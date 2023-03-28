@@ -19,6 +19,7 @@ import {
   getCurrentKeyring,
   getSwapsDefaultToken,
   getIsSwapsChain,
+  getIsBridgeChain,
   getIsBuyableChain,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
@@ -56,6 +57,7 @@ const EthOverview = ({ className }) => {
   const showFiat = useSelector(getShouldShowFiat);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
@@ -75,6 +77,7 @@ const EthOverview = ({ className }) => {
             <div className="eth-overview__primary-container">
               {balance ? (
                 <UserPreferencedCurrencyDisplay
+                  style={{ display: 'contents' }}
                   className={classnames('eth-overview__primary-balance', {
                     'eth-overview__cached-balance': balanceIsCached,
                   })}
@@ -143,7 +146,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
             }
             disabled={!isBuyableChain}
             data-testid="eth-overview-buy"
@@ -231,26 +234,41 @@ const EthOverview = ({ className }) => {
           />
           <IconButton
             className="eth-overview__button"
+            disabled={!isBridgeChain}
             data-testid="eth-overview-bridge"
             Icon={
               <Icon name={ICON_NAMES.BRIDGE} color={IconColor.primaryInverse} />
             }
             label={t('bridge')}
             onClick={() => {
-              const portfolioUrl = process.env.PORTFOLIO_URL;
-              const bridgeUrl = `${portfolioUrl}/bridge`;
-              global.platform.openTab({
-                url: `${bridgeUrl}?metamaskEntry=ext`,
-              });
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
-                properties: {
-                  location: 'Home',
-                  text: 'Bridge',
-                },
-              });
+              if (isBridgeChain) {
+                const portfolioUrl = process.env.PORTFOLIO_URL;
+                const bridgeUrl = `${portfolioUrl}/bridge`;
+                global.platform.openTab({
+                  url: `${bridgeUrl}?metamaskEntry=ext`,
+                });
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
+                  properties: {
+                    location: 'Home',
+                    text: 'Bridge',
+                  },
+                });
+              }
             }}
+            tooltipRender={
+              isBridgeChain
+                ? null
+                : (contents) => (
+                    <Tooltip
+                      title={t('currentlyUnavailable')}
+                      position="bottom"
+                    >
+                      {contents}
+                    </Tooltip>
+                  )
+            }
           />
         </>
       }

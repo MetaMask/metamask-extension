@@ -3,18 +3,16 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { debounce } from 'lodash';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { debounce } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
 } from '@metamask/eth-keyring-controller';
-import {
-  errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
+import createFilterMiddleware from 'eth-json-rpc-filters';
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
+import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
@@ -68,6 +66,7 @@ import {
   AssetType,
   TransactionStatus,
   TransactionType,
+  TokenStandard,
 } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -75,10 +74,8 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import {
-  HardwareDeviceNames,
-  HardwareKeyringTypes,
-} from '../../shared/constants/hardware-wallets';
+import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -104,7 +101,10 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../shared/lib/token-util';
+import {
+  getTokenIdParam,
+  fetchTokenBalance,
+} from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -143,11 +143,8 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
-import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
-import PersonalMessageManager from './lib/personal-message-manager';
-import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -158,6 +155,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import SignController from './controllers/sign';
 
 import {
   CaveatMutatorFactories,
@@ -254,6 +252,8 @@ export default class MetamaskController extends EventEmitter {
     this.networkController = new NetworkController({
       state: initState.NetworkController,
       infuraProjectId: opts.infuraProjectId,
+      trackMetaMetricsEvent: (...args) =>
+        this.metaMetricsController.trackEvent(...args),
     });
     this.networkController.initializeProvider();
     this.provider =
@@ -399,32 +399,30 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
-    process.env.NFTS_V1 &&
-      (this.nftDetectionController = new NftDetectionController({
-        onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
-        getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
-        getBalancesInSingleCall:
-          this.assetsContractController.getBalancesInSingleCall.bind(
-            this.assetsContractController,
-          ),
-        addNft: this.nftController.addNft.bind(this.nftController),
-        getNftState: () => this.nftController.state,
-      }));
+    this.nftDetectionController = new NftDetectionController({
+      onNftsStateChange: (listener) => this.nftController.subscribe(listener),
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+      getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
+      getBalancesInSingleCall:
+        this.assetsContractController.getBalancesInSingleCall.bind(
+          this.assetsContractController,
+        ),
+      addNft: this.nftController.addNft.bind(this.nftController),
+      getNftState: () => this.nftController.state,
+    });
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
@@ -750,7 +748,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.12.0',
+        'https://metamask.github.io/iframe-execution-environment/0.14.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -778,7 +776,10 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokeAllPermissions`,
         `${this.permissionController.name}:revokePermissions`,
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
+        `${this.permissionController.name}:getSubjectNames`,
+        `${this.permissionController.name}:updateCaveat`,
         `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:updateRequestState`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
@@ -891,6 +892,7 @@ export default class MetamaskController extends EventEmitter {
     this.backupController = new BackupController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
+      networkController: this.networkController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -944,10 +946,7 @@ export default class MetamaskController extends EventEmitter {
         this.getExternalPendingTransactions.bind(this),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
-      getTokenStandardAndDetails:
-        this.assetsContractController.getTokenStandardAndDetails.bind(
-          this.assetsContractController,
-        ),
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
@@ -958,14 +957,17 @@ export default class MetamaskController extends EventEmitter {
         status === TransactionStatus.failed
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
-        const frequentRpcListDetail =
-          this.preferencesController.getFrequentRpcListDetail();
         let rpcPrefs = {};
         if (txMeta.chainId) {
-          const rpcSettings = frequentRpcListDetail.find(
-            (rpc) => txMeta.chainId === rpc.chainId,
+          const { networkConfigurations } =
+            this.networkController.store.getState();
+          const matchingNetworkConfig = Object.values(
+            networkConfigurations,
+          ).find(
+            (networkConfiguration) =>
+              networkConfiguration.chainId === txMeta.chainId,
           );
-          rpcPrefs = rpcSettings?.rpcPrefs ?? {};
+          rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
         }
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
@@ -1043,18 +1045,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.networkController.lookupNetwork();
-    this.messageManager = new MessageManager({
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-    });
-    this.personalMessageManager = new PersonalMessageManager({
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-    });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1065,12 +1055,19 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
     });
-    this.typedMessageManager = new TypedMessageManager({
-      getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
+
+    this.signController = new SignController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SignController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
+      keyringController: this.keyringController,
+      preferencesController: this.preferencesController,
+      getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
@@ -1126,10 +1123,8 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.on(NETWORK_EVENTS.NETWORK_WILL_CHANGE, () => {
       this.txController.txStateManager.clearUnapprovedTxs();
       this.encryptionPublicKeyManager.clearUnapproved();
-      this.personalMessageManager.clearUnapproved();
-      this.typedMessageManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
-      this.messageManager.clearUnapproved();
+      this.signController.clearUnapproved();
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -1157,11 +1152,22 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
-      processEthSignMessage: this.newUnsignedMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processEthSignMessage: this.signController.newUnsignedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessage: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessageV3: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessageV4: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processPersonalMessage:
+        this.signController.newUnsignedPersonalMessage.bind(
+          this.signController,
+        ),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
@@ -1185,11 +1191,9 @@ export default class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
-      MessageManager: this.messageManager.memStore,
-      PersonalMessageManager: this.personalMessageManager.memStore,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
-      TypesMessageManager: this.typedMessageManager.memStore,
+      SignController: this.signController,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
@@ -1267,11 +1271,9 @@ export default class MetamaskController extends EventEmitter {
     const resetMethods = [
       this.accountTracker.resetState,
       this.txController.resetState,
-      this.messageManager.resetState,
-      this.personalMessageManager.resetState,
       this.decryptMessageManager.resetState,
       this.encryptionPublicKeyManager.resetState,
-      this.typedMessageManager.resetState,
+      this.signController.resetState.bind(this.signController),
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
@@ -1709,6 +1711,7 @@ export default class MetamaskController extends EventEmitter {
       txController,
       assetsContractController,
       backupController,
+      approvalController,
     } = this;
 
     return {
@@ -1760,6 +1763,10 @@ export default class MetamaskController extends EventEmitter {
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
 
+      // approval
+      requestUserApproval:
+        approvalController.addAndShowApprovalRequest.bind(approvalController),
+
       // primary HD keyring management
       addNewAccount: this.addNewAccount.bind(this),
       verifySeedPhrase: this.verifySeedPhrase.bind(this),
@@ -1803,11 +1810,14 @@ export default class MetamaskController extends EventEmitter {
         networkController.setProviderType.bind(networkController),
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      setCustomRpc: this.setCustomRpc.bind(this),
-      updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
-      delCustomRpc: this.delCustomRpc.bind(this),
-      addCustomNetwork: this.addCustomNetwork.bind(this),
-      requestAddNetworkApproval: this.requestAddNetworkApproval.bind(this),
+      removeNetworkConfiguration:
+        networkController.removeNetworkConfiguration.bind(networkController),
+      setActiveNetwork:
+        networkController.setActiveNetwork.bind(networkController),
+      upsertNetworkConfiguration:
+        this.networkController.upsertNetworkConfiguration.bind(
+          this.networkController,
+        ),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,
@@ -1849,10 +1859,6 @@ export default class MetamaskController extends EventEmitter {
       setTheme: preferencesController.setTheme.bind(preferencesController),
       setTransactionSecurityCheckEnabled:
         preferencesController.setTransactionSecurityCheckEnabled.bind(
-          preferencesController,
-        ),
-      setOpenSeaTransactionSecurityProviderPopoverHasBeenShown:
-        preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown.bind(
           preferencesController,
         ),
       // AssetsContractController
@@ -1957,17 +1963,24 @@ export default class MetamaskController extends EventEmitter {
 
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
-      // messageManager
-      signMessage: this.signMessage.bind(this),
-      cancelMessage: this.cancelMessage.bind(this),
 
-      // personalMessageManager
-      signPersonalMessage: this.signPersonalMessage.bind(this),
-      cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
-
-      // typedMessageManager
-      signTypedMessage: this.signTypedMessage.bind(this),
-      cancelTypedMessage: this.cancelTypedMessage.bind(this),
+      // signController
+      signMessage: this.signController.signMessage.bind(this.signController),
+      cancelMessage: this.signController.cancelMessage.bind(
+        this.signController,
+      ),
+      signPersonalMessage: this.signController.signPersonalMessage.bind(
+        this.signController,
+      ),
+      cancelPersonalMessage: this.signController.cancelPersonalMessage.bind(
+        this.signController,
+      ),
+      signTypedMessage: this.signController.signTypedMessage.bind(
+        this.signController,
+      ),
+      cancelTypedMessage: this.signController.cancelTypedMessage.bind(
+        this.signController,
+      ),
 
       // decryptMessageManager
       decryptMessage: this.decryptMessage.bind(this),
@@ -2166,10 +2179,10 @@ export default class MetamaskController extends EventEmitter {
         detectTokensController,
       ),
 
-      // DetectNftController
-      detectNfts: process.env.NFTS_V1
-        ? nftDetectionController.detectNfts.bind(nftDetectionController)
-        : null,
+      // DetectCollectibleController
+      detectNfts: nftDetectionController.detectNfts.bind(
+        nftDetectionController,
+      ),
 
       /** Token Detection V2 */
       addDetectedTokens:
@@ -2189,12 +2202,72 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const details =
-      await this.assetsContractController.getTokenStandardAndDetails(
+    const { tokenList } = this.tokenListController.state;
+    const { tokens } = this.tokensController.state;
+
+    const staticTokenListDetails =
+      STATIC_MAINNET_TOKEN_LIST[address.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    };
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      tokenDetails.erc20 === true;
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !tokenDetails.erc721;
+
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        const balance = await fetchTokenBalance(
+          address,
+          userAddress,
+          this.provider,
+        );
+
+        details = {
+          address,
+          balance,
+          standard: TokenStandard.ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+        log.warning(`Failed to get token balance. Error: ${e}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
+    if (details === undefined) {
+      details = await this.assetsContractController.getTokenStandardAndDetails(
         address,
         userAddress,
         tokenId,
       );
+    }
+
     return {
       ...details,
       decimals: details?.decimals?.toString(10),
@@ -2239,57 +2312,6 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
-  }
-
-  async requestAddNetworkApproval(customRpc, originIsMetaMask) {
-    try {
-      await this.approvalController.addAndShowApprovalRequest({
-        origin: 'metamask',
-        type: 'wallet_addEthereumChain',
-        requestData: {
-          chainId: customRpc.chainId,
-          blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
-          chainName: customRpc.nickname,
-          rpcUrl: customRpc.rpcUrl,
-          ticker: customRpc.ticker,
-          imageUrl: customRpc.rpcPrefs.imageUrl,
-        },
-      });
-    } catch (error) {
-      if (
-        !(originIsMetaMask && error.message === 'User rejected the request.')
-      ) {
-        throw error;
-      }
-    }
-  }
-
-  async addCustomNetwork(customRpc, actionId) {
-    const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
-
-    this.preferencesController.upsertToFrequentRpcList(
-      rpcUrl,
-      chainId,
-      ticker,
-      chainName,
-      {
-        blockExplorerUrl,
-      },
-    );
-
-    this.metaMetricsController.trackEvent({
-      event: 'Custom Network Added',
-      category: EVENT.CATEGORIES.NETWORK,
-      referrer: {
-        url: ORIGIN_METAMASK,
-      },
-      properties: {
-        chain_id: chainId,
-        symbol: ticker,
-        source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
-      },
-      actionId,
-    });
   }
 
   /**
@@ -2344,7 +2366,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const [primaryKeyring] = keyringController.getKeyringsByType(
-        HardwareKeyringTypes.hdKeyTree,
+        KeyringType.hdKeyTree,
       );
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
@@ -2416,18 +2438,16 @@ export default class MetamaskController extends EventEmitter {
    */
   async fetchInfoToSync() {
     // Preferences
-    const {
-      currentLocale,
-      frequentRpcList,
-      identities,
-      selectedAddress,
-      useTokenDetection,
-    } = this.preferencesController.store.getState();
+    const { currentLocale, identities, selectedAddress, useTokenDetection } =
+      this.preferencesController.store.getState();
 
     const isTokenDetectionInactiveInMainnet =
       !useTokenDetection &&
       this.networkController.store.getState().provider.chainId ===
         CHAIN_IDS.MAINNET;
+
+    const { networkConfigurations } = this.networkController.store.getState();
+
     const { tokenList } = this.tokenListController.state;
     const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
       ? STATIC_MAINNET_TOKEN_LIST
@@ -2435,7 +2455,6 @@ export default class MetamaskController extends EventEmitter {
 
     const preferences = {
       currentLocale,
-      frequentRpcList,
       identities,
       selectedAddress,
     };
@@ -2471,10 +2490,10 @@ export default class MetamaskController extends EventEmitter {
 
     // Accounts
     const [hdKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
@@ -2511,6 +2530,7 @@ export default class MetamaskController extends EventEmitter {
       transactions,
       tokens: { allTokens: allERC20Tokens, allIgnoredTokens },
       network: this.networkController.store.getState(),
+      networkConfigurations,
     };
   }
 
@@ -2637,7 +2657,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getPrimaryKeyringMnemonic() {
     const [keyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
@@ -2777,12 +2797,12 @@ export default class MetamaskController extends EventEmitter {
   async getAccountType(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case HardwareKeyringTypes.trezor:
-      case HardwareKeyringTypes.lattice:
-      case HardwareKeyringTypes.qr:
-      case HardwareKeyringTypes.ledger:
+      case KeyringType.trezor:
+      case KeyringType.lattice:
+      case KeyringType.qr:
+      case KeyringType.ledger:
         return 'hardware';
-      case HardwareKeyringTypes.imported:
+      case KeyringType.imported:
         return 'imported';
       default:
         return 'MetaMask';
@@ -2800,14 +2820,14 @@ export default class MetamaskController extends EventEmitter {
   async getDeviceModel(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case HardwareKeyringTypes.trezor:
+      case KeyringType.trezor:
         return keyring.getModel();
-      case HardwareKeyringTypes.qr:
+      case KeyringType.qr:
         return keyring.getName();
-      case HardwareKeyringTypes.ledger:
+      case KeyringType.ledger:
         // TODO: get model after ledger keyring exposes method
         return HardwareDeviceNames.ledger;
-      case HardwareKeyringTypes.lattice:
+      case KeyringType.lattice:
         // TODO: get model after lattice keyring exposes method
         return HardwareDeviceNames.lattice;
       default:
@@ -2881,7 +2901,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async addNewAccount(accountCount) {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -2926,7 +2946,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async verifySeedPhrase() {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -3048,7 +3068,7 @@ export default class MetamaskController extends EventEmitter {
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
-      HardwareKeyringTypes.imported,
+      KeyringType.imported,
       [privateKey],
     );
     const [firstAccount] = await keyring.getAccounts();
@@ -3072,46 +3092,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async newUnapprovedTransaction(txParams, req) {
     return await this.txController.newUnapprovedTransaction(txParams, req);
-  }
-
-  // eth_sign methods:
-
-  /**
-   * Called when a Dapp uses the eth_sign method, to request user approval.
-   * eth_sign is a pure signature of arbitrary data. It is on a deprecation
-   * path, since this data can be a transaction, or can leak private key
-   * information.
-   *
-   * @param {object} msgParams - The params passed to eth_sign.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnsignedMessage(msgParams, req) {
-    const { disabledRpcMethodPreferences } =
-      this.preferencesController.store.getState();
-    const { eth_sign } = disabledRpcMethodPreferences; // eslint-disable-line camelcase
-    const data = normalizeMsgData(msgParams.data);
-    let promise;
-
-    // eslint-disable-next-line camelcase
-    if (!eth_sign) {
-      throw ethErrors.rpc.methodNotFound(
-        'eth_sign has been disabled. You must enable it in the advanced settings',
-      );
-    }
-
-    // 64 hex + "0x" at the beginning
-    // This is needed because Ethereum's EcSign works only on 32 byte numbers
-    // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
-    if (data.length === 66 || data.length === 67) {
-      promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req);
-      this.sendUpdate();
-      this.opts.showUserConfirmation();
-    } else {
-      throw ethErrors.rpc.invalidParams(
-        'eth_sign requires 32 byte message hash',
-      );
-    }
-    return await promise;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -3139,105 +3119,6 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.exportAppKeyForAddress(account, subject);
   }
   ///: END:ONLY_INCLUDE_IN
-
-  /**
-   * Signifies user intent to complete an eth_sign method.
-   *
-   * @param {object} msgParams - The params passed to eth_call.
-   * @returns {Promise<object>} Full state update.
-   */
-  async signMessage(msgParams) {
-    log.info('MetaMaskController - signMessage');
-    const msgId = msgParams.metamaskId;
-    try {
-      // sets the status op the message to 'approved'
-      // and removes the metamaskId for signing
-      const cleanMsgParams = await this.messageManager.approveMessage(
-        msgParams,
-      );
-      const rawSig = await this.keyringController.signMessage(cleanMsgParams);
-      this.messageManager.setMsgStatusSigned(msgId, rawSig);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_sign failed', error);
-      this.messageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a message submitted via eth_sign.
-   *
-   * @param {string} msgId - The id of the message to cancel.
-   */
-  cancelMessage(msgId) {
-    const { messageManager } = this;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // personal_sign methods:
-
-  /**
-   * Called when a dapp uses the personal_sign method.
-   * This is identical to the Geth eth_sign method, and may eventually replace
-   * eth_sign.
-   *
-   * We currently define our eth_sign and personal_sign mostly for legacy Dapps.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnsignedPersonalMessage(msgParams, req) {
-    const promise = this.personalMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * Signifies a user's approval to sign a personal_sign message in queue.
-   * Triggers signing, and the callback function from newUnsignedPersonalMessage.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<object>} A full state update.
-   */
-  async signPersonalMessage(msgParams) {
-    log.info('MetaMaskController - signPersonalMessage');
-    const msgId = msgParams.metamaskId;
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    try {
-      const cleanMsgParams = await this.personalMessageManager.approveMessage(
-        msgParams,
-      );
-      const rawSig = await this.keyringController.signPersonalMessage(
-        cleanMsgParams,
-      );
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_personalSign failed', error);
-      this.personalMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a personal_sign type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelPersonalMessage(msgId) {
-    const messageManager = this.personalMessageManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
 
   // eth_decrypt methods
 
@@ -3342,7 +3223,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case HardwareKeyringTypes.ledger: {
+      case KeyringType.ledger: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -3350,7 +3231,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case HardwareKeyringTypes.trezor: {
+      case KeyringType.trezor: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -3358,7 +3239,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case HardwareKeyringTypes.lattice: {
+      case KeyringType.lattice: {
         return new Promise((_, reject) => {
           reject(
             new Error('Lattice does not support eth_getEncryptionPublicKey.'),
@@ -3366,7 +3247,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case HardwareKeyringTypes.qr: {
+      case KeyringType.qr: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
@@ -3427,74 +3308,6 @@ export default class MetamaskController extends EventEmitter {
    */
   cancelEncryptionPublicKey(msgId) {
     const messageManager = this.encryptionPublicKeyManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // eth_signTypedData methods
-
-  /**
-   * Called when a dapp uses the eth_signTypedData method, per EIP 712.
-   *
-   * @param {object} msgParams - The params passed to eth_signTypedData.
-   * @param {object} [req] - The original request, containing the origin.
-   * @param version
-   */
-  async newUnsignedTypedMessage(msgParams, req, version) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-      version,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * The method for a user approving a call to eth_signTypedData, per EIP 712.
-   * Triggers the callback in newUnsignedTypedMessage.
-   *
-   * @param {object} msgParams - The params passed to eth_signTypedData.
-   * @returns {object} Full state update.
-   */
-  async signTypedMessage(msgParams) {
-    log.info('MetaMaskController - eth_signTypedData');
-    const msgId = msgParams.metamaskId;
-    const { version } = msgParams;
-    try {
-      const cleanMsgParams = await this.typedMessageManager.approveMessage(
-        msgParams,
-      );
-
-      // For some reason every version after V1 used stringified params.
-      if (version !== 'V1') {
-        // But we don't have to require that. We can stop suggesting it now:
-        if (typeof cleanMsgParams.data === 'string') {
-          cleanMsgParams.data = JSON.parse(cleanMsgParams.data);
-        }
-      }
-
-      const signature = await this.keyringController.signTypedMessage(
-        cleanMsgParams,
-        { version },
-      );
-      this.typedMessageManager.setMsgStatusSigned(msgId, signature);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_signTypedData failed.', error);
-      this.typedMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a eth_signTypedData type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelTypedMessage(msgId) {
-    const messageManager = this.typedMessageManager;
     messageManager.rejectMsg(msgId);
     return this.getState();
   }
@@ -3876,19 +3689,21 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
-    const { provider } = this;
-
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
+    const { blockTracker, provider } = this;
 
-    // forward notifications from network provider
-    provider.on('data', (error, message) => {
-      if (error) {
-        // This should never happen, this error parameter is never set
-        throw error;
-      }
-      engine.emit('notification', message);
+    // create filter polyfill middleware
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+
+    // create subscription polyfill middleware
+    const subscriptionManager = createSubscriptionManager({
+      provider,
+      blockTracker,
     });
+    subscriptionManager.events.on('notification', (message) =>
+      engine.emit('notification', message),
+    );
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
@@ -3914,6 +3729,7 @@ export default class MetamaskController extends EventEmitter {
         getMetricsState: this.metaMetricsController.store.getState.bind(
           this.metaMetricsController.store,
         ),
+        securityProviderRequest: this.securityProviderRequest.bind(this),
       }),
     );
 
@@ -3953,7 +3769,6 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
@@ -3976,40 +3791,24 @@ export default class MetamaskController extends EventEmitter {
             { origin },
           ),
 
-        // Custom RPC-related
-        addCustomRpc: async ({
-          chainId,
-          blockExplorerUrl,
-          ticker,
-          chainName,
-          rpcUrl,
-        } = {}) => {
-          await this.preferencesController.upsertToFrequentRpcList(
-            rpcUrl,
-            chainId,
-            ticker,
-            chainName,
-            {
-              blockExplorerUrl,
-            },
-          );
-        },
-        findCustomRpcBy: this.findCustomRpcBy.bind(this),
         getCurrentChainId: () =>
           this.networkController.store.getState().provider.chainId,
-        getCurrentRpcUrl:
+        getCurrentRpcUrl: () =>
           this.networkController.store.getState().provider.rpcUrl,
+        // network configuration-related
+        getNetworkConfigurations: () =>
+          this.networkController.store.getState().networkConfigurations,
+        upsertNetworkConfiguration:
+          this.networkController.upsertNetworkConfiguration.bind(
+            this.networkController,
+          ),
+        setActiveNetwork: this.networkController.setActiveNetwork.bind(
+          this.networkController,
+        ),
+        findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
-        updateRpcTarget: ({ rpcUrl, chainId, ticker, nickname }) => {
-          this.networkController.setRpcTarget(
-            rpcUrl,
-            chainId,
-            ticker,
-            nickname,
-          );
-        },
 
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
@@ -4057,6 +3856,9 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
+    // filter and subscription polyfills
+    engine.push(filterMiddleware);
+    engine.push(subscriptionManager.middleware);
     if (subjectType !== SubjectType.Internal) {
       // permissions
       engine.push(
@@ -4365,120 +4167,24 @@ export default class MetamaskController extends EventEmitter {
   // CONFIG
   //=============================================================================
 
-  // Log blocks
-
   /**
-   * A method for selecting a custom URL for an ethereum RPC provider and updating it
-   *
-   * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {string} chainId - The chainId of the selected network.
-   * @param {string} ticker - The ticker symbol of the selected network.
-   * @param {string} [nickname] - Nickname of the selected network.
-   * @param {object} [rpcPrefs] - RPC preferences.
-   * @param {string} [rpcPrefs.blockExplorerUrl] - URL of block explorer for the chain.
-   * @returns {Promise<string>} The RPC Target URL confirmed.
-   */
-  async updateAndSetCustomRpc(
-    rpcUrl,
-    chainId,
-    ticker = 'ETH',
-    nickname,
-    rpcPrefs,
-  ) {
-    this.networkController.setRpcTarget(
-      rpcUrl,
-      chainId,
-      ticker,
-      nickname,
-      rpcPrefs,
-    );
-    await this.preferencesController.upsertToFrequentRpcList(
-      rpcUrl,
-      chainId,
-      ticker,
-      nickname,
-      rpcPrefs,
-    );
-    return rpcUrl;
-  }
-
-  /**
-   * A method for selecting a custom URL for an ethereum RPC provider.
-   *
-   * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {string} chainId - The chainId of the selected network.
-   * @param {string} ticker - The ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
-   * @param rpcPrefs
-   * @returns {Promise<string>} The RPC Target URL confirmed.
-   */
-  async setCustomRpc(
-    rpcUrl,
-    chainId,
-    ticker = 'ETH',
-    nickname = '',
-    rpcPrefs = {},
-  ) {
-    const frequentRpcListDetail =
-      this.preferencesController.getFrequentRpcListDetail();
-    const rpcSettings = frequentRpcListDetail.find(
-      (rpc) => rpcUrl === rpc.rpcUrl,
-    );
-
-    if (rpcSettings) {
-      this.networkController.setRpcTarget(
-        rpcSettings.rpcUrl,
-        rpcSettings.chainId,
-        rpcSettings.ticker,
-        rpcSettings.nickname,
-        rpcPrefs,
-      );
-    } else {
-      this.networkController.setRpcTarget(
-        rpcUrl,
-        chainId,
-        ticker,
-        nickname,
-        rpcPrefs,
-      );
-      await this.preferencesController.upsertToFrequentRpcList(
-        rpcUrl,
-        chainId,
-        ticker,
-        nickname,
-        rpcPrefs,
-      );
-    }
-    return rpcUrl;
-  }
-
-  /**
-   * A method for deleting a selected custom URL.
-   *
-   * @param {string} rpcUrl - A RPC URL to delete.
-   */
-  async delCustomRpc(rpcUrl) {
-    await this.preferencesController.removeFromFrequentRpcList(rpcUrl);
-  }
-
-  /**
-   * Returns the first RPC info object that matches at least one field of the
+   * Returns the first network configuration object that matches at least one field of the
    * provided search criteria. Returns null if no match is found
    *
    * @param {object} rpcInfo - The RPC endpoint properties and values to check.
-   * @returns {object} rpcInfo found in the frequentRpcList
+   * @returns {object} rpcInfo found in the network configurations list
    */
-  findCustomRpcBy(rpcInfo) {
-    const frequentRpcListDetail =
-      this.preferencesController.getFrequentRpcListDetail();
-    for (const existingRpcInfo of frequentRpcListDetail) {
-      for (const key of Object.keys(rpcInfo)) {
-        if (existingRpcInfo[key] === rpcInfo[key]) {
-          return existingRpcInfo;
-        }
-      }
-    }
-    return null;
+  findNetworkConfigurationBy(rpcInfo) {
+    const { networkConfigurations } = this.networkController.store.getState();
+    const networkConfiguration = Object.values(networkConfigurations).find(
+      (configuration) => {
+        return Object.keys(rpcInfo).some((key) => {
+          return configuration[key] === rpcInfo[key];
+        });
+      },
+    );
+
+    return networkConfiguration || null;
   }
 
   /**
@@ -4585,14 +4291,14 @@ export default class MetamaskController extends EventEmitter {
    */
   setLocked() {
     const [trezorKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.trezor,
+      KeyringType.trezor,
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
 
     const [ledgerKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.ledger,
+      KeyringType.ledger,
     );
     ledgerKeyring?.destroy?.();
 
@@ -4612,6 +4318,24 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  updateCaveat = (origin, target, caveatType, caveatValue) => {
+    try {
+      this.controllerMessenger.call(
+        'PermissionController:updateCaveat',
+        origin,
+        target,
+        caveatType,
+        caveatValue,
+      );
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+  ///: END:ONLY_INCLUDE_IN
 
   rejectPermissionsRequest = (requestId) => {
     try {
@@ -4660,11 +4384,11 @@ export default class MetamaskController extends EventEmitter {
     const { currentLocale, transactionSecurityCheckEnabled } =
       this.preferencesController.store.getState();
 
-    const chainId = Number(
-      hexToDecimal(this.networkController.store.getState().provider.chainId),
-    );
-
     if (transactionSecurityCheckEnabled) {
+      const chainId = Number(
+        hexToDecimal(this.networkController.store.getState().provider.chainId),
+      );
+
       try {
         const securityProviderResponse = await securityProviderCheck(
           requestData,

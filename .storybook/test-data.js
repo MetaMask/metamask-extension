@@ -1,5 +1,5 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
-import { HardwareKeyringTypes } from '../shared/constants/hardware-wallets';
+import { KeyringType } from '../shared/constants/keyring';
 
 const state = {
   invalidCustomNetwork: {
@@ -289,7 +289,6 @@ const state = {
           },
           version: '0.6.0',
         },
-        permissionName: 'wallet_snap_local:http://localhost:8080/',
         sourceCode: '(...)',
         status: 'stopped',
         svgIcon: '<svg>...</svg>',
@@ -330,7 +329,6 @@ const state = {
           },
           version: '0.6.0',
         },
-        permissionName: 'wallet_snap_npm:http://localhost:8080/',
         sourceCode: '(...)',
         status: 'stopped',
         svgIcon: '<svg>...</svg>',
@@ -422,7 +420,6 @@ const state = {
         ],
       },
     },
-    frequentRpcList: [],
     addressBook: {
       undefined: {
         0: {
@@ -460,20 +457,28 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5' : {
+      '0x5': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
             decimals: 18,
             symbol: 'LINK',
-            image: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
-            aggregators: ['coinGecko', 'oneInch', 'paraswap', 'zapper', 'zerion'],
+            image:
+              'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+            aggregators: [
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'zapper',
+              'zerion',
+            ],
           },
           {
             address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
             decimals: 18,
             symbol: 'COMP',
-            image: 'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+            image:
+              'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
             aggregators: [
               'bancor',
               'cmc',
@@ -503,8 +508,8 @@ const state = {
               'zerion',
             ],
           },
-        ]
-      }
+        ],
+      },
     },
     detectedTokens: [
       {
@@ -1163,30 +1168,39 @@ const state = {
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
     keyringTypes: [
-      HardwareKeyringTypes.imported,
-      HardwareKeyringTypes.hdKeyTree,
-      HardwareKeyringTypes.trezor,
-      HardwareKeyringTypes.ledger,
+      KeyringType.imported,
+      KeyringType.hdKeyTree,
+      KeyringType.trezor,
+      KeyringType.ledger,
     ],
     keyrings: [
       {
-        type: HardwareKeyringTypes.hdKeyTree,
+        type: KeyringType.hdKeyTree,
         accounts: [
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-          '0x9d0ba4ddac06032527b140912ec808ab9451b788',
         ],
       },
-    ],
-    frequentRpcListDetail: [
       {
+        type: KeyringType.ledger,
+        accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
+      },
+    ],
+    networkConfigurations: {
+      'test-networkConfigurationId-1': {
+        rpcUrl: 'https://testrpc.com',
+        chainId: '0x1',
+        nickname: 'mainnet',
+        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+      },
+      'test-networkConfigurationId-2': {
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
         rpcPrefs: {},
       },
-    ],
+    },
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [

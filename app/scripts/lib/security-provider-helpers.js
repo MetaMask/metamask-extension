@@ -39,12 +39,12 @@ export async function securityProviderCheck(
       rpc_method_name: methodName,
       chain_id: chainId,
       data: {
-        from_address: requestData.txParams.from,
-        to_address: requestData.txParams.to,
-        gas: requestData.txParams.gas,
-        gasPrice: requestData.txParams.gasPrice,
-        value: requestData.txParams.value,
-        data: requestData.txParams.data,
+        from_address: requestData?.txParams?.from,
+        to_address: requestData?.txParams?.to,
+        gas: requestData?.txParams?.gas,
+        gasPrice: requestData?.txParams?.gasPrice,
+        value: requestData?.txParams?.value,
+        data: requestData?.txParams?.data,
       },
       currentLocale,
     };

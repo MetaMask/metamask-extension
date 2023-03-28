@@ -1,3 +1,4 @@
+import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { SECOND } from '../../../shared/constants/time';
 import { detectSIWE } from '../../../shared/modules/siwe';
@@ -46,6 +47,7 @@ const RATE_LIMIT_MAP = {
 const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.ETH_SIGN]: {
     APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
+    FAILED: EVENT_NAMES.SIGNATURE_FAILED,
     REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
     REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
   },
@@ -105,14 +107,16 @@ const rateLimitTimeouts = {};
  *  MetaMetricsController
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
+ * @param opts.securityProviderRequest
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds = 60 * 5,
+  securityProviderRequest,
 }) {
-  return function rpcMethodTrackingMiddleware(
+  return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ res,
     /** @type {Function} */ next,
@@ -160,20 +164,63 @@ export default function createRPCMethodTrackingMiddleware({
 
       const properties = {};
 
+      let msgParams;
+
       if (event === EVENT_NAMES.SIGNATURE_REQUESTED) {
         properties.signature_type = method;
+
+        const data = req?.params?.[0];
+        const from = req?.params?.[1];
+        const paramsExamplePassword = req?.params?.[2];
+
+        msgParams = {
+          ...paramsExamplePassword,
+          from,
+          data,
+          origin,
+        };
+
+        const msgData = {
+          msgParams,
+          status: 'unapproved',
+          type: req.method,
+        };
+
+        try {
+          const securityProviderResponse = await securityProviderRequest(
+            msgData,
+            req.method,
+          );
+
+          if (securityProviderResponse?.flagAsDangerous === 1) {
+            properties.ui_customizations = ['flagged_as_malicious'];
+          } else if (securityProviderResponse?.flagAsDangerous === 2) {
+            properties.ui_customizations = ['flagged_as_safety_unknown'];
+          } else {
+            properties.ui_customizations = null;
+          }
+
+          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+            const { isSIWEMessage } = detectSIWE({ data });
+            if (isSIWEMessage) {
+              properties.ui_customizations === null
+                ? (properties.ui_customizations = [
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ])
+                : properties.ui_customizations.push(
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  );
+            }
+          }
+        } catch (e) {
+          console.warn(
+            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
+          );
+        }
       } else {
         properties.method = method;
-      }
-
-      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
-        const data = req?.params?.[0];
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
-          properties.ui_customizations = [
-            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
-          ];
-        }
       }
 
       trackEvent({
@@ -190,32 +237,87 @@ export default function createRPCMethodTrackingMiddleware({
       }, SECOND * rateLimitSeconds);
     }
 
-    next((callback) => {
+    next(async (callback) => {
       if (shouldTrackEvent === false || typeof eventType === 'undefined') {
         return callback();
       }
 
-      // An error code of 4001 means the user rejected the request, which we
-      // can use here to determine which event to track.
-      const event =
-        res.error?.code === 4001 ? eventType.REJECTED : eventType.APPROVED;
-
       const properties = {};
+
+      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
+      const isDisabledEthSignAdvancedSetting =
+        method === MESSAGE_TYPE.ETH_SIGN &&
+        res.error?.code === errorCodes.rpc.methodNotFound;
+
+      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
+
+      let event;
+      if (isDisabledRPCMethod) {
+        event = eventType.FAILED;
+        properties.error = res.error;
+      } else if (res.error?.code === 4001) {
+        event = eventType.REJECTED;
+      } else {
+        event = eventType.APPROVED;
+      }
+
+      let msgParams;
 
       if (eventType.REQUESTED === EVENT_NAMES.SIGNATURE_REQUESTED) {
         properties.signature_type = method;
+
+        const data = req?.params?.[0];
+        const from = req?.params?.[1];
+        const paramsExamplePassword = req?.params?.[2];
+
+        msgParams = {
+          ...paramsExamplePassword,
+          from,
+          data,
+          origin,
+        };
+
+        const msgData = {
+          msgParams,
+          status: 'unapproved',
+          type: req.method,
+        };
+
+        try {
+          const securityProviderResponse = await securityProviderRequest(
+            msgData,
+            req.method,
+          );
+
+          if (securityProviderResponse?.flagAsDangerous === 1) {
+            properties.ui_customizations = ['flagged_as_malicious'];
+          } else if (securityProviderResponse?.flagAsDangerous === 2) {
+            properties.ui_customizations = ['flagged_as_safety_unknown'];
+          } else {
+            properties.ui_customizations = null;
+          }
+
+          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+            const { isSIWEMessage } = detectSIWE({ data });
+            if (isSIWEMessage) {
+              properties.ui_customizations === null
+                ? (properties.ui_customizations = [
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ])
+                : properties.ui_customizations.push(
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  );
+            }
+          }
+        } catch (e) {
+          console.warn(
+            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
+          );
+        }
       } else {
         properties.method = method;
-      }
-
-      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
-        const data = req?.params?.[0];
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
-          properties.ui_customizations = [
-            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
-          ];
-        }
       }
 
       trackEvent({
@@ -226,6 +328,7 @@ export default function createRPCMethodTrackingMiddleware({
         },
         properties,
       });
+
       return callback();
     });
   };
