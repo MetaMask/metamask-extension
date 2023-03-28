@@ -1,10 +1,10 @@
 import React from 'react';
-import SnapsAuthorshipPill from '.';
+import SnapAuthorship from '.';
 
 export default {
-  title: 'Components/App/Flask/SnapsAuthorshipPill',
+  title: 'Components/App/Flask/SnapAuthorship',
 
-  component: SnapsAuthorshipPill,
+  component: SnapAuthorship,
   argTypes: {
     snapId: {
       control: 'text',
@@ -12,7 +12,7 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <SnapsAuthorshipPill {...args} />;
+export const DefaultStory = (args) => <SnapAuthorship {...args} />;
 
 DefaultStory.storyName = 'Default';
 

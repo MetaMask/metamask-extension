@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Εμφάνιση"
   },
-  "showAdvancedGasInline": {
-    "message": "Προωθημένος έλεγχος gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Επιλέξτε αυτό για να εμφανίσετε τις τιμές αερίου και να περιορίσετε τα στοιχεία ελέγχου απευθείας στις οθόνες αποστολής και επιβεβαίωσης."
-  },
   "showFiatConversionInTestnets": {
     "message": "Εμφάνιση Μετατροπής σε Δοκιμαστικά Δίκτυα"
   },

@@ -666,12 +666,6 @@
   "settings": {
     "message": "Nastavitve"
   },
-  "showAdvancedGasInline": {
-    "message": "Napredno krmiljenje plina"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izberite to možnost, če želite prikazati ceno plina in omejiti nadzor neposredno na zaslonih za pošiljanje in potrditev."
-  },
   "showFiatConversionInTestnets": {
     "message": "Pokažite pretvorbo na testnih omrežjih"
   },
