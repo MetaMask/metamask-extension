@@ -441,9 +441,18 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
  */
 
 /**
- * @param {Function} t - The translation function
- * @param {string} permissionName - The name of the permission to request
- * @param {object} permissionValue - The value of the permission to request
+ * @typedef {object} PermissionDescriptionParamsObject
+ * @property {Function} t - The translation function.
+ * @property {string} permissionName - The name of the permission.
+ * @property {object} permissionValue - The permission object.
+ * @property {object} targetSubjectMetadata - Subject metadata.
+ */
+
+/**
+ * @param {PermissionDescriptionParamsObject} params - The permission description params object.
+ * @param {Function} params.t - The translation function.
+ * @param {string} params.permissionName - The name of the permission to request
+ * @param {object} params.permissionValue - The value of the permission to request
  * @returns {PermissionLabelObject[]}
  */
 export const getPermissionDescription = ({
