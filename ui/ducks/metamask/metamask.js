@@ -14,7 +14,7 @@ import {
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import {
@@ -28,7 +28,7 @@ const initialState = {
   isAccountMenuOpen: false,
   identities: {},
   unapprovedTxs: {},
-  frequentRpcList: [],
+  networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
   pendingTokens: {},
@@ -166,7 +166,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
@@ -407,7 +407,7 @@ export function getLedgerTransportType(state) {
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === HardwareKeyringTypes.ledger;
+  return keyring?.type === KeyringType.ledger;
 }
 
 /**
@@ -419,6 +419,6 @@ export function isAddressLedger(state, address) {
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === HardwareKeyringTypes.ledger;
+    return kr.type === KeyringType.ledger;
   });
 }

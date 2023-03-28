@@ -5,6 +5,256 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
   <div
     class="settings-page__body"
   >
+    <h4
+      class="box box--margin-top-1 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-alternative"
+    >
+      Privacy
+    </h4>
+    <div
+      class="settings-page__content-row settings-page__content-row-experimental"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Enable transaction security providers
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          >
+            We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
+          </h6>
+          <h6
+            class="box box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          >
+            Select providers:
+          </h6>
+          <div
+            class="settings-page__content-item-col settings-page__content-item-col-open-sea"
+          >
+            <h5
+              class="box box--margin-top-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
+            >
+              OpenSea (Beta)
+            </h5>
+            <label
+              class="toggle-button toggle-button--off"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  />
+                </div>
+                <input
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                />
+                <span
+                  class="toggle-button__label-on"
+                />
+              </div>
+            </label>
+          </div>
+          <h6
+            class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          >
+            This service is experimental
+          </h6>
+          <h5
+            class="box box--margin-top-2 box--margin-bottom-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-muted"
+          >
+            More coming soon...
+          </h5>
+        </div>
+      </div>
+    </div>
+    <div
+      class="settings-page__content-row"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Enable OpenSea API
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
+              </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div
+      class="settings-page__content-row"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Autodetect NFTs
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          <p
+            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+          >
+            We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature.
+          </p>
+          <ul
+            class="settings-page__content-unordered-list"
+          >
+            <li>
+              Your account address will be viewable to third-party APIs.
+            </li>
+            <li>
+              NFT metadata may contain links to scams or phishing sites.
+            </li>
+            <li>
+              Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet.
+            </li>
+          </ul>
+          <p
+            class="box mm-text mm-text--body-md box--padding-top-4 box--flex-direction-row box--color-text-alternative"
+          >
+            Leave this feature off if you don't want the app to pull data from those services.
+          </p>
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
+              </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
     <div
       class="settings-page__content-row"
       data-testid="advanced-setting-desktop-pairing"

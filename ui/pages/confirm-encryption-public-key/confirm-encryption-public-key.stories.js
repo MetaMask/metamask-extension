@@ -28,6 +28,11 @@ export default {
     encryptionPublicKey: {
       action: 'encryptionPublicKey',
     },
+    conversionRate: {
+      control: {
+        type: 'number',
+      },
+    },
     history: {
       control: {
         type: 'object',
@@ -69,6 +74,8 @@ export default {
     subjectMetadata: metamask.subjectMetadata,
     mostRecentOverviewPage: history.mostRecentOverviewPage,
     nativeCurrency: metamask.nativeCurrency,
+    currentCurrency: metamask.currentCurrency,
+    conversionRate: metamask.conversionRate,
   },
 };
 

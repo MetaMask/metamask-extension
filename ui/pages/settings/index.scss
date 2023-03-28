@@ -246,6 +246,12 @@
         @include screen-sm-min {
           max-height: 50px;
         }
+
+        &__caret {
+          @include screen-sm-min {
+            display: none;
+          }
+        }
       }
     }
 

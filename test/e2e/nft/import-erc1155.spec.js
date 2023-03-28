@@ -42,7 +42,7 @@ describe('Import ERC1155 NFT', function () {
         await driver.fill('[data-testid="token-id"]', '1');
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
-        const newNftNotification = await driver.findElement({
+        const newNftNotification = await driver.findVisibleElement({
           text: 'NFT was successfully added!',
           tag: 'h6',
         });
@@ -53,10 +53,11 @@ describe('Import ERC1155 NFT', function () {
           css: 'h5',
           text: 'Rocks',
         });
-        const importedERC1155Image = await driver.waitForSelector(
-          '[class="nfts-items__item-image"]',
-        );
         assert.equal(await importedERC1155.isDisplayed(), true);
+
+        const importedERC1155Image = await driver.findVisibleElement(
+          '.nfts-items__item img',
+        );
         assert.equal(await importedERC1155Image.isDisplayed(), true);
       },
     );

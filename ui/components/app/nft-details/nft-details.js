@@ -55,6 +55,7 @@ import {
 import NftDefaultImage from '../nft-default-image';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 
 export default function NftDetails({ nft }) {
   const {
@@ -86,6 +87,7 @@ export default function NftDetails({ nft }) {
   const nftImageAlt = getNftImageAlt(nft);
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isDataURI = nftImageURL.startsWith('data:');
+
   const formattedTimestamp = formatDate(
     new Date(lastSale?.event_timestamp).getTime(),
     'M/d/y',
@@ -297,7 +299,9 @@ export default function NftDetails({ nft }) {
                     overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                     boxProps={{ margin: 0, marginBottom: 4 }}
                   >
-                    {lastSale.total_price}
+                    {`${Number(decWEIToDecETH(lastSale.total_price))} ${
+                      lastSale.payment_token.symbol
+                    }`}
                   </Typography>
                 </Box>
               </Box>
@@ -461,6 +465,9 @@ NftDetails.propTypes = {
     lastSale: PropTypes.shape({
       event_timestamp: PropTypes.string,
       total_price: PropTypes.string,
+      payment_token: PropTypes.shape({
+        symbol: PropTypes.string,
+      }),
     }),
   }),
 };
