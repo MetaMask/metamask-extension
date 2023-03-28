@@ -1,3 +1,4 @@
+import { isObject } from '@metamask/utils';
 import { PERMISSION_DESCRIPTIONS } from '../../../helpers/utils/permission';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
@@ -8,7 +9,17 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
         permissionValue,
         targetSubjectMetadata,
       });
-      if (permissionDescription.weight === 1) {
+      if (Array.isArray(permissionDescription)) {
+        permissionDescription.forEach((description) => {
+          if (description.weight === 1) {
+            const { id, message } = description;
+            filteredPermissions.push({ id, message });
+          }
+        });
+      } else if (
+        isObject(permissionDescription) &&
+        permissionDescription.weight === 1
+      ) {
         const { id, message } = permissionDescription;
         filteredPermissions.push({ id, message });
       }
