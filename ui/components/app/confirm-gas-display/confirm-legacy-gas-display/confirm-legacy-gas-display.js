@@ -130,7 +130,7 @@ const ConfirmLegacyGasDisplay = () => {
       }
       subTitle={
         <>
-          {dappSuggestedGasFees ? (
+          {dappSuggestedGasFees && (
             <Text
               variant={TextVariant.bodySm}
               fontStyle={FONT_STYLE.ITALIC}
@@ -139,8 +139,6 @@ const ConfirmLegacyGasDisplay = () => {
             >
               {t('transactionDetailDappGasMoreInfo')}
             </Text>
-          ) : (
-            ''
           )}
         </>
       }

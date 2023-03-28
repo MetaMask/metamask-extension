@@ -2,6 +2,14 @@ import { useSelector } from 'react-redux';
 import { getCurrentDraftTransaction } from '../ducks/send';
 import { getUnapprovedTransactions } from '../selectors';
 
+/**
+ * Returns an object that resembles the txData.txParams from the Transactions state.
+ * While processing gas details for send transaction and edit transaction,
+ * the gas data from draftTransaction and unapprovedTx has to be reorganized
+ * to mimic the txdata.txParam from a confirmTransaction
+ *
+ * @returns {Object txData.txParams}
+ */
 export const useDraftTransactionGasValues = () => {
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);

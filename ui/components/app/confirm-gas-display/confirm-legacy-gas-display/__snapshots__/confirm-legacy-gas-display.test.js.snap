@@ -88,9 +88,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
     <div
       class="transaction-detail-item__row"
     >
-      <div>
-        
-      </div>
+      <div />
       <h6
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
       >
