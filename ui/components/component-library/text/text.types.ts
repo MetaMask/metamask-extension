@@ -73,22 +73,22 @@ export interface TextProps extends BoxProps {
    * The font-weight of the Text component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js
    */
-  fontWeight?: FONT_WEIGHT;
+  fontWeight?: typeof FONT_WEIGHT;
   /**
    * The font-style of the Text component. Should use the FONT_STYLE object from
    * ./ui/helpers/constants/design-system.js
    */
-  fontStyle?: FONT_STYLE;
+  fontStyle?: typeof FONT_STYLE;
   /**
    * The textTransform of the Text component. Should use the TEXT_TRANSFORM object from
    * ./ui/helpers/constants/design-system.js
    */
-  textTransform?: TEXT_TRANSFORM;
+  textTransform?: typeof TEXT_TRANSFORM;
   /**
    * The text-align of the Text component. Should use the TEXT_ALIGN object from
    * ./ui/helpers/constants/design-system.js
    */
-  textAlign?: TEXT_ALIGN;
+  textAlign?: typeof TEXT_ALIGN;
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
@@ -98,7 +98,7 @@ export interface TextProps extends BoxProps {
    * The overflow-wrap of the Text component. Should use the OVERFLOW_WRAP object from
    * ./ui/helpers/constants/design-system.js
    */
-  overflowWrap?: OVERFLOW_WRAP;
+  overflowWrap?: typeof OVERFLOW_WRAP;
   /**
    * Used for long strings that can be cut off...
    */
