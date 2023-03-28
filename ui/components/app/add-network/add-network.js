@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
-import Typography from '../../ui/typography';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   BorderRadius,
   BackgroundColor,
@@ -38,7 +36,7 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES, Text } from '../../component-library';
 import { EVENT } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {
@@ -98,7 +96,7 @@ const AddNetwork = () => {
             <img src="images/info-fox.svg" />
           </Box>
           <Box>
-            <Typography variant={TypographyVariant.H7}>
+            <Text variant={TextVariant.bodySm} as="h6">
               {t('youHaveAddedAll', [
                 <a
                   key="link"
@@ -121,15 +119,16 @@ const AddNetwork = () => {
                       : history.push(ADD_NETWORK_ROUTE);
                   }}
                 >
-                  <Typography
-                    variant={TypographyVariant.H7}
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
                     color={TextColor.infoDefault}
                   >
                     {t('addMoreNetworks')}.
-                  </Typography>
+                  </Text>
                 </Button>,
               ])}
-            </Typography>
+            </Text>
           </Box>
         </Box>
       ) : (
@@ -144,19 +143,21 @@ const AddNetwork = () => {
               paddingBottom={2}
               className="add-network__header"
             >
-              <Typography
-                variant={TypographyVariant.H4}
+              <Text
+                variant={TextVariant.headingSm}
                 color={TextColor.textMuted}
+                as="h4"
               >
                 {t('networks')}
-              </Typography>
+              </Text>
               <span className="add-network__header__subtitle">{'  >  '}</span>
-              <Typography
-                variant={TypographyVariant.H4}
+              <Text
+                variant={TextVariant.headingSm}
+                as="h4"
                 color={TextColor.textDefault}
               >
                 {t('addANetwork')}
-              </Typography>
+              </Text>
             </Box>
           )}
           <Box
@@ -164,22 +165,24 @@ const AddNetwork = () => {
             marginBottom={1}
             className="add-network__main-container"
           >
-            <Typography
-              variant={TypographyVariant.H6}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={TextColor.textAlternative}
               margin={0}
               marginTop={4}
             >
               {t('addFromAListOfPopularNetworks')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H7}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={TextColor.textMuted}
               marginTop={4}
               marginBottom={3}
             >
               {t('popularCustomNetworks')}
-            </Typography>
+            </Text>
             {notExistingNetworkConfigurations.map((item, index) => (
               <Box
                 key={index}
@@ -200,13 +203,13 @@ const AddNetwork = () => {
                     </IconBorder>
                   </Box>
                   <Box marginLeft={2}>
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySmBold}
+                      as="h6"
                       color={TextColor.textDefault}
-                      fontWeight={FONT_WEIGHT.BOLD}
                     >
                       {item.nickname}
-                    </Typography>
+                    </Text>
                   </Box>
                 </Box>
                 <Box
@@ -294,12 +297,13 @@ const AddNetwork = () => {
                   : history.push(ADD_NETWORK_ROUTE);
               }}
             >
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.primaryDefault}
               >
                 {t('addANetworkManually')}
-              </Typography>
+              </Text>
             </Button>
           </Box>
         </Box>
