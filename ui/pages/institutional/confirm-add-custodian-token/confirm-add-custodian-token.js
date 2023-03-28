@@ -178,8 +178,8 @@ const ConfirmAddCustodianToken = () => {
         ) : (
           <footer>
             <Button
-              type="default"
-              large
+              type={BUTTON_TYPES.SECONDARY}
+              size={BUTTON_SIZES.LG}
               data-testid="cancel-btn"
               className="page-container__footer-button"
               onClick={() => {
