@@ -221,7 +221,7 @@ export default class MetaMetricsController {
       keccak(
         Buffer.from(
           String(Date.now()) +
-          String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
         ),
       ),
     );
@@ -237,12 +237,14 @@ export default class MetaMetricsController {
   createEventFragment(options) {
     if (!options.successEvent || !options.category) {
       throw new Error(
-        `Must specify success event and category. Success event was: ${options.event
+        `Must specify success event and category. Success event was: ${
+          options.event
         }. Category was: ${options.category}. Payload keys were: ${Object.keys(
           options,
-        )}. ${typeof options.properties === 'object'
-          ? `Payload property keys were: ${Object.keys(options.properties)}`
-          : ''
+        )}. ${
+          typeof options.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            : ''
         }`,
       );
     }
@@ -578,12 +580,14 @@ export default class MetaMetricsController {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error(
-        `Must specify event and category. Event was: ${payload.event
+        `Must specify event and category. Event was: ${
+          payload.event
         }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
           payload,
-        )}. ${typeof payload.properties === 'object'
-          ? `Payload property keys were: ${Object.keys(payload.properties)}`
-          : ''
+        )}. ${
+          typeof payload.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            : ''
         }`,
       );
     }
@@ -730,7 +734,7 @@ export default class MetaMetricsController {
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
     const mmiAccountAddress =
       metamaskState.custodyAccountDetails &&
-        Object.keys(metamaskState.custodyAccountDetails).length
+      Object.keys(metamaskState.custodyAccountDetails).length
         ? Object.keys(metamaskState.custodyAccountDetails)[0]
         : null;
     ///: END:ONLY_INCLUDE_IN
