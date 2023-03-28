@@ -25,7 +25,6 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     </button>
     <div>
       <button
-        aria-label="NFT Options"
         class="box mm-button-icon mm-button-icon--size-lg nft-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
         data-testid="nft-options__button"
       >
@@ -169,7 +168,6 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               tabindex="0"
             >
               <button
-                aria-label="copy"
                 class="box mm-button-icon mm-button-icon--size-lg nft-details__contract-copy-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
                 data-testid="nft-address-copy"
               >

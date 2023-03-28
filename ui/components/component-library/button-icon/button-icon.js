@@ -30,6 +30,9 @@ export const ButtonIcon = ({
   ...props
 }) => {
   const Tag = href ? 'a' : as;
+
+  console.log({ ariaLabel });
+
   return (
     <Box
       aria-label={ariaLabel}
