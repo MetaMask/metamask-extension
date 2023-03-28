@@ -108,6 +108,24 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         leftIcon: getLeftIcon(ICON_NAMES.SECURITY_SEARCH),
         rightIcon: RIGHT_WARNING_ICON,
         weight: 1,
+        id: `public-key-access-bip32-${path
+          .join('-')
+          .replace(/'/gu, 'h')}-${curve}-${i}`,
+        message: t('snapInstallWarningPublicKeyAccess', [
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata.origin)}
+          </Text>,
+          <b key="2">
+            {getSnapDerivationPathName(path, curve) ??
+              `${path.join('/')} (${curve})`}
+          </b>,
+        ]),
       };
 
       const friendlyName = getSnapDerivationPathName(path, curve);
@@ -149,10 +167,22 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
           path.join('/'),
         ]),
-        id: `public-key-access-bip32-${path
+      };
+    }),
+  [RestrictedMethods.snap_getBip32Entropy]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) =>
+    permissionValue.caveats[0].value.map(({ path, curve }, i) => {
+      const baseDescription = {
+        leftIcon: getLeftIcon(ICON_NAMES.KEY),
+        rightIcon: RIGHT_WARNING_ICON,
+        weight: 1,
+        id: `key-access-bip32-${path
           .join('-')
           .replace(/'/gu, 'h')}-${curve}-${i}`,
-        message: t('snapInstallWarningPublicKeyAccess', [
+        message: t('snapInstallWarningKeyAccess', [
           <Text
             key="1"
             color={Color.primaryDefault}
@@ -167,18 +197,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
               `${path.join('/')} (${curve})`}
           </b>,
         ]),
-      };
-    }),
-  [RestrictedMethods.snap_getBip32Entropy]: ({
-    t,
-    permissionValue,
-    targetSubjectMetadata,
-  }) =>
-    permissionValue.caveats[0].value.map(({ path, curve }, i) => {
-      const baseDescription = {
-        leftIcon: getLeftIcon(ICON_NAMES.KEY),
-        rightIcon: RIGHT_WARNING_ICON,
-        weight: 1,
       };
 
       const friendlyName = getSnapDerivationPathName(path, curve);
@@ -219,24 +237,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             {path.join('/')}
           </span>,
           curve,
-        ]),
-        id: `key-access-bip32-${path
-          .join('-')
-          .replace(/'/gu, 'h')}-${curve}-${i}`,
-        message: t('snapInstallWarningKeyAccess', [
-          <Text
-            key="1"
-            color={Color.primaryDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TextVariant.bodySm}
-            as="span"
-          >
-            {getSnapName(targetSubjectMetadata.origin)}
-          </Text>,
-          <b key="2">
-            {getSnapDerivationPathName(path, curve) ??
-              `${path.join('/')} (${curve})`}
-          </b>,
         ]),
       };
     }),

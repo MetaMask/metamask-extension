@@ -3,7 +3,7 @@ import { PERMISSION_DESCRIPTIONS } from '../../../helpers/utils/permission';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
   const weightOneWarnings = Object.entries(permissions).reduce(
-    (filteredPermissions, [permissionName, permissionValue]) => {
+    (filteredWarnings, [permissionName, permissionValue]) => {
       const permissionDescription = PERMISSION_DESCRIPTIONS[permissionName]({
         t,
         permissionValue,
@@ -13,7 +13,7 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
         permissionDescription.forEach((description) => {
           if (description.weight === 1) {
             const { id, message } = description;
-            filteredPermissions.push({ id, message });
+            filteredWarnings.push({ id, message });
           }
         });
       } else if (
@@ -21,9 +21,9 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
         permissionDescription.weight === 1
       ) {
         const { id, message } = permissionDescription;
-        filteredPermissions.push({ id, message });
+        filteredWarnings.push({ id, message });
       }
-      return filteredPermissions;
+      return filteredWarnings;
     },
     [],
   );
