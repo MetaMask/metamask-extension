@@ -6,33 +6,29 @@ exports[`AccountPicker renders properly 1`] = `
     class="box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-transparent box--rounded-pill"
   >
     <span
-      class="box mm-text mm-text--inherit mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--inherit mm-text--ellipsis mm-text--color-text-default box--display-flex box--gap-2 box--flex-direction-row"
     >
       <div
-        class="box box--display-flex box--gap-2 box--flex-direction-row"
+        class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-border-default box--border-style-solid box--border-width-1"
       >
-        <div
-          class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-border-default box--border-style-solid box--border-width-1"
-        >
-          <canvas
-            height="32"
-            style="display: none;"
-            width="32"
-          />
-          <img
-            alt=""
-            height="24"
-            src="data:image/png;base64,00"
-            style="border-radius: 50%;"
-            width="24"
-          />
-        </div>
-        <span
-          class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
-        >
-          Account 1
-        </span>
+        <canvas
+          height="32"
+          style="display: none;"
+          width="32"
+        />
+        <img
+          alt=""
+          height="24"
+          src="data:image/png;base64,00"
+          style="border-radius: 50%;"
+          width="24"
+        />
       </div>
+      <span
+        class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+      >
+        Account 1
+      </span>
     </span>
     <span
       class="box mm-icon mm-icon--size-sm box--margin-inline-start-1 box--display-inline-block box--flex-direction-row box--color-inherit"
