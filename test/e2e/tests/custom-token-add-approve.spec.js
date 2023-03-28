@@ -294,7 +294,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.waitForSelector({
           css: '.box--flex-direction-row > h6',
-          text: '0.0006 ETH',
+          text: '0.00060001 ETH',
         });
 
         // editing spending cap
