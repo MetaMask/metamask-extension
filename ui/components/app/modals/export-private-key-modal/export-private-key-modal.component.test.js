@@ -118,9 +118,9 @@ describe('Export Private Key Modal', () => {
 
     fireEvent.mouseDown(holdButton);
 
-    const circle = getByLabelText('hold-to-reveal-circle');
+    const circle = getByLabelText('hold to reveal circle locked');
     fireEvent.transitionEnd(circle);
-    const circleUnlocked = getByLabelText('hold-to-reveal-circle-unlocked');
+    const circleUnlocked = getByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
