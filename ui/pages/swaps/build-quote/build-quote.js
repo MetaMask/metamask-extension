@@ -82,7 +82,11 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -447,7 +451,7 @@ export default function BuildQuote({
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Build Quote Page Loaded',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
@@ -486,10 +490,10 @@ export default function BuildQuote({
         onClick={() => {
           /* istanbul ignore next */
           trackEvent({
-            event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
-            category: EVENT.CATEGORIES.SWAPS,
+            event: MetaMetricsEventName.ExternalLinkClicked,
+            category: MetaMetricsEventCategory.Swaps,
             properties: {
-              link_type: EVENT.EXTERNAL_LINK_TYPES.TOKEN_TRACKER,
+              link_type: MetaMetricsEventExternalLinkType.TokenTracker,
               location: 'Swaps Confirmation',
               url_domain: getURLHostName(blockExplorerTokenLink),
             },
@@ -819,7 +823,7 @@ export default function BuildQuote({
                         /* istanbul ignore next */
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
-                          category: EVENT.CATEGORIES.SWAPS,
+                          category: MetaMetricsEventCategory.Swaps,
                           properties: {
                             link_type: 'Token Tracker',
                             action: 'Swaps Confirmation',

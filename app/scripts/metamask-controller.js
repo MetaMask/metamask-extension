@@ -99,7 +99,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
 
 import {
   getTokenIdParam,
@@ -379,8 +382,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
           this.metaMetricsController.trackEvent({
-            event: EVENT_NAMES.NFT_ADDED,
-            category: EVENT.CATEGORIES.WALLET,
+            event: MetaMetricsEventName.NftAdded,
+            category: MetaMetricsEventCategory.Wallet,
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
@@ -1018,7 +1021,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.trackEvent(
             {
               event: 'Tx Status Update: On-Chain Failure',
-              category: EVENT.CATEGORIES.BACKGROUND,
+              category: MetaMetricsEventCategory.Background,
               properties: {
                 action: 'Transactions',
                 errorMessage: txMeta.simulationFails?.reason,
@@ -1533,7 +1536,7 @@ export default class MetamaskController extends EventEmitter {
       (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Installed',
-          category: EVENT.CATEGORIES.SNAPS,
+          category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
             version: truncatedSnap.version,
@@ -1547,7 +1550,7 @@ export default class MetamaskController extends EventEmitter {
       (newSnap, oldVersion) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Updated',
-          category: EVENT.CATEGORIES.SNAPS,
+          category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: newSnap.id,
             old_version: oldVersion,
@@ -3452,8 +3455,8 @@ export default class MetamaskController extends EventEmitter {
       if (usePhishDetect && phishingTestResponse?.result) {
         this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({
-          event: EVENT_NAMES.PHISHING_PAGE_DISPLAYED,
-          category: EVENT.CATEGORIES.PHISHING,
+          event: MetaMetricsEventName.PhishingPageDisplayed,
+          category: MetaMetricsEventCategory.Phishing,
           properties: {
             url: hostname,
           },

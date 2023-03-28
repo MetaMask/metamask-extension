@@ -21,7 +21,7 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { createNetworkClient } from './create-network-client';
 
 /**
@@ -559,7 +559,7 @@ export default class NetworkController extends EventEmitter {
     if (!oldNetworkConfigurationId) {
       this._trackMetaMetricsEvent({
         event: 'Custom Network Added',
-        category: EVENT.CATEGORIES.NETWORK,
+        category: MetaMetricsEventCategory.Network,
         referrer: {
           url: referrer,
         },

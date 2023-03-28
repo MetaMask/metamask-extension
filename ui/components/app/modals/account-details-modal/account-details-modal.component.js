@@ -9,8 +9,10 @@ import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -65,10 +67,10 @@ export default class AccountDetailsModal extends Component {
     const openBlockExplorer = () => {
       const accountLink = getAccountLink(address, chainId, rpcPrefs);
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.NAVIGATION,
-        event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.ExternalLinkClicked,
         properties: {
-          link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+          link_type: MetaMetricsEventExternalLinkType.AccountTracker,
           location: 'Account Details Modal',
           url_domain: getURLHostName(accountLink),
         },
@@ -115,10 +117,10 @@ export default class AccountDetailsModal extends Component {
             className="account-details-modal__button"
             onClick={() => {
               this.context.trackEvent({
-                category: EVENT.CATEGORIES.ACCOUNTS,
-                event: EVENT_NAMES.KEY_EXPORT_SELECTED,
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.KeyExportSelected,
                 properties: {
-                  key_type: EVENT.KEY_TYPES.PKEY,
+                  key_type: MetaMetricsEventKeyType.Pkey,
                   location: 'Account Details Modal',
                 },
               });

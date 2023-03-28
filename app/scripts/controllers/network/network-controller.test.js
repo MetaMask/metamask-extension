@@ -5,7 +5,7 @@ import nock from 'nock';
 import sinon from 'sinon';
 import * as ethJsonRpcProvider from '@metamask/eth-json-rpc-provider';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventNetworkSource } from '../../../../shared/constants/metametrics';
 import NetworkController from './network-controller';
 
 jest.mock('@metamask/eth-json-rpc-provider', () => {
@@ -5507,7 +5507,7 @@ describe('NetworkController', () => {
             },
             {
               referrer: 'https://test-dapp.com',
-              source: EVENT.SOURCE.NETWORK.DAPP,
+              source: MetaMetricsEventNetworkSource.Dapp,
             },
           ),
         ).toThrow(
@@ -5531,7 +5531,7 @@ describe('NetworkController', () => {
             },
             {
               referrer: 'https://test-dapp.com',
-              source: EVENT.SOURCE.NETWORK.DAPP,
+              source: MetaMetricsEventNetworkSource.Dapp,
             },
           ),
         ).toThrow(
@@ -5554,7 +5554,7 @@ describe('NetworkController', () => {
             },
             {
               referrer: 'https://test-dapp.com',
-              source: EVENT.SOURCE.NETWORK.DAPP,
+              source: MetaMetricsEventNetworkSource.Dapp,
             },
           ),
         ).toThrow(
@@ -5578,7 +5578,7 @@ describe('NetworkController', () => {
             },
             {
               referrer: 'https://test-dapp.com',
-              source: EVENT.SOURCE.NETWORK.DAPP,
+              source: MetaMetricsEventNetworkSource.Dapp,
             },
           ),
         ).toThrow(new Error('rpcUrl must be a valid URL'));
@@ -5597,7 +5597,7 @@ describe('NetworkController', () => {
             },
             {
               referrer: 'https://test-dapp.com',
-              source: EVENT.SOURCE.NETWORK.DAPP,
+              source: MetaMetricsEventNetworkSource.Dapp,
             },
           ),
         ).toThrow(
@@ -5642,7 +5642,7 @@ describe('NetworkController', () => {
 
           controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
 
           expect(
@@ -5680,7 +5680,7 @@ describe('NetworkController', () => {
 
           controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
 
           expect(
@@ -5729,7 +5729,7 @@ describe('NetworkController', () => {
 
           controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
 
           expect(
@@ -5778,7 +5778,7 @@ describe('NetworkController', () => {
           };
           controller.upsertNetworkConfiguration(updatedConfiguration, {
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
           expect(
             Object.values(controller.store.getState().networkConfigurations),
@@ -5831,7 +5831,7 @@ describe('NetworkController', () => {
             },
             {
               referrer: 'https://test-dapp.com',
-              source: EVENT.SOURCE.NETWORK.DAPP,
+              source: MetaMetricsEventNetworkSource.Dapp,
             },
           );
 
@@ -5891,7 +5891,7 @@ describe('NetworkController', () => {
 
           controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
 
           expect(controller.store.getState().provider).toStrictEqual(
@@ -5933,7 +5933,7 @@ describe('NetworkController', () => {
           controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             setActive: true,
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
 
           expect(controller.store.getState().provider).toStrictEqual({
@@ -5982,7 +5982,7 @@ describe('NetworkController', () => {
 
           controller.upsertNetworkConfiguration(newNetworkConfiguration, {
             referrer: 'https://test-dapp.com',
-            source: EVENT.SOURCE.NETWORK.DAPP,
+            source: MetaMetricsEventNetworkSource.Dapp,
           });
 
           expect(
