@@ -678,12 +678,6 @@
   "settings": {
     "message": "Налаштування"
   },
-  "showAdvancedGasInline": {
-    "message": "Розширене керування газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Виберіть цей параметр, щоб відображати регулятори ціни й ліміту газу на екранах надсилання й підтвердження."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показати бесіду у Testnet"
   },
