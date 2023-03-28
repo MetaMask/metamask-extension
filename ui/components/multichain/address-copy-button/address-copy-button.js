@@ -29,8 +29,8 @@ export const AddressCopyButton = ({
       <ButtonBase
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => handleCopy(address)}
-        paddingRight={3}
-        paddingLeft={3}
+        paddingRight={4}
+        paddingLeft={4}
         size={Size.SM}
         variant={TextVariant.bodyXs}
         color={TextColor.primaryDefault}
