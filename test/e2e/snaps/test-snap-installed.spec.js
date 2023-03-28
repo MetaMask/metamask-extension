@@ -47,33 +47,33 @@ describe('Test Snap Installed', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectDialogSnap',
+          text: 'Reconnect to Dialog Snap',
+        });
 
         const errorButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(errorButton);
@@ -86,32 +86,32 @@ describe('Test Snap Installed', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
 
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
+
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectErrorSnap',
+          text: 'Reconnect to Error Snap',
+        });
 
         const result = await driver.findElement('#installedSnapsResult');
         await driver.scrollToElement(result);

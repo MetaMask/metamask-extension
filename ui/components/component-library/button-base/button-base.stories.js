@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlignItems,
+  Color,
   DISPLAY,
   FLEX_DIRECTION,
   Size,
@@ -149,6 +150,15 @@ Href.args = {
   href: '/metamask',
 };
 
+export const ExternalLink = (args) => (
+  <ButtonBase {...args}>Anchor element with external link</ButtonBase>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io',
+  externalLink: true,
+};
+
 export const Disabled = (args) => (
   <ButtonBase {...args}>Disabled Button</ButtonBase>
 );
@@ -190,11 +200,18 @@ export const Rtl = (args) => (
       {...args}
       startIconName={ICON_NAMES.ADD_SQUARE}
       endIconName={ICON_NAMES.ARROW_2_RIGHT}
-      textProps={{
-        textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
-      }}
+      textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}
     >
       Button Demo
+    </ButtonBase>
+  </Box>
+);
+
+export const Ellipsis = (args) => (
+  <Box backgroundColor={Color.iconMuted} style={{ width: 150 }}>
+    <ButtonBase {...args}>Example without ellipsis</ButtonBase>
+    <ButtonBase {...args} ellipsis>
+      Example with ellipsis
     </ButtonBase>
   </Box>
 );

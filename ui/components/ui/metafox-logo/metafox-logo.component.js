@@ -8,7 +8,7 @@ export default class MetaFoxLogo extends PureComponent {
     onClick: PropTypes.func,
     unsetIconHeight: PropTypes.bool,
     isOnboarding: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     src: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -22,7 +22,7 @@ export default class MetaFoxLogo extends PureComponent {
       onClick,
       unsetIconHeight,
       isOnboarding,
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       src,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -39,7 +39,7 @@ export default class MetaFoxLogo extends PureComponent {
 
     let imageSrc = './images/logo/metamask-fox.svg';
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (src) {
       renderHorizontalLogo = () => (
         <img
