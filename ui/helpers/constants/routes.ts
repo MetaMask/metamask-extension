@@ -20,6 +20,9 @@ const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
@@ -217,6 +220,9 @@ export {
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  CUSTODY_ACCOUNT_DONE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   PATH_NAME_MAP,
   SWAPS_ROUTE,
   BUILD_QUOTE_ROUTE,
