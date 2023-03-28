@@ -27,20 +27,18 @@ export const AccountPicker = ({ address, name, onClick }) => {
       ellipsis
       textProps={{ display: DISPLAY.FLEX, gap: 2 }}
     >
-      <Box display={DISPLAY.FLEX} gap={2}>
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={address}
-          size={Size.SM}
-        />
-        <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
-          {name}
-        </Text>
-      </Box>
+      <AvatarAccount
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
+        address={address}
+        size={Size.SM}
+      />
+      <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
+        {name}
+      </Text>
     </ButtonBase>
   );
 };
