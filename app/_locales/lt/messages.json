@@ -678,12 +678,6 @@
   "settings": {
     "message": "Nustatymai"
   },
-  "showAdvancedGasInline": {
-    "message": "Išplėstiniai dujų valdikliai"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pasirinkite tai, kad būtų rodoma dujų kaina, ir ribokite valdymo elementus tiesiogiai siuntimo ir patvirtinimo ekranuose."
-  },
   "showFiatConversionInTestnets": {
     "message": "Rodyti keitimą „Testnet“"
   },
