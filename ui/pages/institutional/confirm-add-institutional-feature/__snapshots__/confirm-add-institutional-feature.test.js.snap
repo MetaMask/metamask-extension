@@ -11,12 +11,12 @@ exports[`Confirm Add Institutional Feature handles error 1`] = `
       class="box page-container__header box--flex-direction-row"
     >
       <p
-        class="box mm-text page-container__title mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text page-container__title mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         Institutional Features
       </p>
       <p
-        class="box mm-text page-container__subtitle mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text page-container__subtitle mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         The page at origin would like to authorise the following project’s compliance settings in MetaMask Institutional
       </p>
@@ -25,17 +25,17 @@ exports[`Confirm Add Institutional Feature handles error 1`] = `
       class="box page-container__content box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-sm mm-text--color-text-default box--margin-top-3 box--margin-right-8 box--margin-left-8 box--flex-direction-row"
+        class="box mm-text mm-text--body-sm box--margin-top-3 box--margin-right-8 box--margin-left-8 box--flex-direction-row box--color-text-default"
       >
         Project Name
       </p>
       <p
-        class="box mm-text mm-text--body-lg-medium mm-text--color-text-default mm-text--overflow-wrap-break-word box--margin-top-1 box--margin-right-8 box--margin-bottom-1 box--margin-left-8 box--flex-direction-row"
+        class="box mm-text mm-text--body-lg-medium mm-text--overflow-wrap-break-word box--margin-top-1 box--margin-right-8 box--margin-bottom-1 box--margin-left-8 box--flex-direction-row box--color-text-default"
       >
         projectName
       </p>
       <p
-        class="box mm-text mm-text--body-xs mm-text--color-text-muted mm-text--overflow-wrap-break-word box--margin-right-8 box--margin-left-8 box--flex-direction-row"
+        class="box mm-text mm-text--body-xs mm-text--overflow-wrap-break-word box--margin-right-8 box--margin-left-8 box--flex-direction-row box--color-text-muted"
       >
         Id
         : 
@@ -43,7 +43,7 @@ exports[`Confirm Add Institutional Feature handles error 1`] = `
       </p>
     </div>
     <p
-      class="box mm-text mm-text--body-md mm-text--text-align-center mm-text--color-text-default box--margin-top-4 box--flex-direction-row"
+      class="box mm-text mm-text--body-md mm-text--text-align-center box--margin-top-4 box--flex-direction-row box--color-text-default"
     >
       Actions must be plain objects. Use custom middleware for async actions.
     </p>
@@ -80,12 +80,12 @@ exports[`Confirm Add Institutional Feature opens confirm institutional sucessful
       class="box page-container__header box--flex-direction-row"
     >
       <p
-        class="box mm-text page-container__title mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text page-container__title mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         Institutional Features
       </p>
       <p
-        class="box mm-text page-container__subtitle mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text page-container__subtitle mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         The page at origin would like to authorise the following project’s compliance settings in MetaMask Institutional
       </p>
@@ -94,17 +94,17 @@ exports[`Confirm Add Institutional Feature opens confirm institutional sucessful
       class="box page-container__content box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-sm mm-text--color-text-default box--margin-top-3 box--margin-right-8 box--margin-left-8 box--flex-direction-row"
+        class="box mm-text mm-text--body-sm box--margin-top-3 box--margin-right-8 box--margin-left-8 box--flex-direction-row box--color-text-default"
       >
         Project Name
       </p>
       <p
-        class="box mm-text mm-text--body-lg-medium mm-text--color-text-default mm-text--overflow-wrap-break-word box--margin-top-1 box--margin-right-8 box--margin-bottom-1 box--margin-left-8 box--flex-direction-row"
+        class="box mm-text mm-text--body-lg-medium mm-text--overflow-wrap-break-word box--margin-top-1 box--margin-right-8 box--margin-bottom-1 box--margin-left-8 box--flex-direction-row box--color-text-default"
       >
         projectName
       </p>
       <p
-        class="box mm-text mm-text--body-xs mm-text--color-text-muted mm-text--overflow-wrap-break-word box--margin-right-8 box--margin-left-8 box--flex-direction-row"
+        class="box mm-text mm-text--body-xs mm-text--overflow-wrap-break-word box--margin-right-8 box--margin-left-8 box--flex-direction-row box--color-text-muted"
       >
         Id
         : 
