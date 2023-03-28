@@ -344,9 +344,6 @@
   "settings": {
     "message": "การตั้งค่า"
   },
-  "showAdvancedGasInline": {
-    "message": "การควบคุม Gas ขั้นสูง"
-  },
   "showPrivateKeys": {
     "message": "แสดงคีย์ส่วนตัว"
   },
