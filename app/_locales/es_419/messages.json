@@ -2070,12 +2070,6 @@
   "show": {
     "message": "Mostrar"
   },
-  "showAdvancedGasInline": {
-    "message": "Controles avanzados de gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Seleccione esta opción para mostrar el precio del gas y limitar los controles directamente en las pantallas de envío y confirmación."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversión en redes de prueba"
   },

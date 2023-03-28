@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Zeigen"
   },
-  "showAdvancedGasInline": {
-    "message": "Erweiterte Gaskontrollen"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Wählen Sie dies aus, um den Gaspreis und die Limitkontrollen direkt auf den Senden- und Bestätigen-Bildschirmen anzuzeigen."
-  },
   "showFiatConversionInTestnets": {
     "message": "Umwandlung auf Testnets anzeigen"
   },
