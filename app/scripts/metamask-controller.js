@@ -1069,6 +1069,9 @@ export default class MetamaskController extends EventEmitter {
       }),
       keyringController: this.keyringController,
       getState: this.getState.bind(this),
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
     });
 
     this.signController = new SignController({

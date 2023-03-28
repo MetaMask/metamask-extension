@@ -104,12 +104,6 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
 
   private _encryptionPublicKeyManager: EncryptionPublicKeyManager;
 
-  private _messageManagers: AbstractMessageManager<
-    AbstractMessage,
-    AbstractMessageParams,
-    AbstractMessageParamsMetamask
-  >[];
-
   private _metricsEvent: (payload: any, options?: any) => void;
 
   /**
@@ -141,20 +135,16 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     this.hub = new EventEmitter();
     this._encryptionPublicKeyManager = new EncryptionPublicKeyManager();
 
-    this._messageManagers = [this._encryptionPublicKeyManager];
-
-    const methodNames = [methodNameGetEncryptionPublicKey];
-
-    this._messageManagers.forEach((messageManager, index) => {
-      this._bubbleEvents(messageManager);
-
-      messageManager.hub.on(
-        'unapprovedMessage',
-        (msgParams: AbstractMessageParamsMetamask) => {
-          this._requestApproval(msgParams, methodNames[index]);
-        },
-      );
+    this._encryptionPublicKeyManager.hub.on('updateBadge', () => {
+      this.hub.emit('updateBadge');
     });
+
+    this._encryptionPublicKeyManager.hub.on(
+      'unapprovedMessage',
+      (msgParams: AbstractMessageParamsMetamask) => {
+        this._requestApproval(msgParams, methodNameGetEncryptionPublicKey);
+      },
+    );
 
     this._subscribeToMessageState(
       this._encryptionPublicKeyManager,
@@ -288,11 +278,13 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
    * @param reason - A message to indicate why.
    */
   rejectUnapproved(reason?: string) {
-    this._messageManagers.forEach((messageManager) => {
-      Object.keys(messageManager.getUnapprovedMessages()).forEach(
-        (messageId) => {
-          this._cancelAbstractMessage(messageManager, messageId, reason);
-        },
+    Object.keys(
+      this._encryptionPublicKeyManager.getUnapprovedMessages(),
+    ).forEach((messageId) => {
+      this._cancelAbstractMessage(
+        this._encryptionPublicKeyManager,
+        messageId,
+        reason,
       );
     });
   }
@@ -301,11 +293,9 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
    * Clears all unapproved messages from memory.
    */
   clearUnapproved() {
-    this._messageManagers.forEach((messageManager) => {
-      messageManager.update({
-        unapprovedMessages: {},
-        unapprovedMessagesCount: 0,
-      });
+    this._encryptionPublicKeyManager.update({
+      unapprovedMessages: {},
+      unapprovedMessagesCount: 0,
     });
   }
 
@@ -334,22 +324,10 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     return this._getState();
   }
 
-  private _bubbleEvents(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      any,
-      AbstractMessageParamsMetamask
-    >,
-  ) {
-    messageManager.hub.on('updateBadge', () => {
-      this.hub.emit('updateBadge');
-    });
-  }
-
   private _subscribeToMessageState(
     messageManager: AbstractMessageManager<
       AbstractMessage,
-      any,
+      AbstractMessageParams,
       AbstractMessageParamsMetamask
     >,
     updateState: (
@@ -399,12 +377,6 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     };
 
     return stateMessage;
-  }
-
-  private _getMessage(messageId: string): StateMessage {
-    return {
-      ...this.state.unapprovedEncryptionPublicKeyMsgs,
-    }[messageId];
   }
 
   private _requestApproval(
