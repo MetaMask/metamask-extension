@@ -329,9 +329,6 @@
     "message": "Izinkan $1 untuk ditarik dan digunakan hingga jumlah berikut:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Selalu pastikan untuk melakukan uji tuntas Anda sendiri sebelum menyetujui permintaan apa pun."
-  },
   "amount": {
     "message": "Jumlah"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Aktifkan penyedia keamanan"
-  },
   "enableSmartTransactions": {
     "message": "Aktifkan transaksi pintar"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Umum"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Dapatkan peringatan dari OpenSea setiap kali Anda menerima permintaan berbahaya yang diketahui."
   },
   "goBack": {
     "message": "Kembali"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Gas tidak cukup"
   },
-  "notNow": {
-    "message": "Tidak sekarang"
-  },
   "notifications": {
     "message": "Notifikasi"
   },
@@ -2607,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Penyedia keamanan OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea merupakan penyedia keamanan pertama untuk fitur ini. Penyedia lainnya akan segera hadir!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3250,6 @@
   "show": {
     "message": "Tampil"
   },
-  "showAdvancedGasInline": {
-    "message": "Kontrol gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menampilkan biaya gas dan kontrol batas secara langsung di layar kirim dan konfirmasi."
-  },
   "showFiatConversionInTestnets": {
     "message": "Tampilkan konversi di jaringan uji"
   },
@@ -3507,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "Tidak terhubung"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Tetap aman bersama OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Hubungkan Lattice1 Anda"

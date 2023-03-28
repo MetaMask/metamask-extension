@@ -329,9 +329,6 @@
     "message": "$1에서 다음 금액까지 인출 및 지출하도록 허용:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "모든 요청을 승인하기 전에 주의 깊게 직접 확인하세요."
-  },
   "amount": {
     "message": "금액"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "보안 업체 활성화"
-  },
   "enableSmartTransactions": {
     "message": "스마트 트랜잭션 활성화"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "일반"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "알려진 악성 요청을 받을 때마다 OpenSea로부터 경고 알림을 받으세요."
   },
   "goBack": {
     "message": "뒤로 가기"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "가스 부족"
   },
-  "notNow": {
-    "message": "나중에"
-  },
   "notifications": {
     "message": "알림"
   },
@@ -2607,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (베타)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea 보안 업체"
-  },
-  "openSeaDescription": {
-    "message": "이 기능의 1차 보안 업체는 OpenSea입니다. 곧 다른 보안 업체도 마련하겠습니다!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3250,6 @@
   "show": {
     "message": "보기"
   },
-  "showAdvancedGasInline": {
-    "message": "고급 가스 제어 기능"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "이 항목을 선택하면 보내기 및 확인 화면에서 바로 가스 가격과 한도 조절을 확인할 수 있습니다."
-  },
   "showFiatConversionInTestnets": {
     "message": "테스트넷에 전환 표시"
   },
@@ -3507,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea로 보안을 유지하세요"
   },
   "step1LatticeWallet": {
     "message": "Lattice1을 연결하세요."

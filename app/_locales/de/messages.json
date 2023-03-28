@@ -329,9 +329,6 @@
     "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Gehen Sie immer mit Sorgfalt vor, bevor Sie irgendwelche Anfragen genehmigen."
-  },
   "amount": {
     "message": "Betrag"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Sicherheitsanbieter aktivieren"
-  },
   "enableSmartTransactions": {
     "message": "Intelligente Transaktionen ermöglichen"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Allgemein"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Erhalten Sie Warnungen von OpenSea, wenn Sie eine bekannte bösartige Anfrage erhalten."
   },
   "goBack": {
     "message": "Zurück"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
   },
-  "notNow": {
-    "message": "Nicht jetzt"
-  },
   "notifications": {
     "message": "Benachrichtigungen"
   },
@@ -2607,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea-Sicherheitsanbieter"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea ist der erset Sicherheitsanbieter für diese Funktion. Mehr Anbieter folgen in Kürze!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3250,6 @@
   "show": {
     "message": "Zeigen"
   },
-  "showAdvancedGasInline": {
-    "message": "Erweiterte Gaskontrollen"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Wählen Sie dies aus, um den Gaspreis und die Limitkontrollen direkt auf den Senden- und Bestätigen-Bildschirmen anzuzeigen."
-  },
   "showFiatConversionInTestnets": {
     "message": "Umwandlung auf Testnets anzeigen"
   },
@@ -3507,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Mit OpenSea sicher bleiben"
   },
   "step1LatticeWallet": {
     "message": "Verbinden Sie Ihr Lattice1"

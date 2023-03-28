@@ -329,9 +329,6 @@
     "message": "Разрешить $1 снять и потратить до следующей суммы:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Всегда обязательно проводите собственную комплексную проверку, прежде чем утверждать какие-либо запросы."
-  },
   "amount": {
     "message": "Сумма"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Включить поставщика услуг безопасности"
-  },
   "enableSmartTransactions": {
     "message": "Включить смарт-транзакции"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Общее"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Получайте предупреждения от OpenSea всякий раз, когда вы получаете заведомо вредоносный запрос."
   },
   "goBack": {
     "message": "Назад"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Недостаточно газа"
   },
-  "notNow": {
-    "message": "Не сейчас"
-  },
   "notifications": {
     "message": "Уведомления"
   },
@@ -2607,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (бета-версия)"
-  },
-  "openSeaAltText": {
-    "message": "Поставщик услуг безопасности OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea является первым поставщиком услуг безопасности для этой функции. Скоро появятся новые поставщики!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3250,6 @@
   "show": {
     "message": "Показать"
   },
-  "showAdvancedGasInline": {
-    "message": "Расширенное управление газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Выберите это, чтобы отображать цену газа и управление лимитами непосредственно на экранах отправки и подтверждения."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показывать конвертацию в тестовых сетях"
   },
@@ -3507,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "Не подключено"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Оставайтесь в безопасности с OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Подключите Lattice1"

@@ -721,6 +721,9 @@ export default class MetaMetricsController {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       [TRAITS.DESKTOP_ENABLED]: metamaskState.desktopEnabled || false,
       ///: END:ONLY_INCLUDE_IN
+      [TRAITS.SECURITY_PROVIDERS]: metamaskState.transactionSecurityCheckEnabled
+        ? ['opensea']
+        : [],
     };
 
     if (!previousUserTraits) {

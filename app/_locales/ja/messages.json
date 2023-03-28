@@ -329,9 +329,6 @@
     "message": "$1に以下の額までの引き出しと使用を許可します。",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "リクエストを承認する前に、必ず独自のデューデリジェンスを行ってください。"
-  },
   "amount": {
     "message": "金額"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "セキュリティプロバイダーを有効にする"
-  },
   "enableSmartTransactions": {
     "message": "スマートトランザクションを有効にする"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "一般"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "既知の悪質なリクエストを受けた際に OpenSea から警告を受けられます。"
   },
   "goBack": {
     "message": "戻る"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "ガスが不足しています"
   },
-  "notNow": {
-    "message": "また後で"
-  },
   "notifications": {
     "message": "通知"
   },
@@ -2607,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (ベータ)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea セキュリティプロバイダー"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea は、この機能を提供する最初のセキュリティプロバイダーです。他のプロバイダーも近日追加予定です！"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3250,6 @@
   "show": {
     "message": "表示"
   },
-  "showAdvancedGasInline": {
-    "message": "高度なガスコントロール"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "これを選択すると、ガス代と限度額のコントロールが送金画面と確認画面に直接表示されます。"
-  },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に変換を表示"
   },
@@ -3507,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea で安全を確保"
   },
   "step1LatticeWallet": {
     "message": "Lattice1を接続する"

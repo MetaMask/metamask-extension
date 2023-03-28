@@ -66,7 +66,6 @@ const ConfirmPageContainer = (props) => {
     image,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     detailsComponent,
     dataComponent,
     dataHexComponent,
@@ -122,11 +121,6 @@ const ConfirmPageContainer = (props) => {
 
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
-
-  const hideTitle =
-    (currentTransaction.type === TransactionType.contractInteraction ||
-      currentTransaction.type === TransactionType.deployContract) &&
-    currentTransaction.txParams?.value === '0x0';
 
   const networkName =
     NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
@@ -203,7 +197,6 @@ const ConfirmPageContainer = (props) => {
             image={image}
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
@@ -225,7 +218,6 @@ const ConfirmPageContainer = (props) => {
             rejectNText={t('rejectTxsN', [unapprovedTxCount])}
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
-            hideTitle={hideTitle}
             supportsEIP1559={supportsEIP1559}
             currentTransaction={currentTransaction}
             nativeCurrency={nativeCurrency}
@@ -341,7 +333,6 @@ const ConfirmPageContainer = (props) => {
 ConfirmPageContainer.propTypes = {
   // Header
   action: PropTypes.string,
-  hideSubtitle: PropTypes.bool,
   onEdit: PropTypes.func,
   showEdit: PropTypes.bool,
   subtitleComponent: PropTypes.node,
