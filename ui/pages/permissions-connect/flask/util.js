@@ -1,104 +1,21 @@
-import { isObject } from '@metamask/utils';
-import React from 'react';
-import { Text } from '../../../components/component-library';
-import {
-  Color,
-  FONT_WEIGHT,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-
-import {
-  coinTypeToProtocolName,
-  getSnapName,
-  getSnapDerivationPathName,
-} from '../../../helpers/utils/util';
+import { PERMISSION_DESCRIPTIONS } from '../../../helpers/utils/permission';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
-  const bip32EntropyPermission = permissions.snap_getBip32Entropy;
+  const weightOneWarnings = Object.entries(permissions).reduce(
+    (filteredPermissions, [permissionName, permissionValue]) => {
+      const permissionDescription = PERMISSION_DESCRIPTIONS[permissionName]({
+        t,
+        permissionValue,
+        targetSubjectMetadata,
+      });
+      if (permissionDescription.weight === 1) {
+        const { id, message } = permissionDescription;
+        filteredPermissions.push({ id, message });
+      }
+      return filteredPermissions;
+    },
+    [],
+  );
 
-  const bip44EntropyPermission = permissions.snap_getBip44Entropy;
-
-  const bip32PublicKeyPermission = permissions.snap_getBip32PublicKey;
-
-  const ethereumProviderPermission =
-    permissions['endowment:ethereum-provider'] ?? [];
-
-  let ethereumProviderPermissionDescription = ethereumProviderPermission;
-
-  if (isObject(ethereumProviderPermission)) {
-    ethereumProviderPermissionDescription = [
-      {
-        id: 'ethereum-provider-access',
-        message: t('ethereumProviderAccess', [targetSubjectMetadata.origin]),
-      },
-    ];
-  }
-
-  return [
-    ...(bip32EntropyPermission
-      ? bip32EntropyPermission.caveats[0].value.map(({ path, curve }, i) => ({
-          id: `key-access-bip32-${path
-            .join('-')
-            .replace(/'/gu, 'h')}-${curve}-${i}`,
-          message: t('snapInstallWarningKeyAccess', [
-            <Text
-              key="1"
-              color={Color.primaryDefault}
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TextVariant.bodySm}
-              as="span"
-            >
-              {getSnapName(targetSubjectMetadata.origin)}
-            </Text>,
-            <b key="2">
-              {getSnapDerivationPathName(path, curve) ??
-                `${path.join('/')} (${curve})`}
-            </b>,
-          ]),
-        }))
-      : []),
-    ...(bip44EntropyPermission
-      ? bip44EntropyPermission.caveats[0].value.map(({ coinType }, i) => ({
-          id: `key-access-bip44-${coinType}-${i}`,
-          message: t('snapInstallWarningKeyAccess', [
-            <Text
-              key="1"
-              color={Color.primaryDefault}
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TextVariant.bodySm}
-              as="span"
-            >
-              {getSnapName(targetSubjectMetadata.origin)}
-            </Text>,
-            <b key="2">
-              {coinTypeToProtocolName(coinType) ||
-                t('unrecognizedProtocol', [coinType])}
-            </b>,
-          ]),
-        }))
-      : []),
-    ...(bip32PublicKeyPermission
-      ? bip32PublicKeyPermission.caveats[0].value.map(({ path, curve }, i) => ({
-          id: `public-key-access-bip32-${path
-            .join('-')
-            .replace(/'/gu, 'h')}-${curve}-${i}`,
-          message: t('snapInstallWarningPublicKeyAccess', [
-            <Text
-              key="1"
-              color={Color.primaryDefault}
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TextVariant.bodySm}
-              as="span"
-            >
-              {getSnapName(targetSubjectMetadata.origin)}
-            </Text>,
-            <b key="2">
-              {getSnapDerivationPathName(path, curve) ??
-                `${path.join('/')} (${curve})`}
-            </b>,
-          ]),
-        }))
-      : []),
-    ...ethereumProviderPermissionDescription,
-  ];
+  return weightOneWarnings;
 }
