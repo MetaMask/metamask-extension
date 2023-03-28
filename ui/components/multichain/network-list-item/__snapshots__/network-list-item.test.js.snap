@@ -6,7 +6,7 @@ exports[`NetworkListItem renders properly 1`] = `
     class="box multichain-network-list-item box--padding-4 box--gap-2 box--flex-direction-row box--justify-content-space-between box--align-items-center box--background-color-transparent box--display-flex"
   >
     <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <img
         alt="Polygon logo"
@@ -18,7 +18,7 @@ exports[`NetworkListItem renders properly 1`] = `
       class="box multichain-network-list-item__network-name box--flex-direction-row"
     >
       <div
-        class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
       >
         <a
           href="#"
