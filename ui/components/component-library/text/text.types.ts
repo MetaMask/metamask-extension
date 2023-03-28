@@ -1,5 +1,5 @@
 import React from 'react';
-import { BoxProps } from '../../ui/box';
+import type { BoxProps } from '../../ui/box/box.d';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
@@ -73,22 +73,22 @@ export interface TextProps extends BoxProps {
    * The font-weight of the Text component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js
    */
-  fontWeight?: typeof FONT_WEIGHT;
+  fontWeight?: keyof FONT_WEIGHT;
   /**
    * The font-style of the Text component. Should use the FONT_STYLE object from
    * ./ui/helpers/constants/design-system.js
    */
-  fontStyle?: typeof FONT_STYLE;
+  fontStyle?: keyof FONT_STYLE;
   /**
    * The textTransform of the Text component. Should use the TEXT_TRANSFORM object from
    * ./ui/helpers/constants/design-system.js
    */
-  textTransform?: typeof TEXT_TRANSFORM;
+  textTransform?: keyof TEXT_TRANSFORM;
   /**
    * The text-align of the Text component. Should use the TEXT_ALIGN object from
    * ./ui/helpers/constants/design-system.js
    */
-  textAlign?: typeof TEXT_ALIGN;
+  textAlign?: keyof TEXT_ALIGN;
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
@@ -98,7 +98,7 @@ export interface TextProps extends BoxProps {
    * The overflow-wrap of the Text component. Should use the OVERFLOW_WRAP object from
    * ./ui/helpers/constants/design-system.js
    */
-  overflowWrap?: typeof OVERFLOW_WRAP;
+  overflowWrap?: keyof OVERFLOW_WRAP;
   /**
    * Used for long strings that can be cut off...
    */

@@ -6,23 +6,23 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TextProps } from './text.types';
+import { TextProps, ValidTag } from './text.types';
 
 const getTextElementDefault = (variant: TextVariant) => {
   switch (variant) {
     case TextVariant.displayMd:
-      return 'h1';
+      return ValidTag.H1;
     case TextVariant.headingLg:
-      return 'h2';
+      return ValidTag.H2;
     case TextVariant.headingMd:
-      return 'h3';
+      return ValidTag.H3;
     case TextVariant.headingSm:
-      return 'h4';
+      return ValidTag.H4;
     case TextVariant.inherit:
-      return 'span';
+      return ValidTag.Span;
     // TextVariant.bodyLgMedium, TextVariant.bodyMd, TextVariant.bodyMdBold, TextVariant.bodySm, TextVariant.bodySmBold, TextVariant.bodyXs use default 'p' tag
     default:
-      return 'p';
+      return ValidTag.P;
   }
 };
 
@@ -42,7 +42,7 @@ export const Text = forwardRef(function Text(
     children,
     ...props
   }: TextProps,
-  ref: Ref<HTMLDivElement>,
+  ref: Ref<HTMLElement> | null,
 ) {
   // Check if as is set otherwise set a default tag based on variant
   const Tag = as ?? getTextElementDefault(variant);
