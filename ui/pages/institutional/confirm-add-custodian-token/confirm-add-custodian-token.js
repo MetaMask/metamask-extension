@@ -203,8 +203,7 @@ const ConfirmAddCustodianToken = () => {
               {t('cancel')}
             </Button>
             <Button
-              type="primary"
-              large
+              size={BUTTON_SIZES.LG}
               data-testid="confirm-btn"
               className="page-container__footer-button"
               onClick={async () => {
