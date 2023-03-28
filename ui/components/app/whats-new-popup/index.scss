@@ -8,7 +8,7 @@
   &__first-notification {
     display: flex;
     flex-direction: column;
-    margin: 0 24px 24px 24px;
+    margin: 0 16px 16px 16px;
     border-bottom: 1px solid var(--color-border-muted);
     position: relative;
   }
@@ -60,24 +60,39 @@
     cursor: pointer;
   }
 
-  &__notification-title {
-    @include H4;
-
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-
   &__intersection-observable {
     bottom: 22px;
     position: absolute;
     height: 1px;
     width: 100%;
   }
+
+  &__scroll-button {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    height: 32px;
+    width: 32px;
+    border-radius: 14px;
+    border: 1px solid var(--color-border-default);
+    background: var(--color-background-alternative);
+    color: var(--color-icon-default);
+    z-index: 201;
+    cursor: pointer;
+    opacity: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .popover-wrap.whats-new-popup__popover {
   @include screen-sm-min {
-    max-height: 600px;
+    max-height: 750px;
     width: 500px;
   }
 

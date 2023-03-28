@@ -689,6 +689,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              isMMI: buildType === 'mmi',
             });
             break;
           }
@@ -906,6 +907,9 @@ function setupBundlerDefaults(
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
+  // This dependency uses WASM which we cannot execute in accordance with our CSP
+  bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
+
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
@@ -1105,7 +1109,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
-    NFTS_V1: config.NFTS_V1 === '1',
+    MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
@@ -1143,6 +1147,7 @@ function renderHtmlFile({
   commonSet,
   browserPlatforms,
   applyLavaMoat,
+  isMMI,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1154,7 +1159,11 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, {
+    jsBundles,
+    applyLavaMoat,
+    isMMI,
+  });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

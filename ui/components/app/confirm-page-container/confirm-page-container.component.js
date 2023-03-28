@@ -24,7 +24,7 @@ import Typography from '../../ui/typography';
 import { TypographyVariant } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -66,7 +66,6 @@ const ConfirmPageContainer = (props) => {
     image,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     detailsComponent,
     dataComponent,
     dataHexComponent,
@@ -123,16 +122,15 @@ const ConfirmPageContainer = (props) => {
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
 
-  const hideTitle =
-    (currentTransaction.type === TransactionType.contractInteraction ||
-      currentTransaction.type === TransactionType.deployContract) &&
-    currentTransaction.txParams?.value === '0x0';
-
   const networkName =
     NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
-    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+    const tokenBalance = await fetchTokenBalance(
+      tokenAddress,
+      fromAddress,
+      global.ethereumProvider,
+    );
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
 
@@ -199,7 +197,6 @@ const ConfirmPageContainer = (props) => {
             image={image}
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
@@ -221,7 +218,6 @@ const ConfirmPageContainer = (props) => {
             rejectNText={t('rejectTxsN', [unapprovedTxCount])}
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
-            hideTitle={hideTitle}
             supportsEIP1559={supportsEIP1559}
             currentTransaction={currentTransaction}
             nativeCurrency={nativeCurrency}
@@ -337,7 +333,6 @@ const ConfirmPageContainer = (props) => {
 ConfirmPageContainer.propTypes = {
   // Header
   action: PropTypes.string,
-  hideSubtitle: PropTypes.bool,
   onEdit: PropTypes.func,
   showEdit: PropTypes.bool,
   subtitleComponent: PropTypes.node,

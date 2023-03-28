@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import BackupController from './backup';
 
-function getMockController() {
+function getMockPreferencesController() {
   const mcState = {
     getSelectedAddress: sinon.stub().returns('0x01'),
     selectedAddress: '0x01',
@@ -31,13 +31,135 @@ function getMockController() {
   return mcState;
 }
 
-const jsonData = `{"preferences":{"frequentRpcListDetail":[{"chainId":"0x539","nickname":"Localhost 8545","rpcPrefs":{},"rpcUrl":"http://localhost:8545","ticker":"ETH"},{"chainId":"0x38","nickname":"Binance Smart Chain Mainnet","rpcPrefs":{"blockExplorerUrl":"https://bscscan.com"},"rpcUrl":"https://bsc-dataseed1.binance.org","ticker":"BNB"},{"chainId":"0x61","nickname":"Binance Smart Chain Testnet","rpcPrefs":{"blockExplorerUrl":"https://testnet.bscscan.com"},"rpcUrl":"https://data-seed-prebsc-1-s1.binance.org:8545","ticker":"tBNB"},{"chainId":"0x89","nickname":"Polygon Mainnet","rpcPrefs":{"blockExplorerUrl":"https://polygonscan.com"},"rpcUrl":"https://polygon-rpc.com","ticker":"MATIC"}],"useBlockie":false,"useNonceField":false,"usePhishDetect":true,"dismissSeedBackUpReminder":false,"useTokenDetection":false,"useNftDetection":false,"openSeaEnabled":false,"advancedGasFee":null,"featureFlags":{"sendHexData":true,"showIncomingTransactions":true},"knownMethodData":{},"currentLocale":"en","forgottenPassword":false,"preferences":{"hideZeroBalanceTokens":false,"showFiatInTestnets":false,"showTestNetworks":true,"useNativeCurrencyAsPrimaryCurrency":true},"ipfsGateway":"dweb.link","infuraBlocked":false,"ledgerTransportType":"webhid","theme":"light","customNetworkListEnabled":false,"textDirection":"auto"},"addressBook":{"addressBook":{"0x61":{"0x42EB768f2244C8811C63729A21A3569731535f06":{"address":"0x42EB768f2244C8811C63729A21A3569731535f06","chainId":"0x61","isEns":false,"memo":"","name":""}}}}}`;
+function getMockAddressBookController() {
+  const mcState = {
+    addressBook: {
+      '0x61': {
+        '0x42EB768f2244C8811C63729A21A3569731535f06': {
+          address: '0x42EB768f2244C8811C63729A21A3569731535f06',
+          chainId: '0x61',
+          isEns: false,
+          memo: '',
+          name: '',
+        },
+      },
+    },
+
+    update: (store) => (mcState.store = store),
+  };
+
+  mcState.store = {
+    getState: sinon.stub().returns(mcState),
+    updateState: (store) => (mcState.store = store),
+  };
+
+  return mcState;
+}
+
+function getMockNetworkController() {
+  const mcState = {
+    networkConfigurations: {},
+
+    update: (store) => (mcState.store = store),
+  };
+
+  mcState.store = {
+    getState: sinon.stub().returns(mcState),
+    updateState: (store) => (mcState.store = store),
+  };
+
+  return mcState;
+}
+
+const jsonData = JSON.stringify({
+  addressBook: {
+    addressBook: {
+      '0x61': {
+        '0x42EB768f2244C8811C63729A21A3569731535f06': {
+          address: '0x42EB768f2244C8811C63729A21A3569731535f06',
+          chainId: '0x61',
+          isEns: false,
+          memo: '',
+          name: '',
+        },
+      },
+    },
+  },
+  network: {
+    networkConfigurations: {
+      'network-configuration-id-1': {
+        chainId: '0x539',
+        nickname: 'Localhost 8545',
+        rpcPrefs: {},
+        rpcUrl: 'http://localhost:8545',
+        ticker: 'ETH',
+      },
+      'network-configuration-id-2': {
+        chainId: '0x38',
+        nickname: 'Binance Smart Chain Mainnet',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://bscscan.com',
+        },
+        rpcUrl: 'https://bsc-dataseed1.binance.org',
+        ticker: 'BNB',
+      },
+      'network-configuration-id-3': {
+        chainId: '0x61',
+        nickname: 'Binance Smart Chain Testnet',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://testnet.bscscan.com',
+        },
+        rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+        ticker: 'tBNB',
+      },
+      'network-configuration-id-4': {
+        chainId: '0x89',
+        nickname: 'Polygon Mainnet',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://polygonscan.com',
+        },
+        rpcUrl: 'https://polygon-rpc.com',
+        ticker: 'MATIC',
+      },
+    },
+  },
+  preferences: {
+    useBlockie: false,
+    useNonceField: false,
+    usePhishDetect: true,
+    dismissSeedBackUpReminder: false,
+    useTokenDetection: false,
+    useCollectibleDetection: false,
+    openSeaEnabled: false,
+    advancedGasFee: null,
+    featureFlags: {
+      sendHexData: true,
+      showIncomingTransactions: true,
+    },
+    knownMethodData: {},
+    currentLocale: 'en',
+    forgottenPassword: false,
+    preferences: {
+      hideZeroBalanceTokens: false,
+      showFiatInTestnets: false,
+      showTestNetworks: true,
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    ipfsGateway: 'dweb.link',
+    infuraBlocked: false,
+    ledgerTransportType: 'webhid',
+    theme: 'light',
+    customNetworkListEnabled: false,
+    textDirection: 'auto',
+  },
+});
 
 describe('BackupController', function () {
   const getBackupController = () => {
     return new BackupController({
-      preferencesController: getMockController(),
-      addressBookController: getMockController(),
+      preferencesController: getMockPreferencesController(),
+      addressBookController: getMockAddressBookController(),
+      networkController: getMockNetworkController(),
       trackMetaMetricsEvent: sinon.stub(),
     });
   };
@@ -53,16 +175,30 @@ describe('BackupController', function () {
     it('should restore backup', async function () {
       const backupController = getBackupController();
       backupController.restoreUserData(jsonData);
-      // check Preferences backup
+      // check networks backup
       assert.equal(
-        backupController.preferencesController.store.frequentRpcListDetail[0]
-          .chainId,
+        backupController.networkController.store.networkConfigurations[
+          'network-configuration-id-1'
+        ].chainId,
         '0x539',
       );
       assert.equal(
-        backupController.preferencesController.store.frequentRpcListDetail[1]
-          .chainId,
+        backupController.networkController.store.networkConfigurations[
+          'network-configuration-id-2'
+        ].chainId,
         '0x38',
+      );
+      assert.equal(
+        backupController.networkController.store.networkConfigurations[
+          'network-configuration-id-3'
+        ].chainId,
+        '0x61',
+      );
+      assert.equal(
+        backupController.networkController.store.networkConfigurations[
+          'network-configuration-id-4'
+        ].chainId,
+        '0x89',
       );
       // make sure identities are not lost after restore
       assert.equal(

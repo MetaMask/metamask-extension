@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const { promises: fs } = require('fs');
 const path = require('path');
 // Fetch is part of node js in future versions, thus triggering no-shadow
@@ -34,7 +35,6 @@ async function start() {
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
-
   // build the github comment content
 
   // links to extension builds

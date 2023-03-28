@@ -20,7 +20,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isUnlocked,
     isAccountMenuOpen,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
   } = metamask;
@@ -40,12 +40,10 @@ const mapStateToProps = (state) => {
     isAccountMenuOpen,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount,
+    desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(beta)
     showBetaHeader,
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
   };
 };

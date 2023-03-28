@@ -186,6 +186,9 @@
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
  * @property {'install_date_ext'} INSTALL_DATE_EXT - when the user installed the extension
+ * @property {'desktop_enabled'} [DESKTOP_ENABLED] - optional / does the user have desktop enabled?
+ * @property {'security_providers'} SECURITY_PROVIDERS - when security provider feature is toggled we
+ * identify the security_providers trait
  */
 
 /**
@@ -213,6 +216,8 @@ export const TRAITS = {
   MMI_EXTENSION_ID: 'extensionId',
   MMI_IS_CUSTODIAN: 'isCustodian',
   ///: END:ONLY_INCLUDE_IN
+  DESKTOP_ENABLED: 'desktop_enabled',
+  SECURITY_PROVIDERS: 'security_providers',
 };
 
 /**
@@ -242,6 +247,8 @@ export const TRAITS = {
  *  enabled? (deprecated)
  * @property {string} [theme] - which theme the user has selected
  * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
+ * @property {boolean} [desktop_enabled] - optional / does the user have desktop enabled?
+ * @property {Array<string>} [security_providers] - whether security provider feature toggle is on or off
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -294,6 +301,7 @@ export const EVENT_NAMES = {
   APP_UNLOCKED: 'App Unlocked',
   APP_UNLOCKED_FAILED: 'App Unlocked Failed',
   APP_WINDOW_EXPANDED: 'App Window Expanded',
+  BRIDGE_LINK_CLICKED: 'Bridge Link Clicked',
   DECRYPTION_APPROVED: 'Decryption Approved',
   DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
@@ -343,6 +351,7 @@ export const EVENT_NAMES = {
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
   SIGNATURE_APPROVED: 'Signature Approved',
+  SIGNATURE_FAILED: 'Signature Failed',
   SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_IMPORT_BUTTON_CLICKED: 'Import Token Button Clicked',
@@ -404,6 +413,7 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+    DESKTOP: 'Desktop',
   },
   EXTERNAL_LINK_TYPES: {
     TRANSACTION_BLOCK_EXPLORER: 'Transaction Block Explorer',
@@ -426,6 +436,7 @@ export const EVENT = {
     NETWORK: {
       CUSTOM_NETWORK_FORM: 'custom_network_form',
       POPULAR_NETWORK_LIST: 'popular_network_list',
+      DAPP: 'dapp',
     },
     SWAPS: {
       MAIN_VIEW: 'Main View',

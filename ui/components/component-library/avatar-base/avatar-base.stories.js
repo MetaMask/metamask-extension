@@ -89,10 +89,11 @@ export default {
     color: TextColor.textDefault,
     backgroundColor: BackgroundColor.backgroundAlternative,
     borderColor: BorderColor.borderDefault,
+    children: 'B',
   },
 };
 
-export const DefaultStory = (args) => <AvatarBase {...args}>B</AvatarBase>;
+export const DefaultStory = (args) => <AvatarBase {...args} />;
 
 DefaultStory.storyName = 'Default';
 

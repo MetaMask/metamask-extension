@@ -15,7 +15,7 @@ jest.mock('../../store/actions', () => {
   return {
     hideLoadingIndication: () => mockHideLoadingIndication,
     showLoadingIndication: () => mockShowLoadingIndication,
-    generateOtp: jest.fn(),
+    generateDesktopOtp: jest.fn(),
   };
 });
 
@@ -44,7 +44,7 @@ describe('Desktop Pairing page', () => {
 
   it('should render otp component', async () => {
     const otp = '123456';
-    mockedActions.generateOtp.mockResolvedValue(otp);
+    mockedActions.generateDesktopOtp.mockResolvedValue(otp);
 
     const store = configureStore(mockState);
     let container = null;
@@ -65,7 +65,7 @@ describe('Desktop Pairing page', () => {
     const otp = '123456';
     const newOtp = '654321';
     const neverGeneratedOTP = '111222';
-    mockedActions.generateOtp
+    mockedActions.generateDesktopOtp
       .mockResolvedValueOnce(otp)
       .mockResolvedValueOnce(newOtp)
       .mockResolvedValueOnce(neverGeneratedOTP);
@@ -81,7 +81,7 @@ describe('Desktop Pairing page', () => {
       await flushPromises();
       expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
       expect(screen.getByText(otp)).toBeDefined();
-      expect(mockedActions.generateOtp).toHaveBeenCalledTimes(1);
+      expect(mockedActions.generateDesktopOtp).toHaveBeenCalledTimes(1);
     });
 
     // Advance timers 30s to trigger next OTP
@@ -91,7 +91,7 @@ describe('Desktop Pairing page', () => {
       await flushPromises();
       expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
       expect(screen.getByText(newOtp)).toBeDefined();
-      expect(mockedActions.generateOtp).toHaveBeenCalledTimes(2);
+      expect(mockedActions.generateDesktopOtp).toHaveBeenCalledTimes(2);
     });
 
     // Advance timers 10s to test that OTP is still the same
@@ -101,7 +101,7 @@ describe('Desktop Pairing page', () => {
       await flushPromises();
       expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
       expect(screen.getByText(newOtp)).toBeDefined();
-      expect(mockedActions.generateOtp).toHaveBeenCalledTimes(2);
+      expect(mockedActions.generateDesktopOtp).toHaveBeenCalledTimes(2);
     });
 
     jest.clearAllTimers();

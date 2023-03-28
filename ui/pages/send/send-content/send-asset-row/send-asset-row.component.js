@@ -147,6 +147,7 @@ export default class SendAssetRow extends Component {
       if (token) {
         return this.renderToken(token);
       }
+      return this.renderToken(details);
     } else if (type === AssetType.NFT) {
       const nft = nfts.find(
         ({ address, tokenId }) =>

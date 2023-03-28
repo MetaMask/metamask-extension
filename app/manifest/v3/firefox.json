@@ -22,5 +22,20 @@
     "default_title": "MetaMask",
     "default_popup": "popup.html"
   },
-  "manifest_version": 2
+  "manifest_version": 2,
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "clipboardWrite",
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://*.codefi.network/",
+    "https://chainid.network/chains.json",
+    "https://lattice.gridplus.io/*",
+    "tabs",
+    "activeTab",
+    "webRequest",
+    "*://*.eth/",
+    "notifications"
+  ]
 }

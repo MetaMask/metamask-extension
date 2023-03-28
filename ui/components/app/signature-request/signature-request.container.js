@@ -4,10 +4,12 @@ import {
   doesAddressRequireLedgerHidConnection,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  conversionRateSelector,
   getSubjectMetadata,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  getCurrentCurrency,
+  getPreferences,
+  conversionRateSelector,
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -34,6 +36,7 @@ function mapStateToProps(state, ownProps) {
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
     provider,
@@ -44,8 +47,11 @@ function mapStateToProps(state, ownProps) {
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
@@ -80,8 +86,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    conversionRate,
     nativeCurrency,
+    currentCurrency,
+    conversionRate,
     provider,
     subjectMetadata,
     unconfirmedMessagesList,
@@ -132,8 +139,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    conversionRate,
     nativeCurrency,
+    currentCurrency,
+    conversionRate,
     provider,
     subjectMetadata,
     unapprovedMessagesCount,

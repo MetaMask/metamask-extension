@@ -1,5 +1,10 @@
+const {
+  WALLET_SNAP_PERMISSION_KEY,
+  SnapCaveatType,
+} = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 
 function defaultFixture() {
   return {
@@ -106,6 +111,11 @@ function defaultFixture() {
             id: 15,
             isShown: false,
           },
+          16: {
+            date: null,
+            id: 16,
+            isShown: true,
+          },
           17: {
             date: null,
             id: 17,
@@ -179,6 +189,16 @@ function defaultFixture() {
           ticker: 'ETH',
           type: 'rpc',
         },
+        networkConfigurations: {
+          networkConfigurationId: {
+            chainId: CHAIN_IDS.LOCALHOST,
+            nickname: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+            networkConfigurationId: 'networkConfigurationId',
+          },
+        },
       },
       OnboardingController: {
         completedOnboarding: true,
@@ -197,15 +217,6 @@ function defaultFixture() {
           showIncomingTransactions: true,
         },
         forgottenPassword: false,
-        frequentRpcListDetail: [
-          {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-          },
-        ],
         identities: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -234,7 +245,6 @@ function defaultFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -308,6 +318,16 @@ function onboardingFixture() {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
         },
+        networkConfigurations: {
+          networkConfigurationId: {
+            chainId: CHAIN_IDS.LOCALHOST,
+            nickname: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+            networkConfigurationId: 'networkConfigurationId',
+          },
+        },
       },
       PreferencesController: {
         advancedGasFee: null,
@@ -317,15 +337,6 @@ function onboardingFixture() {
           showIncomingTransactions: true,
         },
         forgottenPassword: false,
-        frequentRpcListDetail: [
-          {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-          },
-        ],
         identities: {},
         infuraBlocked: false,
         ipfsGateway: 'dweb.link',
@@ -347,7 +358,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -408,16 +418,6 @@ class FixtureBuilder {
 
   withCachedBalancesController(data) {
     merge(this.fixture.data.CachedBalancesController, data);
-    return this;
-  }
-
-  withNftsController(data) {
-    merge(
-      this.fixture.data.NftController
-        ? this.fixture.data.NftController
-        : (this.fixture.data.NftController = {}),
-      data,
-    );
     return this;
   }
 
@@ -487,6 +487,91 @@ class FixtureBuilder {
     return this;
   }
 
+  withNetworkControllerSupportEIP1559() {
+    merge(this.fixture.data.NetworkController, {
+      networkDetails: {
+        EIPS: { 1559: true },
+      },
+    });
+    return this;
+  }
+
+  withNftController(data) {
+    merge(
+      this.fixture.data.NftController
+        ? this.fixture.data.NftController
+        : (this.fixture.data.NftController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withNftControllerERC1155() {
+    return this.withNftController({
+      allNftContracts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
+            },
+          ],
+        },
+      },
+      allNfts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
+              tokenId: '1',
+              favorite: false,
+              isCurrentlyOwned: true,
+              name: 'Rocks',
+              description: 'This is a collection of Rock NFTs.',
+              image:
+                'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
+              standard: 'ERC1155',
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    });
+  }
+
+  withNftControllerERC721() {
+    return this.withNftController({
+      allNftContracts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              name: 'TestDappCollectibles',
+              symbol: 'TDC',
+            },
+          ],
+        },
+      },
+      allNfts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              description: 'Test Dapp Collectibles for testing.',
+              favorite: false,
+              image:
+                'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
+              isCurrentlyOwned: true,
+              name: 'Test Dapp Collectibles #1',
+              standard: 'ERC721',
+              tokenId: '1',
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    });
+  }
+
   withOnboardingController(data) {
     merge(this.fixture.data.OnboardingController, data);
     return this;
@@ -527,48 +612,22 @@ class FixtureBuilder {
         'https://metamask.github.io': {
           origin: 'https://metamask.github.io',
           permissions: {
-            'wallet_snap_npm:@metamask/test-snap-bip32': {
+            [WALLET_SNAP_PERMISSION_KEY]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.SnapIds,
+                  value: {
+                    'npm@metamask/test-snap-bip32': {},
+                    'npm@metamask/test-snap-bip44': {},
+                    'npm@metamask/test-snap-error': {},
+                    'npm@metamask/test-snap-managestate': {},
+                    'npm@metamask/test-snap-notification': {},
+                  },
+                },
+              ],
               id: 'CwdJq0x8N_b9FNxn6dVuP',
-              parentCapability: 'wallet_snap_npm:@metamask/test-snap-bip32',
+              parentCapability: WALLET_SNAP_PERMISSION_KEY,
               invoker: 'https://metamask.github.io',
-              caveats: null,
-              date: 1664388714636,
-            },
-            'wallet_snap_npm:@metamask/test-snap-bip44': {
-              id: '8zH-0opWuZhvJew41FMVh',
-              parentCapability: 'wallet_snap_npm:@metamask/test-snap-bip44',
-              invoker: 'https://metamask.github.io',
-              caveats: null,
-              date: 1664388714636,
-            },
-            'wallet_snap_npm:@metamask/test-snap-confirm': {
-              id: 'Wb_1c9toBggBQWfOJwjMg',
-              parentCapability: 'wallet_snap_npm:@metamask/test-snap-confirm',
-              invoker: 'https://metamask.github.io',
-              caveats: null,
-              date: 1664388714636,
-            },
-            'wallet_snap_npm:@metamask/test-snap-error': {
-              id: '5FUZoCyimOWKTbuLCEOWa',
-              parentCapability: 'wallet_snap_npm:@metamask/test-snap-error',
-              invoker: 'https://metamask.github.io',
-              caveats: null,
-              date: 1664388714636,
-            },
-            'wallet_snap_npm:@metamask/test-snap-managestate': {
-              id: 'Z6XPdyuCHCf1pyqSiU7nh',
-              parentCapability:
-                'wallet_snap_npm:@metamask/test-snap-managestate',
-              invoker: 'https://metamask.github.io',
-              caveats: null,
-              date: 1664388714636,
-            },
-            'wallet_snap_npm:@metamask/test-snap-notification': {
-              id: '_xfRMXzq0bs8QcXRcvjcP',
-              parentCapability:
-                'wallet_snap_npm:@metamask/test-snap-notification',
-              invoker: 'https://metamask.github.io',
-              caveats: null,
               date: 1664388714636,
             },
           },
@@ -635,6 +694,43 @@ class FixtureBuilder {
 
   withTokensController(data) {
     merge(this.fixture.data.TokensController, data);
+    return this;
+  }
+
+  withTokensControllerERC20() {
+    merge(this.fixture.data.TokensController, {
+      tokens: [
+        {
+          address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+          symbol: 'TST',
+          decimals: 4,
+          image:
+            'https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+          isERC721: false,
+          aggregators: [],
+        },
+      ],
+      ignoredTokens: [],
+      detectedTokens: [],
+      allTokens: {
+        '0x539': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+              symbol: 'TST',
+              decimals: 4,
+              image:
+                'https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
+      suggestedAssets: [],
+    });
     return this;
   }
 
@@ -1337,15 +1433,6 @@ class FixtureBuilder {
         },
       },
     });
-  }
-
-  withNetworkSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
-    return this;
   }
 
   build() {
