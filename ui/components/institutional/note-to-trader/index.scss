@@ -1,0 +1,23 @@
+.note-header {
+  line-height: 100%;
+  margin: 0 0 5px 0;
+
+  label {
+    color: var(--black);
+    margin: 0 0 4px 0;
+  }
+}
+
+.note-field {
+  textarea {
+    min-height: 90px;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 12px;
+    resize: none;
+
+    &::placeholder {
+      color: var(--color-icon-alternative);
+    }
+  }
+}

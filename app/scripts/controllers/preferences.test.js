@@ -182,66 +182,6 @@ describe('preferences controller', function () {
     });
   });
 
-  describe('adding and removing from frequentRpcListDetail', function () {
-    it('should add custom RPC url to state', function () {
-      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-    });
-
-    it('should throw if chainId is invalid', function () {
-      assert.throws(() => {
-        preferencesController.upsertToFrequentRpcList('rpc_url', '1');
-      }, 'should throw on invalid chainId');
-    });
-
-    it('should remove custom RPC url from state', function () {
-      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-      preferencesController.removeFromFrequentRpcList('other_rpc_url');
-      preferencesController.removeFromFrequentRpcList('http://localhost:8545');
-      preferencesController.removeFromFrequentRpcList('rpc_url');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [],
-      );
-    });
-  });
-
   describe('setUsePhishDetect', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -387,30 +327,6 @@ describe('preferences controller', function () {
       assert.equal(
         preferencesController.store.getState().useCurrencyRateCheck,
         false,
-      );
-    });
-  });
-
-  describe('setOpenSeaTransactionSecurityProviderPopoverHasBeenShown', function () {
-    it('should default to value "false"', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(
-        state.openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        false,
-      );
-    });
-
-    it('should set the openSeaTransactionSecurityProviderPopoverHasBeenShown to true', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(
-        state.openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        false,
-      );
-      preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown();
-      assert.equal(
-        preferencesController.store.getState()
-          .openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        true,
       );
     });
   });

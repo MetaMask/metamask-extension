@@ -4,10 +4,14 @@ import { produce } from 'immer';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box/check-box.component';
-import Typography from '../../../ui/typography/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
+
+import {
+  TextVariant,
+  TEXT_ALIGN,
+} from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
+import { Text } from '../../../component-library';
 
 /**
  * a very simple reducer using produce from Immer to keep checkboxes state manipulation
@@ -63,20 +67,23 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
   return (
     <Popover
       className="snap-install-warning"
-      title={t('areYouSure')}
+      title={t('snapInstallWarningHeading')}
+      centerTitle
       footer={<SnapInstallWarningFooter />}
       headerProps={{ padding: [6, 6, 0] }}
-      contentProps={{ padding: [6, 4] }}
+      contentProps={{
+        paddingLeft: [6, 4],
+        paddingRight: [6, 4],
+        paddingTop: 0,
+        paddingBottom: [6, 4],
+      }}
       footerProps={{ padding: [4, 6] }}
     >
-      <Typography
-        variant={TypographyVariant.H6}
-        boxProps={{ paddingBottom: 4 }}
-      >
+      <Text paddingBottom={6} textAlign={TEXT_ALIGN.CENTER}>
         {warnings.length > 1
           ? t('snapInstallWarningCheckPlural')
           : t('snapInstallWarningCheck')}
-      </Typography>
+      </Text>
       {warnings.map((warning, i) => (
         <div
           className={classnames('checkbox-label', {
@@ -89,7 +96,9 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
             id={warning.id}
             onClick={() => onCheckboxClicked(warning.id)}
           />
-          <label htmlFor={warning.id}>{warning.message}</label>
+          <label htmlFor={warning.id}>
+            <Text variant={TextVariant.bodySm}>{warning.message}</Text>
+          </label>
         </div>
       ))}
     </Popover>

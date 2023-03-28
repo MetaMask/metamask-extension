@@ -91,9 +91,21 @@ export const UI_NOTIFICATIONS = {
     id: 15,
     date: '2022-09-15',
   },
+  16: {
+    id: 16,
+    date: null,
+    image: {
+      src: 'images/open-sea-security-provider.svg',
+      width: '100%',
+    },
+  },
   17: {
     id: 17,
     date: null,
+    image: {
+      src: 'images/nfts.svg',
+      width: '100%',
+    },
   },
   ///: END:ONLY_INCLUDE_IN
 };
@@ -264,10 +276,30 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    16: {
+      ...UI_NOTIFICATIONS[16],
+      title: t('notifications16Title'),
+      description: [
+        t('notifications16DescriptionOne'),
+        t('notifications16DescriptionTwo'),
+        t('notifications16DescriptionThree'),
+      ],
+      actionText: t('notifications16ActionText'),
+      date: UI_NOTIFICATIONS[16].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[16].date),
+          )
+        : '',
+    },
+
     17: {
       ...UI_NOTIFICATIONS[17],
       title: t('notifications17Title'),
-      description: t('notifications17Description'),
+      description: [
+        t('notifications17DescriptionOne'),
+        t('notifications17DescriptionTwo'),
+        t('notifications17DescriptionThree'),
+      ],
       actionText: t('notifications17ActionText'),
       date: UI_NOTIFICATIONS[17].date
         ? new Intl.DateTimeFormat(formattedLocale).format(

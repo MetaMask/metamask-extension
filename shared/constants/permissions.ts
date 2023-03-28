@@ -5,7 +5,6 @@ export const CaveatTypes = Object.freeze({
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  snap_confirm: 'snap_confirm',
   snap_dialog: 'snap_dialog',
   snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
@@ -13,7 +12,7 @@ export const RestrictedMethods = Object.freeze({
   snap_getBip32Entropy: 'snap_getBip32Entropy',
   snap_getBip44Entropy: 'snap_getBip44Entropy',
   snap_getEntropy: 'snap_getEntropy',
-  'wallet_snap_*': 'wallet_snap_*',
+  wallet_snap: 'wallet_snap',
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
@@ -23,10 +22,6 @@ export const RestrictedMethods = Object.freeze({
  * This is a fix for https://github.com/MetaMask/snaps-monorepo/issues/1103 and https://github.com/MetaMask/snaps-monorepo/issues/990.
  * TODO: Disable endowment:long-running and eth_account in stable.
  */
-export const PermissionNamespaces = Object.freeze({
-  wallet_snap_: 'wallet_snap_*',
-} as const);
-
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:transaction-insight': 'endowment:transaction-insight',
@@ -34,6 +29,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
   'endowment:long-running': 'endowment:long-running',
+  'endowment:webassembly': 'endowment:webassembly',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.

@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
 import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
+import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
@@ -35,7 +37,7 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-export function renderWithProvider(component, store, pathname = '/') {
+const createProviderWrapper = (store, pathname = '/') => {
   const history = createMemoryHistory({ initialEntries: [pathname] });
   const Wrapper = ({ children }) =>
     store ? (
@@ -60,7 +62,24 @@ export function renderWithProvider(component, store, pathname = '/') {
     children: PropTypes.node,
   };
   return {
+    Wrapper,
+    history,
+  };
+};
+
+export function renderWithProvider(component, store, pathname = '/') {
+  const { history, Wrapper } = createProviderWrapper(store, pathname);
+  return {
     ...render(component, { wrapper: Wrapper }),
+    history,
+  };
+}
+
+export function renderHookWithProvider(hook, state, pathname = '/') {
+  const store = state ? configureStore(state) : undefined;
+  const { history, Wrapper } = createProviderWrapper(store, pathname);
+  return {
+    ...renderHook(hook, { wrapper: Wrapper }),
     history,
   };
 }

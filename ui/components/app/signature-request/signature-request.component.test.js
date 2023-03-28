@@ -6,15 +6,32 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import SignatureRequest from './signature-request.component';
 
+const baseProps = {
+  hardwareWalletRequiresConnection: false,
+  clearConfirmTransaction: () => undefined,
+  cancel: () => undefined,
+  cancelAll: () => undefined,
+  mostRecentOverviewPage: '/',
+  showRejectTransactionsConfirmationModal: () => undefined,
+  sign: () => undefined,
+  history: { push: '/' },
+  provider: { type: 'rpc' },
+  nativeCurrency: 'ABC',
+  currentCurrency: 'def',
+  fromAccount: {
+    address: '0x123456789abcdef',
+    balance: '0x346ba7725f412cbfdb',
+    name: 'Antonio',
+  },
+};
+
 describe('Signature Request Component', () => {
   const store = configureMockStore()(mockState);
 
   describe('render', () => {
-    let fromAddress;
     let messageData;
 
     beforeEach(() => {
-      fromAddress = '0x123456789abcdef';
       messageData = {
         domain: {
           chainId: 97,
@@ -63,7 +80,7 @@ describe('Signature Request Component', () => {
       };
     });
 
-    it('should match snapshot when useNativeCurrencyAsPrimaryCurrency is false', () => {
+    it('should match snapshot when we want to switch to fiat', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
@@ -71,22 +88,11 @@ describe('Signature Request Component', () => {
       };
       const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
-          useNativeCurrencyAsPrimaryCurrency={false}
-          nativeCurrency="ABC"
-          currentCurrency="DEF"
+          conversionRate={1567}
         />,
         store,
       );
@@ -94,7 +100,7 @@ describe('Signature Request Component', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('should match snapshot when useNativeCurrencyAsPrimaryCurrency is true', () => {
+    it('should match snapshot when we are using eth', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
@@ -102,22 +108,11 @@ describe('Signature Request Component', () => {
       };
       const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
-          useNativeCurrencyAsPrimaryCurrency
-          nativeCurrency="ABC"
-          currentCurrency="DEF"
+          conversionRate={null}
         />,
         store,
       );
@@ -133,19 +128,11 @@ describe('Signature Request Component', () => {
       };
       const { queryByTestId } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
         />,
         store,
       );
@@ -165,19 +152,11 @@ describe('Signature Request Component', () => {
       };
       const { queryByText } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
         />,
         store,
       );
@@ -196,19 +175,11 @@ describe('Signature Request Component', () => {
       };
       const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
         />,
         store,
       );
@@ -226,19 +197,11 @@ describe('Signature Request Component', () => {
       };
       const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
           unapprovedMessagesCount={2}
         />,
         store,
@@ -257,19 +220,11 @@ describe('Signature Request Component', () => {
       };
       const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
           unapprovedMessagesCount={2}
         />,
         store,
@@ -290,19 +245,11 @@ describe('Signature Request Component', () => {
       };
       const { getByText } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
           unapprovedMessagesCount={2}
         />,
         store,
@@ -320,14 +267,8 @@ describe('Signature Request Component', () => {
 
       const { queryByText } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
+          conversionRate={null}
           txData={{
             msgParams,
             securityProviderResponse: {
@@ -336,8 +277,6 @@ describe('Signature Request Component', () => {
               reason_header: 'Some reason header...',
             },
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
           unapprovedMessagesCount={2}
         />,
         store,
@@ -363,14 +302,8 @@ describe('Signature Request Component', () => {
 
       const { queryByText } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          cancelAll={() => undefined}
-          mostRecentOverviewPage="/"
-          showRejectTransactionsConfirmationModal={() => undefined}
-          history={{ push: '/' }}
-          sign={() => undefined}
+          {...baseProps}
+          conversionRate={null}
           txData={{
             msgParams,
             securityProviderResponse: {
@@ -378,8 +311,6 @@ describe('Signature Request Component', () => {
                 SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
             },
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
           unapprovedMessagesCount={2}
         />,
         store,

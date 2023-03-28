@@ -61,9 +61,6 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  ENABLE_DESKTOP: `metamask_enableDesktop`,
-  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
   MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',

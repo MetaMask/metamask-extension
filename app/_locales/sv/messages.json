@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Ansluter till Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
   },
@@ -401,6 +404,9 @@
   },
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testnätverk"
   },
   "links": {
     "message": "Länkar"
@@ -655,12 +661,6 @@
   },
   "settings": {
     "message": "Inställningar"
-  },
-  "showAdvancedGasInline": {
-    "message": "Avancerade gaskontroller"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Välj detta för att visa gas-pris och gränskontroller direkt på skicka och bekräfta-skärmarna."
   },
   "showFiatConversionInTestnets": {
     "message": "Visa omvandling på testnätverk"

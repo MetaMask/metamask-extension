@@ -15,6 +15,8 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { IconColor } from '../../helpers/constants/design-system';
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -38,10 +40,11 @@ export default class ConfirmDecryptMessage extends Component {
     txData: PropTypes.object,
     subjectMetadata: PropTypes.object,
     nativeCurrency: PropTypes.string.isRequired,
+    currentCurrency: PropTypes.string.isRequired,
+    conversionRate: PropTypes.number,
   };
 
   state = {
-    fromAccount: this.props.fromAccount,
     copyToClipboardPressed: false,
     hasCopied: false,
   };
@@ -77,7 +80,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderAccount = () => {
-    const { fromAccount } = this.state;
+    const { fromAccount } = this.props;
     const { t } = this.context;
 
     return (
@@ -94,20 +97,31 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBalance = () => {
-    const { nativeCurrency } = this.props;
     const {
+      conversionRate,
+      nativeCurrency,
+      currentCurrency,
       fromAccount: { balance },
-    } = this.state;
+    } = this.props;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = new Numeric(
-      balance,
-      16,
-      EtherDenomination.WEI,
-    )
-      .toDenomination(EtherDenomination.ETH)
-      .round(6)
-      .toBase(10);
+    const nativeCurrencyBalance = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
 
     return (
       <div className="request-decrypt-message__balance">
@@ -115,7 +129,9 @@ export default class ConfirmDecryptMessage extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-decrypt-message__balance-value">
-          {`${nativeCurrencyBalance} ${nativeCurrency}`}
+          {`${nativeCurrencyBalance} ${
+            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+          }`}
         </div>
       </div>
     );
