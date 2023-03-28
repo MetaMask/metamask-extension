@@ -119,7 +119,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             variant={TextVariant.bodySm}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata.origin)}
+            {getSnapName(targetSubjectMetadata?.origin)}
           </Text>,
           <b key="2">
             {getSnapDerivationPathName(path, curve) ??
@@ -190,7 +190,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             variant={TextVariant.bodySm}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata.origin)}
+            {getSnapName(targetSubjectMetadata?.origin)}
           </Text>,
           <b key="2">
             {getSnapDerivationPathName(path, curve) ??
@@ -273,7 +273,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           variant={TextVariant.bodySm}
           as="span"
         >
-          {getSnapName(targetSubjectMetadata.origin)}
+          {getSnapName(targetSubjectMetadata?.origin)}
         </Text>,
         <b key="2">
           {coinTypeToProtocolName(coinType) ||
@@ -394,7 +394,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: RIGHT_INFO_ICON,
     weight: 1,
     id: 'ethereum-provider-access',
-    message: t('ethereumProviderAccess', [targetSubjectMetadata.origin]),
+    message: t('ethereumProviderAccess', [targetSubjectMetadata?.origin]),
   }),
   [EndowmentPermissions['endowment:rpc']]: ({ t, permissionValue }) => {
     const baseDescription = {
