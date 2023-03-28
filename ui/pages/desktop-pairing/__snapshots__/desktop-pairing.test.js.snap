@@ -92,13 +92,13 @@ exports[`Desktop Pairing page should render otp component 1`] = `
     </div>
     <h3
       align="center"
-      class="box mm-text mm-text--heading-md mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--heading-md box--flex-direction-row box--color-text-default"
     >
       Pair with Desktop
     </h3>
     <p
       align="center"
-      class="box mm-text mm-text--body-md mm-text--color-text-default box--margin-top-2 box--flex-direction-row"
+      class="box mm-text mm-text--body-md box--margin-top-2 box--flex-direction-row box--color-text-default"
     >
       Open your MetaMask Desktop and type this code
     </p>
@@ -119,7 +119,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
         >
           <h1
             align="center"
-            class="box mm-text desktop-pairing__otp mm-text--display-md mm-text--color-text-default box--flex-direction-row"
+            class="box mm-text desktop-pairing__otp mm-text--display-md box--flex-direction-row box--color-text-default"
           >
             123456
           </h1>
@@ -130,7 +130,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       >
         <p
           align="center"
-          class="box mm-text desktop-pairing__countdown-timer mm-text--body-md mm-text--color-text-default box--padding-2 box--flex-direction-row box--background-color-background-default box--rounded-xl"
+          class="box mm-text desktop-pairing__countdown-timer mm-text--body-md box--padding-2 box--flex-direction-row box--color-text-default box--background-color-background-default box--rounded-xl"
         >
           <span>
              
@@ -147,7 +147,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       </div>
       <p
         align="center"
-        class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
       >
         If the pairing is successful, extension will restart and you'll have to re-enter your password.
       </p>
@@ -156,7 +156,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       class="box box--flex-direction-row"
     >
       <button
-        class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-text--color-primary-inverse box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-primary-default box--rounded-pill"
+        class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
       >
         Done
       </button>
