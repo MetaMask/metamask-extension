@@ -120,27 +120,24 @@ export const AccountListItem = ({
             gap={2}
           >
             <Text ellipsis as="div">
-              {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-                <Tooltip
-                  title={identity.name}
-                  position="bottom"
-                  wrapperClassName="multichain-account-list-item__tooltip"
-                >
-                  <ButtonLink
-                    onClick={onClick}
-                    className="multichain-account-list-item__account-name"
+              <ButtonLink
+                onClick={onClick}
+                className="multichain-account-list-item__account-name"
+                color={Color.textDefault}
+                ellipsis
+              >
+                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                  <Tooltip
+                    title={identity.name}
+                    position="bottom"
+                    wrapperClassName="multichain-account-list-item__tooltip"
                   >
                     {identity.name}
-                  </ButtonLink>
-                </Tooltip>
-              ) : (
-                <ButtonLink
-                  onClick={onClick}
-                  className="multichain-account-list-item__account-name"
-                >
-                  {identity.name}
-                </ButtonLink>
-              )}
+                  </Tooltip>
+                ) : (
+                  identity.name
+                )}
+              </ButtonLink>
             </Text>
             <Box
               display={DISPLAY.FLEX}
