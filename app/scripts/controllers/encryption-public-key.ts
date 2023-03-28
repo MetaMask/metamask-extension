@@ -133,7 +133,11 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     this._metricsEvent = metricsEvent;
 
     this.hub = new EventEmitter();
-    this._encryptionPublicKeyManager = new EncryptionPublicKeyManager();
+    this._encryptionPublicKeyManager = new EncryptionPublicKeyManager(
+      undefined,
+      undefined,
+      ['received'],
+    );
 
     this._encryptionPublicKeyManager.hub.on('updateBadge', () => {
       this.hub.emit('updateBadge');
@@ -245,9 +249,10 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
 
       // tells the listener that the message has been processed
       // and can be returned to the dapp
-      this._encryptionPublicKeyManager.setMessageStatusReceived(
+      this._encryptionPublicKeyManager.setMessageStatusAndResult(
         messageId,
         publicKey,
+        'received',
       );
 
       this._acceptApproval(messageId);
