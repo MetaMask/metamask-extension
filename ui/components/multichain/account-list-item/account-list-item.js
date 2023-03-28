@@ -17,6 +17,7 @@ import {
   ICON_SIZES,
   AvatarFavicon,
   Tag,
+  ButtonLink,
 } from '../../component-library';
 import {
   Color,
@@ -125,14 +126,20 @@ export const AccountListItem = ({
                   position="bottom"
                   wrapperClassName="multichain-account-list-item__tooltip"
                 >
-                  <a href="#" onClick={onClick}>
+                  <ButtonLink
+                    onClick={onClick}
+                    className="multichain-account-list-item__account-name"
+                  >
                     {identity.name}
-                  </a>
+                  </ButtonLink>
                 </Tooltip>
               ) : (
-                <a href="#" onClick={onClick}>
+                <ButtonLink
+                  onClick={onClick}
+                  className="multichain-account-list-item__account-name"
+                >
                   {identity.name}
-                </a>
+                </ButtonLink>
               )}
             </Text>
             <Box

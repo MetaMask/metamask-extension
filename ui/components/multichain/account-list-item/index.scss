@@ -10,9 +10,13 @@
     }
   }
 
-  a:hover,
-  a:focus {
+  &__account-name {
     color: inherit;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
   }
 
   &__selected-indicator {
