@@ -110,7 +110,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         weight: 1,
         id: `public-key-access-bip32-${path
           .join('-')
-          .replace(/'/gu, 'h')}-${curve}-${i}`,
+          ?.replace(/'/gu, 'h')}-${curve}-${i}`,
         message: t('snapInstallWarningPublicKeyAccess', [
           <Text
             key="1"
@@ -181,7 +181,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         weight: 1,
         id: `key-access-bip32-${path
           .join('-')
-          .replace(/'/gu, 'h')}-${curve}-${i}`,
+          ?.replace(/'/gu, 'h')}-${curve}-${i}`,
         message: t('snapInstallWarningKeyAccess', [
           <Text
             key="1"
