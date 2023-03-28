@@ -17,7 +17,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { Label, Text, ButtonLink } from '../../../components/component-library';
+import { Label, Text, ButtonLink, Button, BUTTON_SIZES, BUTTON_TYPES } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 
 const ConfirmAddCustodianToken = () => {
