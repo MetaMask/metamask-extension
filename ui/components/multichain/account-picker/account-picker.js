@@ -8,7 +8,6 @@ import {
   AvatarAccountVariant,
   Text,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import {
   BackgroundColor,
   DISPLAY,
