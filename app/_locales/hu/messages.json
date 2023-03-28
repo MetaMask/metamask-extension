@@ -671,12 +671,6 @@
   "settings": {
     "message": "Beállítások"
   },
-  "showAdvancedGasInline": {
-    "message": "Speciális gázszabályzók"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Jelöld meg ezt a gázárak és korlátozásellenőrzés mutatásához közvetlenül a küldési és megerősítési képernyőkön."
-  },
   "showFiatConversionInTestnets": {
     "message": "Konverzió mutatása Testnetsen"
   },
