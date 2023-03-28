@@ -18,10 +18,8 @@ import {
 
 import Box from '../../ui/box';
 import README from './README.mdx';
-import { ValidTag, Text, TextDirection } from '.';
-
-const sizeKnobOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
+import { Text } from './text';
+import { ValidTag, TextDirection } from './text.types';
 
 export default {
   title: 'Components/ComponentLibrary/Text',
@@ -33,96 +31,33 @@ export default {
     },
   },
   argTypes: {
-    variant: {
-      control: { type: 'select' },
-      options: Object.values(TextVariant),
-    },
-    color: {
-      control: { type: 'select' },
-      options: Object.values(TextColor),
-    },
+    // variant: {
+    //   options: Object.values(TextVariant),
+    // },
+    // color: {
+    //   options: Object.values(TextColor),
+    // },
     fontWeight: {
-      control: { type: 'select' },
       options: Object.values(FONT_WEIGHT),
     },
     fontStyle: {
-      control: { type: 'select' },
       options: Object.values(FONT_STYLE),
     },
     textTransform: {
-      control: { type: 'select' },
       options: Object.values(TEXT_TRANSFORM),
     },
-    align: {
-      control: { type: 'select' },
+    textAlign: {
       options: Object.values(TEXT_ALIGN),
     },
     overflowWrap: {
-      control: { type: 'select' },
       options: Object.values(OVERFLOW_WRAP),
     },
     ellipsis: {
       control: { type: 'boolean' },
     },
-    as: {
-      control: { type: 'select' },
-      options: ValidTag,
-    },
-    textDirection: {
-      control: { type: 'select' },
-      options: Object.values(TextDirection),
-    },
-    className: {
-      control: { type: 'text' },
-    },
-    children: {
-      control: { type: 'text' },
-    },
-    display: {
-      options: Object.values(DISPLAY),
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    backgroundColor: {
-      options: Object.values(BackgroundColor),
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    borderColor: {
-      options: Object.values(BorderColor),
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    padding: {
-      options: sizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    margin: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginTop: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
+    // textDirection: {
+    //   options: TextDirection,
+    // },
   },
 } as ComponentMeta<typeof Text>;
 
@@ -186,7 +121,7 @@ export const Variant = (args) => (
   </>
 );
 
-export const ColorStory = (args) => {
+export const ColorStory: ComponentStory<typeof Text> = (args) => {
   // Index of last valid color in TextColor array
   return (
     <>
@@ -207,7 +142,7 @@ export const ColorStory = (args) => {
 };
 ColorStory.storyName = 'Color';
 
-export const FontWeight = (args) => (
+export const FontWeight: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(FONT_WEIGHT).map((weight) => (
       <Text {...args} fontWeight={weight} key={weight}>
@@ -217,7 +152,7 @@ export const FontWeight = (args) => (
   </>
 );
 
-export const FontStyle = (args) => (
+export const FontStyle: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(FONT_STYLE).map((style) => (
       <Text {...args} fontStyle={style} key={style}>
@@ -227,7 +162,7 @@ export const FontStyle = (args) => (
   </>
 );
 
-export const TextTransform = (args) => (
+export const TextTransform: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(TEXT_TRANSFORM).map((transform) => (
       <Text {...args} textTransform={transform} key={transform}>
@@ -237,7 +172,7 @@ export const TextTransform = (args) => (
   </>
 );
 
-export const TextAlign = (args) => (
+export const TextAlign: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(TEXT_ALIGN).map((align) => (
       <Text {...args} textAlign={align} key={align}>
@@ -247,7 +182,7 @@ export const TextAlign = (args) => (
   </>
 );
 
-export const OverflowWrap = (args) => (
+export const OverflowWrap: ComponentStory<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.warningDefault}
     display={DISPLAY.BLOCK}
@@ -262,7 +197,7 @@ export const OverflowWrap = (args) => (
   </Box>
 );
 
-export const Ellipsis = (args) => (
+export const Ellipsis: ComponentStory<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.primaryDefault}
     display={DISPLAY.BLOCK}
@@ -277,16 +212,23 @@ export const Ellipsis = (args) => (
   </Box>
 );
 
-export const As = (args) => (
+export const As: ComponentStory<typeof Text> = (args) => (
   <>
-    {Object.values(ValidTag).map((tag) => {
-      if (tag === ValidTag.Input) {
-        return <Text key={tag} {...args} as={tag} placeholder={tag} />;
+    {Object.keys(ValidTag).map((tag) => {
+      if (ValidTag[tag] === ValidTag.Input) {
+        return (
+          <Text
+            key={ValidTag[tag]}
+            {...args}
+            as={ValidTag[tag]}
+            placeholder={ValidTag[tag]}
+          />
+        );
       }
       return (
-        <div key={tag}>
-          <Text {...args} as={tag}>
-            {tag}
+        <div key={ValidTag[tag]}>
+          <Text {...args} as={ValidTag[tag]}>
+            {ValidTag[tag]}
           </Text>
         </div>
       );
@@ -294,7 +236,7 @@ export const As = (args) => (
   </>
 );
 
-export const TextDirectionStory = (args) => (
+export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
   <Box
     style={{ maxWidth: 300 }}
     display={DISPLAY.FLEX}
