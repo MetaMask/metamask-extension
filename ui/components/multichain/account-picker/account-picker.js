@@ -10,6 +10,7 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
+  BorderRadius,
   DISPLAY,
   FONT_WEIGHT,
   Size,
@@ -24,6 +25,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
       endIconName={ICON_NAMES.ARROW_DOWN}
+      borderRadius={BorderRadius.LG}
       ellipsis
       textProps={{ display: DISPLAY.FLEX, gap: 2 }}
     >
