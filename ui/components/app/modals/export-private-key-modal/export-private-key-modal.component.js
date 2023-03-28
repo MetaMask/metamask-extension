@@ -7,6 +7,7 @@ import Box from '../../../ui/box';
 import {
   BUTTON_SIZES,
   BUTTON_TYPES,
+  BannerAlert,
   Button,
   Text,
 } from '../../../component-library';
@@ -283,24 +284,15 @@ const ExportPrivateKeyModal = ({
               </Text>
             ) : null}
           </Box>
-          <Box
-            borderRadius={BorderRadius.MD}
-            borderWidth={1}
-            backgroundColor={BackgroundColor.errorMuted}
-            borderColor={BorderColor.errorDefault}
+          <BannerAlert
             padding={[1, 3, 0, 3]}
             marginLeft={5}
             marginRight={5}
             marginTop={4}
+            severity="danger"
           >
-            <Text
-              color={TextColor.textDefault}
-              fontWeight={FONT_WEIGHT.MEDIUM}
-              variant={TextVariant.bodyXs}
-            >
-              {t('privateKeyWarning')}
-            </Text>
-          </Box>
+            {t('privateKeyWarning')}
+          </BannerAlert>
           {renderButtons(privateKey, address, hideModal)}
         </>
       )}
