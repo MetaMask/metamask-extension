@@ -57,7 +57,9 @@ export const Text = forwardRef(function Text(
     className,
     `mm-text--${variant}`,
     (strongTagFontWeight || fontWeight) &&
-      `mm-text--font-weight-${String(strongTagFontWeight || fontWeight)}`,
+      `mm-text--font-weight-${
+        String(strongTagFontWeight) || String(fontWeight)
+      }`,
     {
       [`mm-text--font-style-${String(fontStyle)}`]: fontStyle,
       [`mm-text--ellipsis`]: ellipsis,
@@ -73,7 +75,7 @@ export const Text = forwardRef(function Text(
       as={Tag}
       dir={textDirection}
       color={color}
-      ref={ref}
+      ref={ref || null}
       {...props}
     >
       {children}
