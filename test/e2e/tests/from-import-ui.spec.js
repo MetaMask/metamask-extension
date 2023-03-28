@@ -267,13 +267,10 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement({ text: 'Remove', tag: 'button' });
 
         // Wait until selected account switches away from removed account to first account
-        await driver.waitForSelector(
-          {
-            css: '.selected-account__name',
-            text: 'Account 1',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.selected-account__name',
+          text: 'Account 1',
+        });
 
         await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
