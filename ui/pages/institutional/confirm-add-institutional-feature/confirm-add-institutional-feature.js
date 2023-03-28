@@ -7,7 +7,6 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import { Text } from '../../../components/component-library';
 import {
   TextColor,
@@ -25,7 +24,10 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const connectRequests = useSelector(getInstitutionalConnectRequests);
+  const connectRequests = useSelector(
+    (state) => state.metamask.institutionalFeatures?.connectRequests,
+  );
+
   const trackEvent = useContext(MetaMetricsContext);
   const connectRequest = connectRequests[0];
 
@@ -50,7 +52,6 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   };
 
   const handleConnectError = ({ message }) => {
-    console.log('caca', message);
     let error = message.startsWith('401') ? t('projectIdInvalid') : message;
     if (!error) {
       error = 'Connection error';
