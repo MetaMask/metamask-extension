@@ -17,7 +17,7 @@ import {
 import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapResult({
@@ -52,10 +52,7 @@ export default function SnapResult({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <SnapsAuthorshipPill
-          snapId={targetSubjectMetadata.origin}
-          version={targetSubjectMetadata.version}
-        />
+        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {isLoading && (
           <Box
             className="loader-container"
