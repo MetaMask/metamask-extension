@@ -669,12 +669,6 @@
   "settings": {
     "message": "Podešavanja"
   },
-  "showAdvancedGasInline": {
-    "message": "Napredne kontrole gasa"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izaberite ovo kako biste prikazali cenu gasa i kontrole limita direktno na ekranima za slanje i potvrđivanje."
-  },
   "showFiatConversionInTestnets": {
     "message": "Prikažite konverzije na Testnet"
   },
