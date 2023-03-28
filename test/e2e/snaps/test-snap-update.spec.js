@@ -36,7 +36,7 @@ describe('Test Snap update', function () {
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
-        await driver.delay(2000);
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -61,7 +61,7 @@ describe('Test Snap update', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
         await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-0');
         await driver.clickElement({
@@ -92,11 +92,8 @@ describe('Test Snap update', function () {
         await driver.clickElement('#connectUpdateNew');
         await driver.delay(1000);
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension and update
         await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.delay(1000);
-
-        // approve update of snap
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
