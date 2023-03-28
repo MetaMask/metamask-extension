@@ -1,30 +1,48 @@
 import React, { useContext, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { Text, Icon, ICON_NAMES, ICON_SIZES } from '../../../components/component-library';
+import {
+  AlignItems,
+  DISPLAY,
+  FLEX_DIRECTION,
+  FONT_WEIGHT,
+  TypographyVariant,
+  JustifyContent,
+  BorderRadius,
+  BackgroundColor,
+  TextColor,
+  IconColor,
+} from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
+import Box from '../../../components/ui/box';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
+import {
+  getCurrentChainId,
+  getProvider,
+  getMmiConfiguration,
+} from '../../../selectors';
 // @TODO Fix import CustodyAccountList is merged
 import CustodyAccountList from './account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 
-// * const mmiActions = mmiActionsFactory();
-// * mmiActions.connectCustodyAddresses(...)
-
-const CustodyView = (props) => {
-
-  const handleSearchDebounce = useCallback(
-    debounce((currentJwt, apiUrl, input, selectedCustodianType, chainId) => getCustodianAccountsByAddress(currentJwt, apiUrl, input, selectedCustodianType, chainId), 300),
-    []);
-
+const CustodyView = () => {
   const t = useContext(I18nContext);
+  const history = useHistory();
+
+const mmiActions = mmiActionsFactory();
+  const currentChainId = useSelector(getCurrentChainId)
+  const provider = useSelector(getProvider);
+  const custodians = useSelector(getMmiConfiguration);
 
   const [selectedAccounts, setSelectedAccounts] = useState({});
   const [selectedCustodianName, setSelectedCustodianName] = useState('');
@@ -41,28 +59,38 @@ const CustodyView = (props) => {
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
 
-    // declare the async data fetching function
-    const fetchData = async () => {
-      const connectRequest = await props.getCustodianConnectRequest();
-      setChainId(parseInt(this.props.provider.chainId, 16));
+  const handleSearchDebounce = useCallback(
+    debounce((currentJwt, apiUrl, input, selectedCustodianType, chainId) => getCustodianAccountsByAddress(currentJwt, apiUrl, input, selectedCustodianType, chainId), 300),
+    []);
 
-      // check if it's empty object
-      if (Object.keys(connectRequest).length) {
-        setConnectRequest(connectRequest);
-        setCurrentJwt(connectRequest.token || (await props.getCustodianToken()));
-        setSelectedCustodianType(connectRequest.custodianType);
-        setSelectedCustodianName(connectRequest.custodianName);
-        setApiUrl(connectRequest.apiUrl);
-        connect();
-      }
+  const fetchConnectRequest = async () => {
+    const connectRequest = await mmiActions.getCustodianConnectRequest();
+    setChainId(parseInt(currentChainId, 16));
+
+    // check if it's empty object
+    if (Object.keys(connectRequest).length) {
+      setConnectRequest(connectRequest);
+      setCurrentJwt(connectRequest.token || (await mmiActions.getCustodianToken()));
+      setSelectedCustodianType(connectRequest.custodianType);
+      setSelectedCustodianName(connectRequest.custodianName);
+      setApiUrl(connectRequest.apiUrl);
+      connect();
     }
+  }
 
   useEffect(() => {
     // call the function
-    fetchData()
+    fetchConnectRequest()
       // make sure to catch any error
       .catch(console.error);;
   }, [])
+
+  useEffect(() => {
+    if (parseInt(chainId, 16) !== chainId) {
+      setChainId(parseInt(currentChainId, 16));
+      handleNetworkChange();
+    }
+  }, [currentChainId]);
 
   const handleNetworkChange = async () => {
     if (!isNaN(chainId)) {
@@ -74,14 +102,14 @@ const CustodyView = (props) => {
     }
   };
 
-  const connect = () => {
+  const connect = async () => {
     try {
-      // @shane-t I added this because sometimes if you have one JWT already, but no dropdown yet, this.state.currentJwt is null!
+      // If you have one JWT already, but no dropdown yet, currentJwt is null!
       const jwt = currentJwt ? currentJwt : jwtList[0];
       setConnectError('');
       const accounts = await getCustodianAccounts(jwt, apiUrl, selectedCustodianType, true);
       setAccounts(accounts);
-      context.current.trackEvent({
+      trackEvent({
         category: 'MMI',
         event: 'Connect to custodian',
         properties: {
@@ -96,15 +124,12 @@ const CustodyView = (props) => {
   };
 
   const getCustodianAccounts = async () => {
-    const {
-      selectedCustodianType
-    } = state.current;
-    return await props.getCustodianAccounts(token, apiUrl, custody || selectedCustodianType, getNonImportedAccounts);
+    return await mmiActions.getCustodianAccounts(token, apiUrl, custody || selectedCustodianType, getNonImportedAccounts);
   };
 
   const getCustodianAccountsByAddress = async (token, apiUrl, address, custody) => {
     try {
-      const accounts = await props.getCustodianAccountsByAddress(token, apiUrl, address, custody);
+      const accounts = await mmiActions.getCustodianAccountsByAddress(token, apiUrl, address, custody);
       setAccounts(accounts);
     } catch (e) {
       handleConnectError(e);
@@ -124,20 +149,18 @@ const CustodyView = (props) => {
         // Authentication Error
         errorMessage = 'Authentication error. Please ensure you have entered the correct token';
       }
-    } // Connectivity issue, or NXDOMAIN etc
-
+    }
 
     if (/Network Error/u.test(e.message)) {
       errorMessage = 'Network error. Please ensure you have entered the correct API URL';
-    } // Much of the time, there wont be a detail property
-
+    }
 
     if (!errorMessage) {
       errorMessage = e.message;
     }
 
     setConnectError(`Something went wrong connecting your custodian account. Error details: ${errorMessage}`);
-    context.current.trackEvent({
+    trackEvent({
       category: 'MMI',
       event: 'Connect to custodian error',
       properties: {
@@ -147,25 +170,19 @@ const CustodyView = (props) => {
   };
 
   const renderHeader = () => {
-    return <div className="custody-connect">
-        <h4 className="custody-connect__title">
-          {context.current.t('selectAnAccount')}
-        </h4>
+    return <Box className="custody-connect">
+        <Text as="h4" className="custody-connect__title">
+          {t('selectAnAccount')}
+        </Text>
         <p className="custody-connect__msg">
-          {context.current.t('selectAnAccountHelp')}
+          {t('selectAnAccountHelp')}
         </p>
-      </div>;
+      </Box>;
   };
 
   const renderSelectCustody = () => {
-    const {
-      t
-    } = context.current;
-    const {
-      history
-    } = props;
     const custodianButtons = [];
-    props.custodians.forEach(custodian => {
+    custodians.forEach(custodian => {
       if (!custodian.production && process.env.METAMASK_ENVIRONMENT === 'production' || custodian.hidden || connectRequest && Object.keys(connectRequest).length && custodian.name !== selectedCustodianName) {
         return;
       }
@@ -177,7 +194,7 @@ const CustodyView = (props) => {
           </span>
 
           <button data-testid="custody-connect-button" className={classNames('custody-connect__list__list-item__button', 'button btn--rounded button btn-primary')} onClick={async _ => {
-          const jwtList = await props.getCustodianJWTList(custodian.name);
+          const jwtList = await mmiActions.getCustodianJWTList(custodian.name);
           setSelectedCustodianName(custodian.name);
           setSelectedCustodianType(custodian.type);
           setSelectedCustodianImage(custodian.iconUrl);
@@ -185,7 +202,7 @@ const CustodyView = (props) => {
           setApiUrl(custodian.apiUrl);
           setCurrentJwt(jwtList[0] || '');
           setJwtList(jwtList);
-          context.current.trackEvent({
+          trackEvent({
             category: 'MMI',
             event: 'Custodian Selected',
             properties: {
@@ -202,11 +219,11 @@ const CustodyView = (props) => {
           <i className="fas fa-chevron-left custody-connect__header__back-btn__chevron-left" />
           {t('back')}
         </button>
-        <h4 className="custody-connect__header__title">
-          {context.current.t('connectCustodialAccountTitle')}
-        </h4>
+        <Text as="h4" className="custody-connect__header__title">
+          {t('connectCustodialAccountTitle')}
+        </Text>
         <p className="custody-connect__header__msg">
-          {context.current.t('connectCustodialAccountMsg')}
+          {t('connectCustodialAccountMsg')}
         </p>
         <div>
           <ul className="custody-connect__list">{custodianButtons}</ul>
@@ -226,14 +243,6 @@ const CustodyView = (props) => {
   };
 
   const renderConnectButton = () => {
-    const {
-      t
-    } = context.current;
-    const {
-      selectedCustodianName,
-      addNewTokenClicked,
-      currentJwt
-    } = state.current;
     return <div className="jwt-url-form-buttons">
         <Button className="custody-connect__cancel-btn" onClick={() => {
         cancelConnectCustodianToken();
@@ -241,15 +250,12 @@ const CustodyView = (props) => {
           {t('cancel')}
         </Button>
         <Button type="primary" data-testid="jwt-form-connect-button" className="custody-connect__connect-btn" onClick={connect} disabled={!selectedCustodianName || addNewTokenClicked && !currentJwt}>
-          {context.current.t('connect')}
+          {t('connect')}
         </Button>
       </div>;
   };
 
   const selectAllAccounts = () => {
-    const {
-      accounts
-    } = state.current;
     const allAccounts = {};
 
     if (e.currentTarget.checked) {
@@ -275,21 +281,13 @@ const CustodyView = (props) => {
     return <div className="custody-select-all">
         <input type="checkbox" id="selectAllAccounts" name="selectAllAccounts" className="custody-select-all__input" value={{}} onChange={e => selectAllAccounts(e)} checked={Object.keys(selectedAccounts).length === accounts.length} />
         <label htmlFor="selectAllAccounts">
-          {context.current.t('selectAllAccounts')}
+          {t('selectAllAccounts')}
         </label>
       </div>;
   };
 
   const renderSelectList = () => {
-    const {
-      history,
-      connectCustodyAddresses,
-      provider
-    } = props;
     return <CustodyAccountList custody={selectedCustodianName} accounts={accounts} onAccountChange={account => {
-      const {
-        selectedAccounts
-      } = state.current;
 
       if (selectedAccounts[account.address]) {
         delete selectedAccounts[account.address];
@@ -309,17 +307,17 @@ const CustodyView = (props) => {
       setSelectedAccounts(selectedAccounts);
     }} provider={provider} selectedAccounts={selectedAccounts} onAddAccounts={async () => {
       try {
-        await connectCustodyAddresses(selectedCustodianType, selectedCustodianName, selectedAccounts);
-        const selectedCustodian = props.custodians.find(custodian => custodian.name === selectedCustodianName);
+        await mmiActions.connectCustodyAddresses(selectedCustodianType, selectedCustodianName, selectedAccounts);
+        const selectedCustodian = custodians.find(custodian => custodian.name === selectedCustodianName);
         history.push({
           pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
           state: {
             imgSrc: selectedCustodian.iconUrl,
-            title: context.current.t('custodianAccountAddedTitle'),
-            description: context.current.t('custodianAccountAddedDesc')
+            title: t('custodianAccountAddedTitle'),
+            description: t('custodianAccountAddedDesc')
           }
         });
-        context.current.trackEvent({
+        trackEvent({
           category: 'MMI',
           event: 'Custodial accounts connected',
           properties: {
@@ -344,7 +342,7 @@ const CustodyView = (props) => {
         history.push(DEFAULT_ROUTE);
       }
 
-      context.current.trackEvent({
+      trackEvent({
         category: 'MMI',
         event: 'Connect to custodian cancel',
         properties: {
@@ -357,10 +355,6 @@ const CustodyView = (props) => {
   };
 
   const renderCustodyContent = () => {
-    const {
-      t
-    } = context.current;
-
     if (!accounts && !selectedCustodianType) {
       return renderSelectCustody();
     }
@@ -369,21 +363,21 @@ const CustodyView = (props) => {
       return <>
           <div className="custody-connect__header">
             <button className="custody-connect__header__back-btn" onClick={() => cancelConnectCustodianToken()}>
-              <i className="fas fa-chevron-left custody-connect__header__back-btn__chevron-left" />
+            <Icon name={ICON_NAMES.ARROW_LEFT} size={ICON_SIZES.SM} color={IconColor.iconAlternative} />
               {t('back')}
             </button>
-            <h4 className="custody-connect__header__title">
+            <Text as="h4" className="custody-connect__header__title">
               <span className="custody-connect__list__list-item__avatar">
                 {selectedCustodianImage && <img className="custody-connect__list__list-item__img" src={selectedCustodianImage} alt={selectedCustodianDisplayName} />}
                 {selectedCustodianDisplayName}
               </span>
-            </h4>
-            <p className="custody-connect__header__msg">
-              {context.current.t('enterCustodianToken', [selectedCustodianDisplayName])}
-            </p>
+            </Text>
+            <Text className="custody-connect__header__msg">
+              {t('enterCustodianToken', [selectedCustodianDisplayName])}
+            </Text>
           </div>
           <div className="custody-connect__jwt-form">
-            <JwtUrlForm jwtList={jwtList} currentJwt={currentJwt} onJwtChange={jwt => {}} jwtInputText={context.current.t('pasteJWTToken')} apiUrl={apiUrl} urlInputText={context.current.t('custodyApiUrl', [selectedCustodianDisplayName])} onUrlChange={url => {}} />
+            <JwtUrlForm jwtList={jwtList} currentJwt={currentJwt} onJwtChange={jwt => {}} jwtInputText={t('pasteJWTToken')} apiUrl={apiUrl} urlInputText={t('custodyApiUrl', [selectedCustodianDisplayName])} onUrlChange={url => {}} />
             {renderConnectButton()}
           </div>
         </>;
@@ -401,13 +395,6 @@ const CustodyView = (props) => {
   };
 
   const renderAllAccountsConnected = () => {
-    const {
-      history
-    } = props;
-    const {
-      t
-    } = context.current;
-
     if (accounts && accounts.length === 0) {
       return <div data-testid="custody-accounts-empty" className="custody-accounts-empty">
           <p className="custody-accounts-empty__title">
@@ -439,73 +426,4 @@ const CustodyView = (props) => {
       </div>;
 };
 
-CustodyView.propTypes = {
-  connectCustodyAddresses: PropTypes.func,
-  getCustodianAccounts: PropTypes.func,
-  getCustodianAccountsByAddress: PropTypes.func,
-  getCustodianToken: PropTypes.func,
-  getCustodianJWTList: PropTypes.func,
-  provider: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  custodians: PropTypes.array,
-  history: PropTypes.object,
-  getCustodianConnectRequest: PropTypes.func,
-};
-
-const mapStateToProps = (state) => {
-  const {
-    metamask: {
-      provider,
-      mmiConfiguration: { custodians },
-    },
-  } = state;
-  return {
-    provider,
-    custodians,
-  };
-};
-
-/* istanbul ignore next */
-const mapDispatchToProps = (dispatch) => {
-  const MMIActions = getMMIActions();
-  return {
-    connectCustodyAddresses: (custodianType, custodianName, accounts) => {
-      return dispatch(
-        MMIActions.connectCustodyAddresses(
-          custodianType,
-          custodianName,
-          accounts,
-        ),
-      );
-    },
-    getCustodianAccounts: (token, apiUrl, custody, getNonImportedAccounts) => {
-      return dispatch(
-        MMIActions.getCustodianAccounts(
-          token,
-          apiUrl,
-          custody,
-          getNonImportedAccounts,
-        ),
-      );
-    },
-    getCustodianAccountsByAddress: (token, apiUrl, address, custody) => {
-      return dispatch(
-        MMIActions.getCustodianAccountsByAddress(
-          token,
-          apiUrl,
-          address,
-          custody,
-        ),
-      );
-    },
-    getCustodianToken: () => {
-      return dispatch(MMIActions.getCustodianToken());
-    },
-    getCustodianJWTList: (custody) => {
-      return dispatch(MMIActions.getCustodianJWTList(custody));
-    },
-    getCustodianConnectRequest: () =>
-      dispatch(MMIActions.getCustodianConnectRequest()),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CustodyView);
+export default CustodyView;

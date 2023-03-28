@@ -1370,3 +1370,15 @@ export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
 ///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getMmiConfiguration(state) {
+  return state.metamask.mmiConfiguration;
+}
+///: END:ONLY_INCLUDE_IN
