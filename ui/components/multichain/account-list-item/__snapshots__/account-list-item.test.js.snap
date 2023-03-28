@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance 1`] = `
+<div>
+  <button
+    class="box multichain-account-list-item box--padding-4 box--display-flex box--gap-2 box--flex-direction-row box--background-color-transparent"
+  >
+    <div
+      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+    >
+      <div
+        class="mm-avatar-account__jazzicon"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+        >
+          <svg
+            height="24"
+            width="24"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#18CDF2"
+              height="24"
+              transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+              width="24"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#035E56"
+              height="24"
+              transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+              width="24"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F26602"
+              height="24"
+              transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+              width="24"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div
+      class="box multichain-account-list-item__content box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box box--display-flex box--flex-direction-column"
+      >
+        <div
+          class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between"
+        >
+          <div
+            class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          >
+            Test Account
+          </div>
+          <div
+            class="box box--display-flex box--flex-direction-row box--align-items-center"
+          >
+            <div
+              class="box mm-text mm-text--body-md mm-text--text-align-end box--flex-direction-row box--color-text-default"
+            >
+              <div
+                class="currency-display-component"
+                title="0.006 ETH"
+              >
+                <span
+                  class="currency-display-component__prefix"
+                />
+                <span
+                  class="currency-display-component__text"
+                >
+                  0.006
+                </span>
+                <span
+                  class="currency-display-component__suffix"
+                >
+                  ETH
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
+      >
+        <p
+          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+        >
+          0x0dc...e7bc
+        </p>
+        <div
+          class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
+        >
+          <div
+            class="currency-display-component"
+            title="0.006 ETH"
+          >
+            <span
+              class="currency-display-component__prefix"
+            />
+            <span
+              class="currency-display-component__text"
+            >
+              0.006
+            </span>
+            <span
+              class="currency-display-component__suffix"
+            >
+              ETH
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        aria-label="Test Account Options"
+        class="box mm-button-icon mm-button-icon--size-sm box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+        data-testid="account-list-item-menu-button"
+        tabindex="0"
+      >
+        <span
+          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/more-vertical.svg');"
+        />
+      </div>
+    </div>
+  </button>
+</div>
+`;

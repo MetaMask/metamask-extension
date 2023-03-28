@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.26.2]
+### Changed
+- Sign in with Ethereum: re-enable warning UI for mismatched domains / disable domain binding ([#18200](https://github.com/MetaMask/metamask-extension/pull/18200))
+
 ## [10.26.1]
 ### Fixed
 - Fix main build by modifying desktop build steps ([#18112](https://github.com/MetaMask/metamask-extension/pull/18112))
@@ -3532,7 +3536,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.26.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.26.2...HEAD
+[10.26.2]: https://github.com/MetaMask/metamask-extension/compare/v10.26.1...v10.26.2
 [10.26.1]: https://github.com/MetaMask/metamask-extension/compare/v10.26.0...v10.26.1
 [10.26.0]: https://github.com/MetaMask/metamask-extension/compare/v10.25.0...v10.26.0
 [10.25.0]: https://github.com/MetaMask/metamask-extension/compare/v10.24.2...v10.25.0

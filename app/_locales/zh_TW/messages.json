@@ -313,6 +313,9 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
+  "connectingToLineaTestnet": {
+    "message": "連線到 Linea Goerli 測試網路"
+  },
   "connectingToMainnet": {
     "message": "連線到 Ethereum 主網路"
   },
@@ -812,6 +815,9 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli 測試網路"
+  },
   "links": {
     "message": "連結"
   },
@@ -1238,12 +1244,6 @@
   },
   "settings": {
     "message": "設定"
-  },
-  "showAdvancedGasInline": {
-    "message": "顯示進階 gas 控制選項"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "選擇此項會在傳送或確認畫面顯示可微調 gas 價格以及 gas 上限的功能"
   },
   "showFiatConversionInTestnets": {
     "message": "在測試網上顯示匯率"
