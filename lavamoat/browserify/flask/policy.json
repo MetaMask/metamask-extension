@@ -1411,14 +1411,22 @@
       }
     },
     "@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/permission-controller>@metamask/base-controller": true,
         "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/permission-controller>@metamask/controller-utils": {
@@ -1428,12 +1436,25 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controller-utils>isomorphic-fetch": true,
+        "@metamask/permission-controller>@metamask/controller-utils>@metamask/utils": true,
+        "@spruceid/siwe-parser": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1560,8 +1581,8 @@
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/rpc-methods>@metamask/permission-controller": true,
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snaps-ui": true,
         "@metamask/snaps-utils": true,
@@ -1582,53 +1603,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
-        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/rpc-methods>nanoid": true,
-        "deep-freeze-strict": true,
-        "eth-rpc-errors": true,
-        "immer": true,
-        "json-rpc-engine": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils>@metamask/utils": true,
-        "@spruceid/siwe-parser": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1688,11 +1662,11 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
-        "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@metamask/subject-metadata-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
@@ -1712,48 +1686,6 @@
     "@metamask/snaps-controllers>@metamask/base-controller": {
       "packages": {
         "immer": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils>@metamask/utils": true,
-        "@spruceid/siwe-parser": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/snaps-controllers>@metamask/base-controller": true,
-        "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils": true,
-        "@metamask/snaps-controllers>nanoid": true,
-        "deep-freeze-strict": true,
-        "eth-rpc-errors": true,
-        "immer": true,
-        "json-rpc-engine": true
       }
     },
     "@metamask/snaps-controllers>@metamask/subject-metadata-controller": {

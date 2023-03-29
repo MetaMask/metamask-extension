@@ -3595,7 +3595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^1.0.0, @metamask/approval-controller@npm:^1.0.1, @metamask/approval-controller@npm:^1.1.0":
+"@metamask/approval-controller@npm:^1.0.0, @metamask/approval-controller@npm:^1.0.1":
   version: 1.1.0
   resolution: "@metamask/approval-controller@npm:1.1.0"
   dependencies:
@@ -4167,26 +4167,6 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^1.0.1
   checksum: 06c062d232817f6816fb6038b7139f32324ceb3f6c7398effabd5fe6eed8e643b414202e20239302ce01aaa68503a0a49f0692512a433040e89907306260a3db
-  languageName: node
-  linkType: hard
-
-"@metamask/permission-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/permission-controller@npm:2.0.0"
-  dependencies:
-    "@metamask/approval-controller": ^1.1.0
-    "@metamask/base-controller": ^1.1.2
-    "@metamask/controller-utils": ^2.0.0
-    "@metamask/types": ^1.1.0
-    "@types/deep-freeze-strict": ^1.1.0
-    deep-freeze-strict: ^1.1.1
-    eth-rpc-errors: ^4.0.0
-    immer: ^9.0.6
-    json-rpc-engine: ^6.1.0
-    nanoid: ^3.1.31
-  peerDependencies:
-    "@metamask/approval-controller": ^1.1.0
-  checksum: 152be8429ceebf7dfbd415ff12746ee9c0216fa4dfb90f825532fd216f6b2aa66061748fb0685ec23ad6bde21212c6ccd32a4219b803913d45b70f8ded45ac2e
   languageName: node
   linkType: hard
 
@@ -24310,7 +24290,7 @@ __metadata:
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^5.0.0
-    "@metamask/permission-controller": ^2.0.0
+    "@metamask/permission-controller": ^3.1.0
     "@metamask/phishing-controller": ^2.0.0
     "@metamask/phishing-warning": ^2.0.1
     "@metamask/post-message-stream": ^6.0.0

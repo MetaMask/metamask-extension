@@ -247,7 +247,7 @@
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/notification-controller": "^1.0.0",
     "@metamask/obs-store": "^5.0.0",
-    "@metamask/permission-controller": "^2.0.0",
+    "@metamask/permission-controller": "^3.1.0",
     "@metamask/phishing-controller": "^2.0.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^10.2.1",
