@@ -58,7 +58,7 @@ const Address = ({
       </div>
 
       <div
-        className="address__name"
+        className="tx-insight-component-address__name"
         onClick={() => setShowNicknamePopovers(true)}
       >
         {recipientToRender}

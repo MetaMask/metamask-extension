@@ -2,6 +2,7 @@
  * @file The entry point for the web extension singleton process.
  */
 
+import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
@@ -51,7 +52,18 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
+
 /* eslint-enable import/first */
+
+/* eslint-disable import/order */
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import {
+  CONNECTION_TYPE_EXTERNAL,
+  CONNECTION_TYPE_INTERNAL,
+} from '@metamask/desktop/dist/constants';
+import DesktopManager from '@metamask/desktop/dist/desktop-manager';
+///: END:ONLY_INCLUDE_IN
+/* eslint-enable import/order */
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
@@ -67,7 +79,6 @@ const metamaskBlockedPorts = ['trezor-connect'];
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
-
 const notificationManager = new NotificationManager();
 global.METAMASK_NOTIFIER = notificationManager;
 
@@ -95,6 +106,16 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const OVERRIDE_ORIGIN = {
+  EXTENSION: 'EXTENSION',
+  DESKTOP: 'DESKTOP_APP',
+};
+///: END:ONLY_INCLUDE_IN
+
+// Event emitter for state persistence
+export const statePersistenceEvents = new EventEmitter();
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -177,8 +198,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternal(...args);
 });
 
-initialize().catch(log.error);
-
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
  */
@@ -192,7 +211,7 @@ initialize().catch(log.error);
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
- * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
+ * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
  * @property {object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
@@ -243,6 +262,11 @@ async function initialize() {
   try {
     const initState = await loadStateFromPersistence();
     const initLangCode = await getFirstPreferredLangCode();
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    await DesktopManager.init(platform.getVersion());
+    ///: END:ONLY_INCLUDE_IN
+
     setupController(initState, initLangCode);
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -331,7 +355,7 @@ async function loadPhishingWarningPage() {
  *
  * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
  */
-async function loadStateFromPersistence() {
+export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({ migrations });
   migrator.on('error', console.warn);
@@ -384,8 +408,9 @@ async function loadStateFromPersistence() {
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  */
-function setupController(initState, initLangCode) {
+export function setupController(initState, initLangCode, overrides) {
   //
   // MetaMask Controller
   //
@@ -410,12 +435,12 @@ function setupController(initState, initLangCode) {
       return openMetamaskTabsIDs;
     },
     localStore,
+    overrides,
   });
 
   setupEnsIpfsResolver({
-    getCurrentChainId: controller.networkController.getCurrentChainId.bind(
-      controller.networkController,
-    ),
+    getCurrentChainId: () =>
+      controller.networkController.store.getState().provider.chainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -426,7 +451,10 @@ function setupController(initState, initLangCode) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    createStreamSink((state) => localStore.set(state)),
+    createStreamSink(async (state) => {
+      await localStore.set(state);
+      statePersistenceEvents.emit('state-persisted', state);
+    }),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
@@ -475,6 +503,26 @@ function setupController(initState, initLangCode) {
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    if (
+      DesktopManager.isDesktopEnabled() &&
+      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
+    ) {
+      DesktopManager.createStream(remotePort, CONNECTION_TYPE_INTERNAL).then(
+        () => {
+          // When in Desktop Mode the responsibility to send CONNECTION_READY is on the desktop app side
+          if (isManifestV3) {
+            // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
+            // This ensures that UI is initialised only after background is ready
+            // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
+            remotePort.postMessage({ name: 'CONNECTION_READY' });
+          }
+        },
+      );
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -495,7 +543,8 @@ function setupController(initState, initLangCode) {
     }
 
     if (isMetaMaskInternalProcess) {
-      const portStream = new PortStream(remotePort);
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -553,7 +602,8 @@ function setupController(initState, initLangCode) {
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream = new PortStream(remotePort);
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -575,12 +625,27 @@ function setupController(initState, initLangCode) {
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
-    const portStream = new PortStream(remotePort);
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    if (
+      DesktopManager.isDesktopEnabled() &&
+      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
+    ) {
+      DesktopManager.createStream(remotePort, CONNECTION_TYPE_EXTERNAL);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
   };
+
+  if (overrides?.registerConnectListeners) {
+    overrides.registerConnectListeners(connectRemote, connectExternal);
+  }
 
   //
   // User Interface setup
@@ -588,14 +653,6 @@ function setupController(initState, initLangCode) {
 
   updateBadge();
   controller.txController.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.messageManager.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.personalMessageManager.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -607,7 +664,7 @@ function setupController(initState, initLangCode) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.typedMessageManager.on(
+  controller.signController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -643,23 +700,17 @@ function setupController(initState, initLangCode) {
 
   function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
-    const { unapprovedMsgCount } = controller.messageManager;
-    const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
-    const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
       unapprovedTxCount +
-      unapprovedMsgCount +
-      unapprovedPersonalMsgCount +
       unapprovedDecryptMsgCount +
       unapprovedEncryptionPublicKeyMsgCount +
-      unapprovedTypedMessagesCount +
       pendingApprovalCount +
       waitingForUnlockCount
     );
@@ -682,30 +733,7 @@ function setupController(initState, initLangCode) {
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.messageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.messageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.personalMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.personalMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.typedMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.typedMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
+    controller.signController.rejectUnapproved(REJECT_NOTFICIATION_CLOSE_SIG);
     controller.decryptMessageManager.messages
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>
@@ -748,6 +776,14 @@ function setupController(initState, initLangCode) {
 
     updateBadge();
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
+    controller.store.subscribe((state) => {
+      DesktopManager.setState(state);
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 }
 
 //
@@ -775,7 +811,12 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     try {
-      await notificationManager.showPopup();
+      const currentPopupId = controller.appStateController.getCurrentPopupId();
+      await notificationManager.showPopup(
+        (newPopupId) =>
+          controller.appStateController.setCurrentPopupId(newPopupId),
+        currentPopupId,
+      );
     } finally {
       uiIsTriggering = false;
     }
@@ -838,4 +879,12 @@ function setupSentryGetStateGlobal(store) {
       version: platform.getVersion(),
     };
   };
+}
+
+function initBackground() {
+  initialize().catch(log.error);
+}
+
+if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
+  initBackground();
 }

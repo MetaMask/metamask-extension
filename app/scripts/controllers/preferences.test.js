@@ -19,7 +19,15 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
-    network = new NetworkController({ infuraProjectId: 'foo' });
+    network = new NetworkController({
+      infuraProjectId: 'foo',
+      state: {
+        provider: {
+          type: 'mainnet',
+          chainId: currentChainId,
+        },
+      },
+    });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -36,10 +44,6 @@ describe('preferences controller', function () {
     sandbox
       .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
-    sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
-    sandbox
-      .stub(network, 'getProviderConfig')
-      .callsFake(() => ({ type: 'mainnet' }));
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
@@ -174,66 +178,6 @@ describe('preferences controller', function () {
       assert.equal(
         preferencesController.store.getState().forgottenPassword,
         true,
-      );
-    });
-  });
-
-  describe('adding and removing from frequentRpcListDetail', function () {
-    it('should add custom RPC url to state', function () {
-      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-    });
-
-    it('should throw if chainId is invalid', function () {
-      assert.throws(() => {
-        preferencesController.upsertToFrequentRpcList('rpc_url', '1');
-      }, 'should throw on invalid chainId');
-    });
-
-    it('should remove custom RPC url from state', function () {
-      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-      preferencesController.removeFromFrequentRpcList('other_rpc_url');
-      preferencesController.removeFromFrequentRpcList('http://localhost:8545');
-      preferencesController.removeFromFrequentRpcList('rpc_url');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [],
       );
     });
   });

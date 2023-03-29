@@ -35,8 +35,8 @@ describe('Token Details', function () {
         await driver.fill('#custom-symbol', tokenSymbol);
         await driver.clickElement({ text: 'Add custom token', tag: 'button' });
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.clickElement('[title="Asset options"]');
-        await driver.clickElement({ text: 'Token details', tag: 'span' });
+        await driver.clickElement('[aria-label="Asset options"]');
+        await driver.clickElement({ text: 'Token details', tag: 'div' });
 
         const tokenAddressFound = {
           text: tokenAddress,

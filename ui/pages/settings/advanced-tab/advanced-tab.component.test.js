@@ -48,10 +48,27 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[3];
+    const testNetworkToggle = queryAllByRole('checkbox')[2];
 
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should not render ledger live control with desktop pairing enabled', () => {
+    const mockStoreWithDesktopEnabled = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        desktopEnabled: true,
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AdvancedTab />,
+      mockStoreWithDesktopEnabled,
+    );
+
+    expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
   });
 });

@@ -63,11 +63,17 @@ describe('Network Dropdown', () => {
         preferences: {
           showTestNetworks: true,
         },
-        frequentRpcListDetail: [
-          { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
-          { rpcUrl: 'http://localhost:7546' },
-          { rpcUrl: LOCALHOST_RPC_URL, nickname: 'localhost' },
-        ],
+        networkConfigurations: {
+          networkConfigurationId1: {
+            chainId: '0x1a',
+            rpcUrl: 'http://localhost:7545',
+          },
+          networkConfigurationId2: { rpcUrl: 'http://localhost:7546' },
+          networkConfigurationId3: {
+            rpcUrl: LOCALHOST_RPC_URL,
+            nickname: 'localhost',
+          },
+        },
       },
       appState: {
         networkDropdownOpen: true,
@@ -135,10 +141,13 @@ describe('Network Dropdown', () => {
         preferences: {
           showTestNetworks: false,
         },
-        frequentRpcListDetail: [
-          { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
-          { rpcUrl: 'http://localhost:7546' },
-        ],
+        networkConfigurations: {
+          networkConfigurationId1: {
+            chainId: '0x1a',
+            rpcUrl: 'http://localhost:7545',
+          },
+          networkConfigurationId2: { rpcUrl: 'http://localhost:7546' },
+        },
       },
       appState: {
         networkDropdownOpen: true,

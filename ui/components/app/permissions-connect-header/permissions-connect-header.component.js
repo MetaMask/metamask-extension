@@ -8,7 +8,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
+import SnapAuthorship from '../flask/snap-authorship';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
@@ -64,6 +64,7 @@ export default class PermissionsConnectHeader extends Component {
         <SiteOrigin
           chip
           siteOrigin={siteOrigin}
+          title={siteOrigin}
           iconSrc={iconUrl}
           name={iconName}
           leftIcon={leftIcon}
@@ -81,7 +82,6 @@ export default class PermissionsConnectHeader extends Component {
       headerText,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       siteOrigin,
-      snapVersion,
       isSnapInstallOrUpdate,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -96,9 +96,7 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          isSnapInstallOrUpdate && (
-            <SnapsAuthorshipPill snapId={siteOrigin} version={snapVersion} />
-          )
+          isSnapInstallOrUpdate && <SnapAuthorship snapId={siteOrigin} />
           ///: END:ONLY_INCLUDE_IN
         }
         <div className="permissions-connect-header__subtitle">{headerText}</div>

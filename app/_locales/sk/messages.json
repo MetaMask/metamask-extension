@@ -72,12 +72,6 @@
   "approved": {
     "message": "Schváleno"
   },
-  "attemptToCancel": {
-    "message": "Pokus o zrušenie?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Odoslanie tohto pokusu nezaručuje, že vaša pôvodná transakcia bude zrušená. Ak je pokus o zrušenie úspešný, naúčtujeme vám vyššie uvedený transakčný poplatok."
-  },
   "attemptingConnect": {
     "message": "Pokouším se připojit k blockchainu."
   },
@@ -124,20 +118,11 @@
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },
-  "buyWithWyre": {
-    "message": "Kúpte $1 s Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu $1 priamo na váš účet MetaMask."
-  },
   "bytes": {
     "message": "Bajty"
   },
   "cancel": {
     "message": "Zrušit"
-  },
-  "cancellationGasFee": {
-    "message": "Storno poplatok za GAS"
   },
   "cancelled": {
     "message": "Zrušený"
@@ -177,9 +162,6 @@
   },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
-  },
-  "continueToWyre": {
-    "message": "Pokračovať na Wyre"
   },
   "contractDeployment": {
     "message": "Nasazení kontraktu"
@@ -332,13 +314,6 @@
   },
   "general": {
     "message": "Všeobecne"
-  },
-  "getEther": {
-    "message": "Získejte Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Získejte Ether z faucetu za $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Testovacia sieť Goerli"
@@ -617,35 +592,21 @@
   "reset": {
     "message": "Resetovať"
   },
-  "resetAccount": {
-    "message": "Resetovat účet"
-  },
-  "resetAccountDescription": {
-    "message": "Pri obnovení účtu sa vymaže história transakcií."
-  },
   "restore": {
     "message": "Obnoviť"
   },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ak niekedy zmeníte prehliadač alebo presuniete počítače, budete potrebovať túto seed frázu na prístup k svojim účtom. Uložte ich niekde v bezpečí a v tajnosti."
-  },
   "revealSeedWordsWarning": {
-    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Túto frázu s nikým NEZDIEĽAJTE!"
+    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nová RPC URL"
   },
   "save": {
     "message": "Uložit"
-  },
-  "saveAsCsvFile": {
-    "message": "Uložiť ako súbor CSV"
   },
   "scanInstructions": {
     "message": "Umiestnite QR kód pred kameru"
@@ -688,12 +649,6 @@
   },
   "settings": {
     "message": "Nastavení"
-  },
-  "showAdvancedGasInline": {
-    "message": "Pokročilé ovládacie prvky GAS"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vyberte túto možnosť vtedy, keď chcete priamo na obrazovke odosielania a potvrdenia zobraziť ceny za GAS a ovládacie prvky limitov."
   },
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
@@ -778,9 +733,6 @@
   },
   "terms": {
     "message": "Podmínky použití"
-  },
-  "testFaucet": {
-    "message": "Testovací faucet"
   },
   "tips": {
     "message": "Príspevky"
@@ -897,9 +849,6 @@
   "userName": {
     "message": "Meno používateľa"
   },
-  "viewAccount": {
-    "message": "Zobrazit účet"
-  },
   "viewContact": {
     "message": "Zobraziť kontakt"
   },
@@ -908,9 +857,6 @@
   },
   "welcomeBack": {
     "message": "Vitajte späť!"
-  },
-  "yesLetsTry": {
-    "message": "Áno, skúsme to"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."

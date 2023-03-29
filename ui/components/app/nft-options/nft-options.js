@@ -1,36 +1,39 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ICON_NAMES } from '../../component-library';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
-const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
+const NftOptions = ({ onRemove, onViewOnOpensea }) => {
   const t = useContext(I18nContext);
-  const [collectibleOptionsButtonElement, setCollectibleOptionsButtonElement] =
-    useState(null);
-  const [collectibleOptionsOpen, setCollectibleOptionsOpen] = useState(false);
+  const [nftOptionsOpen, setNftOptionsOpen] = useState(false);
+  const ref = useRef(false);
 
   return (
-    <>
-      <button
-        className="fas fa-ellipsis-v collectible-options__button"
-        data-testid="collectible-options__button"
-        onClick={() => setCollectibleOptionsOpen(true)}
-        ref={setCollectibleOptionsButtonElement}
+    <div ref={ref}>
+      <ButtonIcon
+        iconName={ICON_NAMES.MORE_VERTICAL}
+        className="nft-options__button"
+        data-testid="nft-options__button"
+        onClick={() => setNftOptionsOpen(true)}
+        color={Color.textDefault}
+        ariaLabel={t('nftOptions')}
       />
-      {collectibleOptionsOpen ? (
+
+      {nftOptionsOpen ? (
         <Menu
-          anchorElement={collectibleOptionsButtonElement}
-          data-testid="close-collectible-options-menu"
-          onHide={() => setCollectibleOptionsOpen(false)}
+          data-testid="close-nft-options-menu"
+          anchorElement={ref.current}
+          onHide={() => setNftOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
             <MenuItem
               iconName={ICON_NAMES.EXPORT}
-              data-testid="collectible-options__view-on-opensea"
+              data-testid="nft-options__view-on-opensea"
               onClick={() => {
-                setCollectibleOptionsOpen(false);
+                setNftOptionsOpen(false);
                 onViewOnOpensea();
               }}
             >
@@ -39,9 +42,9 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
           ) : null}
           <MenuItem
             iconName={ICON_NAMES.TRASH}
-            data-testid="collectible-item-remove"
+            data-testid="nft-item-remove"
             onClick={() => {
-              setCollectibleOptionsOpen(false);
+              setNftOptionsOpen(false);
               onRemove();
             }}
           >
@@ -49,13 +52,13 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
           </MenuItem>
         </Menu>
       ) : null}
-    </>
+    </div>
   );
 };
 
-CollectibleOptions.propTypes = {
+NftOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onViewOnOpensea: PropTypes.func,
 };
 
-export default CollectibleOptions;
+export default NftOptions;

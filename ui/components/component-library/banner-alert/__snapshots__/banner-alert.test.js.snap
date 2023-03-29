@@ -6,18 +6,18 @@ exports[`BannerAlert should render BannerAlert element correctly 1`] = `
     class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
     data-testid="bannerAlert"
   >
-    <div
-      class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-primary-default"
+    <span
+      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-primary-default"
       style="mask-image: url('./images/icons/info.svg');"
     />
     <div>
       <h5
-        class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-banner-base__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
       >
         BannerAlert test
       </h5>
       <p
-        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         should render BannerAlert element correctly
       </p>

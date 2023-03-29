@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Identicon from '../../ui/identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const SetApproveForAllWarning = ({
   collectionName,
@@ -60,7 +61,10 @@ const SetApproveForAllWarning = ({
         padding={4}
         className="set-approval-for-all-warning__content__header"
       >
-        <i className="fa fa-exclamation-triangle set-approval-for-all-warning__content__header__warning-icon" />
+        <Icon
+          name={ICON_NAMES.DANGER}
+          className="set-approval-for-all-warning__content__header__warning-icon"
+        />
         <Typography
           variant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}

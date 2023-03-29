@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import Typography from '../../../ui/typography/typography';
+import { Text } from '../../../component-library';
 import {
   AlignItems,
   FLEX_DIRECTION,
   JustifyContent,
   TEXT_ALIGN,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
@@ -54,12 +54,13 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
           {data && Object.keys(data).length > 0 ? (
             <SnapUIRenderer snapId={selectedSnap.id} data={data} />
           ) : (
-            <Typography
+            <Text
               color={TextColor.textAlternative}
-              variant={TypographyVariant.H6}
+              variant={TextVariant.bodySm}
+              as="h6"
             >
               {t('snapsNoInsight')}
-            </Typography>
+            </Text>
           )}
         </Box>
       )}
@@ -87,13 +88,14 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
       {loading && (
         <>
           <Preloader size={40} />
-          <Typography
+          <Text
             marginTop={3}
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H6}
+            variant={TextVariant.bodySm}
+            as="h6"
           >
             {t('snapsInsightLoading')}
-          </Typography>
+          </Text>
         </>
       )}
     </Box>

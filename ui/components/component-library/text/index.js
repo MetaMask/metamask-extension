@@ -1,2 +1,2 @@
 export { Text } from './text';
-export { TEXT_VARIANTS, TEXT_DIRECTIONS } from './text.constants';
+export { TEXT_DIRECTIONS, INVISIBLE_CHARACTER } from './text.constants';

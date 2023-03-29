@@ -147,6 +147,15 @@ function renderBackgroundColor(color) {
     case Color.infoInverse:
       bgColor = BackgroundColor.infoDefault;
       break;
+    case Color.goerliInverse:
+      bgColor = BackgroundColor.goerli;
+      break;
+    case Color.sepoliaInverse:
+      bgColor = BackgroundColor.sepolia;
+      break;
+    case Color.lineaTestnetInverse:
+      bgColor = BackgroundColor.lineaTestnet;
+      break;
     default:
       bgColor = null;
       break;

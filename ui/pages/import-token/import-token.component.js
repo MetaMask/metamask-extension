@@ -8,7 +8,7 @@ import {
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
@@ -133,7 +133,7 @@ class ImportToken extends Component {
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
-    collectibleAddressError: null,
+    nftAddressError: null,
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
@@ -198,7 +198,7 @@ class ImportToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     return (
@@ -206,7 +206,7 @@ class ImportToken extends Component {
       customAddressError ||
       customSymbolError ||
       customDecimalsError ||
-      collectibleAddressError
+      nftAddressError
     );
   }
 
@@ -265,7 +265,7 @@ class ImportToken extends Component {
     this.setState({
       customAddress,
       customAddressError: null,
-      collectibleAddressError: null,
+      nftAddressError: null,
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
@@ -309,21 +309,20 @@ class ImportToken extends Component {
         });
 
         break;
-      case process.env.NFTS_V1 &&
-        (standard === 'ERC1155' || standard === 'ERC721'):
+      case standard === 'ERC1155' || standard === 'ERC721':
         this.setState({
-          collectibleAddressError: this.context.t('collectibleAddressError', [
+          nftAddressError: this.context.t('nftAddressError', [
             <a
-              className="import-token__collectible-address-error-link"
+              className="import-token__nft-address-error-link"
               onClick={() =>
                 this.props.history.push({
-                  pathname: ADD_COLLECTIBLE_ROUTE,
+                  pathname: ADD_NFT_ROUTE,
                   state: {
                     addressEnteredOnImportTokensPage: this.state.customAddress,
                   },
                 })
               }
-              key="collectibleAddressError"
+              key="nftAddressError"
             >
               {this.context.t('importNFTPage')}
             </a>,
@@ -406,7 +405,7 @@ class ImportToken extends Component {
       symbolAutoFilled,
       decimalAutoFilled,
       mainnetTokenWarning,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     const {
@@ -493,9 +492,7 @@ class ImportToken extends Component {
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
-          error={
-            customAddressError || mainnetTokenWarning || collectibleAddressError
-          }
+          error={customAddressError || mainnetTokenWarning || nftAddressError}
           fullWidth
           autoFocus
           margin="normal"

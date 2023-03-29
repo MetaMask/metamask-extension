@@ -5,8 +5,9 @@ exports[`ErrorMessage Component should render a message from props.errorMessage 
   <div
     class="error-message"
   >
-    <i
-      class="fa fa-exclamation-circle error-message__icon"
+    <span
+      class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+      style="mask-image: url('./images/icons/warning.svg');"
     />
     <div
       class="error-message__text"
@@ -22,8 +23,9 @@ exports[`ErrorMessage Component should render a message translated from props.er
   <div
     class="error-message"
   >
-    <i
-      class="fa fa-exclamation-circle error-message__icon"
+    <span
+      class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+      style="mask-image: url('./images/icons/warning.svg');"
     />
     <div
       class="error-message__text"

@@ -30,8 +30,10 @@ Possible sizes include:
 
 Defaults to `md`
 
+The fallback display of the `AvatarToken` is a circle with the initial letter of the network name. The size of the initial letter is calculated based on the size of the `AvatarToken` component.
+
 <Canvas>
-  <Story id="components-componentlibrary-avatartoken--size" />
+  <Story id="components-componentlibrary-avatartoken--size-story" />
 </Canvas>
 
 ```jsx
@@ -47,6 +49,8 @@ import { AvatarToken } from '../../component-library';
 ### Name
 
 Use the `name` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `src` prop.
+
+Use `Text` component props to change the `variant`, `font-weight`, `font-family`, etc.
 
 <Canvas>
   <Story id="components-componentlibrary-avatartoken--name" />

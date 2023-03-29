@@ -6,7 +6,7 @@ import { Label } from './label';
 
 # Label
 
-The `Label` is a component used to label form inputs
+`Label` is used to describe the purpose of a form field
 
 <Canvas>
   <Story id="components-componentlibrary-label--default-story" />
@@ -62,36 +62,13 @@ Use the `htmlFor` prop to allow the `Label` to focus on an input with the same i
 </Canvas>
 
 ```jsx
-import { Label, TextFieldBase } from '../../component-library';
+import { Label, TextField } from '../../component-library';
 
 <Label htmlFor="add-network">Add network</Label>
 <TextField id="add-network" placeholder="Enter network name" />
 ```
 
-### Required
+### Internal Resources
 
-Use the `required` prop to add a required red asterisk next to the `children` of the `Label`. Note the required asterisk will always render after the `children`.
-
-<Canvas>
-  <Story id="components-componentlibrary-label--required" />
-</Canvas>
-
-```jsx
-import { Label } from '../../component-library';
-
-<Label required>Label</Label>;
-```
-
-### Disabled
-
-Use the `disabled` prop to set the `Label` in disabled state
-
-<Canvas>
-  <Story id="components-componentlibrary-label--disabled" />
-</Canvas>
-
-```jsx
-import { Label } from '../../component-library';
-
-<Label disabled>Label</Label>;
-```
+- [Figma component](https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/branch/7uyrueQIFQBLqo9uzkxclr/DS-Components?node-id=13879%3A38076&t=dBHjnJTMSVE8N2UP-1)
+- [Insight report](https://www.figma.com/file/aGW8sk6X6Jf9ac0MRMD4kX/TextField-Audit?node-id=282%3A22&t=ZgCGFwGOBmOwQR5c-1)

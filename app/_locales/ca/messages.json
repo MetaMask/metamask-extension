@@ -75,12 +75,6 @@
   "asset": {
     "message": "Actius"
   },
-  "attemptToCancel": {
-    "message": "Estàs provant de cancel·lar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar aquesta temptativa no garanteix que la teva transacció original sigui cancel·lada. Si la temptativa de cancel·lació té èxit, se't carregarà la tarifa de transacció de més amunt."
-  },
   "attemptingConnect": {
     "message": "Intentant conectar a blockchain."
   },
@@ -130,17 +124,8 @@
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
   },
-  "buyWithWyre": {
-    "message": "Compra $1 amb Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar $1 directe al teu compte MetaMask."
-  },
   "cancel": {
     "message": "Cancel·la"
-  },
-  "cancellationGasFee": {
-    "message": "Preu de cancel·lació del gas"
   },
   "cancelled": {
     "message": "Cancel·lat"
@@ -180,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Continua a Wyre"
   },
   "contractDeployment": {
     "message": "Desplegament de Contracte"
@@ -328,13 +310,6 @@
   },
   "gasUsed": {
     "message": "Gas utilitzat"
-  },
-  "getEther": {
-    "message": "Aconsegueix Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Aconsegueix Ether d'una aixeta per $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Xarxa de test Goerli"
@@ -623,35 +598,21 @@
   "reset": {
     "message": "Restableix"
   },
-  "resetAccount": {
-    "message": "Reiniciar Compte"
-  },
-  "resetAccountDescription": {
-    "message": "Reiniciar el teu compte esborrarà el teu historial de transaccions."
-  },
   "restore": {
     "message": "Restaura"
   },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si mai canvies el navegador o l'ordinador, necessitaràs aquesta frase de recuperació per accedir als teus comptes. Guarda-la a un lloc segur i secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NO comparteixis aquesta frase amb ningú!"
+    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nova URL de RPC"
   },
   "save": {
     "message": "Desa"
-  },
-  "saveAsCsvFile": {
-    "message": "Guarda com a Arxiu CSV"
   },
   "scanInstructions": {
     "message": "Col·loca el codi QR davant la teva càmera"
@@ -694,12 +655,6 @@
   },
   "settings": {
     "message": "Configuració"
-  },
-  "showAdvancedGasInline": {
-    "message": "Controls de gas avançats"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selecciona això per a mostrar el preu del gas i els controls de límit directament a les pantalles d'enviament i confirmació."
   },
   "showFiatConversionInTestnets": {
     "message": "Mostra Conversió a Testnets"
@@ -900,9 +855,6 @@
   "userName": {
     "message": "Nom d'usuari"
   },
-  "viewAccount": {
-    "message": "Mostra el compte"
-  },
   "viewContact": {
     "message": "Veure Contacte"
   },
@@ -911,9 +863,6 @@
   },
   "welcomeBack": {
     "message": "Benvingut de nou!"
-  },
-  "yesLetsTry": {
-    "message": "Sí, provem"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."

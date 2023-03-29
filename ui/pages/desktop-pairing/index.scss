@@ -1,0 +1,28 @@
+.desktop-pairing {
+  &__countdown-timer {
+    font-size: 12px;
+  }
+
+  &__countdown-timer-seconds {
+    color: var(--color-primary-default);
+    min-width: 180px;
+  }
+
+  &__otp {
+    letter-spacing: 10px;
+  }
+
+  &__tooltip-wrapper {
+    width: 100%;
+  }
+
+  &__clickable:hover {
+    cursor: pointer;
+  }
+
+  &__icon {
+    path {
+      fill: var(--color-icon-default);
+    }
+  }
+}

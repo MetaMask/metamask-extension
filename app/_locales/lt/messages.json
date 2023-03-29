@@ -75,12 +75,6 @@
   "asset": {
     "message": "Turtas"
   },
-  "attemptToCancel": {
-    "message": "Mėginti atšaukti?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Šis mėginimas negarantuoja, kad jūsų pradinė operacija bus atšaukta. Jeigu mėginimas atšaukti yra sėkmingas, jums bus taikomas pirmiau minėtas operacijos mokestis."
-  },
   "attemptingConnect": {
     "message": "Mėginama prisijungti prie „blockchain“."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
-  "buyWithWyre": {
-    "message": "Pirkti $1 su „Wyre“"
-  },
-  "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti $1 tiesiai į jūsų „MetaMask“ paskyrą."
-  },
   "bytes": {
     "message": "Baitai"
   },
   "cancel": {
     "message": "Atšaukti"
-  },
-  "cancellationGasFee": {
-    "message": "Dujų mokesčio atšaukimas"
   },
   "cancelled": {
     "message": "Atšaukta"
@@ -183,9 +168,6 @@
   },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
-  },
-  "continueToWyre": {
-    "message": "Tęsti su „Wyre“"
   },
   "contractDeployment": {
     "message": "Sutarties išdėstymas"
@@ -338,13 +320,6 @@
   },
   "general": {
     "message": "Bendra"
-  },
-  "getEther": {
-    "message": "Gauti eterių"
-  },
-  "getEtherFromFaucet": {
-    "message": "Gaukite eterių iš čiaupo $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "„Goerli“ bandomasis tinklas"
@@ -645,35 +620,21 @@
   "reset": {
     "message": "Nustatyti iš naujo"
   },
-  "resetAccount": {
-    "message": "Atkurti paskyrą"
-  },
-  "resetAccountDescription": {
-    "message": "Atkūrus paskyrą, jūsų operacijų istorija bus išvalyta."
-  },
   "restore": {
     "message": "Atkurti"
   },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jei imsite naudotis kita naršykle arba kitu kompiuteriu, šios atkūrimo frazės jums reikės paskyroms pasiekti. Saugokite ją saugioje ir slaptoje vietoje."
-  },
   "revealSeedWordsWarning": {
-    "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Šia fraze su niekuo NESIDALINKITE!"
+    "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"
   },
   "save": {
     "message": "Išsaugoti"
-  },
-  "saveAsCsvFile": {
-    "message": "Įrašyti kaip CSV failą"
   },
   "scanInstructions": {
     "message": "Laikykite QR kodą priešais kamerą"
@@ -716,12 +677,6 @@
   },
   "settings": {
     "message": "Nustatymai"
-  },
-  "showAdvancedGasInline": {
-    "message": "Išplėstiniai dujų valdikliai"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pasirinkite tai, kad būtų rodoma dujų kaina, ir ribokite valdymo elementus tiesiogiai siuntimo ir patvirtinimo ekranuose."
   },
   "showFiatConversionInTestnets": {
     "message": "Rodyti keitimą „Testnet“"
@@ -809,9 +764,6 @@
   },
   "terms": {
     "message": "Naudojimo sąlygos"
-  },
-  "testFaucet": {
-    "message": "Testuoti čiaupą"
   },
   "tips": {
     "message": "Arbatpinigiai"
@@ -931,9 +883,6 @@
   "userName": {
     "message": "Vartotojo vardas"
   },
-  "viewAccount": {
-    "message": "Žiūrėti paskyrą"
-  },
   "viewContact": {
     "message": "Peržiūrėti kontaktą"
   },
@@ -942,9 +891,6 @@
   },
   "welcomeBack": {
     "message": "Sveiki sugrįžę!"
-  },
-  "yesLetsTry": {
-    "message": "Taip, mėginkime"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
