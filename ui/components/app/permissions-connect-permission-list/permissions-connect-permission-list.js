@@ -1,36 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  getRightIcon,
-  getWeightedPermissions,
-} from '../../../helpers/utils/permission';
+import { getWeightedPermissions } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
-/**
- * Get one or more permission descriptions for a permission name.
- *
- * @param permission - The permission to render.
- * @param index - The index of the permission.
- * @returns {JSX.Element} A permission description node.
- */
-function getDescriptionNode(permission, index) {
-  const { label, leftIcon, permissionName } = permission;
-
-  return (
-    <div className="permission" key={`${permissionName}-${index}`}>
-      {typeof leftIcon === 'string' ? <i className={leftIcon} /> : leftIcon}
-      {label}
-      {getRightIcon(permission)}
-    </div>
-  );
-}
+import PermissionCell from '../flask/permission-cell';
 
 export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
 
   return (
     <div className="permissions-connect-permission-list">
-      {getWeightedPermissions(t, permissions).map(getDescriptionNode)}
+      {getWeightedPermissions(t, permissions).map((perm, index) => {
+        return (
+          <PermissionCell
+            title={perm.label}
+            description={perm.description}
+            weight={perm.weight}
+            avatarIcon={perm.leftIcon}
+            dateApproved={perm?.permissionValue?.date}
+            key={`${perm.permissionName}-${index}`}
+          />
+        );
+      })}
     </div>
   );
 }

@@ -176,7 +176,7 @@ function ViewSnap() {
             >
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
-            <Box width={FRACTIONS.TEN_TWELFTHS}>
+            <Box width="full">
               <PermissionsConnectPermissionList
                 permissions={permissions ?? {}}
               />

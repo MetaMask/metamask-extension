@@ -2927,7 +2927,7 @@
     "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
   },
   "permission_manageBip44Keys": {
-    "message": "Control your \"$1\" accounts and assets.",
+    "message": "Control your $1 accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageBip44KeysDescription": {
