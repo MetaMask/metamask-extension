@@ -268,7 +268,17 @@ async function initialize() {
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
-    setupController(initState, initLangCode);
+    let { isFirstMetaMaskControllerSetup } = await browser.storage.session.get(['isFirstMetaMaskControllerSetup']);
+
+    if (isFirstMetaMaskControllerSetup === true) {
+      isFirstMetaMaskControllerSetup = false;
+      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+    } else if (isFirstMetaMaskControllerSetup === undefined) {
+      isFirstMetaMaskControllerSetup = true;
+      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+    }
+
+    setupController(initState, initLangCode, {}, isFirstMetaMaskControllerSetup);
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -411,7 +421,7 @@ export async function loadStateFromPersistence() {
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  */
-export function setupController(initState, initLangCode, overrides) {
+export function setupController(initState, initLangCode, overrides, isFirstMetaMaskControllerSetup) {
   //
   // MetaMask Controller
   //
@@ -437,6 +447,7 @@ export function setupController(initState, initLangCode, overrides) {
     },
     localStore,
     overrides,
+    isFirstMetaMaskControllerSetup,
   });
 
   setupEnsIpfsResolver({

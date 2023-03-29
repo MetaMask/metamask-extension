@@ -200,6 +200,8 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
+    const { isFirstMetaMaskControllerSetup } = opts;
+
     this.defaultMaxListeners = 20;
 
     this.sendUpdate = debounce(
@@ -1346,7 +1348,7 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3) {
-      if (globalThis.isFirstTimeProfileLoaded === true) {
+      if (isFirstMetaMaskControllerSetup === true) {
         this.resetStates(resetMethods);
       }
     } else {
@@ -1423,7 +1425,7 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    globalThis.isFirstTimeProfileLoaded = false;
+    browser.storage.session.set({ isFirstMetaMaskControllerSetup: false });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
