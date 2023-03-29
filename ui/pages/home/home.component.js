@@ -641,7 +641,7 @@ export default class Home extends PureComponent {
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
-            <MenuBar />
+            {process.env.MULTICHAIN ? null : <MenuBar />}
             <div className="home__balance-wrapper">
               <EthOverview />
             </div>

@@ -1,8 +1,6 @@
 /*
   TODO:
     * Look at Figma to get the padding of container and spacing between icons
-    * Create a selector to allow us to get the current network info
-    * Employ selector to pull the current account name
     * Put this new header in place with feature flag
 */
 
@@ -24,12 +22,17 @@ import {
 import { GlobalMenu } from '../global-menu';
 
 import Box from '../../ui/box/box';
+import { getSelectedIdentity } from '../../../selectors';
 
 export const AppHeader = ({}) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const menuRef = useRef(false);
 
+  // Used for account picker
+  const identity = useSelector(getSelectedIdentity);
+
+  // Used for network icon / dropdown
   const currentNetwork = useSelector((state) => ({
     nickname: state.metamask.provider.nickname,
     type: state.metamask.provider.type,
@@ -40,7 +43,7 @@ export const AppHeader = ({}) => {
       display={DISPLAY.FLEX}
       alignItems={AlignItems.center}
       style={{ background: 'red' }}
-      padding={[5, 4, 5, 4 ]}
+      padding={[5, 4, 5, 4]}
       gap={2}
     >
       {/* AvatarNetwork should only display in popup mode */}
@@ -57,7 +60,8 @@ export const AppHeader = ({}) => {
         Waiting on: https://github.com/MetaMask/metamask-extension/pull/18177
 
         <AccountPicker address={} name={} onClick={() => undefined} />
-      */}(Account picker here)
+      */}
+        (Account picker here)
       </Box>
       <Box style={{ background: 'lightblue' }}>
         {/*
@@ -69,7 +73,8 @@ export const AppHeader = ({}) => {
           status,
           text,
         />
-      */}O
+      */}
+        O
       </Box>
       <ButtonIcon
         iconName={ICON_NAMES.MORE_VERTICAL}

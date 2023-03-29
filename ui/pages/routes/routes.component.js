@@ -31,6 +31,10 @@ import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import AppHeader from '../../components/app/app-header';
+import {
+  AppHeader as MultichainAppHeader,
+  AccountListMenu,
+} from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
@@ -90,7 +94,6 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -474,18 +477,21 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && (
-          <AppHeader
-            hideNetworkIndicator={this.onInitializationUnlockPage()}
-            disableNetworkIndicator={this.onSwapsPage()}
-            onClick={this.onAppHeaderClick}
-            disabled={
-              this.onConfirmPage() ||
-              this.onEditTransactionPage() ||
-              (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
-            }
-          />
-        )}
+        {!this.hideAppHeader() &&
+          (process.env.MULTICHAIN ? (
+            <MultichainAppHeader />
+          ) : (
+            <AppHeader
+              hideNetworkIndicator={this.onInitializationUnlockPage()}
+              disableNetworkIndicator={this.onSwapsPage()}
+              onClick={this.onAppHeaderClick}
+              disabled={
+                this.onConfirmPage() ||
+                this.onEditTransactionPage() ||
+                (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
+              }
+            />
+          ))}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
         {process.env.MULTICHAIN ? null : <AccountMenu />}
