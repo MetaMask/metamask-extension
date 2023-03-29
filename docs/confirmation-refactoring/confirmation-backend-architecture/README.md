@@ -28,5 +28,5 @@ Current confirmation implementation in the background consists of following piec
 
 ### Using ApprovalController for Confirmations
 
-[ApprovalController](https://github.com/MetaMask/core/tree/main/packages/approval-controller) is writter as helper to `PermissionController`. It's role is to manage requests that require user approval. It can also be used to confirmation code to launch UI. Thus use of `showUserConfirmation` function in `MetamaskController ` can be removed.
+[ApprovalController](https://github.com/MetaMask/core/tree/main/packages/approval-controller) is written as a helper to `PermissionController`. Its role is to manage requests that require user approval. It can also be used in confirmation code to launch UI. Thus the use of `showUserConfirmation` function in `MetamaskController ` can be removed.
 But `ApprovalController` will need some changes to be able to use it for confirmations, for example it does not support multiple paraller requests from same origin.
