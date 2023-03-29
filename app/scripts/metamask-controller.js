@@ -789,7 +789,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:terminateAllSnaps',
         'ExecutionService:handleRpcRequest',
         'SnapsRegistry:get',
-        'SnapsRegistry:getMetadata'
+        'SnapsRegistry:getMetadata',
       ],
     });
 
