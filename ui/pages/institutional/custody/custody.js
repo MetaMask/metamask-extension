@@ -42,7 +42,7 @@ import {
 import CustodyAccountList from './account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 
-const CustodyView = () => {
+const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
 
@@ -222,21 +222,6 @@ const CustodyView = () => {
     });
   };
 
-  const renderHeader = () => {
-    return (
-      <Box
-        borderColor={BorderColor.borderDefault}
-        padding={[5, 7, 2]}
-        width={BLOCK_SIZES.FULL}
-      >
-        <Text as="h4">{t('selectAnAccount')}</Text>
-        <Text marginTop={2} marginBottom={5}>
-          {t('selectAnAccountHelp')}
-        </Text>
-      </Box>
-    );
-  };
-
   const renderSelectCustody = () => {
     const custodianButtons = [];
     custodians.forEach((custodian) => {
@@ -378,7 +363,7 @@ const CustodyView = () => {
     );
   };
 
-  const selectAllAccounts = () => {
+  const renderSelectAllAccounts = (e) => {
     const allAccounts = {};
 
     if (e.currentTarget.checked) {
@@ -398,31 +383,6 @@ const CustodyView = () => {
     } else {
       setSelectedAccounts({});
     }
-  };
-
-  const renderSelectAll = () => {
-    return (
-      <Box
-        padding={[5, 7, 0]}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JustifyContent.flexStart}
-        alignItems={AlignItems.center}
-        className="custody-select-all"
-      >
-        <input
-          type="checkbox"
-          id="selectAllAccounts"
-          name="selectAllAccounts"
-          marginRight={2}
-          marginLeft={2}
-          value={{}}
-          onChange={(e) => selectAllAccounts(e)}
-          checked={Object.keys(selectedAccounts).length === accounts.length}
-        />
-        <Label htmlFor="selectAllAccounts">{t('selectAllAccounts')}</Label>
-      </Box>
-    );
   };
 
   const renderSelectList = () => {
@@ -567,8 +527,36 @@ const CustodyView = () => {
     if (accounts.length > 0) {
       return (
         <>
-          {renderHeader()}
-          {renderSelectAll()}
+          <Box
+            borderColor={BorderColor.borderDefault}
+            padding={[5, 7, 2]}
+            width={BLOCK_SIZES.FULL}
+          >
+            <Text as="h4">{t('selectAnAccount')}</Text>
+            <Text marginTop={2} marginBottom={5}>
+              {t('selectAnAccountHelp')}
+            </Text>
+          </Box>
+          <Box
+            padding={[5, 7, 0]}
+            display={DISPLAY.FLEX}
+            flexDirection={FLEX_DIRECTION.ROW}
+            justifyContent={JustifyContent.flexStart}
+            alignItems={AlignItems.center}
+            className="custody-select-all"
+          >
+            <input
+              type="checkbox"
+              id="selectAllAccounts"
+              name="selectAllAccounts"
+              marginRight={2}
+              marginLeft={2}
+              value={{}}
+              onChange={(e) => renderSelectAllAccounts(e)}
+              checked={Object.keys(selectedAccounts).length === accounts.length}
+            />
+            <Label htmlFor="selectAllAccounts">{t('selectAllAccounts')}</Label>
+          </Box>
           {renderSelectList()}
         </>
       );
@@ -634,4 +622,4 @@ const CustodyView = () => {
   );
 };
 
-export default CustodyView;
+export default CustodyPage;
