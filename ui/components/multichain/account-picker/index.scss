@@ -1,6 +1,7 @@
 .multichain-account-picker {
   &:hover,
   &:focus {
+    box-shadow: none;
     background: var(--color-background-default-hover);
   }
 }
