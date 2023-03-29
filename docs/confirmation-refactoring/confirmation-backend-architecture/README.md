@@ -13,7 +13,7 @@ Current confirmation implementation in the background consists of following piec
 2. `MessageManagers`:
    There are 3 different message managers responsible for processing signature requests. These are detailed [here](https://github.com/MetaMask/metamask-extension/tree/develop/docs/refactoring/signature-request#proposed-refactoring).
 3. `MetamaskController `:
-   `MetamaskController ` is responsible for gluing together the different pieces in transaction processing. It is reponsible to inject dependencies in `TransactionController`, `MessageManagers`, handle different events, reponse to DAPP requests, etc.
+   `MetamaskController ` is responsible for gluing together the different pieces in transaction processing. It is responsible to inject dependencies in `TransactionController`, `MessageManagers`, handling different events, responses to DAPP requests, etc.
 
 ## Areas of Code Cleanup:
 
