@@ -876,7 +876,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
       refetchOnAllowlistMiss: isMain,
-      failOnUnavailableRegistry: isMain
+      failOnUnavailableRegistry: isMain,
     });
 
     this.desktopController = new DesktopController({
