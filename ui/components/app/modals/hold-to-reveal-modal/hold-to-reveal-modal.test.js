@@ -16,7 +16,6 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
-// import MockProvider from './test-helper/mockProvider';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import HoldToRevealModal from '.';
 

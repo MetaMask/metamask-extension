@@ -144,7 +144,7 @@ const RevealSeedPage = () => {
   };
 
   const renderRevealSeedContent = () => {
-    // default fir SRP_VIEW_SRP_TEXT event because this is the first thing showed after rendering
+    // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
     trackEvent({
       category: EVENT.CATEGORIES.KEYS,
       event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
