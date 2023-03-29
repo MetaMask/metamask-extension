@@ -133,6 +133,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     this._encryptionPublicKeyManager = new EncryptionPublicKeyManager(
       undefined,
       undefined,
+      undefined,
       ['received'],
     );
 
