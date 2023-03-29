@@ -16,6 +16,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  INTERNAL_RPC_ERROR_CODE,
   NetworkStatus,
 } from '../../../../shared/constants/network';
 import {
@@ -33,12 +34,6 @@ import { createNetworkClient } from './create-network-client';
  * @property {object} [rpcPrefs] - Personalized preferences.
  * @property {string} [nickname] - Personalized network name.
  */
-
-/**
- * The error code that is used for RPC requests that produce an "internal"
- * error, borrowed from `eth-rpc-errors`.
- */
-const INTERNAL_RPC_ERROR_CODE = -32603;
 
 function buildDefaultProviderConfigState() {
   if (process.env.IN_TEST) {
