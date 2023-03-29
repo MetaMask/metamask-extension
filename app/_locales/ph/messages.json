@@ -1320,12 +1320,6 @@
   "settings": {
     "message": "Mga Setting"
   },
-  "showAdvancedGasInline": {
-    "message": "Mga advanced na kontrol sa gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Piliin ito para direktang maipakita ang presyo ng gas at mga kontrol sa limitasyon sa mga screen ng pagpapadala at pagkumpirma."
-  },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa Testnets"
   },
