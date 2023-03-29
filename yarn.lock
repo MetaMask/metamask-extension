@@ -2181,6 +2181,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/rlp@npm:^4.0.0-beta.2":
+  version: 4.0.0
+  resolution: "@ethereumjs/rlp@npm:4.0.0"
+  bin:
+    rlp: bin/rlp
+  checksum: 30db19c78faa2b6ff27275ab767646929207bb207f903f09eb3e4c273ce2738b45f3c82169ddacd67468b4f063d8d96035f2bf36f02b6b7e4d928eefe2e3ecbc
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/rlp@npm:^4.0.1":
   version: 4.0.1
   resolution: "@ethereumjs/rlp@npm:4.0.1"
@@ -2246,6 +2255,17 @@ __metadata:
     ethereum-cryptography: ^2.0.0
     micro-ftch: ^0.3.1
   checksum: 034e06cddec27417318434a1a7cd7a9dc0f0b447c1f54423c515d8809c9697386eee6429d0a1c13517a85c696e6fdba570b243d882e65764c274859606027015
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/util@npm:^8.0.5":
+  version: 8.0.5
+  resolution: "@ethereumjs/util@npm:8.0.5"
+  dependencies:
+    "@chainsafe/ssz": 0.9.4
+    "@ethereumjs/rlp": ^4.0.1
+    ethereum-cryptography: ^1.1.2
+  checksum: 318386785295b4584289b1aa576d2621392b3a918d127890db62d3f74184f3377694dd9e951e19bfb9ab80e8dc9e38e180236cac2651dead26097d10963731f9
   languageName: node
   linkType: hard
 
@@ -4245,6 +4265,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-snap-keyring@git+git@work.github.com:MetaMask/eth-snap-keyring.git#e438d016d4b25f9731e7600f7eb444988d5a3fd9":
+  version: 0.1.0
+  resolution: "@metamask/eth-snap-keyring@git+git@work.github.com:MetaMask/eth-snap-keyring.git#commit=e438d016d4b25f9731e7600f7eb444988d5a3fd9"
+  dependencies:
+    "@metamask/snaps-utils": ^0.31.0
+    "@metamask/utils": ^5.0.0
+    "@types/uuid": ^9.0.1
+    eth-rpc-errors: ^4.0.3
+    uuid: ^9.0.0
+  checksum: 48fa9c92365ee9f8204d35ba4dc5cbc26e2508543512eb4c5ac467b2faa3a8cf31f8700b250909446228fbb3b5acfb04de21cd51b8a53e6a4356433d586d0fe1
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-token-tracker@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/eth-token-tracker@npm:4.0.0"
@@ -4808,9 +4841,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-ui@npm:^0.32.2":
-  version: 0.32.2
-  resolution: "@metamask/snaps-ui@npm:0.32.2"
+"@metamask/snaps-registry@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/snaps-registry@npm:1.1.1"
+  dependencies:
+    "@metamask/utils": ^5.0.0
+    superstruct: ^1.0.3
+  checksum: 1e77c30af2955baf559160c1098f79a042196b23cd691448668672b4c8c3d92a0602061ab4c4f05b2f60310cfd81147c5e87ce80da6d4a48e45765d569132a77
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-ui@npm:^0.30.0":
+  version: 0.30.0
+  resolution: "@metamask/snaps-ui@npm:0.30.0"
   dependencies:
     "@metamask/utils": ^5.0.0
     superstruct: ^1.0.3
@@ -4869,7 +4912,45 @@ __metadata:
     ses: ^0.18.1
     superstruct: ^1.0.3
     validate-npm-package-name: ^5.0.0
-  checksum: 3568fb79cff8283eacb6e1bd498e20191f2c7c6774675be372f5305a4b5275512d1ded2a9fb36c106a8b10c5cbf480f6a87cdacfc70baf642b9bf3094ee3aefa
+  checksum: 56334795dee7deeddd63badd35870ebb51ba5336071146bd6f48a9f7c1d703515241ac9371d7a4e054d77d7c6d06f34530e7b9439074339a46fea89920d32bce
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@npm:^0.31.0":
+  version: 0.31.0
+  resolution: "@metamask/snaps-utils@npm:0.31.0"
+  dependencies:
+    "@babel/core": ^7.18.6
+    "@babel/types": ^7.18.7
+    "@metamask/permission-controller": ^3.0.0
+    "@metamask/providers": ^10.2.1
+    "@metamask/snaps-registry": ^1.1.1
+    "@metamask/snaps-ui": ^0.31.0
+    "@metamask/utils": ^5.0.0
+    "@noble/hashes": ^1.1.3
+    "@scure/base": ^1.1.1
+    cron-parser: ^4.5.0
+    eth-rpc-errors: ^4.0.3
+    fast-deep-equal: ^3.1.3
+    fast-json-stable-stringify: ^2.1.0
+    rfdc: ^1.3.0
+    semver: ^7.3.7
+    ses: ^0.18.1
+    superstruct: ^1.0.3
+    validate-npm-package-name: ^5.0.0
+  checksum: 007dc6e08989b0a197cc84d95b29a194c3408a2f9e822a42c2060a1c842ff10c737cf8f5f0e8f8178a7ea7f98565cfc8e16eaa9181331b50b5dc13c3a80655cd
+  languageName: node
+  linkType: hard
+
+"@metamask/subject-metadata-controller@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@metamask/subject-metadata-controller@npm:1.0.1"
+  dependencies:
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/permission-controller": ^1.0.1
+    "@metamask/types": ^1.1.0
+    immer: ^9.0.6
+  checksum: 8686dd9a7a274bc7fe2315f63687ec91161a7d18da829a2c6a08728c0ab61ceabbeae256e96247a059acc5c74d5dfbe48667893791d9f608e4989d5c4cc62c89
   languageName: node
   linkType: hard
 

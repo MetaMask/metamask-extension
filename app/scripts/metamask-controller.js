@@ -135,6 +135,9 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
+///: END:ONLY_INCLUDE_IN
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
 import {
@@ -1688,7 +1691,7 @@ export default class MetamaskController extends EventEmitter {
       }
       // we can't provide constructor arguments to keyrings
       // so we have to set the provider here
-      snapKeyring.setProvider(this.provider, this.snapController);
+      snapKeyring.setController(this.snapController);
       this.snapKeyring = snapKeyring;
     }
     return this.snapKeyring;
