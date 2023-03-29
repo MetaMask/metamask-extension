@@ -1295,11 +1295,25 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/message-manager>@metamask/controller-utils>@metamask/utils": true,
+        "@spruceid/siwe-parser": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/message-manager>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1533,7 +1547,15 @@
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
-        "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@noble/secp256k1": true
+        "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/secp256k1": true
+      }
+    },
+    "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -2577,11 +2599,6 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
-      }
-    },
-    "btoa": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "classnames": {
