@@ -6,8 +6,10 @@ declare module '@metamask/eth-keyring-controller' {
 
     signTypedMessage: (...any) => any;
 
-    getKeyringForAccount: (...any) => any;
+    getKeyringForAccount: (address: string) => Promise<{
+      type: string;
+    }>;
 
-    getEncryptionPublicKey: (...any) => any;
+    getEncryptionPublicKey: (address: string) => Promise<string>;
   }
 }

@@ -25,7 +25,6 @@ import {
 } from '@metamask/approval-controller';
 import { EVENT } from '../../../shared/constants/metametrics';
 import { KeyringType } from '../../../shared/constants/keyring';
-import PreferencesController from './preferences';
 
 const controllerName = 'EncryptionPublicKeyController';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
@@ -82,8 +81,6 @@ export type EncryptionPublicKeyControllerMessenger =
 export type EncryptionPublicKeyControllerOptions = {
   messenger: EncryptionPublicKeyControllerMessenger;
   keyringController: KeyringController;
-  preferencesController: PreferencesController;
-  sendUpdate: () => void;
   getState: () => any;
   metricsEvent: (payload: any, options?: any) => void;
 };
