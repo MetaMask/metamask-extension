@@ -21,16 +21,14 @@ import {
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
-  getNewCollectibleAddedMessage,
+  getNewNftAddedMessage,
   getNewTokensImported,
-  getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
-  getRemoveCollectibleMessage,
+  getRemoveNftMessage,
 } from '../../selectors';
 
 import {
   closeNotificationPopup,
-  hidePortfolioTooltip,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -39,20 +37,15 @@ import {
   setRecoveryPhraseReminderLastShown,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewCollectibleAddedMessage,
-  setRemoveCollectibleMessage,
+  setNewNftAddedMessage,
+  setRemoveNftMessage,
   setNewTokensImported,
-  setRpcTarget,
+  setActiveNetwork,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  setNewCustomNetworkAdded,
-  getPortfolioTooltipWasShownInThisSession,
-  setPortfolioTooltipWasShownInThisSession,
-} from '../../ducks/app/app';
+import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -142,19 +135,16 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
-    showPortfolioTooltip: getShowPortfolioTooltip(state),
-    portfolioTooltipWasShownInThisSession:
-      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showOutdatedBrowserWarning:
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
-    newNetworkAdded: getNewNetworkAdded(state),
+    newNetworkAddedName: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
-    newNftAddedMessage: getNewCollectibleAddedMessage(state),
-    removeNftMessage: getRemoveCollectibleMessage(state),
+    newNftAddedMessage: getNewNftAddedMessage(state),
+    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
-    newCustomNetworkAdded: appState.newCustomNetworkAdded,
+    newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
@@ -172,7 +162,6 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(AlertTypes.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
-  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -180,27 +169,23 @@ const mapDispatchToProps = (dispatch) => ({
   setOutdatedBrowserWarningLastShown: (lastShown) => {
     dispatch(setOutdatedBrowserWarningLastShown(lastShown));
   },
-  setNewNetworkAdded: (newNetwork) => {
-    console.log({ newNetwork });
-    dispatch(setNewNetworkAdded(newNetwork));
+  setNewNftAddedMessage: (message) => {
+    dispatch(setRemoveNftMessage(''));
+    dispatch(setNewNftAddedMessage(message));
   },
-  setNewCollectibleAddedMessage: (message) => {
-    dispatch(setNewCollectibleAddedMessage(message));
-  },
-  setRemoveCollectibleMessage: (message) => {
-    dispatch(setRemoveCollectibleMessage(message));
+  setRemoveNftMessage: (message) => {
+    dispatch(setNewNftAddedMessage(''));
+    dispatch(setRemoveNftMessage(message));
   },
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
-  clearNewCustomNetworkAdded: () => {
-    dispatch(setNewCustomNetworkAdded({}));
+  clearNewNetworkAdded: () => {
+    dispatch(setNewNetworkAdded({}));
   },
-  setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
-    dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
+  setActiveNetwork: (networkConfigurationId) => {
+    dispatch(setActiveNetwork(networkConfigurationId));
   },
-  setPortfolioTooltipWasShownInThisSession: () =>
-    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

@@ -1,13 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
-import CollectiblesTab from '../../components/app/nfts-tab';
+import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -22,18 +24,19 @@ import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import Typography from '../../components/ui/typography/typography';
 import {
-  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
-  BLOCK_SIZES,
-  Size,
-  TextVariant,
   TextColor,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
-import { ButtonLink, ICON_NAMES } from '../../components/component-library';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+  Text,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -47,11 +50,10 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import Tooltip from '../../components/ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -109,10 +111,6 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    showPortfolioTooltip: PropTypes.bool.isRequired,
-    hidePortfolioTooltip: PropTypes.func.isRequired,
-    portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
-    setPortfolioTooltipWasShownInThisSession: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
@@ -134,21 +132,20 @@ export default class Home extends PureComponent {
         );
       }
     },
-    newNetworkAdded: PropTypes.string,
-    setNewNetworkAdded: PropTypes.func.isRequired,
+    newNetworkAddedName: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newNftAddedMessage: PropTypes.string,
-    setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
-    setRemoveCollectibleMessage: PropTypes.func.isRequired,
+    setRemoveNftMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newCustomNetworkAdded: PropTypes.object,
-    clearNewCustomNetworkAdded: PropTypes.func,
-    setRpcTarget: PropTypes.func,
+    newNetworkAddedConfigurationId: PropTypes.string,
+    clearNewNetworkAdded: PropTypes.func,
+    setActiveNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
   };
 
@@ -216,12 +213,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    const { setPortfolioTooltipWasShownInThisSession, showPortfolioTooltip } =
-      this.props;
     this.checkStatusAndNavigate();
-    if (showPortfolioTooltip) {
-      setPortfolioTooltipWasShownInThisSession();
-    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -258,6 +250,7 @@ export default class Home extends PureComponent {
 
   renderNotifications() {
     const { t } = this.context;
+
     const {
       history,
       shouldShowSeedPhraseReminder,
@@ -273,22 +266,21 @@ export default class Home extends PureComponent {
       ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNetworkAdded,
-      setNewNetworkAdded,
       newNftAddedMessage,
-      setNewCollectibleAddedMessage,
+      setNewNftAddedMessage,
+      newNetworkAddedName,
       removeNftMessage,
-      setRemoveCollectibleMessage,
+      setRemoveNftMessage,
       newTokensImported,
       setNewTokensImported,
-      newCustomNetworkAdded,
-      clearNewCustomNetworkAdded,
-      setRpcTarget,
+      newNetworkAddedConfigurationId,
+      clearNewNetworkAdded,
+      setActiveNetwork,
     } = this.props;
 
     const onAutoHide = () => {
-      setNewCollectibleAddedMessage('');
-      setRemoveCollectibleMessage('');
+      setNewNftAddedMessage('');
+      setRemoveNftMessage('');
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -305,20 +297,20 @@ export default class Home extends PureComponent {
                     infoText={error.data.snapId}
                     descriptionText={
                       <>
-                        <Typography
+                        <Text
+                          variant={TextVariant.bodyMd}
+                          as="h5"
                           color={TextColor.textAlternative}
-                          variant={TypographyVariant.H5}
-                          fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
-                        </Typography>
-                        <Typography
+                        </Text>
+                        <Text
                           color={TextColor.textAlternative}
-                          variant={TypographyVariant.H7}
-                          fontWeight={FONT_WEIGHT.NORMAL}
+                          variant={TextVariant.bodySm}
+                          as="h6"
                         >
                           {t('snapError', [error.message, error.code])}
-                        </Typography>
+                        </Text>
                       </>
                     }
                     onIgnore={async () => {
@@ -341,16 +333,13 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
+                <Text variant={TextVariant.bodySm} as="h6">
                   {t('newNftAddedMessage')}
-                </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
-                  onClick={onAutoHide}
+                </Text>
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                 />
               </Box>
             }
@@ -366,38 +355,35 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
+                <Text variant={TextVariant.bodySm} as="h6">
                   {t('removeNftMessage')}
-                </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
+                </Text>
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
               </Box>
             }
           />
         ) : null}
-        {newNetworkAdded ? (
+        {newNetworkAddedName ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
-                  {t('newNetworkAdded', [newNetworkAdded])}
-                </Typography>
-                <button
-                  className="fas fa-times home__new-network-notification-close"
-                  title={t('close')}
-                  onClick={() => setNewNetworkAdded('')}
+                <Text variant={TextVariant.bodySm} as="h6">
+                  {t('newNetworkAdded', [newNetworkAddedName])}
+                </Text>
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
+                  onClick={() => clearNewNetworkAdded()}
+                  className="home__new-network-notification-close"
                 />
               </Box>
             }
@@ -411,25 +397,28 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
                 <Box>
-                  <Typography
+                  <Text
                     className="home__new-tokens-imported-notification-title"
-                    variant={TypographyVariant.H6}
-                    fontWeight={FONT_WEIGHT.BOLD}
+                    variant={TextVariant.bodySmBold}
+                    as="h6"
                   >
                     {t('newTokensImportedTitle')}
-                  </Typography>
-                  <Typography
+                  </Text>
+                  <Text
                     className="home__new-tokens-imported-notification-message"
-                    variant={TypographyVariant.H7}
-                    fontWeight={FONT_WEIGHT.NORMAL}
+                    variant={TextVariant.bodySm}
+                    as="h6"
                   >
                     {t('newTokensImportedMessage', [newTokensImported])}
-                  </Typography>
+                  </Text>
                 </Box>
-                <button
-                  className="fas fa-times home__new-tokens-imported-notification-close"
-                  title={t('close')}
+
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
+                  className="home__new-tokens-imported-notification-close"
                 />
               </Box>
             }
@@ -506,11 +495,12 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {Object.keys(newCustomNetworkAdded).length !== 0 && (
+        {newNetworkAddedConfigurationId && (
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Typography
-              variant={TypographyVariant.H4}
+            <Text
+              variant={TextVariant.headingSm}
+              as="h4"
               marginTop={5}
               marginRight={9}
               marginLeft={9}
@@ -518,40 +508,32 @@ export default class Home extends PureComponent {
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('networkAddedSuccessfully')}
-            </Typography>
+            </Text>
             <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
               <Button
                 type="primary"
                 className="home__new-network-added__switch-to-button"
                 onClick={() => {
-                  setRpcTarget(
-                    newCustomNetworkAdded.rpcUrl,
-                    newCustomNetworkAdded.chainId,
-                    newCustomNetworkAdded.ticker,
-                    newCustomNetworkAdded.chainName,
-                  );
-                  clearNewCustomNetworkAdded();
+                  setActiveNetwork(newNetworkAddedConfigurationId);
+                  clearNewNetworkAdded();
                 }}
               >
-                <Typography
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.NORMAL}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.primaryInverse}
                 >
-                  {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
-                </Typography>
+                  {t('switchToNetwork', [newNetworkAddedName])}
+                </Text>
               </Button>
-              <Button
-                type="secondary"
-                onClick={() => clearNewCustomNetworkAdded()}
-              >
-                <Typography
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.NORMAL}
+              <Button type="secondary" onClick={() => clearNewNetworkAdded()}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
-                </Typography>
+                </Text>
               </Button>
             </Box>
           </Popover>
@@ -618,16 +600,12 @@ export default class Home extends PureComponent {
       announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
-      showPortfolioTooltip,
-      hidePortfolioTooltip,
-      portfolioTooltipWasShownInThisSession,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
-      shouldShowSeedPhraseReminder,
       onboardedInThisUISession,
-      newCustomNetworkAdded,
+      newNetworkAddedConfigurationId,
     } = this.props;
 
     if (forgottenPassword) {
@@ -641,9 +619,8 @@ export default class Home extends PureComponent {
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       announcementsToShow &&
       showWhatsNewPopup &&
-      !showPortfolioTooltip &&
-      !portfolioTooltipWasShownInThisSession &&
-      Object.keys(newCustomNetworkAdded).length === 0;
+      !process.env.IN_TEST &&
+      !newNetworkAddedConfigurationId;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -673,74 +650,6 @@ export default class Home extends PureComponent {
               defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
-              subHeader={
-                <Tooltip
-                  position="bottom"
-                  open={
-                    !process.env.IN_TEST &&
-                    !shouldShowSeedPhraseReminder &&
-                    !showRecoveryPhraseReminder &&
-                    showPortfolioTooltip
-                  }
-                  interactive
-                  theme="home__subheader-link--tooltip"
-                  html={
-                    <div>
-                      <div className="home__subheader-link--tooltip-content-header">
-                        <div className="home__subheader-link--tooltip-content-header-text">
-                          {t('new')}
-                        </div>
-                        <button
-                          className="home__subheader-link--tooltip-content-header-button"
-                          onClick={() => {
-                            hidePortfolioTooltip();
-                          }}
-                        >
-                          <i className="fa fa-times" />
-                        </button>
-                      </div>
-                      <div>
-                        {t('tryOur')}&nbsp;
-                        <span className="home__subheader-link--tooltip-content-text-bold">
-                          {t('betaPortfolioSite')}
-                        </span>
-                        &nbsp;{t('keepTapsOnTokens')}
-                      </div>
-                    </div>
-                  }
-                >
-                  <ButtonLink
-                    className="home__subheader-link"
-                    data-testid="home__portfolio-site"
-                    onClick={async () => {
-                      const portfolioUrl = process.env.PORTFOLIO_URL;
-                      global.platform.openTab({
-                        url: `${portfolioUrl}?metamaskEntry=ext`,
-                      });
-                      this.context.trackEvent(
-                        {
-                          category: EVENT.CATEGORIES.HOME,
-                          event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
-                          properties: {
-                            url: portfolioUrl,
-                          },
-                        },
-                        {
-                          contextPropsIntoEventProperties: [
-                            CONTEXT_PROPS.PAGE_TITLE,
-                          ],
-                        },
-                      );
-                    }}
-                    iconName={ICON_NAMES.DIAGRAM}
-                    width={BLOCK_SIZES.FULL}
-                    size={Size.MD}
-                    textProps={{ variant: TextVariant.bodySm }}
-                  >
-                    {t('portfolioSite')}
-                  </ButtonLink>
-                </Tooltip>
-              }
             >
               <Tab
                 activeClassName="home__tab--active"
@@ -755,26 +664,24 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.NFTS_V1 ? (
-                <Tab
-                  activeClassName="home__tab--active"
-                  className="home__tab"
-                  data-testid="home__nfts-tab"
-                  name={this.context.t('nfts')}
-                  tabKey="nfts"
-                >
-                  <CollectiblesTab
-                    onAddNFT={() => {
-                      history.push(ADD_COLLECTIBLE_ROUTE);
-                    }}
-                  />
-                </Tab>
-              ) : null}
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__nfts-tab"
+                name={this.context.t('nfts')}
+                tabKey="nfts"
+              >
+                <NftsTab
+                  onAddNFT={() => {
+                    history.push(ADD_NFT_ROUTE);
+                  }}
+                />
+              </Tab>
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={this.context.t('activity')}
+                name={t('activity')}
                 tabKey="activity"
               >
                 <TransactionList />

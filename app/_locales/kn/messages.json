@@ -75,12 +75,6 @@
   "asset": {
     "message": "ಆಸ್ತಿ"
   },
-  "attemptToCancel": {
-    "message": "ರದ್ದುಗೊಳಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿರುವಿರಾ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "ಈ ಪ್ರಯತ್ನವನ್ನು ಸಲ್ಲಿಸುವುದರಿಂದ ನಿಮ್ಮ ಮೂಲ ವಹಿವಾಟು ರದ್ದುಗೊಳ್ಳುತ್ತದೆ ಎಂಬುದಾಗಿ ಖಾತ್ರಿಪಡಿಸಲಾಗುವುದಿಲ್ಲ. ರದ್ದು ಮಾಡುವ ಪ್ರಯತ್ನವು ಯಶಸ್ವಿಯಾದರೆ, ಮೇಲಿನ ವಹಿವಾಟು ಶುಲ್ಕವನ್ನು ನಿಮಗೆ ವಿಧಿಸಲಾಗುತ್ತದೆ."
-  },
   "attemptingConnect": {
     "message": "ಬ್ಲಾಕ್‌ಚೈನ್‌ಗೆ ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
   },
-  "buyWithWyre": {
-    "message": "Wyre ನೊಂದಿಗೆ $1 ಖರೀದಿಸಿ"
-  },
-  "buyWithWyreDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ $1 ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
-  },
   "bytes": {
     "message": "ಬೈಟ್‌ಗಳು"
   },
   "cancel": {
     "message": "ರದ್ದುಮಾಡಿ"
-  },
-  "cancellationGasFee": {
-    "message": "ರದ್ದುಗೊಳಿಸುವ ಗ್ಯಾಸ್ ಶುಲ್ಕ"
   },
   "cancelled": {
     "message": "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
+  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "continueToWyre": {
-    "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
   },
   "contractDeployment": {
     "message": "ಒಪ್ಪಂದದ ನಿಯೋಜನೆ"
@@ -336,13 +321,6 @@
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
   },
-  "getEther": {
-    "message": "ಎಥರ್ ಪಡೆಯಿರಿ"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 ಗಾಗಿ ಫಾಸೆಟ್‌ನಿಂದ ಎಥರ್ ಅನ್ನು ಪಡೆಯಿರಿ",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
@@ -436,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "links": {
     "message": "ಲಿಂಕ್‌ಗಳು"
@@ -645,23 +626,15 @@
   "revealSeedWords": {
     "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
   },
-  "revealSeedWordsDescription": {
-    "message": "ನೀವು ಬ್ರೌಸರ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿದರೆ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ಗಳನ್ನು ಸರಿಸಿದರೆ, ನಿಮ್ಮ ಖಾತೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಈ ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳ ಅಗತ್ಯವಿರುತ್ತದೆ. ಅವುಗಳನ್ನು ಎಲ್ಲಿಯಾದರೂ ಸುರಕ್ಷಿತವಾಗಿ ಮತ್ತು ರಹಸ್ಯವಾಗಿ ಉಳಿಸಿ."
-  },
   "revealSeedWordsWarning": {
-    "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!"
+    "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "ಹೊಸ RPC URL"
   },
   "save": {
     "message": "ಉಳಿಸು"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV ಫೈಲ್ ರೂಪದಲ್ಲಿ ಉಳಿಸಿ"
   },
   "scanInstructions": {
     "message": "ನಿಮ್ಮ ಕ್ಯಾಮರಾದ ಮುಂದೆ QR ಕೋಡ್ ಇರಿಸಿ"
@@ -704,12 +677,6 @@
   },
   "settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
-  },
-  "showAdvancedGasInline": {
-    "message": "ಸುಧಾರಿತ ಗ್ಯಾಸ್ ನಿಯಂತ್ರಣಗಳು"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "ಕಳುಹಿಸುವ ಮತ್ತು ಖಚಿತಪಡಿಸುವ ಪರದೆಯ ಮೇಲೆ ನೇರವಾಗಿ ಗ್ಯಾಸ್ ಬೆಲೆ ಮತ್ತು ಮಿತಿಯ ನಿಯಂತ್ರಣಗಳನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },
   "showFiatConversionInTestnets": {
     "message": "Testnets ನಲ್ಲಿ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಿ"
@@ -797,9 +764,6 @@
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"
-  },
-  "testFaucet": {
-    "message": "ಫಾಸೆಟ್ ಪರೀಕ್ಷಿಸಿ"
   },
   "tips": {
     "message": "ಸಲಹೆಗಳು"
@@ -919,9 +883,6 @@
   "userName": {
     "message": "ಬಳಕೆದಾರಹೆಸರು"
   },
-  "viewAccount": {
-    "message": "ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
-  },
   "viewContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
@@ -930,9 +891,6 @@
   },
   "welcomeBack": {
     "message": "ಮರಳಿ ಸ್ವಾಗತ!"
-  },
-  "yesLetsTry": {
-    "message": "ಹೌದು, ಪ್ರಯತ್ನಿಸೋಣ"
   },
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."

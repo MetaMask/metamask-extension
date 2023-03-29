@@ -12,20 +12,28 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getTokenList,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
 import {
   Color,
-  FONT_WEIGHT,
-  JustifyContent,
+
   TextVariant,
+  TEXT_ALIGN,
+
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
+import {
+  DetectedTokensBanner,
+  MultichainTokenListItem,
+  MultichainImportTokenLink,
+} from '../../multichain';
+import { Text } from '../../component-library';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 import { Text } from 'ui/components/component-library';
 
@@ -69,20 +77,38 @@ const AssetList = ({ onClickAsset }) => {
   const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
-
+  const tokenList = useSelector(getTokenList);
+  const tokenData = Object.values(tokenList).find(
+    (token) => token.symbol === primaryCurrencyProperties.suffix,
+  );
+  const title = tokenData?.name || primaryCurrencyProperties.suffix;
   return (
     <>
-      <AssetListItem
-        onClick={() => onClickAsset(nativeCurrency)}
-        data-testid="wallet-balance"
-        primary={
-          primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
-        }
-        tokenSymbol={primaryCurrencyProperties.suffix}
-        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-        tokenImage={balanceIsLoading ? null : primaryTokenImage}
-        identiconBorder
-      />
+      {process.env.MULTICHAIN ? (
+        <MultichainTokenListItem
+          onClick={() => onClickAsset(nativeCurrency)}
+          title={title}
+          primary={
+            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+          }
+          tokenSymbol={primaryCurrencyProperties.suffix}
+          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+          tokenImage={balanceIsLoading ? null : primaryTokenImage}
+        />
+      ) : (
+        <AssetListItem
+          onClick={() => onClickAsset(nativeCurrency)}
+          data-testid="wallet-balance"
+          primary={
+            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+          }
+          tokenSymbol={primaryCurrencyProperties.suffix}
+          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+          tokenImage={balanceIsLoading ? null : primaryTokenImage}
+          identiconBorder
+        />
+      )}
+
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
@@ -98,18 +124,38 @@ const AssetList = ({ onClickAsset }) => {
       />
       {detectedTokens.length > 0 &&
         !istokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
+          <>
+            {process.env.MULTICHAIN ? (
+              <DetectedTokensBanner
+                actionButtonOnClick={() => setShowDetectedTokens(true)}
+                margin={4}
+              />
+            ) : (
+              <DetectedTokensLink
+                setShowDetectedTokens={setShowDetectedTokens}
+              />
+            )}
+          </>
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <Box justifyContent={JustifyContent.center}>
-          <Text
-            color={Color.textAlternative}
-            variant={TextVariant.bodySm}
-          >
-            {t('missingToken')}
-          </Text>
-        </Box>
-        <ImportTokenLink />
+
+        {process.env.MULTICHAIN ? (
+          <MultichainImportTokenLink margin={4} />
+        ) : (
+          <>
+            <Text
+              color={Color.textAlternative}
+              variant={TextVariant.bodySm}
+              as="h6"
+              textAlign={TEXT_ALIGN.CENTER}
+            >
+              {t('missingToken')}
+            </Text>
+
+            <ImportTokenLink />
+          </>
+        )}
+
       </Box>
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />

@@ -50,6 +50,12 @@ module.exports = function createStaticAssetTasks({
         dest: `images`,
       },
     ],
+    [BuildType.mmi]: [
+      {
+        src: './app/build-types/mmi/images/',
+        dest: `images`,
+      },
+    ],
   };
 
   if (Object.keys(additionalBuildTargets).includes(buildType)) {

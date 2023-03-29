@@ -33,6 +33,24 @@ export const ValidTags = [
   'input',
 ];
 
+const getTextElementDefault = (variant) => {
+  switch (variant) {
+    case TextVariant.displayMd:
+      return 'h1';
+    case TextVariant.headingLg:
+      return 'h2';
+    case TextVariant.headingMd:
+      return 'h3';
+    case TextVariant.headingSm:
+      return 'h4';
+    case TextVariant.inherit:
+      return 'span';
+    // TextVariant.bodyLgMedium, TextVariant.bodyMd, TextVariant.bodyMdBold, TextVariant.bodySm, TextVariant.bodySmBold, TextVariant.bodyXs use default 'p' tag
+    default:
+      return 'p';
+  }
+};
+
 export const Text = React.forwardRef(
   (
     {
@@ -52,7 +70,8 @@ export const Text = React.forwardRef(
     },
     ref,
   ) => {
-    let Tag = as ?? variant;
+    // Check if as is set otherwise set a default tag based on variant
+    const Tag = as ?? getTextElementDefault(variant);
     let strongTagFontWeight;
 
     if (Tag === 'strong') {
@@ -70,20 +89,9 @@ export const Text = React.forwardRef(
         [`mm-text--ellipsis`]: Boolean(ellipsis),
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
-        [`mm-text--color-${color}`]: Boolean(color),
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
-
-    // // Set a default tag based on variant
-    const splitTag = Tag.split('-')[0];
-    if (splitTag === 'body') {
-      Tag = 'p';
-    } else if (splitTag === 'heading') {
-      Tag = 'h2';
-    } else if (splitTag === 'display') {
-      Tag = 'h1';
-    }
 
     return (
       <Box
@@ -91,6 +99,7 @@ export const Text = React.forwardRef(
         className={classnames(computedClassName)}
         as={Tag}
         dir={textDirection}
+        color={color}
         {...props}
       >
         {children}

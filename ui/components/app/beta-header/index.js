@@ -6,12 +6,17 @@ import {
   Color,
   BLOCK_SIZES,
   DISPLAY,
-  TextVariant,
+
+  AlignItems,
+  IconColor,
+
 } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { Text } from 'ui/components/component-library';
+
+import { ButtonIcon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -23,6 +28,7 @@ const BetaHeader = () => {
       backgroundColor={Color.warningDefault}
       padding={2}
       className="beta-header"
+      alignItems={AlignItems.center}
     >
       <Text
         variant={TextVariant.bodySm}
@@ -41,17 +47,19 @@ const BetaHeader = () => {
             {t('here')}
           </a>,
         ])}
-      </Text>
-      <button
+
+      </Typography>
+      <ButtonIcon
+        iconName={ICON_NAMES.CLOSE}
+        size={ICON_SIZES.SM}
+        color={IconColor.warningInverse}
         className="beta-header__button"
         data-testid="beta-header-close"
         onClick={() => {
           hideBetaHeader();
         }}
         aria-label={t('close')}
-      >
-        <i className="fa fa-times" />
-      </button>
+      />
     </Box>
   );
 };

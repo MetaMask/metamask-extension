@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
+<div>
+  <div
+    class="box jwt-url-form box--margin-bottom-8 box--display-flex box--flex-direction-row box--align-items-flex-start"
+  >
+    <div
+      class="box jwt-url-form__jwt-container box--margin-bottom-6 box--flex-direction-row"
+    >
+      <div
+        class="box box--flex-direction-row"
+      >
+        <p
+          class="box mm-text jwt-url-form__instruction mm-text--body-md box--flex-direction-row box--color-text-default"
+        >
+          input text
+        </p>
+        <textarea
+          bordercolor="border-default"
+          class="jwt-url-form__input-jwt"
+          data-testid="jwt-input"
+          id="jwt-box"
+        />
+      </div>
+    </div>
+    <div
+      class="box jwt-url-form__jwt-apiUrlInput box--flex-direction-row"
+    >
+      <p
+        class="box mm-text jwt-url-form__instruction mm-text--body-md box--flex-direction-row box--color-text-default"
+      />
+      <div
+        class="box box--flex-direction-row"
+      >
+        <input
+          class="jwt-url-form__input"
+          data-testid="jwt-api-url-input"
+          id="api-url-box"
+          value="url"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

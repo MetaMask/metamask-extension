@@ -1,19 +1,13 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import {
-  providerFromEngine,
-  providerFromMiddleware,
-} from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
   createEventEmitterProxy,
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
+import { v4 as random } from 'uuid';
 import {
   INFURA_PROVIDER_TYPES,
   BUILT_IN_NETWORKS,
@@ -22,13 +16,22 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import createInfuraClient from './createInfuraClient';
-import createJsonRpcClient from './createJsonRpcClient';
+import { EVENT } from '../../../../shared/constants/metametrics';
+import { createNetworkClient } from './create-network-client';
+
+/**
+ * @typedef {object} NetworkConfiguration
+ * @property {string} rpcUrl - RPC target URL.
+ * @property {string} chainId - Network ID as per EIP-155
+ * @property {string} ticker - Currency ticker.
+ * @property {object} [rpcPrefs] - Personalized preferences.
+ * @property {string} [nickname] - Personalized network name.
+ */
 
 const env = process.env.METAMASK_ENV;
 const fetchWithTimeout = getFetchWithTimeout();
@@ -83,8 +86,9 @@ export default class NetworkController extends EventEmitter {
    * @param {object} [options] - NetworkController options.
    * @param {object} [options.state] - Initial controller state.
    * @param {string} [options.infuraProjectId] - The Infura project ID.
+   * @param {string} [options.trackMetaMetricsEvent] - A method to forward events to the MetaMetricsController
    */
-  constructor({ state = {}, infuraProjectId } = {}) {
+  constructor({ state = {}, infuraProjectId, trackMetaMetricsEvent } = {}) {
     super();
 
     // create stores
@@ -105,11 +109,17 @@ export default class NetworkController extends EventEmitter {
         ...defaultNetworkDetailsState,
       },
     );
+
+    this.networkConfigurationsStore = new ObservableStore(
+      state.networkConfigurations || {},
+    );
+
     this.store = new ComposedStore({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
       network: this.networkStore,
       networkDetails: this.networkDetails,
+      networkConfigurations: this.networkConfigurationsStore,
     });
 
     // provider and block tracker
@@ -124,6 +134,7 @@ export default class NetworkController extends EventEmitter {
       throw new Error('Invalid Infura project ID');
     }
     this._infuraProjectId = infuraProjectId;
+    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.lookupNetwork();
@@ -140,7 +151,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   async initializeProvider() {
-    const { type, rpcUrl, chainId } = this.getProviderConfig();
+    const { type, rpcUrl, chainId } = this.providerStore.getState();
     this._configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
   }
@@ -172,14 +183,6 @@ export default class NetworkController extends EventEmitter {
     return supportsEIP1559;
   }
 
-  getNetworkState() {
-    return this.networkStore.getState();
-  }
-
-  isNetworkLoading() {
-    return this.getNetworkState() === 'loading';
-  }
-
   async lookupNetwork() {
     // Prevent firing when provider is not defined.
     if (!this._provider) {
@@ -189,23 +192,19 @@ export default class NetworkController extends EventEmitter {
       return;
     }
 
-    // NOTE: This will never happen in practice because you can't pass null or
-    // undefined for chainId to setRpcTarget, and all of the known networks have
-    // a chain ID
-    const chainId = this.getCurrentChainId();
+    const { chainId } = this.providerStore.getState();
     if (!chainId) {
       log.warn(
         'NetworkController - lookupNetwork aborted due to missing chainId',
       );
       this._setNetworkState('loading');
-      // keep network details in sync with network state
       this._clearNetworkDetails();
       return;
     }
 
     // Ping the RPC endpoint so we can confirm that it works
-    const initialNetwork = this.getNetworkState();
-    const { type } = this.getProviderConfig();
+    const initialNetwork = this.networkStore.getState();
+    const { type } = this.providerStore.getState();
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
@@ -221,7 +220,7 @@ export default class NetworkController extends EventEmitter {
     } catch (error) {
       networkVersionError = error;
     }
-    if (initialNetwork !== this.getNetworkState()) {
+    if (initialNetwork !== this.networkStore.getState()) {
       return;
     }
 
@@ -236,74 +235,59 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  getCurrentChainId() {
-    const { type, chainId: configChainId } = this.getProviderConfig();
-    return BUILT_IN_NETWORKS[type]?.chainId || configChainId;
-  }
+  /**
+   * A method for setting the currently selected network provider by networkConfigurationId.
+   *
+   * @param {string} networkConfigurationId - the universal unique identifier that corresponds to the network configuration to set as active.
+   * @returns {string} The rpcUrl of the network that was just set as active
+   */
+  setActiveNetwork(networkConfigurationId) {
+    const targetNetwork =
+      this.networkConfigurationsStore.getState()[networkConfigurationId];
 
-  getCurrentRpcUrl() {
-    const { rpcUrl } = this.getProviderConfig();
-    return rpcUrl;
-  }
+    if (!targetNetwork) {
+      throw new Error(
+        `networkConfigurationId ${networkConfigurationId} does not match a configured networkConfiguration`,
+      );
+    }
 
-  setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
-    assert.ok(
-      isPrefixedFormattedHexString(chainId),
-      `Invalid chain ID "${chainId}": invalid hex string.`,
-    );
-    assert.ok(
-      isSafeChainId(parseInt(chainId, 16)),
-      `Invalid chain ID "${chainId}": numerical value greater than max safe value.`,
-    );
     this._setProviderConfig({
       type: NETWORK_TYPES.RPC,
-      rpcUrl,
-      chainId,
-      ticker,
-      nickname,
-      rpcPrefs,
+      ...targetNetwork,
     });
+
+    return targetNetwork.rpcUrl;
   }
 
   setProviderType(type) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPES.RPC,
-      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setRpcTarget"`,
+      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setActiveNetwork"`,
     );
     assert.ok(
       INFURA_PROVIDER_TYPES.includes(type),
       `Unknown Infura provider type "${type}".`,
     );
-    const { chainId, ticker } = BUILT_IN_NETWORKS[type];
+    const { chainId, ticker, blockExplorerUrl } = BUILT_IN_NETWORKS[type];
     this._setProviderConfig({
       type,
       rpcUrl: '',
       chainId,
       ticker: ticker ?? 'ETH',
       nickname: '',
+      rpcPrefs: { blockExplorerUrl },
     });
   }
 
   resetConnection() {
-    this._setProviderConfig(this.getProviderConfig());
+    this._setProviderConfig(this.providerStore.getState());
   }
 
   rollbackToPreviousProvider() {
     const config = this.previousProviderStore.getState();
-    this.providerStore.updateState(config);
+    this.providerStore.putState(config);
     this._switchNetwork(config);
-  }
-
-  getProviderConfig() {
-    return this.providerStore.getState();
-  }
-
-  getNetworkIdentifier() {
-    const provider = this.providerStore.getState();
-    return provider.type === NETWORK_TYPES.RPC
-      ? provider.rpcUrl
-      : provider.type;
   }
 
   //
@@ -360,7 +344,7 @@ export default class NetworkController extends EventEmitter {
    * @param {boolean} isSupported - True if the EIP is supported
    */
   _setNetworkEIPSupport(EIPNumber, isSupported) {
-    this.networkDetails.updateState({
+    this.networkDetails.putState({
       EIPS: {
         [EIPNumber]: isSupported,
       },
@@ -380,8 +364,8 @@ export default class NetworkController extends EventEmitter {
    * @param config
    */
   _setProviderConfig(config) {
-    this.previousProviderStore.updateState(this.getProviderConfig());
-    this.providerStore.updateState(config);
+    this.previousProviderStore.putState(this.providerStore.getState());
+    this.providerStore.putState(config);
     this._switchNetwork(config);
   }
 
@@ -441,7 +425,10 @@ export default class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
     if (isInfura) {
-      this._configureInfuraProvider(type, this._infuraProjectId);
+      this._configureInfuraProvider({
+        type,
+        infuraProjectId: this._infuraProjectId,
+      });
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPES.RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
@@ -452,42 +439,23 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  _configureInfuraProvider(type, projectId) {
+  _configureInfuraProvider({ type, infuraProjectId }) {
     log.info('NetworkController - configureInfuraProvider', type);
-    const networkClient = createInfuraClient({
+    const { provider, blockTracker } = createNetworkClient({
       network: type,
-      projectId,
+      infuraProjectId,
+      type: 'infura',
     });
-    this._setNetworkClient(networkClient);
+    this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 
   _configureStandardProvider(rpcUrl, chainId) {
     log.info('NetworkController - configureStandardProvider', rpcUrl);
-    const networkClient = createJsonRpcClient({ rpcUrl, chainId });
-    this._setNetworkClient(networkClient);
-  }
-
-  _setNetworkClient({ networkMiddleware, blockTracker }) {
-    const networkProvider = providerFromMiddleware(networkMiddleware);
-    const filterMiddleware = createFilterMiddleware({
-      provider: networkProvider,
-      blockTracker,
+    const { provider, blockTracker } = createNetworkClient({
+      chainId,
+      rpcUrl,
+      type: 'custom',
     });
-    const subscriptionManager = createSubscriptionManager({
-      provider: networkProvider,
-      blockTracker,
-    });
-
-    const engine = new JsonRpcEngine();
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
-    engine.push(networkMiddleware);
-
-    const provider = providerFromEngine(engine);
-
     this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 
@@ -508,5 +476,118 @@ export default class NetworkController extends EventEmitter {
     // set new provider and blockTracker
     this._provider = provider;
     this._blockTracker = blockTracker;
+  }
+
+  /**
+   * Network Configuration management functions
+   */
+
+  /**
+   * Adds a network configuration if the rpcUrl is not already present on an
+   * existing network configuration. Otherwise updates the entry with the matching rpcUrl.
+   *
+   * @param {NetworkConfiguration} networkConfiguration - The network configuration to add or, if rpcUrl matches an existing entry, to modify.
+   * @param {object} options
+   * @param {boolean} options.setActive - An option to set the newly added networkConfiguration as the active provider.
+   * @param {string} options.referrer - The site from which the call originated, or 'metamask' for internal calls - used for event metrics.
+   * @param {string} options.source - Where the upsertNetwork event originated (i.e. from a dapp or from the network form)- used for event metrics.
+   * @returns {string} id for the added or updated network configuration
+   */
+  upsertNetworkConfiguration(
+    { rpcUrl, chainId, ticker, nickname, rpcPrefs },
+    { setActive = false, referrer, source },
+  ) {
+    assert.ok(
+      isPrefixedFormattedHexString(chainId),
+      `Invalid chain ID "${chainId}": invalid hex string.`,
+    );
+    assert.ok(
+      isSafeChainId(parseInt(chainId, 16)),
+      `Invalid chain ID "${chainId}": numerical value greater than max safe value.`,
+    );
+
+    if (!rpcUrl) {
+      throw new Error(
+        'An rpcUrl is required to add or update network configuration',
+      );
+    }
+
+    if (!referrer || !source) {
+      throw new Error(
+        'referrer and source are required arguments for adding or updating a network configuration',
+      );
+    }
+
+    try {
+      // eslint-disable-next-line no-new
+      new URL(rpcUrl);
+    } catch (e) {
+      if (e.message.includes('Invalid URL')) {
+        throw new Error('rpcUrl must be a valid URL');
+      }
+    }
+
+    if (!ticker) {
+      throw new Error(
+        'A ticker is required to add or update networkConfiguration',
+      );
+    }
+
+    const networkConfigurations = this.networkConfigurationsStore.getState();
+    const newNetworkConfiguration = {
+      rpcUrl,
+      chainId,
+      ticker,
+      nickname,
+      rpcPrefs,
+    };
+
+    const oldNetworkConfigurationId = Object.values(networkConfigurations).find(
+      (networkConfiguration) =>
+        networkConfiguration.rpcUrl?.toLowerCase() === rpcUrl?.toLowerCase(),
+    )?.id;
+
+    const newNetworkConfigurationId = oldNetworkConfigurationId || random();
+    this.networkConfigurationsStore.putState({
+      ...networkConfigurations,
+      [newNetworkConfigurationId]: {
+        ...newNetworkConfiguration,
+        id: newNetworkConfigurationId,
+      },
+    });
+
+    if (!oldNetworkConfigurationId) {
+      this._trackMetaMetricsEvent({
+        event: 'Custom Network Added',
+        category: EVENT.CATEGORIES.NETWORK,
+        referrer: {
+          url: referrer,
+        },
+        properties: {
+          chain_id: chainId,
+          symbol: ticker,
+          source,
+        },
+      });
+    }
+
+    if (setActive) {
+      this.setActiveNetwork(newNetworkConfigurationId);
+    }
+
+    return newNetworkConfigurationId;
+  }
+
+  /**
+   * Removes network configuration from state.
+   *
+   * @param {string} networkConfigurationId - the unique id for the network configuration to remove.
+   */
+  removeNetworkConfiguration(networkConfigurationId) {
+    const networkConfigurations = {
+      ...this.networkConfigurationsStore.getState(),
+    };
+    delete networkConfigurations[networkConfigurationId];
+    this.networkConfigurationsStore.putState(networkConfigurations);
   }
 }

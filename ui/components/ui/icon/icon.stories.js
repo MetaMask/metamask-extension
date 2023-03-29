@@ -22,14 +22,6 @@ import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
-import IconCaretLeft from './icon-caret-left';
-import IconCaretRight from './icon-caret-right';
-import IconCaretDown from './icon-caret-down';
-import IconCaretUp from './icon-caret-up';
-import IconCheck from './icon-check';
-import IconCog from './icon-cog';
-import IconImport from './icon-import';
-import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
@@ -122,14 +114,6 @@ export const DefaultStory = (args) => (
           gridTemplateColumns: 'repeat(auto-fill, 176px)',
         }}
       >
-        <IconItem Component={<IconCaretLeft {...args} />} />
-        <IconItem Component={<IconCaretRight {...args} />} />
-        <IconItem Component={<IconCaretDown {...args} />} />
-        <IconItem Component={<IconCaretUp {...args} />} />
-        <IconItem Component={<IconCheck {...args} />} />
-        <IconItem Component={<IconPlus {...args} />} />
-        <IconItem Component={<IconImport {...args} />} />
-        <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
       </div>
@@ -172,9 +156,9 @@ DefaultStory.args = {
 
 export const Size = (args) => (
   <div>
-    <IconCaretLeft size={16 || args.size} />
-    <IconCaretLeft size={24 || args.size} />
-    <IconCaretLeft size={32 || args.size} />
+    <SunCheck size={16 || args.size} />
+    <SunCheck size={24 || args.size} />
+    <SunCheck size={32 || args.size} />
   </div>
 );
 
@@ -185,12 +169,12 @@ Size.args = {
 export const Color = (args) => (
   <>
     {Object.values(validColors).map((color) => (
-      <IconCaretLeft {...args} color={args.color || color} key={color} />
+      <SunCheck {...args} color={args.color || color} key={color} />
     ))}
   </>
 );
 
-export const AriaLabel = (args) => <IconCaretLeft {...args} />;
+export const AriaLabel = (args) => <SunCheck {...args} />;
 
 AriaLabel.args = {
   ariaLabel: 'back',

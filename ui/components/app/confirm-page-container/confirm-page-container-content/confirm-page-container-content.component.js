@@ -7,9 +7,12 @@ import ActionableMessage from '../../../ui/actionable-message/actionable-message
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import { TextVariant} from '../../../../helpers/constants/design-system';
-import DepositPopover from '../../deposit-popover/deposit-popover';
 
+import Typography from '../../../ui/typography';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
+
+import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 import { Text } from 'ui/components/component-library';
 
@@ -28,11 +31,9 @@ export default class ConfirmPageContainerContent extends Component {
     ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
@@ -47,7 +48,6 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.bool,
     supportsEIP1559: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
@@ -55,10 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
-  };
-
-  state = {
-    setShowDepositPopover: false,
+    txData: PropTypes.object,
   };
 
   renderContent() {
@@ -138,11 +135,9 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      title,
       image,
       titleComponent,
       subtitleComponent,
-      hideSubtitle,
       tokenAddress,
       nonce,
       detailsComponent,
@@ -158,7 +153,6 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
-      hideTitle,
       supportsEIP1559,
       hasTopBorder,
       nativeCurrency,
@@ -166,6 +160,7 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      txData,
     } = this.props;
 
     const { t } = this.context;
@@ -174,8 +169,6 @@ export default class ConfirmPageContainerContent extends Component {
       supportsEIP1559 &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
-
-    const { setShowDepositPopover } = this.state;
 
     return (
       <div
@@ -187,21 +180,27 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         <ConfirmPageContainerSummary
           className={classnames({
             'confirm-page-container-summary--border':
               !detailsComponent || !dataComponent,
           })}
           action={action}
-          title={title}
           image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
-          hideSubtitle={hideSubtitle}
           tokenAddress={tokenAddress}
           nonce={nonce}
           origin={origin}
-          hideTitle={hideTitle}
           toAddress={toAddress}
           transactionType={transactionType}
         />
@@ -224,9 +223,12 @@ export default class ConfirmPageContainerContent extends Component {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() =>
-                          this.setState({ setShowDepositPopover: true })
-                        }
+                        onClick={() => {
+                          const portfolioUrl = process.env.PORTFOLIO_URL;
+                          global.platform.openTab({
+                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                          });
+                        }}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
@@ -247,11 +249,6 @@ export default class ConfirmPageContainerContent extends Component {
               type="danger"
             />
           </div>
-        )}
-        {setShowDepositPopover && (
-          <DepositPopover
-            onClose={() => this.setState({ setShowDepositPopover: false })}
-          />
         )}
         <PageContainerFooter
           onCancel={onCancel}

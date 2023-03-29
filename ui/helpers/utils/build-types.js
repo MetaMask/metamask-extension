@@ -4,6 +4,9 @@ import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import desktopJson from '../../../app/build-types/desktop/images/desktop-mascot.json';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import mmiJson from '../../../app/build-types/mmi/images/mmi-mascot.json';
+///: END:ONLY_INCLUDE_IN
 
 const assetList = {
   main: {
@@ -23,6 +26,11 @@ const assetList = {
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   desktop: {
     foxMeshJson: desktopJson,
+  },
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  mmi: {
+    foxMeshJson: mmiJson,
   },
   ///: END:ONLY_INCLUDE_IN
 };

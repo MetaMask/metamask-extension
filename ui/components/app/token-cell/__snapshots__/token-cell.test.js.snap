@@ -80,16 +80,21 @@ exports[`Token Cell should match snapshot 1`] = `
     <div
       class="list-item__right-content"
     >
-      <i
-        class="fas fa-chevron-right asset-list-item__chevron-right"
-      />
-      <a
-        class="button btn-link asset-list-item__send-token-button"
-        role="button"
-        tabindex="0"
+      <div
+        class="box box--flex-direction-row"
       >
-        Send TEST
-      </a>
+        <span
+          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+          style="mask-image: url('./images/icons/arrow-right.svg'); vertical-align: middle;"
+        />
+        <a
+          class="button btn-link asset-list-item__send-token-button"
+          role="button"
+          tabindex="0"
+        >
+          Send TEST
+        </a>
+      </div>
     </div>
   </div>
 </div>

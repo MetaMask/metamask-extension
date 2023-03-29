@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 
@@ -61,8 +61,7 @@ const ConfirmTransaction = () => {
   const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
   const totalUnapproved = unconfirmedTxs.length || 0;
-
-  const transaction = useMemo(() => {
+  const getTransaction = useCallback(() => {
     return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
           unconfirmedMessages[paramsTransactionId] ||
@@ -75,10 +74,27 @@ const ConfirmTransaction = () => {
     unconfirmedMessages,
     unconfirmedTxs,
   ]);
+  const [transaction, setTransaction] = useState(getTransaction);
+
+  useEffect(() => {
+    const tx = getTransaction();
+    setTransaction(tx);
+    if (tx?.id) {
+      dispatch(setTransactionToConfirm(tx.id));
+    }
+  }, [
+    dispatch,
+    getTransaction,
+    paramsTransactionId,
+    totalUnapproved,
+    unapprovedTxs,
+    unconfirmedMessages,
+    unconfirmedTxs,
+  ]);
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
-  const isValidERC20TokenMethod = isTokenMethodAction(type);
+  const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
     transactionId &&
     (!paramsTransactionId || paramsTransactionId === transactionId);
@@ -152,7 +168,8 @@ const ConfirmTransaction = () => {
     } else if (
       prevTransactionId &&
       transactionId &&
-      prevTransactionId !== transactionId
+      prevTransactionId !== transactionId &&
+      paramsTransactionId !== transactionId
     ) {
       history.replace(mostRecentOverviewPage);
     }
@@ -168,7 +185,7 @@ const ConfirmTransaction = () => {
     transactionId,
   ]);
 
-  if (isValidERC20TokenMethod && isValidTransactionId) {
+  if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params

@@ -1,7 +1,7 @@
 import React from 'react';
-import CollectibleDetails from './nft-details';
+import NftDetails from './nft-details';
 
-const collectible = {
+const nft = {
   name: 'Catnip Spicywright',
   tokenId: '1124157',
   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
@@ -12,35 +12,38 @@ const collectible = {
   lastSale: {
     event_timestamp: '2023-01-18T21:51:23',
     total_price: '4900000000000000',
+    payment_token: {
+      symbol: 'ETH',
+    },
   },
 };
 
 export default {
-  title: 'Components/App/CollectiblesDetail',
+  title: 'Components/App/NftsDetail',
 
   argTypes: {
-    collectible: {
+    nft: {
       control: 'object',
     },
   },
   args: {
-    collectible,
+    nft,
   },
 };
 
 export const DefaultStory = (args) => {
-  return <CollectibleDetails {...args} />;
+  return <NftDetails {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
 export const NoImage = (args) => {
-  return <CollectibleDetails {...args} />;
+  return <NftDetails {...args} />;
 };
 
 NoImage.args = {
-  collectible: {
-    ...collectible,
+  nft: {
+    ...nft,
     image: undefined,
   },
 };

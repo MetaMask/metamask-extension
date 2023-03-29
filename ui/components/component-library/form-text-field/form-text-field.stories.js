@@ -73,18 +73,6 @@ export default {
     helpTextProps: {
       control: 'object',
     },
-    showClearButton: {
-      control: 'boolean',
-      table: { category: 'text field props' },
-    },
-    clearButtonOnClick: {
-      action: 'clearButtonOnClick',
-      table: { category: 'text field props' },
-    },
-    clearButtonProps: {
-      control: 'object',
-      table: { category: 'text field props' },
-    },
     autoComplete: {
       control: 'boolean',
       table: { category: 'text field base props' },
@@ -113,7 +101,7 @@ export default {
       control: 'object',
       table: { category: 'text field base props' },
     },
-    leftAccessory: {
+    startAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -157,7 +145,7 @@ export default {
       control: 'boolean',
       table: { category: 'text field base props' },
     },
-    rightAccessory: {
+    endAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -209,17 +197,7 @@ const Template = (args) => {
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
-  const handleOnClear = () => {
-    updateArgs({ value: '' });
-  };
-  return (
-    <FormTextField
-      {...args}
-      value={value}
-      onChange={handleOnChange}
-      clearButtonOnClick={handleOnClear}
-    />
-  );
+  return <FormTextField {...args} value={value} onChange={handleOnChange} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -245,9 +223,6 @@ export const HelpTextStory = (args) => {
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
-  const handleOnClear = () => {
-    updateArgs({ value: '' });
-  };
   return (
     <>
       <FormTextField
@@ -255,7 +230,6 @@ export const HelpTextStory = (args) => {
         id="input-with-help-text"
         value={value}
         onChange={handleOnChange}
-        clearButtonOnClick={handleOnClear}
         marginBottom={4}
       />
       <FormTextField
@@ -265,7 +239,6 @@ export const HelpTextStory = (args) => {
         helpText="When error is true the help text will be rendered as an error message"
         value={value}
         onChange={handleOnChange}
-        clearButtonOnClick={handleOnClear}
       />
     </>
   );
@@ -432,9 +405,7 @@ export const CustomLabelOrHelpText = () => (
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
-        <Label htmlFor="custom-spending-cap" required>
-          Custom spending cap
-        </Label>
+        <Label htmlFor="custom-spending-cap">Custom spending cap</Label>
         <Icon
           name={ICON_NAMES.INFO}
           size={Size.SM}
@@ -447,7 +418,7 @@ export const CustomLabelOrHelpText = () => (
     <FormTextField
       id="custom-spending-cap"
       placeholder="Enter a number"
-      rightAccessory={<ButtonLink>Max</ButtonLink>}
+      endAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
       type={TEXT_FIELD_TYPES.NUMBER}
     />

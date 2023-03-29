@@ -15,3 +15,7 @@ GHSA-6fc8-4gx4-v693
 # patched version of 3.3.1. We can remove this once the
 # smart-transaction-controller updates its dependency.
 GHSA-8gh8-hqwg-xf34
+
+# request library is subject to SSRF.
+# addressed by temporary patch in .yarn/patches/request-npm-2.88.2-f4a57c72c4.patch
+GHSA-p8p7-x288-28g6

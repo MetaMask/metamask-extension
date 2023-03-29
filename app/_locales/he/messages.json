@@ -75,12 +75,6 @@
   "asset": {
     "message": "נכס"
   },
-  "attemptToCancel": {
-    "message": "לנסות לבטל?"
-  },
-  "attemptToCancelDescription": {
-    "message": "הגשת ניסיון זה אינה מבטיחה כי העסקה המקורית שלך תבוטל. אם ניסיון הביטול יצליח, תחויב/י בעמלת העסקה המופיעה מעלה."
-  },
   "attemptingConnect": {
     "message": "מנסה להתחבר לבלוקצ'יין."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
-  "buyWithWyre": {
-    "message": "רכישת את'ר עם Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד $1 ישירות בחשבון ה-MetaMask שלך."
-  },
   "bytes": {
     "message": "בייטים"
   },
   "cancel": {
     "message": "ביטול"
-  },
-  "cancellationGasFee": {
-    "message": "עמלת דלק עבור ביטול"
   },
   "cancelled": {
     "message": "מבוטל"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "מתחבר ל-Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "continueToWyre": {
-    "message": "המשך ל-Wyre"
   },
   "contractDeployment": {
     "message": "שליחת חוזה (Contract Deployment)"
@@ -336,13 +321,6 @@
   "general": {
     "message": "כללי"
   },
-  "getEther": {
-    "message": "השג/י את'ר"
-  },
-  "getEtherFromFaucet": {
-    "message": "השג/י את'ר מברז (faucet) עבור ה-$1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "רשת בדיקה Goerli "
   },
@@ -436,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
+  },
+  "lineatestnet": {
+    "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
     "message": "קישורים"
@@ -642,23 +623,15 @@
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
-  },
   "revealSeedWordsWarning": {
-    "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "אין לשתף צירוף מילים זה עם אף אחד!"
+    "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
   },
   "save": {
     "message": "שמור"
-  },
-  "saveAsCsvFile": {
-    "message": "שמירה כקובץ CSV"
   },
   "scanInstructions": {
     "message": "הצב/י את קוד ה-QR שלך מול המצלמה"
@@ -701,12 +674,6 @@
   },
   "settings": {
     "message": "הגדרות"
-  },
-  "showAdvancedGasInline": {
-    "message": "אמצעי שליטה מתקדמים בדלק"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג אמצעי שליטה במחיר הדלק וההגבלה (limit) ישירות במסכי השליחה והאישור."
   },
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"
@@ -794,9 +761,6 @@
   },
   "terms": {
     "message": "תנאי שימוש"
-  },
-  "testFaucet": {
-    "message": "בדיקת ברז (Faucet)"
   },
   "tips": {
     "message": "טיפים"
@@ -916,9 +880,6 @@
   "userName": {
     "message": "שם משתמש"
   },
-  "viewAccount": {
-    "message": "הצג חשבון"
-  },
   "viewContact": {
     "message": "הצג איש קשר"
   },
@@ -927,9 +888,6 @@
   },
   "welcomeBack": {
     "message": "ברוך שובך!"
-  },
-  "yesLetsTry": {
-    "message": "כן, בוא ננסה"
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."

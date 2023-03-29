@@ -1,4 +1,4 @@
-.collectibles-detection-notice {
+.nfts-detection-notice {
   margin: 16px 16px 0 16px;
 
   &__message {
@@ -13,7 +13,7 @@
       right: 8px;
     }
 
-    a.collectibles-detection-notice__message__link {
+    a.nfts-detection-notice__message__link {
       @include H7;
 
       width: 100%;

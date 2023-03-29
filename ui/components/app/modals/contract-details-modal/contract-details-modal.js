@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -23,7 +22,6 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
@@ -36,8 +34,6 @@ export default function ContractDetailsModal({
   toAddress,
   chainId,
   rpcPrefs,
-  origin,
-  siteImage,
   tokenId,
   assetName,
   assetStandard,
@@ -207,30 +203,11 @@ export default function ContractDetailsModal({
           borderColor={BorderColor.borderDefault}
           className="contract-details-modal__content__contract"
         >
-          {nft ? (
-            <Identicon
-              className="contract-details-modal__content__contract__identicon"
-              diameter={24}
-              address={toAddress}
-            />
-          ) : (
-            <UrlIcon
-              className={classnames({
-                'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                  addressBookEntry?.data?.name === undefined,
-                'contract-details-modal__content__contract__identicon':
-                  addressBookEntry?.data?.name !== undefined,
-              })}
-              fallbackClassName={classnames({
-                'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                  addressBookEntry?.data?.name === undefined,
-                'contract-details-modal__content__contract__identicon':
-                  addressBookEntry?.data?.name !== undefined,
-              })}
-              name={origin}
-              url={siteImage}
-            />
-          )}
+          <Identicon
+            className="contract-details-modal__content__contract__identicon"
+            diameter={24}
+            address={toAddress}
+          />
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
@@ -342,15 +319,7 @@ ContractDetailsModal.propTypes = {
    */
   rpcPrefs: PropTypes.object,
   /**
-   * Dapp URL
-   */
-  origin: PropTypes.string,
-  /**
-   * Dapp image
-   */
-  siteImage: PropTypes.string,
-  /**
-   * The token id of the collectible
+   * The token id of the NFT
    */
   tokenId: PropTypes.string,
   /**

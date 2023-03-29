@@ -75,12 +75,6 @@
   "asset": {
     "message": "Aset"
   },
-  "attemptToCancel": {
-    "message": "Cuba untuk Batalkan?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Menghantar percubaan ini tidak akan menjamin transaksi asal anda dibatalkan. Jika percubaan pembatalan berjaya, anda akan dikenakan yuran transaksi di atas."
-  },
   "attemptingConnect": {
     "message": "Sedang cuba menyambungkan kepada rantaian blok."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
-  "buyWithWyre": {
-    "message": "Beli $1 dengan Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit $1 secara terus ke dalam akaun MetaMask anda."
-  },
   "bytes": {
     "message": "Bait"
   },
   "cancel": {
     "message": "Batal"
-  },
-  "cancellationGasFee": {
-    "message": "Fi Gas Pembatalan"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
-  },
-  "continueToWyre": {
-    "message": "Teruskan ke Wyre"
   },
   "contractDeployment": {
     "message": "Penyusunan Kontrak"
@@ -329,13 +314,6 @@
   "general": {
     "message": "Am"
   },
-  "getEther": {
-    "message": "Dapatkan Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Dapatkan Ether daripada pili untuk $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
   },
@@ -425,6 +403,9 @@
   },
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
+  },
+  "lineatestnet": {
+    "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
     "message": "Pautan"
@@ -625,23 +606,15 @@
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jika anda pernah menukar pelayar atau berpindah komputer, anda memerlukan ungkapan benih ini untuk mengakses akaun anda. Simpan ungkapan di tempat yang selamat dan rahsia."
-  },
   "revealSeedWordsWarning": {
-    "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "JANGAN berkongsi ungkapan ini dengan orang lain!"
+    "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC baru"
   },
   "save": {
     "message": "Simpan"
-  },
-  "saveAsCsvFile": {
-    "message": "Simpan sebagai Fail CSV"
   },
   "scanInstructions": {
     "message": "Bawa kod QR ke hadapan kamera anda"
@@ -684,12 +657,6 @@
   },
   "settings": {
     "message": "Tetapan"
-  },
-  "showAdvancedGasInline": {
-    "message": "Kawalan gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menunjukkan harga gas dan kawalan had terus di skrin hantar dan sahkan."
   },
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
@@ -777,9 +744,6 @@
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"
-  },
-  "testFaucet": {
-    "message": "Uji Pili"
   },
   "tips": {
     "message": "Tip"
@@ -896,9 +860,6 @@
   "userName": {
     "message": "Nama pengguna"
   },
-  "viewAccount": {
-    "message": "Paparkan Akaun"
-  },
   "viewContact": {
     "message": "Lihat Kenalan"
   },
@@ -907,9 +868,6 @@
   },
   "welcomeBack": {
     "message": "Selamat Kembali!"
-  },
-  "yesLetsTry": {
-    "message": "Ya, mari cuba"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."

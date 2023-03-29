@@ -5,6 +5,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import SignatureRequestOriginal from '.';
 
 const MOCK_SIGN_DATA = JSON.stringify({
@@ -114,5 +115,38 @@ describe('SignatureRequestOriginal', () => {
     const { getByText } = render(txData);
     expect(getByText('Message \\u202E test:')).toBeInTheDocument();
     expect(getByText('Hi, \\u202E Alice!')).toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly', () => {
+    props.txData.securityProviderResponse = {
+      flagAsDangerous: '?',
+      reason: 'Some reason...',
+      reason_header: 'Some reason header...',
+    };
+    render();
+    expect(screen.getByText('Request not verified')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('This is based on information from'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
+    props.txData.securityProviderResponse = {
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+    };
+
+    render();
+    expect(screen.queryByText('Request not verified')).toBeNull();
+    expect(
+      screen.queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeNull();
+    expect(screen.queryByText('This is based on information from')).toBeNull();
   });
 });

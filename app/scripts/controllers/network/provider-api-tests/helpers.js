@@ -1,65 +1,13 @@
 import nock from 'nock';
 import sinon from 'sinon';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { providerFromEngine } from 'eth-json-rpc-middleware';
 import EthQuery from 'eth-query';
-import createInfuraClient from '../createInfuraClient';
-import createJsonRpcClient from '../createJsonRpcClient';
+import { createNetworkClient } from '../create-network-client';
 
 /**
  * @typedef {import('nock').Scope} NockScope
  *
  * A object returned by the `nock` function for mocking requests to a particular
  * base URL.
- */
-
-/**
- * @typedef {{blockTracker: import('eth-block-tracker').PollingBlockTracker, clock: sinon.SinonFakeTimers, makeRpcCall: (request: Partial<JsonRpcRequest>) => Promise<any>, makeRpcCallsInSeries: (requests: Partial<JsonRpcRequest>[]) => Promise<any>}} Client
- *
- * Provides methods to interact with the suite of middleware that
- * `createInfuraClient` or `createJsonRpcClient` exposes.
- */
-
-/**
- * @typedef {{providerType: "infura" | "custom", infuraNetwork?: string, customRpcUrl?: string, customChainId?: string}} WithClientOptions
- *
- * The options bag that `withNetworkClient` takes.
- */
-
-/**
- * @typedef {(client: Client) => Promise<any>} WithClientCallback
- *
- * The callback that `withNetworkClient` takes.
- */
-
-/**
- * @typedef {{ nockScope: NockScope, blockNumber: string }} MockBlockTrackerRequestOptions
- *
- * The options to `mockNextBlockTrackerRequest` and `mockAllBlockTrackerRequests`.
- */
-
-/**
- * @typedef {{ nockScope: NockScope, request: object, response: object, delay?: number }} MockRpcCallOptions
- *
- * The options to `mockRpcCall`.
- */
-
-/**
- * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string, infuraNetwork: string}} Communications
- *
- * Provides methods to mock different kinds of requests to the provider.
- */
-
-/**
- * @typedef {{providerType: 'infura' | 'custom', infuraNetwork?: string}} WithMockedCommunicationsOptions
- *
- * The options bag that `Communications` takes.
- */
-
-/**
- * @typedef {(comms: Communications) => Promise<any>} WithMockedCommunicationsCallback
- *
- * The callback that `mockingCommunications` takes.
  */
 
 /**
@@ -83,6 +31,12 @@ const MOCK_RPC_URL = 'http://foo.com';
 const DEFAULT_LATEST_BLOCK_NUMBER = '0x42';
 
 /**
+ * A reference to the original `setTimeout` function so that we can use it even
+ * when using fake timers.
+ */
+const originalSetTimeout = setTimeout;
+
+/**
  * If you're having trouble writing a test and you're wondering why the test
  * keeps failing, you can set `process.env.DEBUG_PROVIDER_TESTS` to `1`. This
  * will turn on some extra logging.
@@ -103,13 +57,16 @@ function debug(...args) {
  */
 function buildScopeForMockingRequests(rpcUrl) {
   return nock(rpcUrl).filteringRequestBody((body) => {
-    const copyOfBody = JSON.parse(body);
-    // Some IDs are random, so remove them entirely from the request to make it
-    // possible to mock these requests
-    delete copyOfBody.id;
-    return JSON.stringify(copyOfBody);
+    debug('Nock Received Request: ', body);
+    return body;
   });
 }
+
+/**
+ * @typedef {{ nockScope: NockScope, blockNumber: string }} MockBlockTrackerRequestOptions
+ *
+ * The options to `mockNextBlockTrackerRequest` and `mockAllBlockTrackerRequests`.
+ */
 
 /**
  * Mocks the next request for the latest block that the block tracker will make.
@@ -152,6 +109,12 @@ async function mockAllBlockTrackerRequests({
 }
 
 /**
+ * @typedef {{ nockScope: NockScope, request: object, response: object, delay?: number }} MockRpcCallOptions
+ *
+ * The options to `mockRpcCall`.
+ */
+
+/**
  * Mocks a JSON-RPC request sent to the provider with the given response.
  * Provider type is inferred from the base url set on the nockScope.
  *
@@ -177,24 +140,38 @@ function mockRpcCall({ nockScope, request, response, error, delay, times }) {
   // eth-query always passes `params`, so even if we don't supply this property,
   // for consistency with makeRpcCall, assume that the `body` contains it
   const { method, params = [], ...rest } = request;
-  const httpStatus = response?.httpStatus ?? 200;
-  let completeResponse;
+  let httpStatus = 200;
+  let completeResponse = { id: 2, jsonrpc: '2.0' };
   if (response !== undefined) {
-    if (response.body === undefined) {
-      completeResponse = { id: 1, jsonrpc: '2.0' };
-      ['id', 'jsonrpc', 'result', 'error'].forEach((prop) => {
-        if (response[prop] !== undefined) {
-          completeResponse[prop] = response[prop];
-        }
-      });
-    } else {
+    if ('body' in response) {
       completeResponse = response.body;
+    } else {
+      if (response.error) {
+        completeResponse.error = response.error;
+      } else {
+        completeResponse.result = response.result;
+      }
+      if (response.httpStatus) {
+        httpStatus = response.httpStatus;
+      }
     }
   }
   const url = nockScope.basePath.includes('infura.io')
     ? `/v3/${MOCK_INFURA_PROJECT_ID}`
     : '/';
+
+  debug('Mocking request:', {
+    url,
+    method,
+    params,
+    response,
+    error,
+    ...rest,
+    times,
+  });
+
   let nockRequest = nockScope.post(url, {
+    id: /\d*/u,
     jsonrpc: '2.0',
     method,
     params,
@@ -212,7 +189,17 @@ function mockRpcCall({ nockScope, request, response, error, delay, times }) {
   if (error !== undefined) {
     return nockRequest.replyWithError(error);
   } else if (completeResponse !== undefined) {
-    return nockRequest.reply(httpStatus, completeResponse);
+    return nockRequest.reply(httpStatus, (_, requestBody) => {
+      if (response !== undefined && !('body' in response)) {
+        if (response.id === undefined) {
+          completeResponse.id = requestBody.id;
+        } else {
+          completeResponse.id = response.id;
+        }
+      }
+      debug('Nock returning Response', completeResponse);
+      return completeResponse;
+    });
   }
   return nockRequest;
 }
@@ -239,6 +226,24 @@ function makeRpcCall(ethQuery, request) {
     });
   });
 }
+
+/**
+ * @typedef {{providerType: 'infura' | 'custom', infuraNetwork?: string}} WithMockedCommunicationsOptions
+ *
+ * The options bag that `Communications` takes.
+ */
+
+/**
+ * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string, infuraNetwork: string}} Communications
+ *
+ * Provides methods to mock different kinds of requests to the provider.
+ */
+
+/**
+ * @typedef {(comms: Communications) => Promise<any>} WithMockedCommunicationsCallback
+ *
+ * The callback that `mockingCommunications` takes.
+ */
 
 /**
  * Sets up request mocks for requests to the provider.
@@ -275,6 +280,7 @@ export async function withMockedCommunications(
     mockAllBlockTrackerRequests({ nockScope, ...localOptions });
   const curriedMockRpcCall = (localOptions) =>
     mockRpcCall({ nockScope, ...localOptions });
+
   const comms = {
     mockNextBlockTrackerRequest: curriedMockNextBlockTrackerRequest,
     mockAllBlockTrackerRequests: curriedMockAllBlockTrackerRequests,
@@ -290,6 +296,71 @@ export async function withMockedCommunications(
     nock.cleanAll();
   }
 }
+
+/**
+ * @typedef {{blockTracker: import('eth-block-tracker').PollingBlockTracker, clock: sinon.SinonFakeTimers, makeRpcCall: (request: Partial<JsonRpcRequest>) => Promise<any>, makeRpcCallsInSeries: (requests: Partial<JsonRpcRequest>[]) => Promise<any>}} MockNetworkClient
+ *
+ * Provides methods to interact with the suite of middleware that
+ * `createInfuraClient` or `createJsonRpcClient` exposes.
+ */
+
+/**
+ * Some middleware contain logic which retries the request if some condition
+ * applies. This retrying always happens out of band via `setTimeout`, and
+ * because we are stubbing time via Jest's fake timers, we have to manually
+ * advance the clock so that the `setTimeout` handlers get fired. We don't know
+ * when these timers will get created, however, so we have to keep advancing
+ * timers until the request has been made an appropriate number of times.
+ * Unfortunately we don't have a good way to know how many times a request has
+ * been retried, but the good news is that the middleware won't end, and thus
+ * the promise which the RPC call returns won't get fulfilled, until all retries
+ * have been made.
+ *
+ * @param promise - The promise which is returned by the RPC call.
+ * @param clock - A Sinon clock object which can be used to advance to the next
+ * `setTimeout` handler.
+ */
+export async function waitForPromiseToBeFulfilledAfterRunningAllTimers(
+  promise,
+  clock,
+) {
+  let hasPromiseBeenFulfilled = false;
+  let numTimesClockHasBeenAdvanced = 0;
+
+  promise
+    .catch((error) => {
+      // This is used to silence Node.js warnings about the rejection
+      // being handled asynchronously. The error is handled later when
+      // `promise` is awaited, but we log it here anyway in case it gets
+      // swallowed.
+      debug(error);
+    })
+    .finally(() => {
+      hasPromiseBeenFulfilled = true;
+    });
+
+  // `hasPromiseBeenFulfilled` is modified asynchronously.
+  /* eslint-disable-next-line no-unmodified-loop-condition */
+  while (!hasPromiseBeenFulfilled && numTimesClockHasBeenAdvanced < 15) {
+    clock.runAll();
+    await new Promise((resolve) => originalSetTimeout(resolve, 10));
+    numTimesClockHasBeenAdvanced += 1;
+  }
+
+  return promise;
+}
+
+/**
+ * @typedef {{providerType: "infura" | "custom", infuraNetwork?: string, customRpcUrl?: string, customChainId?: string}} WithClientOptions
+ *
+ * The options bag that `withNetworkClient` takes.
+ */
+
+/**
+ * @typedef {(client: MockNetworkClient) => Promise<any>} WithClientCallback
+ *
+ * The callback that `withNetworkClient` takes.
+ */
 
 /**
  * Builds a provider from the middleware (for the provider type) along with a
@@ -325,6 +396,13 @@ export async function withNetworkClient(
     );
   }
 
+  // Faking timers ends up doing two things:
+  // 1. Halting the block tracker (which depends on `setTimeout` to periodically
+  // request the latest block) set up in `eth-json-rpc-middleware`
+  // 2. Halting the retry logic in `@metamask/eth-json-rpc-infura` (which also
+  // depends on `setTimeout`)
+  const clock = sinon.useFakeTimers();
+
   // The JSON-RPC client wraps `eth_estimateGas` so that it takes 2 seconds longer
   // than it usually would to complete. Or at least it should — this doesn't
   // appear to be working correctly. Unset `IN_TEST` on `process.env` to prevent
@@ -333,20 +411,21 @@ export async function withNetworkClient(
   delete process.env.IN_TEST;
   const clientUnderTest =
     providerType === 'infura'
-      ? createInfuraClient({
+      ? createNetworkClient({
           network: infuraNetwork,
-          projectId: MOCK_INFURA_PROJECT_ID,
+          infuraProjectId: MOCK_INFURA_PROJECT_ID,
+          type: 'infura',
         })
-      : createJsonRpcClient({ rpcUrl: customRpcUrl, chainId: customChainId });
+      : createNetworkClient({
+          chainId: customChainId,
+          rpcUrl: customRpcUrl,
+          type: 'custom',
+        });
   process.env.IN_TEST = inTest;
 
-  const { networkMiddleware, blockTracker } = clientUnderTest;
+  const { provider, blockTracker } = clientUnderTest;
 
-  const engine = new JsonRpcEngine();
-  engine.push(networkMiddleware);
-  const provider = providerFromEngine(engine);
   const ethQuery = new EthQuery(provider);
-
   const curriedMakeRpcCall = (request) => makeRpcCall(ethQuery, request);
   const makeRpcCallsInSeries = async (requests) => {
     const responses = [];
@@ -355,12 +434,7 @@ export async function withNetworkClient(
     }
     return responses;
   };
-  // Faking timers ends up doing two things:
-  // 1. Halting the block tracker (which depends on `setTimeout` to periodically
-  // request the latest block) set up in `eth-json-rpc-middleware`
-  // 2. Halting the retry logic in `@metamask/eth-json-rpc-infura` (which also
-  // depends on `setTimeout`)
-  const clock = sinon.useFakeTimers();
+
   const client = {
     blockTracker,
     clock,

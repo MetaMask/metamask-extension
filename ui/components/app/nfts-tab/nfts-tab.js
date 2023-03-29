@@ -5,8 +5,8 @@ import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import CollectiblesDetectionNotice from '../nfts-detection-notice';
-import CollectiblesItems from '../nfts-items';
+import NftsDetectionNotice from '../nfts-detection-notice';
+import NftsItems from '../nfts-items';
 import {
   TypographyVariant,
   TEXT_ALIGN,
@@ -23,18 +23,18 @@ import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
 } from '../../../store/actions';
-import { useCollectiblesCollections } from '../../../hooks/useNftsCollections';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-export default function CollectiblesTab({ onAddNFT }) {
+export default function NftsTab({ onAddNFT }) {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { collectiblesLoading, collections, previouslyOwnedCollection } =
-    useCollectiblesCollections();
+  const { nftsLoading, collections, previouslyOwnedCollection } =
+    useNftsCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
@@ -47,23 +47,21 @@ export default function CollectiblesTab({ onAddNFT }) {
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
-  if (collectiblesLoading) {
-    return <div className="collectibles-tab__loading">{t('loadingNFTs')}</div>;
+  if (nftsLoading) {
+    return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
   }
 
   return (
-    <Box className="collectibles-tab">
+    <Box className="nfts-tab">
       {Object.keys(collections).length > 0 ||
-      previouslyOwnedCollection.collectibles.length > 0 ? (
-        <CollectiblesItems
+      previouslyOwnedCollection.nfts.length > 0 ? (
+        <NftsItems
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}
         />
       ) : (
         <>
-          {isMainnet && !useNftDetection ? (
-            <CollectiblesDetectionNotice />
-          ) : null}
+          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
           <Box padding={12}>
             <Box justifyContent={JustifyContent.center}>
               <img src="./images/no-nfts.svg" />
@@ -73,7 +71,7 @@ export default function CollectiblesTab({ onAddNFT }) {
               marginBottom={12}
               justifyContent={JustifyContent.center}
               flexDirection={FLEX_DIRECTION.COLUMN}
-              className="collectibles-tab__link"
+              className="nfts-tab__link"
             >
               <Typography
                 color={TextColor.textMuted}
@@ -114,7 +112,7 @@ export default function CollectiblesTab({ onAddNFT }) {
           {!isMainnet && Object.keys(collections).length < 1 ? null : (
             <>
               <Box
-                className="collectibles-tab__link"
+                className="nfts-tab__link"
                 justifyContent={JustifyContent.flexEnd}
               >
                 {isMainnet && !useNftDetection ? (
@@ -138,7 +136,7 @@ export default function CollectiblesTab({ onAddNFT }) {
           )}
           <Box
             justifyContent={JustifyContent.flexStart}
-            className="collectibles-tab__link"
+            className="nfts-tab__link"
           >
             <Button type="link" onClick={onAddNFT}>
               {t('importNFTs')}
@@ -150,6 +148,6 @@ export default function CollectiblesTab({ onAddNFT }) {
   );
 }
 
-CollectiblesTab.propTypes = {
+NftsTab.propTypes = {
   onAddNFT: PropTypes.func.isRequired,
 };

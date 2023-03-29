@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
+  Color,
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
@@ -13,6 +14,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();
@@ -71,7 +73,11 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
-        <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+        <Icon
+          name={ICON_NAMES.ARROW_RIGHT}
+          color={Color.primaryDefault}
+          size={ICON_SIZES.XS}
+        />
       </button>
       {estimateUsed === 'custom' && (
         <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>

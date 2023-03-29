@@ -180,7 +180,7 @@ export const DefaultStory = (args) => {
                     textAlign: TEXT_ALIGN.CENTER,
                   }}
                   backgroundColor={BackgroundColor.backgroundAlternative}
-                  rightAccessory={
+                  endAccessory={
                     <ButtonIcon
                       iconName={ICON_NAMES.COPY}
                       size={Size.SM}
@@ -225,7 +225,6 @@ export const Name = (args) => (
   <>
     <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={2}>
       {Object.keys(ICON_NAMES).map((item) => {
-        console.log('item:', item);
         return (
           <Box
             borderColor={BorderColor.borderMuted}
@@ -259,9 +258,37 @@ export const SizeStory = (args) => (
       <Icon {...args} size={Size.LG} />
       <Icon {...args} size={Size.XL} />
     </Box>
-    <Text as="p" variant={TextVariant.bodySm}>
-      <Icon {...args} size={Size.inherit} /> inherits the font-size of the
-      parent element.
+    <Text variant={TextVariant.displayMd}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.headingLg}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.headingMd}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.headingSm}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodyLgMedium}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodyMd}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodySm}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodyXs}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
     </Text>
   </>
 );
@@ -390,5 +417,20 @@ export const LayoutAndSpacing = () => (
       />
       <Text>Create account</Text>
     </Box>
+    <Label>
+      Custom spending cap{' '}
+      <Icon name={ICON_NAMES.INFO} size={ICON_SIZES.AUTO} marginLeft={1} />
+    </Label>
+    <div>
+      <Text>
+        <Icon
+          name={ICON_NAMES.WARNING}
+          size={ICON_SIZES.AUTO}
+          marginLeft={1}
+          color={IconColor.warningDefault}
+        />{' '}
+        Warning
+      </Text>
+    </div>
   </Box>
 );

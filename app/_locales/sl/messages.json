@@ -75,12 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptToCancel": {
-    "message": "Želite preklicati?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Če pošljete ta poskus, ne boste zagotovili, da bo vaša prvotna transakcija preklicana. Če bo poskus preklica uspešen, se bo zaračunala zgornja transakcija."
-  },
   "attemptingConnect": {
     "message": "Povezovanje z verigo blokov ..."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Vaš brskalnik ni podptrt ..."
   },
-  "buyWithWyre": {
-    "message": "Kupi $1 z Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vam omogoča, da s kreditno kartico nakažete $1 neposredno na svoj račun MetaMask."
-  },
   "bytes": {
     "message": "Bajti"
   },
   "cancel": {
     "message": "Prekliči"
-  },
-  "cancellationGasFee": {
-    "message": "Preklicani znesek gas"
   },
   "cancelled": {
     "message": "Preklicano"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezovanje na testno omrežje Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
-  },
-  "continueToWyre": {
-    "message": "Nadaljuj na Wyre"
   },
   "contractDeployment": {
     "message": "Ustvarjanje pogodbe"
@@ -333,13 +318,6 @@
   "general": {
     "message": "Splošno"
   },
-  "getEther": {
-    "message": "Pridobi Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Pridobite Ether iz fauceta za $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Testno omrežje Goerli"
   },
@@ -430,6 +408,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
+  },
+  "lineatestnet": {
+    "message": "Testno omrežje Linea Goerli"
   },
   "links": {
     "message": "Povezave"
@@ -633,23 +614,15 @@
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },
-  "revealSeedWordsDescription": {
-    "message": "Če želite zamenjati brskalnik ali računalnik, potrebujete vaš seed phase za dostop do računa. Shranite ga na varno skrito mesto."
-  },
   "revealSeedWordsWarning": {
-    "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Tega ne delite z nikomer!"
+    "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nov URL RPC"
   },
   "save": {
     "message": "Shrani"
-  },
-  "saveAsCsvFile": {
-    "message": "Shrani kot CSV datoteko"
   },
   "scanInstructions": {
     "message": "Postavite QR kodo pred vašo kamero"
@@ -692,12 +665,6 @@
   },
   "settings": {
     "message": "Nastavitve"
-  },
-  "showAdvancedGasInline": {
-    "message": "Napredno krmiljenje plina"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izberite to možnost, če želite prikazati ceno plina in omejiti nadzor neposredno na zaslonih za pošiljanje in potrditev."
   },
   "showFiatConversionInTestnets": {
     "message": "Pokažite pretvorbo na testnih omrežjih"
@@ -785,9 +752,6 @@
   },
   "terms": {
     "message": "Pogoji uporabe"
-  },
-  "testFaucet": {
-    "message": "Testni faucet"
   },
   "tips": {
     "message": "Nasveti"
@@ -907,9 +871,6 @@
   "userName": {
     "message": "Uporabniško ime"
   },
-  "viewAccount": {
-    "message": "Poglej račun"
-  },
   "viewContact": {
     "message": "Ogled stika"
   },
@@ -918,9 +879,6 @@
   },
   "welcomeBack": {
     "message": "Dobrodošli nazaj!"
-  },
-  "yesLetsTry": {
-    "message": "Pa poskusimo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za uporabo te funkcije boste potrebovali dostop do kamere."

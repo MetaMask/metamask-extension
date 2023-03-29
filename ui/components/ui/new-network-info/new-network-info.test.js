@@ -65,7 +65,7 @@ describe('NewNetworkInfo', () => {
       updateTokenDetectionSupportStatus,
     );
     const { container } = renderWithProvider(<NewNetworkInfo />, store);
-    const questionMark = container.querySelector('.fa fa-question-circle');
+    const questionMark = container.querySelector('.question');
 
     expect(questionMark).toBeDefined();
   });

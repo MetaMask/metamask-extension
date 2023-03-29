@@ -2,10 +2,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
-import {
-  renderControlledInput,
-  renderWithUserEvent,
-} from '../../../../test/lib/render-helpers';
+import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { Size } from '../../../helpers/constants/design-system';
 
@@ -81,10 +78,8 @@ describe('FormTextField', () => {
         helpText="test help text"
       />,
     );
-    expect(getByTestId('text-field')).toHaveClass('mm-text-field-base--error');
-    expect(getByText('test help text')).toHaveClass(
-      'mm-text--color-error-default',
-    );
+    expect(getByTestId('text-field')).toHaveClass('mm-text-field--error');
+    expect(getByText('test help text')).toHaveClass('box--color-error-default');
   });
   // helpText
   it('should render with helpText', () => {
@@ -154,17 +149,17 @@ describe('FormTextField', () => {
       'mm-form-text-field__label test',
     );
   });
-  // leftAccessory, // rightAccessory
+  // startAccessory, // endAccessory
   it('should render with right and left accessories', () => {
     const { getByRole, getByText } = render(
       <FormTextField
-        leftAccessory={<div>left accessory</div>}
-        rightAccessory={<div>right accessory</div>}
+        startAccessory={<div>start accessory</div>}
+        endAccessory={<div>end accessory</div>}
       />,
     );
     expect(getByRole('textbox')).toBeDefined();
-    expect(getByText('left accessory')).toBeDefined();
-    expect(getByText('right accessory')).toBeDefined();
+    expect(getByText('start accessory')).toBeDefined();
+    expect(getByText('end accessory')).toBeDefined();
   });
   // maxLength;
   it('should render with maxLength and not allow more than the set characters', async () => {
@@ -230,23 +225,12 @@ describe('FormTextField', () => {
         readOnly
         value="test value"
         data-testid="read-only"
-        inputProps={{ 'data-testid': 'text-field-base-readonly' }}
+        inputProps={{ 'data-testid': 'text-field-readonly' }}
       />,
     );
     await user.type(getByRole('textbox'), 'test');
     expect(getByRole('textbox')).toHaveValue('test value');
     expect(getByRole('textbox')).toHaveAttribute('readonly', '');
-  });
-  // required
-  it('should render with required asterisk after Label', () => {
-    const { getByTestId } = render(
-      <FormTextField
-        required
-        label="test label"
-        labelProps={{ 'data-testid': 'label-test-id' }}
-      />,
-    );
-    expect(getByTestId('label-test-id')).toHaveTextContent('test label*');
   });
   // size = SIZES.MD
   it('should render with different size classes', () => {
@@ -266,9 +250,9 @@ describe('FormTextField', () => {
         />
       </>,
     );
-    expect(getByTestId('sm')).toHaveClass('mm-text-field-base--size-sm');
-    expect(getByTestId('md')).toHaveClass('mm-text-field-base--size-md');
-    expect(getByTestId('lg')).toHaveClass('mm-text-field-base--size-lg');
+    expect(getByTestId('sm')).toHaveClass('mm-text-field--size-sm');
+    expect(getByTestId('md')).toHaveClass('mm-text-field--size-md');
+    expect(getByTestId('lg')).toHaveClass('mm-text-field--size-lg');
   });
   // textFieldProps
   it('should render with textFieldProps', () => {
@@ -288,44 +272,10 @@ describe('FormTextField', () => {
         />
       </>,
     );
-    expect(getByTestId('truncate')).toHaveClass('mm-text-field-base--truncate');
+    expect(getByTestId('truncate')).toHaveClass('mm-text-field--truncate');
     expect(getByTestId('no-truncate')).not.toHaveClass(
-      'mm-text-field-base--truncate',
+      'mm-text-field--truncate',
     );
-  });
-  // showClearButton
-  it('should render showClearButton button when showClearButton is true and value exists', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
-    const { user, getByRole } = renderControlledInput(FormTextField, {
-      showClearButton: true,
-    });
-    await user.type(getByRole('textbox'), 'test value');
-    expect(getByRole('textbox')).toHaveValue('test value');
-    expect(getByRole('button', { name: /Clear/u })).toBeDefined();
-  });
-  // clearButtonOnClick
-  it('should fire onClick event when passed to clearButtonOnClick when clear button is clicked', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
-    const fn = jest.fn();
-    const { user, getByRole } = renderControlledInput(FormTextField, {
-      showClearButton: true,
-      clearButtonOnClick: fn,
-    });
-    await user.type(getByRole('textbox'), 'test value');
-    await user.click(getByRole('button', { name: /Clear/u }));
-    expect(fn).toHaveBeenCalledTimes(1);
-  });
-  // clearButtonProps,
-  it('should fire onClick event when passed to clearButtonProps.onClick prop', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
-    const fn = jest.fn();
-    const { user, getByRole } = renderControlledInput(FormTextField, {
-      showClearButton: true,
-      clearButtonProps: { onClick: fn },
-    });
-    await user.type(getByRole('textbox'), 'test value');
-    await user.click(getByRole('button', { name: /Clear/u }));
-    expect(fn).toHaveBeenCalledTimes(1);
   });
   // type,
   it('should render with different types', () => {

@@ -176,17 +176,23 @@ export default class ExtensionPlatform {
   _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = 'Failed transaction';
-    const message = `Transaction ${nonce} failed! ${
+    let message = `Transaction ${nonce} failed! ${
       errorMessage || txMeta.err.message
     }`;
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (isNaN(nonce)) {
+      message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
+    }
+    ///: END:ONLY_INCLUDE_IN
     this._showNotification(title, message);
   }
 
-  _showNotification(title, message, url) {
+  async _showNotification(title, message, url) {
+    const iconUrl = await browser.runtime.getURL('../../images/icon-64.png');
     browser.notifications.create(url, {
       type: 'basic',
       title,
-      iconUrl: browser.runtime.getURL('../../images/icon-64.png'),
+      iconUrl,
       message,
     });
   }

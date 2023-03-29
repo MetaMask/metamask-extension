@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import log from 'loglevel';
 
 import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
@@ -9,6 +10,8 @@ import { EVENT } from '../../../shared/constants/metametrics';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -25,13 +28,14 @@ export default class ConfirmEncryptionPublicKey extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     subjectMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
+    currentCurrency: PropTypes.string.isRequired,
+    conversionRate: PropTypes.number,
   };
 
   renderHeader = () => {
@@ -71,18 +75,28 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const {
       conversionRate,
       nativeCurrency,
+      currentCurrency,
       fromAccount: { balance },
     } = this.props;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = new Numeric(
-      balance,
-      16,
-      EtherDenomination.WEI,
-    )
-      .applyConversionRate(conversionRate)
-      .round(6)
-      .toBase(10);
+    const nativeCurrencyBalance = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
 
     return (
       <div className="request-encryption-public-key__balance">
@@ -90,7 +104,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-encryption-public-key__balance-value">
-          {`${nativeCurrencyBalance} ${nativeCurrency}`}
+          {`${nativeCurrencyBalance} ${
+            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+          }`}
         </div>
       </div>
     );
@@ -197,6 +213,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   render = () => {
+    if (!this.props.txData) {
+      log.warn('ConfirmEncryptionPublicKey Page: Missing txData prop.');
+      return null;
+    }
+
     return (
       <div className="request-encryption-public-key__container">
         {this.renderHeader()}

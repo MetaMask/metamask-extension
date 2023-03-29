@@ -35,6 +35,7 @@ import {
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
+  isHardwareWallet,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -62,6 +63,7 @@ import { ConfirmPageContainerNavigation } from '../../components/app/confirm-pag
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { Icon, ICON_NAMES } from '../../components/component-library';
+import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 
 export default function TokenAllowance({
   origin,
@@ -111,6 +113,7 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const isHardwareWalletConnected = useSelector(isHardwareWallet);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -491,6 +494,11 @@ export default function TokenAllowance({
           </Box>
         </Box>
       ) : null}
+      {!isFirstPage && isHardwareWalletConnected && (
+        <Box paddingLeft={2} paddingRight={2}>
+          <LedgerInstructionField showDataInstruction />
+        </Box>
+      )}
       <PageContainerFooter
         cancelText={t('reject')}
         submitText={isFirstPage ? t('next') : t('approveButtonText')}
@@ -518,8 +526,6 @@ export default function TokenAllowance({
           toAddress={toAddress}
           chainId={fullTxData.chainId}
           rpcPrefs={rpcPrefs}
-          origin={origin}
-          siteImage={siteImage}
         />
       )}
     </Box>

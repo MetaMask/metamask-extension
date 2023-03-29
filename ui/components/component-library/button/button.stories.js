@@ -64,14 +64,18 @@ export default {
     href: {
       control: 'text',
     },
-    iconName: {
+    startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
     },
-    iconProps: {
+    startIconProps: {
+      control: 'object',
+    },
+    endIconProps: {
       control: 'object',
     },
     loading: {
@@ -209,8 +213,14 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
+export const StartIconName = (args) => (
+  <Button {...args} startIconName={ICON_NAMES.ADD_SQUARE}>
+    Button
+  </Button>
+);
+
+export const EndIconName = (args) => (
+  <Button {...args} endIconName={ICON_NAMES.ARROW_2_RIGHT}>
     Button
   </Button>
 );

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Collectible Details should match minimal props and state snapshot 1`] = `
+exports[`NFT Details should match minimal props and state snapshot 1`] = `
 <div>
   <div
     class="asset-navigation"
@@ -8,9 +8,10 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
     <button
       class="asset-breadcrumb"
     >
-      <i
-        class="fas fa-chevron-left asset-breadcrumb__chevron"
+      <span
+        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-inherit"
         data-testid="asset__back"
+        style="mask-image: url('./images/icons/arrow-left.svg');"
       />
       <span>
         Test Account
@@ -19,39 +20,39 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
       <span
         class="asset-breadcrumb__asset"
       >
-        MUNK #1
+        Munk Generator
       </span>
     </button>
     <div>
       <button
         aria-label="NFT Options"
-        class="box mm-button-icon mm-button-icon--size-lg collectible-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
-        data-testid="collectible-options__button"
+        class="box mm-button-icon mm-button-icon--size-lg nft-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
+        data-testid="nft-options__button"
       >
-        <div
-          class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
+        <span
+          class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
           style="mask-image: url('./images/icons/more-vertical.svg');"
         />
       </button>
     </div>
   </div>
   <div
-    class="box collectible-details box--flex-direction-row"
+    class="box nft-details box--flex-direction-row"
   >
     <div
-      class="collectible-details__top-section"
+      class="nft-details__top-section"
     >
       <div
-        class="box collectible-details__card box--flex-direction-row box--justify-content-center box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1 box--display-flex"
+        class="box nft-details__card box--flex-direction-row box--justify-content-center box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1 box--display-flex"
       >
         <img
           alt="MUNK #1 1"
-          class="collectible-details__image"
+          class="nft-details__image"
           src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
         />
       </div>
       <div
-        class="box collectible-details__info box--flex-direction-column box--justify-content-space-between box--display-flex"
+        class="box nft-details__info box--flex-direction-column box--justify-content-space-between box--display-flex"
       >
         <div>
           <h4
@@ -70,8 +71,8 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
           class="box box--display-flex box--flex-direction-row box--width-1/2"
         >
           <button
-            class="button btn--rounded btn-primary collectible-details__send-button"
-            data-testid="collectible-send-button"
+            class="button btn--rounded btn-primary nft-details__send-button"
+            data-testid="nft-send-button"
             role="button"
             tabindex="0"
           >
@@ -87,12 +88,48 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography collectible-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+        >
+          Last sold
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            1/18/2023
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+        >
+          Last price sold
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            0.0049 ETH
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
         >
           Source
         </h6>
         <h6
-          class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography collectible-details__image-source typography--h6 typography--weight-normal typography--style-normal typography--color-primary-default"
+          class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography nft-details__image-source typography--h6 typography--weight-normal typography--style-normal typography--color-primary-default"
         >
           <a
             href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
@@ -108,12 +145,12 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography collectible-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
         >
           Contract address
         </h6>
         <div
-          class="box collectible-details__contract-wrapper box--display-flex box--flex-direction-row"
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
@@ -121,7 +158,7 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
             0xDc7...6414
           </h6>
           <div
-            class="collectible-details__tooltip-wrapper"
+            class="nft-details__tooltip-wrapper"
           >
             <div
               aria-describedby="tippy-tooltip-1"
@@ -133,11 +170,11 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
             >
               <button
                 aria-label="copy"
-                class="box mm-button-icon mm-button-icon--size-lg collectible-details__contract-copy-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
-                data-testid="collectible-address-copy"
+                class="box mm-button-icon mm-button-icon--size-lg nft-details__contract-copy-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
+                data-testid="nft-address-copy"
               >
-                <div
-                  class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
+                <span
+                  class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>

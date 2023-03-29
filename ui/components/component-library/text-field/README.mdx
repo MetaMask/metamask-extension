@@ -1,12 +1,10 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
-import { TextFieldBase } from '../text-field-base';
-
 import { TextField } from './text-field';
 
 # TextField
 
-The `TextField` component lets users enter and edit text as well as adding a show clear button option. It wraps `TextFieldBase` and functions only as a controlled input.
+`TextField` lets user enter a text data into a boxed field. It can sometimes contain related information or controls.
 
 <Canvas>
   <Story id="components-componentlibrary-textfield--default-story" />
@@ -18,79 +16,318 @@ The `TextField` accepts all props below as well as all [Box](/docs/components-ui
 
 <ArgsTable of={TextField} />
 
-`TextField` accepts all [TextFieldBase](/docs/components-componentlibrary-textfieldbase--default-story#props)
-component props
+### Size
 
-<ArgsTable of={TextFieldBase} />
+Use the `size` prop to set the height of the `TextField`.
 
-### Show Clear Button
+Possible sizes include:
 
-Use the `showClearButton` prop to display a clear button when `TextField` has a value. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input. Otherwise the clear button will not do anything.
+- `sm` 32px
+- `md` 40px
+- `lg` 48px
 
-The clear button uses [ButtonIcon](/docs/components-componentlibrary-buttonicon--default-story) and accepts all `ButtonIcon` props.
-
-**NOTE: The `showClearButton` only works with a controlled input.**
+Defaults to `md`
 
 <Canvas>
-  <Story id="components-componentlibrary-textfield--show-clear-button" />
+  <Story id="components-componentlibrary-textfield--size-story" />
 </Canvas>
 
 ```jsx
+import { Size } from '../../../helpers/constants/design-system';
 import { TextField } from '../../component-library';
 
-const [value, setValue] = useState('show clear');
-
-const handleOnChange = (e) => {
-  setValue(e.target.value);
-};
-
-const handleOnClear = () => {
-  setValue('');
-};
-
-<TextField
-  placeholder="Enter text to show clear"
-  value={value}
-  onChange={handleOnChange}
-  showClearButton
-  clearButtonOnClick={handleOnClear}
-/>;
+<TextField size={Size.SM} />
+<TextField size={Size.MD} />
+<TextField size={Size.LG} />
 ```
 
-### Clear Button Props
+### Type
 
-Use the `clearButtonProps` to access other props of the clear button.
+Use the `type` prop to change the type of input.
+
+Possible types include:
+
+- `text`
+- `number`
+- `password`
+
+Defaults to `text`.
 
 <Canvas>
-  <Story id="components-componentlibrary-textfield--clear-button-props" />
+  <Story id="components-componentlibrary-textfield--type" />
 </Canvas>
 
 ```jsx
-import React, { useState } from 'react';
-import { Color, BorderRadius } from '../../../helpers/constants/design-system';
-
 import { TextField } from '../../component-library';
 
-const [value, setValue] = useState('show clear');
+<TextField type="text" /> // (Default)
+<TextField type="number" />
+<TextField type="password" />
+```
 
+### Truncate
+
+Use the `truncate` prop to truncate the text of the the `TextField`. Defaults to `true`.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--truncate" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField truncate />; // truncate is set to `true` by default
+<TextField truncate={false} />;
+```
+
+### Start accessory End Accessory
+
+Use the `startAccessory` and `endAccessory` props to add components such as icons or buttons to either side of the `TextField`.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--start-accessory-end-accessory" />
+</Canvas>
+
+```jsx
+import { Color, IconColor, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
+import { ButtonIcon, Icon, ICON_NAMES, TextField } from '../../component-library';
+
+<TextField
+  placeholder="Search"
+  startAccessory={
+    <Icon
+      color={IconColor.iconAlternative}
+      name={ICON_NAMES.SEARCH}
+    />
+  }
+/>
+
+<TextField
+  placeholder="Public address (0x), or ENS"
+  endAccessory={
+    <ButtonIcon
+      iconName={ICON_NAMES.SCAN_BARCODE}
+      ariaLabel="Scan QR code"
+      iconProps={{ color: IconColor.primaryDefault }}
+    />
+  }
+/>
+
+<TextField
+  placeholder="Enter amount"
+  type="number"
+  truncate
+  startAccessory={<SelectTokenComponent />}
+  endAccessory={<TokenValueInUSDComponent />}
+/>
+
+<TextField
+  placeholder="Public address (0x), or ENS"
+  truncate
+  startAccessory={<AvatarAccount />}
+  endAccessory={
+    isAddressValid && (
+      <Icon
+        name={ICON_NAMES.CHECK}
+        color={IconColor.successDefault}
+      />
+    )
+  }
+/>
+```
+
+### Input Ref
+
+Use the `inputRef` prop to access the ref of the `<input />` html element of `TextField`. This is useful for focusing the input from a button or other component.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--input-ref" />
+</Canvas>
+
+```jsx
+import { Button, TextField } from '../../component-library';
+
+const inputRef = useRef(null);
+const [value, setValue] = useState('');
+const handleOnClick = () => {
+  inputRef.current.focus();
+};
 const handleOnChange = (e) => {
   setValue(e.target.value);
 };
 
-const handleOnClear = () => {
-  setValue('');
-};
-
 <TextField
-  placeholder="Enter text to show clear"
+  inputRef={inputRef}
   value={value}
   onChange={handleOnChange}
-  showClearButton
-  clearButtonOnClick={handleOnClear}
-  clearButtonProps={{
-    backgroundColor: Color.backgroundAlternative,
-    borderRadius: BorderRadius.XS,
-    'data-testid': 'clear-button',
-  }}
-/>;
+/>
+<Button marginLeft={1} onClick={handleOnClick}>
+  Edit
+</Button>
+```
+
+### Input Component
+
+Use the `InputComponent` prop change the component used for the input element. This is useful for replacing the base input with a custom input while retaining the functionality of the `TextField`.
+
+Defaults to the [Text](/docs/components-componentlibrary-text--default-story) component
+
+To function fully the custom component should accept the following props:
+
+- `aria-invalid`
+- `as`
+- `autoComplete`
+- `autoFocus`
+- `backgroundColor`
+- `defaultValue`
+- `disabled`
+- `focused`
+- `id`
+- `margin`
+- `maxLength`
+- `name`
+- `onBlur`
+- `onChange`
+- `onFocus`
+- `padding`
+- `paddingLeft`
+- `paddingRight`
+- `placeholder`
+- `readOnly`
+- `ref`
+- `required`
+- `value`
+- `variant`
+- `type`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--input-component" />
+</Canvas>
+
+```jsx
+import { TextField, Icon, ICON_NAMES } from '../../component-library';
+
+// should map the props to the custom input component
+const CustomInputComponent = () => <div>{/* Custom input component */}</div>;
+
+const TextFieldCustomInput = (args) => (
+  <TextField
+    size={SIZES.LG}
+    InputComponent={CustomInputComponent}
+    startAccessory={
+      <Icon color={IconColor.iconAlternative} name={ICON_NAMES.WALLET} />
+    }
+  />
+);
+```
+
+### Auto Complete
+
+Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--auto-complete" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField type="password" autoComplete />;
+```
+
+### Auto Focus
+
+Use the `autoFocus` prop to focus the `TextField` during the first mount
+
+To view story see [Canvas tab](/story/components-componentlibrary-textfield--auto-complete). Removing it from docs because created annoying reading experience 😁
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField autoFocus />;
+```
+
+### Default Value
+
+Use the `defaultValue` prop to set the default value of the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--default-value" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField defaultValue="default value" />;
+```
+
+### Disabled
+
+Use the `disabled` prop to set the disabled state of the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--disabled" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField disabled />;
+```
+
+### Error
+
+Use the `error` prop to set the error state of the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--error-story" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField error />;
+```
+
+### Max Length
+
+Use the `maxLength` prop to set the maximum allowed input characters for the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--max-length" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField maxLength={10} />;
+```
+
+### Read Only
+
+Use the `readOnly` prop to set the `TextField` to read only. When `readOnly` is true `TextField` will not have a focus state.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--read-only" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField readOnly />;
+```
+
+### Required
+
+Use the `required` prop to set the `TextField` to required. Currently there is no visual difference to the `TextField` when required.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--required" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+// Currently no visual difference
+<TextField required />;
 ```

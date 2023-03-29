@@ -9,7 +9,22 @@ import {
   BackgroundColor,
   FLEX_DIRECTION,
   JustifyContent,
+  Color,
+  DISPLAY,
+  TextVariant,
+  Size,
+  BorderColor,
+  IconColor,
+  TEXT_ALIGN,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
+import {
+  ButtonIcon,
+  Text,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -46,6 +61,8 @@ const Popover = ({
   showArrow,
   CustomBackground,
   popoverRef,
+  showScrollDown,
+  onScrollDownButtonClick,
   centerTitle,
   headerProps = defaultHeaderProps,
   contentProps = defaultContentProps,
@@ -53,43 +70,51 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
-  const Header = () => {
-    return (
+  const Header = () => (
+    <Box
+      {...{ ...defaultHeaderProps, ...headerProps }}
+      className="popover-header"
+    >
       <Box
-        {...{ ...defaultHeaderProps, ...headerProps }}
-        className="popover-header"
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        justifyContent={centerTitle ? null : JustifyContent.spaceBetween}
+        className={classnames('popover-header__title', {
+          'popover-header__title--center': centerTitle,
+        })}
+        marginBottom={2}
       >
-        <div
-          className={classnames(
-            'popover-header__title',
-            centerTitle ? 'center' : '',
-          )}
+        {onBack ? (
+          <ButtonIcon
+            iconName={ICON_NAMES.ARROW_LEFT}
+            ariaLabel={t('back')}
+            onClick={onBack}
+            color={Color.iconDefault}
+            size={Size.SM}
+          />
+        ) : null}
+        <Text
+          textAlign={centerTitle ? TEXT_ALIGN.CENTER : TEXT_ALIGN.START}
+          ellipsis
+          variant={TextVariant.headingSm}
+          as="h2"
+          width={BLOCK_SIZES.FULL}
         >
-          <h2 title="popover">
-            {onBack ? (
-              <button
-                className="fas fa-chevron-left popover-header__button"
-                title={t('back')}
-                onClick={onBack}
-              />
-            ) : null}
-            {title}
-          </h2>
-          {onClose ? (
-            <button
-              className="fas fa-times popover-header__button"
-              title={t('close')}
-              data-testid="popover-close"
-              onClick={onClose}
-            />
-          ) : null}
-        </div>
-        {subtitle ? (
-          <p className="popover-header__subtitle">{subtitle}</p>
+          {title}
+        </Text>
+        {onClose ? (
+          <ButtonIcon
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel={t('close')}
+            data-testid="popover-close"
+            onClick={onClose}
+            size={Size.SM}
+          />
         ) : null}
       </Box>
-    );
-  };
+      {subtitle ? <Text variant={TextVariant.bodySm}>{subtitle}</Text> : null}
+    </Box>
+  );
 
   return (
     <div className="popover-container">
@@ -102,6 +127,26 @@ const Popover = ({
         className={classnames('popover-wrap', className)}
         ref={popoverRef}
       >
+        {showScrollDown ? (
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            borderColor={BorderColor.borderDefault}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            color={Color.iconDefault}
+            onClick={onScrollDownButtonClick}
+            className="whats-new-popup__scroll-button"
+            data-testid="whats-new-popup-scroll-button"
+          >
+            <Icon
+              name={ICON_NAMES.ARROW_DOWN}
+              color={IconColor.primaryDefault}
+              size={ICON_SIZES.MD}
+              aria-label={t('scrollDown')}
+            />
+          </Box>
+        ) : null}
         {showArrow ? <div className="popover-arrow" /> : null}
         {showHeader && <Header />}
         {children ? (
@@ -173,6 +218,14 @@ Popover.propTypes = {
   popoverRef: PropTypes.shape({
     current: PropTypes.instanceOf(window.Element),
   }),
+  /**
+   * Show title of the popover
+   */
+  showScrollDown: PropTypes.bool,
+  /**
+   * ScrollDown handler
+   */
+  onScrollDownButtonClick: PropTypes.func,
   /**
    * Check if use centered title
    */

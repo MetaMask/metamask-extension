@@ -33,10 +33,10 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-export function renderWithProvider(component, store) {
+export function renderWithProvider(component, store, initialEntries) {
   const Wrapper = ({ children }) => {
     const WithoutStore = () => (
-      <MemoryRouter initialEntries={['/']} initialIndex={0}>
+      <MemoryRouter initialEntries={initialEntries || ['/']} initialIndex={0}>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>{children}</LegacyI18nProvider>
         </I18nProvider>

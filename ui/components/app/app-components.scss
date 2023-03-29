@@ -12,6 +12,7 @@
 @import 'beta-header/index';
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
+@import 'confirm-data/index';
 @import 'confirmation-warning-modal/index';
 @import 'nfts-items/index';
 @import 'nfts-tab/index';
@@ -25,7 +26,6 @@
 @import 'connected-status-indicator/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'custom-spending-cap/index';
-@import 'deposit-popover/index';
 @import 'edit-gas-display/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';
@@ -34,7 +34,6 @@
 @import 'edit-gas-fee-popover/network-statistics/status-slider/index';
 @import 'edit-gas-fee-popover/edit-gas-tooltip/index';
 @import 'flask/experimental-area/index';
-@import 'flask/snaps-authorship-pill/index';
 @import 'flask/snap-content-footer/index';
 @import 'flask/snap-install-warning/index';
 @import 'flask/snap-remove-warning/index';
@@ -73,7 +72,6 @@
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';
 @import 'transaction-activity-log/index';
-@import 'transaction-activity-log/transaction-activity-log-icon/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-detail/index';
 @import 'transaction-detail-item/index';
