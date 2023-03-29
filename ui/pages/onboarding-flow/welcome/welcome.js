@@ -20,7 +20,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -60,6 +63,7 @@ export default function OnboardingWelcome() {
         account_type: 'metamask',
       },
     });
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
   const toggleTermsCheck = () => {
@@ -86,6 +90,7 @@ export default function OnboardingWelcome() {
         account_type: 'imported',
       },
     });
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
 
@@ -193,6 +198,7 @@ export default function OnboardingWelcome() {
             data-testid="onboarding-create-wallet"
             type="primary"
             onClick={onCreateClick}
+            disabled={!termsChecked}
           >
             {t('onboardingCreateWallet')}
           </Button>
@@ -202,6 +208,7 @@ export default function OnboardingWelcome() {
             data-testid="onboarding-import-wallet"
             type="secondary"
             onClick={onImportClick}
+            disabled={!termsChecked}
           >
             {t('onboardingImportWallet')}
           </Button>

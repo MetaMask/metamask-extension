@@ -173,6 +173,18 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Record the timestamp of the last time the user has acceoted the terms of use
+   *
+   * @param {number} lastAgreed - timestamp when user last accepted the terms of use
+   */
+  setTermsOfUseLastAgreed(lastAgreed) {
+    console.log('setTermsOfUseLastAgreed', lastAgreed);
+    this.store.updateState({
+      termsOfUseLastAgreed: lastAgreed,
+    });
+  }
+
+  /**
    * Record the timestamp of the last time the user has seen the outdated browser warning
    *
    * @param {number} lastShown - Timestamp (in milliseconds) of when the user was last shown the warning.
