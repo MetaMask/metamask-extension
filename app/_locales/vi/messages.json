@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Hiển thị"
   },
-  "showAdvancedGasInline": {
-    "message": "Quyền kiểm soát gas nâng cao"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chọn tùy chọn này để hiển thị các quyền kiểm soát giá gas và giới hạn ngay trên màn hình gửi và xác nhận."
-  },
   "showFiatConversionInTestnets": {
     "message": "Hiển thị tỷ lệ quy đổi trên các mạng thử nghiệm"
   },
