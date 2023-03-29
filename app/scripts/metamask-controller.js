@@ -637,6 +637,9 @@ export default class MetamaskController extends EventEmitter {
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
+      initState: isManifestV3 && isFirstMetaMaskControllerSetup === false
+        ? { accounts: initState.AccountTracker.accounts }
+        : { accounts: {} },
     });
 
     // start and stop polling for balances based on activeControllerConnections
