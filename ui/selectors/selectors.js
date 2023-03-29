@@ -177,10 +177,6 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function isEIP1559Account() {
-  return true;
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -189,9 +185,7 @@ export function isEIP1559Account() {
  */
 export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkSupports1559 && accountSupports1559;
+  return networkSupports1559;
 }
 
 /**
@@ -202,9 +196,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkNotSupports1559 || accountSupports1559 === false;
+  return networkNotSupports1559;
 }
 
 /**
