@@ -22,7 +22,7 @@ Currently we have following confirmation pages mapping to confirmation routes:
 
 `confirm-transaction-base` component is responsible for checking transaction details and pass required details like `gas-details`, `hex-data`, etc and passing over to `confirm-page-container`.
 
-Other confirmation components listed above map to different types of transaction are responsible for passing over to `confirm-transaction-base` values / components specific to their transaction type. For instance, `confirm-deploy-contract` passes data section to `confirm-transaction-base`.
+Other confirmation components listed above map to different types of transactions and are responsible for passing over to `confirm-transaction-base` values / components specific to their transaction type. For instance, `confirm-deploy-contract` passes data section to `confirm-transaction-base`.
 
 ## Areas of Refactoring:
 
