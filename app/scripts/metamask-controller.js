@@ -826,10 +826,12 @@ export default class MetamaskController extends EventEmitter {
 
           const originMetadata = subjectMetadataState.subjectMetadata[origin];
 
-          this.platform._showNotification(
-            originMetadata?.name ?? origin,
-            message,
-          );
+          this.platform
+            ._showNotification(originMetadata?.name ?? origin, message)
+            .catch((error) => {
+              log.error('Failed to create notification', error);
+            });
+
           return null;
         },
         showInAppNotification: (origin, message) => {
@@ -969,7 +971,12 @@ export default class MetamaskController extends EventEmitter {
           );
           rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
         }
-        this.platform.showTransactionNotification(txMeta, rpcPrefs);
+
+        try {
+          await this.platform.showTransactionNotification(txMeta, rpcPrefs);
+        } catch (error) {
+          log.error('Failed to create transaction notification', error);
+        }
 
         const { txReceipt } = txMeta;
 

@@ -113,19 +113,19 @@ export default class ExtensionPlatform {
     }
   }
 
-  showTransactionNotification(txMeta, rpcPrefs) {
+  async showTransactionNotification(txMeta, rpcPrefs) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
     if (status === TransactionStatus.confirmed) {
       // There was an on-chain failure
       receiptStatus === '0x0'
-        ? this._showFailedTransaction(
+        ? await this._showFailedTransaction(
             txMeta,
             'Transaction encountered an error.',
           )
-        : this._showConfirmedTransaction(txMeta, rpcPrefs);
+        : await this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TransactionStatus.failed) {
-      this._showFailedTransaction(txMeta);
+      await this._showFailedTransaction(txMeta);
     }
   }
 
@@ -157,7 +157,7 @@ export default class ExtensionPlatform {
     await browser.tabs.remove(tabId);
   }
 
-  _showConfirmedTransaction(txMeta, rpcPrefs) {
+  async _showConfirmedTransaction(txMeta, rpcPrefs) {
     this._subscribeToNotificationClicked();
 
     const url = getBlockExplorerLink(txMeta, rpcPrefs);
@@ -170,10 +170,10 @@ export default class ExtensionPlatform {
     const message = `Transaction ${nonce} confirmed! ${
       url.length ? `View on ${view}` : ''
     }`;
-    this._showNotification(title, message, url);
+    await this._showNotification(title, message, url);
   }
 
-  _showFailedTransaction(txMeta, errorMessage) {
+  async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = 'Failed transaction';
     let message = `Transaction ${nonce} failed! ${
@@ -184,12 +184,13 @@ export default class ExtensionPlatform {
       message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
     }
     ///: END:ONLY_INCLUDE_IN
-    this._showNotification(title, message);
+    await this._showNotification(title, message);
   }
 
   async _showNotification(title, message, url) {
     const iconUrl = await browser.runtime.getURL('../../images/icon-64.png');
-    browser.notifications.create(url, {
+
+    await browser.notifications.create(url, {
       type: 'basic',
       title,
       iconUrl,
