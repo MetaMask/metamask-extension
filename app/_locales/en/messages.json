@@ -1979,6 +1979,9 @@
   "lock": {
     "message": "Lock"
   },
+  "lockMetaMask": {
+    "message": "Lock MetaMask"
+  },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
@@ -2963,6 +2966,9 @@
   },
   "portfolio": {
     "message": "Portfolio"
+  },
+  "portfolioView": {
+    "message": "Portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
