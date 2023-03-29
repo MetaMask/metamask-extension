@@ -390,11 +390,8 @@ Box.propTypes = {
    * ./ui/helpers/constants/design-system.js
    */
   color: MultipleTextColors,
-<<<<<<< HEAD
   ariaLabel: PropTypes.string,
   'aria-label': PropTypes.string,
-=======
->>>>>>> 56c162101 (revert aria label changes)
 };
 
 export default Box;
