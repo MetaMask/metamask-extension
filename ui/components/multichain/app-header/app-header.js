@@ -3,9 +3,8 @@
     * Look at Figma to get the padding of container and spacing between icons
     * Put this new header in place with feature flag
 */
-
 import React, { useContext, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import {
@@ -23,6 +22,7 @@ import { GlobalMenu } from '../global-menu';
 
 import Box from '../../ui/box/box';
 import { getSelectedIdentity } from '../../../selectors';
+import { toggleAccountMenu } from '../../../store/actions';
 
 export const AppHeader = ({}) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -31,8 +31,12 @@ export const AppHeader = ({}) => {
 
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
+  const dispatch = useDispatch();
 
   // Used for network icon / dropdown
+  // This is inaccurate; we should create a new selector
+  // after https://github.com/MetaMask/metamask-extension/pull/18229 is merged
+  // which filters from the selector I added there
   const currentNetwork = useSelector((state) => ({
     nickname: state.metamask.provider.nickname,
     type: state.metamask.provider.type,
@@ -42,7 +46,7 @@ export const AppHeader = ({}) => {
     <Box
       display={DISPLAY.FLEX}
       alignItems={AlignItems.center}
-      style={{ background: 'red' }}
+      style={{ background: 'red', maxWidth: '80vw', width: '100%' }}
       padding={[5, 4, 5, 4]}
       gap={2}
     >
@@ -54,21 +58,24 @@ export const AppHeader = ({}) => {
         style={{ background: 'pink' }}
       />
       {/* PickerNetwork should only display in full screen mode */}
-      <PickerNetwork className avatarNetworkProps iconProps label src />
+      <PickerNetwork avatarNetworkProps iconProps label src />
+
       <Box style={{ flexGrow: 1, background: 'lightyellow' }}>
         {/*
         Waiting on: https://github.com/MetaMask/metamask-extension/pull/18177
 
-        <AccountPicker address={} name={} onClick={() => undefined} />
+        <AccountPicker
+          address={identity.address}
+          name={identity.name}
+          onClick={() => useDispatch(toggleAccountMenu())}
+        />
       */}
-        (Account picker here)
       </Box>
       <Box style={{ background: 'lightblue' }}>
         {/*
         Waiting on: https://github.com/MetaMask/metamask-extension/pull/18167
 
         <MultichainConnectedSiteMenu
-          className,
           globalMenuColor,
           status,
           text,
