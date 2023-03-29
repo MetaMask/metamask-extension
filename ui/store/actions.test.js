@@ -45,6 +45,10 @@ describe('Actions', () => {
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
     });
+
+    background.signMessage = sinon.stub();
+    background.signPersonalMessage = sinon.stub();
+    background.signTypedMessage = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -2110,7 +2114,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.cancelMsgs(msgsList));
       const resultantActions = store.getActions();
-      console.log(resultantActions);
+
       const expectedActions = resultantActions.filter(
         (action) => action.type === 'COMPLETED_TX',
       );

@@ -656,14 +656,6 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.messageManager.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.personalMessageManager.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
   controller.decryptMessageManager.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -672,7 +664,7 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.typedMessageManager.on(
+  controller.signController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -708,23 +700,17 @@ export function setupController(initState, initLangCode, overrides) {
 
   function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
-    const { unapprovedMsgCount } = controller.messageManager;
-    const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
-    const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
       unapprovedTxCount +
-      unapprovedMsgCount +
-      unapprovedPersonalMsgCount +
       unapprovedDecryptMsgCount +
       unapprovedEncryptionPublicKeyMsgCount +
-      unapprovedTypedMessagesCount +
       pendingApprovalCount +
       waitingForUnlockCount
     );
@@ -747,30 +733,7 @@ export function setupController(initState, initLangCode, overrides) {
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.messageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.messageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.personalMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.personalMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.typedMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.typedMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
+    controller.signController.rejectUnapproved(REJECT_NOTFICIATION_CLOSE_SIG);
     controller.decryptMessageManager.messages
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>

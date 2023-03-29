@@ -67,7 +67,6 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
-      openSeaTransactionSecurityProviderPopoverHasBeenShown: false,
       ...opts.initState,
     };
 
@@ -206,16 +205,6 @@ export default class PreferencesController {
   setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
     this.store.updateState({
       transactionSecurityCheckEnabled,
-    });
-  }
-
-  /**
-   * Setter for the `openSeaTransactionSecurityProviderPopoverHasBeenShown` property
-   *
-   */
-  setOpenSeaTransactionSecurityProviderPopoverHasBeenShown() {
-    this.store.updateState({
-      openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
     });
   }
 

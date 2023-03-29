@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "מתחבר ל-Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },
@@ -411,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
+  },
+  "lineatestnet": {
+    "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
     "message": "קישורים"
@@ -668,12 +674,6 @@
   },
   "settings": {
     "message": "הגדרות"
-  },
-  "showAdvancedGasInline": {
-    "message": "אמצעי שליטה מתקדמים בדלק"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג אמצעי שליטה במחיר הדלק וההגבלה (limit) ישירות במסכי השליחה והאישור."
   },
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"

@@ -326,9 +326,6 @@
     "message": "$1 को निम्नलिखित तक राशि निकालने और खर्च करने की अनुमति दें:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "किसी भी अनुरोध को मंजूरी देने से पहले हमेशा अपनी खुद की उचित कर्मठता सुनिश्चित करें।"
-  },
   "amount": {
     "message": "राशि"
   },
@@ -707,6 +704,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
@@ -1219,9 +1219,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "सुरक्षा प्रदाता सक्षम करें"
-  },
   "enableSmartTransactions": {
     "message": "स्मार्ट लेनदेन को सक्षम करें"
   },
@@ -1316,9 +1313,6 @@
   },
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
-  },
-  "expandExperience": {
-    "message": "MetaMask स्नैप्स के साथ अपने web3 अनुभव का विस्तार करें"
   },
   "expandView": {
     "message": "दृश्य का विस्तार करें"
@@ -1515,9 +1509,6 @@
   },
   "general": {
     "message": "सामान्य"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "जब भी आप एक ज्ञात दुर्भावनापूर्ण अनुरोध प्राप्त करते हैं, OpenSea से चेतावनी प्राप्त करें।"
   },
   "goBack": {
     "message": "वापस जाएं"
@@ -1892,6 +1883,9 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क"
+  },
   "link": {
     "message": "लिंक"
   },
@@ -1951,9 +1945,6 @@
   },
   "malformedData": {
     "message": "विकृत डेटा"
-  },
-  "manageSnaps": {
-    "message": "अपने इंस्टाल किए गए स्नैप्स मैनेज करें"
   },
   "max": {
     "message": "अधिकतम"
@@ -2188,9 +2179,6 @@
     "message": "नॉन्स $1 के सुझाए गए नॉन्स से अधिक है",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "एनएफटी"
-  },
   "nftAddFailedMessage": {
     "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
   },
@@ -2275,9 +2263,6 @@
   "notEnoughGas": {
     "message": "पर्याप्त गैस नहीं"
   },
-  "notNow": {
-    "message": "अभी नहीं"
-  },
   "notifications": {
     "message": "सूचनाएं"
   },
@@ -2341,9 +2326,6 @@
   },
   "notifications17ActionText": {
     "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
-  },
-  "notifications17Description": {
-    "message": "यह अपडेट अधिक विकल्प प्रदान करता है ताकि आप अपनी गोपनीयता को बेहतर ढंग से नियंत्रित कर सकें। हमने डेटा कैसे एकत्र किया जाता है और इसे साझा करने के लिए स्पष्ट विकल्पों के बारे में और अधिक पारदर्शिता जोड़ी है। सुरक्षा और गोपनीयता के सेटिंग्स के माध्यम से अपनी प्राथमिकताओं को बदलें या एक्सटेंशन उपयोग डेटा हटाएं।"
   },
   "notifications17Title": {
     "message": "सुरक्षा और गोपनीयता सेटिंग्स"
@@ -2610,12 +2592,6 @@
   },
   "openSea": {
     "message": "OpenSea (बीटा)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea सुरक्षा प्रदाता"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea इस सुविधा के लिए पहला सुरक्षा प्रदाता है।अधिक प्रदाता जल्द ही आ रहे हैं!"
   },
   "openSeaNew": {
     "message": "ओपनसी"
@@ -3271,12 +3247,6 @@
   "show": {
     "message": "दिखाएं"
   },
-  "showAdvancedGasInline": {
-    "message": "उन्नत गैस नियंत्रण"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
-  },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
   },
@@ -3376,15 +3346,8 @@
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "ये स्नैप निम्नलिखित अनुमतियों हेतु अनुरोध कर रहा है:"
-  },
   "snapUpdate": {
     "message": "स्नैप अपडेट करें"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 को आपके स्नैप के नए वर्जन की जरूरत है।",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "स्नैप्स"
@@ -3517,9 +3480,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea के साथ सुरक्षित रहें"
   },
   "step1LatticeWallet": {
     "message": "अपना Lattice1 कनेक्ट करें"

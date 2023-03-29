@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalContent should match snapshot 1`] = `
+<div>
+  <div
+    class="box mm-modal-content mm-modal-content--size-sm box--padding-4 box--flex-direction-row box--width-full box--background-color-background-default box--rounded-lg"
+  >
+    test
+  </div>
+</div>
+`;

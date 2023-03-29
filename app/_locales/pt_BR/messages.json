@@ -448,6 +448,9 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Conectando à rede de testes Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Conectando à mainnet do Ethereum"
   },
@@ -1266,6 +1269,9 @@
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
   },
+  "lineatestnet": {
+    "message": "Rede de testes Linea Goerli"
+  },
   "link": {
     "message": "Link"
   },
@@ -2060,12 +2066,6 @@
   },
   "show": {
     "message": "Mostrar"
-  },
-  "showAdvancedGasInline": {
-    "message": "Controles avançados de gás"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selecione isso para mostrar o preço do gás e limitar os controles diretamente nas telas de envio e de confirmação."
   },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversão nas redes de teste"

@@ -253,7 +253,7 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {this.renderTransactionSecurityCheckToggle()}
-        {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
+        {this.renderOpenSeaEnabledToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
           this.renderDesktopEnableButton()

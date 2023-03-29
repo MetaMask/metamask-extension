@@ -212,7 +212,7 @@ describe('MetaMask Import UI', function () {
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey1);
-        await driver.clickElement({ text: 'Import', tag: 'span' });
+        await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // should show the correct account name
         const importedAccountName = await driver.findElement(
@@ -239,7 +239,7 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement({ text: 'Import account', tag: 'div' });
         // enter private key
         await driver.fill('#private-key-box', testPrivateKey2);
-        await driver.clickElement({ text: 'Import', tag: 'span' });
+        await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // should see new account in account menu
         const importedAccount2Name = await driver.findElement(
@@ -267,13 +267,10 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement({ text: 'Remove', tag: 'button' });
 
         // Wait until selected account switches away from removed account to first account
-        await driver.waitForSelector(
-          {
-            css: '.selected-account__name',
-            text: 'Account 1',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.selected-account__name',
+          text: 'Account 1',
+        });
 
         await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
@@ -330,7 +327,7 @@ describe('MetaMask Import UI', function () {
 
         await driver.fill('#json-password-box', 'foobarbazqux');
 
-        await driver.clickElement({ text: 'Import', tag: 'span' });
+        await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // should show the correct account name
         const importedAccountName = await driver.findElement(
@@ -392,7 +389,7 @@ describe('MetaMask Import UI', function () {
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey);
-        await driver.clickElement({ text: 'Import', tag: 'span' });
+        await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // error should occur
         await driver.waitForSelector({

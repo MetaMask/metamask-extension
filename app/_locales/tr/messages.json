@@ -326,9 +326,6 @@
     "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Talepleri onaylamadan önce her zaman bunu gerekli özeni göstererek yaptığınızdan emin olun."
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -707,6 +704,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli test ağına bağlanılıyor"
   },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet ağına bağlanıyor"
@@ -1219,9 +1219,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Güvenlik sağlayıcısını etkinleştir"
-  },
   "enableSmartTransactions": {
     "message": "Akıllı işlemleri etkinleştir"
   },
@@ -1316,9 +1313,6 @@
   },
   "etherscanViewOn": {
     "message": "Etherscan'de görüntüle"
-  },
-  "expandExperience": {
-    "message": "MetaMask Snap'leri ile web3 deneyimini genişlet"
   },
   "expandView": {
     "message": "Görünümü genişlet"
@@ -1515,9 +1509,6 @@
   },
   "general": {
     "message": "Genel"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Bilinen bir kötü amaçlı talep aldığınızda OpenSea'den uyarı alın."
   },
   "goBack": {
     "message": "Geri git"
@@ -1892,6 +1883,9 @@
   "likeToImportTokens": {
     "message": "Bu tokenleri içe aktarmak ister misiniz?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test ağı"
+  },
   "link": {
     "message": "Bağlantı"
   },
@@ -1951,9 +1945,6 @@
   },
   "malformedData": {
     "message": "Hatalı biçimlendirilmiş veri"
-  },
-  "manageSnaps": {
-    "message": "Yüklü snap'lerini yönet"
   },
   "max": {
     "message": "Maksimum"
@@ -2188,9 +2179,6 @@
     "message": "Geçici anahtar, önerilen $1 geçici anahtarından daha büyük",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Sahiplik bilgileri eşleşmediği için NFT eklenemiyor. Doğru bilgileri girdiğinizden emin olun."
   },
@@ -2275,9 +2263,6 @@
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
   },
-  "notNow": {
-    "message": "Şimdi değil"
-  },
   "notifications": {
     "message": "Bildirimler"
   },
@@ -2341,9 +2326,6 @@
   },
   "notifications17ActionText": {
     "message": "Güvenlik ve Gizlilik ayarlarını göster"
-  },
-  "notifications17Description": {
-    "message": "Bu güncelleme, kendi gizliliğinizi daha iyi kontrol edebilmeniz için daha fazla seçenek sunar. Verilerin nasıl toplandığı hakkında daha fazla şeffaflık ve paylaşımına yönelik daha açık seçenekler ekledik. Güvenlik ve Gizlilik ayarlarından tercihlerinizi değiştirin veya uzantı kullanım verilerinizi silin."
   },
   "notifications17Title": {
     "message": "Güvenlik ve Gizlilik Ayarları"
@@ -2610,12 +2592,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea güvenlik sağlayıcısı"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea bu özellik için birinci güvenlik sağlayıcısıdır. Daha fazla sağlayıcı çok yakında gelecektir!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3271,12 +3247,6 @@
   "show": {
     "message": "Göster"
   },
-  "showAdvancedGasInline": {
-    "message": "Gelişmiş gaz kontrolleri"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
-  },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında dönüşümü göster"
   },
@@ -3376,15 +3346,8 @@
     "message": "\"$1\" için $2 anahtar erişimi veriyorsunuz. Bu iptal edilemez ve $2 hesaplarınıza ve varlıklarınıza \"$1\" kontrolü verir. İlerlemeden önce \"$1\" alanına güvendiğinizden emin olun.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Bu ek, aşağıdaki izinleri istiyor:"
-  },
   "snapUpdate": {
     "message": "Snap'i güncelle"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 için daha yeni bir snap sürümü gerekli.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snap'ler"
@@ -3517,9 +3480,6 @@
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea ile güvende kalın"
   },
   "step1LatticeWallet": {
     "message": "Lattice1'inizi bağlayın"

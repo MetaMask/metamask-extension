@@ -2149,6 +2149,7 @@ export default class TransactionController extends EventEmitter {
       originalApprovalAmount,
       finalApprovalAmount,
       contractMethodName,
+      securityProviderResponse,
     } = txMeta;
 
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -2300,6 +2301,16 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
+    let uiCustomizations;
+
+    if (securityProviderResponse?.flagAsDangerous === 1) {
+      uiCustomizations = ['flagged_as_malicious'];
+    } else if (securityProviderResponse?.flagAsDangerous === 2) {
+      uiCustomizations = ['flagged_as_safety_unknown'];
+    } else {
+      uiCustomizations = null;
+    }
+
     let properties = {
       chain_id: chainId,
       referrer,
@@ -2314,6 +2325,7 @@ export default class TransactionController extends EventEmitter {
       token_standard: tokenStandard,
       transaction_type: transactionType,
       transaction_speed_up: type === TransactionType.retry,
+      ui_customizations: uiCustomizations,
     };
 
     if (transactionContractMethod === contractMethodNames.APPROVE) {

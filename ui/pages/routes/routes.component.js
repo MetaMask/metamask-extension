@@ -90,6 +90,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -125,6 +126,8 @@ export default class Routes extends Component {
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
+    toggleAccountMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -252,9 +255,7 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        {process.env.NFTS_V1 ? (
-          <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
-        ) : null}
+        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -429,6 +430,8 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
       completedOnboarding,
+      isAccountMenuOpen,
+      toggleAccountMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -485,7 +488,10 @@ export default class Routes extends Component {
         )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
-        <AccountMenu />
+        {process.env.MULTICHAIN ? null : <AccountMenu />}
+        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+          <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
@@ -524,6 +530,8 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('connectingToLineaTestnet');
       default:
         return t('connectingTo', [providerId]);
     }
