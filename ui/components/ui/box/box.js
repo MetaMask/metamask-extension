@@ -301,9 +301,18 @@ const Box = React.forwardRef(function Box(
     return children(boxClassName);
   }
   const Component = as;
-  const ariaLabelProp = {
-    [isCustomComponent(Component) ? ariaLabel : 'aria-label']: ariaLabel,
-  };
+
+  const ariaLabelProp = {};
+  if (isCustomComponent(Component)) {
+    ariaLabelProp.ariaLabel = ariaLabel;
+  } else {
+    ariaLabelProp['aria-label'] = ariaLabel;
+  }
+
+  if (props['aria-label']) {
+    ariaLabelProp['aria-label'] = props['aria-label'];
+  }
+
   return (
     <Component className={boxClassName} ref={ref} {...props} {...ariaLabelProp}>
       {children}
@@ -388,6 +397,7 @@ Box.propTypes = {
    */
   color: MultipleTextColors,
   ariaLabel: PropTypes.string,
+  'aria-label': PropTypes.string,
 };
 
 export default Box;
