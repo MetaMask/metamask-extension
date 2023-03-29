@@ -227,7 +227,9 @@ export default class Home extends PureComponent {
       this.setState({ shouldShowSrpReminder });
     };
 
-    checkSrpReminder();
+    if (!this.state.shouldShowSrpReminder) {
+      checkSrpReminder();
+    }
   }
 
   static getDerivedStateFromProps(props) {
