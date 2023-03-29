@@ -321,13 +321,12 @@ const Box = React.forwardRef(function Box(
 });
 
 function isCustomComponent(element) {
-  if (typeof element.type === 'string') {
-    // Built-in HTML element (div, span, etc.)
-    return false;
-  } else if (typeof element.type === 'function') {
+  if (typeof element.type === 'function') {
     // Custom component (class component or functional component)
     return true;
   }
+
+  // Built-in HTML elements (div, span, etc.) have type string
   return false;
 }
 
