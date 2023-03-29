@@ -419,7 +419,6 @@ export function setupController(initState, initLangCode, overrides) {
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
-    openPopup,
     // initial state
     initState,
     // initial locale code
@@ -791,9 +790,18 @@ export function setupController(initState, initLangCode, overrides) {
 //
 
 /**
- * Opens the browser popup for user confirmation
+ * Settings for the triggerUi method
+ *
+ * @typedef TriggerUiSettings
+ * @property {boolean} waitForUserInteraction - Whether to wait until user interacts with the UI.
  */
-async function triggerUi() {
+
+/**
+ * Opens the browser popup for user confirmation
+ *
+ * @param {TriggerUiSettings} [triggerUiSettings] - Settings for the triggerUi method.
+ */
+async function triggerUi({ waitForUserInteraction } = {}) {
   const tabs = await platform.getActiveTabs();
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
@@ -820,23 +828,18 @@ async function triggerUi() {
     } finally {
       uiIsTriggering = false;
     }
-  }
-}
 
-/**
- * Opens the browser popup for user confirmation of watchAsset
- * then it waits until user interact with the UI
- */
-async function openPopup() {
-  await triggerUi();
-  await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (!notificationIsOpen) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, SECOND);
-  });
+    if (waitForUserInteraction) {
+      await new Promise((resolve) => {
+        const interval = setInterval(() => {
+          if (!notificationIsOpen) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, SECOND);
+      });
+    }
+  }
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
