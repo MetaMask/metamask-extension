@@ -320,14 +320,10 @@ const Box = React.forwardRef(function Box(
   );
 });
 
+// Both class or functional components have type function.
+// Built-in HTML elements (div, span, etc.) have type string.
 function isCustomComponent(element) {
-  if (typeof element.type === 'function') {
-    // Custom component (class component or functional component)
-    return true;
-  }
-
-  // Built-in HTML elements (div, span, etc.) have type string
-  return false;
+  return typeof element.type === 'function';
 }
 
 Box.propTypes = {
