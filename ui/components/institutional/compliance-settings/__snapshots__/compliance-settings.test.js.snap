@@ -44,17 +44,17 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
       class="box institutional-feature__content box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-md mm-text--color-text-default box--padding-bottom-3 box--flex-direction-row"
+        class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
       >
         DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties.
       </p>
       <p
-        class="box mm-text mm-text--body-md mm-text--color-text-default box--padding-bottom-3 box--flex-direction-row"
+        class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
       >
         Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting.
       </p>
       <p
-        class="box mm-text mm-text--body-md mm-text--color-text-default box--padding-bottom-3 box--flex-direction-row"
+        class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
       >
         Steps to enable AML/CFT Compliance:
       </p>
