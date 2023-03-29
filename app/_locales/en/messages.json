@@ -1994,6 +1994,9 @@
   "lock": {
     "message": "Lock"
   },
+  "lockMetaMask": {
+    "message": "Lock MetaMask"
+  },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
@@ -2979,6 +2982,9 @@
   "portfolio": {
     "message": "Portfolio"
   },
+  "portfolioView": {
+    "message": "Portfolio view"
+  },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -3452,12 +3458,6 @@
   },
   "show": {
     "message": "Show"
-  },
-  "showAdvancedGasInline": {
-    "message": "Advanced gas controls"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
