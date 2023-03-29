@@ -121,7 +121,7 @@ import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { isMain, isFlask } from '../../shared/constants/environment';
 // eslint-disable-next-line import/order
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-import SnapKeyring from './lib/snap-keyring';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
@@ -1391,7 +1391,7 @@ export default class MetamaskController extends EventEmitter {
       }
       // we can't provide constructor arguments to keyrings
       // so we have to set the provider here
-      snapKeyring.setProvider(this.provider, this.snapController);
+      snapKeyring.setController(this.snapController);
       this.snapKeyring = snapKeyring;
     }
     return this.snapKeyring;
