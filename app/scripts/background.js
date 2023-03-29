@@ -271,7 +271,9 @@ async function initialize() {
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
-    await sendReadyMessageToTabs();
+    if (isManifestV3) {
+      await sendReadyMessageToTabs();
+    }
     log.info('MetaMask initialization complete.');
     resolveInitialization();
   } catch (error) {
