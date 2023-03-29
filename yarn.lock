@@ -3667,14 +3667,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@portal:/home/bernardo/repos/metamask/metamask-core/packages/base-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@metamask/base-controller@portal:/home/bernardo/repos/metamask/metamask-core/packages/base-controller::locator=metamask-crx%40workspace%3A."
+"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1, @metamask/base-controller@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@metamask/base-controller@npm:1.1.2"
   dependencies:
-    "@metamask/controller-utils": "workspace:^"
+    "@metamask/controller-utils": ^2.0.0
     immer: ^9.0.6
+  checksum: 54a114615924a755fe1a1e2d0b9fd7b9f982dee813a9908889e133aec8190f7d52a7903f830d66b020b487c1c4047b1a379ac07e9c80fec67688763bd8a713dd
   languageName: node
-  linkType: soft
+  linkType: hard
+
+"@metamask/base-controller@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/base-controller@npm:2.0.0"
+  dependencies:
+    "@metamask/controller-utils": ^3.0.0
+    immer: ^9.0.6
+  checksum: afd7df59cbcd26261e3d015ac0669261efbfad8e106b55ae7184f7445979b867f78f0d56fe103566150236093847b3acc68473f979e46bd9c67f654857995458
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/base-controller@npm:1.0.0"
+  dependencies:
+    "@metamask/controller-utils": ~1.0.0
+    immer: ^9.0.6
+  checksum: 40affd024add235548c886bd8ad3348682231af8d4a2f7e6fbc5dea5ffa077ed48535f21ac17017c640c50b5d17b5211c30cbb23b7025f360801e72ccbd61a5d
+  languageName: node
+  linkType: hard
 
 "@metamask/browser-passworder@npm:^4.0.2":
   version: 4.0.2
@@ -3690,17 +3711,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@portal:/home/bernardo/repos/metamask/metamask-core/packages/controller-utils::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@metamask/controller-utils@portal:/home/bernardo/repos/metamask/metamask-core/packages/controller-utils::locator=metamask-crx%40workspace%3A."
+"@metamask/controller-utils@npm:^1.0.0, @metamask/controller-utils@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/controller-utils@npm:1.0.0"
   dependencies:
     eth-ens-namehash: ^2.0.8
     eth-rpc-errors: ^4.0.0
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
+    isomorphic-fetch: ^3.0.0
+  checksum: 76e0629ba97b0b704f2f08e346fc27cf404630a64088504dbbad3d4124afe7a6c9bf3627e999ab9a1f1c183a444978ecc288b6df3ab30b47b5398a1da848ebbf
   languageName: node
-  linkType: soft
+  linkType: hard
+
+"@metamask/controller-utils@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/controller-utils@npm:2.0.0"
+  dependencies:
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.0
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+    isomorphic-fetch: ^3.0.0
+  checksum: 7e77aad25057b63a62a05058685fc07f78693d737892fc617a23ae06512715ed74a536174396e04cc276999e44c7ca67bd8a0026e5b820455dbf6eb5d0c7c173
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/controller-utils@npm:3.0.0"
+  dependencies:
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.0
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: 44227aa9f716f86373a1a4fb86b7ae1c51199dd819f30a3a310a9f87838b7e11c1a3bb024572253bd3cb0258281596cfab8fbf317c3fe90962fa6cf426aa6858
+  languageName: node
+  linkType: hard
 
 "@metamask/design-tokens@npm:^1.6.0, @metamask/design-tokens@npm:^1.9.0":
   version: 1.11.1
@@ -3984,19 +4034,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@portal:/home/bernardo/repos/metamask/metamask-core/packages/message-manager::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@metamask/message-manager@portal:/home/bernardo/repos/metamask/metamask-core/packages/message-manager::locator=metamask-crx%40workspace%3A."
+"@metamask/message-manager@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/message-manager@npm:2.0.0"
   dependencies:
-    "@metamask/base-controller": "workspace:^"
-    "@metamask/controller-utils": "workspace:^"
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.0.0
     "@types/uuid": ^8.3.0
     eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
+  checksum: f130b5c58fbbb5ccd69da32cfa43839a09dec906974c6d0f6e2d46f15d1a872c564b0c880aac2979b7ffc8d00bcf328bf1989cb133cc41bc612e1e6e16ef9ef5
   languageName: node
-  linkType: soft
+  linkType: hard
+
+"@metamask/message-manager@patch:@metamask/message-manager@npm%3A2.0.0#./.yarn/patches/@metamask-message-manager-npm-2.0.0-f23d924f4f.patch::locator=metamask-crx%40workspace%3A.":
+  version: 2.0.0
+  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A2.0.0#./.yarn/patches/@metamask-message-manager-npm-2.0.0-f23d924f4f.patch::version=2.0.0&hash=c81619&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.0.0
+    "@types/uuid": ^8.3.0
+    eth-sig-util: ^3.0.0
+    ethereumjs-util: ^7.0.10
+    jsonschema: ^1.2.4
+    uuid: ^8.3.2
+  checksum: 85b237b9dbdce89140a44d340450c166c77a578bb44441f96a659579a072b67c9ba8c0ac896d9df306f8c164644ec7d192ec19e37c1976c8f49bbbe2e3721ea2
+  languageName: node
+  linkType: hard
 
 "@metamask/metamask-eth-abis@npm:3.0.0, @metamask/metamask-eth-abis@npm:^3.0.0":
   version: 3.0.0
