@@ -5,6 +5,7 @@ import React from 'react';
 import { Color, TextColor } from '../../../helpers/constants/design-system';
 
 import { AvatarBase } from './avatar-base';
+import { AvatarBaseSizes } from './avatar-base.types';
 
 describe('AvatarBase', () => {
   it('should render correctly', () => {
@@ -17,11 +18,11 @@ describe('AvatarBase', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <AvatarBase size="xs" data-testid="avatar-base-xs" />
-        <AvatarBase size="sm" data-testid="avatar-base-sm" />
-        <AvatarBase size="md" data-testid="avatar-base-md" />
-        <AvatarBase size="lg" data-testid="avatar-base-lg" />
-        <AvatarBase size="xl" data-testid="avatar-base-xl" />
+        <AvatarBase size={AvatarBaseSizes.XS} data-testid="avatar-base-xs" />
+        <AvatarBase size={AvatarBaseSizes.SM} data-testid="avatar-base-sm" />
+        <AvatarBase size={AvatarBaseSizes.MD} data-testid="avatar-base-md" />
+        <AvatarBase size={AvatarBaseSizes.LG} data-testid="avatar-base-lg" />
+        <AvatarBase size={AvatarBaseSizes.XL} data-testid="avatar-base-xl" />
       </>,
     );
     expect(getByTestId('avatar-base-xs')).toHaveClass(
