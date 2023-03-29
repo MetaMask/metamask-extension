@@ -689,6 +689,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `SnapController:install`,
         ],
       }),
       state: initState.PermissionController,
@@ -3855,15 +3856,11 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:getPermitted',
           origin,
         ),
-        requestPermissions: async (requestedPermissions) => {
-          const [approvedPermissions] =
-            await this.permissionController.requestPermissions(
-              { origin },
-              requestedPermissions,
-            );
-
-          return Object.values(approvedPermissions);
-        },
+        requestPermissions: async (requestedPermissions) =>
+          await this.permissionController.requestPermissions(
+            { origin },
+            requestedPermissions,
+          ),
         getPermissions: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
