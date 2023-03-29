@@ -2,12 +2,21 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
-import { Text, Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import {
+  Text,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+  AvatarIcon,
+} from '../../component-library';
+import {
+  AlignItems,
   BackgroundColor,
-  Color,
+  IconColor,
+  TextColor,
   DISPLAY,
   TextVariant,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
 import NftCollectionImage from '../nft-collection-image/nft-collection-image';
@@ -22,78 +31,81 @@ export default function NftInfoSetApprovalForAll({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      className="nft-info-setApproveForAll"
+      className="nft-info-set-approve-for-all"
       backgroundColor={BackgroundColor.backgroundAlternative}
+      padding={4}
     >
-      <Box marginTop={4} marginBottom={4} marginLeft={4}>
-        <Text variant={TextVariant.bodyMdBold} as="h6">
-          {t('nftCollectionName')}:
+      <Text variant={TextVariant.bodyMdBold} as="h6" marginBottom={1}>
+        {t('nftCollectionName')}:
+      </Text>
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        marginBottom={4}
+      >
+        <NftCollectionImage assetName={assetName} tokenAddress={tokenAddress} />
+        <Text
+          variant={TextVariant.bodyLgMedium}
+          display={DISPLAY.FLEX}
+          color={TextColor.textAlternative}
+          marginLeft={2}
+          as="h5"
+        >
+          {assetName ?? t('unknownCollection')}
         </Text>
-        <Box display={DISPLAY.FLEX} marginTop={1}>
-          <NftCollectionImage
-            assetName={assetName}
-            tokenAddress={tokenAddress}
-          />
+      </Box>
+      <Box>
+        <Text variant={TextVariant.bodyMdBold} as="h6" marginBottom={1}>
+          {t('numberOfNfts')}:
+        </Text>
+        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+          <Tooltip
+            interactive
+            position="top"
+            html={
+              <Text
+                variant={TextVariant.bodySm}
+                display={DISPLAY.INLINE_BLOCK}
+                color={TextColor.textAlternative}
+                className="nft-info-set-approve-for-all__tooltip"
+                as="h6"
+              >
+                {t('nftInfoTooltipText', [
+                  <Text
+                    key="nft-tooltip-text"
+                    variant={TextVariant.bodySmBold}
+                    display={DISPLAY.INLINE_BLOCK}
+                    color={TextColor.errorDefault}
+                    width={BLOCK_SIZES.FULL}
+                    as="h6"
+                  >
+                    <Icon
+                      name={ICON_NAMES.DANGER}
+                      size={ICON_SIZES.AUTO}
+                      marginRight={1}
+                    />{' '}
+                    {t('beCareful')}
+                  </Text>,
+                ])}
+              </Text>
+            }
+          >
+            <AvatarIcon
+              iconName={ICON_NAMES.DANGER}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+              backgroundColor={BackgroundColor.errorMuted}
+              className="nft-info-set-approve-for-all__tooltip__icon"
+            />
+          </Tooltip>
           <Text
             variant={TextVariant.bodyLgMedium}
-            display={DISPLAY.FLEX}
-            color={Color.textAlternative}
+            color={TextColor.textAlternative}
             marginLeft={2}
             as="h5"
           >
-            {assetName ?? t('unknownCollection')}
+            {t('numberOfNFTsFromCollection', [isERC721 ? `(${total})` : ''])}
           </Text>
-        </Box>
-        <Box marginTop={4}>
-          <Text variant={TextVariant.bodyMdBold} as="h6">
-            {t('numberOfNfts')}:
-          </Text>
-          <Box display={DISPLAY.FLEX}>
-            <Tooltip
-              interactive
-              position="top"
-              html={
-                <Text
-                  variant={TextVariant.bodySm}
-                  display={DISPLAY.INLINE_BLOCK}
-                  color={Color.textAlternative}
-                  className="nft-info-setApproveForAll__tooltip"
-                  as="h6"
-                >
-                  {t('nftInfoTooltipText', [
-                    <Text
-                      key="nft-tooltip-text"
-                      variant={TextVariant.bodySmBold}
-                      display={DISPLAY.INLINE_BLOCK}
-                      color={Color.errorDefault}
-                      className="nft-info-setApproveForAll__tooltip__title"
-                      as="h6"
-                    >
-                      <Icon name={ICON_NAMES.DANGER} size={ICON_SIZES.AUTO} />{' '}
-                      {t('beCareful')}
-                    </Text>,
-                  ])}
-                </Text>
-              }
-            >
-              <Icon
-                name={ICON_NAMES.DANGER}
-                className="nft-info-setApproveForAll__tooltip__icon"
-                size={ICON_SIZES.MD}
-              />
-            </Tooltip>
-            <Text
-              variant={TextVariant.bodyLgMedium}
-              display={DISPLAY.FLEX}
-              color={Color.textAlternative}
-              marginTop={1}
-              marginLeft={2}
-              as="h5"
-            >
-              {t('numberOfNFTsFromCollection', [isERC721 ? `(${total})` : ''])}
-            </Text>
-          </Box>
         </Box>
       </Box>
     </Box>

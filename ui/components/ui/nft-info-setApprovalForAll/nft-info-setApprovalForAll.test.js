@@ -61,7 +61,7 @@ describe('NftInfoSetApprovalForAll', () => {
     );
 
     const tooltipIcon = container.querySelector(
-      '.nft-info-setApproveForAll__tooltip__icon',
+      '.nft-info-set-approve-for-all__tooltip__icon',
     );
     expect(tooltipIcon).toBeDefined();
   });
@@ -73,7 +73,7 @@ describe('NftInfoSetApprovalForAll', () => {
     );
 
     const tooltipTitleText = container.querySelector(
-      '.nft-info-setApproveForAll__tooltip__title',
+      '.nft-info-set-approve-for-all__tooltip__title',
     );
     expect(tooltipTitleText).toBeDefined();
   });
@@ -85,7 +85,7 @@ describe('NftInfoSetApprovalForAll', () => {
     );
 
     const tooltipText = container.querySelector(
-      '.nft-info-setApproveForAll__tooltip',
+      '.nft-info-set-approve-for-all__tooltip',
     );
     expect(tooltipText).toBeDefined();
   });
