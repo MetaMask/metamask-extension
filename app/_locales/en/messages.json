@@ -150,6 +150,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activated": {
+    "message": "Active"
+  },
   "active": {
     "message": "Active"
   },
@@ -638,6 +641,9 @@
   },
   "close": {
     "message": "Close"
+  },
+  "codefiCompliance": {
+    "message": "Codefi Compliance"
   },
   "coingecko": {
     "message": "CoinGecko"
