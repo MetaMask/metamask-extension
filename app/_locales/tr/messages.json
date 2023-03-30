@@ -4022,9 +4022,6 @@
   "thisIsBasedOn": {
     "message": "Bu, şu kaynaktan alınan bilgilere dayanır: "
   },
-  "thisServiceIsExperimental": {
-    "message": "Bu hizmet deneyseldir"
-  },
   "time": {
     "message": "Zaman"
   },

@@ -4068,6 +4068,9 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUse": {
+    "message": "terms of use"
+  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4084,7 +4087,8 @@
     "message": "This is based on information from "
   },
   "thisServiceIsExperimental": {
-    "message": "This service is experimental"
+    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
+    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"

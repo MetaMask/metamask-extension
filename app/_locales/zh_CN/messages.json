@@ -4022,9 +4022,6 @@
   "thisIsBasedOn": {
     "message": "所根据的信息是来自"
   },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的"
-  },
   "time": {
     "message": "时间"
   },

@@ -4022,9 +4022,6 @@
   "thisIsBasedOn": {
     "message": "다음에 기반한 정보입니다: "
   },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 서비스입니다"
-  },
   "time": {
     "message": "시간"
   },

@@ -4022,9 +4022,6 @@
   "thisIsBasedOn": {
     "message": "これは次の情報源からの情報に基づくものです: "
   },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは実験段階です"
-  },
   "time": {
     "message": "時間"
   },

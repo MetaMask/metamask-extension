@@ -4022,9 +4022,6 @@
   "thisIsBasedOn": {
     "message": "Hal ini berdasarkan informasi dari "
   },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental"
-  },
   "time": {
     "message": "Waktu"
   },
