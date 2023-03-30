@@ -53,11 +53,7 @@ export const AppHeader = ({}) => {
       gap={2}
     >
       {/* AvatarNetwork should only display in popup mode */}
-      <AvatarNetwork
-        name="TODO"
-        src="TODO"
-        size={Size.MD}
-      />
+      <AvatarNetwork name="TODO" src="TODO" size={Size.MD} />
       {/* PickerNetwork should only display in full screen mode */}
       <PickerNetwork avatarNetworkProps iconProps label src />
 
@@ -85,22 +81,23 @@ export const AppHeader = ({}) => {
         </Box>
       ) : null}
       {isUnlocked ? (
-        <ButtonIcon
-          iconName={ICON_NAMES.MORE_VERTICAL}
-          data-testid="account-options-menu-button"
-          ariaLabel="NEEDS NEW TRANSLATED LABEL"
-          ref={menuRef}
-          onClick={() => {
-            trackEvent({
-              event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
-              category: EVENT.CATEGORIES.NAVIGATION,
-              properties: {
-                location: 'Home',
-              },
-            });
-            setAccountOptionsMenuOpen(true);
-          }}
-        />
+        <Box ref={menuRef}>
+          <ButtonIcon
+            iconName={ICON_NAMES.MORE_VERTICAL}
+            data-testid="account-options-menu-button"
+            ariaLabel="NEEDS NEW TRANSLATED LABEL"
+            onClick={() => {
+              trackEvent({
+                event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
+                category: EVENT.CATEGORIES.NAVIGATION,
+                properties: {
+                  location: 'Home',
+                },
+              });
+              setAccountOptionsMenuOpen(true);
+            }}
+          />
+        </Box>
       ) : null}
       {accountOptionsMenuOpen ? (
         <GlobalMenu
