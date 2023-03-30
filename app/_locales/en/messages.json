@@ -1365,6 +1365,10 @@
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
+  "ethereumProviderAccess": {
+    "message": "Grant Ethereum provider access to $1",
+    "description": "The parameter is the name of the requesting origin"
+  },
   "ethereumPublicAddress": {
     "message": "Ethereum public address"
   },
@@ -3572,7 +3576,11 @@
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 key access to $1",
+    "message": "Grant $2 account control to $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Grant $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapResultError": {
