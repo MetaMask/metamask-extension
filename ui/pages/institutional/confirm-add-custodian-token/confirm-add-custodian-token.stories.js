@@ -33,7 +33,7 @@ const customData = {
 const store = configureStore(customData);
 
 export default {
-  title: 'Components/Institutional/ConfirmAddCustodianToken',
+  title: 'Pages/Institutional/ConfirmAddCustodianToken',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: ConfirmAddCustodianToken,
 };
