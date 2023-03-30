@@ -44,7 +44,7 @@ describe('network utils', () => {
     });
 
     it('returns false given a "0x"-prefixed hex string that does not evaluate to zero but is zero-padded', () => {
-      expect(isPrefixedFormattedHexString('0x0')).toBe(false);
+      expect(isPrefixedFormattedHexString('0x01')).toBe(false);
     });
 
     it('returns false given a hex number that is simply a string but not "0x"-prefixed', () => {
