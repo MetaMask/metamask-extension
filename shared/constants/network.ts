@@ -716,9 +716,3 @@ export enum NetworkStatus {
    */
   Blocked = 'blocked',
 }
-
-/**
- * The error code that is used for RPC requests that produce an "internal"
- * error. This code is borrowed from `eth-rpc-errors`.
- */
-export const INTERNAL_RPC_ERROR_CODE = -32603;

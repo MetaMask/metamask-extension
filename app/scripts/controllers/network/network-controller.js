@@ -9,6 +9,7 @@ import {
 import EthQuery from 'eth-query';
 import { v4 as random } from 'uuid';
 import { hasProperty, isPlainObject } from '@metamask/utils';
+import { errorCodes } from 'eth-rpc-errors';
 import {
   INFURA_PROVIDER_TYPES,
   BUILT_IN_NETWORKS,
@@ -16,7 +17,6 @@ import {
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
-  INTERNAL_RPC_ERROR_CODE,
   NetworkStatus,
 } from '../../../../shared/constants/network';
 import {
@@ -262,7 +262,7 @@ export default class NetworkController extends EventEmitter {
           responseBody.error === INFURA_BLOCKED_KEY
         ) {
           networkStatus = NetworkStatus.Blocked;
-        } else if (error.code === INTERNAL_RPC_ERROR_CODE) {
+        } else if (error.code === errorCodes.rpc.internal) {
           networkStatus = NetworkStatus.Unknown;
         } else {
           networkStatus = NetworkStatus.Unavailable;
