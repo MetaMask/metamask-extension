@@ -1,0 +1,312 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Account Menu Render Content should not render keyring label if keyring tyoe is Custody - JSONRPC 1`] = `
+<div>
+  <div
+    class="account-menu"
+  >
+    <div
+      class="account-menu__close-area"
+    />
+    <div
+      class="account-menu__item account-menu__header"
+    >
+      My accounts
+      <button
+        class="button btn--rounded btn-secondary account-menu__lock-button"
+        role="button"
+        tabindex="0"
+      >
+        Lock
+      </button>
+    </div>
+    <div
+      class="account-menu__divider"
+    />
+    <div
+      class="account-menu__accounts-container"
+    >
+      <div
+        class="account-menu__accounts"
+      >
+        <button
+          class="account-menu__account account-menu__item--clickable"
+          data-testid="account-menu__account"
+        >
+          <div
+            class="account-menu__check-mark"
+          />
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 24px; width: 24px; border-radius: 12px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 151, 242);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2362E1"
+                    height="24"
+                    transform="translate(2.6919976385943882 -4.000732967425142) rotate(458.4 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F94301"
+                    height="24"
+                    transform="translate(-11.522594467237658 5.994263726614974) rotate(268.8 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FA7900"
+                    height="24"
+                    transform="translate(-6.8071905594760675 22.110011910512533) rotate(117.3 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="account-menu__account-info"
+          >
+            <div
+              class="account-menu__name"
+            >
+              Account 1
+            </div>
+            <div
+              class="currency-display-component account-menu__balance"
+              data-testid="account-menu__balance"
+              title="0 ETH"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </button>
+        <button
+          class="account-menu__account account-menu__item--clickable"
+          data-testid="account-menu__account"
+        >
+          <div
+            class="account-menu__check-mark"
+          />
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 24px; width: 24px; border-radius: 12px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 162, 242);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#F29602"
+                    height="24"
+                    transform="translate(0.0008341139930255813 -0.00037625505634810975) rotate(358.8 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FA6C00"
+                    height="24"
+                    transform="translate(5.974289636227165 7.880005368393935) rotate(69.5 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#236CE1"
+                    height="24"
+                    transform="translate(-14.300029938001572 12.149694281529626) rotate(260.2 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="account-menu__account-info"
+          >
+            <div
+              class="account-menu__name"
+            >
+              Imported Account 1
+            </div>
+            <div
+              class="currency-display-component account-menu__balance"
+              data-testid="account-menu__balance"
+              title="0 ETH"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+    <div
+      class="account-menu__divider"
+    />
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__icon"
+      >
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+          style="mask-image: url('./images/icons/add.svg');"
+        />
+      </div>
+      <div
+        class="account-menu__item__text"
+      >
+        Create account
+      </div>
+    </button>
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__icon"
+      >
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+          style="mask-image: url('./images/icons/import.svg');"
+        />
+      </div>
+      <div
+        class="account-menu__item__text"
+      >
+        Import account
+      </div>
+    </button>
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__icon"
+      >
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+          style="mask-image: url('./images/icons/hardware.svg');"
+        />
+      </div>
+      <div
+        class="account-menu__item__text"
+      >
+        Connect hardware wallet
+      </div>
+    </button>
+    <div
+      class="account-menu__divider"
+    />
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__icon"
+      >
+        <div
+          class="account-menu__notifications"
+        >
+          <span
+            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+            style="mask-image: url('./images/icons/notification.svg');"
+          />
+        </div>
+      </div>
+      <div
+        class="account-menu__item__text"
+      >
+        Notifications
+      </div>
+    </button>
+    <div
+      class="account-menu__divider"
+    />
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__icon"
+      >
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+          style="mask-image: url('./images/icons/messages.svg');"
+        />
+      </div>
+      <div
+        class="account-menu__item__text"
+      >
+        Submit a ticket
+      </div>
+    </button>
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__icon"
+      >
+        <span
+          arialabel="Settings"
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+          style="mask-image: url('./images/icons/setting.svg');"
+        />
+      </div>
+      <div
+        class="account-menu__item__text"
+      >
+        Settings
+      </div>
+    </button>
+  </div>
+</div>
+`;
