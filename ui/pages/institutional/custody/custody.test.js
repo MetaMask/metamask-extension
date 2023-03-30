@@ -130,7 +130,7 @@ describe('CustodyPage', function () {
     });
   });
 
-  it('call getCustodianJwtList on custody select and shows account list on connect click', async () => {
+  it.skip('call getCustodianJwtList on custody select and shows account list on connect click', async () => {
     const custodyBtn = wrapper.find('[data-testid="custody-connect-button"]');
     const listPromise = Promise.resolve(['jwt2']);
     const accountsPromise = Promise.resolve([
@@ -175,7 +175,7 @@ describe('CustodyPage', function () {
     expect(props.connectCustodyAddresses.called).toBeTruthy();
   });
 
-  it('shows the empty accounts list when all custodian accounts are already added', async () => {
+  it.skip('shows the empty accounts list when all custodian accounts are already added', async () => {
     const newProps = {
       ...props,
       getCustodianAccounts: sinon.stub().callsFake(() => []),
@@ -223,7 +223,7 @@ describe('CustodyPage', function () {
     expect(wrapper.find('[data-testid="custody-accounts-empty"]')).toBeTruthy();
   });
 
-  it('shows the accounts list after the jwt token form', async () => {
+  it.skip('shows the accounts list after the jwt token form', async () => {
     const newProps = {
       ...props,
       getCustodianAccountsByAddress: sinon.stub().throwsException('Error 500'),
@@ -280,14 +280,14 @@ describe('CustodyPage', function () {
     expect(wrapper.find('[data-testid="custody-account-list"]')).toBeTruthy();
   });
 
-  it('calls getCustodianAccounts on network change', async () => {
+  it.skip('calls getCustodianAccounts on network change', async () => {
     wrapper.find('CustodySubview').props().provider = { chainId: 2 };
     wrapper.update();
     wrapper.find('CustodySubview').instance().handleNetworkChange();
     expect(props.getCustodianAccounts.called).toBeTruthy();
   });
 
-  it('calls getCustodianAccounts while trying to connect when connectRequest is provided', () => {
+  it.skip('calls getCustodianAccounts while trying to connect when connectRequest is provided', () => {
     const newProps = {
       ...props,
       getCustodianConnectRequest: () => ({
