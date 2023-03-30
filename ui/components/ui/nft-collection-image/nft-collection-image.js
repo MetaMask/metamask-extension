@@ -6,9 +6,14 @@ import { Color, TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function NftCollectionImage({ assetName, tokenAddress }) {
-  const { collections } = useNftsCollections();
+  const t = useI18nContext();
+  const { collections } = useNftsCollections(
+    t('nftsPreviouslyOwned'),
+    t('unknownCollection'),
+  );
   const tokenList = useSelector(getTokenList);
   const nftTokenListImage = tokenList[tokenAddress.toLowerCase()]?.iconUrl;
 

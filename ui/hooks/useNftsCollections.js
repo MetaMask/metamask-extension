@@ -5,10 +5,10 @@ import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { usePrevious } from './usePrevious';
 
-export function useNftsCollections() {
+export function useNftsCollections(previouslyOwnedText, unknownCollectionText) {
   const [collections, setCollections] = useState({});
   const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
-    collectionName: 'Previously Owned',
+    collectionName: previouslyOwnedText,
     nfts: [],
   });
   const nfts = useSelector(getNfts);
@@ -27,7 +27,7 @@ export function useNftsCollections() {
       }
       const newCollections = {};
       const newPreviouslyOwnedCollections = {
-        collectionName: 'Previously Owned',
+        collectionName: previouslyOwnedText,
         nfts: [],
       };
 
@@ -41,7 +41,7 @@ export function useNftsCollections() {
             ({ address }) => address === nft.address,
           );
           newCollections[nft.address] = {
-            collectionName: collectionContract?.name || nft.name,
+            collectionName: collectionContract?.name || unknownCollectionText,
             collectionImage: collectionContract?.logo || nft.image,
             nfts: [nft],
           };
