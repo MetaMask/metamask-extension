@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import browserAPI from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IN(desktop)
+///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -38,12 +38,10 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import Notifications from '../notifications';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
-///: END:ONLY_INCLUDE_IN(desktop)
+///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -70,14 +68,12 @@ import {
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
 ///: END:ONLY_INCLUDE_IN
 
@@ -94,6 +90,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -129,6 +126,8 @@ export default class Routes extends Component {
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
+    toggleAccountMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -144,7 +143,7 @@ export default class Routes extends Component {
     document.documentElement.setAttribute('data-theme', osTheme);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   componentDidMount() {
     const { history } = this.props;
     browserAPI.runtime.onMessage.addListener(
@@ -164,7 +163,7 @@ export default class Routes extends Component {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === ThemeType.OS) {
+      if (theme === ThemeType.os) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
@@ -206,7 +205,7 @@ export default class Routes extends Component {
         <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Route
             path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
             component={DesktopErrorPage}
@@ -256,9 +255,7 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        {process.env.NFTS_V1 ? (
-          <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
-        ) : null}
+        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -281,7 +278,7 @@ export default class Routes extends Component {
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Authenticated
             path={DESKTOP_PAIRING_ROUTE}
             component={DesktopPairingPage}
@@ -345,7 +342,7 @@ export default class Routes extends Component {
   hideAppHeader() {
     const { location } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const isDesktopConnectionLostScreen = Boolean(
       matchPath(location.pathname, {
         path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,
@@ -433,6 +430,8 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
       completedOnboarding,
+      isAccountMenuOpen,
+      toggleAccountMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -489,7 +488,10 @@ export default class Routes extends Component {
         )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
-        <AccountMenu />
+        {process.env.MULTICHAIN ? null : <AccountMenu />}
+        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+          <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
@@ -528,6 +530,8 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('connectingToLineaTestnet');
       default:
         return t('connectingTo', [providerId]);
     }

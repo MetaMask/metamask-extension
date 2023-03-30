@@ -1,11 +1,12 @@
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { waitFor, act, screen } from '@testing-library/react';
+import { waitFor, act, screen, fireEvent } from '@testing-library/react';
 import actions from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest';
 import mockState from '../../../test/data/mock-state.json';
 import { SECOND } from '../../../shared/constants/time';
+import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import DesktopPairingPage from '.';
 
 const mockHideLoadingIndication = jest.fn();
@@ -15,14 +16,17 @@ jest.mock('../../store/actions', () => {
   return {
     hideLoadingIndication: () => mockHideLoadingIndication,
     showLoadingIndication: () => mockShowLoadingIndication,
-    generateOtp: jest.fn(),
+    generateDesktopOtp: jest.fn(),
   };
 });
+
+jest.mock('../../hooks/useCopyToClipboard');
 
 const mockedActions = actions;
 
 describe('Desktop Pairing page', () => {
   const mockHistoryPush = jest.fn();
+  const handleCopy = jest.fn();
 
   function flushPromises() {
     // Wait for promises running in the non-async timer callback to complete.
@@ -35,6 +39,7 @@ describe('Desktop Pairing page', () => {
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
       .mockReturnValue({ push: mockHistoryPush });
+    useCopyToClipboard.mockReturnValue([false, handleCopy]);
   });
 
   afterEach(() => {
@@ -44,7 +49,7 @@ describe('Desktop Pairing page', () => {
 
   it('should render otp component', async () => {
     const otp = '123456';
-    mockedActions.generateOtp.mockResolvedValue(otp);
+    mockedActions.generateDesktopOtp.mockResolvedValue(otp);
 
     const store = configureStore(mockState);
     let container = null;
@@ -65,7 +70,7 @@ describe('Desktop Pairing page', () => {
     const otp = '123456';
     const newOtp = '654321';
     const neverGeneratedOTP = '111222';
-    mockedActions.generateOtp
+    mockedActions.generateDesktopOtp
       .mockResolvedValueOnce(otp)
       .mockResolvedValueOnce(newOtp)
       .mockResolvedValueOnce(neverGeneratedOTP);
@@ -81,7 +86,7 @@ describe('Desktop Pairing page', () => {
       await flushPromises();
       expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
       expect(screen.getByText(otp)).toBeDefined();
-      expect(mockedActions.generateOtp).toHaveBeenCalledTimes(1);
+      expect(mockedActions.generateDesktopOtp).toHaveBeenCalledTimes(1);
     });
 
     // Advance timers 30s to trigger next OTP
@@ -91,7 +96,7 @@ describe('Desktop Pairing page', () => {
       await flushPromises();
       expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
       expect(screen.getByText(newOtp)).toBeDefined();
-      expect(mockedActions.generateOtp).toHaveBeenCalledTimes(2);
+      expect(mockedActions.generateDesktopOtp).toHaveBeenCalledTimes(2);
     });
 
     // Advance timers 10s to test that OTP is still the same
@@ -101,10 +106,59 @@ describe('Desktop Pairing page', () => {
       await flushPromises();
       expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
       expect(screen.getByText(newOtp)).toBeDefined();
-      expect(mockedActions.generateOtp).toHaveBeenCalledTimes(2);
+      expect(mockedActions.generateDesktopOtp).toHaveBeenCalledTimes(2);
     });
 
     jest.clearAllTimers();
     jest.useRealTimers();
+  });
+
+  it('should copy otp value when content is clicked', async () => {
+    const otp = '123456';
+    mockedActions.generateDesktopOtp.mockResolvedValue(otp);
+
+    const store = configureStore(mockState);
+
+    act(() => {
+      renderWithProvider(<DesktopPairingPage />, store);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
+      expect(screen.getByText(otp)).toBeDefined();
+    });
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('desktop-pairing-otp-content'));
+    });
+
+    await waitFor(() => {
+      expect(handleCopy).toHaveBeenCalledWith(otp);
+    });
+  });
+
+  it('should return to previews page when the done button is clicked', async () => {
+    const otp = '123456';
+    const mostRecentOverviewPage = '/mostRecentOverviewPage';
+    mockedActions.generateDesktopOtp.mockResolvedValue(otp);
+
+    const store = configureStore(mockState);
+
+    act(() => {
+      renderWithProvider(<DesktopPairingPage />, store);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('desktop-pairing-otp-content')).toBeDefined();
+    });
+
+    act(() => {
+      fireEvent.click(screen.getByText('Done'));
+    });
+
+    await waitFor(() => {
+      expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+      expect(mockHistoryPush).toHaveBeenCalledWith(mostRecentOverviewPage);
+    });
   });
 });

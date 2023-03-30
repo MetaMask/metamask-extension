@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
   },
@@ -398,6 +401,9 @@
   },
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
+  },
+  "lineatestnet": {
+    "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
     "message": "Viungo"
@@ -649,12 +655,6 @@
   },
   "settings": {
     "message": "Mipangilio"
-  },
-  "showAdvancedGasInline": {
-    "message": "Udhibiti wa juu wa gesi"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chagua hii ili uonyeshe bei ya gesi na punguza vidhibiti moja kwa moja kwenye skrini za tuma na thibitisha."
   },
   "showFiatConversionInTestnets": {
     "message": "Onyesha Ubadilishaji kwenye Testnets"

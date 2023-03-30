@@ -25,12 +25,12 @@ export const mapStateToProps = (state) => {
     metamask,
   } = state;
   const {
-    featureFlags: { sendHexData, advancedInlineGas } = {},
+    featureFlags: { sendHexData } = {},
     disabledRpcMethodPreferences,
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
   } = metamask;
@@ -45,7 +45,6 @@ export const mapStateToProps = (state) => {
   return {
     warning,
     sendHexData,
-    advancedInlineGas,
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit,
@@ -54,7 +53,7 @@ export const mapStateToProps = (state) => {
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
     disabledRpcMethodPreferences,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -69,8 +68,6 @@ export const mapDispatchToProps = (dispatch) => {
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setAdvancedInlineGasFeatureFlag: (shouldShow) =>
-      dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));

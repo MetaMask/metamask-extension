@@ -308,29 +308,20 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      const functionType = await driver.findElement(
-        '.confirm-page-container-content__function-type',
-      );
-      const functionTypeText = await functionType.getText();
-      assert(functionTypeText.match('Transfer'));
+      await driver.findElement({
+        tag: 'span',
+        text: 'Transfer',
+      });
 
-      const tokenAmount = await driver.findElement(
-        '.confirm-page-container-summary__title-text',
-      );
-      const tokenAmountText = await tokenAmount.getText();
-      assert.equal(tokenAmountText, '1 TST');
+      await driver.findElement({
+        tag: 'h1',
+        text: '1 TST',
+      });
 
-      const confirmDataDiv = await driver.findElement(
-        '.confirm-page-container-content__data-box',
-      );
-      const confirmDataText = await confirmDataDiv.getText();
-
-      await driver.delay(regularDelayMs);
-      assert(
-        confirmDataText.match(
-          /0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/u,
-        ),
-      );
+      await driver.waitForSelector({
+        tag: 'p',
+        text: '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97',
+      });
 
       await driver.clickElement({ text: 'Details', tag: 'button' });
       await driver.delay(regularDelayMs);
@@ -355,13 +346,10 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
-          text: '-1 TST',
-        },
-        { timeout: 10000 },
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        text: '-1 TST',
+      });
 
       await driver.waitForSelector({
         css: '.list-item__heading',
@@ -389,13 +377,10 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
 
       await driver.findElements('.transaction-list__pending-transactions');
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list-item__primary-currency',
-          text: '-1.5 TST',
-        },
-        { timeout: 10000 },
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      });
       await driver.clickElement('.transaction-list-item__primary-currency');
       await driver.delay(regularDelayMs);
 
@@ -427,11 +412,10 @@ describe('MetaMask', function () {
     });
 
     it('submits the transaction', async function () {
-      const tokenAmount = await driver.findElement(
-        '.confirm-page-container-summary__title-text',
-      );
-      const tokenAmountText = await tokenAmount.getText();
-      assert.equal(tokenAmountText, '1.5 TST');
+      await driver.findElement({
+        tag: 'h1',
+        text: '1.5 TST',
+      });
 
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);

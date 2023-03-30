@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
+  "connectingToLineaTestnet": {
+    "message": "Pieslēdzas Linea Goerli testa tīklam"
+  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
   },
@@ -407,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testa tīkls"
   },
   "links": {
     "message": "Saites"
@@ -667,12 +673,6 @@
   },
   "settings": {
     "message": "Iestatījumi"
-  },
-  "showAdvancedGasInline": {
-    "message": "Papildu Gas vadīklas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Atlasiet šo, lai parādītu Gas cenu un ierobežotu kontroles iespējas tieši sūtīšanas un apstiprināšanas ekrānos."
   },
   "showFiatConversionInTestnets": {
     "message": "Rādīt konversiju testa tīklos"

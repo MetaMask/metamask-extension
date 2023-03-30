@@ -16,6 +16,7 @@ import Box from '../../ui/box/box';
 
 import {
   AvatarAccount,
+  AvatarAccountSize,
   AvatarToken,
   Button,
   ButtonIcon,
@@ -305,7 +306,10 @@ export const StartAccessoryEndAccessory = (args) => {
         truncate
         startAccessory={
           value.accountAddress && (
-            <AvatarAccount size={Size.SM} address={value.accountAddress} />
+            <AvatarAccount
+              size={AvatarAccountSize.SM}
+              address={value.accountAddress}
+            />
           )
         }
         endAccessory={

@@ -98,14 +98,11 @@ import {
   setSmartTransactionsOptInStatus,
   clearSmartTransactionFees,
 } from '../../../store/actions';
-import {
-  countDecimals,
-  fetchTokenPrice,
-  fetchTokenBalance,
-} from '../swaps.util';
+import { countDecimals, fetchTokenPrice } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import {
   getValueFromWeiHex,
@@ -313,24 +310,26 @@ export default function BuildQuote({
         isEqualCaseInsensitive(usersToken.address, token.address),
       )
     ) {
-      fetchTokenBalance(token.address, selectedAccountAddress).then(
-        (fetchedBalance) => {
-          if (fetchedBalance?.balance) {
-            const balanceAsDecString = fetchedBalance.balance.toString(10);
-            const userTokenBalance = calcTokenAmount(
-              balanceAsDecString,
-              token.decimals,
-            );
-            dispatch(
-              setSwapsFromToken({
-                ...token,
-                string: userTokenBalance.toString(10),
-                balance: balanceAsDecString,
-              }),
-            );
-          }
-        },
-      );
+      fetchTokenBalance(
+        token.address,
+        selectedAccountAddress,
+        global.ethereumProvider,
+      ).then((fetchedBalance) => {
+        if (fetchedBalance?.balance) {
+          const balanceAsDecString = fetchedBalance.balance.toString(10);
+          const userTokenBalance = calcTokenAmount(
+            balanceAsDecString,
+            token.decimals,
+          );
+          dispatch(
+            setSwapsFromToken({
+              ...token,
+              string: userTokenBalance.toString(10),
+              balance: balanceAsDecString,
+            }),
+          );
+        }
+      });
     }
     dispatch(setSwapsFromToken(token));
     onInputChange(

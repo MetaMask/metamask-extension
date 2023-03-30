@@ -106,17 +106,19 @@ export default function NftsItems({
   };
 
   const updateNftDropDownStateKey = (key, isExpanded) => {
-    const currentAccountNftDropdownState =
-      nftsDropdownState[selectedAddress][chainId];
-
     const newCurrentAccountState = {
-      ...currentAccountNftDropdownState,
+      ...nftsDropdownState[selectedAddress][chainId],
       [key]: !isExpanded,
     };
 
-    nftsDropdownState[selectedAddress][chainId] = newCurrentAccountState;
+    const newState = {
+      ...nftsDropdownState,
+      [selectedAddress]: {
+        [chainId]: newCurrentAccountState,
+      },
+    };
 
-    dispatch(updateNftDropDownState(nftsDropdownState));
+    dispatch(updateNftDropDownState(newState));
   };
 
   const renderCollection = ({ nfts, collectionName, collectionImage, key }) => {
