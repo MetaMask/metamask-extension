@@ -15,21 +15,13 @@ import {
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
-  AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  Icon,
   Text,
   ///: END:ONLY_INCLUDE_IN
   ICON_NAMES,
-  ICON_SIZES,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import {
-  IconColor,
-  Color,
-  FONT_WEIGHT,
-  TextVariant,
-} from '../constants/design-system';
+import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -38,36 +30,6 @@ import {
 ///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-const RIGHT_WARNING_ICON = (
-  <Icon
-    name={ICON_NAMES.DANGER}
-    size={ICON_SIZES.SM}
-    color={IconColor.warningDefault}
-  />
-);
-
-const RIGHT_INFO_ICON = (
-  <Icon
-    name={ICON_NAMES.INFO}
-    size={ICON_SIZES.SM}
-    color={IconColor.iconMuted}
-  />
-);
-///: END:ONLY_INCLUDE_IN
-
-function getLeftIcon(iconName) {
-  return (
-    <AvatarIcon
-      iconName={iconName}
-      size={ICON_SIZES.SM}
-      iconProps={{
-        size: ICON_SIZES.XS,
-      }}
-    />
-  );
-}
 
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
