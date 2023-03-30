@@ -18,15 +18,18 @@ import {
   ICON_SIZES,
   Text,
 } from '../../../component-library';
-import { DelineatorStyle } from '../../../../helpers/constants/flask';
+import {
+  DelineatorType,
+  getDelineatorTitle,
+} from '../../../../helpers/constants/flask';
 
 export const SnapDelineator = ({
   snapName,
-  style = DelineatorStyle.default,
+  type = DelineatorType.default,
   children,
 }) => {
   const t = useI18nContext();
-  const isError = style === DelineatorStyle.error;
+  const isError = type === DelineatorType.error;
   return (
     <Box
       className="snap-delineator__wrapper"
@@ -65,7 +68,7 @@ export const SnapDelineator = ({
           marginTop={0}
           marginBottom={0}
         >
-          {t(isError ? 'errorWithSnap' : 'contentFromSnap', [snapName])}
+          {t(getDelineatorTitle(type), [snapName])}
         </Text>
       </Box>
       <Box className="snap-delineator__content" padding={4}>
@@ -77,6 +80,6 @@ export const SnapDelineator = ({
 
 SnapDelineator.propTypes = {
   snapName: PropTypes.string,
-  style: PropTypes.string,
+  type: PropTypes.string,
   children: PropTypes.ReactNode,
 };

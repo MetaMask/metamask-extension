@@ -25,7 +25,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getSubjectMetadata,
+  getTargetSubjectMetadata,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
@@ -185,14 +185,14 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const subjectMetadata = useSelector((state) =>
-    getSubjectMetadata(state, pendingConfirmation?.origin),
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName =
-    subjectMetadata &&
-    getSnapName(pendingConfirmation?.origin, subjectMetadata);
+    targetSubjectMetadata &&
+    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
 
   const SNAP_DIALOG_TYPE = [
     MESSAGE_TYPE.SNAP_DIALOG_ALERT,

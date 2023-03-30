@@ -19,7 +19,7 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import { Text } from '../../../component-library';
 import { Copyable } from '../copyable';
-import { DelineatorStyle } from '../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../helpers/constants/flask';
 
 export const UI_MAPPING = {
   panel: (props) => ({
@@ -74,7 +74,11 @@ export const mapToTemplate = (data) => {
 };
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
-export const SnapUIRenderer = ({ snapId, data }) => {
+export const SnapUIRenderer = ({
+  snapId,
+  delineatorType = DelineatorType.content,
+  data,
+}) => {
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -84,11 +88,9 @@ export const SnapUIRenderer = ({ snapId, data }) => {
 
   if (!isComponent(data)) {
     return (
-      <SnapDelineator snapName={snapName} style={DelineatorStyle.error}>
+      <SnapDelineator snapName={snapName} type={DelineatorType.error}>
         <Text variant={TextVariant.bodySm} marginBottom={4}>
-          {t('snapsUIError', [
-            <b key="0">{getSnapName(snapId, targetSubjectMetadata)}</b>,
-          ])}
+          {t('snapsUIError', [<b key="0">{snapName}</b>])}
         </Text>
         <Copyable text={t('snapsInvalidUIError')} />
       </SnapDelineator>
@@ -98,7 +100,7 @@ export const SnapUIRenderer = ({ snapId, data }) => {
   const sections = mapToTemplate(data);
 
   return (
-    <SnapDelineator snapName={snapId}>
+    <SnapDelineator snapName={snapName} type={delineatorType}>
       <Box className="snap-ui-renderer__content">
         <MetaMaskTemplateRenderer sections={sections} />
       </Box>
@@ -108,5 +110,6 @@ export const SnapUIRenderer = ({ snapId, data }) => {
 
 SnapUIRenderer.propTypes = {
   snapId: PropTypes.string,
+  delineatorType: PropTypes.string,
   data: PropTypes.object,
 };

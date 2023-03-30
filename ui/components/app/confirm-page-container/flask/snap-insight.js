@@ -17,7 +17,7 @@ import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactio
 import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../flask/snap-ui-renderer';
 import { SnapDelineator } from '../../flask/snap-delineator';
-import { DelineatorStyle } from '../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../helpers/constants/flask';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../flask/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
@@ -38,6 +38,8 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, selectedSnap.id),
   );
+
+  const snapName = getSnapName(selectedSnap.id, targetSubjectMetadata);
 
   const data = response?.content;
 
@@ -61,7 +63,11 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
           className="snap-insight__container"
         >
           {data && Object.keys(data).length > 0 ? (
-            <SnapUIRenderer snapId={selectedSnap.id} data={data} />
+            <SnapUIRenderer
+              snapId={selectedSnap.id}
+              data={data}
+              delineatorType={DelineatorType.insights}
+            />
           ) : (
             <Text
               color={TextColor.textAlternative}
@@ -76,16 +82,9 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
 
       {!loading && error && (
         <Box padding={4} className="snap-insight__container__error">
-          <SnapDelineator
-            snapName={getSnapName(selectedSnap.id, targetSubjectMetadata)}
-            style={DelineatorStyle.error}
-          >
+          <SnapDelineator snapName={snapName} type={DelineatorType.error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
-              {t('snapsUIError', [
-                <b key="0">
-                  {getSnapName(selectedSnap.id, targetSubjectMetadata)}
-                </b>,
-              ])}
+              {t('snapsUIError', [<b key="0">{snapName}</b>])}
             </Text>
             <Copyable text={error.message} />
           </SnapDelineator>
