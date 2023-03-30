@@ -556,7 +556,7 @@ export function getSnapDerivationPathName(path, curve) {
 }
 
 export const removeSnapIdPrefix = (snapId) =>
-  snapId.replace(getSnapPrefix(snapId), '');
+  snapId?.replace(getSnapPrefix(snapId), '');
 
 export const getSnapName = (snapId, subjectMetadata) => {
   if (SNAPS_METADATA[snapId]?.name) {

@@ -150,6 +150,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activated": {
+    "message": "Active"
+  },
   "active": {
     "message": "Active"
   },
@@ -639,8 +642,38 @@
   "close": {
     "message": "Close"
   },
+  "codefiCompliance": {
+    "message": "Codefi Compliance"
+  },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "complianceBlurb0": {
+    "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
+  },
+  "complianceBlurb1": {
+    "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
+  },
+  "complianceBlurbStep1": {
+    "message": "Sign up to Codefi Compliance below"
+  },
+  "complianceBlurbStep2": {
+    "message": "Create an organisation"
+  },
+  "complianceBlurbStep3": {
+    "message": "Create a project"
+  },
+  "complianceBlurbStep4": {
+    "message": "Set your compliance settings"
+  },
+  "complianceBlurbStep5": {
+    "message": "Click the \"Enable Compliance in MMI\" button"
+  },
+  "complianceBlurpStep0": {
+    "message": "Steps to enable AML/CFT Compliance:"
+  },
+  "complianceSettingsExplanation": {
+    "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
   },
   "confirm": {
     "message": "Confirm"
@@ -1332,6 +1365,10 @@
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
+  "ethereumProviderAccess": {
+    "message": "Grant Ethereum provider access to $1",
+    "description": "The parameter is the name of the requesting origin"
+  },
   "ethereumPublicAddress": {
     "message": "Ethereum public address"
   },
@@ -1966,6 +2003,9 @@
   },
   "lock": {
     "message": "Lock"
+  },
+  "lockMetaMask": {
+    "message": "Lock MetaMask"
   },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
@@ -2673,6 +2713,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCodefiCompliance": {
+    "message": "Open Codefi Compliance"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2948,6 +2991,9 @@
   },
   "portfolio": {
     "message": "Portfolio"
+  },
+  "portfolioView": {
+    "message": "Portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -3530,7 +3576,11 @@
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 key access to $1",
+    "message": "Grant $2 account control to $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Grant $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapResultError": {
