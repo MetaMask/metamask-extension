@@ -1192,6 +1192,25 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === false) {
+      const { serviceWorkerLastActiveTime } =
+        this.appStateController.store.getState();
+      const metametricsPayload = {
+        category: EVENT.SOURCE.SERVICE_WORKERS,
+        event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        properties: {
+          service_worker_restarted_time:
+            Date.now() - serviceWorkerLastActiveTime,
+        },
+      };
+
+      try {
+        this.metaMetricsController.trackEvent(metametricsPayload);
+      } catch (e) {
+        log.warn('Failed to track service worker restart metric:', e);
+      }
+    }
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
