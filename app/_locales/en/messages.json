@@ -653,6 +653,7 @@
   },
   "complianceActivatedTitle": {
     "message": "Your compliance feature is activated"
+  },
   "complianceBlurb0": {
     "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
   },
