@@ -317,6 +317,11 @@ export default class NetworkController extends EventEmitter {
       return;
     }
 
+    this.messenger.unsubscribe(
+      NetworkControllerEventTypes.NetworkDidChange,
+      listener,
+    );
+
     this.networkStatusStore.putState(networkStatus);
 
     if (networkStatus === NetworkStatus.Available) {
@@ -500,6 +505,7 @@ export default class NetworkController extends EventEmitter {
     this._resetNetworkDetails();
     this._configureProvider(opts);
     this.messenger.publish(NetworkControllerEventTypes.NetworkDidChange);
+    this.lookupNetwork();
   }
 
   _configureProvider({ type, rpcUrl, chainId }) {

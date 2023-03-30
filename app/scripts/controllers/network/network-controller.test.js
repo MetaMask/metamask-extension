@@ -532,7 +532,7 @@ describe('NetworkController', () => {
         blockTracker.addListener('latest', () => {
           // do nothing
         });
-        expect(blockTracker.isRunning()).toBe(true);
+        expect(blockTracker.isRunning()).toBeTruthy();
 
         await controller.destroy();
 
@@ -804,15 +804,16 @@ describe('NetworkController', () => {
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls();
 
-            const promiseForInfuraIsBlocked = waitForPublishedEvents({
+            const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
               messenger,
-              eventType: 'infuraIsBlocked',
+              eventType: 'NetworkController:infuraIsBlocked',
+              count: 0,
               operation: async () => {
                 await controller.initializeProvider();
               },
             });
 
-            await expect(promiseForInfuraIsBlocked).toNeverResolve();
+            expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
           },
         );
       });
@@ -1054,7 +1055,7 @@ describe('NetworkController', () => {
 
           const supportsEIP1559 = await controller.getEIP1559Compatibility();
 
-          expect(supportsEIP1559).toBe(true);
+          expect(supportsEIP1559).toBeTruthy();
         });
       });
     });
@@ -1154,7 +1155,7 @@ describe('NetworkController', () => {
         await controller.getEIP1559Compatibility();
         await controller.getEIP1559Compatibility();
 
-        expect(network.nockScope.isDone()).toBe(true);
+        expect(network.nockScope.isDone()).toBeTruthy();
       });
     });
   });
@@ -1200,15 +1201,16 @@ describe('NetworkController', () => {
         await withController({ messenger }, async ({ controller, network }) => {
           network.mockEssentialRpcCalls();
 
-          const promiseForInfuraIsUnblocked = waitForPublishedEvents({
+          const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
             messenger,
             eventType: 'NetworkController:infuraIsUnblocked',
+            count: 0,
             operation: async () => {
               await controller.lookupNetwork();
             },
           });
 
-          await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+          expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
         });
       });
 
@@ -1218,15 +1220,16 @@ describe('NetworkController', () => {
         await withController({ messenger }, async ({ controller, network }) => {
           network.mockEssentialRpcCalls();
 
-          const promiseForInfuraIsBlocked = waitForPublishedEvents({
+          const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
             messenger,
             eventType: 'NetworkController:infuraIsBlocked',
+            count: 0,
             operation: async () => {
               await controller.lookupNetwork();
             },
           });
 
-          await expect(promiseForInfuraIsBlocked).toNeverResolve();
+          expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
         });
       });
     });
@@ -1278,15 +1281,16 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
             await controller.initializeProvider();
 
-            const promiseForInfuraIsUnblocked = waitForPublishedEvents({
+            const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
               messenger,
               eventType: 'NetworkController:infuraIsUnblocked',
+              count: 0,
               operation: async () => {
                 await controller.lookupNetwork();
               },
             });
 
-            await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+            expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
           },
         );
       });
@@ -1308,15 +1312,16 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
             await controller.initializeProvider();
 
-            const promiseForInfuraIsBlocked = waitForPublishedEvents({
+            const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
               messenger,
               eventType: 'NetworkController:infuraIsBlocked',
+              count: 0,
               operation: async () => {
                 await controller.lookupNetwork();
               },
             });
 
-            await expect(promiseForInfuraIsBlocked).toNeverResolve();
+            expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
           },
         );
       });
@@ -1445,7 +1450,7 @@ describe('NetworkController', () => {
 
                 expect(
                   controller.store.getState().networkDetails.EIPS[1559],
-                ).toBe(true);
+                ).toBeTruthy();
               },
             );
           });
@@ -1727,13 +1732,13 @@ describe('NetworkController', () => {
 
                 const infuraIsBlocked = await waitForPublishedEvents({
                   messenger,
-                  eventType: 'infuraIsBlocked',
+                  eventType: 'NetworkController:infuraIsBlocked',
                   operation: async () => {
                     await controller.lookupNetwork();
                   },
                 });
 
-                expect(infuraIsBlocked).toBe(true);
+                expect(infuraIsBlocked).toBeTruthy();
               },
             );
           });
@@ -1766,15 +1771,17 @@ describe('NetworkController', () => {
                   },
                 });
 
-                const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                  messenger,
-                  eventType: 'infuraIsUnblocked',
-                  operation: async () => {
-                    await controller.lookupNetwork();
-                  },
-                });
+                const promiseForNoInfuraIsUnblockedEvents =
+                  waitForPublishedEvents({
+                    messenger,
+                    eventType: 'NetworkController:infuraIsUnblocked',
+                    count: 0,
+                    operation: async () => {
+                      await controller.lookupNetwork();
+                    },
+                  });
 
-                await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+                expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
               },
             );
           });
@@ -2097,15 +2104,17 @@ describe('NetworkController', () => {
                   },
                 });
 
-                const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                  messenger,
-                  eventType: 'infuraIsBlocked',
-                  operation: async () => {
-                    await controller.lookupNetwork();
-                  },
-                });
+                const promiseForNoInfuraIsBlockedEvents =
+                  waitForPublishedEvents({
+                    messenger,
+                    eventType: 'NetworkController:infuraIsBlocked',
+                    count: 0,
+                    operation: async () => {
+                      await controller.lookupNetwork();
+                    },
+                  });
 
-                await expect(promiseForInfuraIsBlocked).toNeverResolve();
+                expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
               },
             );
           });
@@ -2138,15 +2147,17 @@ describe('NetworkController', () => {
                   },
                 });
 
-                const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                  controller,
-                  eventType: 'NetworkController:infuraIsUnblocked',
-                  operation: async () => {
-                    await controller.lookupNetwork();
-                  },
-                });
+                const promiseForNoInfuraIsUnblockedEvents =
+                  waitForPublishedEvents({
+                    messenger,
+                    eventType: 'NetworkController:infuraIsUnblocked',
+                    count: 0,
+                    operation: async () => {
+                      await controller.lookupNetwork();
+                    },
+                  });
 
-                await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+                expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
               },
             );
           });
@@ -2480,19 +2491,21 @@ describe('NetworkController', () => {
                     await controller.initializeProvider();
                   },
                 });
-                const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                  controller,
-                  eventType: 'NetworkController:infuraIsUnblocked',
-                });
+                const promiseForNoInfuraIsUnblockedEvents =
+                  waitForPublishedEvents({
+                    messenger,
+                    eventType: 'NetworkController:infuraIsUnblocked',
+                    count: 0,
+                  });
                 const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                  controller,
+                  messenger,
                   eventType: 'NetworkController:infuraIsBlocked',
                 });
 
                 await controller.lookupNetwork();
 
-                await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-                expect(await promiseForInfuraIsBlocked).toBe(true);
+                expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+                expect(await promiseForInfuraIsBlocked).toBeTruthy();
               },
             );
           });
@@ -2625,7 +2638,7 @@ describe('NetworkController', () => {
 
               expect(
                 controller.store.getState().networkDetails.EIPS[1559],
-              ).toBe(true);
+              ).toBeTruthy();
             },
           );
         });
@@ -2673,8 +2686,11 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsUnblocked', async () => {
+          const messenger = buildMessenger();
+
           await withController(
             {
+              messenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -2700,14 +2716,14 @@ describe('NetworkController', () => {
               });
 
               const infuraIsUnblocked = await waitForPublishedEvents({
-                controller,
+                messenger,
                 eventType: 'NetworkController:infuraIsUnblocked',
                 operation: async () => {
                   await controller.lookupNetwork();
                 },
               });
 
-              expect(infuraIsUnblocked).toBe(true);
+              expect(infuraIsUnblocked).toBeTruthy();
             },
           );
         });
@@ -2959,15 +2975,16 @@ describe('NetworkController', () => {
                 },
               });
 
-              const promiseForInfuraIsBlocked = waitForPublishedEvents({
+              const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
                 messenger,
                 eventType: 'NetworkController:infuraIsBlocked',
+                count: 0,
                 operation: async () => {
                   await controller.lookupNetwork();
                 },
               });
 
-              await expect(promiseForInfuraIsBlocked).toNeverResolve();
+              expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
             },
           );
         });
@@ -3222,15 +3239,16 @@ describe('NetworkController', () => {
                 },
               });
 
-              const promiseForInfuraIsBlocked = waitForPublishedEvents({
+              const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
                 messenger,
                 eventType: 'NetworkController:infuraIsBlocked',
+                count: 0,
                 operation: async () => {
                   await controller.lookupNetwork();
                 },
               });
 
-              await expect(promiseForInfuraIsBlocked).toNeverResolve();
+              expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
             },
           );
         });
@@ -3240,6 +3258,7 @@ describe('NetworkController', () => {
 
           await withController(
             {
+              messenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -3556,10 +3575,12 @@ describe('NetworkController', () => {
                   await controller.initializeProvider();
                 },
               });
-              const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                messenger,
-                eventType: 'NetworkController:infuraIsUnblocked',
-              });
+              const promiseForNoInfuraIsUnblockedEvents =
+                waitForPublishedEvents({
+                  messenger,
+                  eventType: 'NetworkController:infuraIsUnblocked',
+                  count: 0,
+                });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
                 eventType: 'NetworkController:infuraIsBlocked',
@@ -3567,8 +3588,8 @@ describe('NetworkController', () => {
 
               await controller.lookupNetwork();
 
-              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-              expect(await promiseForInfuraIsBlocked).toBe(true);
+              expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+              expect(await promiseForInfuraIsBlocked).toBeTruthy();
             },
           );
         });
@@ -3855,10 +3876,12 @@ describe('NetworkController', () => {
                   await controller.initializeProvider();
                 },
               });
-              const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                messenger,
-                eventType: 'NetworkController:infuraIsUnblocked',
-              });
+              const promiseForNoInfuraIsUnblockedEvents =
+                waitForPublishedEvents({
+                  messenger,
+                  eventType: 'NetworkController:infuraIsUnblocked',
+                  count: 0,
+                });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
                 eventType: 'NetworkController:infuraIsBlocked',
@@ -3866,8 +3889,8 @@ describe('NetworkController', () => {
 
               await controller.lookupNetwork();
 
-              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-              expect(await promiseForInfuraIsBlocked).toBe(true);
+              expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+              expect(await promiseForInfuraIsBlocked).toBeTruthy();
             },
           );
         });
@@ -4812,9 +4835,10 @@ describe('NetworkController', () => {
                 response: BLOCKED_INFURA_RESPONSE,
               },
             });
-            const promiseForInfuraIsUnblocked = waitForPublishedEvents({
+            const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
               messenger,
               eventType: 'NetworkController:infuraIsUnblocked',
+              count: 0,
             });
             const promiseForInfuraIsBlocked = waitForPublishedEvents({
               messenger,
@@ -4823,8 +4847,8 @@ describe('NetworkController', () => {
 
             controller.setProviderType(networkType);
 
-            await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-            expect(await promiseForInfuraIsBlocked).toBe(true);
+            expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+            expect(await promiseForInfuraIsBlocked).toBeTruthy();
           });
         });
 
@@ -5151,10 +5175,12 @@ describe('NetworkController', () => {
                   response: BLOCKED_INFURA_RESPONSE,
                 },
               });
-              const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                messenger,
-                eventType: 'NetworkController:infuraIsUnblocked',
-              });
+              const promiseForNoInfuraIsUnblockedEvents =
+                waitForPublishedEvents({
+                  messenger,
+                  eventType: 'NetworkController:infuraIsUnblocked',
+                  count: 0,
+                });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
                 eventType: 'NetworkController:infuraIsBlocked',
@@ -5162,8 +5188,8 @@ describe('NetworkController', () => {
 
               controller.resetConnection();
 
-              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-              expect(await promiseForInfuraIsBlocked).toBe(true);
+              expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+              expect(await promiseForInfuraIsBlocked).toBeTruthy();
             },
           );
         });
@@ -6158,10 +6184,12 @@ describe('NetworkController', () => {
                   controller.setActiveNetwork('testNetworkConfigurationId');
                 },
               });
-              const promiseForInfuraIsUnblocked = waitForPublishedEvents({
-                messenger,
-                eventType: 'NetworkController:infuraIsUnblocked',
-              });
+              const promiseForNoInfuraIsUnblockedEvents =
+                waitForPublishedEvents({
+                  messenger,
+                  eventType: 'NetworkController:infuraIsUnblocked',
+                  count: 0,
+                });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
                 eventType: 'NetworkController:infuraIsBlocked',
@@ -6174,8 +6202,8 @@ describe('NetworkController', () => {
                 },
               });
 
-              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-              expect(await promiseForInfuraIsBlocked).toBe(true);
+              expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+              expect(await promiseForInfuraIsBlocked).toBeTruthy();
             },
           );
         });
