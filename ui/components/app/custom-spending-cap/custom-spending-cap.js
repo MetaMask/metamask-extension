@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import Typography from '../../ui/typography';
+import { Text } from '../../component-library'
 import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
 import {
   AlignItems,
@@ -14,7 +14,7 @@ import {
   FLEX_DIRECTION,
   TEXT_ALIGN,
   FONT_WEIGHT,
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   Size,
   BLOCK_SIZES,
@@ -71,14 +71,15 @@ export default function CustomSpendingCap({
       return {
         className: 'custom-spending-cap__lowerValue',
         description: t('inputLogicEqualOrSmallerNumber', [
-          <Typography
+          <Text
             key="custom-spending-cap"
-            variant={TypographyVariant.H6}
+            variant={TextVariant.bodySm}
+            as="h6"
             fontWeight={FONT_WEIGHT.BOLD}
             className="custom-spending-cap__input-value-and-token-name"
           >
             {replaceCommaToDot(inputNumber)} {tokenName}
-          </Typography>,
+          </Text>,
         ]),
       };
     } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
@@ -145,15 +146,15 @@ export default function CustomSpendingCap({
     currentTokenBalance,
   )
     ? t('warningTooltipText', [
-        <Typography
-          key="tooltip-text"
-          variant={TypographyVariant.H7}
-          fontWeight={FONT_WEIGHT.BOLD}
-          color={TextColor.errorDefault}
-        >
-          <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
-        </Typography>,
-      ])
+      <Text
+        key="tooltip-text"
+        variant={TextVariant.bodySm}
+        fontWeight={FONT_WEIGHT.BOLD}
+        color={TextColor.errorDefault}
+      >
+        <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
+      </Text>,
+    ])
     : t('inputLogicEmptyState');
 
   return (
@@ -249,15 +250,16 @@ export default function CustomSpendingCap({
                 'custom-spending-cap__description--with-error-message': error,
               })}
             >
-              <Typography
+              <Text
                 color={TextColor.textDefault}
-                variant={TypographyVariant.H7}
+                variant={TextVariant.bodySm}
+                as="h6"
                 boxProps={{ paddingTop: 2, paddingBottom: 2 }}
               >
                 {replaceCommaToDot(value)
                   ? customSpendingCapText
                   : inputLogicEmptyStateText}
-              </Typography>
+              </Text>
             </Box>
           </label>
         </Box>
