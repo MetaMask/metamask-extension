@@ -56,14 +56,16 @@ export const Text = forwardRef(function Text(
     'mm-text',
     className,
     `mm-text--${variant}`,
-    (strongTagFontWeight || fontWeight) &&
-      `mm-text--font-weight-${strongTagFontWeight || fontWeight}`,
     {
-      [`mm-text--font-style-${String(fontStyle)}`]: fontStyle,
-      [`mm-text--ellipsis`]: ellipsis,
-      [`mm-text--text-transform-${String(textTransform)}`]: textTransform,
-      [`mm-text--text-align-${String(textAlign)}`]: textAlign,
-      [`mm-text--overflow-wrap-${String(overflowWrap)}`]: overflowWrap,
+      [`mm-text--font-weight-${strongTagFontWeight || fontWeight}`]: Boolean(
+        strongTagFontWeight || fontWeight,
+      ),
+      [`mm-text--font-style-${String(fontStyle)}`]: Boolean(fontStyle),
+      [`mm-text--ellipsis`]: Boolean(ellipsis),
+      [`mm-text--text-transform-${String(textTransform)}`]:
+        Boolean(textTransform),
+      [`mm-text--text-align-${String(textAlign)}`]: Boolean(textAlign),
+      [`mm-text--overflow-wrap-${String(overflowWrap)}`]: Boolean(overflowWrap),
     },
   );
 

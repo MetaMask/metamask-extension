@@ -30,35 +30,6 @@ export default {
       page: README,
     },
   },
-  argTypes: {
-    // variant: {
-    //   options: Object.values(TextVariant),
-    // },
-    // color: {
-    //   options: Object.values(TextColor),
-    // },
-    fontWeight: {
-      options: Object.values(FONT_WEIGHT),
-    },
-    fontStyle: {
-      options: Object.values(FONT_STYLE),
-    },
-    textTransform: {
-      options: Object.values(TEXT_TRANSFORM),
-    },
-    textAlign: {
-      options: Object.values(TEXT_ALIGN),
-    },
-    overflowWrap: {
-      options: Object.values(OVERFLOW_WRAP),
-    },
-    ellipsis: {
-      control: { type: 'boolean' },
-    },
-    // textDirection: {
-    //   options: TextDirection,
-    // },
-  },
 } as ComponentMeta<typeof Text>;
 
 function renderBackgroundColor(color) {
