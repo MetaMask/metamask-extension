@@ -96,21 +96,18 @@ const JSONRPC_RESPONSE_BODY_PROPERTIES = ['id', 'jsonrpc', 'result', 'error'];
  */
 const INFURA_NETWORKS = [
   {
-    networkName: 'Mainnet',
     networkType: 'mainnet',
     chainId: '0x1',
     networkId: '1',
     ticker: 'ETH',
   },
   {
-    networkName: 'Goerli',
     networkType: 'goerli',
     chainId: '0x5',
     networkId: '5',
     ticker: 'GoerliETH',
   },
   {
-    networkName: 'Sepolia',
     networkType: 'sepolia',
     chainId: '0xaa36a7',
     networkId: '11155111',
@@ -570,9 +567,9 @@ describe('NetworkController', () => {
       );
     });
 
-    for (const { networkName, networkType, chainId } of INFURA_NETWORKS) {
+    for (const { networkType, chainId } of INFURA_NETWORKS) {
       describe(`when the type in the provider configuration is "${networkType}"`, () => {
-        it(`initializes a provider pointed to the ${networkName} Infura network (chainId: ${chainId})`, async () => {
+        it(`initializes a provider pointed to the "${networkType}" Infura network (chainId: ${chainId})`, async () => {
           await withController(
             {
               state: {
@@ -922,9 +919,9 @@ describe('NetworkController', () => {
       });
     });
 
-    for (const { networkName, networkType, chainId } of INFURA_NETWORKS) {
+    for (const { networkType, chainId } of INFURA_NETWORKS) {
       describe(`when the type in the provider configuration is changed to "${networkType}"`, () => {
-        it(`returns a provider object that was pointed to another network before the switch and is pointed to ${networkName} afterward`, async () => {
+        it(`returns a provider object that was pointed to another network before the switch and is pointed to "${networkType}" afterward`, async () => {
           await withController(
             {
               state: {
@@ -4404,12 +4401,7 @@ describe('NetworkController', () => {
   });
 
   describe('setProviderType', () => {
-    for (const {
-      networkName,
-      networkType,
-      chainId,
-      ticker,
-    } of INFURA_NETWORKS) {
+    for (const { networkType, chainId, ticker } of INFURA_NETWORKS) {
       describe(`given a type of "${networkType}"`, () => {
         it('stores the current provider configuration before overwriting it', async () => {
           await withController(
@@ -4678,7 +4670,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it(`initializes a provider pointed to the ${networkName} Infura network (chainId: ${chainId})`, async () => {
+        it(`initializes a provider pointed to the "${networkType}" Infura network (chainId: ${chainId})`, async () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
@@ -4867,7 +4859,7 @@ describe('NetworkController', () => {
   });
 
   describe('resetConnection', () => {
-    for (const { networkName, networkType, chainId } of INFURA_NETWORKS) {
+    for (const { networkType, chainId } of INFURA_NETWORKS) {
       describe(`when the type in the provider configuration is "${networkType}"`, () => {
         it('emits networkWillChange', async () => {
           await withController(
@@ -4982,7 +4974,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it(`initializes a new provider object pointed to the current Infura network (name: ${networkName}, chain ID: ${chainId})`, async () => {
+        it(`initializes a new provider object pointed to the current Infura network (type: "${networkType}", chain ID: ${chainId})`, async () => {
           await withController(
             {
               state: {
@@ -5571,7 +5563,7 @@ describe('NetworkController', () => {
   });
 
   describe('rollbackToPreviousProvider', () => {
-    for (const { networkName, networkType, chainId } of INFURA_NETWORKS) {
+    for (const { networkType, chainId } of INFURA_NETWORKS) {
       describe(`if the previous provider configuration had a type of "${networkType}"`, () => {
         it('overwrites the the current provider configuration with the previous provider configuration', async () => {
           await withController(
@@ -5862,7 +5854,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it(`initializes a provider pointed to the ${networkName} Infura network (chainId: ${chainId})`, async () => {
+        it(`initializes a provider pointed to the "${networkType}" Infura network (chainId: ${chainId})`, async () => {
           await withController(
             {
               state: {
