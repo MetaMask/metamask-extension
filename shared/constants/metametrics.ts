@@ -51,19 +51,19 @@ type MetaMetricsContext = {
      * The version of the application.
      */
     version: string;
-    /**
-     * The user agent of the application.
-     */
-    userAgent: string;
-    /**
-     * An object representing details of the current page.
-     */
-    page?: MetaMetricsPageObject;
-    /**
-     * The dapp that triggered an interaction (MetaMask only).
-     */
-    referrer?: MetaMetricsReferrerObject;
   };
+  /**
+   * The user agent of the application.
+   */
+  userAgent: string;
+  /**
+   * An object representing details of the current page.
+   */
+  page?: MetaMetricsPageObject;
+  /**
+   * The dapp that triggered an interaction (MetaMask only).
+   */
+  referrer?: MetaMetricsReferrerObject;
 };
 
 export type MetaMetricsEventPayload = {
