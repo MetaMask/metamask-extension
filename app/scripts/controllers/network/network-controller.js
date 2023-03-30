@@ -7,6 +7,9 @@ import {
   createEventEmitterProxy,
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
+// ControllerMessenger is referred to in the JSDocs
+// eslint-disable-next-line no-unused-vars
+import { ControllerMessenger } from '@metamask/base-controller';
 import { v4 as random } from 'uuid';
 import { hasProperty, isPlainObject } from '@metamask/utils';
 import { errorCodes } from 'eth-rpc-errors';
@@ -82,29 +85,56 @@ function buildDefaultNetworkConfigurationsState() {
   return {};
 }
 
-export const NETWORK_EVENTS = {
-  // Fired after the actively selected network is changed
-  NETWORK_DID_CHANGE: 'networkDidChange',
-  // Fired when the actively selected network *will* change
-  NETWORK_WILL_CHANGE: 'networkWillChange',
-  // Fired when Infura returns an error indicating no support
-  INFURA_IS_BLOCKED: 'infuraIsBlocked',
-  // Fired when not using an Infura network or when Infura returns no error,
-  // indicating support
-  INFURA_IS_UNBLOCKED: 'infuraIsUnblocked',
+/**
+ * The name of the controller.
+ */
+const name = 'NetworkController';
+
+/**
+ * The set of event types that this controller can publish via its messenger.
+ */
+export const NetworkControllerEventTypes = {
+  /**
+   * Fired after the current network is changed.
+   */
+  NetworkDidChange: `${name}:networkDidChange`,
+  /**
+   * Fired when there is a request to change the current network, but no state
+   * changes have occurred yet.
+   */
+  NetworkWillChange: `${name}:networkWillChange`,
+  /**
+   * Fired after the network is changed to an Infura network, but when Infura
+   * returns an error denying support for the user's location.
+   */
+  InfuraIsBlocked: `${name}:infuraIsBlocked`,
+  /**
+   * Fired after the network is changed to an Infura network and Infura does not
+   * return an error denying support for the user's location, or after the
+   * network is changed to a custom network.
+   */
+  InfuraIsUnblocked: `${name}:infuraIsUnblocked`,
 };
 
 export default class NetworkController extends EventEmitter {
   /**
    * Construct a NetworkController.
    *
-   * @param {object} [options] - NetworkController options.
+   * @param {object} options - Options for this controller.
+   * @param {ControllerMessenger} options.messenger - The controller messenger.
    * @param {object} [options.state] - Initial controller state.
    * @param {string} [options.infuraProjectId] - The Infura project ID.
    * @param {string} [options.trackMetaMetricsEvent] - A method to forward events to the MetaMetricsController
    */
-  constructor({ state = {}, infuraProjectId, trackMetaMetricsEvent } = {}) {
+  constructor({
+    messenger,
+    state = {},
+    infuraProjectId,
+    trackMetaMetricsEvent,
+  } = {}) {
     super();
+
+    this.messenger = messenger;
 
     // create stores
     this.providerStore = new ObservableStore(
@@ -151,11 +181,8 @@ export default class NetworkController extends EventEmitter {
       throw new Error('Invalid Infura project ID');
     }
     this._infuraProjectId = infuraProjectId;
-    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
-    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      this.lookupNetwork();
-    });
+    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
   }
 
   /**
@@ -236,9 +263,17 @@ export default class NetworkController extends EventEmitter {
 
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
-    this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+    const listener = () => {
       networkChanged = true;
-    });
+      this.messenger.unsubscribe(
+        NetworkControllerEventTypes.NetworkDidChange,
+        listener,
+      );
+    };
+    this.messenger.subscribe(
+      NetworkControllerEventTypes.NetworkDidChange,
+      listener,
+    );
 
     try {
       const results = await Promise.all([
@@ -299,15 +334,15 @@ export default class NetworkController extends EventEmitter {
 
     if (isInfura) {
       if (networkStatus === NetworkStatus.Available) {
-        this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
+        this.messenger.publish(NetworkControllerEventTypes.InfuraIsUnblocked);
       } else if (networkStatus === NetworkStatus.Blocked) {
-        this.emit(NETWORK_EVENTS.INFURA_IS_BLOCKED);
+        this.messenger.publish(NetworkControllerEventTypes.InfuraIsBlocked);
       }
     } else {
-      // Always emit infuraIsUnblocked regardless of network status to prevent
-      // consumers from being stuck in a blocked state if they were previously
-      // connected to an Infura network that was blocked
-      this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
+      // Always publish infuraIsUnblocked regardless of network status to
+      // prevent consumers from being stuck in a blocked state if they were
+      // previously connected to an Infura network that was blocked
+      this.messenger.publish(NetworkControllerEventTypes.InfuraIsUnblocked);
     }
   }
 
@@ -459,12 +494,12 @@ export default class NetworkController extends EventEmitter {
   }
 
   _switchNetwork(opts) {
-    this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
+    this.messenger.publish(NetworkControllerEventTypes.NetworkWillChange);
     this._resetNetworkId();
     this._resetNetworkStatus();
     this._resetNetworkDetails();
     this._configureProvider(opts);
-    this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE);
+    this.messenger.publish(NetworkControllerEventTypes.NetworkDidChange);
   }
 
   _configureProvider({ type, rpcUrl, chainId }) {

@@ -13,7 +13,7 @@ import { convertHexToDecimal } from '@metamask/controller-utils';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
-import NetworkController, { NETWORK_EVENTS } from './network';
+import NetworkController, { NetworkControllerEventTypes } from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
@@ -192,7 +192,11 @@ describe('DetectTokensController', function () {
       .persist();
 
     keyringMemStore = new ObservableStore({ isUnlocked: false });
-    network = new NetworkController({ infuraProjectId });
+    const networkControllerMessenger = new ControllerMessenger();
+    network = new NetworkController({
+      messenger: networkControllerMessenger,
+      infuraProjectId,
+    });
     await network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
 
@@ -212,6 +216,8 @@ describe('DetectTokensController', function () {
       network,
       provider,
       tokenListController,
+      onInfuraIsBlocked: sinon.stub(),
+      onInfuraIsUnblocked: sinon.stub(),
     });
     preferences.setAddresses([
       '0x7e57e2',
@@ -241,17 +247,20 @@ describe('DetectTokensController', function () {
         preferences.store,
       ),
       onNetworkStateChange: (cb) =>
-        network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-          const networkState = network.store.getState();
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.provider,
-              chainId: convertHexToDecimal(networkState.provider.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+        networkControllerMessenger.subscribe(
+          NetworkControllerEventTypes.NetworkDidChange,
+          () => {
+            const networkState = network.store.getState();
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+                chainId: convertHexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          },
+        ),
     });
   });
 
