@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ButtonIcon,
   Button,
@@ -45,6 +46,7 @@ import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const mmiActions = mmiActionsFactory();
   const currentChainId = useSelector(getCurrentChainId);
@@ -189,7 +191,7 @@ const CustodyPage = () => {
     );
   };
 
-  const handleConnectError = () => {
+  const handleConnectError = (e) => {
     let errorMessage;
     const detailedError = e.message.split(':');
 

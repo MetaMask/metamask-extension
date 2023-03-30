@@ -1,32 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import sinon from 'sinon';
-import { mount } from 'enzyme';
 import configureMockStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import CustodySubview from './custody.component';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import CustodyPage from '.';
 
-// TODO - check why they fail running together
-/* eslint-disable mocha/no-skipped-tests */
-describe.skip('CustodySubview', function () {
-  let wrapper, clock;
+const mockedReturnedValue = jest
+  .fn()
+  .mockReturnValue({ type: 'TYPE' });
 
-  const mockStore = {
-    metamask: {
-      provider: {
-        type: 'test',
-      },
-    },
-    appState: {
-      isLoading: false,
-    },
-  };
-
-  const store = configureMockStore()(mockStore);
-
-  const props = {
-    connectCustodyAddresses: sinon.spy(),
-    getCustodianAccounts: sinon.stub().callsFake(() => [
+const mockedGetCustodianAccounts = jest
+  .fn()
+  .mockReturnValue(
+    [
       {
         address: '0xAddress',
         name: 'name',
@@ -35,57 +21,113 @@ describe.skip('CustodySubview', function () {
         chainId: 1,
         accountBalance: 1,
       },
-    ]),
-    getCustodianAccountsByAddress: sinon.spy(),
-    getCustodianToken: sinon.stub().callsFake(() => 'testJWT'),
+    ]
+  );
+
+const mockedGetCustodianToken = jest
+  .fn()
+  .mockReturnValue('testJWT');
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    getCustodianConnectRequest: mockedReturnedValue,
+    getCustodianToken: mockedGetCustodianToken,
+    getCustodianAccounts: mockedGetCustodianAccounts,
+    getCustodianAccountsByAddress: mockedReturnedValue,
     getCustodianJWTList: async () => ['jwt1'],
-    provider: { chainId: 0x1 },
-    history: {
-      push: sinon.spy(),
-    },
-    mostRecentOverviewPage: 'test',
-    custodians: [
-      {
-        production: true,
-        name: 'name',
-        type: 'type',
-        iconUrl: 'iconUrl',
-        displayName: 'displayName',
+    connectCustodyAddresses: mockedReturnedValue,
+  }),
+}));
+
+describe('CustodyPage', function () {
+  const mockStore = {
+    metamask: {
+      provider: { chainId: 0x1, type: 'test' },
+      mmiConfiguration: {
+        portfolio: {
+          enabled: true,
+          url: "https://portfolio.io",
+        },
+        custodians: [
+          {
+            type: "Saturn",
+            name: "saturn",
+            apiUrl: "https://saturn-custody.dev.metamask-institutional.io",
+            iconUrl: "https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg",
+            displayName: "Saturn Custody",
+            production: true,
+            refreshTokenUrl: null,
+            isNoteToTraderSupported: false,
+            version: 1,
+          },
+        ],
       },
-    ],
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+      appState: {
+        isLoading: false,
+      },
+      history: {
+        mostRecentOverviewPage: '/',
+      },
+    },
   };
 
+  const store = configureMockStore()(mockStore);
+
+  // const props = {
+  //   connectCustodyAddresses: sinon.spy(),
+  //   getCustodianAccounts: sinon.stub().callsFake(() => [
+  //     {
+  //       address: '0xAddress',
+  //       name: 'name',
+  //       custodianDetails: {},
+  //       labels: [],
+  //       chainId: 1,
+  //       accountBalance: 1,
+  //     },
+  //   ]),
+  //   getCustodianAccountsByAddress: sinon.spy(),
+  //   getCustodianToken: sinon.stub().callsFake(() => 'testJWT'),
+  //   getCustodianJWTList: async () => ['jwt1'],
+  //   provider: { chainId: 0x1 },
+  //   history: {
+  //     push: sinon.spy(),
+  //   },
+  //   mostRecentOverviewPage: 'test',
+  //   custodians: [
+  //     {
+  //       production: true,
+  //       name: 'name',
+  //       type: 'type',
+  //       iconUrl: 'iconUrl',
+  //       displayName: 'displayName',
+  //     },
+  //   ],
+  // };
+
+  let clock;
+  const subscribeSpy = sinon.spy();
+
   beforeEach(() => {
-    wrapper = mount(
-      <Provider store={store}>
-        <CustodySubview.WrappedComponent {...props} />
-      </Provider>,
-      {
-        context: {
-          t: (str) => str,
-          store,
-          metricsEvent: () => undefined,
-        },
-        childContextTypes: {
-          t: PropTypes.func,
-          store: PropTypes.object,
-          metricsEvent: () => undefined,
-        },
-      },
-    );
     clock = sinon.useFakeTimers(1);
   });
 
   afterEach(() => {
-    props.history.push.resetHistory();
+    subscribeSpy.resetHistory();
     clock.restore();
   });
 
-  it('opens connect custody without any custody selected', () => {
-    const selectedCustodyBtn = wrapper.find(
-      '[data-testid="custody-connect-button"]',
+  it('opens connect custody without any custody selected', async () => {
+    const { getByTestId } = renderWithProvider(
+      <CustodyPage />,
+      store,
     );
-    expect(Object.keys(selectedCustodyBtn)).toHaveLength(0);
+
+    await waitFor(() => {
+      expect(getByTestId('custody-connect-button')).toBeDefined();
+    });
   });
 
   it('call getCustodianJwtList on custody select and shows account list on connect click', async () => {
