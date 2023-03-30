@@ -5,8 +5,8 @@ const { mergeWith, cloneDeep } = require('lodash');
 const baseManifest = process.env.ENABLE_MV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const { BuildType } = require('../lib/build-type');
 const { hideBin } = require('yargs/helpers');
+const { BuildType } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
@@ -103,8 +103,10 @@ function createManifestTasks({
           const manifest = await readJson(manifestPath);
           transformFn(manifest);
 
-          manifest.name = 'MetaMask build type `' + process.argv[2] + '`';
-          manifest.description = 'build args: `' + hideBin(process.argv).join(' ') + '`';
+          manifest.name = `MetaMask build task \`${process.argv[2]}\``;
+          manifest.description = `build args: \`${hideBin(process.argv).join(
+            ' ',
+          )}\``;
 
           await writeJson(manifest, manifestPath);
         }),
