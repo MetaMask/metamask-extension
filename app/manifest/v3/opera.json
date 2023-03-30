@@ -1,7 +1,5 @@
 {
   "permissions": [
-    "scripting",
-    "alarms",
     "storage",
     "tabs",
     "clipboardWrite",
