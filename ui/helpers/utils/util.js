@@ -562,7 +562,7 @@ export const getSnapName = (snapId, subjectMetadata) => {
   if (SNAPS_METADATA[snapId]?.name) {
     return SNAPS_METADATA[snapId].name;
   }
-  console.log(subjectMetadata?.name);
+
   return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
 };
 

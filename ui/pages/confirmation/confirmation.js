@@ -35,8 +35,10 @@ import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import SnapAuthorship from '../../components/app/flask/snap-authorship/snap-authorship';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapName } from '../../helpers/utils/util';
 import ConfirmationFooter from './components/confirmation-footer';
+///: END:ONLY_INCLUDE_IN
 import {
   getTemplateValues,
   getTemplateAlerts,
@@ -360,8 +362,7 @@ export default function ConfirmationPage({
           isSnapDialog && (
             <Box
               alignItems="center"
-              marginTop={1}
-              paddingTop={1}
+              marginTop={4}
               marginLeft={4}
               marginRight={4}
               marginBottom={4}
