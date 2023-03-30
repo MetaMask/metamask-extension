@@ -1,7 +1,6 @@
 /*
   TODO:
     * Look at Figma to get the padding of container and spacing between icons
-    * Put this new header in place with feature flag
 */
 import React, { useContext, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,10 +51,12 @@ export const AppHeader = ({}) => {
       padding={[5, 4, 5, 4]}
       gap={2}
     >
-      {/* AvatarNetwork should only display in popup mode */}
-      <AvatarNetwork name="TODO" src="TODO" size={Size.MD} />
-      {/* PickerNetwork should only display in full screen mode */}
-      <PickerNetwork avatarNetworkProps iconProps label src />
+      <Box display={DISPLAY.FLEX}>
+        {/* AvatarNetwork should only display in popup mode */}
+        <AvatarNetwork name="TODO" src="TODO" size={Size.MD} />
+        {/* PickerNetwork should only display in full screen mode */}
+        <PickerNetwork avatarNetworkProps iconProps label src />
+      </Box>
 
       {isUnlocked ? (
         <Box style={{ flexGrow: 1, textAlign: 'center' }}>
@@ -105,6 +106,7 @@ export const AppHeader = ({}) => {
           closeMenu={() => setAccountOptionsMenuOpen(false)}
         />
       ) : null}
+      {isUnlocked ? null : <Box width={8} style={{textAlign: 'right', flexGrow: '1'}}><img src="/images/logo/metamask-fox.svg" alt="" /></Box>}
     </Box>
   );
 };
