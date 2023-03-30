@@ -651,7 +651,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it('determines whether the network supports EIP-1559, storing it in state', async () => {
+        it('determines whether the network supports EIP-1559 and stores the result in state without overwriting other state in the networkDetails store', async () => {
           await withController(
             {
               state: {
