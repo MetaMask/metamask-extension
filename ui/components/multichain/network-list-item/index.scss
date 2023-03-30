@@ -28,6 +28,10 @@
     flex: 1;
     overflow: hidden;
     text-align: start;
+
+    button:hover {
+      opacity: 1;
+    }
   }
 
   &__tooltip {

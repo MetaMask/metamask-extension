@@ -17,15 +17,15 @@ exports[`NetworkListItem renders properly 1`] = `
     <div
       class="box multichain-network-list-item__network-name box--flex-direction-row"
     >
-      <div
-        class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+      <button
+        class="box mm-text mm-button-base mm-button-base--ellipsis mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
       >
-        <a
-          href="#"
+        <span
+          class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           Polygon
-        </a>
-      </div>
+        </span>
+      </button>
     </div>
     <button
       aria-label="[deleteNetwork]"

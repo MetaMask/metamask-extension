@@ -9,12 +9,13 @@ import {
   Color,
   Size,
   JustifyContent,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   ButtonIcon,
+  ButtonLink,
   ICON_NAMES,
-  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
@@ -50,27 +51,19 @@ export const NetworkListItem = ({
       )}
       <AvatarNetwork name={name} src={iconSrc} />
       <Box className="multichain-network-list-item__network-name">
-        <Text as="div" ellipsis>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onClick();
-            }}
-          >
-            {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-              <Tooltip
-                title={name}
-                position="bottom"
-                wrapperClassName="multichain-network-list-item__tooltip"
-              >
-                {name}
-              </Tooltip>
-            ) : (
-              name
-            )}
-          </a>
-        </Text>
+        <ButtonLink onClick={onClick} color={TextColor.textDefault} ellipsis>
+          {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+            <Tooltip
+              title={name}
+              position="bottom"
+              wrapperClassName="multichain-network-list-item__tooltip"
+            >
+              {name}
+            </Tooltip>
+          ) : (
+            name
+          )}
+        </ButtonLink>
       </Box>
       {onDeleteClick ? (
         <ButtonIcon
