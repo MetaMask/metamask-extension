@@ -11,5 +11,6 @@ declare module '@metamask/eth-keyring-controller' {
     }>;
 
     getEncryptionPublicKey: (address: string) => Promise<string>;
+    decryptMessage: (...any) => any;
   }
 }

@@ -682,7 +682,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.decryptMessageManager.on(
+  controller.decryptMessageController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -725,7 +725,7 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
+    const { unapprovedDecryptMsgCount } = controller.decryptMessageController;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
@@ -753,14 +753,9 @@ export function setupController(
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
     controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
-    controller.decryptMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.decryptMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTIFICATION_CLOSE,
-        ),
-      );
+    controller.decryptMessageController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE,
+    );
     controller.encryptionPublicKeyController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE,
     );

@@ -90,7 +90,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -150,7 +149,7 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
-import DecryptMessageManager from './lib/decrypt-message-manager';
+import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -1156,7 +1155,17 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.networkController.lookupNetwork();
-    this.decryptMessageManager = new DecryptMessageManager({
+    this.decryptMessageController = new DecryptMessageController({
+      getState: this.getState.bind(this),
+      keyringController: this.keyringController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'DecryptMessageController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -1256,7 +1265,7 @@ export default class MetamaskController extends EventEmitter {
       () => {
         this.txController.txStateManager.clearUnapprovedTxs();
         this.encryptionPublicKeyController.clearUnapproved();
-        this.decryptMessageManager.clearUnapproved();
+        this.decryptMessageController.clearUnapproved();
         this.signController.clearUnapproved();
       },
     );
@@ -1321,10 +1330,13 @@ export default class MetamaskController extends EventEmitter {
         this.signController.newUnsignedPersonalMessage.bind(
           this.signController,
         ),
-      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey:
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
+        ),
+      processDecryptMessage:
+        this.decryptMessageController.newRequestDecryptMessage.bind(
+          this.decryptMessageController,
         ),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
@@ -1347,7 +1359,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
-      DecryptMessageManager: this.decryptMessageManager.memStore,
+      DecryptMessageManager: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignController: this.signController,
       SwapsController: this.swapsController.store,
@@ -1433,7 +1445,9 @@ export default class MetamaskController extends EventEmitter {
     const resetMethods = [
       this.accountTracker.resetState,
       this.txController.resetState,
-      this.decryptMessageManager.resetState,
+      this.decryptMessageController.resetState.bind(
+        this.decryptMessageController,
+      ),
       this.encryptionPublicKeyController.resetState.bind(
         this.encryptionPublicKeyController,
       ),
@@ -2137,10 +2151,18 @@ export default class MetamaskController extends EventEmitter {
         this.signController,
       ),
 
-      // decryptMessageManager
-      decryptMessage: this.decryptMessage.bind(this),
-      decryptMessageInline: this.decryptMessageInline.bind(this),
-      cancelDecryptMessage: this.cancelDecryptMessage.bind(this),
+      // decryptMessageController
+      decryptMessage: this.decryptMessageController.decryptMessage.bind(
+        this.decryptMessageController,
+      ),
+      decryptMessageInline:
+        this.decryptMessageController.decryptMessageInline.bind(
+          this.decryptMessageController,
+        ),
+      cancelDecryptMessage:
+        this.decryptMessageController.cancelDecryptMessage.bind(
+          this.decryptMessageController,
+        ),
 
       // EncryptionPublicKeyController
       encryptionPublicKey:
@@ -3158,91 +3180,131 @@ export default class MetamaskController extends EventEmitter {
     return await this.txController.newUnapprovedTransaction(txParams, req);
   }
 
-  // eth_decrypt methods
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  /**
+   * Gets an "app key" corresponding to an Ethereum address. An app key is more
+   * or less an addrdess hashed together with some string, in this case a
+   * subject identifier / origin.
+   *
+   * @todo Figure out a way to derive app keys that doesn't depend on the user's
+   * Ethereum addresses.
+   * @param {string} subject - The identifier of the subject whose app key to
+   * retrieve.
+   * @param {string} [requestedAccount] - The account whose app key to retrieve.
+   * The first account in the keyring will be used by default.
+   */
+  async getAppKeyForSubject(subject, requestedAccount) {
+    let account;
+
+    if (requestedAccount) {
+      account = requestedAccount;
+    } else {
+      [account] = await this.keyringController.getAccounts();
+    }
+
+    return this.keyringController.exportAppKeyForAddress(account, subject);
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  // eth_getEncryptionPublicKey methods
 
   /**
-   * Called when a dapp uses the eth_decrypt method.
+   * Called when a dapp uses the eth_getEncryptionPublicKey method.
    *
    * @param {object} msgParams - The params of the message to sign & return to the Dapp.
    * @param {object} req - (optional) the original request, containing the origin
    * Passed back to the requesting Dapp.
    */
-  async newRequestDecryptMessage(msgParams, req) {
-    const promise = this.decryptMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
+  async newRequestEncryptionPublicKey(msgParams, req) {
+    const address = msgParams;
+    const keyring = await this.keyringController.getKeyringForAccount(address);
 
-  /**
-   * Only decrypt message and don't touch transaction state
-   *
-   * @param {object} msgParams - The params of the message to decrypt.
-   * @returns {Promise<object>} A full state update.
-   */
-  async decryptMessageInline(msgParams) {
-    log.info('MetaMaskController - decryptMessageInline');
-    // decrypt the message inline
-    const msgId = msgParams.metamaskId;
-    const msg = this.decryptMessageManager.getMsg(msgId);
-    try {
-      const stripped = stripHexPrefix(msgParams.data);
-      const buff = Buffer.from(stripped, 'hex');
-      msgParams.data = JSON.parse(buff.toString('utf8'));
+    switch (keyring.type) {
+      case KeyringType.ledger: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Ledger does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
 
-      msg.rawData = await this.keyringController.decryptMessage(msgParams);
-    } catch (e) {
-      msg.error = e.message;
+      case KeyringType.trezor: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Trezor does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
+      case KeyringType.lattice: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Lattice does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
+      case KeyringType.qr: {
+        return Promise.reject(
+          new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
+        );
+      }
+
+      default: {
+        const promise =
+          this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
+            msgParams,
+            req,
+          );
+        this.sendUpdate();
+        this.opts.showUserConfirmation();
+        return promise;
+      }
     }
-    this.decryptMessageManager._updateMsg(msg);
-
-    return this.getState();
   }
 
   /**
-   * Signifies a user's approval to decrypt a message in queue.
-   * Triggers decrypt, and the callback function from newUnsignedDecryptMessage.
+   * Signifies a user's approval to receiving encryption public key in queue.
+   * Triggers receiving, and the callback function from newUnsignedEncryptionPublicKey.
    *
-   * @param {object} msgParams - The params of the message to decrypt & return to the Dapp.
+   * @param {object} msgParams - The params of the message to receive & return to the Dapp.
    * @returns {Promise<object>} A full state update.
    */
-  async decryptMessage(msgParams) {
-    log.info('MetaMaskController - decryptMessage');
+  async encryptionPublicKey(msgParams) {
+    log.info('MetaMaskController - encryptionPublicKey');
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
     // and removes the metamaskId for decryption
     try {
-      const cleanMsgParams = await this.decryptMessageManager.approveMessage(
+      const params = await this.encryptionPublicKeyManager.approveMessage(
         msgParams,
       );
 
-      const stripped = stripHexPrefix(cleanMsgParams.data);
-      const buff = Buffer.from(stripped, 'hex');
-      cleanMsgParams.data = JSON.parse(buff.toString('utf8'));
-
-      // decrypt the message
-      const rawMess = await this.keyringController.decryptMessage(
-        cleanMsgParams,
+      // EncryptionPublicKey message
+      const publicKey = await this.keyringController.getEncryptionPublicKey(
+        params.data,
       );
-      // tells the listener that the message has been decrypted and can be returned to the dapp
-      this.decryptMessageManager.setMsgStatusDecrypted(msgId, rawMess);
+
+      // tells the listener that the message has been processed
+      // and can be returned to the dapp
+      this.encryptionPublicKeyManager.setMsgStatusReceived(msgId, publicKey);
     } catch (error) {
-      log.info('MetaMaskController - eth_decrypt failed.', error);
-      this.decryptMessageManager.errorMessage(msgId, error);
+      log.info(
+        'MetaMaskController - eth_getEncryptionPublicKey failed.',
+        error,
+      );
+      this.encryptionPublicKeyManager.errorMessage(msgId, error);
     }
     return this.getState();
   }
 
   /**
-   * Used to cancel a eth_decrypt type message.
+   * Used to cancel a eth_getEncryptionPublicKey type message.
    *
    * @param {string} msgId - The ID of the message to cancel.
    */
-  cancelDecryptMessage(msgId) {
-    const messageManager = this.decryptMessageManager;
+  cancelEncryptionPublicKey(msgId) {
+    const messageManager = this.encryptionPublicKeyManager;
     messageManager.rejectMsg(msgId);
     return this.getState();
   }
