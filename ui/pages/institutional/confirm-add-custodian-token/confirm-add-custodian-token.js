@@ -176,18 +176,16 @@ const ConfirmAddCustodianToken = () => {
         </Box>
       )}
 
-      <Box padding={4} className="page-container__footer">
+      <Box as="footer" className="page-container__footer" padding={4}>
         {isLoading ? (
-          <footer>
-            <PulseLoader />
-          </footer>
+          <PulseLoader />
         ) : (
-          <footer>
+          <Box display={DISPLAY.FLEX} gap={4}>
             <Button
+              block
               type={BUTTON_TYPES.SECONDARY}
               size={BUTTON_SIZES.LG}
               data-testid="cancel-btn"
-              className="page-container__footer-button"
               onClick={() => {
                 mmiActions.removeAddTokenConnectRequest({
                   origin: connectRequest.origin,
@@ -209,9 +207,9 @@ const ConfirmAddCustodianToken = () => {
               {t('cancel')}
             </Button>
             <Button
-              size={BUTTON_SIZES.LG}
+              block
               data-testid="confirm-btn"
-              className="page-container__footer-button"
+              size={BUTTON_SIZES.LG}
               onClick={async () => {
                 setConnectError('');
                 setIsLoading(true);
@@ -260,7 +258,7 @@ const ConfirmAddCustodianToken = () => {
             >
               {t('confirm')}
             </Button>
-          </footer>
+          </Box>
         )}
       </Box>
     </Box>
