@@ -1,7 +1,11 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  EVENT_NAMES,
+  METAMETRIC_KEY_OPT,
+} from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { detectSIWE } from '../../../shared/modules/siwe';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -51,6 +55,12 @@ function getNext(timeout = 500) {
 
 const waitForSeconds = async (seconds) =>
   await new Promise((resolve) => setTimeout(resolve, SECOND * seconds));
+
+jest.mock('../../../shared/modules/siwe', () => ({
+  detectSIWE: jest.fn().mockImplementation(() => {
+    return { isSIWEMessage: false };
+  }),
+}));
 
 describe('createRPCMethodTrackingMiddleware', () => {
   afterEach(() => {
@@ -153,7 +163,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       };
 
       const res = {
-        error: { code: 4001 },
+        error: { code: errorCodes.provider.userRejectedRequest },
       };
       const { next, executeMiddlewareStack } = getNext();
       await handler(req, res, next);
@@ -230,6 +240,36 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent.mock.calls[1][0].properties.method).toBe('eth_chainId');
     });
 
+    it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
+      const req = {
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+
+      detectSIWE.mockImplementation(() => {
+        return { isSIWEMessage: true };
+      });
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.SIGNATURE_APPROVED,
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          ui_customizations: [METAMETRIC_KEY_OPT.ui_customizations.SIWE],
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
     describe(`when '${MESSAGE_TYPE.ETH_SIGN}' is disabled in advanced settings`, () => {
       it(`should track ${EVENT_NAMES.SIGNATURE_FAILED} and include error property`, async () => {
         const mockError = { code: errorCodes.rpc.methodNotFound };
@@ -258,93 +298,89 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
     });
-  });
 
-  describe('participateInMetaMetrics is set to true with a request flagged as safe', () => {
-    beforeEach(() => {
-      metricsState.participateInMetaMetrics = true;
-    });
+    describe('when request is flagged as safe by security provider', () => {
+      it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event`, async () => {
+        const req = {
+          method: MESSAGE_TYPE.ETH_SIGN,
+          origin: 'some.dapp',
+        };
+        const res = {
+          error: null,
+        };
+        const { next } = getNext();
 
-    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as safe`, async () => {
-      const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
-        origin: 'some.dapp',
-      };
+        await handler(req, res, next);
 
-      const res = {
-        error: null,
-      };
-      const { next } = getNext();
-      await handler(req, res, next);
-      expect(trackEvent).toHaveBeenCalledTimes(1);
-      expect(trackEvent.mock.calls[0][0]).toMatchObject({
-        category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_REQUESTED,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN,
-          ui_customizations: null,
-        },
-        referrer: { url: 'some.dapp' },
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent.mock.calls[0][0]).toMatchObject({
+          category: 'inpage_provider',
+          event: EVENT_NAMES.SIGNATURE_REQUESTED,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN,
+          },
+          referrer: { url: 'some.dapp' },
+        });
       });
     });
-  });
 
-  describe('participateInMetaMetrics is set to true with a request flagged as malicious', () => {
-    beforeEach(() => {
-      metricsState.participateInMetaMetrics = true;
-      flagAsDangerous = 1;
-    });
+    describe('when request is flagged as malicious by security provider', () => {
+      beforeEach(() => {
+        flagAsDangerous = 1;
+      });
 
-    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as malicious`, async () => {
-      const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
-        origin: 'some.dapp',
-      };
+      it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as malicious`, async () => {
+        const req = {
+          method: MESSAGE_TYPE.ETH_SIGN,
+          origin: 'some.dapp',
+        };
+        const res = {
+          error: null,
+        };
+        const { next } = getNext();
 
-      const res = {
-        error: null,
-      };
-      const { next } = getNext();
-      await handler(req, res, next);
-      expect(trackEvent).toHaveBeenCalledTimes(1);
-      expect(trackEvent.mock.calls[0][0]).toMatchObject({
-        category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_REQUESTED,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN,
-          ui_customizations: ['flagged_as_malicious'],
-        },
-        referrer: { url: 'some.dapp' },
+        await handler(req, res, next);
+
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent.mock.calls[0][0]).toMatchObject({
+          category: 'inpage_provider',
+          event: EVENT_NAMES.SIGNATURE_REQUESTED,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN,
+            ui_customizations: ['flagged_as_malicious'],
+          },
+          referrer: { url: 'some.dapp' },
+        });
       });
     });
-  });
 
-  describe('participateInMetaMetrics is set to true with a request flagged as safety unknown', () => {
-    beforeEach(() => {
-      metricsState.participateInMetaMetrics = true;
-      flagAsDangerous = 2;
-    });
+    describe('when request flagged as safety unknown by security provider', () => {
+      beforeEach(() => {
+        flagAsDangerous = 2;
+      });
 
-    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as safety unknown`, async () => {
-      const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
-        origin: 'some.dapp',
-      };
+      it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as safety unknown`, async () => {
+        const req = {
+          method: MESSAGE_TYPE.ETH_SIGN,
+          origin: 'some.dapp',
+        };
+        const res = {
+          error: null,
+        };
+        const { next } = getNext();
 
-      const res = {
-        error: null,
-      };
-      const { next } = getNext();
-      await handler(req, res, next);
-      expect(trackEvent).toHaveBeenCalledTimes(1);
-      expect(trackEvent.mock.calls[0][0]).toMatchObject({
-        category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_REQUESTED,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN,
-          ui_customizations: ['flagged_as_safety_unknown'],
-        },
-        referrer: { url: 'some.dapp' },
+        await handler(req, res, next);
+
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent.mock.calls[0][0]).toMatchObject({
+          category: 'inpage_provider',
+          event: EVENT_NAMES.SIGNATURE_REQUESTED,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN,
+            ui_customizations: ['flagged_as_safety_unknown'],
+          },
+          referrer: { url: 'some.dapp' },
+        });
       });
     });
   });
