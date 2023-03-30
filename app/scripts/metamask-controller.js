@@ -56,6 +56,7 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
   CronjobController,
+  JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
@@ -701,6 +702,8 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `SnapController:getPermitted`,
+          `SnapController:install`,
         ],
       }),
       state: initState.PermissionController,
@@ -760,9 +763,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.14.0',
-      ),
+      iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
@@ -800,6 +801,8 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:terminateSnap',
         'ExecutionService:terminateAllSnaps',
         'ExecutionService:handleRpcRequest',
+        'SnapsRegistry:get',
+        'SnapsRegistry:getMetadata',
       ],
     });
 
@@ -858,7 +861,6 @@ export default class MetamaskController extends EventEmitter {
         },
       },
     });
-    // --- Snaps Cronjob Controller configuration
     const cronjobControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'CronjobController',
       allowedEvents: [
@@ -875,6 +877,24 @@ export default class MetamaskController extends EventEmitter {
     this.cronjobController = new CronjobController({
       state: initState.CronjobController,
       messenger: cronjobControllerMessenger,
+    });
+
+    const snapsRegistryMessenger = this.controllerMessenger.getRestricted({
+      name: 'SnapsRegistry',
+      allowedEvents: [],
+      allowedActions: [],
+    });
+    this.snapsRegistry = new JsonSnapsRegistry({
+      state: initState.SnapsRegistry,
+      messenger: snapsRegistryMessenger,
+      refetchOnAllowlistMiss: isMain,
+      failOnUnavailableRegistry: isMain,
+      url: {
+        registry: 'https://acl.execution.metamask.io/latest/registry.json',
+        signature: 'https://acl.execution.metamask.io/latest/signature.json',
+      },
+      publicKey:
+        '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
     });
 
     this.desktopController = new DesktopController({
@@ -1259,6 +1279,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
+      SnapsRegistry: this.snapsRegistry,
       NotificationController: this.notificationController,
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
@@ -1292,6 +1313,7 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
+        SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
@@ -3866,15 +3888,11 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:getPermitted',
           origin,
         ),
-        requestPermissions: async (requestedPermissions) => {
-          const [approvedPermissions] =
-            await this.permissionController.requestPermissions(
-              { origin },
-              requestedPermissions,
-            );
-
-          return Object.values(approvedPermissions);
-        },
+        requestPermissions: async (requestedPermissions) =>
+          await this.permissionController.requestPermissions(
+            { origin },
+            requestedPermissions,
+          ),
         getPermissions: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,

@@ -127,7 +127,7 @@ describe('Test Snap update', function () {
         // look for the correct version text
         const versionResult = await driver.findElement('#updateSnapVersion');
         await driver.delay(1000);
-        assert.equal(await versionResult.getText(), '"5.0.1"');
+        assert.equal(await versionResult.getText(), '"5.1.2"');
       },
     );
   });
