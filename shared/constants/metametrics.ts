@@ -303,7 +303,7 @@ export type MetaMetricsUserTraits = {
    */
   networks_added?: string[];
   /**
-   * An array consisting of chain ID that represent the networks added by the
+   * An array consisting of chain IDs that represent the networks added by the
    * user that do not have a ticker.
    */
   networks_without_ticker?: string[];
