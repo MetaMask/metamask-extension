@@ -365,7 +365,7 @@ export enum MetaMetricsUserTrait {
    */
   AddressBookEntries = 'address_book_entries',
   /**
-   * TODO
+   * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
   /**
