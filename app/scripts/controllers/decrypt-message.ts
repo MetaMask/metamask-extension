@@ -32,7 +32,7 @@ const stateMetadata = {
   unapprovedDecryptMsgCount: { persist: false, anonymous: false },
 };
 
-const getDefaultState = () => ({
+export const getDefaultState = () => ({
   unapprovedDecryptMsgs: {},
   unapprovedDecryptMsgCount: 0,
 });
@@ -101,14 +101,14 @@ export default class DecryptMessageController extends BaseControllerV2<
    * @param options - The controller options.
    * @param options.getState - Callback to retrieve all user state.
    * @param options.keyringController - An instance of a keyring controller used to decrypt message
+   * @param options.messenger - A reference to the messaging system.
    * @param options.metricsEvent - A function for emitting a metric event.
-   * @param options.messenger
    */
   constructor({
     getState,
     keyringController,
-    messenger,
     metricsEvent,
+    messenger,
   }: DecryptMessageControllerOptions) {
     super({
       metadata: stateMetadata,
@@ -164,6 +164,16 @@ export default class DecryptMessageController extends BaseControllerV2<
   }
 
   /**
+   * Clears all unapproved messages from memory.
+   */
+  clearUnapproved() {
+    this._decryptMessageManager.update({
+      unapprovedMessages: {},
+      unapprovedMessagesCount: 0,
+    });
+  }
+
+  /**
    * Called when a dapp uses the eth_decrypt method
    *
    * @param messageParams - The params passed to eth_decrypt.
@@ -181,16 +191,6 @@ export default class DecryptMessageController extends BaseControllerV2<
   }
 
   /**
-   * Clears all unapproved messages from memory.
-   */
-  clearUnapproved() {
-    this._decryptMessageManager.update({
-      unapprovedMessages: {},
-      unapprovedMessagesCount: 0,
-    });
-  }
-
-  /**
    * Signifies a user's approval to decrypt a message in queue.
    * Triggers decrypt, and the callback function from newUnsignedDecryptMessage.
    *
@@ -204,7 +204,7 @@ export default class DecryptMessageController extends BaseControllerV2<
         await this._decryptMessageManager.approveMessage(messageParams);
 
       cleanMessageParams.data = this._parseMessage(cleanMessageParams.data);
-      const rawMessage = await this.keyringController.decryptMessage(
+      const rawMessage = await this._keyringController.decryptMessage(
         cleanMessageParams,
       );
 
@@ -213,7 +213,10 @@ export default class DecryptMessageController extends BaseControllerV2<
         rawMessage,
       );
     } catch (error) {
-      this._cancelAbstractMessage(this._decryptMessageManager, messageId);
+      return this._cancelAbstractMessage(
+        this._decryptMessageManager,
+        messageId,
+      );
     }
     return this._getState();
   }
@@ -225,12 +228,11 @@ export default class DecryptMessageController extends BaseControllerV2<
    * @returns A full state update.
    */
   async decryptMessageInline(messageParams) {
-    // decrypt the message inline
     const messageId = messageParams.metamaskId;
     const message = this._decryptMessageManager.getMessage(messageId);
     try {
       messageParams.data = this._parseMessage(messageParams.data);
-      message.rawData = await this.keyringController.decryptMessage(
+      message.rawData = await this._keyringController.decryptMessage(
         messageParams,
       );
     } catch (e) {
