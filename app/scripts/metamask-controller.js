@@ -3528,7 +3528,11 @@ export default class MetamaskController extends EventEmitter {
     phishingStream.on(
       'data',
       createMetaRPCHandler(
-        { safelistPhishingDomain: this.safelistPhishingDomain.bind(this) },
+        {
+          safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
+          backToSafetyPhishingWarning:
+            this.backToSafetyPhishingWarning.bind(this),
+        },
         phishingStream,
       ),
     );
@@ -4291,6 +4295,11 @@ export default class MetamaskController extends EventEmitter {
    */
   safelistPhishingDomain(hostname) {
     return this.phishingController.bypass(hostname);
+  }
+
+  async backToSafetyPhishingWarning() {
+    const extensionURL = this.platform.getExtensionURL();
+    await this.platform.switchToAnotherURL(undefined, extensionURL);
   }
 
   /**
