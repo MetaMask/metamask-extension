@@ -18,7 +18,7 @@ import {
   ICON_NAMES,
   PickerNetwork,
 } from '../../component-library';
-import { GlobalMenu } from '../global-menu';
+import { GlobalMenu, AccountPicker } from '../';
 
 import Box from '../../ui/box/box';
 import { getSelectedIdentity } from '../../../selectors';
@@ -60,16 +60,12 @@ export const AppHeader = ({}) => {
       {/* PickerNetwork should only display in full screen mode */}
       <PickerNetwork avatarNetworkProps iconProps label src />
 
-      <Box style={{ flexGrow: 1, background: 'lightyellow' }}>
-        {/*
-        Waiting on: https://github.com/MetaMask/metamask-extension/pull/18177
-
+      <Box style={{ flexGrow: 1, textAlign: 'center' }}>
         <AccountPicker
           address={identity.address}
           name={identity.name}
-          onClick={() => useDispatch(toggleAccountMenu())}
+          onClick={() => dispatch(toggleAccountMenu())}
         />
-      */}
       </Box>
       <Box style={{ background: 'lightblue' }}>
         {/*
