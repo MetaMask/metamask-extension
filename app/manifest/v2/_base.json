@@ -60,5 +60,19 @@
   },
   "manifest_version": 2,
   "name": "__MSG_appName__",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "clipboardWrite",
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://*.codefi.network/",
+    "https://chainid.network/chains.json",
+    "https://lattice.gridplus.io/*",
+    "activeTab",
+    "webRequest",
+    "*://*.eth/",
+    "notifications"
+  ],
   "short_name": "__MSG_appName__"
 }
