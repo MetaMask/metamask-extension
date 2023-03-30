@@ -38,7 +38,7 @@ describe('Test Snap Error', function () {
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
+        const windowHandles = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
@@ -53,16 +53,17 @@ describe('Test Snap Error', function () {
           tag: 'button',
         });
 
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
           tag: 'button',
         });
 

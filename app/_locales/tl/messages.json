@@ -329,9 +329,6 @@
     "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Laging siguraduhin na gawin ang iyong sariling angkop na pagsusumikap bago aprubahan ang anumang mga kahilingan."
-  },
   "amount": {
     "message": "Halaga"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Kumokonekta sa Linea Goerli test network"
   },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Paganahin ang tagapagbigay ng seguridad"
-  },
   "enableSmartTransactions": {
     "message": "Payagan ang mga smart transaction"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Tingnan sa Etherscan"
-  },
-  "expandExperience": {
-    "message": "Palawakin ang iyong karanasan sa web3 gamit ang MetaMask Snaps"
   },
   "expandView": {
     "message": "I-expand ang view"
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Makakuha ng mga babala mula sa OpenSea sa tuwing makakatanggap ka ng kilalang malisyosong kahilingan."
   },
   "goBack": {
     "message": "Bumalik"
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
+  },
   "link": {
     "message": "Link"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "Pangit na datos"
-  },
-  "manageSnaps": {
-    "message": "Pamahalaan ang iyong mga naka-install na snap"
   },
   "max": {
     "message": "Max"
@@ -2191,9 +2182,6 @@
     "message": "Mas mataas ang noncesa iminumungkahing nonce na $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Hindi maidaragdag ang NFT dahil hindi tumutugma ang mga detalye ng pagmamay-ari. Siguraduhing tamang impormasyon ang iyong nailagay."
   },
@@ -2277,9 +2265,6 @@
   },
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
-  },
-  "notNow": {
-    "message": "Hindi ngayon"
   },
   "notifications": {
     "message": "Mga Abiso"
@@ -2610,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea na (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Tagapagbigay ng seguridad ng OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "Ang OpenSea ay ang unang tagapagbigay ng seguridad para sa tampok na ito. Marami pang mga provider ang paparating!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3271,12 +3250,6 @@
   "show": {
     "message": "Ipakita"
   },
-  "showAdvancedGasInline": {
-    "message": "Mga advanced na kontrol sa gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Piliin ito para direktang maipakita ang presyo ng gas at mga kontrol sa limitasyon sa mga screen ng pagpapadala at pagkumpirma."
-  },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa Testnets"
   },
@@ -3376,15 +3349,8 @@
     "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Hinihiling ng snap na ito ang mga sumusunod na pahintulot:"
-  },
   "snapUpdate": {
     "message": "I-update ang snap"
-  },
-  "snapUpdateExplanation": {
-    "message": "Kailangan ng $1 ng bagong bersyon ng iyong snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Mga Snap"
@@ -3517,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Manatiling ligtas sa OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Ikonekta ang iyong Lattice1"

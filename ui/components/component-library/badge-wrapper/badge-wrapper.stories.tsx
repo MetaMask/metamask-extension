@@ -3,9 +3,10 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import {
   AlignItems,
+  TextColor,
   BorderColor,
   BorderRadius,
-  Color,
+  BackgroundColor,
   DISPLAY,
   IconColor,
   Size,
@@ -155,7 +156,7 @@ export const Badge = () => (
     <BadgeWrapper
       badge={
         <Box
-          backgroundColor={Color.successDefault}
+          backgroundColor={BackgroundColor.successDefault}
           borderRadius={BorderRadius.full}
           borderColor={BorderColor.borderMuted}
           borderWidth={2}
@@ -174,7 +175,7 @@ export const Badge = () => (
       paddingBottom={1}
       paddingRight={1}
       paddingLeft={1}
-      backgroundColor={Color.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundAlternative}
       borderRadius={BorderRadius.SM}
       style={{ alignSelf: 'flex-start' }}
     >
@@ -182,8 +183,8 @@ export const Badge = () => (
         badge={
           <Tag
             label="9999"
-            backgroundColor={Color.errorDefault}
-            labelProps={{ color: Color.errorInverse }}
+            backgroundColor={BackgroundColor.errorDefault}
+            labelProps={{ color: TextColor.errorInverse }}
             borderColor={BorderColor.errorDefault}
           />
         }
@@ -196,7 +197,7 @@ export const Badge = () => (
           paddingLeft={8}
           borderRadius={BorderRadius.SM}
           borderColor={BorderColor.borderDefault}
-          backgroundColor={Color.backgroundDefault}
+          backgroundColor={BackgroundColor.backgroundDefault}
         >
           NFTs
         </Box>
@@ -284,14 +285,14 @@ export const AnchorElementShape = () => (
     <BadgeWrapper
       badge={
         <Box
-          backgroundColor={Color.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           borderRadius={BorderRadius.full}
           style={{ width: 16, height: 16 }}
         />
       }
     >
       <Box
-        backgroundColor={Color.infoDefault}
+        backgroundColor={BackgroundColor.infoDefault}
         borderRadius={BorderRadius.full}
         style={{ width: 40, height: 40 }}
       />
@@ -299,14 +300,14 @@ export const AnchorElementShape = () => (
     <BadgeWrapper
       badge={
         <Box
-          backgroundColor={Color.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           borderRadius={BorderRadius.full}
           style={{ width: 8, height: 8 }}
         />
       }
     >
       <Box
-        backgroundColor={Color.infoDefault}
+        backgroundColor={BackgroundColor.infoDefault}
         borderRadius={BorderRadius.full}
         style={{ width: 40, height: 40 }}
       />
@@ -315,14 +316,14 @@ export const AnchorElementShape = () => (
       anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
       badge={
         <Box
-          backgroundColor={Color.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           borderRadius={BorderRadius.full}
           style={{ width: 16, height: 16 }}
         />
       }
     >
       <Box
-        backgroundColor={Color.infoDefault}
+        backgroundColor={BackgroundColor.infoDefault}
         style={{ width: 40, height: 40 }}
       />
     </BadgeWrapper>
@@ -330,14 +331,14 @@ export const AnchorElementShape = () => (
       anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
       badge={
         <Box
-          backgroundColor={Color.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           borderRadius={BorderRadius.full}
           style={{ width: 8, height: 8 }}
         />
       }
     >
       <Box
-        backgroundColor={Color.infoDefault}
+        backgroundColor={BackgroundColor.infoDefault}
         style={{ width: 40, height: 40 }}
       />
     </BadgeWrapper>
@@ -345,14 +346,14 @@ export const AnchorElementShape = () => (
       anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
       badge={
         <Box
-          backgroundColor={Color.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           borderRadius={BorderRadius.full}
           style={{ width: 16, height: 16 }}
         />
       }
     >
       <Box
-        backgroundColor={Color.infoDefault}
+        backgroundColor={BackgroundColor.infoDefault}
         style={{ width: 40, height: 80 }}
       />
     </BadgeWrapper>

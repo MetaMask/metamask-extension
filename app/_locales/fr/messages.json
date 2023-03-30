@@ -329,9 +329,6 @@
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
-  },
   "amount": {
     "message": "Montant"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Connexion au réseau de test Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Activer le fournisseur de services de sécurité"
-  },
   "enableSmartTransactions": {
     "message": "Activer les transactions intelligentes"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Afficher sur Etherscan"
-  },
-  "expandExperience": {
-    "message": "Développez votre expérience web3 avec les Snaps MetaMask"
   },
   "expandView": {
     "message": "Agrandir la vue"
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Général"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "OpenSea vous avertira dès que vous recevrez une requête malveillante."
   },
   "goBack": {
     "message": "Retour"
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
+  "lineatestnet": {
+    "message": "Réseau de test Linea Goerli"
+  },
   "link": {
     "message": "Associer"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "Données malformées"
-  },
-  "manageSnaps": {
-    "message": "Gérez vos Snaps installés"
   },
   "max": {
     "message": "Max."
@@ -2191,9 +2182,6 @@
     "message": "Le nonce est supérieur au nonce suggéré de $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
   },
@@ -2277,9 +2265,6 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
-  },
-  "notNow": {
-    "message": "Pas maintenant"
   },
   "notifications": {
     "message": "Notifications"
@@ -2610,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Fournisseur de services de sécurité OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea est le premier fournisseur de services de sécurité à offrir cette fonctionnalité. D’autres fournisseurs seront bientôt ajoutés !"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3271,12 +3250,6 @@
   "show": {
     "message": "Afficher"
   },
-  "showAdvancedGasInline": {
-    "message": "Contrôles de carburant avancés"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur les testnets"
   },
@@ -3376,15 +3349,8 @@
     "message": "Vous autorisez $2 à accéder à la clé du snap « $1 ». Cette action est irréversible et accorde à « $1 » le contrôle de vos comptes et actifs $2. Assurez-vous que vous faites confiance à « $1 » avant de continuer.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Ce snap demande les autorisations suivantes :"
-  },
   "snapUpdate": {
     "message": "Mettre à jour Snap"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 a besoin d’une version plus récente de votre snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snaps"
@@ -3517,9 +3483,6 @@
   },
   "statusNotConnected": {
     "message": "Non connecté"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Restez en sécurité avec OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Connectez votre Lattice1"

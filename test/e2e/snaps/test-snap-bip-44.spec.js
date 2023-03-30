@@ -52,16 +52,8 @@ describe('Test Snap bip-44', function () {
           tag: 'button',
         });
 
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // switch to metamask extension
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-
-        // approve install of snap
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
@@ -73,6 +65,13 @@ describe('Test Snap bip-44', function () {
         await driver.delay(1500);
         await driver.clickElement({
           text: 'Confirm',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
           tag: 'button',
         });
 

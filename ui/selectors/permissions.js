@@ -100,6 +100,24 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
+export function getConnectedSubjectsForAllAddresses(state) {
+  const subjects = getPermissionSubjects(state);
+  const subjectMetadata = getSubjectMetadata(state);
+
+  const accountsToConnections = {};
+  Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
+    const exposedAccounts = getAccountsFromSubject(subjectValue);
+    exposedAccounts.forEach((address) => {
+      if (!accountsToConnections[address]) {
+        accountsToConnections[address] = [];
+      }
+      accountsToConnections[address].push(subjectMetadata[subjectKey] || {});
+    });
+  });
+
+  return accountsToConnections;
+}
+
 export function getSubjectsWithPermission(state, permissionName) {
   const subjects = getPermissionSubjects(state);
 
@@ -310,7 +328,9 @@ export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
       ({ type }) =>
-        type === 'wallet_installSnap' || type === 'wallet_updateSnap',
+        type === 'wallet_installSnap' ||
+        type === 'wallet_updateSnap' ||
+        type === 'wallet_installSnapResult',
     )
     .map(({ requestData }) => requestData);
 }
@@ -333,4 +353,12 @@ export function getFirstPermissionRequest(state) {
 
 export function getPermissions(state, origin) {
   return getPermissionSubjects(state)[origin]?.permissions;
+}
+
+export function getRequestState(state, id) {
+  return state.metamask.pendingApprovals[id]?.requestState;
+}
+
+export function getRequestType(state, id) {
+  return state.metamask.pendingApprovals[id]?.type;
 }

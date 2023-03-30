@@ -20,8 +20,11 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import Typography from '../../ui/typography';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
+import {
+  TextVariant,
+  TEXT_ALIGN,
+} from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
@@ -66,7 +69,6 @@ const ConfirmPageContainer = (props) => {
     image,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     detailsComponent,
     dataComponent,
     dataHexComponent,
@@ -122,11 +124,6 @@ const ConfirmPageContainer = (props) => {
 
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
-
-  const hideTitle =
-    (currentTransaction.type === TransactionType.contractInteraction ||
-      currentTransaction.type === TransactionType.deployContract) &&
-    currentTransaction.txParams?.value === '0x0';
 
   const networkName =
     NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
@@ -203,7 +200,6 @@ const ConfirmPageContainer = (props) => {
             image={image}
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
@@ -225,7 +221,6 @@ const ConfirmPageContainer = (props) => {
             rejectNText={t('rejectTxsN', [unapprovedTxCount])}
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
-            hideTitle={hideTitle}
             supportsEIP1559={supportsEIP1559}
             currentTransaction={currentTransaction}
             nativeCurrency={nativeCurrency}
@@ -241,7 +236,11 @@ const ConfirmPageContainer = (props) => {
             <ActionableMessage
               message={
                 isBuyableChain ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    textAlign={TEXT_ALIGN.LEFT}
+                    as="h6"
+                  >
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
@@ -264,14 +263,18 @@ const ConfirmPageContainer = (props) => {
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
                     ])}
-                  </Typography>
+                  </Text>
                 ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    textAlign={TEXT_ALIGN.LEFT}
+                    as="h6"
+                  >
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
                     ])}
-                  </Typography>
+                  </Text>
                 )
               }
               useIcon
@@ -341,7 +344,6 @@ const ConfirmPageContainer = (props) => {
 ConfirmPageContainer.propTypes = {
   // Header
   action: PropTypes.string,
-  hideSubtitle: PropTypes.bool,
   onEdit: PropTypes.func,
   showEdit: PropTypes.bool,
   subtitleComponent: PropTypes.node,

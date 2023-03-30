@@ -160,6 +160,9 @@
   "connectingToGoerli": {
     "message": "Povezuje se sa test mrežom Goerli "
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezuje se sa test mrežom Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
   },
@@ -408,6 +411,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
+  },
+  "lineatestnet": {
+    "message": "Test mreža Linea Goerli"
   },
   "links": {
     "message": "Veze"
@@ -662,12 +668,6 @@
   },
   "settings": {
     "message": "Podešavanja"
-  },
-  "showAdvancedGasInline": {
-    "message": "Napredne kontrole gasa"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izaberite ovo kako biste prikazali cenu gasa i kontrole limita direktno na ekranima za slanje i potvrđivanje."
   },
   "showFiatConversionInTestnets": {
     "message": "Prikažite konverzije na Testnet"

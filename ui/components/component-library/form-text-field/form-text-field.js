@@ -59,7 +59,6 @@ export const FormTextField = ({
     {label && (
       <Label
         htmlFor={id}
-        required={required}
         {...labelProps}
         className={classnames(
           'mm-form-text-field__label',

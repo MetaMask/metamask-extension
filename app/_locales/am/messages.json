@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
+  "connectingToLineaTestnet": {
+    "message": "ከ Linea Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
+  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
   },
@@ -399,6 +402,9 @@
   },
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
+  },
+  "lineatestnet": {
+    "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
   },
   "links": {
     "message": "ማስፈንጠሪያዎች"
@@ -656,12 +662,6 @@
   },
   "settings": {
     "message": "ቅንብሮች"
-  },
-  "showAdvancedGasInline": {
-    "message": "የላቁ የነዳጅ ቁጥጥሮች"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "በላክ እና አረጋግጥ ማያዎች ላይ የነዳጅ ዋጋን ለማሳየትና ቁጥጥሮችን ለመገደብ ይህን ይምረጡ።"
   },
   "showFiatConversionInTestnets": {
     "message": "ልወጣን በ Testnets ላይ አሳይ"

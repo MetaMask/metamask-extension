@@ -136,13 +136,10 @@ describe('Navigate transactions', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         await driver.switchToWindow(extension);
-        navigationElement = await driver.waitForSelector(
-          {
-            css: '.confirm-page-container-navigation',
-            text: '2 of 5',
-          },
-          { timeout: 10000 },
-        );
+        navigationElement = await driver.waitForSelector({
+          css: '.confirm-page-container-navigation',
+          text: '2 of 5',
+        });
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('2 of 5'),
@@ -169,13 +166,10 @@ describe('Navigate transactions', function () {
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
-        const navigationElement = await driver.waitForSelector(
-          {
-            css: '.confirm-page-container-navigation',
-            text: '1 of 3',
-          },
-          { timeout: 10000 },
-        );
+        const navigationElement = await driver.waitForSelector({
+          css: '.confirm-page-container-navigation',
+          text: '1 of 3',
+        });
         const navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('1 of 3'),
@@ -202,13 +196,10 @@ describe('Navigate transactions', function () {
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        const navigationElement = await driver.waitForSelector(
-          {
-            css: '.confirm-page-container-navigation',
-            text: '1 of 3',
-          },
-          { timeout: 10000 },
-        );
+        const navigationElement = await driver.waitForSelector({
+          css: '.confirm-page-container-navigation',
+          text: '1 of 3',
+        });
         const navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('1 of 3'),
@@ -228,7 +219,7 @@ describe('Navigate transactions', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -236,10 +227,11 @@ describe('Navigate transactions', function () {
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
-        const balance = await driver.findElement(
+        const balance = await ganacheServer.getBalance();
+        const balanceElement = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );
-        assert.ok(/^25\sETH$/u.test(await balance.getText()));
+        assert.equal(`${balance}\nETH`, await balanceElement.getText());
       },
     );
   });

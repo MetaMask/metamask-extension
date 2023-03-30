@@ -15,6 +15,7 @@ import {
   Size,
   BorderRadius,
   BackgroundColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -24,6 +25,7 @@ export const ButtonBase = ({
   children,
   className,
   href,
+  ellipsis = false,
   externalLink,
   size = BUTTON_BASE_SIZES.MD,
   startIconName,
@@ -34,6 +36,7 @@ export const ButtonBase = ({
   disabled,
   iconLoadingProps,
   textProps,
+  color = TextColor.textDefault,
   ...props
 }) => {
   const Tag = href ? 'a' : as;
@@ -42,13 +45,14 @@ export const ButtonBase = ({
     props.rel = 'noopener noreferrer';
   }
   return (
-    <Box
+    <Text
       as={Tag}
       backgroundColor={BackgroundColor.backgroundAlternative}
-      color={TextColor.textDefault}
+      color={loading ? TextColor.transparent : color}
       href={href}
       paddingLeft={4}
       paddingRight={4}
+      ellipsis={ellipsis}
       className={classnames(
         'mm-button-base',
         {
@@ -57,6 +61,7 @@ export const ButtonBase = ({
           'mm-button-base--loading': loading,
           'mm-button-base--disabled': disabled,
           'mm-button-base--block': block,
+          'mm-button-base--ellipsis': ellipsis,
         },
         className,
       )}
@@ -67,33 +72,52 @@ export const ButtonBase = ({
       borderRadius={BorderRadius.pill}
       {...props}
     >
-      <Text
-        as="span"
-        className="mm-button-base__content"
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        gap={2}
-        variant={TextVariant.bodyMd}
-        color={TextColor.inherit}
-        {...textProps}
-      >
-        {startIconName && (
-          <Icon name={startIconName} size={Size.SM} {...startIconProps} />
-        )}
-        {children}
-        {endIconName && (
-          <Icon name={endIconName} size={Size.SM} {...endIconProps} />
-        )}
-      </Text>
+      {startIconName && (
+        <Icon
+          name={startIconName}
+          size={Size.SM}
+          marginInlineEnd={1}
+          {...startIconProps}
+          color={loading ? IconColor.transparent : startIconProps?.color}
+        />
+      )}
+      {/*
+       * If children is a string and doesn't need truncation or loading
+       * prevent html bloat by rendering just the string
+       * otherwise render with wrapper to allow truncation or loading
+       */}
+      {typeof children === 'string' && !ellipsis && !loading ? (
+        children
+      ) : (
+        <Text
+          as="span"
+          ellipsis={ellipsis}
+          variant={TextVariant.inherit}
+          color={loading ? TextColor.transparent : color}
+          {...textProps}
+        >
+          {children}
+        </Text>
+      )}
+      {endIconName && (
+        <Icon
+          name={endIconName}
+          size={Size.SM}
+          marginInlineStart={1}
+          {...endIconProps}
+          color={loading ? IconColor.transparent : endIconProps?.color}
+        />
+      )}
       {loading && (
         <Icon
           className="mm-button-base__icon-loading"
           name={ICON_NAMES.LOADING}
+          color={color}
           size={Size.MD}
           {...iconLoadingProps}
         />
       )}
-    </Box>
+    </Text>
   );
 };
 
@@ -126,6 +150,10 @@ ButtonBase.propTypes = {
    * When an `href` prop is passed, ButtonBase will automatically change the root element to be an `a` (anchor) tag
    */
   href: PropTypes.string,
+  /**
+   * Used for long strings that can be cut off...
+   */
+  ellipsis: PropTypes.bool,
   /**
    * Boolean indicating if the link targets external content, it will cause the link to open in a new tab
    */
