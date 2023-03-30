@@ -6,6 +6,7 @@ import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import { TransactionMeta } from '../../shared/constants/transaction';
+import type { NetworkStatus } from '../../shared/constants/network';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -65,7 +66,8 @@ interface TemporaryBackgroundState {
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
-  network: string;
+  networkId: string | null;
+  networkStatus: NetworkStatus;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   knownMethodData?: {
     [fourBytePrefix: string]: Record<string, unknown>;

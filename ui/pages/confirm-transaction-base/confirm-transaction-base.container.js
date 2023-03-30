@@ -101,7 +101,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    network,
+    networkId,
     unapprovedTxs,
     nextNonce,
     provider: { chainId },
@@ -160,7 +160,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
+      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
