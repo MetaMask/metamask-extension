@@ -1,4 +1,5 @@
 import type { EnvironmentType } from './app';
+import { LedgerTransportTypes } from './hardware-wallets';
 
 /**
  * Used to attach context of where the user was at in the application when the
@@ -296,7 +297,7 @@ export type MetaMetricsUserTraits = {
   /**
    * The type of ledger connection set by user preference.
    */
-  ledger_connection_type?: 'ledgerLive' | 'webhid' | 'u2f';
+  ledger_connection_type?: LedgerTransportTypes;
   /**
    * An array consisting of chain IDs that represent the networks added by the
    * user.
