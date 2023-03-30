@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustodyPage renders CustodyPage 1`] = `
+<div>
+  <div
+    class="box box--flex-direction-row"
+  >
+    
+    
+    <div
+      class="box box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
+    >
+      <button
+        aria-label="Back"
+        class="box mm-button-icon mm-button-icon--size-sm box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+      >
+        <span
+          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+      <h4
+        class="box mm-text mm-text--body-md box--margin-top-4 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+      >
+        Custodial Accounts
+      </h4>
+      <h6
+        class="box mm-text mm-text--body-md box--margin-top-2 box--margin-bottom-5 box--flex-direction-row box--color-text-default"
+      >
+        Please choose the custodian you want to connect in order to add or refresh a token.
+      </h6>
+      <div
+        class="box box--flex-direction-row"
+      >
+        <ul
+          width="full"
+        >
+          <div
+            class="box box--margin-bottom-4 box--padding-3 box--sm:padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center box--rounded-sm box--border-color-border-default box--border-style-solid box--border-width-1"
+          >
+            <div
+              class="box box--display-flex box--flex-direction-row box--align-items-center"
+            >
+              <img
+                alt="Saturn Custody"
+                height="32"
+                src="https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg"
+                width="32"
+              />
+              <p
+                class="box mm-text mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-text-default"
+              >
+                Saturn Custody
+              </p>
+            </div>
+            <button
+              class="box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+              data-testid="custody-connect-button"
+            >
+              Select
+            </button>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;

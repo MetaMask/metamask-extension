@@ -1,40 +1,42 @@
 import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, act, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
 
-const mockedReturnedValue = jest
-  .fn()
-  .mockReturnValue({ type: 'TYPE' });
+const mockedReturnedValue = jest.fn().mockReturnValue({ type: 'TYPE' });
 
-const mockedGetCustodianAccounts = jest
-  .fn()
-  .mockReturnValue(
-    [
-      {
-        address: '0xAddress',
-        name: 'name',
-        custodianDetails: {},
-        labels: [],
-        chainId: 1,
-        accountBalance: 1,
-      },
-    ]
-  );
+const mockedGetCustodianAccounts = jest.fn().mockReturnValue([
+  {
+    address: '0xAddress',
+    name: 'name',
+    custodianDetails: {},
+    labels: [],
+    chainId: 1,
+    accountBalance: 1,
+  },
+]);
 
-const mockedGetCustodianToken = jest
-  .fn()
-  .mockReturnValue('testJWT');
+const mockedGetCustodianToken = jest.fn().mockReturnValue('testJWT');
+
+const mockedGetCustodianJWTList = jest.fn().mockReturnValue(['jwt1']);
+
+const mockedGetCustodianConnectRequest = jest.fn().mockReturnValue({
+  custodian: 'saturn',
+  token: 'token',
+  apiUrl: 'url',
+  custodianType: 'JSON-RPC',
+  custodianName: 'Saturn',
+});
 
 jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
-    getCustodianConnectRequest: mockedReturnedValue,
+    getCustodianConnectRequest: mockedGetCustodianConnectRequest,
     getCustodianToken: mockedGetCustodianToken,
     getCustodianAccounts: mockedGetCustodianAccounts,
     getCustodianAccountsByAddress: mockedReturnedValue,
-    getCustodianJWTList: async () => ['jwt1'],
+    getCustodianJWTList: mockedGetCustodianJWTList,
     connectCustodyAddresses: mockedReturnedValue,
   }),
 }));
@@ -46,15 +48,16 @@ describe('CustodyPage', function () {
       mmiConfiguration: {
         portfolio: {
           enabled: true,
-          url: "https://portfolio.io",
+          url: 'https://portfolio.io',
         },
         custodians: [
           {
-            type: "Saturn",
-            name: "saturn",
-            apiUrl: "https://saturn-custody.dev.metamask-institutional.io",
-            iconUrl: "https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg",
-            displayName: "Saturn Custody",
+            type: 'Saturn',
+            name: 'saturn',
+            apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
+            iconUrl:
+              'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
+            displayName: 'Saturn Custody',
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
@@ -119,60 +122,46 @@ describe('CustodyPage', function () {
     clock.restore();
   });
 
+  it('renders CustodyPage', async () => {
+    const { container } = renderWithProvider(<CustodyPage />, store);
+
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
+  });
+
   it('opens connect custody without any custody selected', async () => {
-    const { getByTestId } = renderWithProvider(
-      <CustodyPage />,
-      store,
-    );
+    const { getByTestId } = renderWithProvider(<CustodyPage />, store);
 
     await waitFor(() => {
       expect(getByTestId('custody-connect-button')).toBeDefined();
     });
   });
 
-  it.skip('call getCustodianJwtList on custody select and shows account list on connect click', async () => {
-    const custodyBtn = wrapper.find('[data-testid="custody-connect-button"]');
-    const listPromise = Promise.resolve(['jwt2']);
-    const accountsPromise = Promise.resolve([
-      {
-        address: 'address',
-        name: 'name',
-        custodianDetails: { walletId: 'walletId' },
-        labels: [],
-      },
-    ]);
-    jest
-      .spyOn(props, 'getCustodianAccounts')
-      .mockImplementation(() => accountsPromise);
-    jest
-      .spyOn(props, 'getCustodianJWTList')
-      .mockImplementation(() => listPromise);
+  it('calls getCustodianJwtList on custody select when connect btn is click', async () => {
+    const { getByTestId } = renderWithProvider(<CustodyPage />, store);
 
-    custodyBtn.first().simulate('click');
+    const custodyBtn = getByTestId('custody-connect-button');
+    await waitFor(() => {
+      fireEvent.click(custodyBtn);
+    });
 
-    await listPromise;
-    wrapper.update();
-    await wrapper
-      .find('[data-testid="jwt-form-connect-button"]')
-      .first()
-      .simulate('click');
-    await accountsPromise;
-    wrapper.update();
-    expect(wrapper.find('.custody-account-list')).toBeTruthy();
-    wrapper
-      .find('[data-testid="custody-account-list-item-radio-button"] input')
-      .first()
-      .simulate('change', { target: { checked: true } });
-    expect(
-      wrapper.find(
-        '[data-testid="custody-account-list-item-radio-button"] input[checked="true"]',
-      ),
-    ).toBeTruthy();
-    wrapper
-      .find('[data-testid="custody-account-connect-button"]')
-      .first()
-      .simulate('click');
-    expect(props.connectCustodyAddresses.called).toBeTruthy();
+    await waitFor(() => {
+      expect(mockedGetCustodianJWTList).toHaveBeenCalled();
+    });
+  });
+
+  it('clicks connect button and shows the jwt form', async () => {
+    const { getByTestId } = renderWithProvider(<CustodyPage />, store);
+    const custodyBtn = getByTestId('custody-connect-button');
+
+    await waitFor(() => {
+      fireEvent.click(custodyBtn);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('jwt-form-connect-button')).toBeInTheDocument();
+    });
   });
 
   it.skip('shows the empty accounts list when all custodian accounts are already added', async () => {
@@ -278,41 +267,5 @@ describe('CustodyPage', function () {
     await accountsPromise;
     wrapper.update();
     expect(wrapper.find('[data-testid="custody-account-list"]')).toBeTruthy();
-  });
-
-  it.skip('calls getCustodianAccounts on network change', async () => {
-    wrapper.find('CustodySubview').props().provider = { chainId: 2 };
-    wrapper.update();
-    wrapper.find('CustodySubview').instance().handleNetworkChange();
-    expect(props.getCustodianAccounts.called).toBeTruthy();
-  });
-
-  it.skip('calls getCustodianAccounts while trying to connect when connectRequest is provided', () => {
-    const newProps = {
-      ...props,
-      getCustodianConnectRequest: () => ({
-        custodian: 'jupiter',
-        token: 'token',
-        apiUrl: 'url',
-      }),
-    };
-    wrapper = mount(
-      <Provider store={store}>
-        <CustodySubview.WrappedComponent {...newProps} />
-      </Provider>,
-      {
-        context: {
-          t: (str) => str,
-          store,
-          metricsEvent: () => undefined,
-        },
-        childContextTypes: {
-          t: PropTypes.func,
-          store: PropTypes.object,
-          metricsEvent: () => undefined,
-        },
-      },
-    );
-    expect(props.getCustodianAccounts.called).toBeTruthy();
   });
 });
