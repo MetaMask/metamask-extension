@@ -4,8 +4,10 @@ import { isEqual } from 'lodash';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { usePrevious } from './usePrevious';
+import { useI18nContext } from './useI18nContext';
 
 export function useNftsCollections() {
+  const t = useI18nContext();
   const [collections, setCollections] = useState({});
   const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
     collectionName: 'Previously Owned',
@@ -41,7 +43,7 @@ export function useNftsCollections() {
             ({ address }) => address === nft.address,
           );
           newCollections[nft.address] = {
-            collectionName: collectionContract?.name || nft.name,
+            collectionName: collectionContract?.name || t('unknownCollection'),
             collectionImage: collectionContract?.logo || nft.image,
             nfts: [nft],
           };
@@ -68,6 +70,7 @@ export function useNftsCollections() {
     prevChainId,
     selectedAddress,
     prevSelectedAddress,
+    t,
   ]);
 
   return { nftsLoading, collections, previouslyOwnedCollection };
