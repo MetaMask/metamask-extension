@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'lodash';
@@ -39,7 +39,7 @@ import {
   getMmiConfiguration,
 } from '../../../selectors';
 // @TODO Fix import CustodyAccountList is merged
-import CustodyAccountList from './account-list';
+// import CustodyAccountList from './account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 
 const CustodyPage = () => {
@@ -49,7 +49,7 @@ const CustodyPage = () => {
   const mmiActions = mmiActionsFactory();
   const currentChainId = useSelector(getCurrentChainId);
   const provider = useSelector(getProvider);
-  const custodians = useSelector(getMmiConfiguration);
+  const { custodians } = useSelector(getMmiConfiguration);
 
   const [selectedAccounts, setSelectedAccounts] = useState({});
   const [selectedCustodianName, setSelectedCustodianName] = useState('');
@@ -237,29 +237,28 @@ const CustodyPage = () => {
       }
 
       custodianButtons.push(
-        <li
+        <Box
           key={uuidv4()}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.ROW}
-          justifyContent={JustifyContent.flexEnd}
+          justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
           borderColor={BorderColor.borderDefault}
           borderRadius={BorderRadius.SM}
           padding={[3, 4]}
           marginBottom={4}
         >
-          <span display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
             {custodian.iconUrl && (
               <img
-                marginRight={2}
                 width={32}
                 height={32}
                 src={custodian.iconUrl}
                 alt={custodian.displayName}
               />
             )}
-            {custodian.displayName}
-          </span>
+            <Text marginLeft={2}>{custodian.displayName}</Text>
+          </Box>
 
           <Button
             size={BUTTON_SIZES.SM}
@@ -284,9 +283,9 @@ const CustodyPage = () => {
               });
             }}
           >
-            {t('connectCustodialSelect')}
+            {t('select')}
           </Button>
-        </li>,
+        </Box>,
       );
     });
 
@@ -491,18 +490,17 @@ const CustodyPage = () => {
               display={[DISPLAY.FLEX]}
             />
             <Text as="h4">
-              <span display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+              <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
                 {selectedCustodianImage && (
                   <img
-                    marginRight={2}
                     width={32}
                     height={32}
                     src={selectedCustodianImage}
                     alt={selectedCustodianDisplayName}
                   />
                 )}
-                {selectedCustodianDisplayName}
-              </span>
+                <Text marginLeft={2}>{selectedCustodianDisplayName}</Text>
+              </Box>
             </Text>
             <Text marginTop={4} marginBottom={4}>
               {t('enterCustodianToken', [selectedCustodianDisplayName])}
@@ -557,7 +555,7 @@ const CustodyPage = () => {
             />
             <Label htmlFor="selectAllAccounts">{t('selectAllAccounts')}</Label>
           </Box>
-          {renderSelectList()}
+          {/* {renderSelectList()} */}
         </>
       );
     }

@@ -323,6 +323,12 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -702,6 +708,12 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
+  "connectCustodialAccountMsg": {
+    "message": "Please choose the custodian you want to connect in order to add or refresh a token."
+  },
+  "connectCustodialAccountTitle": {
+    "message": "Custodial Accounts"
+  },
   "connectHardwareWallet": {
     "message": "Connect hardware wallet"
   },
@@ -907,6 +919,9 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodyApiUrl": {
+    "message": "$1 API URL"
   },
   "custom": {
     "message": "Advanced"
@@ -1314,6 +1329,9 @@
   },
   "ensUnknownError": {
     "message": "ENS lookup failed."
+  },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
   },
   "enterANumber": {
     "message": "Enter a number"
@@ -2784,6 +2802,9 @@
   "passwordsDontMatch": {
     "message": "Passwords don't match"
   },
+  "pasteJWTToken": {
+    "message": "Paste or drop your token here:"
+  },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
@@ -3375,17 +3396,26 @@
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
+  "select": {
+    "message": "Select"
+  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
   },
+  "selectAllAccounts": {
+    "message": "Select all accounts"
+  },
   "selectAnAccount": {
     "message": "Select an account"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
+  },
+  "selectAnAccountHelp": {
+    "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
   "selectHdPath": {
     "message": "Select HD path"

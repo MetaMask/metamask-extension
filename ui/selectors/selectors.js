@@ -1371,6 +1371,6 @@ export function getIsDesktopEnabled(state) {
  * @returns Boolean
  */
 export function getMmiConfiguration(state) {
-  return state.metamask.mmiConfiguration;
+  return state.metamask.mmiConfiguration || [];
 }
 ///: END:ONLY_INCLUDE_IN
