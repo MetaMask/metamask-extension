@@ -489,15 +489,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withNetworkControllerSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
-    return this;
-  }
-
   withNftController(data) {
     merge(
       this.fixture.data.NftController
