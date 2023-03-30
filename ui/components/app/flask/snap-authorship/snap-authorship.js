@@ -59,7 +59,7 @@ const SnapAuthorship = ({ snapId, className }) => {
       paddingRight={4}
       borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
-      style={{ maxWidth: 'fit-content', width: '100%' }}
+      style={{ width: '100%' }}
     >
       <Box>
         <SnapAvatar snapId={snapId} />
@@ -87,6 +87,7 @@ const SnapAuthorship = ({ snapId, className }) => {
         iconName={ICON_NAMES.EXPORT}
         color={IconColor.infoDefault}
         size={ICON_SIZES.MD}
+        style={{ marginLeft: 'auto' }}
       />
     </Box>
   );
