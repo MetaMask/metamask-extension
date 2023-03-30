@@ -135,7 +135,9 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
-import NetworkController, { NETWORK_EVENTS } from './controllers/network';
+import NetworkController, {
+  NetworkControllerEventTypes,
+} from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
@@ -249,7 +251,12 @@ export default class MetamaskController extends EventEmitter {
       showApprovalRequest: opts.showUserConfirmation,
     });
 
+    const networkControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'NetworkController',
+      allowedEvents: Object.values(NetworkControllerEventTypes),
+    });
     this.networkController = new NetworkController({
+      messenger: networkControllerMessenger,
       state: initState.NetworkController,
       infuraProjectId: opts.infuraProjectId,
       trackMetaMetricsEvent: (...args) =>
@@ -292,7 +299,14 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       openPopup: opts.openPopup,
-      network: this.networkController,
+      onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.InfuraIsBlocked,
+      ),
+      onInfuraIsUnblocked: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.InfuraIsUnblocked,
+      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
     });
@@ -320,8 +334,7 @@ export default class MetamaskController extends EventEmitter {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         onNetworkStateChange: (cb) =>
-          this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-            const networkState = this.networkController.store.getState();
+          this.networkController.store.subscribe((networkState) => {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
@@ -427,9 +440,9 @@ export default class MetamaskController extends EventEmitter {
     this.metaMetricsController = new MetaMetricsController({
       segment,
       preferencesStore: this.preferencesController.store,
-      onNetworkDidChange: this.networkController.on.bind(
-        this.networkController,
-        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.NetworkDidChange,
       ),
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
@@ -464,9 +477,9 @@ export default class MetamaskController extends EventEmitter {
       clientId: SWAPS_CLIENT_ID,
       getProvider: () =>
         this.networkController.getProviderAndBlockTracker().provider,
-      onNetworkStateChange: this.networkController.on.bind(
-        this.networkController,
-        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.NetworkDidChange,
       ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
@@ -578,9 +591,9 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
-      onNetworkDidChange: this.networkController.on.bind(
-        this.networkController,
-        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.NetworkDidChange,
       ),
     });
 
@@ -590,9 +603,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
-      onNetworkDidChange: this.networkController.on.bind(
-        this.networkController,
-        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.NetworkDidChange,
       ),
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
@@ -826,10 +839,12 @@ export default class MetamaskController extends EventEmitter {
 
           const originMetadata = subjectMetadataState.subjectMetadata[origin];
 
-          this.platform._showNotification(
-            originMetadata?.name ?? origin,
-            message,
-          );
+          this.platform
+            ._showNotification(originMetadata?.name ?? origin, message)
+            .catch((error) => {
+              log.error('Failed to create notification', error);
+            });
+
           return null;
         },
         showInAppNotification: (origin, message) => {
@@ -969,7 +984,12 @@ export default class MetamaskController extends EventEmitter {
           );
           rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
         }
-        this.platform.showTransactionNotification(txMeta, rpcPrefs);
+
+        try {
+          await this.platform.showTransactionNotification(txMeta, rpcPrefs);
+        } catch (error) {
+          log.error('Failed to create transaction notification', error);
+        }
 
         const { txReceipt } = txMeta;
 
@@ -1034,15 +1054,18 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, async () => {
-      const { ticker } = this.networkController.store.getState().provider;
-      try {
-        await this.currencyRateController.setNativeCurrency(ticker);
-      } catch (error) {
-        // TODO: Handle failure to get conversion rate more gracefully
-        console.error(error);
-      }
-    });
+    networkControllerMessenger.subscribe(
+      NetworkControllerEventTypes.NetworkDidChange,
+      async () => {
+        const { ticker } = this.networkController.store.getState().provider;
+        try {
+          await this.currencyRateController.setNativeCurrency(ticker);
+        } catch (error) {
+          // TODO: Handle failure to get conversion rate more gracefully
+          console.error(error);
+        }
+      },
+    );
 
     this.networkController.lookupNetwork();
     this.decryptMessageManager = new DecryptMessageManager({
@@ -1076,6 +1099,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.txGasUtil,
       ),
       networkController: this.networkController,
+      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        NetworkControllerEventTypes.NetworkDidChange,
+      ),
       provider: this.provider,
       getProviderConfig: () => this.networkController.store.getState().provider,
       getTokenRatesState: () => this.tokenRatesController.state,
@@ -1115,17 +1142,23 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // ensure accountTracker updates balances after network change
-    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      this.accountTracker._updateAccounts();
-    });
+    networkControllerMessenger.subscribe(
+      NetworkControllerEventTypes.NetworkDidChange,
+      () => {
+        this.accountTracker._updateAccounts();
+      },
+    );
 
     // clear unapproved transactions and messages when the network will change
-    this.networkController.on(NETWORK_EVENTS.NETWORK_WILL_CHANGE, () => {
-      this.txController.txStateManager.clearUnapprovedTxs();
-      this.encryptionPublicKeyManager.clearUnapproved();
-      this.decryptMessageManager.clearUnapproved();
-      this.signController.clearUnapproved();
-    });
+    networkControllerMessenger.subscribe(
+      NetworkControllerEventTypes.NetworkWillChange,
+      () => {
+        this.txController.txStateManager.clearUnapprovedTxs();
+        this.encryptionPublicKeyManager.clearUnapproved();
+        this.decryptMessageManager.clearUnapproved();
+        this.signController.clearUnapproved();
+      },
+    );
 
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
