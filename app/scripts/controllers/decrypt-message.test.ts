@@ -1,5 +1,5 @@
 import { DecryptMessageManager } from '@metamask/message-manager';
-import { AbstractMessage } from '@metamask/message-manager/dist/AbstractMessageManager';
+import { AbstractMessage, OriginalRequest } from '@metamask/message-manager/dist/AbstractMessageManager';
 import { EVENT } from '../../../shared/constants/metametrics';
 import DecryptMessageController, {
   DecryptMessageControllerMessenger,
@@ -40,11 +40,13 @@ const createDecryptMessageManagerMock = <T>() =>
     getMessage: jest.fn(),
     addUnapprovedMessageAsync: jest.fn(),
     approveMessage: jest.fn(),
-    setMessageStatusDecrypted: jest.fn(),
+    setMessageStatusAndResult: jest.fn(),
     rejectMessage: jest.fn(),
     update: jest.fn(),
     subscribe: jest.fn(),
     updateMessage: jest.fn(),
+    updateMessageErrorInline: jest.fn(),
+    updateMessageDataInline: jest.fn(),
     hub: {
       on: jest.fn(),
     },
@@ -134,12 +136,13 @@ describe('EncryptionPublicKeyController', () => {
     expect(keyringControllerMock.decryptMessage).toBeCalledWith(
       messageToDecrypt,
     );
-    expect(decryptMessageManagerMock.setMessageStatusDecrypted).toBeCalledTimes(
+    expect(decryptMessageManagerMock.setMessageStatusAndResult).toBeCalledTimes(
       1,
     );
-    expect(decryptMessageManagerMock.setMessageStatusDecrypted).toBeCalledWith(
+    expect(decryptMessageManagerMock.setMessageStatusAndResult).toBeCalledWith(
       messageIdMock,
       'decryptedMessage',
+      'decrypted',
     );
     expect(result).toBe(mockExtState);
   });
@@ -186,9 +189,10 @@ describe('EncryptionPublicKeyController', () => {
       messageToDecrypt,
     );
 
-    expect(decryptMessageManagerMock.updateMessage).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.updateMessage).toBeCalledWith(
-      decryptedMessage,
+    expect(decryptMessageManagerMock.updateMessageDataInline).toBeCalledTimes(1);
+    expect(decryptMessageManagerMock.updateMessageDataInline).toBeCalledWith(
+      messageIdMock,
+      'decryptedMessage',
     );
     expect(result).toBe(mockExtState);
   });
@@ -208,11 +212,11 @@ describe('EncryptionPublicKeyController', () => {
       messageToDecrypt,
     );
 
-    expect(decryptMessageManagerMock.updateMessage).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.updateMessage).toBeCalledWith({
-      ...messageToDecrypt,
-      error: 'failure on decryption',
-    });
+    expect(decryptMessageManagerMock.updateMessageErrorInline).toBeCalledTimes(1);
+    expect(decryptMessageManagerMock.updateMessageErrorInline).toBeCalledWith(
+      messageIdMock,
+      'failure on decryption',
+    );
     expect(result).toBe(mockExtState);
   });
 

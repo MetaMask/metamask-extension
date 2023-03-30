@@ -10,6 +10,8 @@ import {
   AbstractMessageManager,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
+  MessageManagerState,
+  OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
 import {
   BaseControllerV2,
@@ -41,9 +43,7 @@ export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
 };
 
-export type StateMessage = Required<AbstractMessage> & {
-  msgParams: string;
-};
+export type StateMessage = AbstractMessage;
 
 export type DecryptMessageControllerState = {
   unapprovedDecryptMsgs: Record<string, StateMessage>;
@@ -89,11 +89,15 @@ export default class DecryptMessageController extends BaseControllerV2<
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
 > {
+  hub: EventEmitter;
+
   private _getState: () => any;
 
   private _keyringController: KeyringController;
 
   private _metricsEvent: (payload: any, options?: any) => void;
+
+  private _decryptMessageManager: DecryptMessageManager;
 
   /**
    * Construct a DecryptMessage controller.
@@ -125,6 +129,7 @@ export default class DecryptMessageController extends BaseControllerV2<
     this._decryptMessageManager = new DecryptMessageManager(
       undefined,
       undefined,
+      ['decrypted']
     );
 
     this._decryptMessageManager.hub.on('updateBadge', () => {
@@ -198,19 +203,20 @@ export default class DecryptMessageController extends BaseControllerV2<
    * @returns A full state update.
    */
   async decryptMessage(messageParams: DecryptMessageParamsMetamask) {
-    const messageId = messageParams.metamaskId;
+    const messageId = messageParams.metamaskId as string;
     try {
       const cleanMessageParams =
         await this._decryptMessageManager.approveMessage(messageParams);
 
-      cleanMessageParams.data = this._parseMessage(cleanMessageParams.data);
+      cleanMessageParams.data = this._parseMessageData(cleanMessageParams.data);
       const rawMessage = await this._keyringController.decryptMessage(
         cleanMessageParams,
       );
 
-      this._decryptMessageManager.setMessageStatusDecrypted(
+      this._decryptMessageManager.setMessageStatusAndResult(
         messageId,
         rawMessage,
+        'decrypted'
       );
     } catch (error) {
       return this._cancelAbstractMessage(
@@ -227,18 +233,24 @@ export default class DecryptMessageController extends BaseControllerV2<
    * @param messageParams - The params of the message to decrypt.
    * @returns A full state update.
    */
-  async decryptMessageInline(messageParams) {
-    const messageId = messageParams.metamaskId;
-    const message = this._decryptMessageManager.getMessage(messageId);
+  async decryptMessageInline(messageParams: DecryptMessageParamsMetamask) {
+    const messageId = messageParams.metamaskId as string;
+
+    let rawData;
+    let error;
     try {
-      messageParams.data = this._parseMessage(messageParams.data);
-      message.rawData = await this._keyringController.decryptMessage(
-        messageParams,
-      );
+      messageParams.data = this._parseMessageData(messageParams.data);
+      rawData = await this._keyringController.decryptMessage(messageParams);
     } catch (e) {
-      message.error = e.message;
+      error = (e as Error).message;
     }
-    this._decryptMessageManager.updateMessage(message);
+
+    if (error) {
+      this._decryptMessageManager.updateMessageErrorInline(messageId, error);
+    } else {
+      this._decryptMessageManager.updateMessageDataInline(messageId, rawData);
+    }
+
     return this._getState();
   }
 
@@ -248,7 +260,7 @@ export default class DecryptMessageController extends BaseControllerV2<
    * @param messageId - The ID of the message to cancel.
    * @returns A full state update.
    */
-  cancelDecryptMessage(messageId) {
+  cancelDecryptMessage(messageId: string) {
     this._decryptMessageManager.rejectMessage(messageId);
     return this._getState();
   }
@@ -367,7 +379,7 @@ export default class DecryptMessageController extends BaseControllerV2<
       });
   }
 
-  private _parseMessage(data: string) {
+  private _parseMessageData(data: string) {
     const stripped = stripHexPrefix(data);
     const buff = Buffer.from(stripped, 'hex');
     return JSON.parse(buff.toString('utf8'));
