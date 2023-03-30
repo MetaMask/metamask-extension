@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { EVENT_NAMES, EVENT } = require('../../../shared/constants/metametrics');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../../shared/constants/test-flags');
+const { EVENT_NAMES, EVENT } = require('../../../shared/constants/metametrics');
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
@@ -154,6 +154,29 @@ describe('MV3 - Service worker restart', function () {
         assert.equal(
           mockedRequests[0].body.json.batch[0].properties.locale,
           'en',
+        );
+
+        assert.equal(mockedRequests[1].url, 'https://api.segment.io/v1/batch');
+
+        assert.equal(mockedRequests[1].body.json.batch.length, 1);
+        assert.equal(
+          mockedRequests[1].body.json.batch[1].event,
+          EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        );
+
+        const serviceWorkerRestartTimeRequestProperties =
+          mockedRequests[1].body.json.batch[1].properties;
+        assert.equal(
+          serviceWorkerRestartTimeRequestProperties.category,
+          EVENT.SOURCE.SERVICE_WORKERS,
+        );
+        assert(
+          typeof serviceWorkerRestartTimeRequestProperties.service_worker_action_queue_methods ===
+            'number',
+        );
+        assert(
+          serviceWorkerRestartTimeRequestProperties.service_worker_action_queue_methods >
+            0,
         );
       },
     );
