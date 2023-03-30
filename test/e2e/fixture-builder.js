@@ -180,7 +180,8 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        network: '1337',
+        networkId: '1337',
+        networkStatus: 'available',
         provider: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -310,7 +311,8 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        network: '1337',
+        networkId: '1337',
+        networkStatus: 'available',
         provider: {
           ticker: 'ETH',
           type: 'rpc',
@@ -484,15 +486,6 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
-    return this;
-  }
-
-  withNetworkControllerSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
     return this;
   }
 
