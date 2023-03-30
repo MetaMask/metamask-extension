@@ -2309,6 +2309,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nftsPreviouslyOwned": {
+    "message": "Previously Owned"
+  },
   "nickname": {
     "message": "Nickname"
   },
