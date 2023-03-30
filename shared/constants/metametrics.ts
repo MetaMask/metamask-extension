@@ -405,7 +405,7 @@ export enum MetaMetricsUserTrait {
    */
   OpenSeaApiEnabled = 'opensea_api_enabled',
   /**
-   * TODO
+   * Identified when the user's theme changes.
    */
   Theme = 'theme',
   /**
