@@ -316,7 +316,6 @@ export default class NetworkController extends EventEmitter {
       // in the process of being called, so we don't need to go further.
       return;
     }
-
     this.messenger.unsubscribe(
       NetworkControllerEventTypes.NetworkDidChange,
       listener,

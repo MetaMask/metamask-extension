@@ -6216,7 +6216,7 @@ describe('NetworkController', () => {
             chainId: '0x9999999',
           };
           const currentNetworkConfiguration = {
-            id: 'NetworkConfiguration',
+            id: 'currentNetworkConfiguration',
             rpcUrl: 'https://mock-rpc-url',
             chainId: '0x1337',
             ticker: 'TEST',
@@ -6239,23 +6239,27 @@ describe('NetworkController', () => {
               });
               currentNetwork.mockEssentialRpcCalls({
                 net_version: {
-                  response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                  response: {
+                    error: 'some error',
+                    httpStatus: 405,
+                  },
                 },
               });
               previousNetwork.mockEssentialRpcCalls({
                 eth_getBlockByNumber: {
-                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
                 },
               });
 
-              await waitForLookupNetworkToComplete({
+              await waitForStateChanges({
                 controller,
+                propertyPath: ['networkStatus'],
                 operation: () => {
                   controller.setActiveNetwork('currentNetworkConfiguration');
                 },
               });
               expect(controller.store.getState().networkStatus).toBe(
-                'available',
+                'unavailable',
               );
 
               await waitForLookupNetworkToComplete({
@@ -6264,7 +6268,9 @@ describe('NetworkController', () => {
                   controller.rollbackToPreviousProvider();
                 },
               });
-              expect(controller.store.getState().networkStatus).toBe('unknown');
+              expect(controller.store.getState().networkStatus).toBe(
+                'available',
+              );
             },
           );
         });
