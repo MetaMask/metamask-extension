@@ -393,7 +393,7 @@ export enum MetaMetricsUserTrait {
    */
   NumberOfNftCollections = 'number_of_nft_collections',
   /**
-   * TODO
+   * Identified when the number of NFTs owned by the user changes.
    */
   NumberOfNfts = 'number_of_nfts',
   /**
