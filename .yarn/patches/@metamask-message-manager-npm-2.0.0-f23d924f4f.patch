@@ -1,0 +1,503 @@
+diff --git a/dist/AbstractMessageManager.d.ts b/dist/AbstractMessageManager.d.ts
+index 5c880250d56006d0889ca008f734854d47504f71..f627dbd00a97d158becb5517dddee5f5f76f033e 100644
+--- a/dist/AbstractMessageManager.d.ts
++++ b/dist/AbstractMessageManager.d.ts
+@@ -1,6 +1,7 @@
+ /// <reference types="node" />
+ import { EventEmitter } from 'events';
+ import { BaseController, BaseConfig, BaseState } from '@metamask/base-controller';
++import { Json } from '@metamask/controller-utils';
+ /**
+  * @type OriginalRequest
+  *
+@@ -18,6 +19,7 @@ export interface OriginalRequest {
+  * @property type - The json-prc signing method for which a signature request has been made.
+  * A 'Message' which always has a signing type
+  * @property rawSig - Raw data of the signature request
++ * @property securityProviderResponse - Response from a security provider, whether it is malicious or not
+  */
+ export interface AbstractMessage {
+     id: string;
+@@ -25,6 +27,7 @@ export interface AbstractMessage {
+     status: string;
+     type: string;
+     rawSig?: string;
++    securityProviderResponse?: Map<string, Json>;
+ }
+ /**
+  * @type MessageParams
+@@ -62,11 +65,16 @@ export interface MessageManagerState<M extends AbstractMessage> extends BaseStat
+     };
+     unapprovedMessagesCount: number;
+ }
++/**
++ * A function for verifying a message, whether it is malicious or not
++ */
++export declare type SecurityProviderRequest = (requestData: AbstractMessage, messageType: string) => Promise<Json>;
+ /**
+  * Controller in charge of managing - storing, adding, removing, updating - Messages.
+  */
+ export declare abstract class AbstractMessageManager<M extends AbstractMessage, P extends AbstractMessageParams, PM extends AbstractMessageParamsMetamask> extends BaseController<BaseConfig, MessageManagerState<M>> {
+     protected messages: M[];
++    private securityProviderRequest;
+     /**
+      * Saves the unapproved messages, and their count to state.
+      *
+@@ -86,6 +94,13 @@ export declare abstract class AbstractMessageManager<M extends AbstractMessage,
+      * @param message - A Message that will replace an existing Message (with the id) in this.messages.
+      */
+     protected updateMessage(message: M): void;
++    /**
++     * Verifies a message is malicious or not by checking it against a security provider.
++     *
++     * @param message - The message to verify.
++     * @returns A promise that resolves to a secured message with additional security provider response data.
++     */
++    private securityCheck;
+     /**
+      * EventEmitter instance used to listen to specific message events
+      */
+@@ -99,8 +114,9 @@ export declare abstract class AbstractMessageManager<M extends AbstractMessage,
+      *
+      * @param config - Initial options used to configure this controller.
+      * @param state - Initial state to set on this controller.
++     * @param securityProviderRequest - A function for verifying a message, whether it is malicious or not.
+      */
+-    constructor(config?: Partial<BaseConfig>, state?: Partial<MessageManagerState<M>>);
++    constructor(config?: Partial<BaseConfig>, state?: Partial<MessageManagerState<M>>, securityProviderRequest?: SecurityProviderRequest);
+     /**
+      * A getter for the number of 'unapproved' Messages in this.messages.
+      *
+@@ -121,7 +137,7 @@ export declare abstract class AbstractMessageManager<M extends AbstractMessage,
+      *
+      * @param message - The Message to add to this.messages.
+      */
+-    addMessage(message: M): void;
++    addMessage(message: M): Promise<void>;
+     /**
+      * Returns a specified Message.
+      *
+diff --git a/dist/AbstractMessageManager.js b/dist/AbstractMessageManager.js
+index 3b853d88a65798fca595d5a696679288afaaab04..4577d7eff9de5115aef184df08caa520a43e5e26 100644
+--- a/dist/AbstractMessageManager.js
++++ b/dist/AbstractMessageManager.js
+@@ -1,4 +1,13 @@
+ "use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AbstractMessageManager = void 0;
+ const events_1 = require("events");
+@@ -12,8 +21,9 @@ class AbstractMessageManager extends base_controller_1.BaseController {
+      *
+      * @param config - Initial options used to configure this controller.
+      * @param state - Initial state to set on this controller.
++     * @param securityProviderRequest - A function for verifying a message, whether it is malicious or not.
+      */
+-    constructor(config, state) {
++    constructor(config, state, securityProviderRequest) {
+         super(config, state);
+         /**
+          * EventEmitter instance used to listen to specific message events
+@@ -28,6 +38,7 @@ class AbstractMessageManager extends base_controller_1.BaseController {
+             unapprovedMessagesCount: 0,
+         };
+         this.messages = [];
++        this.securityProviderRequest = securityProviderRequest;
+         this.initialize();
+     }
+     /**
+@@ -72,6 +83,21 @@ class AbstractMessageManager extends base_controller_1.BaseController {
+         }
+         this.saveMessageList();
+     }
++    /**
++     * Verifies a message is malicious or not by checking it against a security provider.
++     *
++     * @param message - The message to verify.
++     * @returns A promise that resolves to a secured message with additional security provider response data.
++     */
++    securityCheck(message) {
++        return __awaiter(this, void 0, void 0, function* () {
++            if (this.securityProviderRequest) {
++                const securityProviderResponse = yield this.securityProviderRequest(message, message.type);
++                return Object.assign(Object.assign({}, message), { securityProviderResponse });
++            }
++            return message;
++        });
++    }
+     /**
+      * A getter for the number of 'unapproved' Messages in this.messages.
+      *
+@@ -100,8 +126,11 @@ class AbstractMessageManager extends base_controller_1.BaseController {
+      * @param message - The Message to add to this.messages.
+      */
+     addMessage(message) {
+-        this.messages.push(message);
+-        this.saveMessageList();
++        return __awaiter(this, void 0, void 0, function* () {
++            const securedMessage = yield this.securityCheck(message);
++            this.messages.push(securedMessage);
++            this.saveMessageList();
++        });
+     }
+     /**
+      * Returns a specified Message.
+diff --git a/dist/AbstractMessageManager.js.map b/dist/AbstractMessageManager.js.map
+index 2fec0b0c5958eed7226a8c11f17ab8d92e8cfe18..ab2f3e9e0a905ba08b9f74e3f3d6f528f482a807 100644
+--- a/dist/AbstractMessageManager.js.map
++++ b/dist/AbstractMessageManager.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"AbstractMessageManager.js","sourceRoot":"","sources":["../src/AbstractMessageManager.ts"],"names":[],"mappings":"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","sourcesContent":["import { EventEmitter } from 'events';\nimport {\n  BaseController,\n  BaseConfig,\n  BaseState,\n} from '@metamask/base-controller';\n\n/**\n * @type OriginalRequest\n *\n * Represents the original request object for adding a message.\n * @property origin? - Is it is specified, represents the origin\n */\nexport interface OriginalRequest {\n  origin?: string;\n}\n\n/**\n * @type Message\n *\n * Represents and contains data about a signing type signature request.\n * @property id - An id to track and identify the message object\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'Message' which always has a signing type\n * @property rawSig - Raw data of the signature request\n */\nexport interface AbstractMessage {\n  id: string;\n  time: number;\n  status: string;\n  type: string;\n  rawSig?: string;\n}\n\n/**\n * @type MessageParams\n *\n * Represents the parameters to pass to the signing method once the signature request is approved.\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface AbstractMessageParams {\n  from: string;\n  origin?: string;\n}\n\n/**\n * @type MessageParamsMetamask\n *\n * Represents the parameters to pass to the signing method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface AbstractMessageParamsMetamask extends AbstractMessageParams {\n  metamaskId?: string;\n}\n\n/**\n * @type MessageManagerState\n *\n * Message Manager state\n * @property unapprovedMessages - A collection of all Messages in the 'unapproved' state\n * @property unapprovedMessagesCount - The count of all Messages in this.unapprovedMessages\n */\nexport interface MessageManagerState<M extends AbstractMessage>\n  extends BaseState {\n  unapprovedMessages: { [key: string]: M };\n  unapprovedMessagesCount: number;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - Messages.\n */\nexport abstract class AbstractMessageManager<\n  M extends AbstractMessage,\n  P extends AbstractMessageParams,\n  PM extends AbstractMessageParamsMetamask,\n> extends BaseController<BaseConfig, MessageManagerState<M>> {\n  protected messages: M[];\n\n  /**\n   * Saves the unapproved messages, and their count to state.\n   *\n   */\n  protected saveMessageList() {\n    const unapprovedMessages = this.getUnapprovedMessages();\n    const unapprovedMessagesCount = this.getUnapprovedMessagesCount();\n    this.update({ unapprovedMessages, unapprovedMessagesCount });\n    this.hub.emit('updateBadge');\n  }\n\n  /**\n   * Updates the status of a Message in this.messages.\n   *\n   * @param messageId - The id of the Message to update.\n   * @param status - The new status of the Message.\n   */\n  protected setMessageStatus(messageId: string, status: string) {\n    const message = this.getMessage(messageId);\n    if (!message) {\n      throw new Error(`${this.name}: Message not found for id: ${messageId}.`);\n    }\n    message.status = status;\n    this.updateMessage(message);\n    this.hub.emit(`${messageId}:${status}`, message);\n    if (status === 'rejected' || status === 'signed' || status === 'errored') {\n      this.hub.emit(`${messageId}:finished`, message);\n    }\n  }\n\n  /**\n   * Sets a Message in this.messages to the passed Message if the ids are equal.\n   * Then saves the unapprovedMessage list to storage.\n   *\n   * @param message - A Message that will replace an existing Message (with the id) in this.messages.\n   */\n  protected updateMessage(message: M) {\n    const index = this.messages.findIndex((msg) => message.id === msg.id);\n    /* istanbul ignore next */\n    if (index !== -1) {\n      this.messages[index] = message;\n    }\n    this.saveMessageList();\n  }\n\n  /**\n   * EventEmitter instance used to listen to specific message events\n   */\n  hub = new EventEmitter();\n\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'AbstractMessageManager';\n\n  /**\n   * Creates an AbstractMessageManager instance.\n   *\n   * @param config - Initial options used to configure this controller.\n   * @param state - Initial state to set on this controller.\n   */\n  constructor(\n    config?: Partial<BaseConfig>,\n    state?: Partial<MessageManagerState<M>>,\n  ) {\n    super(config, state);\n    this.defaultState = {\n      unapprovedMessages: {},\n      unapprovedMessagesCount: 0,\n    };\n    this.messages = [];\n    this.initialize();\n  }\n\n  /**\n   * A getter for the number of 'unapproved' Messages in this.messages.\n   *\n   * @returns The number of 'unapproved' Messages in this.messages.\n   */\n  getUnapprovedMessagesCount() {\n    return Object.keys(this.getUnapprovedMessages()).length;\n  }\n\n  /**\n   * A getter for the 'unapproved' Messages in state messages.\n   *\n   * @returns An index of Message ids to Messages, for all 'unapproved' Messages in this.messages.\n   */\n  getUnapprovedMessages() {\n    return this.messages\n      .filter((message) => message.status === 'unapproved')\n      .reduce((result: { [key: string]: M }, message: M) => {\n        result[message.id] = message;\n        return result;\n      }, {}) as { [key: string]: M };\n  }\n\n  /**\n   * Adds a passed Message to this.messages, and calls this.saveMessageList() to save\n   * the unapproved Messages from that list to this.messages.\n   *\n   * @param message - The Message to add to this.messages.\n   */\n  addMessage(message: M) {\n    this.messages.push(message);\n    this.saveMessageList();\n  }\n\n  /**\n   * Returns a specified Message.\n   *\n   * @param messageId - The id of the Message to get.\n   * @returns The Message with the id that matches the passed messageId, or undefined\n   * if no Message has that id.\n   */\n  getMessage(messageId: string) {\n    return this.messages.find((message) => message.id === messageId);\n  }\n\n  /**\n   * Approves a Message. Sets the message status via a call to this.setMessageStatusApproved,\n   * and returns a promise with any the message params modified for proper signing.\n   *\n   * @param messageParams - The messageParams to be used when signing method is called,\n   * plus data added by MetaMask.\n   * @returns Promise resolving to the messageParams with the metamaskId property removed.\n   */\n  approveMessage(messageParams: PM): Promise<P> {\n    // eslint-disable-next-line @typescript-eslint/ban-ts-comment\n    // @ts-ignore\n    this.setMessageStatusApproved(messageParams.metamaskId);\n    return this.prepMessageForSigning(messageParams);\n  }\n\n  /**\n   * Sets a Message status to 'approved' via a call to this.setMessageStatus.\n   *\n   * @param messageId - The id of the Message to approve.\n   */\n  setMessageStatusApproved(messageId: string) {\n    this.setMessageStatus(messageId, 'approved');\n  }\n\n  /**\n   * Sets a Message status to 'signed' via a call to this.setMessageStatus and updates\n   * that Message in this.messages by adding the raw signature data of the signature\n   * request to the Message.\n   *\n   * @param messageId - The id of the Message to sign.\n   * @param rawSig - The raw data of the signature request.\n   */\n  setMessageStatusSigned(messageId: string, rawSig: string) {\n    const message = this.getMessage(messageId);\n    /* istanbul ignore if */\n    if (!message) {\n      return;\n    }\n    message.rawSig = rawSig;\n    this.updateMessage(message);\n    this.setMessageStatus(messageId, 'signed');\n  }\n\n  /**\n   * Removes the metamaskId property from passed messageParams and returns a promise which\n   * resolves the updated messageParams\n   *\n   * @param messageParams - The messageParams to modify\n   * @returns Promise resolving to the messageParams with the metamaskId property removed\n   */\n  abstract prepMessageForSigning(messageParams: PM): Promise<P>;\n\n  /**\n   * Sets a Message status to 'rejected' via a call to this.setMessageStatus.\n   *\n   * @param messageId - The id of the Message to reject.\n   */\n  rejectMessage(messageId: string) {\n    this.setMessageStatus(messageId, 'rejected');\n  }\n}\n\nexport default AbstractMessageManager;\n"]}
+\ No newline at end of file
++{"version":3,"file":"AbstractMessageManager.js","sourceRoot":"","sources":["../src/AbstractMessageManager.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,mCAAsC;AACtC,+DAImC;AA8EnC;;GAEG;AACH,MAAsB,sBAIpB,SAAQ,gCAAkD;IAgF1D;;;;;;OAMG;IACH,YACE,MAA4B,EAC5B,KAAuC,EACvC,uBAAiD;QAEjD,KAAK,CAAC,MAAM,EAAE,KAAK,CAAC,CAAC;QAtBvB;;WAEG;QACH,QAAG,GAAG,IAAI,qBAAY,EAAE,CAAC;QAEzB;;WAEG;QACM,SAAI,GAAG,wBAAwB,CAAC;QAevC,IAAI,CAAC,YAAY,GAAG;YAClB,kBAAkB,EAAE,EAAE;YACtB,uBAAuB,EAAE,CAAC;SAC3B,CAAC;QACF,IAAI,CAAC,QAAQ,GAAG,EAAE,CAAC;QACnB,IAAI,CAAC,uBAAuB,GAAG,uBAAuB,CAAC;QACvD,IAAI,CAAC,UAAU,EAAE,CAAC;IACpB,CAAC;IA/FD;;;OAGG;IACO,eAAe;QACvB,MAAM,kBAAkB,GAAG,IAAI,CAAC,qBAAqB,EAAE,CAAC;QACxD,MAAM,uBAAuB,GAAG,IAAI,CAAC,0BAA0B,EAAE,CAAC;QAClE,IAAI,CAAC,MAAM,CAAC,EAAE,kBAAkB,EAAE,uBAAuB,EAAE,CAAC,CAAC;QAC7D,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,aAAa,CAAC,CAAC;IAC/B,CAAC;IAED;;;;;OAKG;IACO,gBAAgB,CAAC,SAAiB,EAAE,MAAc;QAC1D,MAAM,OAAO,GAAG,IAAI,CAAC,UAAU,CAAC,SAAS,CAAC,CAAC;QAC3C,IAAI,CAAC,OAAO,EAAE;YACZ,MAAM,IAAI,KAAK,CAAC,GAAG,IAAI,CAAC,IAAI,+BAA+B,SAAS,GAAG,CAAC,CAAC;SAC1E;QACD,OAAO,CAAC,MAAM,GAAG,MAAM,CAAC;QACxB,IAAI,CAAC,aAAa,CAAC,OAAO,CAAC,CAAC;QAC5B,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,SAAS,IAAI,MAAM,EAAE,EAAE,OAAO,CAAC,CAAC;QACjD,IAAI,MAAM,KAAK,UAAU,IAAI,MAAM,KAAK,QAAQ,IAAI,MAAM,KAAK,SAAS,EAAE;YACxE,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,SAAS,WAAW,EAAE,OAAO,CAAC,CAAC;SACjD;IACH,CAAC;IAED;;;;;OAKG;IACO,aAAa,CAAC,OAAU;QAChC,MAAM,KAAK,GAAG,IAAI,CAAC,QAAQ,CAAC,SAAS,CAAC,CAAC,GAAG,EAAE,EAAE,CAAC,OAAO,CAAC,EAAE,KAAK,GAAG,CAAC,EAAE,CAAC,CAAC;QACtE,0BAA0B;QAC1B,IAAI,KAAK,KAAK,CAAC,CAAC,EAAE;YAChB,IAAI,CAAC,QAAQ,CAAC,KAAK,CAAC,GAAG,OAAO,CAAC;SAChC;QACD,IAAI,CAAC,eAAe,EAAE,CAAC;IACzB,CAAC;IAED;;;;;OAKG;IACW,aAAa,CAAC,OAAU;;YACpC,IAAI,IAAI,CAAC,uBAAuB,EAAE;gBAChC,MAAM,wBAAwB,GAAG,MAAM,IAAI,CAAC,uBAAuB,CACjE,OAAO,EACP,OAAO,CAAC,IAAI,CACb,CAAC;gBACF,uCACK,OAAO,KACV,wBAAwB,IACxB;aACH;YACD,OAAO,OAAO,CAAC;QACjB,CAAC;KAAA;IAkCD;;;;OAIG;IACH,0BAA0B;QACxB,OAAO,MAAM,CAAC,IAAI,CAAC,IAAI,CAAC,qBAAqB,EAAE,CAAC,CAAC,MAAM,CAAC;IAC1D,CAAC;IAED;;;;OAIG;IACH,qBAAqB;QACnB,OAAO,IAAI,CAAC,QAAQ;aACjB,MAAM,CAAC,CAAC,OAAO,EAAE,EAAE,CAAC,OAAO,CAAC,MAAM,KAAK,YAAY,CAAC;aACpD,MAAM,CAAC,CAAC,MAA4B,EAAE,OAAU,EAAE,EAAE;YACnD,MAAM,CAAC,OAAO,CAAC,EAAE,CAAC,GAAG,OAAO,CAAC;YAC7B,OAAO,MAAM,CAAC;QAChB,CAAC,EAAE,EAAE,CAAyB,CAAC;IACnC,CAAC;IAED;;;;;OAKG;IACG,UAAU,CAAC,OAAU;;YACzB,MAAM,cAAc,GAAG,MAAM,IAAI,CAAC,aAAa,CAAC,OAAO,CAAC,CAAC;YACzD,IAAI,CAAC,QAAQ,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC;YACnC,IAAI,CAAC,eAAe,EAAE,CAAC;QACzB,CAAC;KAAA;IAED;;;;;;OAMG;IACH,UAAU,CAAC,SAAiB;QAC1B,OAAO,IAAI,CAAC,QAAQ,CAAC,IAAI,CAAC,CAAC,OAAO,EAAE,EAAE,CAAC,OAAO,CAAC,EAAE,KAAK,SAAS,CAAC,CAAC;IACnE,CAAC;IAED;;;;;;;OAOG;IACH,cAAc,CAAC,aAAiB;QAC9B,6DAA6D;QAC7D,aAAa;QACb,IAAI,CAAC,wBAAwB,CAAC,aAAa,CAAC,UAAU,CAAC,CAAC;QACxD,OAAO,IAAI,CAAC,qBAAqB,CAAC,aAAa,CAAC,CAAC;IACnD,CAAC;IAED;;;;OAIG;IACH,wBAAwB,CAAC,SAAiB;QACxC,IAAI,CAAC,gBAAgB,CAAC,SAAS,EAAE,UAAU,CAAC,CAAC;IAC/C,CAAC;IAED;;;;;;;OAOG;IACH,sBAAsB,CAAC,SAAiB,EAAE,MAAc;QACtD,MAAM,OAAO,GAAG,IAAI,CAAC,UAAU,CAAC,SAAS,CAAC,CAAC;QAC3C,wBAAwB;QACxB,IAAI,CAAC,OAAO,EAAE;YACZ,OAAO;SACR;QACD,OAAO,CAAC,MAAM,GAAG,MAAM,CAAC;QACxB,IAAI,CAAC,aAAa,CAAC,OAAO,CAAC,CAAC;QAC5B,IAAI,CAAC,gBAAgB,CAAC,SAAS,EAAE,QAAQ,CAAC,CAAC;IAC7C,CAAC;IAWD;;;;OAIG;IACH,aAAa,CAAC,SAAiB;QAC7B,IAAI,CAAC,gBAAgB,CAAC,SAAS,EAAE,UAAU,CAAC,CAAC;IAC/C,CAAC;CACF;AApND,wDAoNC;AAED,kBAAe,sBAAsB,CAAC","sourcesContent":["import { EventEmitter } from 'events';\nimport {\n  BaseController,\n  BaseConfig,\n  BaseState,\n} from '@metamask/base-controller';\nimport { Json } from '@metamask/controller-utils';\n\n/**\n * @type OriginalRequest\n *\n * Represents the original request object for adding a message.\n * @property origin? - Is it is specified, represents the origin\n */\nexport interface OriginalRequest {\n  origin?: string;\n}\n\n/**\n * @type Message\n *\n * Represents and contains data about a signing type signature request.\n * @property id - An id to track and identify the message object\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'Message' which always has a signing type\n * @property rawSig - Raw data of the signature request\n * @property securityProviderResponse - Response from a security provider, whether it is malicious or not\n */\nexport interface AbstractMessage {\n  id: string;\n  time: number;\n  status: string;\n  type: string;\n  rawSig?: string;\n  securityProviderResponse?: Map<string, Json>;\n}\n\n/**\n * @type MessageParams\n *\n * Represents the parameters to pass to the signing method once the signature request is approved.\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface AbstractMessageParams {\n  from: string;\n  origin?: string;\n}\n\n/**\n * @type MessageParamsMetamask\n *\n * Represents the parameters to pass to the signing method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface AbstractMessageParamsMetamask extends AbstractMessageParams {\n  metamaskId?: string;\n}\n\n/**\n * @type MessageManagerState\n *\n * Message Manager state\n * @property unapprovedMessages - A collection of all Messages in the 'unapproved' state\n * @property unapprovedMessagesCount - The count of all Messages in this.unapprovedMessages\n */\nexport interface MessageManagerState<M extends AbstractMessage>\n  extends BaseState {\n  unapprovedMessages: { [key: string]: M };\n  unapprovedMessagesCount: number;\n}\n\n/**\n * A function for verifying a message, whether it is malicious or not\n */\nexport type SecurityProviderRequest = (\n  requestData: AbstractMessage,\n  messageType: string,\n) => Promise<Json>;\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - Messages.\n */\nexport abstract class AbstractMessageManager<\n  M extends AbstractMessage,\n  P extends AbstractMessageParams,\n  PM extends AbstractMessageParamsMetamask,\n> extends BaseController<BaseConfig, MessageManagerState<M>> {\n  protected messages: M[];\n\n  private securityProviderRequest: SecurityProviderRequest | undefined;\n\n  /**\n   * Saves the unapproved messages, and their count to state.\n   *\n   */\n  protected saveMessageList() {\n    const unapprovedMessages = this.getUnapprovedMessages();\n    const unapprovedMessagesCount = this.getUnapprovedMessagesCount();\n    this.update({ unapprovedMessages, unapprovedMessagesCount });\n    this.hub.emit('updateBadge');\n  }\n\n  /**\n   * Updates the status of a Message in this.messages.\n   *\n   * @param messageId - The id of the Message to update.\n   * @param status - The new status of the Message.\n   */\n  protected setMessageStatus(messageId: string, status: string) {\n    const message = this.getMessage(messageId);\n    if (!message) {\n      throw new Error(`${this.name}: Message not found for id: ${messageId}.`);\n    }\n    message.status = status;\n    this.updateMessage(message);\n    this.hub.emit(`${messageId}:${status}`, message);\n    if (status === 'rejected' || status === 'signed' || status === 'errored') {\n      this.hub.emit(`${messageId}:finished`, message);\n    }\n  }\n\n  /**\n   * Sets a Message in this.messages to the passed Message if the ids are equal.\n   * Then saves the unapprovedMessage list to storage.\n   *\n   * @param message - A Message that will replace an existing Message (with the id) in this.messages.\n   */\n  protected updateMessage(message: M) {\n    const index = this.messages.findIndex((msg) => message.id === msg.id);\n    /* istanbul ignore next */\n    if (index !== -1) {\n      this.messages[index] = message;\n    }\n    this.saveMessageList();\n  }\n\n  /**\n   * Verifies a message is malicious or not by checking it against a security provider.\n   *\n   * @param message - The message to verify.\n   * @returns A promise that resolves to a secured message with additional security provider response data.\n   */\n  private async securityCheck(message: M): Promise<M> {\n    if (this.securityProviderRequest) {\n      const securityProviderResponse = await this.securityProviderRequest(\n        message,\n        message.type,\n      );\n      return {\n        ...message,\n        securityProviderResponse,\n      };\n    }\n    return message;\n  }\n\n  /**\n   * EventEmitter instance used to listen to specific message events\n   */\n  hub = new EventEmitter();\n\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'AbstractMessageManager';\n\n  /**\n   * Creates an AbstractMessageManager instance.\n   *\n   * @param config - Initial options used to configure this controller.\n   * @param state - Initial state to set on this controller.\n   * @param securityProviderRequest - A function for verifying a message, whether it is malicious or not.\n   */\n  constructor(\n    config?: Partial<BaseConfig>,\n    state?: Partial<MessageManagerState<M>>,\n    securityProviderRequest?: SecurityProviderRequest,\n  ) {\n    super(config, state);\n    this.defaultState = {\n      unapprovedMessages: {},\n      unapprovedMessagesCount: 0,\n    };\n    this.messages = [];\n    this.securityProviderRequest = securityProviderRequest;\n    this.initialize();\n  }\n\n  /**\n   * A getter for the number of 'unapproved' Messages in this.messages.\n   *\n   * @returns The number of 'unapproved' Messages in this.messages.\n   */\n  getUnapprovedMessagesCount() {\n    return Object.keys(this.getUnapprovedMessages()).length;\n  }\n\n  /**\n   * A getter for the 'unapproved' Messages in state messages.\n   *\n   * @returns An index of Message ids to Messages, for all 'unapproved' Messages in this.messages.\n   */\n  getUnapprovedMessages() {\n    return this.messages\n      .filter((message) => message.status === 'unapproved')\n      .reduce((result: { [key: string]: M }, message: M) => {\n        result[message.id] = message;\n        return result;\n      }, {}) as { [key: string]: M };\n  }\n\n  /**\n   * Adds a passed Message to this.messages, and calls this.saveMessageList() to save\n   * the unapproved Messages from that list to this.messages.\n   *\n   * @param message - The Message to add to this.messages.\n   */\n  async addMessage(message: M) {\n    const securedMessage = await this.securityCheck(message);\n    this.messages.push(securedMessage);\n    this.saveMessageList();\n  }\n\n  /**\n   * Returns a specified Message.\n   *\n   * @param messageId - The id of the Message to get.\n   * @returns The Message with the id that matches the passed messageId, or undefined\n   * if no Message has that id.\n   */\n  getMessage(messageId: string) {\n    return this.messages.find((message) => message.id === messageId);\n  }\n\n  /**\n   * Approves a Message. Sets the message status via a call to this.setMessageStatusApproved,\n   * and returns a promise with any the message params modified for proper signing.\n   *\n   * @param messageParams - The messageParams to be used when signing method is called,\n   * plus data added by MetaMask.\n   * @returns Promise resolving to the messageParams with the metamaskId property removed.\n   */\n  approveMessage(messageParams: PM): Promise<P> {\n    // eslint-disable-next-line @typescript-eslint/ban-ts-comment\n    // @ts-ignore\n    this.setMessageStatusApproved(messageParams.metamaskId);\n    return this.prepMessageForSigning(messageParams);\n  }\n\n  /**\n   * Sets a Message status to 'approved' via a call to this.setMessageStatus.\n   *\n   * @param messageId - The id of the Message to approve.\n   */\n  setMessageStatusApproved(messageId: string) {\n    this.setMessageStatus(messageId, 'approved');\n  }\n\n  /**\n   * Sets a Message status to 'signed' via a call to this.setMessageStatus and updates\n   * that Message in this.messages by adding the raw signature data of the signature\n   * request to the Message.\n   *\n   * @param messageId - The id of the Message to sign.\n   * @param rawSig - The raw data of the signature request.\n   */\n  setMessageStatusSigned(messageId: string, rawSig: string) {\n    const message = this.getMessage(messageId);\n    /* istanbul ignore if */\n    if (!message) {\n      return;\n    }\n    message.rawSig = rawSig;\n    this.updateMessage(message);\n    this.setMessageStatus(messageId, 'signed');\n  }\n\n  /**\n   * Removes the metamaskId property from passed messageParams and returns a promise which\n   * resolves the updated messageParams\n   *\n   * @param messageParams - The messageParams to modify\n   * @returns Promise resolving to the messageParams with the metamaskId property removed\n   */\n  abstract prepMessageForSigning(messageParams: PM): Promise<P>;\n\n  /**\n   * Sets a Message status to 'rejected' via a call to this.setMessageStatus.\n   *\n   * @param messageId - The id of the Message to reject.\n   */\n  rejectMessage(messageId: string) {\n    this.setMessageStatus(messageId, 'rejected');\n  }\n}\n\nexport default AbstractMessageManager;\n"]}
+\ No newline at end of file
+diff --git a/dist/MessageManager.d.ts b/dist/MessageManager.d.ts
+index c8fb2fbe01abd71da10196854489dd7e3029e581..71a3ddc01f4ef1945a85011c24b97df9f0257fad 100644
+--- a/dist/MessageManager.d.ts
++++ b/dist/MessageManager.d.ts
+@@ -64,7 +64,7 @@ export declare class MessageManager extends AbstractMessageManager<Message, Mess
+      * @param req - The original request object possibly containing the origin.
+      * @returns The id of the newly created message.
+      */
+-    addUnapprovedMessage(messageParams: MessageParams, req?: OriginalRequest): string;
++    addUnapprovedMessage(messageParams: MessageParams, req?: OriginalRequest): Promise<string>;
+     /**
+      * Removes the metamaskId property from passed messageParams and returns a promise which
+      * resolves the updated messageParams.
+diff --git a/dist/MessageManager.js b/dist/MessageManager.js
+index e7c5d9948e00111fb350bea545ef3dcee628474b..5518479a9eb7387dcdeea6572e8c48ba00e283ef 100644
+--- a/dist/MessageManager.js
++++ b/dist/MessageManager.js
+@@ -1,4 +1,13 @@
+ "use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.MessageManager = void 0;
+ const uuid_1 = require("uuid");
+@@ -24,18 +33,20 @@ class MessageManager extends AbstractMessageManager_1.AbstractMessageManager {
+      * @returns Promise resolving to the raw data of the signature request.
+      */
+     addUnapprovedMessageAsync(messageParams, req) {
+-        return new Promise((resolve, reject) => {
++        return __awaiter(this, void 0, void 0, function* () {
+             (0, utils_1.validateSignMessageData)(messageParams);
+-            const messageId = this.addUnapprovedMessage(messageParams, req);
+-            this.hub.once(`${messageId}:finished`, (data) => {
+-                switch (data.status) {
+-                    case 'signed':
+-                        return resolve(data.rawSig);
+-                    case 'rejected':
+-                        return reject(new Error('MetaMask Message Signature: User denied message signature.'));
+-                    default:
+-                        return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(messageParams)}`));
+-                }
++            const messageId = yield this.addUnapprovedMessage(messageParams, req);
++            return new Promise((resolve, reject) => {
++                this.hub.once(`${messageId}:finished`, (data) => {
++                    switch (data.status) {
++                        case 'signed':
++                            return resolve(data.rawSig);
++                        case 'rejected':
++                            return reject(new Error('MetaMask Message Signature: User denied message signature.'));
++                        default:
++                            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(messageParams)}`));
++                    }
++                });
+             });
+         });
+     }
+@@ -50,21 +61,23 @@ class MessageManager extends AbstractMessageManager_1.AbstractMessageManager {
+      * @returns The id of the newly created message.
+      */
+     addUnapprovedMessage(messageParams, req) {
+-        if (req) {
+-            messageParams.origin = req.origin;
+-        }
+-        messageParams.data = (0, utils_1.normalizeMessageData)(messageParams.data);
+-        const messageId = (0, uuid_1.v1)();
+-        const messageData = {
+-            id: messageId,
+-            messageParams,
+-            status: 'unapproved',
+-            time: Date.now(),
+-            type: 'eth_sign',
+-        };
+-        this.addMessage(messageData);
+-        this.hub.emit(`unapprovedMessage`, Object.assign(Object.assign({}, messageParams), { metamaskId: messageId }));
+-        return messageId;
++        return __awaiter(this, void 0, void 0, function* () {
++            if (req) {
++                messageParams.origin = req.origin;
++            }
++            messageParams.data = (0, utils_1.normalizeMessageData)(messageParams.data);
++            const messageId = (0, uuid_1.v1)();
++            const messageData = {
++                id: messageId,
++                messageParams,
++                status: 'unapproved',
++                time: Date.now(),
++                type: 'eth_sign',
++            };
++            yield this.addMessage(messageData);
++            this.hub.emit(`unapprovedMessage`, Object.assign(Object.assign({}, messageParams), { metamaskId: messageId }));
++            return messageId;
++        });
+     }
+     /**
+      * Removes the metamaskId property from passed messageParams and returns a promise which
+diff --git a/dist/MessageManager.js.map b/dist/MessageManager.js.map
+index 18dac6fe1289e47b01eefcfdbf8ca5a232f1cfa9..688c05a2ee2fd3c21a9d03374ae2f2a9fa5bd15b 100644
+--- a/dist/MessageManager.js.map
++++ b/dist/MessageManager.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"MessageManager.js","sourceRoot":"","sources":["../src/MessageManager.ts"],"names":[],"mappings":";;;AAAA,+BAAoC;AACpC,qEAMkC;AAClC,mCAAwE;AA2CxE;;GAEG;AACH,MAAa,cAAe,SAAQ,+CAInC;IAJD;;QAKE;;WAEG;QACM,SAAI,GAAG,gBAAgB,CAAC;IAoFnC,CAAC;IAlFC;;;;;;;OAOG;IACH,yBAAyB,CACvB,aAA4B,EAC5B,GAAqB;QAErB,OAAO,IAAI,OAAO,CAAC,CAAC,OAAO,EAAE,MAAM,EAAE,EAAE;YACrC,IAAA,+BAAuB,EAAC,aAAa,CAAC,CAAC;YACvC,MAAM,SAAS,GAAG,IAAI,CAAC,oBAAoB,CAAC,aAAa,EAAE,GAAG,CAAC,CAAC;YAChE,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,SAAS,WAAW,EAAE,CAAC,IAAa,EAAE,EAAE;gBACvD,QAAQ,IAAI,CAAC,MAAM,EAAE;oBACnB,KAAK,QAAQ;wBACX,OAAO,OAAO,CAAC,IAAI,CAAC,MAAgB,CAAC,CAAC;oBACxC,KAAK,UAAU;wBACb,OAAO,MAAM,CACX,IAAI,KAAK,CACP,4DAA4D,CAC7D,CACF,CAAC;oBACJ;wBACE,OAAO,MAAM,CACX,IAAI,KAAK,CACP,gDAAgD,IAAI,CAAC,SAAS,CAC5D,aAAa,CACd,EAAE,CACJ,CACF,CAAC;iBACL;YACH,CAAC,CAAC,CAAC;QACL,CAAC,CAAC,CAAC;IACL,CAAC;IAED;;;;;;;;;OASG;IACH,oBAAoB,CAAC,aAA4B,EAAE,GAAqB;QACtE,IAAI,GAAG,EAAE;YACP,aAAa,CAAC,MAAM,GAAG,GAAG,CAAC,MAAM,CAAC;SACnC;QACD,aAAa,CAAC,IAAI,GAAG,IAAA,4BAAoB,EAAC,aAAa,CAAC,IAAI,CAAC,CAAC;QAC9D,MAAM,SAAS,GAAG,IAAA,SAAM,GAAE,CAAC;QAC3B,MAAM,WAAW,GAAY;YAC3B,EAAE,EAAE,SAAS;YACb,aAAa;YACb,MAAM,EAAE,YAAY;YACpB,IAAI,EAAE,IAAI,CAAC,GAAG,EAAE;YAChB,IAAI,EAAE,UAAU;SACjB,CAAC;QACF,IAAI,CAAC,UAAU,CAAC,WAAW,CAAC,CAAC;QAC7B,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,mBAAmB,kCAC5B,aAAa,GACb,EAAE,UAAU,EAAE,SAAS,EAAE,EAC5B,CAAC;QACH,OAAO,SAAS,CAAC;IACnB,CAAC;IAED;;;;;;OAMG;IACH,qBAAqB,CACnB,aAAoC;QAEpC,OAAO,aAAa,CAAC,UAAU,CAAC;QAChC,OAAO,OAAO,CAAC,OAAO,CAAC,aAAa,CAAC,CAAC;IACxC,CAAC;CACF;AA5FD,wCA4FC;AAED,kBAAe,cAAc,CAAC","sourcesContent":["import { v1 as random } from 'uuid';\nimport {\n  AbstractMessageManager,\n  AbstractMessage,\n  AbstractMessageParams,\n  AbstractMessageParamsMetamask,\n  OriginalRequest,\n} from './AbstractMessageManager';\nimport { normalizeMessageData, validateSignMessageData } from './utils';\n\n/**\n * @type Message\n *\n * Represents and contains data about a 'eth_sign' type signature request.\n * These are created when a signature for an eth_sign call is requested.\n * @property id - An id to track and identify the message object\n * @property messageParams - The parameters to pass to the eth_sign method once the signature request is approved\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'Message' which always has a 'eth_sign' type\n * @property rawSig - Raw data of the signature request\n */\nexport interface Message extends AbstractMessage {\n  messageParams: MessageParams;\n}\n\n/**\n * @type PersonalMessageParams\n *\n * Represents the parameters to pass to the eth_sign method once the signature request is approved.\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface MessageParams extends AbstractMessageParams {\n  data: string;\n}\n\n/**\n * @type MessageParamsMetamask\n *\n * Represents the parameters to pass to the eth_sign method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface MessageParamsMetamask extends AbstractMessageParamsMetamask {\n  data: string;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - Messages.\n */\nexport class MessageManager extends AbstractMessageManager<\n  Message,\n  MessageParams,\n  MessageParamsMetamask\n> {\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'MessageManager';\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the unapproved Messages.\n   *\n   * @param messageParams - The params for the eth_sign call to be made after the message is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns Promise resolving to the raw data of the signature request.\n   */\n  addUnapprovedMessageAsync(\n    messageParams: MessageParams,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    return new Promise((resolve, reject) => {\n      validateSignMessageData(messageParams);\n      const messageId = this.addUnapprovedMessage(messageParams, req);\n      this.hub.once(`${messageId}:finished`, (data: Message) => {\n        switch (data.status) {\n          case 'signed':\n            return resolve(data.rawSig as string);\n          case 'rejected':\n            return reject(\n              new Error(\n                'MetaMask Message Signature: User denied message signature.',\n              ),\n            );\n          default:\n            return reject(\n              new Error(\n                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(\n                  messageParams,\n                )}`,\n              ),\n            );\n        }\n      });\n    });\n  }\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the\n   * unapproved Messages.\n   *\n   * @param messageParams - The params for the eth_sign call to be made after the message\n   * is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns The id of the newly created message.\n   */\n  addUnapprovedMessage(messageParams: MessageParams, req?: OriginalRequest) {\n    if (req) {\n      messageParams.origin = req.origin;\n    }\n    messageParams.data = normalizeMessageData(messageParams.data);\n    const messageId = random();\n    const messageData: Message = {\n      id: messageId,\n      messageParams,\n      status: 'unapproved',\n      time: Date.now(),\n      type: 'eth_sign',\n    };\n    this.addMessage(messageData);\n    this.hub.emit(`unapprovedMessage`, {\n      ...messageParams,\n      ...{ metamaskId: messageId },\n    });\n    return messageId;\n  }\n\n  /**\n   * Removes the metamaskId property from passed messageParams and returns a promise which\n   * resolves the updated messageParams.\n   *\n   * @param messageParams - The messageParams to modify.\n   * @returns Promise resolving to the messageParams with the metamaskId property removed.\n   */\n  prepMessageForSigning(\n    messageParams: MessageParamsMetamask,\n  ): Promise<MessageParams> {\n    delete messageParams.metamaskId;\n    return Promise.resolve(messageParams);\n  }\n}\n\nexport default MessageManager;\n"]}
+\ No newline at end of file
++{"version":3,"file":"MessageManager.js","sourceRoot":"","sources":["../src/MessageManager.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,+BAAoC;AACpC,qEAMkC;AAClC,mCAAwE;AA2CxE;;GAEG;AACH,MAAa,cAAe,SAAQ,+CAInC;IAJD;;QAKE;;WAEG;QACM,SAAI,GAAG,gBAAgB,CAAC;IAuFnC,CAAC;IArFC;;;;;;;OAOG;IACG,yBAAyB,CAC7B,aAA4B,EAC5B,GAAqB;;YAErB,IAAA,+BAAuB,EAAC,aAAa,CAAC,CAAC;YACvC,MAAM,SAAS,GAAG,MAAM,IAAI,CAAC,oBAAoB,CAAC,aAAa,EAAE,GAAG,CAAC,CAAC;YACtE,OAAO,IAAI,OAAO,CAAC,CAAC,OAAO,EAAE,MAAM,EAAE,EAAE;gBACrC,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,SAAS,WAAW,EAAE,CAAC,IAAa,EAAE,EAAE;oBACvD,QAAQ,IAAI,CAAC,MAAM,EAAE;wBACnB,KAAK,QAAQ;4BACX,OAAO,OAAO,CAAC,IAAI,CAAC,MAAgB,CAAC,CAAC;wBACxC,KAAK,UAAU;4BACb,OAAO,MAAM,CACX,IAAI,KAAK,CACP,4DAA4D,CAC7D,CACF,CAAC;wBACJ;4BACE,OAAO,MAAM,CACX,IAAI,KAAK,CACP,gDAAgD,IAAI,CAAC,SAAS,CAC5D,aAAa,CACd,EAAE,CACJ,CACF,CAAC;qBACL;gBACH,CAAC,CAAC,CAAC;YACL,CAAC,CAAC,CAAC;QACL,CAAC;KAAA;IAED;;;;;;;;;OASG;IACG,oBAAoB,CACxB,aAA4B,EAC5B,GAAqB;;YAErB,IAAI,GAAG,EAAE;gBACP,aAAa,CAAC,MAAM,GAAG,GAAG,CAAC,MAAM,CAAC;aACnC;YACD,aAAa,CAAC,IAAI,GAAG,IAAA,4BAAoB,EAAC,aAAa,CAAC,IAAI,CAAC,CAAC;YAC9D,MAAM,SAAS,GAAG,IAAA,SAAM,GAAE,CAAC;YAC3B,MAAM,WAAW,GAAY;gBAC3B,EAAE,EAAE,SAAS;gBACb,aAAa;gBACb,MAAM,EAAE,YAAY;gBACpB,IAAI,EAAE,IAAI,CAAC,GAAG,EAAE;gBAChB,IAAI,EAAE,UAAU;aACjB,CAAC;YACF,MAAM,IAAI,CAAC,UAAU,CAAC,WAAW,CAAC,CAAC;YACnC,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,mBAAmB,kCAC5B,aAAa,GACb,EAAE,UAAU,EAAE,SAAS,EAAE,EAC5B,CAAC;YACH,OAAO,SAAS,CAAC;QACnB,CAAC;KAAA;IAED;;;;;;OAMG;IACH,qBAAqB,CACnB,aAAoC;QAEpC,OAAO,aAAa,CAAC,UAAU,CAAC;QAChC,OAAO,OAAO,CAAC,OAAO,CAAC,aAAa,CAAC,CAAC;IACxC,CAAC;CACF;AA/FD,wCA+FC;AAED,kBAAe,cAAc,CAAC","sourcesContent":["import { v1 as random } from 'uuid';\nimport {\n  AbstractMessageManager,\n  AbstractMessage,\n  AbstractMessageParams,\n  AbstractMessageParamsMetamask,\n  OriginalRequest,\n} from './AbstractMessageManager';\nimport { normalizeMessageData, validateSignMessageData } from './utils';\n\n/**\n * @type Message\n *\n * Represents and contains data about a 'eth_sign' type signature request.\n * These are created when a signature for an eth_sign call is requested.\n * @property id - An id to track and identify the message object\n * @property messageParams - The parameters to pass to the eth_sign method once the signature request is approved\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'Message' which always has a 'eth_sign' type\n * @property rawSig - Raw data of the signature request\n */\nexport interface Message extends AbstractMessage {\n  messageParams: MessageParams;\n}\n\n/**\n * @type PersonalMessageParams\n *\n * Represents the parameters to pass to the eth_sign method once the signature request is approved.\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface MessageParams extends AbstractMessageParams {\n  data: string;\n}\n\n/**\n * @type MessageParamsMetamask\n *\n * Represents the parameters to pass to the eth_sign method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface MessageParamsMetamask extends AbstractMessageParamsMetamask {\n  data: string;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - Messages.\n */\nexport class MessageManager extends AbstractMessageManager<\n  Message,\n  MessageParams,\n  MessageParamsMetamask\n> {\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'MessageManager';\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the unapproved Messages.\n   *\n   * @param messageParams - The params for the eth_sign call to be made after the message is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns Promise resolving to the raw data of the signature request.\n   */\n  async addUnapprovedMessageAsync(\n    messageParams: MessageParams,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    validateSignMessageData(messageParams);\n    const messageId = await this.addUnapprovedMessage(messageParams, req);\n    return new Promise((resolve, reject) => {\n      this.hub.once(`${messageId}:finished`, (data: Message) => {\n        switch (data.status) {\n          case 'signed':\n            return resolve(data.rawSig as string);\n          case 'rejected':\n            return reject(\n              new Error(\n                'MetaMask Message Signature: User denied message signature.',\n              ),\n            );\n          default:\n            return reject(\n              new Error(\n                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(\n                  messageParams,\n                )}`,\n              ),\n            );\n        }\n      });\n    });\n  }\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the\n   * unapproved Messages.\n   *\n   * @param messageParams - The params for the eth_sign call to be made after the message\n   * is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns The id of the newly created message.\n   */\n  async addUnapprovedMessage(\n    messageParams: MessageParams,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    if (req) {\n      messageParams.origin = req.origin;\n    }\n    messageParams.data = normalizeMessageData(messageParams.data);\n    const messageId = random();\n    const messageData: Message = {\n      id: messageId,\n      messageParams,\n      status: 'unapproved',\n      time: Date.now(),\n      type: 'eth_sign',\n    };\n    await this.addMessage(messageData);\n    this.hub.emit(`unapprovedMessage`, {\n      ...messageParams,\n      ...{ metamaskId: messageId },\n    });\n    return messageId;\n  }\n\n  /**\n   * Removes the metamaskId property from passed messageParams and returns a promise which\n   * resolves the updated messageParams.\n   *\n   * @param messageParams - The messageParams to modify.\n   * @returns Promise resolving to the messageParams with the metamaskId property removed.\n   */\n  prepMessageForSigning(\n    messageParams: MessageParamsMetamask,\n  ): Promise<MessageParams> {\n    delete messageParams.metamaskId;\n    return Promise.resolve(messageParams);\n  }\n}\n\nexport default MessageManager;\n"]}
+\ No newline at end of file
+diff --git a/dist/PersonalMessageManager.d.ts b/dist/PersonalMessageManager.d.ts
+index 999eeb36149c36eaa2773b907e01a349f34a038d..917bcf021d8dd8d2357a84be548a81e8dd309f3b 100644
+--- a/dist/PersonalMessageManager.d.ts
++++ b/dist/PersonalMessageManager.d.ts
+@@ -64,7 +64,7 @@ export declare class PersonalMessageManager extends AbstractMessageManager<Perso
+      * @param req - The original request object possibly containing the origin.
+      * @returns The id of the newly created message.
+      */
+-    addUnapprovedMessage(messageParams: PersonalMessageParams, req?: OriginalRequest): string;
++    addUnapprovedMessage(messageParams: PersonalMessageParams, req?: OriginalRequest): Promise<string>;
+     /**
+      * Removes the metamaskId property from passed messageParams and returns a promise which
+      * resolves the updated messageParams.
+diff --git a/dist/PersonalMessageManager.js b/dist/PersonalMessageManager.js
+index 036bd3b6aaee53b97a457510ade1190c8dfaf02b..3a1f4c0e409763c2327065b768072dd0609eef24 100644
+--- a/dist/PersonalMessageManager.js
++++ b/dist/PersonalMessageManager.js
+@@ -1,4 +1,13 @@
+ "use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.PersonalMessageManager = void 0;
+ const uuid_1 = require("uuid");
+@@ -24,18 +33,20 @@ class PersonalMessageManager extends AbstractMessageManager_1.AbstractMessageMan
+      * @returns Promise resolving to the raw data of the signature request.
+      */
+     addUnapprovedMessageAsync(messageParams, req) {
+-        return new Promise((resolve, reject) => {
++        return __awaiter(this, void 0, void 0, function* () {
+             (0, utils_1.validateSignMessageData)(messageParams);
+-            const messageId = this.addUnapprovedMessage(messageParams, req);
+-            this.hub.once(`${messageId}:finished`, (data) => {
+-                switch (data.status) {
+-                    case 'signed':
+-                        return resolve(data.rawSig);
+-                    case 'rejected':
+-                        return reject(new Error('MetaMask Personal Message Signature: User denied message signature.'));
+-                    default:
+-                        return reject(new Error(`MetaMask Personal Message Signature: Unknown problem: ${JSON.stringify(messageParams)}`));
+-                }
++            const messageId = yield this.addUnapprovedMessage(messageParams, req);
++            return new Promise((resolve, reject) => {
++                this.hub.once(`${messageId}:finished`, (data) => {
++                    switch (data.status) {
++                        case 'signed':
++                            return resolve(data.rawSig);
++                        case 'rejected':
++                            return reject(new Error('MetaMask Personal Message Signature: User denied message signature.'));
++                        default:
++                            return reject(new Error(`MetaMask Personal Message Signature: Unknown problem: ${JSON.stringify(messageParams)}`));
++                    }
++                });
+             });
+         });
+     }
+@@ -50,21 +61,23 @@ class PersonalMessageManager extends AbstractMessageManager_1.AbstractMessageMan
+      * @returns The id of the newly created message.
+      */
+     addUnapprovedMessage(messageParams, req) {
+-        if (req) {
+-            messageParams.origin = req.origin;
+-        }
+-        messageParams.data = (0, utils_1.normalizeMessageData)(messageParams.data);
+-        const messageId = (0, uuid_1.v1)();
+-        const messageData = {
+-            id: messageId,
+-            messageParams,
+-            status: 'unapproved',
+-            time: Date.now(),
+-            type: 'personal_sign',
+-        };
+-        this.addMessage(messageData);
+-        this.hub.emit(`unapprovedMessage`, Object.assign(Object.assign({}, messageParams), { metamaskId: messageId }));
+-        return messageId;
++        return __awaiter(this, void 0, void 0, function* () {
++            if (req) {
++                messageParams.origin = req.origin;
++            }
++            messageParams.data = (0, utils_1.normalizeMessageData)(messageParams.data);
++            const messageId = (0, uuid_1.v1)();
++            const messageData = {
++                id: messageId,
++                messageParams,
++                status: 'unapproved',
++                time: Date.now(),
++                type: 'personal_sign',
++            };
++            yield this.addMessage(messageData);
++            this.hub.emit(`unapprovedMessage`, Object.assign(Object.assign({}, messageParams), { metamaskId: messageId }));
++            return messageId;
++        });
+     }
+     /**
+      * Removes the metamaskId property from passed messageParams and returns a promise which
+diff --git a/dist/PersonalMessageManager.js.map b/dist/PersonalMessageManager.js.map
+index 47ff7bc82a358e736719bd185a212b8b9476e32b..661be0ce4245a3fd07d5497938ddfb0e83c6603e 100644
+--- a/dist/PersonalMessageManager.js.map
++++ b/dist/PersonalMessageManager.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"PersonalMessageManager.js","sourceRoot":"","sources":["../src/PersonalMessageManager.ts"],"names":[],"mappings":";;;AAAA,+BAAoC;AACpC,mCAAwE;AACxE,qEAMkC;AA4ClC;;GAEG;AACH,MAAa,sBAAuB,SAAQ,+CAI3C;IAJD;;QAKE;;WAEG;QACM,SAAI,GAAG,wBAAwB,CAAC;IAuF3C,CAAC;IArFC;;;;;;;OAOG;IACH,yBAAyB,CACvB,aAAoC,EACpC,GAAqB;QAErB,OAAO,IAAI,OAAO,CAAC,CAAC,OAAO,EAAE,MAAM,EAAE,EAAE;YACrC,IAAA,+BAAuB,EAAC,aAAa,CAAC,CAAC;YACvC,MAAM,SAAS,GAAG,IAAI,CAAC,oBAAoB,CAAC,aAAa,EAAE,GAAG,CAAC,CAAC;YAChE,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,SAAS,WAAW,EAAE,CAAC,IAAqB,EAAE,EAAE;gBAC/D,QAAQ,IAAI,CAAC,MAAM,EAAE;oBACnB,KAAK,QAAQ;wBACX,OAAO,OAAO,CAAC,IAAI,CAAC,MAAgB,CAAC,CAAC;oBACxC,KAAK,UAAU;wBACb,OAAO,MAAM,CACX,IAAI,KAAK,CACP,qEAAqE,CACtE,CACF,CAAC;oBACJ;wBACE,OAAO,MAAM,CACX,IAAI,KAAK,CACP,yDAAyD,IAAI,CAAC,SAAS,CACrE,aAAa,CACd,EAAE,CACJ,CACF,CAAC;iBACL;YACH,CAAC,CAAC,CAAC;QACL,CAAC,CAAC,CAAC;IACL,CAAC;IAED;;;;;;;;;OASG;IACH,oBAAoB,CAClB,aAAoC,EACpC,GAAqB;QAErB,IAAI,GAAG,EAAE;YACP,aAAa,CAAC,MAAM,GAAG,GAAG,CAAC,MAAM,CAAC;SACnC;QACD,aAAa,CAAC,IAAI,GAAG,IAAA,4BAAoB,EAAC,aAAa,CAAC,IAAI,CAAC,CAAC;QAC9D,MAAM,SAAS,GAAG,IAAA,SAAM,GAAE,CAAC;QAC3B,MAAM,WAAW,GAAoB;YACnC,EAAE,EAAE,SAAS;YACb,aAAa;YACb,MAAM,EAAE,YAAY;YACpB,IAAI,EAAE,IAAI,CAAC,GAAG,EAAE;YAChB,IAAI,EAAE,eAAe;SACtB,CAAC;QACF,IAAI,CAAC,UAAU,CAAC,WAAW,CAAC,CAAC;QAC7B,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,mBAAmB,kCAC5B,aAAa,GACb,EAAE,UAAU,EAAE,SAAS,EAAE,EAC5B,CAAC;QACH,OAAO,SAAS,CAAC;IACnB,CAAC;IAED;;;;;;OAMG;IACH,qBAAqB,CACnB,aAA4C;QAE5C,OAAO,aAAa,CAAC,UAAU,CAAC;QAChC,OAAO,OAAO,CAAC,OAAO,CAAC,aAAa,CAAC,CAAC;IACxC,CAAC;CACF;AA/FD,wDA+FC;AAED,kBAAe,sBAAsB,CAAC","sourcesContent":["import { v1 as random } from 'uuid';\nimport { normalizeMessageData, validateSignMessageData } from './utils';\nimport {\n  AbstractMessageManager,\n  AbstractMessage,\n  AbstractMessageParams,\n  AbstractMessageParamsMetamask,\n  OriginalRequest,\n} from './AbstractMessageManager';\n\n/**\n * @type Message\n *\n * Represents and contains data about a 'personal_sign' type signature request.\n * These are created when a signature for a personal_sign call is requested.\n * @property id - An id to track and identify the message object\n * @property messageParams - The parameters to pass to the personal_sign method once the signature request is approved\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'Message' which always has a 'personal_sign' type\n * @property rawSig - Raw data of the signature request\n */\nexport interface PersonalMessage extends AbstractMessage {\n  messageParams: PersonalMessageParams;\n}\n\n/**\n * @type PersonalMessageParams\n *\n * Represents the parameters to pass to the personal_sign method once the signature request is approved.\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface PersonalMessageParams extends AbstractMessageParams {\n  data: string;\n}\n\n/**\n * @type MessageParamsMetamask\n *\n * Represents the parameters to pass to the personal_sign method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface PersonalMessageParamsMetamask\n  extends AbstractMessageParamsMetamask {\n  data: string;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - Messages.\n */\nexport class PersonalMessageManager extends AbstractMessageManager<\n  PersonalMessage,\n  PersonalMessageParams,\n  PersonalMessageParamsMetamask\n> {\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'PersonalMessageManager';\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the unapproved Messages.\n   *\n   * @param messageParams - The params for the personal_sign call to be made after the message is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns Promise resolving to the raw data of the signature request.\n   */\n  addUnapprovedMessageAsync(\n    messageParams: PersonalMessageParams,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    return new Promise((resolve, reject) => {\n      validateSignMessageData(messageParams);\n      const messageId = this.addUnapprovedMessage(messageParams, req);\n      this.hub.once(`${messageId}:finished`, (data: PersonalMessage) => {\n        switch (data.status) {\n          case 'signed':\n            return resolve(data.rawSig as string);\n          case 'rejected':\n            return reject(\n              new Error(\n                'MetaMask Personal Message Signature: User denied message signature.',\n              ),\n            );\n          default:\n            return reject(\n              new Error(\n                `MetaMask Personal Message Signature: Unknown problem: ${JSON.stringify(\n                  messageParams,\n                )}`,\n              ),\n            );\n        }\n      });\n    });\n  }\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the\n   * unapproved Messages.\n   *\n   * @param messageParams - The params for the personal_sign call to be made after the message\n   * is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns The id of the newly created message.\n   */\n  addUnapprovedMessage(\n    messageParams: PersonalMessageParams,\n    req?: OriginalRequest,\n  ) {\n    if (req) {\n      messageParams.origin = req.origin;\n    }\n    messageParams.data = normalizeMessageData(messageParams.data);\n    const messageId = random();\n    const messageData: PersonalMessage = {\n      id: messageId,\n      messageParams,\n      status: 'unapproved',\n      time: Date.now(),\n      type: 'personal_sign',\n    };\n    this.addMessage(messageData);\n    this.hub.emit(`unapprovedMessage`, {\n      ...messageParams,\n      ...{ metamaskId: messageId },\n    });\n    return messageId;\n  }\n\n  /**\n   * Removes the metamaskId property from passed messageParams and returns a promise which\n   * resolves the updated messageParams.\n   *\n   * @param messageParams - The messageParams to modify.\n   * @returns Promise resolving to the messageParams with the metamaskId property removed.\n   */\n  prepMessageForSigning(\n    messageParams: PersonalMessageParamsMetamask,\n  ): Promise<PersonalMessageParams> {\n    delete messageParams.metamaskId;\n    return Promise.resolve(messageParams);\n  }\n}\n\nexport default PersonalMessageManager;\n"]}
+\ No newline at end of file
++{"version":3,"file":"PersonalMessageManager.js","sourceRoot":"","sources":["../src/PersonalMessageManager.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,+BAAoC;AACpC,mCAAwE;AACxE,qEAMkC;AA4ClC;;GAEG;AACH,MAAa,sBAAuB,SAAQ,+CAI3C;IAJD;;QAKE;;WAEG;QACM,SAAI,GAAG,wBAAwB,CAAC;IAuF3C,CAAC;IArFC;;;;;;;OAOG;IACG,yBAAyB,CAC7B,aAAoC,EACpC,GAAqB;;YAErB,IAAA,+BAAuB,EAAC,aAAa,CAAC,CAAC;YACvC,MAAM,SAAS,GAAG,MAAM,IAAI,CAAC,oBAAoB,CAAC,aAAa,EAAE,GAAG,CAAC,CAAC;YACtE,OAAO,IAAI,OAAO,CAAC,CAAC,OAAO,EAAE,MAAM,EAAE,EAAE;gBACrC,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,SAAS,WAAW,EAAE,CAAC,IAAqB,EAAE,EAAE;oBAC/D,QAAQ,IAAI,CAAC,MAAM,EAAE;wBACnB,KAAK,QAAQ;4BACX,OAAO,OAAO,CAAC,IAAI,CAAC,MAAgB,CAAC,CAAC;wBACxC,KAAK,UAAU;4BACb,OAAO,MAAM,CACX,IAAI,KAAK,CACP,qEAAqE,CACtE,CACF,CAAC;wBACJ;4BACE,OAAO,MAAM,CACX,IAAI,KAAK,CACP,yDAAyD,IAAI,CAAC,SAAS,CACrE,aAAa,CACd,EAAE,CACJ,CACF,CAAC;qBACL;gBACH,CAAC,CAAC,CAAC;YACL,CAAC,CAAC,CAAC;QACL,CAAC;KAAA;IAED;;;;;;;;;OASG;IACG,oBAAoB,CACxB,aAAoC,EACpC,GAAqB;;YAErB,IAAI,GAAG,EAAE;gBACP,aAAa,CAAC,MAAM,GAAG,GAAG,CAAC,MAAM,CAAC;aACnC;YACD,aAAa,CAAC,IAAI,GAAG,IAAA,4BAAoB,EAAC,aAAa,CAAC,IAAI,CAAC,CAAC;YAC9D,MAAM,SAAS,GAAG,IAAA,SAAM,GAAE,CAAC;YAC3B,MAAM,WAAW,GAAoB;gBACnC,EAAE,EAAE,SAAS;gBACb,aAAa;gBACb,MAAM,EAAE,YAAY;gBACpB,IAAI,EAAE,IAAI,CAAC,GAAG,EAAE;gBAChB,IAAI,EAAE,eAAe;aACtB,CAAC;YACF,MAAM,IAAI,CAAC,UAAU,CAAC,WAAW,CAAC,CAAC;YACnC,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,mBAAmB,kCAC5B,aAAa,GACb,EAAE,UAAU,EAAE,SAAS,EAAE,EAC5B,CAAC;YACH,OAAO,SAAS,CAAC;QACnB,CAAC;KAAA;IAED;;;;;;OAMG;IACH,qBAAqB,CACnB,aAA4C;QAE5C,OAAO,aAAa,CAAC,UAAU,CAAC;QAChC,OAAO,OAAO,CAAC,OAAO,CAAC,aAAa,CAAC,CAAC;IACxC,CAAC;CACF;AA/FD,wDA+FC;AAED,kBAAe,sBAAsB,CAAC","sourcesContent":["import { v1 as random } from 'uuid';\nimport { normalizeMessageData, validateSignMessageData } from './utils';\nimport {\n  AbstractMessageManager,\n  AbstractMessage,\n  AbstractMessageParams,\n  AbstractMessageParamsMetamask,\n  OriginalRequest,\n} from './AbstractMessageManager';\n\n/**\n * @type Message\n *\n * Represents and contains data about a 'personal_sign' type signature request.\n * These are created when a signature for a personal_sign call is requested.\n * @property id - An id to track and identify the message object\n * @property messageParams - The parameters to pass to the personal_sign method once the signature request is approved\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'Message' which always has a 'personal_sign' type\n * @property rawSig - Raw data of the signature request\n */\nexport interface PersonalMessage extends AbstractMessage {\n  messageParams: PersonalMessageParams;\n}\n\n/**\n * @type PersonalMessageParams\n *\n * Represents the parameters to pass to the personal_sign method once the signature request is approved.\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface PersonalMessageParams extends AbstractMessageParams {\n  data: string;\n}\n\n/**\n * @type MessageParamsMetamask\n *\n * Represents the parameters to pass to the personal_sign method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property data - A hex string conversion of the raw buffer data of the signature request\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface PersonalMessageParamsMetamask\n  extends AbstractMessageParamsMetamask {\n  data: string;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - Messages.\n */\nexport class PersonalMessageManager extends AbstractMessageManager<\n  PersonalMessage,\n  PersonalMessageParams,\n  PersonalMessageParamsMetamask\n> {\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'PersonalMessageManager';\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the unapproved Messages.\n   *\n   * @param messageParams - The params for the personal_sign call to be made after the message is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns Promise resolving to the raw data of the signature request.\n   */\n  async addUnapprovedMessageAsync(\n    messageParams: PersonalMessageParams,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    validateSignMessageData(messageParams);\n    const messageId = await this.addUnapprovedMessage(messageParams, req);\n    return new Promise((resolve, reject) => {\n      this.hub.once(`${messageId}:finished`, (data: PersonalMessage) => {\n        switch (data.status) {\n          case 'signed':\n            return resolve(data.rawSig as string);\n          case 'rejected':\n            return reject(\n              new Error(\n                'MetaMask Personal Message Signature: User denied message signature.',\n              ),\n            );\n          default:\n            return reject(\n              new Error(\n                `MetaMask Personal Message Signature: Unknown problem: ${JSON.stringify(\n                  messageParams,\n                )}`,\n              ),\n            );\n        }\n      });\n    });\n  }\n\n  /**\n   * Creates a new Message with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new Message to this.messages, and to save the\n   * unapproved Messages.\n   *\n   * @param messageParams - The params for the personal_sign call to be made after the message\n   * is approved.\n   * @param req - The original request object possibly containing the origin.\n   * @returns The id of the newly created message.\n   */\n  async addUnapprovedMessage(\n    messageParams: PersonalMessageParams,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    if (req) {\n      messageParams.origin = req.origin;\n    }\n    messageParams.data = normalizeMessageData(messageParams.data);\n    const messageId = random();\n    const messageData: PersonalMessage = {\n      id: messageId,\n      messageParams,\n      status: 'unapproved',\n      time: Date.now(),\n      type: 'personal_sign',\n    };\n    await this.addMessage(messageData);\n    this.hub.emit(`unapprovedMessage`, {\n      ...messageParams,\n      ...{ metamaskId: messageId },\n    });\n    return messageId;\n  }\n\n  /**\n   * Removes the metamaskId property from passed messageParams and returns a promise which\n   * resolves the updated messageParams.\n   *\n   * @param messageParams - The messageParams to modify.\n   * @returns Promise resolving to the messageParams with the metamaskId property removed.\n   */\n  prepMessageForSigning(\n    messageParams: PersonalMessageParamsMetamask,\n  ): Promise<PersonalMessageParams> {\n    delete messageParams.metamaskId;\n    return Promise.resolve(messageParams);\n  }\n}\n\nexport default PersonalMessageManager;\n"]}
+\ No newline at end of file
+diff --git a/dist/TypedMessageManager.d.ts b/dist/TypedMessageManager.d.ts
+index a47573c075caca84eeedc34f07b344e245855b2c..cfe4b09c94cca33a98d04b5094e225947348bece 100644
+--- a/dist/TypedMessageManager.d.ts
++++ b/dist/TypedMessageManager.d.ts
+@@ -80,7 +80,7 @@ export declare class TypedMessageManager extends AbstractMessageManager<TypedMes
+      * @param req - The original request object possibly containing the origin.
+      * @returns The id of the newly created TypedMessage.
+      */
+-    addUnapprovedMessage(messageParams: TypedMessageParams, version: string, req?: OriginalRequest): string;
++    addUnapprovedMessage(messageParams: TypedMessageParams, version: string, req?: OriginalRequest): Promise<string>;
+     /**
+      * Sets a TypedMessage status to 'errored' via a call to this.setMessageStatus.
+      *
+diff --git a/dist/TypedMessageManager.js b/dist/TypedMessageManager.js
+index e4b1aa3d186b1345bb5703a01a564aac543d1b1b..6318bd797b303c0c236c595512c3a13d48530afb 100644
+--- a/dist/TypedMessageManager.js
++++ b/dist/TypedMessageManager.js
+@@ -1,4 +1,13 @@
+ "use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TypedMessageManager = void 0;
+ const uuid_1 = require("uuid");
+@@ -25,25 +34,27 @@ class TypedMessageManager extends AbstractMessageManager_1.AbstractMessageManage
+      * @returns Promise resolving to the raw data of the signature request.
+      */
+     addUnapprovedMessageAsync(messageParams, version, req) {
+-        return new Promise((resolve, reject) => {
++        return __awaiter(this, void 0, void 0, function* () {
+             if (version === 'V1') {
+                 (0, utils_1.validateTypedSignMessageDataV1)(messageParams);
+             }
+             if (version === 'V3') {
+                 (0, utils_1.validateTypedSignMessageDataV3)(messageParams);
+             }
+-            const messageId = this.addUnapprovedMessage(messageParams, version, req);
+-            this.hub.once(`${messageId}:finished`, (data) => {
+-                switch (data.status) {
+-                    case 'signed':
+-                        return resolve(data.rawSig);
+-                    case 'rejected':
+-                        return reject(new Error('MetaMask Typed Message Signature: User denied message signature.'));
+-                    case 'errored':
+-                        return reject(new Error(`MetaMask Typed Message Signature: ${data.error}`));
+-                    default:
+-                        return reject(new Error(`MetaMask Typed Message Signature: Unknown problem: ${JSON.stringify(messageParams)}`));
+-                }
++            const messageId = yield this.addUnapprovedMessage(messageParams, version, req);
++            return new Promise((resolve, reject) => {
++                this.hub.once(`${messageId}:finished`, (data) => {
++                    switch (data.status) {
++                        case 'signed':
++                            return resolve(data.rawSig);
++                        case 'rejected':
++                            return reject(new Error('MetaMask Typed Message Signature: User denied message signature.'));
++                        case 'errored':
++                            return reject(new Error(`MetaMask Typed Message Signature: ${data.error}`));
++                        default:
++                            return reject(new Error(`MetaMask Typed Message Signature: Unknown problem: ${JSON.stringify(messageParams)}`));
++                    }
++                });
+             });
+         });
+     }
+@@ -59,21 +70,23 @@ class TypedMessageManager extends AbstractMessageManager_1.AbstractMessageManage
+      * @returns The id of the newly created TypedMessage.
+      */
+     addUnapprovedMessage(messageParams, version, req) {
+-        const messageId = (0, uuid_1.v1)();
+-        const messageParamsMetamask = Object.assign(Object.assign({}, messageParams), { metamaskId: messageId, version });
+-        if (req) {
+-            messageParams.origin = req.origin;
+-        }
+-        const messageData = {
+-            id: messageId,
+-            messageParams,
+-            status: 'unapproved',
+-            time: Date.now(),
+-            type: 'eth_signTypedData',
+-        };
+-        this.addMessage(messageData);
+-        this.hub.emit(`unapprovedMessage`, messageParamsMetamask);
+-        return messageId;
++        return __awaiter(this, void 0, void 0, function* () {
++            const messageId = (0, uuid_1.v1)();
++            const messageParamsMetamask = Object.assign(Object.assign({}, messageParams), { metamaskId: messageId, version });
++            if (req) {
++                messageParams.origin = req.origin;
++            }
++            const messageData = {
++                id: messageId,
++                messageParams,
++                status: 'unapproved',
++                time: Date.now(),
++                type: 'eth_signTypedData',
++            };
++            this.addMessage(messageData);
++            this.hub.emit(`unapprovedMessage`, messageParamsMetamask);
++            return messageId;
++        });
+     }
+     /**
+      * Sets a TypedMessage status to 'errored' via a call to this.setMessageStatus.
+diff --git a/dist/TypedMessageManager.js.map b/dist/TypedMessageManager.js.map
+index dd5ba13402b0dfbe38ce0161f4d8f4e2817893c0..6e77bd96bae9070cffc0cb5b53043627513b58ad 100644
+--- a/dist/TypedMessageManager.js.map
++++ b/dist/TypedMessageManager.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"TypedMessageManager.js","sourceRoot":"","sources":["../src/TypedMessageManager.ts"],"names":[],"mappings":"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","sourcesContent":["import { v1 as random } from 'uuid';\nimport {\n  validateTypedSignMessageDataV3,\n  validateTypedSignMessageDataV1,\n} from './utils';\nimport {\n  AbstractMessageManager,\n  AbstractMessage,\n  AbstractMessageParams,\n  AbstractMessageParamsMetamask,\n  OriginalRequest,\n} from './AbstractMessageManager';\n\n/**\n * @type TypedMessage\n *\n * Represents and contains data about an 'eth_signTypedData' type signature request.\n * These are created when a signature for an eth_signTypedData call is requested.\n * @property id - An id to track and identify the message object\n * @property error - Error corresponding to eth_signTypedData error in failure case\n * @property messageParams - The parameters to pass to the eth_signTypedData method once\n * the signature request is approved\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'TypedMessage' which always has a 'eth_signTypedData' type\n * @property rawSig - Raw data of the signature request\n */\nexport interface TypedMessage extends AbstractMessage {\n  error?: string;\n  messageParams: TypedMessageParams;\n  time: number;\n  status: string;\n  type: string;\n  rawSig?: string;\n}\n\n/**\n * @type TypedMessageParams\n *\n * Represents the parameters to pass to the eth_signTypedData method once the signature request is approved.\n * @property data - A hex string conversion of the raw buffer or an object containing data of the signature\n * request depending on version\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface TypedMessageParams extends AbstractMessageParams {\n  data: Record<string, unknown>[] | string;\n}\n\n/**\n * @type TypedMessageParamsMetamask\n *\n * Represents the parameters to pass to the eth_signTypedData method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property data - A hex string conversion of the raw buffer or an object containing data of the signature\n * request depending on version\n * @property error? - Added for message errored\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n * @property version - Compatibility version EIP712\n */\nexport interface TypedMessageParamsMetamask\n  extends AbstractMessageParamsMetamask {\n  data: Record<string, unknown>[] | string;\n  metamaskId?: string;\n  error?: string;\n  version?: string;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - TypedMessages.\n */\nexport class TypedMessageManager extends AbstractMessageManager<\n  TypedMessage,\n  TypedMessageParams,\n  TypedMessageParamsMetamask\n> {\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'TypedMessageManager';\n\n  /**\n   * Creates a new TypedMessage with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new TypedMessage to this.messages, and to save the unapproved TypedMessages.\n   *\n   * @param messageParams - The params for the eth_signTypedData call to be made after the message is approved.\n   * @param version - Compatibility version EIP712.\n   * @param req - The original request object possibly containing the origin.\n   * @returns Promise resolving to the raw data of the signature request.\n   */\n  addUnapprovedMessageAsync(\n    messageParams: TypedMessageParams,\n    version: string,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    return new Promise((resolve, reject) => {\n      if (version === 'V1') {\n        validateTypedSignMessageDataV1(messageParams);\n      }\n\n      if (version === 'V3') {\n        validateTypedSignMessageDataV3(messageParams);\n      }\n      const messageId = this.addUnapprovedMessage(messageParams, version, req);\n      this.hub.once(`${messageId}:finished`, (data: TypedMessage) => {\n        switch (data.status) {\n          case 'signed':\n            return resolve(data.rawSig as string);\n          case 'rejected':\n            return reject(\n              new Error(\n                'MetaMask Typed Message Signature: User denied message signature.',\n              ),\n            );\n          case 'errored':\n            return reject(\n              new Error(`MetaMask Typed Message Signature: ${data.error}`),\n            );\n          default:\n            return reject(\n              new Error(\n                `MetaMask Typed Message Signature: Unknown problem: ${JSON.stringify(\n                  messageParams,\n                )}`,\n              ),\n            );\n        }\n      });\n    });\n  }\n\n  /**\n   * Creates a new TypedMessage with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new TypedMessage to this.messages, and to save the\n   * unapproved TypedMessages.\n   *\n   * @param messageParams - The params for the 'eth_signTypedData' call to be made after the message\n   * is approved.\n   * @param version - Compatibility version EIP712.\n   * @param req - The original request object possibly containing the origin.\n   * @returns The id of the newly created TypedMessage.\n   */\n  addUnapprovedMessage(\n    messageParams: TypedMessageParams,\n    version: string,\n    req?: OriginalRequest,\n  ) {\n    const messageId = random();\n    const messageParamsMetamask = {\n      ...messageParams,\n      metamaskId: messageId,\n      version,\n    };\n    if (req) {\n      messageParams.origin = req.origin;\n    }\n    const messageData: TypedMessage = {\n      id: messageId,\n      messageParams,\n      status: 'unapproved',\n      time: Date.now(),\n      type: 'eth_signTypedData',\n    };\n    this.addMessage(messageData);\n    this.hub.emit(`unapprovedMessage`, messageParamsMetamask);\n    return messageId;\n  }\n\n  /**\n   * Sets a TypedMessage status to 'errored' via a call to this.setMessageStatus.\n   *\n   * @param messageId - The id of the TypedMessage to error.\n   * @param error - The error to be included in TypedMessage.\n   */\n  setMessageStatusErrored(messageId: string, error: string) {\n    const message = this.getMessage(messageId);\n    /* istanbul ignore if */\n    if (!message) {\n      return;\n    }\n    message.error = error;\n    this.updateMessage(message);\n    this.setMessageStatus(messageId, 'errored');\n  }\n\n  /**\n   * Removes the metamaskId and version properties from passed messageParams and returns a promise which\n   * resolves the updated messageParams.\n   *\n   * @param messageParams - The messageParams to modify.\n   * @returns Promise resolving to the messageParams with the metamaskId and version properties removed.\n   */\n  prepMessageForSigning(\n    messageParams: TypedMessageParamsMetamask,\n  ): Promise<TypedMessageParams> {\n    delete messageParams.metamaskId;\n    delete messageParams.version;\n    return Promise.resolve(messageParams);\n  }\n}\n\nexport default TypedMessageManager;\n"]}
+\ No newline at end of file
++{"version":3,"file":"TypedMessageManager.js","sourceRoot":"","sources":["../src/TypedMessageManager.ts"],"names":[],"mappings":"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","sourcesContent":["import { v1 as random } from 'uuid';\nimport {\n  validateTypedSignMessageDataV3,\n  validateTypedSignMessageDataV1,\n} from './utils';\nimport {\n  AbstractMessageManager,\n  AbstractMessage,\n  AbstractMessageParams,\n  AbstractMessageParamsMetamask,\n  OriginalRequest,\n} from './AbstractMessageManager';\n\n/**\n * @type TypedMessage\n *\n * Represents and contains data about an 'eth_signTypedData' type signature request.\n * These are created when a signature for an eth_signTypedData call is requested.\n * @property id - An id to track and identify the message object\n * @property error - Error corresponding to eth_signTypedData error in failure case\n * @property messageParams - The parameters to pass to the eth_signTypedData method once\n * the signature request is approved\n * @property type - The json-prc signing method for which a signature request has been made.\n * A 'TypedMessage' which always has a 'eth_signTypedData' type\n * @property rawSig - Raw data of the signature request\n */\nexport interface TypedMessage extends AbstractMessage {\n  error?: string;\n  messageParams: TypedMessageParams;\n  time: number;\n  status: string;\n  type: string;\n  rawSig?: string;\n}\n\n/**\n * @type TypedMessageParams\n *\n * Represents the parameters to pass to the eth_signTypedData method once the signature request is approved.\n * @property data - A hex string conversion of the raw buffer or an object containing data of the signature\n * request depending on version\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n */\nexport interface TypedMessageParams extends AbstractMessageParams {\n  data: Record<string, unknown>[] | string;\n}\n\n/**\n * @type TypedMessageParamsMetamask\n *\n * Represents the parameters to pass to the eth_signTypedData method once the signature request is approved\n * plus data added by MetaMask.\n * @property metamaskId - Added for tracking and identification within MetaMask\n * @property data - A hex string conversion of the raw buffer or an object containing data of the signature\n * request depending on version\n * @property error? - Added for message errored\n * @property from - Address to sign this message from\n * @property origin? - Added for request origin identification\n * @property version - Compatibility version EIP712\n */\nexport interface TypedMessageParamsMetamask\n  extends AbstractMessageParamsMetamask {\n  data: Record<string, unknown>[] | string;\n  metamaskId?: string;\n  error?: string;\n  version?: string;\n}\n\n/**\n * Controller in charge of managing - storing, adding, removing, updating - TypedMessages.\n */\nexport class TypedMessageManager extends AbstractMessageManager<\n  TypedMessage,\n  TypedMessageParams,\n  TypedMessageParamsMetamask\n> {\n  /**\n   * Name of this controller used during composition\n   */\n  override name = 'TypedMessageManager';\n\n  /**\n   * Creates a new TypedMessage with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new TypedMessage to this.messages, and to save the unapproved TypedMessages.\n   *\n   * @param messageParams - The params for the eth_signTypedData call to be made after the message is approved.\n   * @param version - Compatibility version EIP712.\n   * @param req - The original request object possibly containing the origin.\n   * @returns Promise resolving to the raw data of the signature request.\n   */\n  async addUnapprovedMessageAsync(\n    messageParams: TypedMessageParams,\n    version: string,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    if (version === 'V1') {\n      validateTypedSignMessageDataV1(messageParams);\n    }\n\n    if (version === 'V3') {\n      validateTypedSignMessageDataV3(messageParams);\n    }\n    const messageId = await this.addUnapprovedMessage(\n      messageParams,\n      version,\n      req,\n    );\n    return new Promise((resolve, reject) => {\n      this.hub.once(`${messageId}:finished`, (data: TypedMessage) => {\n        switch (data.status) {\n          case 'signed':\n            return resolve(data.rawSig as string);\n          case 'rejected':\n            return reject(\n              new Error(\n                'MetaMask Typed Message Signature: User denied message signature.',\n              ),\n            );\n          case 'errored':\n            return reject(\n              new Error(`MetaMask Typed Message Signature: ${data.error}`),\n            );\n          default:\n            return reject(\n              new Error(\n                `MetaMask Typed Message Signature: Unknown problem: ${JSON.stringify(\n                  messageParams,\n                )}`,\n              ),\n            );\n        }\n      });\n    });\n  }\n\n  /**\n   * Creates a new TypedMessage with an 'unapproved' status using the passed messageParams.\n   * this.addMessage is called to add the new TypedMessage to this.messages, and to save the\n   * unapproved TypedMessages.\n   *\n   * @param messageParams - The params for the 'eth_signTypedData' call to be made after the message\n   * is approved.\n   * @param version - Compatibility version EIP712.\n   * @param req - The original request object possibly containing the origin.\n   * @returns The id of the newly created TypedMessage.\n   */\n  async addUnapprovedMessage(\n    messageParams: TypedMessageParams,\n    version: string,\n    req?: OriginalRequest,\n  ): Promise<string> {\n    const messageId = random();\n    const messageParamsMetamask = {\n      ...messageParams,\n      metamaskId: messageId,\n      version,\n    };\n    if (req) {\n      messageParams.origin = req.origin;\n    }\n    const messageData: TypedMessage = {\n      id: messageId,\n      messageParams,\n      status: 'unapproved',\n      time: Date.now(),\n      type: 'eth_signTypedData',\n    };\n    this.addMessage(messageData);\n    this.hub.emit(`unapprovedMessage`, messageParamsMetamask);\n    return messageId;\n  }\n\n  /**\n   * Sets a TypedMessage status to 'errored' via a call to this.setMessageStatus.\n   *\n   * @param messageId - The id of the TypedMessage to error.\n   * @param error - The error to be included in TypedMessage.\n   */\n  setMessageStatusErrored(messageId: string, error: string) {\n    const message = this.getMessage(messageId);\n    /* istanbul ignore if */\n    if (!message) {\n      return;\n    }\n    message.error = error;\n    this.updateMessage(message);\n    this.setMessageStatus(messageId, 'errored');\n  }\n\n  /**\n   * Removes the metamaskId and version properties from passed messageParams and returns a promise which\n   * resolves the updated messageParams.\n   *\n   * @param messageParams - The messageParams to modify.\n   * @returns Promise resolving to the messageParams with the metamaskId and version properties removed.\n   */\n  prepMessageForSigning(\n    messageParams: TypedMessageParamsMetamask,\n  ): Promise<TypedMessageParams> {\n    delete messageParams.metamaskId;\n    delete messageParams.version;\n    return Promise.resolve(messageParams);\n  }\n}\n\nexport default TypedMessageManager;\n"]}
+\ No newline at end of file

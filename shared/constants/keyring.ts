@@ -1,4 +1,4 @@
-import { HardwareKeyringType } from './hardware-wallets';
+import { HardwareKeyringTypes } from './hardware-wallets';
 
 /**
  * These are the keyrings that are managed entirely by MetaMask.
@@ -12,6 +12,6 @@ export enum InternalKeyringType {
  * All keyrings supported by MetaMask.
  */
 export const KeyringType = {
-  ...HardwareKeyringType,
+  ...HardwareKeyringTypes,
   ...InternalKeyringType,
 };

@@ -33,9 +33,9 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
+import { Json } from '@metamask/controller-utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import PreferencesController from './preferences';
-import { Json } from '@metamask/controller-utils';
 
 const controllerName = 'SignController';
 const methodNameSign = 'eth_sign';
@@ -64,15 +64,19 @@ export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
 };
 
-export type StateMessage = Required<AbstractMessage> & {
+// type StateMessageAlias = StateMessage;
+
+export type StateMessageAlias = Required<AbstractMessage> & {
   msgParams: Required<AbstractMessageParams>;
   // securityProviderResponse?: Record<string, any>;
-};
+} & Json;
+
+type StateMessageRecord = Record<string, StateMessageAlias>;
 
 export type SignControllerState = {
-  unapprovedMsgs: Record<string, StateMessage>;
-  unapprovedPersonalMsgs: Record<string, StateMessage>;
-  unapprovedTypedMessages: Record<string, StateMessage>;
+  unapprovedMsgs: StateMessageRecord;
+  unapprovedPersonalMsgs: StateMessageRecord;
+  unapprovedTypedMessages: StateMessageRecord;
   unapprovedMsgCount: number;
   unapprovedPersonalMsgCount: number;
   unapprovedTypedMessagesCount: number;
@@ -550,8 +554,8 @@ export default class SignController extends BaseControllerV2<
       AbstractMessageParamsMetamask
     >,
     updateState: (
-      state: SignControllerState,
-      newMessages: Record<string, StateMessage>,
+      state: any,
+      newMessages: StateMessageRecord,
       messageCount: number,
     ) => void,
   ) {
@@ -570,8 +574,8 @@ export default class SignController extends BaseControllerV2<
 
   private async _migrateMessages(
     coreMessages: Record<string, CoreMessage>,
-  ): Promise<Record<string, StateMessage>> {
-    const stateMessages: Record<string, StateMessage> = {};
+  ): Promise<StateMessageRecord> {
+    const stateMessages: StateMessageRecord = {};
 
     for (const messageId of Object.keys(coreMessages)) {
       const coreMessage = coreMessages[messageId];
@@ -585,7 +589,7 @@ export default class SignController extends BaseControllerV2<
 
   private async _migrateMessage(
     coreMessage: CoreMessage,
-  ): Promise<StateMessage> {
+  ): Promise<StateMessageAlias> {
     const { messageParams, ...coreMessageData } = coreMessage;
 
     // Core message managers use messageParams but frontend uses msgParams with lots of references
@@ -612,7 +616,7 @@ export default class SignController extends BaseControllerV2<
     //   existingMessage?.securityProviderResponse;
     return {
       ...stateMessage,
-      securityProviderResponse: coreMessage.securityProviderResponse as Json,
+      securityProviderResponse: coreMessage.securityProviderResponse as any,
     };
   }
 
@@ -625,7 +629,7 @@ export default class SignController extends BaseControllerV2<
     return bufferToHex(Buffer.from(data, 'utf8'));
   }
 
-  private _getMessage(messageId: string): StateMessage {
+  private _getMessage(messageId: string): StateMessageAlias {
     return {
       ...this.state.unapprovedMsgs,
       ...this.state.unapprovedPersonalMsgs,
