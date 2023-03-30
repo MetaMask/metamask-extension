@@ -751,7 +751,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.15.0',
+        'https://execution.metamask.io/0.15.1/index.html',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -878,6 +878,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: snapsRegistryMessenger,
       refetchOnAllowlistMiss: isMain,
       failOnUnavailableRegistry: isMain,
+      url: {
+        registry: 'https://acl.execution.metamask.io/latest/registry.json',
+        signature: 'https://acl.execution.metamask.io/latest/signature.json'
+      },
+      publicKey: '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6'
     });
 
     this.desktopController = new DesktopController({
