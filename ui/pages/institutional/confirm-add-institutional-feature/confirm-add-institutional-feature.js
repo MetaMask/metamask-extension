@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -31,16 +31,18 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   const trackEvent = useContext(MetaMetricsContext);
   const connectRequest = connectRequests[0];
 
-  if (!connectRequest) {
-    history.push(mostRecentOverviewPage);
+  useEffect(() => {
+    if (!connectRequest) {
+      history.push(mostRecentOverviewPage);
+    }
     return null;
-  }
+  }, [connectRequest, history, mostRecentOverviewPage]);
 
   const serviceLabel = connectRequest.labels.find(
     (label) => label.key === 'service',
   );
 
-  const setTrackEvent = ({ actions, service }) => {
+  const sendEvent = ({ actions, service }) => {
     trackEvent({
       category: 'MMI',
       event: 'Institutional feature connection',
@@ -58,7 +60,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
     }
     setIsLoading(false);
     setConnectError(error);
-    setTrackEvent({ actions: 'Institutional feature RPC error' });
+    sendEvent({ actions: 'Institutional feature RPC error' });
   };
 
   const removeConnectInstitutionalFeature = ({ actions, service, push }) => {
@@ -68,7 +70,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
         projectId: connectRequest.token.projectId,
       }),
     );
-    setTrackEvent({ actions, service });
+    sendEvent({ actions, service });
     history.push(push);
   };
 
@@ -100,7 +102,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
     }
   };
 
-  setTrackEvent({
+  sendEvent({
     actions: 'Institutional feature RPC request',
     service: serviceLabel.value,
   });
