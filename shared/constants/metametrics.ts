@@ -625,6 +625,8 @@ export enum MetaMetricsEventLocation {
 }
 
 export enum MetaMetricsEventUiCustomizationPropertyValue {
+  FlaggedAsMalicious = 'flagged_as_malicious',
+  FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   Siwe = 'sign_in_with_ethereum',
 }
 
