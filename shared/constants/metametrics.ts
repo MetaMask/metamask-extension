@@ -172,7 +172,7 @@ export type MetaMetricsEventFragment = {
   persist?: boolean;
   /**
    * Time in seconds the event should be persisted for. After the timeout the
-   * fragment will be closed as abandoned. if not supplied the fragment is
+   * fragment will be closed as abandoned. If not supplied the fragment is
    * stored indefinitely.
    */
   timeout?: number;
