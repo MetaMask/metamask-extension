@@ -34,7 +34,7 @@ export default function NftsTab({ onAddNFT }) {
   const dispatch = useDispatch();
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
-    useNftsCollections(t('nftsPreviouslyOwned'), t('unknownCollection'));
+    useNftsCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);

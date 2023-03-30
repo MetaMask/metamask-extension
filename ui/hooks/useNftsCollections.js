@@ -4,8 +4,13 @@ import { isEqual } from 'lodash';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { usePrevious } from './usePrevious';
+import { useI18nContext } from './useI18nContext';
 
-export function useNftsCollections(previouslyOwnedText, unknownCollectionText) {
+export function useNftsCollections() {
+  const t = useI18nContext();
+  const previouslyOwnedText = t('nftsPreviouslyOwned');
+  const unknownCollectionText = t('unknownCollection');
+
   const [collections, setCollections] = useState({});
   const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
     collectionName: previouslyOwnedText,
@@ -19,6 +24,7 @@ export function useNftsCollections(previouslyOwnedText, unknownCollectionText) {
   const prevNfts = usePrevious(nfts);
   const prevChainId = usePrevious(chainId);
   const prevSelectedAddress = usePrevious(selectedAddress);
+
   useEffect(() => {
     const getCollections = () => {
       setNftsLoading(true);
