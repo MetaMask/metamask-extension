@@ -79,13 +79,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('showAdvancedGasInline'),
-    descriptionMessage: (t) => t('showAdvancedGasInlineDescription'),
-    route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showHexData'),
     descriptionMessage: (t) => t('showHexDataDescription'),
     route: `${ADVANCED_ROUTE}#show-hexdata`,

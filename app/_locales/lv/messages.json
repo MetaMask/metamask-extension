@@ -674,12 +674,6 @@
   "settings": {
     "message": "Iestatījumi"
   },
-  "showAdvancedGasInline": {
-    "message": "Papildu Gas vadīklas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Atlasiet šo, lai parādītu Gas cenu un ierobežotu kontroles iespējas tieši sūtīšanas un apstiprināšanas ekrānos."
-  },
   "showFiatConversionInTestnets": {
     "message": "Rādīt konversiju testa tīklos"
   },

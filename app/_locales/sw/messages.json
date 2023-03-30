@@ -656,12 +656,6 @@
   "settings": {
     "message": "Mipangilio"
   },
-  "showAdvancedGasInline": {
-    "message": "Udhibiti wa juu wa gesi"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chagua hii ili uonyeshe bei ya gesi na punguza vidhibiti moja kwa moja kwenye skrini za tuma na thibitisha."
-  },
   "showFiatConversionInTestnets": {
     "message": "Onyesha Ubadilishaji kwenye Testnets"
   },
