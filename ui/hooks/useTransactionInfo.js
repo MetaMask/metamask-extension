@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
@@ -10,9 +11,11 @@ export const useTransactionInfo = (txData = {}) => {
   } = useSelector((state) => state.metamask);
 
   const isNftTransfer = Boolean(
-    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
-      return isEqualCaseInsensitive(contract.address, txData.txParams.to);
-    }),
+    allNftContracts?.[selectedAddress]?.[hexToDecimal(chainId)]?.find(
+      (contract) => {
+        return isEqualCaseInsensitive(contract.address, txData.txParams.to);
+      },
+    ),
   );
 
   return { isNftTransfer };
