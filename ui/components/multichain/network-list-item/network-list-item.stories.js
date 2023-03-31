@@ -25,8 +25,6 @@ export default {
     name: 'Ethereum',
     iconSrc: '',
     selected: false,
-    onClick: () => undefined,
-    onDeleteClick: () => undefined,
   },
 };
 
