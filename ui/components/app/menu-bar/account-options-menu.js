@@ -24,7 +24,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -57,7 +57,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       event: MetaMetricsEventName.ExternalLinkClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        link_type: MetaMetricsEventExternalLinkType.AccountTracker,
+        link_type: MetaMetricsEventLinkType.AccountTracker,
         location: 'Account Options',
         url_domain: getURLHostName(addressLink),
       },

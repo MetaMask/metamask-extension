@@ -16,7 +16,7 @@ import { addTokens, clearPendingTokens } from '../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventTokenSource,
+  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import {
   AssetType,
@@ -52,8 +52,8 @@ const ConfirmImportToken = () => {
           token_decimal_precision: pendingToken.decimals,
           unlisted: pendingToken.unlisted,
           source: pendingToken.isCustom
-            ? MetaMetricsEventTokenSource.Custom
-            : MetaMetricsEventTokenSource.List,
+            ? MetaMetricsTokenEventSource.Custom
+            : MetaMetricsTokenEventSource.List,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
         },

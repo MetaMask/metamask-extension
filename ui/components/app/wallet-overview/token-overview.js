@@ -30,7 +30,7 @@ import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventSwapsSource,
+  MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -119,7 +119,7 @@ const TokenOverview = ({ className, token }) => {
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   token_symbol: token.symbol,
-                  location: MetaMetricsEventSwapsSource.TokenView,
+                  location: MetaMetricsSwapsEventSource.TokenView,
                   text: 'Send',
                 },
               });
@@ -163,7 +163,7 @@ const TokenOverview = ({ className, token }) => {
                   category: MetaMetricsEventCategory.Swaps,
                   properties: {
                     token_symbol: token.symbol,
-                    location: MetaMetricsEventSwapsSource.TokenView,
+                    location: MetaMetricsSwapsEventSource.TokenView,
                     text: 'Swap',
                   },
                 });

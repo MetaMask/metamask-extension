@@ -10,7 +10,7 @@ import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventLinkType,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
@@ -70,7 +70,7 @@ export default class AccountDetailsModal extends Component {
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.ExternalLinkClicked,
         properties: {
-          link_type: MetaMetricsEventExternalLinkType.AccountTracker,
+          link_type: MetaMetricsEventLinkType.AccountTracker,
           location: 'Account Details Modal',
           url_domain: getURLHostName(accountLink),
         },

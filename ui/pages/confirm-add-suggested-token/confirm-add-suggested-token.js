@@ -17,7 +17,7 @@ import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventTokenSource,
+  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import {
   AssetType,
@@ -129,7 +129,7 @@ const ConfirmAddSuggestedToken = () => {
             token_contract_address: asset.address,
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
-            source: MetaMetricsEventTokenSource.Dapp,
+            source: MetaMetricsTokenEventSource.Dapp,
             token_standard: TokenStandard.ERC20,
             asset_type: AssetType.token,
           },

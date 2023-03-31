@@ -9,7 +9,7 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { MetaMetricsEventNetworkSource } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -262,7 +262,7 @@ async function addEthereumChainHandler(
         rpcUrl: firstValidRPCUrl,
         ticker,
       },
-      { source: MetaMetricsEventNetworkSource.Dapp, referrer: origin },
+      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
     );
 
     // Once the network has been added, the requested is considered successful

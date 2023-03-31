@@ -7,7 +7,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
@@ -28,8 +28,7 @@ export default function ViewOnBlockExplorer({
             category: MetaMetricsEventCategory.Swaps,
             sensitiveProperties: sensitiveTrackingProperties,
             properties: {
-              link_type:
-                MetaMetricsEventExternalLinkType.TransactionBlockExplorer,
+              link_type: MetaMetricsEventLinkType.TransactionBlockExplorer,
               location: 'Swap Transaction',
               url_domain: blockExplorerHostName,
             },

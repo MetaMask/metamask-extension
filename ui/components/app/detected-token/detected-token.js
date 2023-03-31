@@ -19,7 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
-  MetaMetricsEventTokenSource,
+  MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
@@ -69,7 +69,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: MetaMetricsEventTokenSource.Detected,
+          source: MetaMetricsTokenEventSource.Detected,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
         },

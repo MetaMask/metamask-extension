@@ -2,7 +2,7 @@ import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventName,
-  MetaMetricsEventUiCustomizationPropertyValue,
+  MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { detectSIWE } from '../../../shared/modules/siwe';
@@ -264,9 +264,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [
-            MetaMetricsEventUiCustomizationPropertyValue.Siwe,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
         },
         referrer: { url: 'some.dapp' },
       });

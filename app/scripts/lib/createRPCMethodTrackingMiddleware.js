@@ -6,7 +6,7 @@ import { detectSIWE } from '../../../shared/modules/siwe';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventUiCustomizationPropertyValue,
+  MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 
 /**
@@ -190,11 +190,11 @@ export default function createRPCMethodTrackingMiddleware({
 
           if (securityProviderResponse?.flagAsDangerous === 1) {
             eventProperties.ui_customizations = [
-              MetaMetricsEventUiCustomizationPropertyValue.FlaggedAsMalicious,
+              MetaMetricsEventUiCustomization.FlaggedAsMalicious,
             ];
           } else if (securityProviderResponse?.flagAsDangerous === 2) {
             eventProperties.ui_customizations = [
-              MetaMetricsEventUiCustomizationPropertyValue.FlaggedAsSafetyUnknown,
+              MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
             ];
           }
 
@@ -203,7 +203,7 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               eventProperties.ui_customizations = (
                 eventProperties.ui_customizations || []
-              ).concat(MetaMetricsEventUiCustomizationPropertyValue.Siwe);
+              ).concat(MetaMetricsEventUiCustomization.Siwe);
             }
           }
         } catch (e) {

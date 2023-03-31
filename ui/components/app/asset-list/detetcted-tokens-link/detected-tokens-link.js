@@ -11,7 +11,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventTokenSource,
+  MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 
 const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
@@ -29,7 +29,7 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
       event: MetaMetricsEventName.TokenImportClicked,
       category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: MetaMetricsEventTokenSource.Detected,
+        source: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
       },
     });

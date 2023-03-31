@@ -26,7 +26,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventNetworkSource,
+  MetaMetricsNetworkEventSource,
 } from '../../../../shared/constants/metametrics';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -324,7 +324,7 @@ class NetworkDropdown extends Component {
               },
               {
                 setActive: true,
-                source: MetaMetricsEventNetworkSource.CustomNetworkForm,
+                source: MetaMetricsNetworkEventSource.CustomNetworkForm,
               },
             );
           }

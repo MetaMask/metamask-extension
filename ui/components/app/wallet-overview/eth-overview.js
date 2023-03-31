@@ -32,7 +32,7 @@ import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventSwapsSource,
+  MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -207,7 +207,7 @@ const EthOverview = ({ className }) => {
                   category: MetaMetricsEventCategory.Swaps,
                   properties: {
                     token_symbol: 'ETH',
-                    location: MetaMetricsEventSwapsSource.MainView,
+                    location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                   },
                 });

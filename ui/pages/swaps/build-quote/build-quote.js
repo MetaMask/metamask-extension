@@ -84,7 +84,7 @@ import {
 } from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
@@ -493,7 +493,7 @@ export default function BuildQuote({
             event: MetaMetricsEventName.ExternalLinkClicked,
             category: MetaMetricsEventCategory.Swaps,
             properties: {
-              link_type: MetaMetricsEventExternalLinkType.TokenTracker,
+              link_type: MetaMetricsEventLinkType.TokenTracker,
               location: 'Swaps Confirmation',
               url_domain: getURLHostName(blockExplorerTokenLink),
             },

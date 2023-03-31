@@ -15,7 +15,7 @@ import { Menu, MenuItem } from '../../ui/menu';
 import { ICON_NAMES, Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventExternalLinkType,
+  MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -45,7 +45,7 @@ export const AccountListItemMenu = ({
       event: MetaMetricsEventName.ExternalLinkClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        link_type: MetaMetricsEventExternalLinkType.AccountTracker,
+        link_type: MetaMetricsEventLinkType.AccountTracker,
         location: 'Account Options',
         url_domain: getURLHostName(addressLink),
       },

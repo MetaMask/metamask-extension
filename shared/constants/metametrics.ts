@@ -576,7 +576,7 @@ export enum MetaMetricsEventCategory {
   Desktop = 'Desktop',
 }
 
-export enum MetaMetricsEventExternalLinkType {
+export enum MetaMetricsEventLinkType {
   TransactionBlockExplorer = 'Transaction Block Explorer',
   BlockExplorer = 'Block Explorer',
   AccountTracker = 'Account Tracker',
@@ -597,29 +597,29 @@ export enum MetaMetricsEventOnrampProviderType {
   SelfDeposit = 'direct_deposit',
 }
 
-export enum MetaMetricsEventNetworkSource {
+export enum MetaMetricsNetworkEventSource {
   CustomNetworkForm = 'custom_network_form',
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
 }
 
-export enum MetaMetricsEventSwapsSource {
+export enum MetaMetricsOtherEventSource {
+  ServiceWorkers = 'service_workers',
+}
+
+export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
 }
 
-export enum MetaMetricsEventSource {
-  ServiceWorkers = 'service_workers',
-}
-
-export enum MetaMetricsEventTokenSource {
+export enum MetaMetricsTokenEventSource {
   Custom = 'custom',
   Dapp = 'dapp',
   Detected = 'detected',
   List = 'list',
 }
 
-export enum MetaMetricsEventTransactionSource {
+export enum MetaMetricsTransactionEventSource {
   Dapp = 'dapp',
   User = 'user',
 }
@@ -630,7 +630,7 @@ export enum MetaMetricsEventLocation {
   TokenMenu = 'token_menu',
 }
 
-export enum MetaMetricsEventUiCustomizationPropertyValue {
+export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   Siwe = 'sign_in_with_ethereum',

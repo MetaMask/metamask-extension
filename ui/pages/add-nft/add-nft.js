@@ -34,7 +34,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import {
   MetaMetricsEventName,
-  MetaMetricsEventTokenSource,
+  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import {
   ButtonIcon,
@@ -112,7 +112,7 @@ export default function AddNft() {
         tokenId: tokenId.toString(),
         asset_type: AssetType.NFT,
         token_standard: tokenDetails?.standard,
-        source: MetaMetricsEventTokenSource.Custom,
+        source: MetaMetricsTokenEventSource.Custom,
       },
     });
 
