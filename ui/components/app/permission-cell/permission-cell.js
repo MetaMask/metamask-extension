@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../../ui/box';
+import Box from '../../ui/box';
 import {
   AlignItems,
   Color,
@@ -10,17 +10,17 @@ import {
   Size,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
   Text,
-} from '../../../component-library';
-import { formatDate } from '../../../../helpers/utils/util';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Tooltip from '../../../ui/tooltip';
+} from '../../component-library';
+import { formatDate } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import Tooltip from '../../ui/tooltip';
 
 const PermissionCell = ({
   title,
