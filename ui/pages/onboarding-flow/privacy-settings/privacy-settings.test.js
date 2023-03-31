@@ -23,6 +23,7 @@ describe('Privacy Settings Onboarding View', () => {
   const setUsePhishDetectStub = jest.fn();
   const setUseTokenDetectionStub = jest.fn();
   const setUseCurrencyRateCheckStub = jest.fn();
+  const setIpfsGatewayStub = jest.fn();
   const completeOnboardingStub = jest
     .fn()
     .mockImplementation(() => Promise.resolve());
@@ -33,6 +34,7 @@ describe('Privacy Settings Onboarding View', () => {
     setUsePhishDetect: setUsePhishDetectStub,
     setUseTokenDetection: setUseTokenDetectionStub,
     setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
+    setIpfsGateway: setIpfsGatewayStub,
     completeOnboarding: completeOnboardingStub,
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
   });
@@ -94,5 +96,71 @@ describe('Privacy Settings Onboarding View', () => {
       true,
     );
     expect(setUseCurrencyRateCheckStub.mock.calls[1][0]).toStrictEqual(true);
+  });
+
+  describe('IPFS', () => {
+    it('should handle proper IPFS input', () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      const ipfsInput = queryByTestId('ipfs-input');
+      const ipfsEvent = {
+        target: {
+          value: 'ipfs.io',
+        },
+      };
+
+      fireEvent.change(ipfsInput, ipfsEvent);
+
+      const validIpfsUrl = queryByText('IPFS gateway URL is valid');
+      expect(validIpfsUrl).toBeInTheDocument();
+
+      const submitButton = queryByText('Done');
+      fireEvent.click(submitButton);
+
+      expect(setIpfsGatewayStub).toHaveBeenCalled();
+    });
+
+    it('should error with gateway.ipfs.io IPFS input', () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      const ipfsInput = queryByTestId('ipfs-input');
+      const ipfsEvent = {
+        target: {
+          value: 'gateway.ipfs.io',
+        },
+      };
+
+      fireEvent.change(ipfsInput, ipfsEvent);
+
+      const invalidErrorMsg = queryByText('Please enter a valid URL');
+
+      expect(invalidErrorMsg).toBeInTheDocument();
+    });
+
+    it('should error with improper IPFS input', () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      const ipfsInput = queryByTestId('ipfs-input');
+      const ipfsEvent = {
+        target: {
+          value: ' ',
+        },
+      };
+
+      fireEvent.change(ipfsInput, ipfsEvent);
+
+      const invalidErrorMsg = queryByText('Please enter a valid URL');
+
+      expect(invalidErrorMsg).toBeInTheDocument();
+    });
   });
 });
