@@ -1,4 +1,4 @@
-import { InvisibleCharacter } from '../../components/component-library';
+import { INVISIBLE_CHARACTER } from '../../components/component-library/text/deprecated';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -28,7 +28,7 @@ export function getAccountNameErrorMessage(
 
   let errorMessage;
   if (isValidAccountName) {
-    errorMessage = InvisibleCharacter; // Using an invisible character, so the spacing stays constant
+    errorMessage = INVISIBLE_CHARACTER; // Using an invisible character, so the spacing stays constant
   } else if (isDuplicateAccountName) {
     errorMessage = context.t('accountNameDuplicate');
   } else if (isReservedAccountName) {
