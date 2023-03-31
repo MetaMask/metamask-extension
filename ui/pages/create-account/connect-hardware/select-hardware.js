@@ -6,6 +6,7 @@ import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
+import LogoSelf from '../../../components/ui/logo/logo-self';
 
 import {
   HardwareDeviceNames,
@@ -105,6 +106,21 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToSelfButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === HardwareDeviceNames.self,
+        })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.self })
+        }
+      >
+        <LogoSelf className="hw-connect__btn__img" ariaLabel="Self" />
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
       <>
@@ -119,6 +135,7 @@ export default class SelectHardware extends Component {
           {this.shouldShowConnectButton() &&
             this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
+          {this.renderConnectToSelfButton()}
         </div>
       </>
     );
@@ -185,6 +202,8 @@ export default class SelectHardware extends Component {
         return this.renderTrezorTutorialSteps();
       case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
+      case HardwareDeviceNames.self:
+        return this.renderSelfTutorialSteps();
       case HardwareDeviceNames.qr:
         return this.renderQRHardwareWalletSteps();
       default:
@@ -278,6 +297,10 @@ export default class SelectHardware extends Component {
         ))}
       </div>
     );
+  }
+
+  renderSelfTutorialSteps() {
+    return <p>None</p>;
   }
 
   renderLatticeTutorialSteps() {
@@ -571,6 +594,72 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
             <div className="hw-connect__msg">{step.message}</div>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderLatticeTutorialSteps() {
+    const steps = [
+      {
+        asset: 'connect-lattice',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1LatticeWallet'),
+        message: this.context.t('step1LatticeWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href={ZENDESK_URLS.HARDWARE_CONNECTION}
+            rel="noopener noreferrer"
+            target="_blank"
+            key="lattice-setup-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <Button
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked GridPlus Buy Now',
+                });
+                openWindow(HardwareAffiliateLinks.gridplus);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked GidPlus Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.gridplus);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+            <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
                 className="hw-connect__step-asset"
