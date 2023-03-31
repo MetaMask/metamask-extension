@@ -43,11 +43,17 @@ export default function CustomSpendingCap({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  const value = useSelector(getCustomTokenAmount);
+  const customTokenAmount = useSelector(getCustomTokenAmount);
+  const [value, setValue] = useState(() => {
+    if (Number(dappProposedValue) <= Number(currentTokenBalance)) {
+      return dappProposedValue;
+    }
+    return customTokenAmount;
+  });
 
   const [error, setError] = useState('');
   const [showUseDefaultButton, setShowUseDefaultButton] = useState(
-    value !== String(dappProposedValue) && true,
+    value !== String(dappProposedValue),
   );
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
@@ -127,6 +133,7 @@ export default function CustomSpendingCap({
       }
     }
 
+    setValue(valueInput);
     dispatch(setCustomTokenAmount(String(valueInput)));
   };
 
