@@ -27,6 +27,34 @@ describe('ENS', function () {
 
     await mockServer
       .forPost(infuraUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result: '0x1',
+          },
+        };
+      });
+
+    await mockServer
+      .forPost(infuraUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result: {},
+          },
+        };
+      });
+
+    await mockServer
+      .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_call' })
       .thenCallback(() => {
         return {
