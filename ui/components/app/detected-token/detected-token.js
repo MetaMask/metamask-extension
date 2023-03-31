@@ -95,7 +95,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       category: MetaMetricsEventCategory.Wallet,
       sensitiveProperties: {
         tokens: tokensDetailsList,
-        location: MetaMetricsEventLocation,
+        location: MetaMetricsEventLocation.TokenDetection,
         token_standard: TokenStandard.ERC20,
         asset_type: AssetType.token,
       },
