@@ -4336,6 +4336,12 @@
   "tooltipApproveButton": {
     "message": "I understand"
   },
+  "tooltipSatusConnected": {
+    "message": "connected"
+  },
+  "tooltipSatusNotConnected": {
+    "message": "not connected"
+  },
   "total": {
     "message": "Total"
   },

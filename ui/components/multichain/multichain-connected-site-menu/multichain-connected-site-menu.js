@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
+  STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+  STATUS_NOT_CONNECTED,
+} from '../../../helpers/constants/connected-sites';
+import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
@@ -30,16 +34,16 @@ export const MultichainConnectedSiteMenu = ({
     >
       <Tooltip
         title={
-          status === 'STATUS_NOT_CONNECTED'
+          status === STATUS_NOT_CONNECTED
             ? t('statusNotConnectedAccount')
-            : `${selectedAccount?.name} ${text?.toLowerCase()}`
+            : `${selectedAccount?.name} ${text}`
         }
         data-testid="multichain-connected-site-menu__tooltip"
         position="bottom"
       >
         <BadgeWrapper
           positionObj={
-            status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT'
+            status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
               ? { bottom: 4, right: -1, zIndex: 1 }
               : { bottom: 2, right: -4, zIndex: 1 }
           }
@@ -47,18 +51,18 @@ export const MultichainConnectedSiteMenu = ({
             <Box
               backgroundColor={globalMenuColor}
               className={`multichain-connected-site-menu__badge ${
-                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT'
+                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
                   ? 'not-connected'
                   : ''
               }`}
               borderRadius={BorderRadius.full}
               borderColor={
-                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT'
+                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
                   ? BorderColor.successDefault
                   : BackgroundColor.backgroundDefault
               }
               borderWidth={
-                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT' ? 2 : 3
+                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ? 2 : 3
               }
             />
           }

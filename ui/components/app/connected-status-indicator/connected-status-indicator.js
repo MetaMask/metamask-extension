@@ -56,14 +56,18 @@ export default function ConnectedStatusIndicator({ onClick }) {
   const text =
     status === STATUS_CONNECTED
       ? t('statusConnected')
-      : t('statusNotConnected');
+      : t('statusNotConnected'); // TODO: Remove text since we only need the tooltip text for new permission icon
+  const tooltipText =
+    status === STATUS_CONNECTED
+      ? t('tooltipSatusConnected')
+      : t('tooltipSatusNotConnected');
   return (
     <button className="connected-status-indicator" onClick={onClick}>
       {process.env.MULTICHAIN ? (
         <MultichainConnectedSiteMenu
           status={status}
           globalMenuColor={globalMenuColor}
-          text={text}
+          text={tooltipText}
         />
       ) : (
         <>
