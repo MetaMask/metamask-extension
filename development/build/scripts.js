@@ -997,9 +997,10 @@ function setupMinification(buildConfiguration) {
 }
 
 function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
-  const scuttlingConfig = envVars.ENABLE_MV3 === 'true'
-    ? mv3ScuttlingConfig
-    : standardScuttlingConfig;
+  const scuttlingConfig =
+    envVars.ENABLE_MV3 === 'true'
+      ? mv3ScuttlingConfig
+      : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
