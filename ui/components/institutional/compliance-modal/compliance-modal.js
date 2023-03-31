@@ -14,6 +14,7 @@ import {
   AlignItems,
   JustifyContent,
   TextColor,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 
 const ComplianceModal = () => {
