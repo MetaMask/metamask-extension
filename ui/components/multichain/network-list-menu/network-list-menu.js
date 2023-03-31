@@ -54,7 +54,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
             return (
               <NetworkListItem
                 name={network.nickname}
-                iconSrc={network?.rpcPrefs?.imageUrl || null}
+                iconSrc={network?.rpcPrefs?.imageUrl }
                 key={network.id || network.chainId}
                 selected={isCurrentNetwork}
                 onClick={() => {
