@@ -65,7 +65,9 @@ const ComplianceModal = () => {
             onClick={handleClose}
           />
         </Box>
-        <Text data-testid="compliance-info" paddingBottom={3}>{t('complianceBlurb0')}</Text>
+        <Text data-testid="compliance-info" paddingBottom={3}>
+          {t('complianceBlurb0')}
+        </Text>
         <Text paddingBottom={3}>{t('complianceBlurb1')}</Text>
         <Text paddingBottom={3}>{t('complianceBlurpStep0')}</Text>
         <ol data-testid="compliance-bullets">
