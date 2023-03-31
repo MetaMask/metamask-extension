@@ -3753,6 +3753,9 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "statusNotConnectedAccount": {
+    "message": "No accounts connected"
+  },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
   },
@@ -4350,6 +4353,12 @@
   },
   "tooltipApproveButton": {
     "message": "I understand"
+  },
+  "tooltipSatusConnected": {
+    "message": "connected"
+  },
+  "tooltipSatusNotConnected": {
+    "message": "not connected"
   },
   "total": {
     "message": "Total"
