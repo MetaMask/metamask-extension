@@ -17,10 +17,10 @@ import {
   ICON_NAMES,
   PickerNetwork,
 } from '../../component-library';
+import { getCurrentNetwork, getSelectedIdentity } from '../../../selectors';
 import { GlobalMenu, AccountPicker } from '..';
 
 import Box from '../../ui/box/box';
-import { getSelectedIdentity } from '../../../selectors';
 import { toggleAccountMenu } from '../../../store/actions';
 
 export const AppHeader = ({}) => {
@@ -35,13 +35,7 @@ export const AppHeader = ({}) => {
   const dispatch = useDispatch();
 
   // Used for network icon / dropdown
-  // This is inaccurate; we should create a new selector
-  // after https://github.com/MetaMask/metamask-extension/pull/18229 is merged
-  // which filters from the selector I added there
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-  }));
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   return (
     <Box
@@ -53,9 +47,16 @@ export const AppHeader = ({}) => {
     >
       <Box display={DISPLAY.FLEX}>
         {/* AvatarNetwork should only display in popup mode */}
-        <AvatarNetwork name="TODO" src="TODO" size={Size.MD} />
+        <AvatarNetwork
+          name={currentNetwork.nickname}
+          src={currentNetwork.rpcPrefs?.imageUrl}
+          size={Size.MD}
+        />
         {/* PickerNetwork should only display in full screen mode */}
-        <PickerNetwork avatarNetworkProps iconProps label src />
+        <PickerNetwork
+          label={currentNetwork.nickname}
+          src={currentNetwork.rpcPrefs?.imageUrl}
+        />
       </Box>
 
       {isUnlocked ? (
@@ -106,7 +107,11 @@ export const AppHeader = ({}) => {
           closeMenu={() => setAccountOptionsMenuOpen(false)}
         />
       ) : null}
-      {isUnlocked ? null : <Box width={8} style={{textAlign: 'right', flexGrow: '1'}}><img src="/images/logo/metamask-fox.svg" alt="" /></Box>}
+      {isUnlocked ? null : (
+        <Box width={8} style={{ textAlign: 'right', flexGrow: '1' }}>
+          <img src="/images/logo/metamask-fox.svg" alt="" />
+        </Box>
+      )}
     </Box>
   );
 };
