@@ -42,7 +42,7 @@ export const Text = forwardRef(function Text(
     children,
     ...props
   }: TextProps,
-  ref: Ref<HTMLElement> | null,
+  ref: Ref<HTMLElement>,
 ) {
   // Check if as is set otherwise set a default tag based on variant
   const Tag = as ?? getTextElementDefault(variant);
@@ -75,7 +75,7 @@ export const Text = forwardRef(function Text(
       as={Tag}
       dir={textDirection}
       color={color}
-      ref={ref || null}
+      ref={ref}
       {...props}
     >
       {children}
