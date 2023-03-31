@@ -4,7 +4,11 @@ import sinon from 'sinon';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
-import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  NETWORK_IDS,
+  NetworkStatus,
+} from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -97,11 +101,10 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 function getMockNetworkController() {
   return {
     store: {
-      getState: () => {
-        return {
-          network: NETWORK_IDS.GOERLI,
-        };
-      },
+      getState: sinon.stub().returns({
+        networkId: NETWORK_IDS.GOERLI,
+        networkStatus: NetworkStatus.Available,
+      }),
     },
   };
 }
@@ -219,6 +222,10 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
+      networkController.store.getState.returns({
+        networkId: NETWORK_IDS.MAINNET,
+        networkStatus: NetworkStatus.Available,
+      });
       changeNetwork(NETWORK_IDS.MAINNET);
 
       const newEthersInstance = swapsController.ethersProvider;
@@ -245,6 +252,10 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
+      networkController.store.getState.returns({
+        networkId: null,
+        networkStatus: NetworkStatus.Unknown,
+      });
       changeNetwork('loading');
 
       const newEthersInstance = swapsController.ethersProvider;
@@ -271,6 +282,10 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
+      networkController.store.getState.returns({
+        networkId: NETWORK_IDS.GOERLI,
+        networkStatus: NetworkStatus.Available,
+      });
       changeNetwork(NETWORK_IDS.GOERLI);
 
       const newEthersInstance = swapsController.ethersProvider;

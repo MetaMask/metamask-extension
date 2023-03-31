@@ -535,6 +535,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
+  ServiceWorkerRestarted = 'Service Worker Restarted',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -605,6 +606,10 @@ export enum MetaMetricsEventNetworkSource {
 export enum MetaMetricsEventSwapsSource {
   MainView = 'Main View',
   TokenView = 'Token View',
+}
+
+export enum MetaMetricsEventSource {
+  ServiceWorkers = 'service_workers',
 }
 
 export enum MetaMetricsEventTokenSource {
