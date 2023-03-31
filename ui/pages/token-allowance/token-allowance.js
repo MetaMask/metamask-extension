@@ -117,14 +117,11 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-<<<<<<< Updated upstream
   const isHardwareWalletConnected = useSelector(isHardwareWallet);
-=======
   let customTokenAmount = useSelector(getCustomTokenAmount);
   if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
     customTokenAmount = dappProposedTokenAmount;
   }
->>>>>>> Stashed changes
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
