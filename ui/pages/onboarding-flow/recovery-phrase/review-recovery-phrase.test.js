@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -103,5 +103,26 @@ describe('Review Recovery Phrase Component', () => {
     fireEvent.click(nextButton);
 
     expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
+  });
+
+  it('should route to url with reminder parameter', () => {
+    const isReminderParam = '/?isFromReminder=true';
+    const { queryByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+      isReminderParam,
+    );
+
+    const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
+
+    fireEvent.click(revealRecoveryPhraseButton);
+
+    const nextButton = queryByTestId('recovery-phrase-next');
+
+    fireEvent.click(nextButton);
+
+    expect(mockHistoryPush).toHaveBeenCalledWith(
+      `${ONBOARDING_CONFIRM_SRP_ROUTE}${isReminderParam}`,
+    );
   });
 });
