@@ -1,4 +1,5 @@
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import mockState from '../../test/data/mock-state.json';
 import { useTransactionInfo } from './useTransactionInfo';
 
@@ -17,7 +18,9 @@ describe('useTransactionInfo', () => {
     it('should return true if transaction is NFT transfer', () => {
       mockState.metamask.allNftContracts = {
         [mockState.metamask.selectedAddress]: {
-          [mockState.metamask.provider.chainId]: [{ address: '0x9' }],
+          [hexToDecimal(mockState.metamask.provider.chainId)]: [
+            { address: '0x9' },
+          ],
         },
       };
 
