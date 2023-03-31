@@ -30,12 +30,14 @@ import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
+import { NetworkStatus } from '../../../../shared/constants/network';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionController from '.';
 
 const noop = () => true;
 const currentNetworkId = '5';
 const currentChainId = '0x5';
+const currentNetworkStatus = NetworkStatus.Available;
 const providerConfig = {
   type: 'goerli',
 };
@@ -49,7 +51,8 @@ describe('Transaction Controller', function () {
     providerResultStub,
     fromAccount,
     fragmentExists,
-    networkStore,
+    networkStatusStore,
+    getCurrentChainId,
     messengerMock;
 
   beforeEach(function () {
@@ -63,16 +66,17 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: currentNetworkId,
-      chainId: currentNetworkId,
+      chainId: parseInt(currentChainId, 16),
     }).provider;
 
-    networkStore = new ObservableStore(currentNetworkId);
+    networkStatusStore = new ObservableStore(currentNetworkStatus);
 
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
 
+    getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
     messengerMock = { call: () => Promise.resolve() };
 
     txController = new TransactionController({
@@ -80,8 +84,10 @@ describe('Transaction Controller', function () {
       getGasPrice() {
         return '0xee6b2800';
       },
-      getNetworkState: () => networkStore.getState(),
-      onNetworkStateChange: (listener) => networkStore.subscribe(listener),
+      getNetworkId: () => currentNetworkId,
+      getNetworkStatus: () => networkStatusStore.getState(),
+      onNetworkStateChange: (listener) =>
+        networkStatusStore.subscribe(listener),
       getCurrentNetworkEIP1559Compatibility: () => Promise.resolve(false),
       getCurrentAccountEIP1559Compatibility: () => false,
       txHistoryLimit: 10,
@@ -92,7 +98,7 @@ describe('Transaction Controller', function () {
         }),
       getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
-      getCurrentChainId: () => currentChainId,
+      getCurrentChainId,
       getParticipateInMetrics: () => false,
       trackMetaMetricsEvent: () => undefined,
       createEventFragment: () => undefined,
@@ -475,8 +481,8 @@ describe('Transaction Controller', function () {
       );
     });
 
-    it('should fail if netId is loading', async function () {
-      networkStore.putState('loading');
+    it('should fail if the network status is not "available"', async function () {
+      networkStatusStore.putState(NetworkStatus.Unknown);
       await assert.rejects(
         () =>
           txController.addUnapprovedTransaction(undefined, {
@@ -1169,8 +1175,19 @@ describe('Transaction Controller', function () {
   });
 
   describe('#getChainId', function () {
-    it('returns 0 when the chainId is NaN', function () {
-      networkStore.putState('loading');
+    it('returns the chain ID of the network when it is available', function () {
+      networkStatusStore.putState(NetworkStatus.Available);
+      assert.equal(txController.getChainId(), 5);
+    });
+
+    it('returns 0 when the network is not available', function () {
+      networkStatusStore.putState('asdflsfadf');
+      assert.equal(txController.getChainId(), 0);
+    });
+
+    it('returns 0 when the chain ID cannot be parsed as a hex string', function () {
+      networkStatusStore.putState(NetworkStatus.Available);
+      getCurrentChainId.returns('$fdsjfldf');
       assert.equal(txController.getChainId(), 0);
     });
   });

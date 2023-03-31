@@ -223,7 +223,8 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} provider - The current selected network provider.
  * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
- * @property {string} network - A stringified number of the current network ID.
+ * @property {string} networkId - The stringified number of the current network ID.
+ * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
@@ -555,6 +556,10 @@ export function setupController(initState, initLangCode, overrides) {
           if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
             // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
             remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+
+            controller.appStateController.setServiceWorkerLastActiveTime(
+              Date.now(),
+            );
           }
         });
       }
