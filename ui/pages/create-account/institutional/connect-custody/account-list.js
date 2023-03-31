@@ -8,12 +8,22 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { SECOND } from '../../../../../shared/constants/time';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import Tooltip from '../../../../components/ui/tooltip';
-import { Color } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  Color,
+  TextVariant,
+  JustifyContent,
+  BLOCK_SIZES,
+  DISPLAY,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Box from '../../../../components/ui/box';
+import {
+  Text,
+  Label,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
+  ButtonLink,
 } from '../../../../components/component-library';
 
 export default function CustodyAccountList({
@@ -33,16 +43,38 @@ export default function CustodyAccountList({
     return () => clearTimeout(timerRef.current);
   }, []);
 
+  const getButtonLinkHref = (account) => {
+    const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
+    return `${url}address/${account.address}`;
+  };
+
+  const copyAddressButton = (account) => {
+    setCopied(true);
+    timerRef.current = setTimeout(() => setCopied(false), SECOND * 3);
+    copy(account.address);
+  };
+
   const renderAccounts = () => {
     const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
 
     return (
-      <div className="custody-account-list" data-testid="custody-account-list">
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={['column']}
+        width={BLOCK_SIZES.FULL}
+        className="custody-account-list"
+        data-testid="custody-account-list"
+      >
         {accounts.map((account, idx) => (
-          <div className="custody-account-list__item" key={account.address}>
-            <div
+          <Box
+            display={DISPLAY.FLEX}
+            className="custody-account-list__item"
+            key={account.address}
+          >
+            <Box
+              display={DISPLAY.FLEX}
+              alignItems={['flex-start']}
               data-testid="custody-account-list-item-radio-button"
-              className="custody-account-list__item__radio"
             >
               {!rawList && (
                 <input
@@ -64,50 +96,65 @@ export default function CustodyAccountList({
                   }
                 />
               )}
-            </div>
-            <div className="custody-account-list__item__body">
-              <label
+            </Box>
+            <Box
+              display={DISPLAY.FLEX}
+              flexDirection={['column']}
+              marginLeft={2}
+              width={BLOCK_SIZES.FULL}
+            >
+              <Label
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.center}
+                marginTop={2}
+                marginLeft={2}
                 htmlFor={`address-${idx}`}
                 className="custody-account-list__item__title"
               >
-                <span className="custody-account-list__item__name">
+                <Text
+                  as="span"
+                  variant={TextVariant.inherit}
+                  size={TextVariant.bodySm}
+                  paddingRight={1}
+                  className="custody-account-list__item__name"
+                >
                   {account.name}
-                </span>
-              </label>
-              <label
+                </Text>
+              </Label>
+              <Label
+                display={DISPLAY.FLEX}
+                size={TextVariant.bodySm}
+                marginTop={2}
+                marginRight={3}
                 htmlFor={`address-${idx}`}
-                className="custody-account-list__item__subtitle"
               >
-                <span className="custody-account-list__item__address">
-                  <a
-                    className="custody-account-list__item__address-link"
-                    href={`${
-                      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[
-                        CHAIN_IDS.MAINNET
-                      ]
-                    }address/${account.address}`}
+                <Text
+                  as="span"
+                  variant={TextVariant.bodyMd}
+                  display={DISPLAY.FLEX}
+                  className="custody-account-list__item"
+                >
+                  <ButtonLink
+                    href={getButtonLinkHref(account)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {shortenAddress(account.address)}
                     <Icon
-                      name={ICON_NAMES.OpenInNewTab}
+                      name={ICON_NAMES.EXPORT}
                       size={ICON_SIZES.SM}
                       color={Color.primaryDefault}
                       marginLeft={1}
                     />
-                  </a>
-                  <Tooltip position="bottom" title={tooltipText}>
+                  </ButtonLink>
+                  <Tooltip
+                    position="bottom"
+                    title={tooltipText}
+                    style={{ backgroundColor: 'transparent' }}
+                  >
                     <button
-                      className="custody-account-list__item__address-clipboard"
-                      onClick={() => {
-                        setCopied(true);
-                        timerRef.current = setTimeout(
-                          () => setCopied(false),
-                          SECOND * 3,
-                        );
-                        copy(account.address);
-                      }}
+                      className="custody-account-list__item__clipboard"
+                      onClick={() => copyAddressButton(account)}
                     >
                       <Icon
                         name={ICON_NAMES.COPY}
@@ -116,9 +163,12 @@ export default function CustodyAccountList({
                       />
                     </button>
                   </Tooltip>
-                </span>
-              </label>
-              <div className="custody-account-list__item-details">
+                </Text>
+              </Label>
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.spaceBetween}
+              >
                 {account.labels && (
                   <CustodyLabels
                     labels={account.labels}
@@ -126,11 +176,11 @@ export default function CustodyAccountList({
                     hideNetwork
                   />
                 )}
-              </div>
-            </div>
-          </div>
+              </Box>
+            </Box>
+          </Box>
         ))}
-      </div>
+      </Box>
     );
   };
 
@@ -142,11 +192,21 @@ export default function CustodyAccountList({
     }
 
     return (
-      <div className="new-custody-account-form__buttons">
+      <Box
+        display={DISPLAY.FLEX}
+        width={BLOCK_SIZES.FULL}
+        justifyContent={JustifyContent.spaceBetween}
+        paddingTop={5}
+        paddingRight={7}
+        paddingBottom={7}
+        paddingLeft={7}
+        className="custody-account-list__buttons"
+      >
         <Button
+          data-testid="custody-account-cancel-button"
           type="default"
           large
-          className="new-custody-account-form__button"
+          className="custody-account-list__button"
           onClick={onCancel}
         >
           {t('cancel')}
@@ -155,19 +215,21 @@ export default function CustodyAccountList({
           data-testid="custody-account-connect-button"
           type="primary"
           large
-          className="new-custody-account-form__button unlock"
+          className="custody-account-list__button"
           disabled={disabled}
           onClick={() => onAddAccounts(custody)}
         >
           {t('connect')}
         </Button>
-      </div>
+      </Box>
     );
   };
 
   return (
     <>
-      <div className="custody-account-list-container">{renderAccounts()}</div>
+      <Box paddingTop={4} paddingRight={7} paddingBottom={7} paddingLeft={7}>
+        {renderAccounts()}
+      </Box>
       {!rawList && renderButtons()}
     </>
   );
@@ -180,7 +242,5 @@ CustodyAccountList.propTypes = {
   selectedAccounts: PropTypes.object,
   onAddAccounts: PropTypes.func,
   onCancel: PropTypes.func,
-  // eslint-disable-next-line react/no-unused-prop-types
-  provider: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   rawList: PropTypes.bool,
 };
