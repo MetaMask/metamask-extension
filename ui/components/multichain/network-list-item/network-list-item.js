@@ -41,6 +41,7 @@ export const NetworkListItem = ({
       })}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
+      width={BLOCK_SIZES.FULL}
     >
       {selected && (
         <Box
