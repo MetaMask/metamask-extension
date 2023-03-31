@@ -25,10 +25,6 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
   NetworkStatus,
-  SEPOLIA_DISPLAY_NAME,
-  GOERLI_DISPLAY_NAME,
-  ETH_TOKEN_IMAGE_URL,
-  LINEA_TESTNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -230,6 +226,7 @@ export function getAccountType(state) {
   switch (type) {
     case KeyringType.trezor:
     case KeyringType.ledger:
+    case KeyringType.self:
     case KeyringType.lattice:
       return 'hardware';
     case KeyringType.imported:
@@ -443,11 +440,10 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
     ({ address, name, balance }) => ({
       address,
-      addressLabel: `${
-        name.length < TRUNCATED_NAME_CHAR_LIMIT
+      addressLabel: `${name.length < TRUNCATED_NAME_CHAR_LIMIT
           ? name
           : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
-      } (${shortenAddress(address)})`,
+        } (${shortenAddress(address)})`,
       label: name,
       balance,
     }),
@@ -593,8 +589,8 @@ export function getShouldShowFiat(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
     (isMainNet || isCustomNetwork || showFiatInTestnets) &&
-      useCurrencyRateCheck &&
-      conversionRate,
+    useCurrencyRateCheck &&
+    conversionRate,
   );
 }
 
@@ -1120,63 +1116,6 @@ export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
 }
 
-export function getAllNetworks(state) {
-  const networkConfigurations = getNetworkConfigurations(state) || {};
-  const showTestnetNetworks = getShowTestNetworks(state);
-  const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
-
-  const networks = [];
-  // Mainnet always first
-  networks.push({
-    chainId: CHAIN_IDS.MAINNET,
-    nickname: MAINNET_DISPLAY_NAME,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-    rpcPrefs: {
-      imageUrl: ETH_TOKEN_IMAGE_URL,
-    },
-    providerType: NETWORK_TYPES.MAINNET,
-  });
-  // Custom networks added
-  networks.push(
-    ...Object.entries(networkConfigurations)
-      .filter(
-        ([, network]) =>
-          !localhostFilter(network) && network.chainId !== CHAIN_IDS.MAINNET,
-      )
-      .map(([, network]) => network),
-  );
-  // Test networks if flag is on
-  if (showTestnetNetworks) {
-    networks.push(
-      ...[
-        {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-          providerType: NETWORK_TYPES.GOERLI,
-        },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          nickname: SEPOLIA_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-          providerType: NETWORK_TYPES.SEPOLIA,
-        },
-        {
-          chainId: CHAIN_IDS.LINEA_TESTNET,
-          nickname: LINEA_TESTNET_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-          provderType: NETWORK_TYPES.LINEA_TESTNET,
-        },
-      ], // Localhosts
-      ...Object.entries(networkConfigurations)
-        .filter(([, network]) => localhostFilter(network))
-        .map(([, network]) => network),
-    );
-  }
-
-  return networks;
-}
-
 export function getIsOptimism(state) {
   return (
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
@@ -1349,20 +1288,20 @@ export function getBlockExplorerLinkText(
   if (rpcPrefs.blockExplorerUrl) {
     blockExplorerLinkText = accountDetailsModalComponent
       ? {
-          firstPart: 'blockExplorerView',
-          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
-        }
+        firstPart: 'blockExplorerView',
+        secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+      }
       : {
-          firstPart: 'viewinExplorer',
-          secondPart: 'blockExplorerAccountAction',
-        };
+        firstPart: 'viewinExplorer',
+        secondPart: 'blockExplorerAccountAction',
+      };
   } else if (isCustomNetwork === false) {
     blockExplorerLinkText = accountDetailsModalComponent
       ? { firstPart: 'etherscanViewOn', secondPart: '' }
       : {
-          firstPart: 'viewOnEtherscan',
-          secondPart: 'blockExplorerAccountAction',
-        };
+        firstPart: 'viewOnEtherscan',
+        secondPart: 'blockExplorerAccountAction',
+      };
   }
 
   return blockExplorerLinkText;
