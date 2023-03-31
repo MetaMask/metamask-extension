@@ -290,12 +290,6 @@ export const BUILT_IN_NETWORKS = {
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
     blockExplorerUrl: 'https://explorer.goerli.linea.build',
   },
-  [NETWORK_TYPES.LINEA_TESTNET]: {
-    networkId: NETWORK_IDS.LINEA_TESTNET,
-    chainId: CHAIN_IDS.LINEA_TESTNET,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
-    blockExplorerUrl: 'https://explorer.goerli.linea.build',
-  },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
     chainId: CHAIN_IDS.MAINNET,
