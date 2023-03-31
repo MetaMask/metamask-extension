@@ -54,7 +54,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
             return (
               <NetworkListItem
                 name={network.nickname}
-                iconSrc={network?.rpcPrefs?.imageUrl }
+                iconSrc={network?.rpcPrefs?.imageUrl}
                 key={network.id || network.chainId}
                 selected={isCurrentNetwork}
                 onClick={() => {
@@ -109,7 +109,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
             {t('addNetwork')}
           </Button>
         </Box>
-      </Box>
+      </>
     </Popover>
   );
 };

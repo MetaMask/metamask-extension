@@ -10,6 +10,7 @@ import {
   Size,
   JustifyContent,
   TextColor,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
