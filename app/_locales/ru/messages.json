@@ -4000,9 +4000,6 @@
   "thisIsBasedOn": {
     "message": "Это основано на информации от "
   },
-  "thisServiceIsExperimental": {
-    "message": "Этот сервис является экспериментальным"
-  },
   "time": {
     "message": "Время"
   },

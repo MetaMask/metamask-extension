@@ -3,7 +3,6 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
   /**
@@ -70,7 +69,8 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
-    this.network = opts.network;
+    this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
+    this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.openPopup = opts.openPopup;
@@ -511,10 +511,11 @@ export default class PreferencesController {
   //
 
   _subscribeToInfuraAvailability() {
-    this.network.on(NETWORK_EVENTS.INFURA_IS_BLOCKED, () => {
+    this._onInfuraIsBlocked(() => {
       this._setInfuraBlocked(true);
     });
-    this.network.on(NETWORK_EVENTS.INFURA_IS_UNBLOCKED, () => {
+
+    this._onInfuraIsUnblocked(() => {
       this._setInfuraBlocked(false);
     });
   }

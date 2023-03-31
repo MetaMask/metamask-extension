@@ -5,31 +5,27 @@ exports[`Compliance Settings shows disconnect when Compliance is activated 1`] =
   <div
     class="box box--flex-direction-row"
   >
-    <div
-      class="box institutional-feature__content box--flex-direction-row"
+    <h6
+      class="box mm-text institutional-feature__content mm-text--body-sm box--flex-direction-row box--color-text-default"
     >
       Change your settings or view reports by opening up Codefi Compliance or disconnect below.
-    </div>
-    <footer
-      class="institutional-feature__footer"
+    </h6>
+    <div
+      class="box institutional-feature__footer box--padding-4 box--sm:padding-6 box--flex-direction-row box--border-style-solid box--border-color-border-muted box--border-width-1"
     >
       <button
-        class="button btn--rounded btn-default btn--large"
+        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
         data-testid="disconnect-compliance"
-        role="button"
-        tabindex="0"
       >
         Disconnect
       </button>
       <button
-        class="button btn--rounded btn-primary"
+        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
         data-testid="start-compliance"
-        role="button"
-        tabindex="0"
       >
         Open Codefi Compliance
       </button>
-    </footer>
+    </div>
   </div>
 </div>
 `;
@@ -42,6 +38,7 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
   >
     <div
       class="box institutional-feature__content box--flex-direction-row"
+      variant="body-sm"
     >
       <p
         class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
@@ -79,19 +76,16 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
     <div
       class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
-      <footer
-        class="institutional-feature__footer"
-        padding="4,6"
+      <div
+        class="box institutional-feature__footer box--padding-4 box--sm:padding-6 box--flex-direction-row box--border-style-solid box--border-color-border-muted box--border-width-1"
       >
         <button
-          class="button btn--rounded btn-primary"
+          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
           data-testid="start-compliance"
-          role="button"
-          tabindex="0"
         >
           Open Codefi Compliance
         </button>
-      </footer>
+      </div>
     </div>
   </div>
 </div>
