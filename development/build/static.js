@@ -32,7 +32,7 @@ module.exports = function createStaticAssetTasks({
   });
 
   const additionalAssets =
-    loadBuildTypesConfig().builds[buildType].assets ?? [];
+    loadBuildTypesConfig().buildTypes[buildType].assets ?? [];
 
   Object.entries(copyTargetsProds).forEach(([_, copyTargetsProd]) =>
     copyTargetsProd.push(...additionalAssets),

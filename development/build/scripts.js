@@ -4,6 +4,7 @@ const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
+const assert = require('assert');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const Vinyl = require('vinyl');
@@ -31,14 +32,10 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
-const { loadBuildTypesConfig } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
+const { DeclaredOnly } = require('../lib/variables');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
-const {
-  getConfig,
-  getProductionConfig,
-  getBuildTypesConfig: getFeatureConfig,
-} = require('./config');
+const { getConfig } = require('./config');
 const {
   isDevBuild,
   isTestBuild,
@@ -56,7 +53,6 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
-const { segment } = require('app/scripts/lib/segment');
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {
@@ -109,33 +105,37 @@ const standardScuttlingConfig = {
  *
  * @param {object} options - The Infura project ID options.
  * @param {string} options.buildType - The current build type.
- * @param {object} options.config - The environment variable configuration.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param options.activeBuild
+ * @param options.variables
  * @returns {string} The Infura project ID.
  */
-function getInfuraProjectId({ buildType, config, environment, testing }) {
+function getInfuraProjectId({
+  buildType,
+  activeBuild,
+  variables,
+  environment,
+  testing,
+}) {
   if (testing) {
     return '00000000000000000000000000000000';
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks.
-    return config.INFURA_PROJECT_ID;
+    return variables.get('INFURA_PROJECT_ID');
   }
   /** @type {string|undefined} */
-  const infuraKeyReference =
-    loadBuildTypesConfig().builds[buildType].var?.infuraProjectKey;
-  if (infuraKeyReference === undefined) {
-    throw new Error(
-      `Build type "${buildType}" has undefined infuraEnvKey variable in builds.yml`,
-    );
-  }
+  const infuraKeyReference = activeBuild.var?.infuraProjectKey;
+  assert(
+    typeof infuraKeyReference === 'string',
+    `Build type "${buildType}" has undefined infuraEnvKey variable in builds.yml`,
+  );
   /** @type {string|undefined} */
-  const infuraProjectId = config[infuraKeyReference];
-  if (infuraProjectId === undefined) {
-    throw new Error(
-      `Infura Project ID environmental variable "${infuraKeyReference}" doesn't exist. Misconfigured builds.yml`,
-    );
-  }
+  const infuraProjectId = variables.get(infuraKeyReference);
+  assert(
+    typeof infuraProjectId === 'string',
+    `Infura Project ID environmental variable "${infuraKeyReference}" doesn't exist. Misconfigured builds.yml`,
+  );
   return infuraProjectId;
 }
 
@@ -144,30 +144,30 @@ function getInfuraProjectId({ buildType, config, environment, testing }) {
  *
  * @param {object} options - The Segment write key options.
  * @param {string} options.buildType - The current build type.
- * @param {object} options.config - The environment variable configuration.
  * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param options.variables
+ * @param options.activeBuild
  * @returns {string} The Segment write key.
  */
-function getSegmentWriteKey({ buildType, config, environment }) {
+function getSegmentWriteKey({
+  buildType,
+  variables,
+  activeBuild,
+  environment,
+}) {
   if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
-    return config.SEGMENT_WRITE_KEY;
+    return variables.get('SEGMENT_WRITE_KEY');
   }
-  /** @type {string|undefined} */
-  const segmentKeyReference =
-    loadBuildTypesConfig().builds[buildType].var?.segmentWriteKey;
-  if (segmentKeyReference === undefined) {
-    throw new Error(
-      `Build type "${buildType}" has undefined segmentKey variable in builds.yml`,
-    );
-  }
-  /** @type {string|undefined} */
-  const segmentWriteKey = config[segmentKeyReference];
-  if (segmentWriteKey === undefined) {
-    throw new Error(
-      `Segment Write Key environmental variable "${segmentKeyReference}" doesn't exist. Misconfigured builds.yml`,
-    );
-  }
+
+  const segmentKeyReference = activeBuild.var?.segmentWriteKey;
+  assert(
+    typeof segmentKeyReference === 'string',
+    `Build type "${buildType}" has undefined segmentWriteKey variable in builds.yml`,
+  );
+
+  const segmentWriteKey = variables.get(segmentKeyReference);
+  assert(typeof segmentWriteKey === 'string');
   return segmentWriteKey;
 }
 
@@ -175,14 +175,18 @@ function getSegmentWriteKey({ buildType, config, environment }) {
  * Get the URL for the phishing warning page, if it has been set.
  *
  * @param {object} options - The phishing warning page options.
- * @param {object} options.config - The environment variable configuration.
  * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param options.variables
  * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
  */
-function getPhishingWarningPageUrl({ config, testing }) {
-  let phishingWarningPageUrl = config.PHISHING_WARNING_PAGE_URL;
+function getPhishingWarningPageUrl({ variables, testing }) {
+  let phishingWarningPageUrl = variables.getMaybe('PHISHING_WARNING_PAGE_URL');
 
-  if (!phishingWarningPageUrl) {
+  assert(
+    phishingWarningPageUrl === DeclaredOnly ||
+      typeof phishingWarningPageUrl === 'string',
+  );
+  if (phishingWarningPageUrl === DeclaredOnly) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${phishingWarningManifest.version}/`;
@@ -597,18 +601,29 @@ function createFactoredBuild({
     const reloadOnChange = isDevBuild(buildTarget);
     const minify = !isDevBuild(buildTarget);
 
-    const envVars = await getEnvironmentVariables({
+    const environment = getEnvironment({ buildTarget });
+    const config = await getConfig(buildType, environment);
+    const { variables, activeBuild } = config;
+    await setEnvironmentVariables({
       buildTarget,
       buildType,
+      environment,
+      variables,
+      activeBuild,
       version,
     });
+    const features = {
+      active: new Set(activeBuild.features ?? []),
+      all: new Set(Object.keys(config.buildsYml.features)),
+    };
     setupBundlerDefaults(buildConfiguration, {
       buildTarget,
-      buildType,
-      envVars,
+      variables,
+      envVars: buildSafeVariableObject(variables),
       ignoredFiles,
       policyOnly,
       minify,
+      features,
       reloadOnChange,
       shouldLintFenceFiles,
     });
@@ -827,20 +842,31 @@ function createNormalBundle({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = {
-      ...(await getEnvironmentVariables({
-        buildTarget,
-        buildType,
-        version,
-      })),
-      ...extraEnvironmentVariables,
+    const environment = getEnvironment({ buildTarget });
+    const config = await getConfig(buildType, environment);
+    const { activeBuild, variables } = config;
+    await setEnvironmentVariables({
+      buildTarget,
+      buildType,
+      variables,
+      environment,
+      activeBuild,
+      version,
+    });
+    Object.entries(extraEnvironmentVariables ?? {}).forEach(([key, value]) =>
+      variables.set(key, value),
+    );
+
+    const features = {
+      active: new Set(activeBuild.features ?? []),
+      all: new Set(Object.keys(config.buildsYml.features)),
     };
     setupBundlerDefaults(buildConfiguration, {
-      buildType,
-      envVars,
+      envVars: buildSafeVariableObject(variables),
       ignoredFiles,
       policyOnly,
       minify,
+      features,
       reloadOnChange,
       shouldLintFenceFiles,
       applyLavaMoat,
@@ -886,11 +912,11 @@ function setupBundlerDefaults(
   buildConfiguration,
   {
     buildTarget,
-    buildType,
     envVars,
     ignoredFiles,
     policyOnly,
     minify,
+    features,
     reloadOnChange,
     shouldLintFenceFiles,
     applyLavaMoat,
@@ -903,7 +929,7 @@ function setupBundlerDefaults(
     // Source transforms
     transform: [
       // // Remove code that should be excluded from builds of the current type
-      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
+      createRemoveFencedCodeTransform(features, shouldLintFenceFiles),
       // Transpile top-level code
       [
         babelify,
@@ -1118,50 +1144,49 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string} options.version - The current version of the extension.
+ * @param options.activeBuild
+ * @param options.variables
+ * @param options.environment
  * @returns {object} A map of environment variables to inject.
  */
-async function getEnvironmentVariables({ buildTarget, buildType, version }) {
-  const environment = getEnvironment({ buildTarget });
-  const config =
-    environment === ENVIRONMENT.PRODUCTION
-      ? await getProductionConfig(buildType)
-      : await getConfig();
-
+async function setEnvironmentVariables({
+  buildTarget,
+  buildType,
+  activeBuild,
+  environment,
+  variables,
+  version,
+}) {
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
   const iconNames = await generateIconNames();
-  return {
+
+  variables.setMany({
     ICON_NAMES: iconNames,
-    MULTICHAIN: config.MULTICHAIN === '1',
-    CONF: devMode ? config : {},
-    ENABLE_MV3: config.ENABLE_MV3,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
-      config,
+      activeBuild,
+      variables,
       environment,
       testing,
     }),
-    METAMASK_DEBUG: devMode || config.METAMASK_DEBUG === '1',
+    METAMASK_DEBUG: devMode || variables.getMaybe('METAMASK_DEBUG') === true,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
-    PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
-    SEGMENT_HOST: config.SEGMENT_HOST,
-    SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
-    SENTRY_DSN: config.SENTRY_DSN,
-    SENTRY_DSN_DEV: config.SENTRY_DSN_DEV,
-    SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
-    TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
-    TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
-    // Desktop
-    COMPATIBILITY_VERSION_EXTENSION: config.COMPATIBILITY_VERSION_EXTENSION,
-    DISABLE_WEB_SOCKET_ENCRYPTION: config.DISABLE_WEB_SOCKET_ENCRYPTION === '1',
-    SKIP_OTP_PAIRING_FLOW: config.SKIP_OTP_PAIRING_FLOW === '1',
-    ...getFeatureConfig(buildType),
-  };
+    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({
+      variables,
+      testing,
+    }),
+    SEGMENT_WRITE_KEY: getSegmentWriteKey({
+      buildType,
+      activeBuild,
+      variables,
+      environment,
+    }),
+  });
 }
 
 function renderHtmlFile({
@@ -1192,6 +1217,29 @@ function renderHtmlFile({
     // we dont have a way of creating async events atm
     writeFileSync(dest, htmlOutput);
   });
+}
+
+/**
+ * Builds a javascript object that throws an error when trying to access a property that wasn't defined properly
+ *
+ * @param {Variables} variables
+ * @returns {{[key: string]: unknown }} Variable definitions
+ */
+function buildSafeVariableObject(variables) {
+  return new Proxy(
+    {},
+    {
+      has(_, key) {
+        return key !== '_'; // loose-envify uses "_" for settings
+      },
+      get(_, key) {
+        if (key === '_') {
+          return undefined; // loose-envify uses "_" for settings
+        }
+        return variables.get(key);
+      },
+    },
+  );
 }
 
 function beep() {

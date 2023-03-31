@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
+import SnapSettingsCard from '../../../../components/app/snaps/snap-settings-card';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   JustifyContent,

@@ -287,7 +287,7 @@ describe('build/transforms/remove-fenced-code', () => {
     });
 
     it('ignores sentinels preceded by non-whitespace', () => {
-      const validBeginDirective = '///: BEGIN:ONLY_INCLUDE_IN(flask)\n';
+      const validBeginDirective = '///: BEGIN:ONLY_INCLUDE_IN(build-flask)\n';
       const ignoredLines = [
         `a ${validBeginDirective}`,
         `2 ${validBeginDirective}`,
@@ -382,46 +382,46 @@ describe('build/transforms/remove-fenced-code', () => {
 
     it('rejects malformed BEGIN directives', () => {
       // This is the first line of the minimal input template
-      const directiveString = '///: BEGIN:ONLY_INCLUDE_IN(flask)';
+      const directiveString = '///: BEGIN:ONLY_INCLUDE_IN(build-flask)';
 
       const replacements = [
         // Invalid terminus
-        '///: BE_GIN:ONLY_INCLUDE_IN(flask)',
-        '///: BE6IN:ONLY_INCLUDE_IN(flask)',
-        '///: BEGIN7:ONLY_INCLUDE_IN(flask)',
-        '///: BeGIN:ONLY_INCLUDE_IN(flask)',
-        '///: BE3:ONLY_INCLUDE_IN(flask)',
-        '///: BEG-IN:ONLY_INCLUDE_IN(flask)',
-        '///: BEG N:ONLY_INCLUDE_IN(flask)',
+        '///: BE_GIN:BEGIN:ONLY_INCLUDE_IN(build-flask)',
+        '///: BE6IN:BEGIN:ONLY_INCLUDE_IN(build-flask)',
+        '///: BEGIN7:BEGIN:ONLY_INCLUDE_IN(build-flask)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)',
+        '///: BE3:BEGIN:ONLY_INCLUDE_IN(build-flask)',
+        '///: BEG-IN:BEGIN:ONLY_INCLUDE_IN(build-flask)',
+        '///: BEG N:BEGIN:ONLY_INCLUDE_IN(build-flask)',
 
         // Invalid commands
         '///: BEGIN:ONLY-INCLUDE_IN(flask)',
         '///: BEGIN:ONLY_INCLUDE:IN(flask)',
         '///: BEGIN:ONL6_INCLUDE_IN(flask)',
         '///: BEGIN:ONLY_IN@LUDE_IN(flask)',
-        '///: BEGIN:ONLy_INCLUDE_IN(flask)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)',
         '///: BEGIN:ONLY INCLUDE_IN(flask)',
 
         // Invalid parameters
         '///: BEGIN:ONLY_INCLUDE_IN(,flask)',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask,)',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask,,main)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask,)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask,,main)',
         '///: BEGIN:ONLY_INCLUDE_IN(,)',
         '///: BEGIN:ONLY_INCLUDE_IN()',
         '///: BEGIN:ONLY_INCLUDE_IN( )',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask]',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask]',
         '///: BEGIN:ONLY_INCLUDE_IN[flask)',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask.main)',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask,@)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask.main)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask,@)',
         '///: BEGIN:ONLY_INCLUDE_IN(fla k)',
 
         // Stuff after the directive
-        '///: BEGIN:ONLY_INCLUDE_IN(flask) A',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask) 9',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask)A',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask)9',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask)_',
-        '///: BEGIN:ONLY_INCLUDE_IN(flask))',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask) A',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask) 9',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)A',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)9',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)_',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask))',
       ];
 
       replacements.forEach((replacement) => {
@@ -488,7 +488,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
     it('rejects files with uneven number of fence lines', () => {
       const additions = [
-        '///: BEGIN:ONLY_INCLUDE_IN(flask)',
+        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)',
         '///: END:ONLY_INCLUDE_IN',
       ];
       additions.forEach((addition) => {
@@ -597,17 +597,17 @@ describe('build/transforms/remove-fenced-code', () => {
         'The second directive of a pair must be an "END" directive.';
       const testCases = [
         [
-          'BEGIN:ONLY_INCLUDE_IN(flask)',
+          'BEGIN:ONLY_INCLUDE_IN(build-flask)',
           'END:ONLY_INCLUDE_IN',
           expectedBeginError,
         ],
         [
           /END:ONLY_INCLUDE_IN/mu,
-          'BEGIN:ONLY_INCLUDE_IN(main)',
+          'BEGIN:ONLY_INCLUDE_IN(build-main)',
           expectedEndError,
         ],
         [
-          'BEGIN:ONLY_INCLUDE_IN(beta)',
+          'BEGIN:ONLY_INCLUDE_IN(build-beta)',
           'END:ONLY_INCLUDE_IN',
           expectedBeginError,
         ],
@@ -644,14 +644,14 @@ function getTestData() {
   const data = {
     validInputs: {
       withFences: `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 
 Conditionally_Included
@@ -660,7 +660,7 @@ Conditionally_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 
 Conditionally_Included
 Conditionally_Included
@@ -678,7 +678,7 @@ Conditionally_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 Conditionally_Included
 Conditionally_Included
 
@@ -690,14 +690,14 @@ Conditionally_Included
 `,
 
       extraContentWithFences: `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 
 Conditionally_Included
@@ -706,7 +706,7 @@ Conditionally_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 
 Conditionally_Included
 Conditionally_Included
@@ -723,7 +723,7 @@ Conditionally_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 Conditionally_Included
 Conditionally_Included
 
@@ -781,14 +781,14 @@ Always_Included
     validOutputs: {
       beta: [
         `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 
 Conditionally_Included
@@ -810,14 +810,14 @@ Always_Included
       ],
       flask: [
         `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 
 Conditionally_Included
@@ -826,7 +826,7 @@ Conditionally_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 
 Conditionally_Included
 Conditionally_Included
@@ -839,7 +839,7 @@ Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 Conditionally_Included
 Conditionally_Included
 
@@ -872,14 +872,14 @@ Always_Included
     validOutputsWithExtraContent: {
       beta: [
         `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 
 Conditionally_Included
@@ -904,14 +904,14 @@ Always_Included
       ],
       flask: [
         `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask,beta,desktop)
 Conditionally_Included
 
 Conditionally_Included
@@ -920,7 +920,7 @@ Conditionally_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 
 Conditionally_Included
 Conditionally_Included
@@ -933,7 +933,7 @@ Always_Included
 Always_Included
 Always_Included
 Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 Conditionally_Included
 Conditionally_Included
 

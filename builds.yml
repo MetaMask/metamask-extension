@@ -1,11 +1,20 @@
-# TODO(ritave): Add support for METAMASK_ENVIRONMENT
+# TODO(ritave): Add support for environments (<root>/development/build/constants.js:@ENVIRONMENT)
 # TODO(ritave): Add support for build targets (<root>/development/build/constants.js:@BUILD_TARGETS)
-# The build type to use when no build type provided
+# TODO(ritave): Add support for ignored files (<root>/development/build/index.js:@getIgnoredFiles)
+# TODO(ritave): Remove build code modifying hardcoded variables
+# TODO(ritave): Tree shaking was removing folders with the name of a build type -> flask remove /flask/ folders.
+#               It should also remove feature folders
+
+# The priority order of variable definitions (most important to least important):
+# hardcoded build code; environment variables; .metamaskprodrc; .metamaskrc; builds.yml:.buildTypes.<type>.env; builds.yml:.features.<feature>.env; builds.yml:.env
+
+# The build type to use when no build type provided in the cli
 default: &default main
 
 # Declaration of build types
 # Each build type is composed of features, env variables and assets.
-builds:
+# Also known as productFlavors in Android lingo
+buildTypes:
   main:
     # Additional env variables that are specific to this build
     # and required
@@ -13,10 +22,14 @@ builds:
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+    features:
+      - build-main
     # Variables that modify the build process itself
     # It's an escape hatch for backwards compatibility
     # for things that were hard-coded in.
-    # The end goal is not to have those
+    # The end goal is not to have those when build targets are supported
     var:
       # Variables used to remove hardcoded switches
       # in backwards compatible way
@@ -24,6 +37,8 @@ builds:
       segmentWriteKey: SEGMENT_PROD_WRITE_KEY
 
   beta:
+    features:
+      - build-beta
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -42,12 +57,17 @@ builds:
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
+      - build-flask
       - snaps
       - desktop
     isPrerelease: true
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: true
+      - REQUIRE_SNAPS_ALLOWLIST: false
+      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
+      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new'
     assets:
       - src: ./app/build-types/flask/images/
         dest: images
@@ -55,8 +75,10 @@ builds:
       infuraProjectKey: INFURA_FLASK_PROJECT_ID
       segmentWriteKey: SEGMENT_FLASK_WRITE_KEY
 
+  # TODO(ritave): Remove this build type as it was merged into Flask
   desktop:
     features:
+      - build-desktop
       - desktop
     isPrerelease: true
     assets:
@@ -64,9 +86,14 @@ builds:
         dest: images
 
   mmi:
+    features:
+      - build-mmi
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
+      - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
+      - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
+
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -77,23 +104,107 @@ builds:
       infuraEnvKey: INFURA_MMI_PROJECT_ID
       segmentWriteKey: SEGMENT_MMI_WRITE_KEY
 
+# Build types are composed of a set of features.
+# Each feature can have code fences that add new code
+# as well declaring, defining and overriding env variables
+features:
+  snaps:
+    env:
+      # Whether to allow snaps from localhost - local://localhost:8080/snap.manifest.json
+      # Enabled in Flask, disabled in Main
+      - ALLOW_LOCAL_SNAPS
+      # Snaps in main extension require MetaMask signed allow list
+      - REQUIRE_SNAPS_ALLOWLIST
+    # TODO(ritave): Assets globs? Include dirs only with "snaps" in them?
+    # assets:
+    #   - exclusive: '**/snaps/**'
+    # TODO(ritave): Maybe also inclusive
+  desktop:
+    # Each feature might have variables that only exist when built with that feature active
+    env:
+      - COMPATIBILITY_VERSION_EXTENSION: 1
+      - DISABLE_WEB_SOCKET_ENCRYPTION: false
+      - SKIP_OTP_PAIRING_FLOW: false
+      - WEB_SOCKET_PORT: null
+
+  #
+  # Build Type code extensions. Things like different support links, warning pages, banners
+  #
+  # TODO(ritave): instead of 1:1 feature - build type, split into smaller features
+  build-main:
+  build-beta:
+  build-mmi:
+  build-flask:
+  build-desktop:
+
 # Env variables that are required for all types of builds
 # (Potentially set to undefined)
 #
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
-# Variables that were declared have to be defined somewhere using normal maskenv loading behavior.
-# order of priority: prompt, .metamaskrc, .env, buids.yumll
+# Variables that were declared have to be defined somewhere in the load chain before usage
 env:
+  - SWAPS_USE_DEV_APIS: false
+  - PORTFOLIO_URL: 'https://portfolio.metamask.io'
+  - TOKEN_ALLOWANCE_IMPROVEMENTS: false
+  - TRANSACTION_SECURITY_PROVIDER: false
+  # The unlock password
+  - PASSWORD: null
+  # Also see METAMASK_DEBUG and NODE_DEBUG
+  - DEBUG: null
+  - SUPPORT_LINK: https://support.metamask.io
+  - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
+  - SKIP_BACKGROUND_INITIALIZATION: false
+  # TODO(ritave): Move ManifestV3 into a feature?
+  - HARDWARE_WALLETS_MV3: false
+
+  ###
+  # API keys to 3rd party services
+  ###
+
   - PUBNUB_PUB_KEY: null
   - PUBNUB_SUB_KEY: null
+  - SEGMENT_HOST: null
   - SENTRY_DSN: null
-  - INFURA_PROJECT_ID: '00000000000'
-  - SEGMENT_WRITE_KEY: null
-  - SWAPS_USE_DEV_APIS: null
-  - PORTFOLIO_URL: null
-  - TRANSACTION_SECURITY_PROVIDER: null
-  - PASSWORD: METAMASK PASSWORD
-  # Set this to test changes to the phishing warning page.
-  - PHISHING_WARNING_PAGE_URL: null
+  - SENTRY_DSN_DEV: null
+  - OPENSEA_KEY: null
+  - ETHERSCAN_KEY: null
+  # also INFURA_PROJECT_ID below
+
+  ###
+  # Variables that are modified with hardcoded code
+  ###
+
+  # Used for debugging changes to the phishing warning page.
+  # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
+  - PHISHING_WARNING_PAGE_URL
+  # Modified in <root>/development/build/scripts.js:@getInfuraProjectId
+  - INFURA_PROJECT_ID
+  # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
+  - SEGMENT_WRITE_KEY: ''
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  # Also see DEBUG and NODE_DEBUG
+  - METAMASK_DEBUG: false
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - ICON_NAMES
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - IN_TEST
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_ENVIRONMENT
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_VERSION
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_TYPE
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - NODE_ENV
+  # Defined by node itself
+  # Also see DEBUG and METAMASK_DEBUG
+  # TODO(ritave): There's a bug in build system and NODE_DEBUG is actually circularly checked from here
+  #               rather than actual process.env
+  - NODE_DEBUG: null
+
+  ###
+  # Meta variables
+  ###
+
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default

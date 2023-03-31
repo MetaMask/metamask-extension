@@ -1,6 +1,5 @@
 const path = require('path');
 const { PassThrough, Transform } = require('stream');
-const { BuildType, BuildTypeInheritance } = require('../../lib/build-type');
 const { lintTransformedFile } = require('./utils');
 
 const hasKey = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
@@ -18,14 +17,14 @@ class RemoveFencedCodeTransform extends Transform {
    * Optionally lints the file if it was modified.
    *
    * @param {string} filePath - The path to the file being transformed.
-   * @param {string[]|Set<string>} features - Features that are currently enabled.
+   * @param {import('./remove-fenced-code').Features} features - Features that are currently enabled.
    * @param {boolean} shouldLintTransformedFiles - Whether the file should be
    * linted if modified by the transform.
    */
   constructor(filePath, features, shouldLintTransformedFiles) {
     super();
     this.filePath = filePath;
-    this.features = new Set(features);
+    this.features = features;
     this.shouldLintTransformedFiles = shouldLintTransformedFiles;
     this._fileBuffers = [];
   }
@@ -82,7 +81,7 @@ class RemoveFencedCodeTransform extends Transform {
  * file is ignored by ESLint, since linting is our first line of defense against
  * making un-syntactic modifications to files using code fences.
  *
- * @param {string[]|Set<string>} features - Features that are currently enabled.
+ * @param {import('./remove-fenced-code').Features} features - Features that are currently enabled.
  * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
  * @returns {(filePath: string) => Transform} The transform function.
  */
@@ -126,31 +125,39 @@ const DirectiveCommands = {
   ONLY_INCLUDE_IN: 'ONLY_INCLUDE_IN',
 };
 
-const CommandValidators = {
-  [DirectiveCommands.ONLY_INCLUDE_IN]: (params, filePath) => {
-    if (!params || params.length === 0) {
-      throw new Error(
-        getInvalidParamsMessage(
-          filePath,
-          DirectiveCommands.ONLY_INCLUDE_IN,
-          `No params specified.`,
-        ),
-      );
-    }
-
-    params.forEach((param) => {
-      if (!hasKey(BuildType, param)) {
+/**
+ * Factory function for command validators.
+ *
+ * @param {{ features: import('./remove-fenced-code').Features }} config - Configuration required for validation.
+ * @returns A mapping of command -> validator function.
+ */
+function CommandValidators({ features }) {
+  return {
+    [DirectiveCommands.ONLY_INCLUDE_IN]: (params, filePath) => {
+      if (!params || params.length === 0) {
         throw new Error(
           getInvalidParamsMessage(
             filePath,
             DirectiveCommands.ONLY_INCLUDE_IN,
-            `"${param}" is not a valid build type.`,
+            `No params specified.`,
           ),
         );
       }
-    });
-  },
-};
+
+      for (const param of params) {
+        if (!features.all.has(param)) {
+          throw new Error(
+            getInvalidParamsMessage(
+              filePath,
+              DirectiveCommands.ONLY_INCLUDE_IN,
+              `"${param}" is not a declared build feature.`,
+            ),
+          );
+        }
+      }
+    },
+  };
+}
 
 // Matches lines starting with "///:", and any preceding whitespace, except
 // newlines. We except newlines to avoid eating blank lines preceding a fenced
@@ -165,7 +172,8 @@ const fenceSentinelRegex = /^\s*\/\/\/:/u;
 // At this stage of parsing, we are looking for one of:
 // - TERMINUS:COMMAND(PARAMS)
 // - TERMINUS:COMMAND
-const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
+const directiveParsingRegex =
+  /^([A-Z]+):([A-Z_]+)(?:\(((?:\w[-\w]*,)*\w[-\w]*)\))?$/u;
 
 /**
  * Removes fenced code from the given JavaScript source string. "Fenced code"
@@ -180,7 +188,7 @@ const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
  * Here's an example of a valid fence:
  *
  * ```javascript
- *   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+ *   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
  *   console.log('I am Flask.');
  *   ///: END:ONLY_INCLUDE_IN
  * ```
@@ -188,12 +196,12 @@ const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
  * For details, please see the documentation.
  *
  * @param {string} filePath - The path to the file being transformed.
- * @param {string} typeOfCurrentBuild - The type of the current build.
+ * @param {import('./remove-fenced-code').Features} features - Features that are currently active.
  * @param {string} fileContent - The contents of the file being transformed.
  * @returns {[string, modified]} A tuple of the post-transform file contents and
  * a boolean indicating whether they were modified.
  */
-function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
+function removeFencedCode(filePath, features, fileContent) {
   // Do not modify the file if we detect an inline sourcemap. For reasons
   // yet to be determined, the transform receives every file twice while in
   // watch mode, the second after Babel has transpiled the file. Babel adds
@@ -312,6 +320,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
   const splicingIndices = [];
   let shouldSplice = false;
   let currentCommand;
+  const commandValidators = CommandValidators({ features });
 
   for (let i = 0; i < parsedDirectives.length; i++) {
     const { line, indices, terminus, command, parameters } =
@@ -329,21 +338,17 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
 
       currentCommand = command;
       // Throws an error if the command parameters are invalid
-      CommandValidators[command](parameters, filePath);
+      commandValidators[command](parameters, filePath);
 
-      const validBuildTypes = [
-        typeOfCurrentBuild,
-        ...(BuildTypeInheritance[typeOfCurrentBuild] || []),
-      ];
-
-      const buildTypeMatches = validBuildTypes.some((validBuildType) =>
-        parameters.includes(validBuildType),
+      const blockIsActive = parameters.some((param) =>
+        features.active.has(param),
       );
 
-      if (buildTypeMatches) {
+      if (blockIsActive) {
         shouldSplice = false;
       } else {
         shouldSplice = true;
+
         // Add start index of BEGIN directive line to splicing indices
         splicingIndices.push(indices[0]);
       }

@@ -277,7 +277,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
         .option('build-type', {
           default: loadBuildTypesConfig().default,
           description: 'The type of build to create.',
-          choices: Object.keys(loadBuildTypesConfig().builds),
+          choices: Object.keys(loadBuildTypesConfig().buildTypes),
         })
         .option('build-version', {
           default: 0,
@@ -380,16 +380,16 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
  * build, or `null` if no files are to be ignored.
  */
 function getIgnoredFiles(currentBuildType) {
-  const inheritedBuildTypes = BuildTypeInheritance[currentBuildType] || [];
-  const excludedFiles = Object.keys(loadBuildTypesConfig().builds)
+  const buildConfig = loadBuildTypesConfig();
+  const defaultBuild = buildConfig.default;
+
+  const excludedFiles = Object.keys(buildConfig.buildTypes)
     // This filter removes "main" and the current build type. The files of any
     // build types that remain in the array will be excluded. "main" is the
     // default build type, and has no files that are excluded from other builds.
     .filter(
       (buildType) =>
-        buildType !== loadBuildTypesConfig().default &&
-        buildType !== currentBuildType &&
-        !inheritedBuildTypes.includes(buildType),
+        buildType !== defaultBuild && buildType !== currentBuildType,
     )
     // Compute globs targeting files for exclusion for each excluded build
     // type.

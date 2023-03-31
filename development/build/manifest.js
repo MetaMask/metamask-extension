@@ -170,7 +170,7 @@ async function writeJson(obj, file) {
  * @returns {object} The build modificantions for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
-  if (!(buildType in loadBuildTypesConfig().builds)) {
+  if (!(buildType in loadBuildTypesConfig().buildTypes)) {
     throw new Error(`Invalid build type: ${buildType}`);
   } else if (buildType === loadBuildTypesConfig().default) {
     return {};

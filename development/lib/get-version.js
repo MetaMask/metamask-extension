@@ -13,9 +13,9 @@ const { loadBuildTypesConfig } = require('./build-type');
  * @returns {string} The MetaMask extension version.
  */
 function getVersion(buildType, buildVersion) {
-  return loadBuildTypesConfig().builds[buildType].isPrerelease !== true
-    ? manifestVersion
-    : `${manifestVersion}-${buildType}.${buildVersion}`;
+  return loadBuildTypesConfig().buildTypes[buildType].isPrerelease === true
+    ? `${manifestVersion}-${buildType}.${buildVersion}`
+    : manifestVersion;
 }
 
 module.exports = { getVersion };
