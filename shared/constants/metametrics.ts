@@ -574,6 +574,7 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Desktop = 'Desktop',
+  ServiceWorkers = 'service_workers',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -601,10 +602,6 @@ export enum MetaMetricsNetworkEventSource {
   CustomNetworkForm = 'custom_network_form',
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
-}
-
-export enum MetaMetricsOtherEventSource {
-  ServiceWorkers = 'service_workers',
 }
 
 export enum MetaMetricsSwapsEventSource {

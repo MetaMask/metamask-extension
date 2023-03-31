@@ -1199,8 +1199,8 @@ export default class MetamaskController extends EventEmitter {
       const { serviceWorkerLastActiveTime } =
         this.appStateController.store.getState();
       const metametricsPayload = {
-        category: EVENT.SOURCE.SERVICE_WORKERS,
-        event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        category: MetaMetricsEventCategory.ServiceWorkers,
+        event: MetaMetricsEventName.ServiceWorkerRestarted,
         properties: {
           service_worker_restarted_time:
             Date.now() - serviceWorkerLastActiveTime,

@@ -1,7 +1,7 @@
 import pify from 'pify';
 import {
+  MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsOtherEventSource,
 } from '../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { trackMetaMetricsEvent } from '../actions';
@@ -195,7 +195,7 @@ async function processActionRetryQueue() {
   try {
     if (actionRetryQueue.length > 0) {
       const metametricsPayload = {
-        category: MetaMetricsOtherEventSource.ServiceWorkers,
+        category: MetaMetricsEventCategory.ServiceWorkers,
         event: MetaMetricsEventName.ServiceWorkerRestarted,
         properties: {
           service_worker_action_queue_methods: actionRetryQueue.map(
