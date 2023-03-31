@@ -198,6 +198,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make username mandatory in the edit contact screen ([#17425](https://github.com/MetaMask/metamask-extension/pull/17425))
 - NFTs: Hide  detail when no thumbnail available ([#17693](https://github.com/MetaMask/metamask-extension/pull/17693))
 - Removing TEXT_VARIANTS in favour of TextVariant ([#17674](https://github.com/MetaMask/metamask-extension/pull/17674))
+## [10.27.0]
+### Added
+- feat: add the ConsenSys zkEVM (Linea) as a default network ([#17875](https://github.com/MetaMask/metamask-extension/pull/17875))
+
+## [10.26.2]
+### Changed
+- Sign in with Ethereum: re-enable warning UI for mismatched domains / disable domain binding ([#18200](https://github.com/MetaMask/metamask-extension/pull/18200))
 
 ## [10.26.1]
 ### Fixed
@@ -3727,6 +3734,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.28.0...HEAD
 [10.28.0]: https://github.com/MetaMask/metamask-extension/compare/v10.26.1...v10.28.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.27.0...HEAD
+[10.27.0]: https://github.com/MetaMask/metamask-extension/compare/v10.26.2...v10.27.0
+[10.26.2]: https://github.com/MetaMask/metamask-extension/compare/v10.26.1...v10.26.2
 [10.26.1]: https://github.com/MetaMask/metamask-extension/compare/v10.26.0...v10.26.1
 [10.26.0]: https://github.com/MetaMask/metamask-extension/compare/v10.25.0...v10.26.0
 [10.25.0]: https://github.com/MetaMask/metamask-extension/compare/v10.24.2...v10.25.0
