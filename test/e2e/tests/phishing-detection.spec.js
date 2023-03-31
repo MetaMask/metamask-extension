@@ -289,4 +289,46 @@ describe('Phishing Detection', function () {
       },
     );
   });
+
+  it('should open a new extension expanded view when clicking back to safety button', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockPhishingDetection,
+        dapp: true,
+        dappPaths: ['mock-page-with-disallowed-iframe'],
+        dappOptions: {
+          numberOfDapps: 2,
+        },
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        await driver.openNewPage(
+          `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
+        );
+
+        const iframe = await driver.findElement('iframe');
+
+        await driver.switchToFrame(iframe);
+        await driver.clickElement({
+          text: 'Open this warning in a new tab',
+        });
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await driver.clickElement({
+          text: 'Back to safety',
+        });
+
+        // Ensure we're redirected to wallet home page
+        const homePage = await driver.findElement('.home__main-view');
+        const homePageDisplayed = await homePage.isDisplayed();
+
+        assert.equal(homePageDisplayed, true);
+      },
+    );
+  });
 });

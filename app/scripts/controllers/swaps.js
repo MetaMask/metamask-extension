@@ -17,7 +17,7 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
@@ -136,10 +136,14 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new Web3Provider(provider);
-    this._currentNetwork = networkController.store.getState().network;
-    onNetworkDidChange((network) => {
-      if (network !== 'loading' && network !== this._currentNetwork) {
-        this._currentNetwork = network;
+    this._currentNetworkId = networkController.store.getState().networkId;
+    onNetworkDidChange(() => {
+      const { networkId, networkStatus } = networkController.store.getState();
+      if (
+        networkStatus === NetworkStatus.Available &&
+        networkId !== this._currentNetworkId
+      ) {
+        this._currentNetworkId = networkId;
         this.ethersProvider = new Web3Provider(provider);
       }
     });
