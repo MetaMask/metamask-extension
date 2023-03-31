@@ -111,7 +111,6 @@ export default class AppStateController extends EventEmitter {
   waitForUnlock(resolve, shouldShowUnlockRequest) {
     this.waitingForUnlock.push({ resolve });
     this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
-
     if (shouldShowUnlockRequest) {
       this._createApprovalRequest();
     }
