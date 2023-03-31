@@ -2184,9 +2184,6 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
-  "networkMenuHeading": {
-    "message": "Select a network"
-  },
   "networkName": {
     "message": "Network name"
   },
@@ -3756,9 +3753,6 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "statusNotConnectedAccount": {
-    "message": "No accounts connected"
-  },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
   },
@@ -4356,12 +4350,6 @@
   },
   "tooltipApproveButton": {
     "message": "I understand"
-  },
-  "tooltipSatusConnected": {
-    "message": "connected"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "not connected"
   },
   "total": {
     "message": "Total"

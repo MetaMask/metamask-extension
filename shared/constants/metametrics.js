@@ -374,7 +374,6 @@ export const EVENT_NAMES = {
   ONBOARDING_WALLET_IMPORT_ATTEMPTED: 'Wallet Import Attempted',
   ONBOARDING_WALLET_VIDEO_PLAY: 'SRP Intro Video Played',
   ONBOARDING_TWITTER_CLICK: 'External Link Clicked',
-  SERVICE_WORKER_RESTARTED: 'Service Worker Restarted',
 };
 
 export const EVENT = {
@@ -448,7 +447,6 @@ export const EVENT = {
       DAPP: 'dapp',
       USER: 'user',
     },
-    SERVICE_WORKERS: 'service_workers',
   },
   LOCATION: {
     TOKEN_DETAILS: 'token_details',

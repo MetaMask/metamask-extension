@@ -5,22 +5,24 @@ import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
  * Because some cryptographic libraries we use expect the chain ID to be a
  * number primitive, it must not exceed a certain size.
  *
- * @param chainId - The chain ID to check for safety.
- * @returns Whether the given chain ID is safe.
+ * @param {number} chainId - The chain ID to check for safety.
+ * @returns {boolean} Whether the given chain ID is safe.
  */
-export function isSafeChainId(chainId: unknown): boolean {
-  return isSafeInteger(chainId) && chainId > 0 && chainId <= MAX_SAFE_CHAIN_ID;
+export function isSafeChainId(chainId) {
+  return (
+    Number.isSafeInteger(chainId) && chainId > 0 && chainId <= MAX_SAFE_CHAIN_ID
+  );
 }
 
 /**
  * Checks whether the given value is a 0x-prefixed, non-zero, non-zero-padded,
  * hexadecimal string.
  *
- * @param value - The value to check.
- * @returns True if the value is a correctly formatted hex string,
+ * @param {any} value - The value to check.
+ * @returns {boolean} True if the value is a correctly formatted hex string,
  * false otherwise.
  */
-export function isPrefixedFormattedHexString(value: unknown) {
+export function isPrefixedFormattedHexString(value) {
   if (typeof value !== 'string') {
     return false;
   }
@@ -33,7 +35,7 @@ export function isPrefixedFormattedHexString(value: unknown) {
  * @param chainId - ChainID of network
  * @returns Whether the current network supports token detection
  */
-export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
+export function isTokenDetectionEnabledForNetwork(chainId) {
   switch (chainId) {
     case CHAIN_IDS.MAINNET:
     case CHAIN_IDS.BSC:
@@ -43,15 +45,4 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     default:
       return false;
   }
-}
-
-/**
- * Like {@link Number.isSafeInteger}, but types the input as a `number` if it is
- * indeed a safe integer.
- *
- * @param value - The value to check.
- * @returns True if the value is a safe integer, false otherwise.
- */
-function isSafeInteger(value: unknown): value is number {
-  return Number.isSafeInteger(value);
 }

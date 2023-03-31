@@ -103,7 +103,6 @@ export const AccountListMenu = ({ onClose }) => {
                     },
                   });
                   dispatch(setSelectedAccount(account.address));
-                  onClose();
                 }}
                 identity={account}
                 key={account.address}
