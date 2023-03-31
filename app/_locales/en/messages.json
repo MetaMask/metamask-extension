@@ -103,6 +103,9 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
+  "ShowMore": {
+    "message": "Show more"
+  },
   "about": {
     "message": "About"
   },
@@ -347,6 +350,9 @@
   },
   "amount": {
     "message": "Amount"
+  },
+  "apiUrl": {
+    "message": "API URL"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -907,6 +913,12 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodian": {
+    "message": "Custodian"
+  },
+  "custodianAccount": {
+    "message": "Custodian account"
   },
   "custom": {
     "message": "Advanced"
@@ -2120,6 +2132,9 @@
   "missingToken": {
     "message": "Don't see your token?"
   },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
@@ -2310,6 +2325,9 @@
   },
   "nfts": {
     "message": "NFTs"
+  },
+  "nftsPreviouslyOwned": {
+    "message": "Previously Owned"
   },
   "nickname": {
     "message": "Nickname"
@@ -4238,6 +4256,9 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUse": {
+    "message": "terms of use"
+  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4257,7 +4278,8 @@
     "message": "This is based on information from "
   },
   "thisServiceIsExperimental": {
-    "message": "This service is experimental"
+    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
+    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"
