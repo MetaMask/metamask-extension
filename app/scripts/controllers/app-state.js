@@ -51,7 +51,6 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
-      serviceWorkerLastActiveTime: 0,
     });
     this.timer = null;
 
@@ -362,11 +361,5 @@ export default class AppStateController extends EventEmitter {
    */
   getCurrentPopupId() {
     return this.store.getState().currentPopupId;
-  }
-
-  setServiceWorkerLastActiveTime(serviceWorkerLastActiveTime) {
-    this.store.updateState({
-      serviceWorkerLastActiveTime,
-    });
   }
 }

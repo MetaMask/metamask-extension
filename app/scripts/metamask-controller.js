@@ -121,7 +121,6 @@ import { isMain, isFlask } from '../../shared/constants/environment';
 // eslint-disable-next-line import/order
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
-import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -696,7 +695,6 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
-
     this.keyringController.on('unlock', () => this._onUnlock());
     this.keyringController.on('lock', () => this._onLock());
 
@@ -1192,25 +1190,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === false) {
-      const { serviceWorkerLastActiveTime } =
-        this.appStateController.store.getState();
-      const metametricsPayload = {
-        category: EVENT.SOURCE.SERVICE_WORKERS,
-        event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
-        properties: {
-          service_worker_restarted_time:
-            Date.now() - serviceWorkerLastActiveTime,
-        },
-      };
-
-      try {
-        this.metaMetricsController.trackEvent(metametricsPayload);
-      } catch (e) {
-        log.warn('Failed to track service worker restart metric:', e);
-      }
-    }
-
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -1554,10 +1533,10 @@ export default class MetamaskController extends EventEmitter {
           params:
             newAccounts.length < 2
               ? // If the length is 1 or 0, the accounts are sorted by definition.
-                newAccounts
+              newAccounts
               : // If the length is 2 or greater, we have to execute
-                // `eth_accounts` vi this method.
-                await this.getPermittedAccounts(origin),
+              // `eth_accounts` vi this method.
+              await this.getPermittedAccounts(origin),
         });
       }
 
@@ -2525,7 +2504,7 @@ export default class MetamaskController extends EventEmitter {
     const isTokenDetectionInactiveInMainnet =
       !useTokenDetection &&
       this.networkController.store.getState().provider.chainId ===
-        CHAIN_IDS.MAINNET;
+      CHAIN_IDS.MAINNET;
 
     const { networkConfigurations } = this.networkController.store.getState();
 
@@ -2648,7 +2627,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Automatic login via config password
       const password = process.env.CONF?.PASSWORD;
-      if (password && !process.env.IN_TEST) {
+      if (password) {
         await this.submitPassword(password);
       }
       // Automatic login via storage encryption key
@@ -2774,6 +2753,8 @@ export default class MetamaskController extends EventEmitter {
       case HardwareDeviceNames.lattice:
         keyringName = keyringOverrides?.lattice?.type || LatticeKeyring.type;
         break;
+      case HardwareDeviceNames.self:
+        keyringName = keyringOverrides?.self?.type || TrezorKeyring.type;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -2923,9 +2904,8 @@ export default class MetamaskController extends EventEmitter {
    */
 
   getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
-      parseInt(index, 10) + 1
-    } ${hdPathDescription || ''}`.trim();
+    return `${name[0].toUpperCase()}${name.slice(1)} ${parseInt(index, 10) + 1
+      } ${hdPathDescription || ''}`.trim();
   }
 
   /**
@@ -2981,13 +2961,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
-    const isActionMetricsQueueE2ETest =
-      this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
-
-    if (process.env.IN_TEST && isActionMetricsQueueE2ETest) {
-      await new Promise((resolve) => setTimeout(resolve, 5_000));
-    }
-
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
