@@ -10,15 +10,15 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
   return (
     <Box paddingTop={1}>
-      {getWeightedPermissions(t, permissions).map((perm, index) => {
+      {getWeightedPermissions(t, permissions).map((permission, index) => {
         return (
           <PermissionCell
-            title={perm.label}
-            description={perm.description}
-            weight={perm.weight}
-            avatarIcon={perm.leftIcon}
-            dateApproved={perm?.permissionValue?.date}
-            key={`${perm.permissionName}-${index}`}
+            title={permission.label}
+            description={permission.description}
+            weight={permission.weight}
+            avatarIcon={permission.leftIcon}
+            dateApproved={permission?.permissionValue?.date}
+            key={`${permission.permissionName}-${index}`}
           />
         );
       })}
