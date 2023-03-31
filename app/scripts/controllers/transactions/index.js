@@ -51,7 +51,10 @@ import {
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  ORIGIN_METAMASK,
+  MESSAGE_TYPE,
+} from '../../../../shared/constants/app';
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
@@ -153,6 +156,7 @@ export default class TransactionController extends EventEmitter {
     this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
+    this.messagingSystem = opts.messenger;
 
     this.memStore = new ObservableStore({});
 
@@ -789,6 +793,7 @@ export default class TransactionController extends EventEmitter {
         this.txStateManager.getTransactionWithActionId(actionId);
       if (existingTxMeta) {
         this.emit('newUnapprovedTx', existingTxMeta);
+        this._requestApproval(existingTxMeta);
         existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
         return existingTxMeta;
       }
@@ -861,6 +866,7 @@ export default class TransactionController extends EventEmitter {
 
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
+    this._requestApproval(txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
 
@@ -1346,6 +1352,7 @@ export default class TransactionController extends EventEmitter {
     try {
       // approve
       this.txStateManager.setTxStatusApproved(txId);
+      this._acceptApproval(txMeta);
       // get next nonce
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
@@ -1725,6 +1732,7 @@ export default class TransactionController extends EventEmitter {
   async cancelTransaction(txId, actionId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     this.txStateManager.setTxStatusRejected(txId);
+    this._rejectApproval(txMeta);
     this._trackTransactionMetricsEvent(
       txMeta,
       TransactionMetaMetricsEvent.rejected,
@@ -2586,5 +2594,45 @@ export default class TransactionController extends EventEmitter {
         dropped: true,
       },
     );
+  }
+
+  _requestApproval(txMeta) {
+    const id = this._getApprovalId(txMeta);
+    const { origin } = txMeta;
+    const type = MESSAGE_TYPE.TRANSACTION;
+    const requestState = { txId: txMeta.id };
+
+    this.messagingSystem
+      .call(
+        'ApprovalController:addRequest',
+        {
+          id,
+          origin,
+          type,
+          requestState,
+        },
+        true,
+      )
+      .catch(() => {
+        // Intentionally ignored as promise not currently used
+      });
+  }
+
+  _acceptApproval(txMeta) {
+    const id = this._getApprovalId(txMeta);
+    this.messagingSystem.call('ApprovalController:acceptRequest', id);
+  }
+
+  _rejectApproval(txMeta) {
+    const id = this._getApprovalId(txMeta);
+    this.messagingSystem.call(
+      'ApprovalController:rejectRequest',
+      id,
+      new Error('Rejected'),
+    );
+  }
+
+  _getApprovalId(txMeta) {
+    return String(txMeta.id);
   }
 }

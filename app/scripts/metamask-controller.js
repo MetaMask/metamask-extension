@@ -950,8 +950,15 @@ export default class MetamaskController extends EventEmitter {
       getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'TransactionController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
     });
-    this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
