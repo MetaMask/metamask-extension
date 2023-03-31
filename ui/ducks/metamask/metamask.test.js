@@ -157,6 +157,17 @@ describe('MetaMask Reducers', () => {
     expect(state.isAccountMenuOpen).toStrictEqual(true);
   });
 
+  it('toggles network menu', () => {
+    const state = reduceMetamask(
+      {},
+      {
+        type: actionConstants.TOGGLE_NETWORK_MENU,
+      },
+    );
+
+    expect(state.isNetworktMenuOpen).toStrictEqual(true);
+  });
+
   it('updates value of tx by id', () => {
     const oldState = {
       currentNetworkTxList: [

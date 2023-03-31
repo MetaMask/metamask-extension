@@ -21,7 +21,7 @@ import { getCurrentNetwork, getSelectedIdentity } from '../../../selectors';
 import { GlobalMenu, AccountPicker } from '..';
 
 import Box from '../../ui/box/box';
-import { toggleAccountMenu } from '../../../store/actions';
+import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
 
 export const AppHeader = ({}) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -51,11 +51,13 @@ export const AppHeader = ({}) => {
           name={currentNetwork.nickname}
           src={currentNetwork.rpcPrefs?.imageUrl}
           size={Size.MD}
+          onClick={() => dispatch(toggleNetworkMenu())}
         />
         {/* PickerNetwork should only display in full screen mode */}
         <PickerNetwork
           label={currentNetwork.nickname}
           src={currentNetwork.rpcPrefs?.imageUrl}
+          onClick={() => dispatch(toggleNetworkMenu())}
         />
       </Box>
 

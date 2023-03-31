@@ -25,7 +25,7 @@ const render = (showTestNetworks = false) => {
       },
     },
   });
-  return renderWithProvider(<NetworkListMenu closeMenu={jest.fn()} />, store);
+  return renderWithProvider(<NetworkListMenu onClose={jest.fn()} />, store);
 };
 
 describe('NetworkListMenu', () => {

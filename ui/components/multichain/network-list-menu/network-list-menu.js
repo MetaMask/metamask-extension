@@ -30,7 +30,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 
 const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
 
-export const NetworkListMenu = ({ closeMenu }) => {
+export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const networks = useSelector(getAllNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -42,7 +42,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   return (
-    <Popover onClose={closeMenu} centerTitle title={t('networkMenuHeading')}>
+    <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
       <>
         <Box className="multichain-network-list-menu">
           {networks.map((network) => {
@@ -63,7 +63,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
                   } else {
                     dispatch(setActiveNetwork(network.id));
                   }
-                  closeMenu();
+                  onClose();
                 }}
                 onDeleteClick={
                   canDeleteNetwork
@@ -75,7 +75,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
                             onConfirm: () => undefined,
                           }),
                         );
-                        closeMenu();
+                        onClose();
                       }
                     : null
                 }
@@ -118,5 +118,5 @@ NetworkListMenu.propTypes = {
   /**
    * Executes when the menu should be closed
    */
-  closeMenu: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
