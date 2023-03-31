@@ -17,6 +17,7 @@ import MetaMaskTemplateRenderer from '../../components/app/metamask-template-ren
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
+  AlignItems,
   FLEX_DIRECTION,
   Size,
   TextColor,
@@ -339,7 +340,7 @@ export default function ConfirmationPage({
             ///: END:ONLY_INCLUDE_IN
             pendingConfirmation.origin === 'metamask' && (
               <Box
-                alignItems="center"
+                alignItems={AlignItems.center}
                 marginTop={1}
                 paddingTop={1}
                 paddingRight={4}

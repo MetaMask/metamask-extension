@@ -14,6 +14,7 @@ import {
   AlignItems,
   DISPLAY,
   BorderRadius,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
 import {
   getSnapName,
@@ -59,7 +60,7 @@ const SnapAuthorship = ({ snapId, className }) => {
       paddingRight={4}
       borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
-      style={{ width: '100%' }}
+      width={BLOCK_SIZES.FULL}
     >
       <Box>
         <SnapAvatar snapId={snapId} />
