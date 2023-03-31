@@ -1691,6 +1691,8 @@
   "holdToRevealTitle": {
     "message": "Keep your SRP safe"
   },
+  "holdToRevealLockedLabel": { "message": "hold to reveal circle locked"},
+  "holdToRevealUnlockedLabel": {"message": "hold to reveal circle unlocked"},
   "ignoreAll": {
     "message": "Ignore all"
   },
