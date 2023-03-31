@@ -222,6 +222,7 @@ const Box = React.forwardRef(function Box(
     className,
     backgroundColor,
     color,
+    ariaLabel,
     as = 'div',
     ...props
   },
@@ -300,12 +301,30 @@ const Box = React.forwardRef(function Box(
     return children(boxClassName);
   }
   const Component = as;
+
+  const ariaLabelProp = {};
+  if (isCustomComponent(Component)) {
+    ariaLabelProp.ariaLabel = ariaLabel;
+  } else {
+    ariaLabelProp['aria-label'] = ariaLabel;
+  }
+
+  if (props['aria-label']) {
+    ariaLabelProp['aria-label'] = props['aria-label'];
+  }
+
   return (
-    <Component className={boxClassName} ref={ref} {...props}>
+    <Component className={boxClassName} ref={ref} {...props} {...ariaLabelProp}>
       {children}
     </Component>
   );
 });
+
+// Both class or functional components have type function.
+// Built-in HTML elements (div, span, etc.) have type string.
+function isCustomComponent(element) {
+  return typeof element.type === 'function';
+}
 
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -372,6 +391,8 @@ Box.propTypes = {
    * ./ui/helpers/constants/design-system.js
    */
   color: MultipleTextColors,
+  ariaLabel: PropTypes.string,
+  'aria-label': PropTypes.string,
 };
 
 export default Box;
