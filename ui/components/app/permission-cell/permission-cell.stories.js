@@ -2,7 +2,7 @@ import React from 'react';
 import PermissionCell from '.';
 
 export default {
-  title: 'Components/App/Flask/PermissionCell',
+  title: 'Components/App/PermissionCell',
 
   component: PermissionCell,
 };
