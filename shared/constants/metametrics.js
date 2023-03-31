@@ -374,6 +374,7 @@ export const EVENT_NAMES = {
   ONBOARDING_WALLET_IMPORT_ATTEMPTED: 'Wallet Import Attempted',
   ONBOARDING_WALLET_VIDEO_PLAY: 'SRP Intro Video Played',
   ONBOARDING_TWITTER_CLICK: 'External Link Clicked',
+  SERVICE_WORKER_RESTARTED: 'Service Worker Restarted',
 };
 
 export const EVENT = {
@@ -447,6 +448,7 @@ export const EVENT = {
       DAPP: 'dapp',
       USER: 'user',
     },
+    SERVICE_WORKERS: 'service_workers',
   },
   LOCATION: {
     TOKEN_DETAILS: 'token_details',
@@ -462,17 +464,19 @@ export const CONTEXT_PROPS = {
 };
 
 /**
- * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
+ * These types correspond to the keys in the METAMETRIC_KEY_OPT object
  */
 export const METAMETRIC_KEY = {
   UI_CUSTOMIZATIONS: `ui_customizations`,
 };
 
 /**
- * This object maps a method name to a METAMETRIC_KEY
+ * This object maps a METAMETRIC_KEY to an object of possible options
  */
-export const METAMETRIC_KEY_OPTIONS = {
+export const METAMETRIC_KEY_OPT = {
   [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    flaggedAsMalicious: 'flagged_as_malicious',
+    flaggedAsSafetyUnknown: 'flagged_as_safety_unknown',
     SIWE: 'sign_in_with_ethereum',
   },
 };

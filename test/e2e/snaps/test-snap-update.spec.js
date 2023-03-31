@@ -64,7 +64,10 @@ describe('Test Snap update', function () {
         // wait for permissions popover, click checkboxes and confirm
         await driver.delay(1000);
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
-        await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-0');
+        await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-1');
+        await driver.clickElement(
+          '#public-key-access-bip32-m-44h-0h-secp256k1-0',
+        );
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -124,7 +127,7 @@ describe('Test Snap update', function () {
         // look for the correct version text
         const versionResult = await driver.findElement('#updateSnapVersion');
         await driver.delay(1000);
-        assert.equal(await versionResult.getText(), '"5.0.1"');
+        assert.equal(await versionResult.getText(), '"5.1.2"');
       },
     );
   });

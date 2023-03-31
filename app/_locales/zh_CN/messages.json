@@ -3250,12 +3250,6 @@
   "show": {
     "message": "显示"
   },
-  "showAdvancedGasInline": {
-    "message": "高级燃料控制"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
-  },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "所根据的信息是来自"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的"
   },
   "time": {
     "message": "时间"

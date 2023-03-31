@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Göster"
   },
-  "showAdvancedGasInline": {
-    "message": "Gelişmiş gaz kontrolleri"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
-  },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında dönüşümü göster"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "Bu, şu kaynaktan alınan bilgilere dayanır: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Bu hizmet deneyseldir"
   },
   "time": {
     "message": "Zaman"

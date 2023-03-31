@@ -665,12 +665,6 @@
   "settings": {
     "message": "Setări"
   },
-  "showAdvancedGasInline": {
-    "message": "Controale avansate pentru gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selectați aceasta pentru a arăta prețul gasului și comenzile de limitare direct pe ecranele de trimitere și confirmare."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afișează conversiile pe rețelele de test (testnets)"
   },

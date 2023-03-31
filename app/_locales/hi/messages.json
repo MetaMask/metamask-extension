@@ -3250,12 +3250,6 @@
   "show": {
     "message": "दिखाएं"
   },
-  "showAdvancedGasInline": {
-    "message": "उन्नत गैस नियंत्रण"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
-  },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "से प्राप्त जानकारी पर आधारित है"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रयोगात्मक है"
   },
   "time": {
     "message": "समय"
