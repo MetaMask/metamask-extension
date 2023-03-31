@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Mostrar"
   },
-  "showAdvancedGasInline": {
-    "message": "Controles avanzados de gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Seleccione esta opción para mostrar el precio del gas y limitar los controles directamente en las pantallas de envío y confirmación."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversión en redes de prueba"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "Esto se basa en información de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Este servicio es experimental"
   },
   "time": {
     "message": "Tiempo"

@@ -196,13 +196,10 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-1 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 ETH',
+        });
       },
     );
   });
@@ -275,7 +272,6 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',
@@ -302,9 +298,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerSupportEIP1559()
           .build(),
-        ganacheOptions,
+        ganacheOptions: {
+          ...ganacheOptions,
+          hardfork: 'london',
+        },
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -345,7 +343,6 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',

@@ -3250,12 +3250,6 @@
   "show": {
     "message": "보기"
   },
-  "showAdvancedGasInline": {
-    "message": "고급 가스 제어 기능"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "이 항목을 선택하면 보내기 및 확인 화면에서 바로 가스 가격과 한도 조절을 확인할 수 있습니다."
-  },
   "showFiatConversionInTestnets": {
     "message": "테스트넷에 전환 표시"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "다음에 기반한 정보입니다: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 서비스입니다"
   },
   "time": {
     "message": "시간"

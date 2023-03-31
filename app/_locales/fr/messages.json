@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Afficher"
   },
-  "showAdvancedGasInline": {
-    "message": "Contrôles de carburant avancés"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur les testnets"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "Ces informations proviennent de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ce service est expérimental"
   },
   "time": {
     "message": "Temps"

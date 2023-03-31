@@ -1470,12 +1470,6 @@
   "settings": {
     "message": "Impostazioni"
   },
-  "showAdvancedGasInline": {
-    "message": "Controlli gas avanzati"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Seleziona per visualizzare i controlli su prezzo e limite del gas nelle schermate di invio e conferma."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostra conversione nelle reti di test"
   },

@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Показать"
   },
-  "showAdvancedGasInline": {
-    "message": "Расширенное управление газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Выберите это, чтобы отображать цену газа и управление лимитами непосредственно на экранах отправки и подтверждения."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показывать конвертацию в тестовых сетях"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "Это основано на информации от "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Этот сервис является экспериментальным"
   },
   "time": {
     "message": "Время"

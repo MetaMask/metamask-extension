@@ -672,12 +672,6 @@
   "settings": {
     "message": "Ustawienia"
   },
-  "showAdvancedGasInline": {
-    "message": "Zaawansowana kontrola gazu"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Wybierz tę opcję, aby móc zmienić cenę i limit gazu bezpośrednio na ekranach wysyłania i potwierdzania."
-  },
   "showFiatConversionInTestnets": {
     "message": "Pokaż przeliczanie w sieciach testowych"
   },

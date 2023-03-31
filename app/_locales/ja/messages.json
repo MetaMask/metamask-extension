@@ -3250,12 +3250,6 @@
   "show": {
     "message": "表示"
   },
-  "showAdvancedGasInline": {
-    "message": "高度なガスコントロール"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "これを選択すると、ガス代と限度額のコントロールが送金画面と確認画面に直接表示されます。"
-  },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に変換を表示"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "これは次の情報源からの情報に基づくものです: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは実験段階です"
   },
   "time": {
     "message": "時間"

@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Tampil"
   },
-  "showAdvancedGasInline": {
-    "message": "Kontrol gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menampilkan biaya gas dan kontrol batas secara langsung di layar kirim dan konfirmasi."
-  },
   "showFiatConversionInTestnets": {
     "message": "Tampilkan konversi di jaringan uji"
   },
@@ -4005,9 +3999,6 @@
   },
   "thisIsBasedOn": {
     "message": "Hal ini berdasarkan informasi dari "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental"
   },
   "time": {
     "message": "Waktu"
