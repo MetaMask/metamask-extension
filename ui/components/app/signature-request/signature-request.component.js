@@ -256,7 +256,6 @@ export default class SignatureRequest extends PureComponent {
         {isHardwareWallet ? (
           <div className="signature-request__error-container">
             <HardwareWalletState
-              initialStatus="unlocked"
               onUpdate={(status) =>
                 this.setState({ hardwareLocked: status === 'locked' })
               }

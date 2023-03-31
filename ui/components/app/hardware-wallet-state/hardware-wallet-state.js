@@ -7,7 +7,10 @@ import {
 } from '../../../selectors';
 import { isDeviceAccessible } from '../../../store/actions';
 import { I18nContext } from '../../../contexts/i18n';
-import { setHardwareWalletState } from '../../../ducks/app/app';
+import {
+  setHardwareWalletState,
+  getHardwareWalletState,
+} from '../../../ducks/app/app';
 import { HARDWARE_CHECK_RATE } from '../../../../shared/constants/hardware-wallets';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { BannerAlert } from '../../component-library';
@@ -41,13 +44,11 @@ DefaultComponent.propTypes = {
  *
  * @param options0
  * @param options0.pollingRateMs
- * @param options0.initialStatus
  * @param options0.onUpdate
  * @param options0.Component
  */
 export default function HardwareWalletState({
   pollingRateMs = HARDWARE_CHECK_RATE,
-  initialStatus = 'locked',
   onUpdate,
   Component = DefaultComponent,
   ...props
@@ -55,20 +56,21 @@ export default function HardwareWalletState({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  const [status, setStatus] = useState(initialStatus);
+  const hdState = useSelector(getHardwareWalletState);
+  const [status, setStatus] = useState(hdState);
   const device = useSelector(getHardwareWalletDevice);
   const path = useSelector(getHardwareWalletPath);
 
   const updateHardwareLockState = useCallback(async () => {
     const unlocked = await isDeviceAccessible(device, path);
     const state = unlocked ? 'unlocked' : 'locked';
-    const changed = state !== status;
     setStatus(state);
     onUpdate?.(state);
-    // issue dispatch on change
-    if (changed) {
+    // dispatch a change action?
+    if (state !== hdState) {
       dispatch(setHardwareWalletState(state));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [device, path, onUpdate]);
 
   useEffect(() => {
@@ -85,8 +87,6 @@ export default function HardwareWalletState({
 HardwareWalletState.propTypes = {
   // number of milliseconds between polling checks
   pollingRateMs: PropTypes.number,
-  // initial status prior to first polling (locked/unlocked)
-  initialStatus: PropTypes.string,
   // invoked with each updated status (locked/unlocked)
   onUpdate: PropTypes.func,
   // component to be rendered (default: BannerAlert)

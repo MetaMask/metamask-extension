@@ -108,7 +108,6 @@ export default function SignatureRequestSIWE({
       {isHdWallet ? (
         <div className="signature-request-siwe__actionable-message">
           <HardwareWalletState
-            initialStatus="unlocked"
             onUpdate={(status) => setHardwareLocked(status === 'locked')}
           />
         </div>

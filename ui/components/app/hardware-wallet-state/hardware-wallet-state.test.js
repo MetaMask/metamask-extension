@@ -1,43 +1,46 @@
 import React from 'react';
 import { act } from '@testing-library/react-hooks';
 import configureMockStore from 'redux-mock-store';
+import { cloneDeep } from 'lodash';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import HardwareWalletState from '.';
 
-describe('HardwareWalletState Component', () => {
-  const mockStore = configureMockStore()(mockState);
+const customStore = ({ hardwareWalletState } = {}) => {
+  const data = cloneDeep({
+    ...mockState,
+    appState: {
+      ...mockState?.appState,
+      hardwareWalletState,
+    },
+  });
+  return configureMockStore()(data);
+};
 
+describe('HardwareWalletState Component', () => {
   it('should match default snapshot', () => {
     const { container } = renderWithProvider(
       <HardwareWalletState />,
-      mockStore,
+      customStore(),
     );
 
     expect(container).toMatchSnapshot();
   });
 
   it('should render message with locked state', () => {
-    const props = {
-      initialStatus: 'locked',
-    };
-
     const { container } = renderWithProvider(
-      <HardwareWalletState {...props} />,
-      mockStore,
+      <HardwareWalletState />,
+      customStore({ hardwareWalletState: 'locked' }),
     );
 
     expect(container).toMatchSnapshot();
   });
 
   it('should render empty with unlocked state', () => {
-    const props = {
-      initialStatus: 'unlocked',
-    };
-
     const { container } = renderWithProvider(
-      <HardwareWalletState {...props} />,
-      mockStore,
+      <HardwareWalletState />,
+      customStore({ hardwareWalletState: 'unlocked' }),
     );
 
     expect(container).toMatchSnapshot();
@@ -48,15 +51,14 @@ describe('HardwareWalletState Component', () => {
     const handler = (state) => {
       status = state;
     };
-    // start unlocked and wait to update to locked
     const props = {
-      initialStatus: status,
       pollingRateMs: 600,
       onUpdate: handler,
     };
     const { container } = renderWithProvider(
       <HardwareWalletState {...props} />,
-      mockStore,
+      // start unlocked and wait to update to locked
+      customStore({ hardwareWalletState: status }),
     );
     // should not change until polling commences
     expect(status).toStrictEqual('unlocked');
