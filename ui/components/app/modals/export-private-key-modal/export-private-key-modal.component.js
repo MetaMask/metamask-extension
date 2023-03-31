@@ -63,38 +63,37 @@ const ExportPrivateKeyModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const exportAccountAndGetPrivateKey = (passwordInput, address) => {
-    exportAccount(passwordInput, address)
-      .then((privateKeyRetrieved) => {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.KEYS,
-            event: EVENT_NAMES.KEY_EXPORT_REVEALED,
-            properties: {
-              key_type: EVENT.KEY_TYPES.PKEY,
-            },
+  const exportAccountAndGetPrivateKey = async (passwordInput, address) => {
+    try {
+      const privateKeyRetrieved = await exportAccount(passwordInput, address);
+      trackEvent(
+        {
+          category: EVENT.CATEGORIES.KEYS,
+          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+          properties: {
+            key_type: EVENT.KEY_TYPES.PKEY,
           },
-          {},
-        );
-        setPrivateKey(privateKeyRetrieved);
-        setShowWarning(false);
-        setShowHoldToReveal(true);
-      })
-      .catch((e) => {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.KEYS,
-            event: EVENT_NAMES.KEY_EXPORT_FAILED,
-            properties: {
-              key_type: EVENT.KEY_TYPES.PKEY,
-              reason: 'incorrect_password',
-            },
+        },
+        {},
+      );
+      setPrivateKey(privateKeyRetrieved);
+      setShowWarning(false);
+      setShowHoldToReveal(true);
+    } catch (e) {
+      trackEvent(
+        {
+          category: EVENT.CATEGORIES.KEYS,
+          event: EVENT_NAMES.KEY_EXPORT_FAILED,
+          properties: {
+            key_type: EVENT.KEY_TYPES.PKEY,
+            reason: 'incorrect_password',
           },
-          {},
-        );
+        },
+        {},
+      );
 
-        log.error(e);
-      });
+      log.error(e);
+    }
   };
 
   const renderPasswordLabel = (privateKeyInput) => {
