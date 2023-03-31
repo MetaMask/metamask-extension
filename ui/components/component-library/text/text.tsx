@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React, { forwardRef, RefObject } from 'react';
 import classnames from 'classnames';
 import Box from '../../ui/box';
 import {
@@ -42,7 +42,7 @@ export const Text = forwardRef(function Text(
     children,
     ...props
   }: TextProps,
-  ref: Ref<HTMLElement>,
+  ref: RefObject<HTMLElement>,
 ) {
   // Check if as is set otherwise set a default tag based on variant
   const Tag = as ?? getTextElementDefault(variant);
