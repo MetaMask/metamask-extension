@@ -14,6 +14,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
+  HardwareKeyringNames,
   LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -92,6 +93,7 @@ class ConnectHardwareForm extends Component {
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.ledger,
       HardwareDeviceNames.lattice,
+      HardwareKeyringNames.self,
     ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
