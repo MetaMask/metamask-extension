@@ -11,6 +11,7 @@ import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';
 import LogoTrezor from './logo-trezor';
 import LogoLattice from './logo-lattice';
+import LogoSelf from './logo-self';
 
 import README from './README.mdx';
 
@@ -68,6 +69,7 @@ export const DefaultStory = (args) => (
     <LogoItem Component={<LogoQRBased {...args} />} />
     <LogoItem Component={<LogoTrezor {...args} />} />
     <LogoItem Component={<LogoLattice {...args} />} />
+    <LogoItem Component={<LogoSelf {...args} />} />
   </div>
 );
 
