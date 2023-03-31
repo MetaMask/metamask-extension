@@ -66,7 +66,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
             <SnapUIRenderer
               snapId={selectedSnap.id}
               data={data}
-              delineatorType={DelineatorType.insights}
+              delineatorType={DelineatorType.Insights}
             />
           ) : (
             <Text
@@ -82,7 +82,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
 
       {!loading && error && (
         <Box padding={4} className="snap-insight__container__error">
-          <SnapDelineator snapName={snapName} type={DelineatorType.error}>
+          <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               {t('snapsUIError', [<b key="0">{snapName}</b>])}
             </Text>

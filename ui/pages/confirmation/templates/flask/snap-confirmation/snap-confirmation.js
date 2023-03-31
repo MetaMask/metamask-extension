@@ -21,7 +21,7 @@ function getValues(pendingApproval, t, actions) {
           element: 'SnapDelineator',
           key: 'snap-delineator',
           props: {
-            type: DelineatorType.content,
+            type: DelineatorType.Content,
             snapName,
           },
           // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.

@@ -21,7 +21,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
           element: 'SnapDelineator',
           key: 'snap-delineator',
           props: {
-            type: DelineatorType.content,
+            type: DelineatorType.Content,
             snapName,
           },
           children: [

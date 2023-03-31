@@ -76,7 +76,7 @@ export const mapToTemplate = (data) => {
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 export const SnapUIRenderer = ({
   snapId,
-  delineatorType = DelineatorType.content,
+  delineatorType = DelineatorType.Content,
   data,
 }) => {
   const t = useI18nContext();
@@ -88,7 +88,7 @@ export const SnapUIRenderer = ({
 
   if (!isComponent(data)) {
     return (
-      <SnapDelineator snapName={snapName} type={DelineatorType.error}>
+      <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
         <Text variant={TextVariant.bodySm} marginBottom={4}>
           {t('snapsUIError', [<b key="0">{snapName}</b>])}
         </Text>

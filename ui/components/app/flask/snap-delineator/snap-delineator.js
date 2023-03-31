@@ -29,7 +29,7 @@ export const SnapDelineator = ({
   children,
 }) => {
   const t = useI18nContext();
-  const isError = type === DelineatorType.error;
+  const isError = type === DelineatorType.Error;
   return (
     <Box
       className="snap-delineator__wrapper"
