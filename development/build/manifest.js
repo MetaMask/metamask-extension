@@ -1,11 +1,11 @@
 const { promises: fs } = require('fs');
 const path = require('path');
-const { mergeWith, cloneDeep } = require('lodash');
+const childProcess = require('child_process');
+const { mergeWith, cloneDeep, capitalize } = require('lodash');
 
 const baseManifest = process.env.ENABLE_MV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const { hideBin } = require('yargs/helpers');
 const { BuildType } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
@@ -17,6 +17,9 @@ function createManifestTasks({
   browserPlatforms,
   browserVersionMap,
   buildType,
+  applyLavaMoat,
+  shouldIncludeSnow,
+  entryTask,
 }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
@@ -103,15 +106,32 @@ function createManifestTasks({
           const manifest = await readJson(manifestPath);
           transformFn(manifest);
 
-          manifest.name = `MetaMask build task \`${process.argv[2]}\``;
-          manifest.description = `build args: \`${hideBin(process.argv).join(
-            ' ',
-          )}\``;
+          modifyNameAndDescForDev(manifest);
 
           await writeJson(manifest, manifestPath);
         }),
       );
     };
+  }
+
+  // For non-production builds only, modify the extension's name and description
+  function modifyNameAndDescForDev(manifest) {
+    const mv3Str = process.env.ENABLE_MV3 ? ' MV3' : '';
+    const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
+    const snowStr = shouldIncludeSnow ? ' snow' : '';
+
+    // Get the first 8 characters of the git revision id
+    const gitRevisionStr = childProcess
+      .execSync('git rev-parse HEAD')
+      .toString()
+      .trim()
+      .substring(0, 8);
+
+    manifest.name = `MetaMask ${capitalize(
+      buildType,
+    )}${mv3Str}${lavamoatStr}${snowStr}`;
+
+    manifest.description = `${entryTask} build from git id: ${gitRevisionStr}`;
   }
 
   // helper for merging obj value
