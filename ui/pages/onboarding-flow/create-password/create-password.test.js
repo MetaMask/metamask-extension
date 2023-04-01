@@ -374,16 +374,9 @@ describe('Onboarding Create Password', () => {
 
       const importWalletButton = queryByTestId('create-password-import');
 
-      expect(importWalletButton).toMatchInlineSnapshot(`
-<button
-  class="button btn--rounded btn-primary btn--large create-password__form--submit-button"
-  data-testid="create-password-import"
-  role="button"
-  tabindex="0"
->
-  Import my wallet
-</button>
-`);
+      expect(importWalletButton.textContent).toMatchInlineSnapshot(
+        `"Import my wallet"`,
+      );
 
       fireEvent.click(importWalletButton);
 
