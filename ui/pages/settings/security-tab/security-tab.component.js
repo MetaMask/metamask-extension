@@ -484,9 +484,6 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>
-        <div className="settings-page__content-padded">
-          {this.renderSeedWords()}
-        </div>
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>

@@ -108,26 +108,6 @@ export default class AccountDetailsModal extends Component {
             blockExplorerLinkText.secondPart,
           ])}
         </Button>
-
-        {exportPrivateKeyFeatureEnabled && (
-          <Button
-            type="secondary"
-            className="account-details-modal__button"
-            onClick={() => {
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.ACCOUNTS,
-                event: EVENT_NAMES.KEY_EXPORT_SELECTED,
-                properties: {
-                  key_type: EVENT.KEY_TYPES.PKEY,
-                  location: 'Account Details Modal',
-                },
-              });
-              showExportPrivateKeyModal();
-            }}
-          >
-            {this.context.t('exportPrivateKey')}
-          </Button>
-        )}
       </AccountModalContainer>
     );
   }
