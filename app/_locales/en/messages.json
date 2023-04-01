@@ -103,6 +103,9 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
+  "ShowMore": {
+    "message": "Show more"
+  },
   "about": {
     "message": "About"
   },
@@ -347,6 +350,9 @@
   },
   "amount": {
     "message": "Amount"
+  },
+  "apiUrl": {
+    "message": "API URL"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -907,6 +913,12 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodian": {
+    "message": "Custodian"
+  },
+  "custodianAccount": {
+    "message": "Custodian account"
   },
   "custom": {
     "message": "Advanced"
@@ -2118,6 +2130,9 @@
   "missingToken": {
     "message": "Don't see your token?"
   },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
@@ -2168,6 +2183,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkMenuHeading": {
+    "message": "Select a network"
   },
   "networkName": {
     "message": "Network name"
@@ -2308,6 +2326,9 @@
   },
   "nfts": {
     "message": "NFTs"
+  },
+  "nftsPreviouslyOwned": {
+    "message": "Previously Owned"
   },
   "nickname": {
     "message": "Nickname"
@@ -3735,6 +3756,9 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "statusNotConnectedAccount": {
+    "message": "No accounts connected"
+  },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
   },
@@ -4332,6 +4356,12 @@
   },
   "tooltipApproveButton": {
     "message": "I understand"
+  },
+  "tooltipSatusConnected": {
+    "message": "connected"
+  },
+  "tooltipSatusNotConnected": {
+    "message": "not connected"
   },
   "total": {
     "message": "Total"
