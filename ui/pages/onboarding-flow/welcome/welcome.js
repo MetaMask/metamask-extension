@@ -178,7 +178,7 @@ export default function OnboardingWelcome() {
             <CheckBox
               id="onboarding__terms-checkbox"
               className="onboarding__terms-checkbox"
-              dataTestId="onboarding__terms-checkbox"
+              dataTestId="onboarding-terms-checkbox"
               checked={termsChecked}
               onClick={toggleTermsCheck}
             />
