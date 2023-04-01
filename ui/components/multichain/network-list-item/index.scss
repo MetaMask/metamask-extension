@@ -1,0 +1,51 @@
+.multichain-network-list-item {
+  position: relative;
+  cursor: pointer;
+
+  &:not(.multichain-network-list-item--selected) {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default-hover);
+    }
+  }
+
+  a:hover,
+  a:focus {
+    color: inherit;
+  }
+
+  &:hover,
+  &:focus,
+  &:focus-within {
+    .multichain-network-list-item__delete {
+      visibility: visible;
+    }
+  }
+
+  &__network-name {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    text-align: start;
+
+    button:hover {
+      opacity: 1;
+    }
+  }
+
+  &__tooltip {
+    display: inline;
+  }
+
+  &__selected-indicator {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  &__delete {
+    visibility: hidden;
+  }
+}
