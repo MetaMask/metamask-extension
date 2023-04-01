@@ -4,6 +4,9 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ACTION_QUEUE_METRICS_E2E_TEST,
+} = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 
 function defaultFixture() {
@@ -309,6 +312,7 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
         networkId: '1337',
