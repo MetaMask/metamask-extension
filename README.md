@@ -1,4 +1,4 @@
-# MetaMask Browser Extension
+# MetaMask Browser Extension | JoinSelf Integration
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
@@ -17,8 +17,8 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Install [Node.js](https://nodejs.org) version 16
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Install [Yarn v3](https://yarnpkg.com/getting-started/install)
-    - ONLY follow the steps in the "Install Corepack" and "Updating the global Yarn version" sections
-    - DO NOT take any of the steps in the "Initializing your project", "Updating to the latest versions" or "Installing the latest build fresh from master" sections. These steps could result in your repo being reset or installing the wrong yarn version, which can break your build.
+  - ONLY follow the steps in the "Install Corepack" and "Updating the global Yarn version" sections
+  - DO NOT take any of the steps in the "Initializing your project", "Updating to the latest versions" or "Installing the latest build fresh from master" sections. These steps could result in your repo being reset or installing the wrong yarn version, which can break your build.
 - Copy the `.metamaskrc.dist` file to `.metamaskrc`
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
