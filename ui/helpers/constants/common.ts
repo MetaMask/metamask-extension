@@ -12,8 +12,8 @@ _supportRequestLink =
 
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
 _supportRequestLink = 'https://mmi-support.zendesk.com/hc/en-us/requests/new';
-const _mmiWebSite = 'https://metamask.io/institutions/';
-export const MMI_WEB_SITE = _mmiWebSite;
+export const SUPPORT_LINK = 'https://mmi-support.zendesk.com/hc/en-us';
+export const MMI_WEB_SITE = 'https://metamask.io/institutions/';
 ///: END:ONLY_INCLUDE_IN
 
 export const SUPPORT_REQUEST_LINK = _supportRequestLink;
