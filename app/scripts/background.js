@@ -556,6 +556,10 @@ export function setupController(initState, initLangCode, overrides) {
           if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
             // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
             remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+
+            controller.appStateController.setServiceWorkerLastActiveTime(
+              Date.now(),
+            );
           }
         });
       }
