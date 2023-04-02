@@ -4204,9 +4204,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@metamask/phishing-warning@npm:2.0.1"
+"@metamask/phishing-warning@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/phishing-warning@npm:2.1.0"
   dependencies:
     "@metamask/design-tokens": ^1.6.0
     "@metamask/post-message-stream": ^6.0.0
@@ -4217,7 +4217,7 @@ __metadata:
     pump: ^3.0.0
     punycode: ^2.1.1
     ses: ^0.18.1
-  checksum: caa3e596c3a67188e457307b43724c89121d60734353922d369932093f8618f96465ba7613b194dc2c57754399783dcdf1777c900afeff21bd5137f02688b686
+  checksum: d04b3f817deafa077028f2d235ae694fa772a5ee6a02fc73c6f1fed6dbd1a7491370a25b9484157835f9e1a1773e738a1306ce0c854604eba99af86f1624f453
   languageName: node
   linkType: hard
 
@@ -24292,7 +24292,7 @@ __metadata:
     "@metamask/obs-store": ^5.0.0
     "@metamask/permission-controller": ^3.1.0
     "@metamask/phishing-controller": ^2.0.0
-    "@metamask/phishing-warning": ^2.0.1
+    "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^1.0.0
