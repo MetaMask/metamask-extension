@@ -124,6 +124,7 @@ import { isMain, isFlask } from '../../shared/constants/environment';
 // eslint-disable-next-line import/order
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
+import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -698,6 +699,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
+
     this.keyringController.on('unlock', () => this._onUnlock());
     this.keyringController.on('lock', () => this._onLock());
 
@@ -1192,6 +1194,25 @@ export default class MetamaskController extends EventEmitter {
         this.signController.clearUnapproved();
       },
     );
+
+    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === false) {
+      const { serviceWorkerLastActiveTime } =
+        this.appStateController.store.getState();
+      const metametricsPayload = {
+        category: EVENT.SOURCE.SERVICE_WORKERS,
+        event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        properties: {
+          service_worker_restarted_time:
+            Date.now() - serviceWorkerLastActiveTime,
+        },
+      };
+
+      try {
+        this.metaMetricsController.trackEvent(metametricsPayload);
+      } catch (e) {
+        log.warn('Failed to track service worker restart metric:', e);
+      }
+    }
 
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
@@ -2631,7 +2652,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Automatic login via config password
       const password = process.env.CONF?.PASSWORD;
-      if (password) {
+      if (password && !process.env.IN_TEST) {
         await this.submitPassword(password);
       }
       // Automatic login via storage encryption key
@@ -2992,6 +3013,13 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
+    const isActionMetricsQueueE2ETest =
+      this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
+
+    if (process.env.IN_TEST && isActionMetricsQueueE2ETest) {
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+    }
+
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
@@ -3613,7 +3641,11 @@ export default class MetamaskController extends EventEmitter {
     phishingStream.on(
       'data',
       createMetaRPCHandler(
-        { safelistPhishingDomain: this.safelistPhishingDomain.bind(this) },
+        {
+          safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
+          backToSafetyPhishingWarning:
+            this.backToSafetyPhishingWarning.bind(this),
+        },
         phishingStream,
       ),
     );
@@ -4372,6 +4404,11 @@ export default class MetamaskController extends EventEmitter {
    */
   safelistPhishingDomain(hostname) {
     return this.phishingController.bypass(hostname);
+  }
+
+  async backToSafetyPhishingWarning() {
+    const extensionURL = this.platform.getExtensionURL();
+    await this.platform.switchToAnotherURL(undefined, extensionURL);
   }
 
   /**
