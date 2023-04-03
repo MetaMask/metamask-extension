@@ -3,6 +3,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
+  HardwareWalletStates,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
@@ -53,7 +54,7 @@ interface AppState {
   gasLoadingAnimationIsShowing: boolean;
   smartTransactionsError: string | null;
   smartTransactionsErrorMessageDismissed: boolean;
-  hardwareWalletState: string | null;
+  hardwareWalletState: HardwareWalletStates | null;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
   newNftAddedMessage: string;
@@ -116,7 +117,7 @@ const initialState: AppState = {
   gasLoadingAnimationIsShowing: false,
   smartTransactionsError: null,
   smartTransactionsErrorMessageDismissed: false,
-  hardwareWalletState: null,
+  hardwareWalletState: HardwareWalletStates.unknown,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
   newNftAddedMessage: '',
@@ -449,7 +450,7 @@ export function toggleGasLoadingAnimation(
 }
 
 export function setHardwareWalletState(
-  payload: string | null,
+  payload: HardwareWalletStates,
 ): PayloadAction<string | null> {
   return { type: actionConstants.SET_HARDWARE_WALLET_STATE, payload };
 }

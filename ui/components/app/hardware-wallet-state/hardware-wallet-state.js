@@ -11,7 +11,10 @@ import {
   setHardwareWalletState,
   getHardwareWalletState,
 } from '../../../ducks/app/app';
-import { HARDWARE_CHECK_RATE } from '../../../../shared/constants/hardware-wallets';
+import {
+  HardwareWalletStates,
+  HARDWARE_CHECK_RATE,
+} from '../../../../shared/constants/hardware-wallets';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { BannerAlert } from '../../component-library';
 
@@ -63,7 +66,7 @@ export default function HardwareWalletState({
 
   const updateHardwareLockState = useCallback(async () => {
     const unlocked = await isDeviceAccessible(device, path);
-    const state = unlocked ? 'unlocked' : 'locked';
+    const state = unlocked ? HardwareWalletStates.unlocked : HardwareWalletStates.locked;
     setStatus(state);
     onUpdate?.(state);
     // dispatch a change action?
@@ -80,7 +83,7 @@ export default function HardwareWalletState({
   }, [pollingRateMs]);
 
   return (
-    status === 'locked' && <Component {...props}>{t('ledgerLocked')}</Component>
+    status === HardwareWalletStates.locked && <Component {...props}>{t('ledgerLocked')}</Component>
   );
 }
 

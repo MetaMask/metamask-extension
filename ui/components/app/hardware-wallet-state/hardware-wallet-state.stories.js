@@ -4,10 +4,11 @@ import { cloneDeep } from 'lodash';
 
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
+import { HardwareWalletStates } from '../../../../shared/constants/hardware-wallets';
 
 import HardwareWalletState from '.';
 
-const customStore = ({ hardwareWalletState } = {}) => {
+const customStore = ({ hardwareWalletState = HardwareWalletStates.unknown } = {}) => {
   const data = cloneDeep({
     ...testData,
     appState: {
@@ -34,14 +35,14 @@ export default {
 };
 
 export const LockedStory = (args) => (
-  <Provider store={customStore({ hardwareWalletState: 'locked' })}>
+  <Provider store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}>
     <HardwareWalletState {...args} />
   </Provider>
 );
 LockedStory.storyName = 'Locked';
 
 export const UnlockedStory = (args) => (
-  <Provider store={customStore({ hardwareWalletState: 'unlocked' })}>
+  <Provider store={customStore({ hardwareWalletState: HardwareWalletStates.unlocked })}>
     <HardwareWalletState {...args} />
   </Provider>
 );
@@ -55,7 +56,7 @@ export const DefaultStory = (args) => (
 DefaultStory.storyName = 'Default';
 
 export const CustomH1ComponentStory = (args) => (
-  <Provider store={customStore({ hardwareWalletState: 'locked' })}>
+  <Provider store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}>
     <HardwareWalletState
       Component={({ children, ...props }) => <h1 {...props}>{children}</h1>}
       {...args}
