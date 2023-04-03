@@ -104,23 +104,34 @@ const initialState = {
 };
 
 export default class SwapsController {
-  constructor({
-    getBufferedGasLimit,
-    networkController,
-    provider,
-    getProviderConfig,
-    getTokenRatesState,
-    fetchTradesInfo = defaultFetchTradesInfo,
-    getCurrentChainId,
-    getEIP1559GasFeeEstimates,
-    onNetworkDidChange,
-  }) {
+  constructor(
+    {
+      getBufferedGasLimit,
+      networkController,
+      provider,
+      getProviderConfig,
+      getTokenRatesState,
+      fetchTradesInfo = defaultFetchTradesInfo,
+      getCurrentChainId,
+      getEIP1559GasFeeEstimates,
+      onNetworkDidChange,
+    },
+    state,
+  ) {
     this.store = new ObservableStore({
-      swapsState: { ...initialState.swapsState },
+      swapsState: {
+        ...initialState.swapsState,
+        swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+      },
     });
 
     this.resetState = () => {
-      this.store.updateState({ swapsState: { ...initialState.swapsState } });
+      this.store.updateState({
+        swapsState: {
+          ...initialState.swapsState,
+          swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+        },
+      });
     };
 
     this._fetchTradesInfo = fetchTradesInfo;
@@ -661,6 +672,7 @@ export default class SwapsController {
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: swapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);

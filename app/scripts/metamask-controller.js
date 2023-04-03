@@ -1127,23 +1127,30 @@ export default class MetamaskController extends EventEmitter {
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
-    this.swapsController = new SwapsController({
-      getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
-        this.txController.txGasUtil,
-      ),
-      networkController: this.networkController,
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        NetworkControllerEventTypes.NetworkDidChange,
-      ),
-      provider: this.provider,
-      getProviderConfig: () => this.networkController.store.getState().provider,
-      getTokenRatesState: () => this.tokenRatesController.state,
-      getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
-    });
+    this.swapsController = new SwapsController(
+      {
+        getBufferedGasLimit:
+          this.txController.txGasUtil.getBufferedGasLimit.bind(
+            this.txController.txGasUtil,
+          ),
+        networkController: this.networkController,
+        onNetworkDidChange: networkControllerMessenger.subscribe.bind(
+          networkControllerMessenger,
+          NetworkControllerEventTypes.NetworkDidChange,
+        ),
+        provider: this.provider,
+        getProviderConfig: () =>
+          this.networkController.store.getState().provider,
+        getTokenRatesState: () => this.tokenRatesController.state,
+        getCurrentChainId: () =>
+          this.networkController.store.getState().provider.chainId,
+        getEIP1559GasFeeEstimates:
+          this.gasFeeController.fetchGasFeeEstimates.bind(
+            this.gasFeeController,
+          ),
+      },
+      initState.SwapsController,
+    );
     this.smartTransactionsController = new SmartTransactionsController(
       {
         onNetworkStateChange: (cb) => {
