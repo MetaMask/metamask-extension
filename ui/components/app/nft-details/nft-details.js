@@ -204,8 +204,7 @@ export default function NftDetails({ nft }) {
                 color={TextColor.textDefault}
                 variant={TextVariant.headingSm}
                 as="h4"
-                fontWeight={FONT_WEIGHT.BOLD}
-                boxProps={{ margin: 0, marginBottom: 2 }}
+                marginBottom={2}
               >
                 {name}
               </Text>
@@ -213,7 +212,7 @@ export default function NftDetails({ nft }) {
                 color={TextColor.textMuted}
                 variant={TextVariant.bodyMd}
                 as="h5"
-                boxProps={{ margin: 0, marginBottom: 4 }}
+                marginBottom={4}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               >
                 #{tokenId}
@@ -227,7 +226,7 @@ export default function NftDetails({ nft }) {
                   as="h6"
                   fontWeight={FONT_WEIGHT.BOLD}
                   className="nft-details__description"
-                  boxProps={{ margin: 0, marginBottom: 2 }}
+                  marginBottom={2}
                 >
                   {t('description')}
                 </Text>
@@ -236,7 +235,7 @@ export default function NftDetails({ nft }) {
                   variant={TextVariant.bodySm}
                   as="h6"
                   overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                  boxProps={{ margin: 0, marginBottom: 4 }}
+                  marginBottom={4}
                 >
                   {description}
                 </Text>
@@ -251,14 +250,10 @@ export default function NftDetails({ nft }) {
               <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
                 <Text
                   color={TextColor.textDefault}
-                  variant={TextVariant.bodySm}
+                  variant={TextVariant.bodySmBold}
                   as="h6"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{
-                    margin: 0,
-                    marginBottom: 4,
-                    marginRight: 2,
-                  }}
+                  marginBottom={4}
+                  marginRight={2}
                   className="nft-details__link-title"
                 >
                   {t('lastSold')}
@@ -273,7 +268,7 @@ export default function NftDetails({ nft }) {
                     variant={TextVariant.bodySm}
                     as="h6"
                     overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                    boxProps={{ margin: 0, marginBottom: 4 }}
+                    marginBottom={4}
                   >
                     {formattedTimestamp}
                   </Text>
@@ -284,12 +279,8 @@ export default function NftDetails({ nft }) {
                   color={TextColor.textDefault}
                   variant={TextVariant.bodySm}
                   as="h6"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{
-                    margin: 0,
-                    marginBottom: 4,
-                    marginRight: 2,
-                  }}
+                  marginBottom={4}
+                  marginRight={2}
                   className="nft-details__link-title"
                 >
                   {t('lastPriceSold')}
@@ -304,7 +295,7 @@ export default function NftDetails({ nft }) {
                     variant={TextVariant.bodySm}
                     as="h6"
                     overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                    boxProps={{ margin: 0, marginBottom: 4 }}
+                    marginBottom={4}
                   >
                     {`${Number(decWEIToDecETH(lastSale.total_price))} ${
                       lastSale.payment_token.symbol
@@ -319,12 +310,8 @@ export default function NftDetails({ nft }) {
               color={TextColor.textDefault}
               variant={TextVariant.bodySm}
               as="h6"
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-                marginRight: 2,
-              }}
+              marginBottom={4}
+              marginRight={2}
               className="nft-details__link-title"
             >
               {t('source')}
@@ -332,10 +319,7 @@ export default function NftDetails({ nft }) {
             <Text
               variant={TextVariant.bodySm}
               as="h6"
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-              }}
+              marginBottom={4}
               className="nft-details__image-source"
               color={
                 isDataURI ? TextColor.textDefault : TextColor.primaryDefault
@@ -361,12 +345,8 @@ export default function NftDetails({ nft }) {
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}
                 as="h6"
-                fontWeight={FONT_WEIGHT.BOLD}
-                boxProps={{
-                  margin: 0,
-                  marginBottom: 4,
-                  marginRight: 2,
-                }}
+                marginBottom={4}
+                marginRight={2}
                 className="nft-details__link-title"
               >
                 {t('link')}
@@ -374,10 +354,7 @@ export default function NftDetails({ nft }) {
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"
-                boxProps={{
-                  margin: 0,
-                  marginBottom: 4,
-                }}
+                marginBottom={4}
                 className="nft-details__image-source"
                 color={
                   isDataURI ? TextColor.textDefault : TextColor.primaryDefault
@@ -399,12 +376,8 @@ export default function NftDetails({ nft }) {
               color={TextColor.textDefault}
               variant={TextVariant.bodySm}
               as="h6"
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-                marginRight: 2,
-              }}
+              marginBottom={4}
+              marginRight={2}
               className="nft-details__link-title"
             >
               {t('contractAddress')}
@@ -419,7 +392,7 @@ export default function NftDetails({ nft }) {
                 variant={TextVariant.bodySm}
                 as="h6"
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                boxProps={{ margin: 0, marginBottom: 4 }}
+                marginBottom={4}
               >
                 {shortenAddress(address)}
               </Text>
