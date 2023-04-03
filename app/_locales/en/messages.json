@@ -2446,10 +2446,10 @@
     "message": "The Ethereum Merge is here!"
   },
   "notifications16ActionText": {
-    "message": "Enable security provider"
+    "message": "Enable security alerts"
   },
   "notifications16DescriptionOne": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request.",
+    "message": "Get warings from MetaMask (powered by OpenSea) when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionThree": {
@@ -2457,11 +2457,11 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionTwo": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!",
+    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16Title": {
-    "message": "Stay safe with OpenSea"
+    "message": "Stay safer using MetaMask"
   },
   "notifications17ActionText": {
     "message": "Enable NFT autodetection"
