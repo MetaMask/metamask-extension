@@ -2449,7 +2449,7 @@
     "message": "Enable security alerts"
   },
   "notifications16DescriptionOne": {
-    "message": "Get warings from MetaMask (powered by OpenSea) when you may have received a malicious request.",
+    "message": "Get alerts from third parties when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionThree": {
@@ -2461,7 +2461,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16Title": {
-    "message": "Stay safer using MetaMask"
+    "message": "Stay safe with security alerts"
   },
   "notifications17ActionText": {
     "message": "Enable NFT autodetection"
