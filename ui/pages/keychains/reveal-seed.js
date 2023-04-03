@@ -150,10 +150,10 @@ const RevealSeedPage = () => {
   const renderRevealSeedContent = () => {
     // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
     trackEvent({
-      category: EVENT.CATEGORIES.KEYS,
-      event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpViewSrpText,
       properties: {
-        key_type: EVENT.KEY_TYPES.SRP,
+        key_type: MetaMetricsEventKeyType.Srp,
       },
     });
 
@@ -164,18 +164,18 @@ const RevealSeedPage = () => {
           onTabClick={(tabName) => {
             if (tabName === 'text-seed') {
               trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewSrpText,
                 properties: {
-                  key_type: EVENT.KEY_TYPES.SRP,
+                  key_type: MetaMetricsEventKeyType.Srp,
                 },
               });
             } else if (tabName === 'qr-seed') {
               trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.SRP_VIEWS_SRP_QR,
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewsSrpQR,
                 properties: {
-                  key_type: EVENT.KEY_TYPES.SRP,
+                  key_type: MetaMetricsEventKeyType.Srp,
                 },
               });
             }
@@ -200,10 +200,10 @@ const RevealSeedPage = () => {
                   },
                 });
                 trackEvent({
-                  category: EVENT.CATEGORIES.KEYS,
-                  event: EVENT_NAMES.SRP_COPIED_TO_CLIPBOARD,
+                  category: MetaMetricsEventCategory.Keys,
+                  event: MetaMetricsEventName.SrpCopiedToClipboard,
                   properties: {
-                    key_type: EVENT.KEY_TYPES.SRP,
+                    key_type: MetaMetricsEventKeyType.Srp,
                     copy_method: 'clipboard',
                   },
                 });
@@ -250,10 +250,10 @@ const RevealSeedPage = () => {
               },
             });
             trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.SRP_REVEAL_CANCELLED,
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCancelled,
               properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
+                key_type: MetaMetricsEventKeyType.Srp,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -273,10 +273,10 @@ const RevealSeedPage = () => {
               },
             });
             trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.SRP_REVEAL_NEXT_CLICKED,
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealNextClicked,
               properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
+                key_type: MetaMetricsEventKeyType.Srp,
               },
             });
             handleSubmit(event);
@@ -298,10 +298,10 @@ const RevealSeedPage = () => {
           size={Size.LG}
           onClick={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.SRP_REVEAL_DONE_CLICKED,
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealDoneClicked,
               properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
+                key_type: MetaMetricsEventKeyType.Srp,
               },
             });
             history.push(mostRecentOverviewPage);

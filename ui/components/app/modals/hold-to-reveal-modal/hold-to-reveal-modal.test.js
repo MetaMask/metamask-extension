@@ -13,8 +13,9 @@ import {
   holdToRevealTitle,
 } from '../../../../../app/_locales/en/messages.json';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import HoldToRevealModal from '.';
@@ -142,10 +143,10 @@ describe('Hold to Reveal Modal', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_CLOSE_CLICKED,
+        category: MetaMetricsEventCategory.key,
+        event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });

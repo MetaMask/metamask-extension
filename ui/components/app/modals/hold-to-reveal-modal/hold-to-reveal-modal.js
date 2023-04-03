@@ -22,8 +22,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 
 const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
@@ -61,10 +62,10 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
           size={Size.SM}
           onClick={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_CLOSE_CLICKED,
+              category: MetaMetricsEventCategory.key,
+              event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
               properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
+                key_type: MetaMetricsEventKeyType.Srp,
               },
             });
             handleCancel();

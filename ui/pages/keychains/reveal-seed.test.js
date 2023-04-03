@@ -5,7 +5,11 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { Modal } from '../../components/app/modals';
 import configureStore from '../../store/store';
 import RevealSeedPage from './reveal-seed';
@@ -153,24 +157,24 @@ describe('Reveal Seed Page', () => {
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRequested,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_REVEAL_NEXT_CLICKED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_FAILED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportFailed,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
           reason: undefined,
         },
       });
@@ -186,24 +190,24 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRequested,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_REVEAL_NEXT_CLICKED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRevealed,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
@@ -225,10 +229,10 @@ describe('Reveal Seed Page', () => {
       // tests that the mock srp is now shown.
       expect(getByText('test srp')).toBeInTheDocument();
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });
@@ -243,10 +247,10 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_VIEWS_SRP_QR,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpViewsSrpQR,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });
@@ -255,10 +259,10 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });
@@ -271,18 +275,18 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_COPIED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportCopied,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
           copy_method: 'clipboard',
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_COPIED_TO_CLIPBOARD,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpCopiedToClipboard,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
           copy_method: 'clipboard',
         },
       });
@@ -293,10 +297,10 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_REVEAL_DONE_CLICKED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealDoneClicked,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });
@@ -319,17 +323,17 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_CANCELED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportCanceled,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_REVEAL_CANCELLED,
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealCancelled,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });

@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import HoldToRevealButton from './hold-to-reveal-button';
 
 const mockTrackEvent = jest.fn();
@@ -86,24 +90,24 @@ describe('HoldToRevealButton', () => {
     await waitFor(() => {
       expect(circleUnlocked).toBeInTheDocument();
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_CLICK_STARTED,
+        category: MetaMetricsEventCategory.key,
+        event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(5, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_COMPLETED,
+        category: MetaMetricsEventCategory.key,
+        event: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(6, {
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_REVEAL_VIEWED,
+        category: MetaMetricsEventCategory.key,
+        event: MetaMetricsEventName.SrpRevealViewed,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
     });

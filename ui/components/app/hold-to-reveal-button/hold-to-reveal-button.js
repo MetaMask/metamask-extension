@@ -10,7 +10,11 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -38,10 +42,10 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const onMouseDown = () => {
     isLongPressing.current = true;
     trackEvent({
-      category: EVENT.CATEGORIES.KEYS,
-      event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_CLICK_STARTED,
+      category: MetaMetricsEventCategory.key,
+      event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
       properties: {
-        key_type: EVENT.KEY_TYPES.SRP,
+        key_type: MetaMetricsEventKeyType.Srp,
       },
     });
   };
@@ -68,17 +72,17 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const triggerOnLongPressed = useCallback(
     (e) => {
       trackEvent({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_COMPLETED,
+        category: MetaMetricsEventCategory.key,
+        event: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       trackEvent({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_REVEAL_VIEWED,
+        category: MetaMetricsEventCategory.key,
+        event: MetaMetricsEventName.SrpRevealViewed,
         properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
+          key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       onLongPressed();
