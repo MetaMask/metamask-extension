@@ -9,7 +9,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
 
   return (
-    <Box paddingTop={1}>
+    <Box paddingTop={2} paddingBottom={2}>
       {getWeightedPermissions(t, permissions).map((permission, index) => {
         return (
           <PermissionCell
