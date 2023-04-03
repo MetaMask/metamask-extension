@@ -32,16 +32,21 @@ const PermissionCell = ({
 }) => {
   const t = useI18nContext();
 
-  let iconColor = Color.primaryDefault;
-  let iconBackgroundColor = Color.primaryMuted;
   let infoIconColor = IconColor.iconMuted;
   let infoIcon = ICON_NAMES.INFO;
+  let iconColor = Color.primaryDefault;
+  let iconBackgroundColor = Color.primaryMuted;
 
   if (!revoked && weight === 1) {
     iconColor = Color.warningDefault;
     iconBackgroundColor = Color.warningMuted;
     infoIconColor = IconColor.warningDefault;
     infoIcon = ICON_NAMES.DANGER;
+  }
+
+  if (dateApproved) {
+    iconColor = Color.iconMuted;
+    iconBackgroundColor = Color.backgroundAlternative;
   }
 
   if (revoked) {
