@@ -6,7 +6,7 @@ import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
@@ -185,7 +185,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
         onCancel={async (event) => {
           await cancelEncryptionPublicKey(txData, event);
           trackEvent({
-            category: EVENT.CATEGORIES.MESSAGES,
+            category: MetaMetricsEventCategory.Messages,
             event: 'Cancel',
             properties: {
               action: 'Encryption public key Request',
@@ -198,7 +198,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
         onSubmit={async (event) => {
           await encryptionPublicKey(txData, event);
           this.context.trackEvent({
-            category: EVENT.CATEGORIES.MESSAGES,
+            category: MetaMetricsEventCategory.Messages,
             event: 'Confirm',
             properties: {
               action: 'Encryption public key Request',

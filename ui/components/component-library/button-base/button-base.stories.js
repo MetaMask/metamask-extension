@@ -7,7 +7,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, TEXT_DIRECTIONS } from '..';
+import { ICON_NAMES, TextDirection } from '..';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -200,7 +200,7 @@ export const Rtl = (args) => (
       {...args}
       startIconName={ICON_NAMES.ADD_SQUARE}
       endIconName={ICON_NAMES.ARROW_2_RIGHT}
-      textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}
+      textDirection={TextDirection.RightToLeft}
     >
       Button Demo
     </ButtonBase>

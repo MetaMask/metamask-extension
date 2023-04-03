@@ -15,7 +15,7 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../helpers/constants/design-system';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -41,7 +41,7 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState();
     await createNewVaultAndRestore(password, seedPhrase);
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.RETENTION,
+      category: MetaMetricsEventCategory.Retention,
       event: 'onboardingRestoredVault',
       properties: {
         action: 'userEntersSeedPhrase',
