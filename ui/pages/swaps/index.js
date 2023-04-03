@@ -80,7 +80,7 @@ import {
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -252,7 +252,7 @@ export default function Swap() {
   const trackExitedSwapsEvent = () => {
     trackEvent({
       event: 'Exited Swaps',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
         token_from_amount: fetchParams?.value,
@@ -313,7 +313,7 @@ export default function Swap() {
   const trackErrorStxEvent = useCallback(() => {
     trackEvent({
       event: 'Error Smart Transactions',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
         token_from_amount: fetchParams?.value,
