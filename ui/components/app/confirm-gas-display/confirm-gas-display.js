@@ -8,7 +8,7 @@ import {
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import GasDetailsItem from '../gas-details-item';
-import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
+import { ConfirmLegacyGasDisplay } from './confirm-legacy-gas-display';
 
 const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
   const { txParams } = useSelector((state) => txDataSelector(state));

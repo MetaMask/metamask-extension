@@ -50,7 +50,7 @@ import { ConfirmHexData } from '../../components/app/confirm-hexdata';
 import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
-import ConfirmGasDisplay from '../../components/app/confirm-gas-display';
+import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {

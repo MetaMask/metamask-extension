@@ -1,1 +1,1 @@
-export { default } from './confirm-legacy-gas-display';
+export { default as ConfirmLegacyGasDisplay } from './confirm-legacy-gas-display';

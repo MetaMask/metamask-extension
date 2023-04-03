@@ -17,7 +17,7 @@ import {
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item';
-import ConfirmGasDisplay from '../../../components/app/confirm-gas-display';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';

@@ -17,7 +17,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import ConfirmGasDisplay from '../confirm-gas-display';
+import { ConfirmGasDisplay } from '../confirm-gas-display';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
