@@ -56,8 +56,8 @@ const PermissionCell = ({
       alignItems={AlignItems.flexStart}
       marginLeft={4}
       marginRight={4}
-      marginTop={2}
-      marginBottom={2}
+      paddingTop={2}
+      paddingBottom={2}
     >
       <Box>
         {typeof avatarIcon === 'string' ? (
