@@ -77,11 +77,7 @@ export default class ExtensionPlatform {
     return version;
   }
 
-  openExtensionInBrowser(
-    route = null,
-    queryString = null,
-    keepWindowOpen = false,
-  ) {
+  getExtensionURL(route = null, queryString = null) {
     let extensionURL = browser.runtime.getURL('home.html');
 
     if (route) {
@@ -92,7 +88,22 @@ export default class ExtensionPlatform {
       extensionURL += `?${queryString}`;
     }
 
+    return extensionURL;
+  }
+
+  openExtensionInBrowser(
+    route = null,
+    queryString = null,
+    keepWindowOpen = false,
+  ) {
+    const extensionURL = this.getExtensionURL(
+      route,
+      queryString,
+      keepWindowOpen,
+    );
+
     this.openTab({ url: extensionURL });
+
     if (
       getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
       !keepWindowOpen
@@ -151,6 +162,10 @@ export default class ExtensionPlatform {
   async switchToTab(tabId) {
     const tab = await browser.tabs.update(tabId, { highlighted: true });
     return tab;
+  }
+
+  async switchToAnotherURL(tabId, url) {
+    await browser.tabs.update(tabId, { url });
   }
 
   async closeTab(tabId) {

@@ -209,7 +209,16 @@ export default class ExperimentalTab extends PureComponent {
                 color={TextColor.textAlternative}
                 marginTop={0}
               >
-                {t('thisServiceIsExperimental')}
+                {t('thisServiceIsExperimental', [
+                  <a
+                    href="http://opensea.io/securityproviderterms"
+                    key="termsOfUse"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {t('termsOfUse')}
+                  </a>,
+                ])}
               </Typography>
               <Typography
                 variant={TypographyVariant.H5}
