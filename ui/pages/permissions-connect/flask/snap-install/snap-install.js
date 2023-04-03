@@ -17,7 +17,7 @@ import {
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -87,11 +87,10 @@ export default function SnapInstall({
         className="headers"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        paddingLeft={4}
+        paddingRight={4}
       >
-        <SnapsAuthorshipPill
-          snapId={targetSubjectMetadata.origin}
-          version={targetSubjectMetadata.version}
-        />
+        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!hasError && (
           <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
             {t('snapInstall')}
@@ -114,8 +113,6 @@ export default function SnapInstall({
           <>
             <Text
               className="headers__permission-description"
-              paddingLeft={4}
-              paddingRight={4}
               paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
@@ -136,11 +133,7 @@ export default function SnapInstall({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
-            >
+            <Text textAlign={TEXT_ALIGN.CENTER}>
               {t('snapInstallRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,

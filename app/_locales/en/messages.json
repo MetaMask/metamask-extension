@@ -103,6 +103,9 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
+  "ShowMore": {
+    "message": "Show more"
+  },
   "about": {
     "message": "About"
   },
@@ -149,6 +152,9 @@
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
+  },
+  "activated": {
+    "message": "Active"
   },
   "active": {
     "message": "Active"
@@ -344,6 +350,9 @@
   },
   "amount": {
     "message": "Amount"
+  },
+  "apiUrl": {
+    "message": "API URL"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -639,8 +648,38 @@
   "close": {
     "message": "Close"
   },
+  "codefiCompliance": {
+    "message": "Codefi Compliance"
+  },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "complianceBlurb0": {
+    "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
+  },
+  "complianceBlurb1": {
+    "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
+  },
+  "complianceBlurbStep1": {
+    "message": "Sign up to Codefi Compliance below"
+  },
+  "complianceBlurbStep2": {
+    "message": "Create an organisation"
+  },
+  "complianceBlurbStep3": {
+    "message": "Create a project"
+  },
+  "complianceBlurbStep4": {
+    "message": "Set your compliance settings"
+  },
+  "complianceBlurbStep5": {
+    "message": "Click the \"Enable Compliance in MMI\" button"
+  },
+  "complianceBlurpStep0": {
+    "message": "Steps to enable AML/CFT Compliance:"
+  },
+  "complianceSettingsExplanation": {
+    "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
   },
   "confirm": {
     "message": "Confirm"
@@ -874,6 +913,12 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodian": {
+    "message": "Custodian"
+  },
+  "custodianAccount": {
+    "message": "Custodian account"
   },
   "custom": {
     "message": "Advanced"
@@ -1329,8 +1374,16 @@
   "errorWhileConnectingToRPC": {
     "message": "Error while connecting to the custom network."
   },
+  "errorWithSnap": {
+    "message": "Error with $1",
+    "description": "$1 represents the name of the snap"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
+  },
+  "ethereumProviderAccess": {
+    "message": "Grant Ethereum provider access to $1",
+    "description": "The parameter is the name of the requesting origin"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum public address"
@@ -1752,6 +1805,10 @@
   "inputLogicHigherNumber": {
     "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
+  "insightsFromSnap": {
+    "message": "Insights from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "install": {
     "message": "Install"
   },
@@ -1967,6 +2024,9 @@
   "lock": {
     "message": "Lock"
   },
+  "lockMetaMask": {
+    "message": "Lock MetaMask"
+  },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
@@ -2078,6 +2138,9 @@
   "missingToken": {
     "message": "Don't see your token?"
   },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
@@ -2128,6 +2191,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkMenuHeading": {
+    "message": "Select a network"
   },
   "networkName": {
     "message": "Network name"
@@ -2269,6 +2335,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nftsPreviouslyOwned": {
+    "message": "Previously Owned"
+  },
   "nickname": {
     "message": "Nickname"
   },
@@ -2385,10 +2454,10 @@
     "message": "The Ethereum Merge is here!"
   },
   "notifications16ActionText": {
-    "message": "Enable security provider"
+    "message": "Enable security alerts"
   },
   "notifications16DescriptionOne": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request.",
+    "message": "Get alerts from third parties when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionThree": {
@@ -2396,11 +2465,11 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionTwo": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!",
+    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16Title": {
-    "message": "Stay safe with OpenSea"
+    "message": "Stay safe with security alerts"
   },
   "notifications17ActionText": {
     "message": "Enable NFT autodetection"
@@ -2673,6 +2742,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCodefiCompliance": {
+    "message": "Open Codefi Compliance"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2855,7 +2927,7 @@
     "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
   },
   "permission_manageBip44Keys": {
-    "message": "Control your \"$1\" accounts and assets.",
+    "message": "Control your $1 accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageBip44KeysDescription": {
@@ -2948,6 +3020,9 @@
   },
   "portfolio": {
     "message": "Portfolio"
+  },
+  "portfolioView": {
+    "message": "Portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -3423,12 +3498,6 @@
   "show": {
     "message": "Show"
   },
-  "showAdvancedGasInline": {
-    "message": "Advanced gas controls"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
-  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
@@ -3536,7 +3605,11 @@
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 key access to $1",
+    "message": "Grant $2 account control to $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Grant $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapResultError": {
@@ -3562,12 +3635,11 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "An error occured with $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
+  },
+  "snapsInvalidUIError": {
+    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
@@ -3582,7 +3654,8 @@
     "message": "A snap will only run if it is enabled"
   },
   "snapsUIError": {
-    "message": "The UI specified by the snap is invalid."
+    "message": "Contact the creators of $1 for further support.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
@@ -3690,6 +3763,9 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
+  },
+  "statusNotConnectedAccount": {
+    "message": "No accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
@@ -4192,6 +4268,9 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUse": {
+    "message": "terms of use"
+  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4211,7 +4290,8 @@
     "message": "This is based on information from "
   },
   "thisServiceIsExperimental": {
-    "message": "This service is experimental"
+    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
+    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"
@@ -4284,6 +4364,12 @@
   },
   "tooltipApproveButton": {
     "message": "I understand"
+  },
+  "tooltipSatusConnected": {
+    "message": "connected"
+  },
+  "tooltipSatusNotConnected": {
+    "message": "not connected"
   },
   "total": {
     "message": "Total"

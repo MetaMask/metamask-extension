@@ -13,8 +13,9 @@ import {
   TEXT_ALIGN,
   FRACTIONS,
   TextColor,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
+import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
 import ToggleButton from '../../../../components/ui/toggle-button';
@@ -118,7 +119,7 @@ function ViewSnap() {
           </Typography>
           <Box className="view-snap__pill-toggle-container">
             <Box className="view-snap__pill-container" paddingLeft={2}>
-              <SnapsAuthorshipPill snapId={snap.id} />
+              <SnapAuthorship snapId={snap.id} />
             </Box>
             <Box paddingLeft={4} className="view-snap__toggle-container">
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
@@ -176,7 +177,7 @@ function ViewSnap() {
             >
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
-            <Box width={FRACTIONS.TEN_TWELFTHS}>
+            <Box width={BLOCK_SIZES.FULL}>
               <PermissionsConnectPermissionList
                 permissions={permissions ?? {}}
               />

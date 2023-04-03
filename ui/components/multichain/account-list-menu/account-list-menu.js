@@ -26,7 +26,11 @@ import {
   getOriginOfCurrentTab,
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   IMPORT_ACCOUNT_ROUTE,
   NEW_ACCOUNT_ROUTE,
@@ -96,13 +100,14 @@ export const AccountListMenu = ({ onClose }) => {
                 onClick={() => {
                   dispatch(toggleAccountMenu());
                   trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
-                    event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.NavAccountSwitched,
                     properties: {
                       location: 'Main Menu',
                     },
                   });
                   dispatch(setSelectedAccount(account.address));
+                  onClose();
                 }}
                 identity={account}
                 key={account.address}
@@ -123,10 +128,10 @@ export const AccountListMenu = ({ onClose }) => {
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.AccountAddSelected,
                   properties: {
-                    account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+                    account_type: MetaMetricsEventAccountType.Default,
                     location: 'Main Menu',
                   },
                 });
@@ -143,10 +148,10 @@ export const AccountListMenu = ({ onClose }) => {
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.AccountAddSelected,
                   properties: {
-                    account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                    account_type: MetaMetricsEventAccountType.Imported,
                     location: 'Main Menu',
                   },
                 });
@@ -163,10 +168,10 @@ export const AccountListMenu = ({ onClose }) => {
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.AccountAddSelected,
                   properties: {
-                    account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+                    account_type: MetaMetricsEventAccountType.Hardware,
                     location: 'Main Menu',
                   },
                 });

@@ -3250,12 +3250,6 @@
   "show": {
     "message": "Göster"
   },
-  "showAdvancedGasInline": {
-    "message": "Gelişmiş gaz kontrolleri"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
-  },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında dönüşümü göster"
   },
@@ -3361,10 +3355,6 @@
   "snaps": {
     "message": "Snap'ler"
   },
-  "snapsInsightError": {
-    "message": "$1: $2 ile ilgili bir hata oldu",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "İşlem ayrıntıları yükleniyor..."
   },
@@ -3381,7 +3371,8 @@
     "message": "Bir snap yalnızca etkinleştirilmişse çalışır"
   },
   "snapsUIError": {
-    "message": "Snap tarafından belirtilen Kullanıcı Arayüzü geçersiz."
+    "message": "Snap tarafından belirtilen Kullanıcı Arayüzü geçersiz.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
@@ -4005,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "Bu, şu kaynaktan alınan bilgilere dayanır: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Bu hizmet deneyseldir"
   },
   "time": {
     "message": "Zaman"

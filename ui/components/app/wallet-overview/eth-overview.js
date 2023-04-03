@@ -29,9 +29,10 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -110,15 +111,15 @@ const EthOverview = ({ className }) => {
                   });
                   trackEvent(
                     {
-                      category: EVENT.CATEGORIES.HOME,
-                      event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                      category: MetaMetricsEventCategory.Home,
+                      event: MetaMetricsEventName.PortfolioLinkClicked,
                       properties: {
                         url: portfolioUrl,
                       },
                     },
                     {
                       contextPropsIntoEventProperties: [
-                        CONTEXT_PROPS.PAGE_TITLE,
+                        MetaMetricsContextProp.PageTitle,
                       ],
                     },
                   );
@@ -154,8 +155,8 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               openBuyCryptoInPdapp();
               trackEvent({
-                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavBuyButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Home',
                   text: 'Buy',
@@ -175,8 +176,8 @@ const EthOverview = ({ className }) => {
             label={t('send')}
             onClick={() => {
               trackEvent({
-                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavSendButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   token_symbol: 'ETH',
                   location: 'Home',
@@ -202,11 +203,11 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               if (isSwapsChain) {
                 trackEvent({
-                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.SWAPS,
+                  event: MetaMetricsEventName.NavSwapButtonClicked,
+                  category: MetaMetricsEventCategory.Swaps,
                   properties: {
                     token_symbol: 'ETH',
-                    location: EVENT.SOURCE.SWAPS.MAIN_VIEW,
+                    location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                   },
                 });
@@ -248,8 +249,8 @@ const EthOverview = ({ className }) => {
                   url: `${bridgeUrl}?metamaskEntry=ext`,
                 });
                 trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.BridgeLinkClicked,
                   properties: {
                     location: 'Home',
                     text: 'Bridge',

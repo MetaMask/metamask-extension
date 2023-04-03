@@ -3250,12 +3250,6 @@
   "show": {
     "message": "दिखाएं"
   },
-  "showAdvancedGasInline": {
-    "message": "उन्नत गैस नियंत्रण"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
-  },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
   },
@@ -3361,10 +3355,6 @@
   "snaps": {
     "message": "स्नैप्स"
   },
-  "snapsInsightError": {
-    "message": "$1: $2 के साथ त्रुटि हुई",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
   },
@@ -3381,7 +3371,8 @@
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
   },
   "snapsUIError": {
-    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।"
+    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और उपयोग करने से पहले जोखिमों को समझें।"
@@ -4005,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "से प्राप्त जानकारी पर आधारित है"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रयोगात्मक है"
   },
   "time": {
     "message": "समय"
