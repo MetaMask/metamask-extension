@@ -2629,16 +2629,26 @@ export default class TransactionController extends EventEmitter {
 
   _acceptApproval(txMeta) {
     const id = this._getApprovalId(txMeta);
-    this.messagingSystem.call('ApprovalController:acceptRequest', id);
+
+    try {
+      this.messagingSystem.call('ApprovalController:acceptRequest', id);
+    } catch (error) {
+      log.error('Failed to accept transaction approval request', error);
+    }
   }
 
   _rejectApproval(txMeta) {
     const id = this._getApprovalId(txMeta);
-    this.messagingSystem.call(
-      'ApprovalController:rejectRequest',
-      id,
-      new Error('Rejected'),
-    );
+
+    try {
+      this.messagingSystem.call(
+        'ApprovalController:rejectRequest',
+        id,
+        new Error('Rejected'),
+      );
+    } catch (error) {
+      log.error('Failed to reject transaction approval request', error);
+    }
   }
 
   _getApprovalId(txMeta) {

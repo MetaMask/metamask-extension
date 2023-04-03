@@ -77,7 +77,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop;
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
-    messengerMock = { call: () => Promise.resolve() };
+    messengerMock = { call: sinon.stub().returns(Promise.resolve()) };
 
     txController = new TransactionController({
       provider,
@@ -494,8 +494,6 @@ describe('Transaction Controller', function () {
     });
 
     it('should create an approval request', async function () {
-      const messengerCallSpy = sinon.spy(messengerMock, 'call');
-
       const txMeta = await txController.addUnapprovedTransaction(
         undefined,
         {
@@ -505,8 +503,8 @@ describe('Transaction Controller', function () {
         ORIGIN_METAMASK,
       );
 
-      assert.equal(messengerCallSpy.callCount, 1);
-      assert.deepEqual(messengerCallSpy.getCall(0).args, [
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:addRequest',
         {
           id: String(txMeta.id),
@@ -519,8 +517,6 @@ describe('Transaction Controller', function () {
     });
 
     it('should still create an approval request when called twice with same actionId', async function () {
-      const messengerCallSpy = sinon.spy(messengerMock, 'call');
-
       await txController.addUnapprovedTransaction(
         undefined,
         {
@@ -545,8 +541,8 @@ describe('Transaction Controller', function () {
         '12345',
       );
 
-      assert.equal(messengerCallSpy.callCount, 2);
-      assert.deepEqual(messengerCallSpy.getCall(1).args, [
+      assert.equal(messengerMock.call.callCount, 2);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
         'ApprovalController:addRequest',
         {
           id: String(secondTxMeta.id),
@@ -1120,15 +1116,18 @@ describe('Transaction Controller', function () {
     });
 
     it('should accept the approval request', async function () {
-      const messengerCallSpy = sinon.spy(messengerMock, 'call');
-
       await txController.approveTransaction(txMeta.id);
 
-      assert.equal(messengerCallSpy.callCount, 1);
-      assert.deepEqual(messengerCallSpy.getCall(0).args, [
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:acceptRequest',
         txMeta.id,
       ]);
+    });
+
+    it('should not throw if accepting approval request throws', async function () {
+      messengerMock.call.throws();
+      await txController.approveTransaction(txMeta.id);
     });
   });
 
@@ -1287,16 +1286,19 @@ describe('Transaction Controller', function () {
     });
 
     it('should reject the approval request', function () {
-      const messengerCallSpy = sinon.spy(messengerMock, 'call');
-
       txController.cancelTransaction(0);
 
-      assert.equal(messengerCallSpy.callCount, 1);
-      assert.deepEqual(messengerCallSpy.getCall(0).args, [
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:rejectRequest',
         '0',
         new Error('Rejected'),
       ]);
+    });
+
+    it('should not throw if rejecting approval request throws', async function () {
+      messengerMock.call.throws();
+      txController.cancelTransaction(0);
     });
   });
 
