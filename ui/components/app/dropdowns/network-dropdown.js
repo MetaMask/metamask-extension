@@ -23,7 +23,11 @@ import { IconColor, Size } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../shared/constants/metametrics';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
@@ -127,8 +131,8 @@ class NetworkDropdown extends Component {
     const { trackEvent } = this.context;
 
     trackEvent({
-      category: EVENT.CATEGORIES.NAVIGATION,
-      event: EVENT_NAMES.NAV_NETWORK_SWITCHED,
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.NavNetworkSwitched,
       properties: {
         from_network: providerType,
         to_network: newProviderType,
@@ -320,7 +324,7 @@ class NetworkDropdown extends Component {
               },
               {
                 setActive: true,
-                source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+                source: MetaMetricsNetworkEventSource.CustomNetworkForm,
               },
             );
           }

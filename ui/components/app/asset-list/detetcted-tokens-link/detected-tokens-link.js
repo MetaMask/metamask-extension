@@ -9,8 +9,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 
 const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
@@ -25,10 +26,10 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
   const onClick = () => {
     setShowDetectedTokens(true);
     trackEvent({
-      event: EVENT_NAMES.TOKEN_IMPORT_CLICKED,
-      category: EVENT.CATEGORIES.WALLET,
+      event: MetaMetricsEventName.TokenImportClicked,
+      category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: EVENT.SOURCE.TOKEN.DETECTED,
+        source: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
       },
     });

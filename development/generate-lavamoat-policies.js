@@ -4,6 +4,11 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { BuildType } = require('./lib/build-type');
 
+const stableBuildTypes = Object.values(BuildType).filter(
+  // Skip generating policy for MMI until that build has stabilized
+  (buildType) => buildType !== BuildType.mmi,
+);
+
 start().catch((error) => {
   console.error('Policy generation failed.', error);
   process.exitCode = 1;
@@ -20,7 +25,7 @@ async function start() {
         .option('build-types', {
           alias: ['t'],
           choices: Object.values(BuildType),
-          default: Object.values(BuildType),
+          default: stableBuildTypes,
           demandOption: true,
           description: 'The build type(s) to generate policy files for.',
         })

@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Une erreur s’est produite avec $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Chargement de l’aperçu de transaction…"
   },
@@ -3375,7 +3371,8 @@
     "message": "Un snap ne s’exécute que s’il est activé"
   },
   "snapsUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
+    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Certains réseaux peuvent présenter des risques pour la sécurité et/ou la vie privée. Informez-vous sur les risques avant d’ajouter et d’utiliser un réseau."
@@ -3999,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "Ces informations proviennent de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ce service est expérimental"
   },
   "time": {
     "message": "Temps"

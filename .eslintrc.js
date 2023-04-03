@@ -81,6 +81,7 @@ module.exports = {
       files: [
         'app/**/*.js',
         'shared/**/*.js',
+        'shared/**/*.ts',
         'ui/**/*.js',
         '**/*.test.js',
         'test/lib/**/*.js',
@@ -272,6 +273,7 @@ module.exports = {
         'app/scripts/platforms/*.test.js',
         'development/**/*.test.js',
         'shared/**/*.test.js',
+        'shared/**/*.test.ts',
         'test/helpers/*.js',
         'test/jest/*.js',
         'ui/**/*.test.js',
