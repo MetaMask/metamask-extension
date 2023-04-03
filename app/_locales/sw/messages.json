@@ -75,12 +75,6 @@
   "asset": {
     "message": "Rasilimali"
   },
-  "attemptToCancel": {
-    "message": "Unajaribu Kubatilisha?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kuwasilisha jaribio hili hakukuhakikishii muamala wako wa awali utabatilishwa. Ikiwa jaribio la kuffuta litafanikiwa, utatozwa ada ya muamala hapo juu."
-  },
   "attemptingConnect": {
     "message": "Inajaribu kuunganisha kwenye blockchain."
   },
@@ -127,17 +121,8 @@
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
-  "buyWithWyre": {
-    "message": "Nunua $1 kwa kutumia Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre inakuwezesha kutumia kadi ya benki kuweka $1 moja kwa moja kwenye akaunti yako ya MetaMask."
-  },
   "cancel": {
     "message": "Ghairi"
-  },
-  "cancellationGasFee": {
-    "message": "Ada ya Kubatilisha Gesi"
   },
   "cancelled": {
     "message": "Imebatilishwa"
@@ -177,9 +162,6 @@
   },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Endelea kwenye Wyre"
   },
   "contractDeployment": {
     "message": "Kutoa Mkataba"
@@ -328,13 +310,6 @@
   },
   "general": {
     "message": "Jumla"
-  },
-  "getEther": {
-    "message": "Pata Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Pata Ether kutoka kwenye mfereji $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
@@ -623,35 +598,21 @@
   "reset": {
     "message": "Weka upya"
   },
-  "resetAccount": {
-    "message": "Futa Akaunti"
-  },
-  "resetAccountDescription": {
-    "message": "Kufuta Akaunti yako kutafuta histori ya akaunti yako."
-  },
   "restore": {
     "message": "Rejesha"
   },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ikiwa utabadilisha kisakuzi au kuhamisha kompyuta, utahitaji kirai hiki kianzio ili kufikia akaunti zako. Vihifadhi mahali fulani ambapo ni salamana pa siri."
-  },
   "revealSeedWordsWarning": {
-    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "USISHIRIKI kirai hiki na mtu yeyote!"
+    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"
   },
   "save": {
     "message": "Hifadhi"
-  },
-  "saveAsCsvFile": {
-    "message": "Hifadhi kama Faili la CSV"
   },
   "scanInstructions": {
     "message": "Weka msimbo wa QR mbele ya kamera yako"
@@ -788,9 +749,6 @@
   "terms": {
     "message": "Masharti ya Matumizi"
   },
-  "testFaucet": {
-    "message": "Mfereji wa Jaribio"
-  },
   "tips": {
     "message": "Michango"
   },
@@ -909,9 +867,6 @@
   "userName": {
     "message": "Jina la mtumiaji"
   },
-  "viewAccount": {
-    "message": "Angalia Akaunti"
-  },
   "viewContact": {
     "message": "Tazama Mawasiliano"
   },
@@ -920,9 +875,6 @@
   },
   "welcomeBack": {
     "message": "Karibu Tena!"
-  },
-  "yesLetsTry": {
-    "message": "Ndiyo, ngoja tujaribu"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."

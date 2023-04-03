@@ -10,7 +10,9 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import {
   ButtonIcon,
+  Icon,
   ICON_NAMES,
+  ICON_SIZES,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
@@ -102,17 +104,19 @@ export default class DomainInput extends Component {
             'ens-input__wrapper--valid': hasSelectedAddress,
           })}
         >
-          <i
-            className={classnames('ens-input__wrapper__status-icon', 'fa', {
-              'fa-check-circle': hasSelectedAddress,
-              'fa-search': !hasSelectedAddress,
-            })}
-            style={{
-              color: hasSelectedAddress
-                ? 'var(--color-success-default)'
-                : 'var(--color-icon-muted)',
-            }}
-          />
+          {hasSelectedAddress ? (
+            <Icon
+              className="ens-input__wrapper__status-icon"
+              name={ICON_NAMES.CHECK}
+              color={IconColor.successDefault}
+            />
+          ) : (
+            <Icon
+              name={ICON_NAMES.SEARCH}
+              color={IconColor.iconMuted}
+              className="ens-input__wrapper__status-icon"
+            />
+          )}
           {hasSelectedAddress ? (
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
@@ -125,18 +129,13 @@ export default class DomainInput extends Component {
                   </div>
                 )}
               </div>
-              <button
+              <ButtonIcon
+                iconName={ICON_NAMES.CLOSE}
+                ariaLabel={t('close')}
                 onClick={this.props.onReset}
                 className="ens-input__wrapper__action-icon-button"
-              >
-                <i
-                  className="fa fa-times"
-                  style={{
-                    color: 'var(--color-icon-default)',
-                  }}
-                  title={t('close')}
-                />
-              </button>
+                size={ICON_SIZES.SM}
+              />
             </>
           ) : (
             <>

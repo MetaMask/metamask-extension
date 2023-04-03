@@ -1,4 +1,7 @@
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
+
+const fetchWithTimeout = getFetchWithTimeout();
 
 export async function securityProviderCheck(
   requestData,
@@ -36,29 +39,27 @@ export async function securityProviderCheck(
       rpc_method_name: methodName,
       chain_id: chainId,
       data: {
-        from_address: requestData.txParams.from,
-        to_address: requestData.txParams.to,
-        gas: requestData.txParams.gas,
-        gasPrice: requestData.txParams.gasPrice,
-        value: requestData.txParams.value,
-        data: requestData.txParams.data,
+        from_address: requestData?.txParams?.from,
+        to_address: requestData?.txParams?.to,
+        gas: requestData?.txParams?.gas,
+        gasPrice: requestData?.txParams?.gasPrice,
+        value: requestData?.txParams?.value,
+        data: requestData?.txParams?.data,
       },
       currentLocale,
     };
   }
 
-  const response = await fetch(
-    'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
+  const response = await fetchWithTimeout(
+    'https://proxy.metafi.codefi.network/opensea/security/v1/validate',
     {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-API-KEY': 'NKYIN6cXkFaNnVIfzNx7s1z0p3b0B4SB6k29qA7n',
       },
       body: JSON.stringify(dataToValidate),
     },
   );
-
   return await response.json();
 }

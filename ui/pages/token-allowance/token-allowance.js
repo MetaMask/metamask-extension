@@ -63,6 +63,8 @@ import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWar
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 
+const ALLOWED_HOSTS = ['portfolio.metamask.io'];
+
 export default function TokenAllowance({
   origin,
   siteImage,
@@ -92,10 +94,13 @@ export default function TokenAllowance({
   const history = useHistory();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
+  const { hostname } = new URL(origin);
+  const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
+
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
   const [isFirstPage, setIsFirstPage] = useState(
-    dappProposedTokenAmount !== '0',
+    dappProposedTokenAmount !== '0' && !thisOriginIsAllowedToSkipFirstPage,
   );
   const [errorText, setErrorText] = useState('');
   const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
@@ -107,10 +112,13 @@ export default function TokenAllowance({
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const customTokenAmount = useSelector(getCustomTokenAmount);
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  let customTokenAmount = useSelector(getCustomTokenAmount);
+  if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
+    customTokenAmount = dappProposedTokenAmount;
+  }
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -518,8 +526,6 @@ export default function TokenAllowance({
           toAddress={toAddress}
           chainId={fullTxData.chainId}
           rpcPrefs={rpcPrefs}
-          origin={origin}
-          siteImage={siteImage}
         />
       )}
     </Box>

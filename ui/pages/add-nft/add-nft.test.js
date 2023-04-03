@@ -9,10 +9,10 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
   ignoreTokens,
-  setNewCollectibleAddedMessage,
-  updateCollectibleDropDownState,
+  setNewNftAddedMessage,
+  updateNftDropDownState,
 } from '../../store/actions';
-import AddCollectible from '.';
+import AddNft from '.';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';
@@ -39,15 +39,15 @@ jest.mock('../../store/actions.ts', () => ({
     .mockReturnValue(jest.fn().mockResolvedValue()),
   getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
   ignoreTokens: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
-  setNewCollectibleAddedMessage: jest
+  setNewNftAddedMessage: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
-  updateCollectibleDropDownState: jest
+  updateNftDropDownState: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
-describe('AddCollectible', () => {
+describe('AddNft', () => {
   const store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
@@ -55,10 +55,7 @@ describe('AddCollectible', () => {
   });
 
   it('should enable the "Add" button when valid entries are input into both Address and TokenId fields', () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <AddCollectible />,
-      store,
-    );
+    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
     expect(getByText('Add')).not.toBeEnabled();
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
@@ -70,10 +67,7 @@ describe('AddCollectible', () => {
   });
 
   it('should not enable the "Add" button when an invalid entry is input into one or both Address and TokenId fields', () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <AddCollectible />,
-      store,
-    );
+    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
     expect(getByText('Add')).not.toBeEnabled();
     fireEvent.change(getByTestId('address'), {
       target: { value: INVALID_ADDRESS },
@@ -92,11 +86,8 @@ describe('AddCollectible', () => {
     expect(getByText('Add')).not.toBeEnabled();
   });
 
-  it('should call addNftVerifyOwnership, updateCollectibleDropDownState, setNewCollectibleAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <AddCollectible />,
-      store,
-    );
+  it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
+    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
     });
@@ -113,7 +104,7 @@ describe('AddCollectible', () => {
         '9007199254740992',
       );
 
-      expect(updateCollectibleDropDownState).toHaveBeenCalledWith({
+      expect(updateNftDropDownState).toHaveBeenCalledWith({
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           '0x5': {
             '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9': true,
@@ -122,7 +113,7 @@ describe('AddCollectible', () => {
         },
       });
 
-      expect(setNewCollectibleAddedMessage).toHaveBeenCalledWith('success');
+      expect(setNewNftAddedMessage).toHaveBeenCalledWith('success');
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
@@ -136,10 +127,7 @@ describe('AddCollectible', () => {
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
-    const { getByTestId, getByText, queryByTitle } = renderWithProvider(
-      <AddCollectible />,
-      store,
-    );
+    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
     });
@@ -151,16 +139,16 @@ describe('AddCollectible', () => {
     fireEvent.click(getByText('Add'));
 
     await waitFor(() => {
-      expect(setNewCollectibleAddedMessage).toHaveBeenCalledWith('error');
+      expect(setNewNftAddedMessage).toHaveBeenCalledWith('error');
     });
 
-    const addCollectibleClose = queryByTitle('Close');
+    const addNftClose = getByTestId('add-nft-error-close');
 
-    fireEvent.click(addCollectibleClose);
+    fireEvent.click(addNftClose);
   });
 
   it('should route to default route when cancel button is clicked', () => {
-    const { queryByTestId } = renderWithProvider(<AddCollectible />, store);
+    const { queryByTestId } = renderWithProvider(<AddNft />, store);
 
     const cancelButton = queryByTestId('page-container-footer-cancel');
     fireEvent.click(cancelButton);
@@ -169,7 +157,7 @@ describe('AddCollectible', () => {
   });
 
   it('should route to default route when close button is clicked', () => {
-    const { queryByLabelText } = renderWithProvider(<AddCollectible />, store);
+    const { queryByLabelText } = renderWithProvider(<AddNft />, store);
 
     const closeButton = queryByLabelText('close');
     fireEvent.click(closeButton);

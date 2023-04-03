@@ -7,11 +7,12 @@ import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
 describe('AvatarFavicon', () => {
   const args = {
     src: './images/eth_logo.svg',
+    name: 'test',
   };
 
   it('should render correctly', () => {
     const { getByTestId, container } = render(
-      <AvatarFavicon data-testid="avatar-favicon" />,
+      <AvatarFavicon name="test" data-testid="avatar-favicon" />,
     );
     expect(getByTestId('avatar-favicon')).toBeDefined();
     expect(container).toMatchSnapshot();
@@ -26,7 +27,7 @@ describe('AvatarFavicon', () => {
 
   it('should render fallback image if no ImageSource is provided', () => {
     const { container } = render(
-      <AvatarFavicon data-testid="avatar-favicon" />,
+      <AvatarFavicon name="test" data-testid="avatar-favicon" />,
     );
     expect(container.getElementsByClassName('mm-icon')).toHaveLength(1);
   });
@@ -34,6 +35,7 @@ describe('AvatarFavicon', () => {
   it('should render fallback image with custom fallbackIconProps if no ImageSource is provided', () => {
     const container = (
       <AvatarFavicon
+        name="test"
         data-testid="avatar-favicon"
         fallbackIconProps={{
           'data-testid': 'fallback-icon',
@@ -96,6 +98,7 @@ describe('AvatarFavicon', () => {
     const { getByTestId } = render(
       <AvatarFavicon
         className="mm-avatar-favicon--test"
+        name="test"
         data-testid="classname"
         {...args}
       />,

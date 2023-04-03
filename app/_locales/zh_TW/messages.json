@@ -77,9 +77,6 @@
   "advanced": {
     "message": "進階"
   },
-  "affirmAgree": {
-    "message": "我同意"
-  },
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
   },
@@ -145,12 +142,6 @@
   "assets": {
     "message": "資產"
   },
-  "attemptToCancel": {
-    "message": "嘗試取消？"
-  },
-  "attemptToCancelDescription": {
-    "message": "送出取消請求並不保證您原本的交易一定會被取消。若取消成功，將會收取上方顯示交易費用。"
-  },
   "attemptingConnect": {
     "message": "正在嘗試連結區塊鏈。"
   },
@@ -209,12 +200,6 @@
   "buy": {
     "message": "買"
   },
-  "buyWithWyre": {
-    "message": "用 Wyre 購買 $1"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 MetaMask 帳戶中直接存入 $1 。"
-  },
   "bytes": {
     "message": "位元組"
   },
@@ -229,9 +214,6 @@
   },
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
-  },
-  "cancellationGasFee": {
-    "message": "需要的手續費"
   },
   "cancelled": {
     "message": "已取消"
@@ -349,9 +331,6 @@
   "continue": {
     "message": "繼續"
   },
-  "continueToWyre": {
-    "message": "繼續前往 Wyre"
-  },
   "contractAddressError": {
     "message": "您正在將代幣傳送到代幣合約的位址。這可能會導致這些代幣遺失。"
   },
@@ -450,18 +429,8 @@
   "deleteNetworkDescription": {
     "message": "你確定要刪除網路嗎？"
   },
-  "depositCrypto": {
-    "message": "存入 $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "details": {
     "message": "詳情"
-  },
-  "directDepositCrypto": {
-    "message": "直接存入 $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "如果您已經擁有一些 $1，直接存入功能是讓新錢包最快取得的方式。"
   },
   "disconnect": {
     "message": "中斷連結"
@@ -681,19 +650,8 @@
   "gasUsed": {
     "message": "Gas 用量"
   },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Privacy Policy here",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "一般"
-  },
-  "getEther": {
-    "message": "取得以太幣"
-  },
-  "getEtherFromFaucet": {
-    "message": "從水龍頭取得 $1 上的以太幣",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Go Back"
@@ -921,10 +879,6 @@
   "name": {
     "message": "名稱"
   },
-  "needCryptoInWallet": {
-    "message": "要使用 MetaMask 存取去中心化應用程式時，您的錢包中需要有 $1。",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
   "needHelp": {
     "message": "需要幫助？聯繫$1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
@@ -990,7 +944,7 @@
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftTokenIdPlaceholder": {
-    "message": "Enter the collectible ID"
+    "message": "Enter the NFT ID"
   },
   "noAccountsFound": {
     "message": "指定的搜尋條件找不到帳戶"
@@ -1000,9 +954,6 @@
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
-  },
-  "noThanks": {
-    "message": "不了"
   },
   "noTransactions": {
     "message": "尚未有交易"
@@ -1172,12 +1123,6 @@
   "reset": {
     "message": "重置"
   },
-  "resetAccount": {
-    "message": "重置帳戶"
-  },
-  "resetAccountDescription": {
-    "message": "重置帳戶將清除您的交易紀錄。這將不會改變您的帳戶餘額或要求您重新輸入助憶詞。"
-  },
   "restore": {
     "message": "還原"
   },
@@ -1190,23 +1135,15 @@
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
-  "revealSeedWordsDescription": {
-    "message": "若想在不同瀏覽器或電腦登入，將需要使用助憶詞還原帳戶資訊。請妥善並安全的保管您的助憶詞。"
-  },
   "revealSeedWordsWarning": {
-    "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "請勿將助憶詞洩漏予他人！"
+    "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"
   },
   "save": {
     "message": "儲存"
-  },
-  "saveAsCsvFile": {
-    "message": "儲存為 CSV 格式檔案"
   },
   "scanInstructions": {
     "message": "請將 QR code 放在攝影鏡頭前面"
@@ -1483,9 +1420,6 @@
   "termsOfService": {
     "message": "服務條款"
   },
-  "testFaucet": {
-    "message": "測試水龍頭"
-  },
   "tips": {
     "message": "提示"
   },
@@ -1645,9 +1579,6 @@
     "message": "在 $1 驗證這個代幣的資訊",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
-  "viewAccount": {
-    "message": "查看帳戶"
-  },
   "viewAllDetails": {
     "message": "查看所有詳情"
   },
@@ -1692,9 +1623,6 @@
   "xOfYPending": {
     "message": "$1 之 $2 等待中",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "了解，試試看"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"

@@ -68,16 +68,24 @@ export default {
     href: {
       control: 'text',
     },
-    iconName: {
+    externalLink: {
+      control: 'boolean',
+    },
+    startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconProps: {
+    startIconProps: {
+      control: 'object',
+      table: { category: 'button base props' },
+    },
+    endIconProps: {
       control: 'object',
       table: { category: 'button base props' },
     },
@@ -182,6 +190,15 @@ export const Href = (args) => <ButtonLink {...args}>Href example</ButtonLink>;
 
 Href.args = {
   href: '/metamask',
+};
+
+export const ExternalLink = (args) => (
+  <ButtonLink {...args}>Anchor element with external link</ButtonLink>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io/',
+  externalLink: true,
 };
 
 export const HitArea = (args) => (

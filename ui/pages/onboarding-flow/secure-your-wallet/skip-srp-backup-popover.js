@@ -9,6 +9,7 @@ import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
   AlignItems,
+  IconColor,
   FLEX_DIRECTION,
   FONT_WEIGHT,
   JustifyContent,
@@ -19,6 +20,11 @@ import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../components/component-library';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
@@ -74,7 +80,12 @@ export default function SkipSRPBackup({ handleClose }) {
         justifyContent={JustifyContent.center}
         margin={4}
       >
-        <i className="fa fa-exclamation-triangle fa-2x skip-srp-backup-popover__icon" />
+        <Icon
+          name={ICON_NAMES.DANGER}
+          size={ICON_SIZES.XL}
+          className="skip-srp-backup-popover__icon"
+          color={IconColor.errorDefault}
+        />
         <Typography
           variant={TypographyVariant.h3}
           fontWeight={FONT_WEIGHT.BOLD}

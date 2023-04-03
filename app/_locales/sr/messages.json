@@ -75,12 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptToCancel": {
-    "message": "Pokušavate da otkažete?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Slanje ovog pokušaja ne garantuje da će prvobitna transakcija biti otkazana. Ako je pokušaj otkazivanja uspešan, biće vam naplaćena provizija koja je navedena gore."
-  },
   "attemptingConnect": {
     "message": "Pokušava da se poveže na lanac blokova"
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Vaš pregledač nije podržan..."
   },
-  "buyWithWyre": {
-    "message": "Kupite $1 preko servisa Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vam dozvoljava da koristite kreditnu karticu kako biste deponovali $1 pravo na vaš MetaMask nalog."
-  },
   "bytes": {
     "message": "Bajtovi"
   },
   "cancel": {
     "message": "Otkaži"
-  },
-  "cancellationGasFee": {
-    "message": "Otkazivanje gas naknade"
   },
   "cancelled": {
     "message": "Otkazano"
@@ -180,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
-  },
-  "continueToWyre": {
-    "message": "Nastavite ka Wyre"
   },
   "contractDeployment": {
     "message": "Primena ugovora"
@@ -335,13 +317,6 @@
   },
   "general": {
     "message": "Opšte"
-  },
-  "getEther": {
-    "message": "Nabavite Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Preuzmite Ether sa slavine za $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Test mreža Goerli "
@@ -636,35 +611,21 @@
   "reset": {
     "message": "Ресетуј"
   },
-  "resetAccount": {
-    "message": "Ponovo postavi nalog"
-  },
-  "resetAccountDescription": {
-    "message": "Resetovanje vašeg naloga će obrisati istoriju transakcija."
-  },
   "restore": {
     "message": "Поново отвори"
   },
   "revealSeedWords": {
     "message": "Otkrivanje početnih reči"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ukoliko ikad promenite pregledač ili kompjuter, trebaće vam ova šifra za oporavak naloga (seed phrase) kako biste pristupili svojim nalozima. Čuvajte je na bezbednom i tajnom mestu."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE delite ovu frazu ni sa kim!"
+    "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Novi RPC URL"
   },
   "save": {
     "message": "Сачувај"
-  },
-  "saveAsCsvFile": {
-    "message": "Sačuvajte u formi CSV datoteke"
   },
   "scanInstructions": {
     "message": "Stavite QR kod ispred vaše kamere"
@@ -916,9 +877,6 @@
   "userName": {
     "message": "Корисничко име"
   },
-  "viewAccount": {
-    "message": "Прикажи налог"
-  },
   "viewContact": {
     "message": "Pogledaj kontakt"
   },
@@ -927,9 +885,6 @@
   },
   "welcomeBack": {
     "message": "Dobro došli nazad!"
-  },
-  "yesLetsTry": {
-    "message": "Da, pokušajmo."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."

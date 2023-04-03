@@ -75,12 +75,6 @@
   "asset": {
     "message": "Activ"
   },
-  "attemptToCancel": {
-    "message": "Încercați să anulați?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Trimiterea acestei încercări nu garantează că tranzacția dvs. originală va fi anulată. Dacă încercarea de anulare va reuși, vi se va percepe taxa tranzacției de mai sus."
-  },
   "attemptingConnect": {
     "message": "Se încearcă conectarea la blockchain."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
-  "buyWithWyre": {
-    "message": "Cumpărați $1 cu Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune $1 direct în contul dvs. MetaMask."
-  },
   "bytes": {
     "message": "Octeți"
   },
   "cancel": {
     "message": "Anulare"
-  },
-  "cancellationGasFee": {
-    "message": "Taxă de anulare în gaz"
   },
   "cancelled": {
     "message": "Anulat"
@@ -183,9 +168,6 @@
   },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
-  },
-  "continueToWyre": {
-    "message": "Continuați la Wyre"
   },
   "contractDeployment": {
     "message": "Implementarea contractului"
@@ -331,13 +313,6 @@
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
-  },
-  "getEther": {
-    "message": "Obțineți Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obțineți Ether de la un robinet pentru $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Rețea de test Goerli"
@@ -632,35 +607,21 @@
   "reset": {
     "message": "Resetează"
   },
-  "resetAccount": {
-    "message": "Resetare cont"
-  },
-  "resetAccountDescription": {
-    "message": "Resetarea contului va duce la ștergerea istoricului tranzacțiilor dvs."
-  },
   "restore": {
     "message": "Restabilește"
   },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Dacă schimbați vreodată browserele sau vă mutați la alt computer, veți avea nevoie de această expresie sursă pentru a vă accesa conturile. Salvați-o într-un loc sigur și secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NU împărtășiți această expresie nimănui!"
+    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC nou"
   },
   "save": {
     "message": "Salvează"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvați ca fișier CSV "
   },
   "scanInstructions": {
     "message": "Așezați codul QR în fața camerei"
@@ -797,9 +758,6 @@
   "terms": {
     "message": "Termeni și condiții"
   },
-  "testFaucet": {
-    "message": "Robinet de testare"
-  },
   "tips": {
     "message": "Cadouri bănești"
   },
@@ -912,9 +870,6 @@
   "userName": {
     "message": "Nume utilizator"
   },
-  "viewAccount": {
-    "message": "Afișați contul"
-  },
   "viewContact": {
     "message": "Vizualizare contact"
   },
@@ -923,9 +878,6 @@
   },
   "welcomeBack": {
     "message": "Bine ai revenit!"
-  },
-  "yesLetsTry": {
-    "message": "Da, să încercăm"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."

@@ -39,7 +39,10 @@ export const ButtonLink = ({
             : TextVariant.bodyMd,
         ...textProps,
       }}
-      iconProps={{
+      startIconProps={{
+        size: size === BUTTON_LINK_SIZES.INHERIT ? Size.inherit : Size.SM,
+      }}
+      endIconProps={{
         size: size === BUTTON_LINK_SIZES.INHERIT ? Size.inherit : Size.SM,
       }}
       iconLoadingProps={{

@@ -11,7 +11,6 @@ import {
   getIsTestnet,
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
-  getShowPortfolioTooltip,
   isCurrentProviderCustom,
 } from '../../selectors';
 import {
@@ -53,7 +52,6 @@ function mapStateToProps(state) {
     isTestNet: getIsTestnet(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
-    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,

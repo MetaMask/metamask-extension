@@ -16,7 +16,8 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import Box from '../../ui/box/box';
 
 const AssetListItem = ({
   className,
@@ -138,14 +139,15 @@ const AssetListItem = ({
       midContent={midContent}
       rightContent={
         !isERC721 && (
-          <>
+          <Box>
             <Icon
               name={ICON_NAMES.ARROW_RIGHT}
               color={Color.iconDefault}
-              className="asset-list-item__chevron-right"
+              size={ICON_SIZES.SM}
+              style={{ verticalAlign: 'middle' }}
             />
             {sendTokenButton}
-          </>
+          </Box>
         )
       }
     />

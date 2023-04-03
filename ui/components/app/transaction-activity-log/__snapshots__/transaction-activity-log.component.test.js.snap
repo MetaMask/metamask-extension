@@ -19,8 +19,8 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <div
-            class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-icon-default"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/add.svg');"
           />
         </div>
@@ -41,8 +41,8 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <div
-            class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-icon-default"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-up.svg');"
           />
         </div>
@@ -63,8 +63,8 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <div
-            class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-icon-default"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/programming-arrows.svg');"
           />
         </div>
@@ -85,8 +85,8 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <div
-            class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-icon-default"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/check.svg');"
           />
         </div>

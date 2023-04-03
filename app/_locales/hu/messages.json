@@ -75,12 +75,6 @@
   "asset": {
     "message": "Eszköz"
   },
-  "attemptToCancel": {
-    "message": "Megpróbálja törölni?"
-  },
-  "attemptToCancelDescription": {
-    "message": "A próbálkozás elküldése nem garantálja, hogy az eredeti tranzakció törlésre kerül. Ha a törlési kísérlet sikeres, akkor a fenti tranzakciós díjat számítjuk fel önnek."
-  },
   "attemptingConnect": {
     "message": "Próbálunk csatlakozni a blokklánchoz."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
-  "buyWithWyre": {
-    "message": "Vásároljon $1 -t a Wyre-rel"
-  },
-  "buyWithWyreDescription": {
-    "message": "A Wyre segítségével egyensen a MetaMaks fiókjában tehet letétbe ETH-t."
-  },
   "bytes": {
     "message": "Bájtok"
   },
   "cancel": {
     "message": "Mégse"
-  },
-  "cancellationGasFee": {
-    "message": "A törlés gázára"
   },
   "cancelled": {
     "message": "Megszakítva"
@@ -183,9 +168,6 @@
   },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
-  },
-  "continueToWyre": {
-    "message": "Tovább a Wyre-re"
   },
   "contractDeployment": {
     "message": "Szerződés alkalmazása"
@@ -334,13 +316,6 @@
   },
   "general": {
     "message": "Általános"
-  },
-  "getEther": {
-    "message": "Ether beszerzése"
-  },
-  "getEtherFromFaucet": {
-    "message": "Szerezzen Ethert pénzcsapból a(z) $1-ért",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli teszthálózat"
@@ -638,35 +613,21 @@
   "reset": {
     "message": "Visszaállítás"
   },
-  "resetAccount": {
-    "message": "Fiók visszaállítása"
-  },
-  "resetAccountDescription": {
-    "message": "A fiók visszaállítása törli a tranzakciók előzményeit."
-  },
   "restore": {
     "message": "Visszaállítás"
   },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ha valamikor böngészőt váltasz, vagy számítógépet cserélsz, a fiókjaid használatához szükséged lesz erre a kulcsszóláncra. Őrizd őket egy biztonságos és titkos helyen."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE ossza meg ezt a mondatot senkivel!"
+    "message": "Ezekkel a szavakkal ellophatóak a fiókjai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Új RPC URL"
   },
   "save": {
     "message": "Mentés"
-  },
-  "saveAsCsvFile": {
-    "message": "Mentés CSV-fájlként"
   },
   "scanInstructions": {
     "message": "Helyezze a QR-kódot a fényképezőgép elé"
@@ -803,9 +764,6 @@
   "terms": {
     "message": "Használati feltételek"
   },
-  "testFaucet": {
-    "message": "Teszt csap"
-  },
   "tips": {
     "message": "Adományok"
   },
@@ -921,9 +879,6 @@
   "userName": {
     "message": "Felhasználónév"
   },
-  "viewAccount": {
-    "message": "Fiók megtekintése"
-  },
   "viewContact": {
     "message": "Névjegy megtekintése"
   },
@@ -932,9 +887,6 @@
   },
   "welcomeBack": {
     "message": "Üdvözöljük újra!"
-  },
-  "yesLetsTry": {
-    "message": "Igen, próbáljuk ki!"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."

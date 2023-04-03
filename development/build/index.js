@@ -73,9 +73,17 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
+  // scuttle on production/tests environment only
+  const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
+
+  console.log(
+    `Building lavamoat runtime file`,
+    `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
+  );
+
   // build lavamoat runtime file
   await lavapack.buildRuntime({
-    scuttleGlobalThis: true,
+    scuttleGlobalThis: applyLavaMoat && shouldScuttle,
     scuttleGlobalThisExceptions: [
       // globals used by different mm deps outside of lm compartment
       'toString',
@@ -94,7 +102,7 @@ async function defineAndRunBuildTasks() {
       'navigator',
       'harden',
       'console',
-      'location',
+      'Image', // Used by browser to generate notifications
       // globals chrome driver needs to function (test env)
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'performance',

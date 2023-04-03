@@ -25,13 +25,13 @@ import {
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
-import { getCollectibleImageAlt } from '../../../helpers/utils/nfts';
-import { updateCollectibleDropDownState } from '../../../store/actions';
+import { getNftImageAlt } from '../../../helpers/utils/nfts';
+import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
+import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import CollectibleDefaultImage from '../nft-default-image';
 import { Icon, ICON_NAMES } from '../../component-library';
+import NftDefaultImage from '../nft-default-image';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -40,13 +40,13 @@ const width =
 
 const PREVIOUSLY_OWNED_KEY = 'previouslyOwned';
 
-export default function CollectiblesItems({
+export default function NftsItems({
   collections = {},
   previouslyOwnedCollection = {},
 }) {
   const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
-  const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
+  const nftsDropdownState = useSelector(getNftsDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
@@ -57,29 +57,29 @@ export default function CollectiblesItems({
       chainId !== undefined &&
       selectedAddress !== undefined &&
       !isEqual(previousCollectionKeys, collectionsKeys) &&
-      (collectiblesDropdownState?.[selectedAddress]?.[chainId] === undefined ||
-        Object.keys(collectiblesDropdownState?.[selectedAddress]?.[chainId])
-          .length === 0)
+      (nftsDropdownState?.[selectedAddress]?.[chainId] === undefined ||
+        Object.keys(nftsDropdownState?.[selectedAddress]?.[chainId]).length ===
+          0)
     ) {
       const initState = {};
       collectionsKeys.forEach((key) => {
         initState[key] = true;
       });
 
-      const newCollectibleDropdownState = {
-        ...collectiblesDropdownState,
+      const newNftDropdownState = {
+        ...nftsDropdownState,
         [selectedAddress]: {
-          ...collectiblesDropdownState?.[selectedAddress],
+          ...nftsDropdownState?.[selectedAddress],
           [chainId]: initState,
         },
       };
 
-      dispatch(updateCollectibleDropDownState(newCollectibleDropdownState));
+      dispatch(updateNftDropDownState(newNftDropdownState));
     }
   }, [
     collectionsKeys,
     previousCollectionKeys,
-    collectiblesDropdownState,
+    nftsDropdownState,
     selectedAddress,
     chainId,
     dispatch,
@@ -94,51 +94,46 @@ export default function CollectiblesItems({
         <img
           alt={collectionName}
           src={getAssetImageURL(collectionImage, ipfsGateway)}
-          className="collectibles-items__collection-image"
+          className="nfts-items__collection-image"
         />
       );
     }
     return (
-      <div className="collectibles-items__collection-image-alt">
+      <div className="nfts-items__collection-image-alt">
         {collectionName?.[0]?.toUpperCase() ?? null}
       </div>
     );
   };
 
-  const updateCollectibleDropDownStateKey = (key, isExpanded) => {
-    const currentAccountCollectibleDropdownState =
-      collectiblesDropdownState[selectedAddress][chainId];
-
+  const updateNftDropDownStateKey = (key, isExpanded) => {
     const newCurrentAccountState = {
-      ...currentAccountCollectibleDropdownState,
+      ...nftsDropdownState[selectedAddress][chainId],
       [key]: !isExpanded,
     };
 
-    collectiblesDropdownState[selectedAddress][chainId] =
-      newCurrentAccountState;
+    const newState = {
+      ...nftsDropdownState,
+      [selectedAddress]: {
+        [chainId]: newCurrentAccountState,
+      },
+    };
 
-    dispatch(updateCollectibleDropDownState(collectiblesDropdownState));
+    dispatch(updateNftDropDownState(newState));
   };
 
-  const renderCollection = ({
-    collectibles,
-    collectionName,
-    collectionImage,
-    key,
-  }) => {
-    if (!collectibles.length) {
+  const renderCollection = ({ nfts, collectionName, collectionImage, key }) => {
+    if (!nfts.length) {
       return null;
     }
 
-    const isExpanded =
-      collectiblesDropdownState[selectedAddress]?.[chainId]?.[key];
+    const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
     return (
-      <div className="collectibles-items__collection" key={`collection-${key}`}>
+      <div className="nfts-items__collection" key={`collection-${key}`}>
         <button
-          className="collectibles-items__collection-wrapper"
+          className="nfts-items__collection-wrapper"
           data-testid="collection-expander-button"
           onClick={() => {
-            updateCollectibleDropDownStateKey(key, isExpanded);
+            updateNftDropDownStateKey(key, isExpanded);
           }}
         >
           <Box
@@ -146,11 +141,11 @@ export default function CollectiblesItems({
             display={DISPLAY.FLEX}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
-            className="collectibles-items__collection-accordion-title"
+            className="nfts-items__collection-accordion-title"
           >
             <Box
               alignItems={AlignItems.center}
-              className="collectibles-items__collection-header"
+              className="nfts-items__collection-header"
             >
               {renderCollectionImage(collectionImage, collectionName)}
               <Typography
@@ -158,9 +153,7 @@ export default function CollectiblesItems({
                 variant={TypographyVariant.H5}
                 margin={2}
               >
-                {`${collectionName ?? t('unknownCollection')} (${
-                  collectibles.length
-                })`}
+                {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
               </Typography>
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
@@ -176,43 +169,42 @@ export default function CollectiblesItems({
 
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
-            {collectibles.map((collectible, i) => {
-              const { image, address, tokenId, backgroundColor, name } =
-                collectible;
-              const collectibleImage = getAssetImageURL(image, ipfsGateway);
-              const collectibleImageAlt = getCollectibleImageAlt(collectible);
+            {nfts.map((nft, i) => {
+              const { image, address, tokenId, backgroundColor, name } = nft;
+              const nftImage = getAssetImageURL(image, ipfsGateway);
+              const nftImageAlt = getNftImageAlt(nft);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
 
               return (
                 <Box
-                  data-testid="collectible-wrapper"
+                  data-testid="nft-wrapper"
                   width={width}
-                  key={`collectible-${i}`}
-                  className="collectibles-items__item-wrapper"
+                  key={`nft-${i}`}
+                  className="nfts-items__item-wrapper"
                 >
                   <Card
                     padding={0}
                     justifyContent={JustifyContent.center}
-                    className="collectibles-items__item-wrapper__card"
+                    className="nfts-items__item-wrapper__card"
                   >
-                    {collectibleImage ? (
+                    {nftImage ? (
                       <button
-                        className="collectibles-items__item"
+                        className="nfts-items__item"
                         style={{
                           backgroundColor,
                         }}
                         onClick={handleImageClick}
                       >
                         <img
-                          className="collectibles-items__item-image"
-                          data-testid="collectible-image"
-                          src={collectibleImage}
-                          alt={collectibleImageAlt}
+                          className="nfts-items__item-image"
+                          data-testid="nft-image"
+                          src={nftImage}
+                          alt={nftImageAlt}
                         />
                       </button>
                     ) : (
-                      <CollectibleDefaultImage
+                      <NftDefaultImage
                         name={name}
                         tokenId={tokenId}
                         handleImageClick={handleImageClick}
@@ -229,7 +221,7 @@ export default function CollectiblesItems({
   };
 
   return (
-    <div className="collectibles-items">
+    <div className="nfts-items">
       <Box
         paddingTop={6}
         paddingBottom={6}
@@ -239,11 +231,10 @@ export default function CollectiblesItems({
       >
         <>
           {collectionsKeys.map((key) => {
-            const { collectibles, collectionName, collectionImage } =
-              collections[key];
+            const { nfts, collectionName, collectionImage } = collections[key];
 
             return renderCollection({
-              collectibles,
+              nfts,
               collectionName,
               collectionImage,
               key,
@@ -251,9 +242,9 @@ export default function CollectiblesItems({
             });
           })}
           {renderCollection({
-            collectibles: previouslyOwnedCollection.collectibles,
+            nfts: previouslyOwnedCollection.nfts,
             collectionName: previouslyOwnedCollection.collectionName,
-            collectionImage: previouslyOwnedCollection.collectibles[0]?.image,
+            collectionImage: previouslyOwnedCollection.nfts[0]?.image,
             isPreviouslyOwnedCollection: true,
             key: PREVIOUSLY_OWNED_KEY,
           })}
@@ -263,9 +254,9 @@ export default function CollectiblesItems({
   );
 }
 
-CollectiblesItems.propTypes = {
+NftsItems.propTypes = {
   previouslyOwnedCollection: PropTypes.shape({
-    collectibles: PropTypes.arrayOf(
+    nfts: PropTypes.arrayOf(
       PropTypes.shape({
         address: PropTypes.string.isRequired,
         tokenId: PropTypes.string.isRequired,
@@ -286,7 +277,7 @@ CollectiblesItems.propTypes = {
     collectionImage: PropTypes.string,
   }),
   collections: PropTypes.shape({
-    collectibles: PropTypes.arrayOf(
+    nfts: PropTypes.arrayOf(
       PropTypes.shape({
         address: PropTypes.string.isRequired,
         tokenId: PropTypes.string.isRequired,

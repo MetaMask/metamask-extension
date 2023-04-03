@@ -7,10 +7,8 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import LockIcon from '../../../../components/ui/lock-icon';
-import IconCheck from '../../../../components/ui/icon/icon-check';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
+import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
@@ -18,11 +16,17 @@ import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../../components/component-library';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 const NetworksListItem = ({
   network,
   networkIsSelected,
-  selectedRpcUrl,
+  selectedNetworkConfigurationId,
   setSearchQuery,
   setSearchedNetworks,
 }) => {
@@ -34,11 +38,14 @@ const NetworksListItem = ({
   const {
     label,
     labelKey,
+    networkConfigurationId,
     rpcUrl,
     providerType: currentProviderType,
   } = network;
 
-  const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
+  const listItemNetworkIsSelected =
+    selectedNetworkConfigurationId &&
+    selectedNetworkConfigurationId === networkConfigurationId;
   const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
     provider.type !== NETWORK_TYPES.RPC &&
@@ -60,29 +67,21 @@ const NetworksListItem = ({
   return (
     <div
       ref={settingsRefs}
-      key={`settings-network-list-item:${rpcUrl}`}
+      key={`settings-network-list-item:${networkConfigurationId}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
         setSearchQuery('');
         setSearchedNetworks([]);
-        dispatch(setSelectedSettingsRpcUrl(rpcUrl));
+        dispatch(setSelectedNetworkConfigurationId(networkConfigurationId));
         if (!isFullScreen) {
           global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
         }
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="var(--color-success-default)"
-          aria-label={t('active')}
-        />
+        <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
       ) : (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="transparent"
-          aria-hidden="true"
-        />
+        <Icon name={ICON_NAMES.CHECK} color={IconColor.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -122,7 +121,12 @@ const NetworksListItem = ({
       >
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPES.RPC && (
-          <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
+          <Icon
+            name={ICON_NAMES.LOCK}
+            color={IconColor.iconMuted}
+            size={ICON_SIZES.AUTO}
+            marginInlineStart={2}
+          />
         )}
       </div>
     </div>
@@ -132,7 +136,7 @@ const NetworksListItem = ({
 NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
-  selectedRpcUrl: PropTypes.string,
+  selectedNetworkConfigurationId: PropTypes.string,
   setSearchQuery: PropTypes.func,
   setSearchedNetworks: PropTypes.func,
 };

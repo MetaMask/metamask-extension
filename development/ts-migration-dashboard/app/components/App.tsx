@@ -4,23 +4,24 @@ import { Tooltip as ReactTippy } from 'react-tippy';
 import { readPartitionsFile } from '../../common/partitions-file';
 
 type Summary = {
-  numConvertedFiles: number;
-  numFiles: number;
+  numConvertedModules: number;
+  numModules: number;
 };
 
 function calculatePercentageComplete(summary: Summary) {
-  return ((summary.numConvertedFiles / summary.numFiles) * 100).toFixed(1);
+  return ((summary.numConvertedModules / summary.numModules) * 100).toFixed(1);
 }
 
 export default function App() {
   const partitions = readPartitionsFile();
 
-  const allFiles = partitions.flatMap((partition) => {
+  const allModules = partitions.flatMap((partition) => {
     return partition.children;
   });
   const overallTotal = {
-    numConvertedFiles: allFiles.filter((file) => file.hasBeenConverted).length,
-    numFiles: allFiles.length,
+    numConvertedModules: allModules.filter((module) => module.hasBeenConverted)
+      .length,
+    numModules: allModules.length,
   };
 
   return (
@@ -35,7 +36,7 @@ export default function App() {
           '--progress': `${calculatePercentageComplete(overallTotal)}%`,
         }}
       >
-        OVERALL: {overallTotal.numConvertedFiles}/{overallTotal.numFiles} (
+        OVERALL: {overallTotal.numConvertedModules}/{overallTotal.numModules} (
         {calculatePercentageComplete(overallTotal)}%)
       </h2>
       <details className="help">
@@ -50,13 +51,13 @@ export default function App() {
 
           <p>
             Each box
-            <div className="file file--inline file--to-be-converted">
+            <div className="module module--inline module--to-be-converted">
               &nbsp;
             </div>
             on this page represents a file that either we want to convert or
             we've already converted to TypeScript (hover over a box to see the
             filename). Boxes that are
-            <div className="file file--inline file--to-be-converted file--test">
+            <div className="module module--inline module--to-be-converted module--test">
               &nbsp;
             </div>
             greyed out are test or Storybook files.
@@ -96,15 +97,17 @@ export default function App() {
           </p>
         </div>
       </details>
-      <div className="levels">
+      <div className="partitions">
         {partitions.map((partition) => {
           return (
-            <div key={partition.level} className="level">
-              <div className="level__name">level {partition.level}</div>
-              <div className="level__children">
+            <div key={partition.level} className="partition">
+              <div className="partition__name">level {partition.level}</div>
+              <div className="partition__children">
                 {partition.children.map(({ name, hasBeenConverted }) => {
                   const isTest = /\.test\.(?:js|tsx?)/u.test(name);
-                  const isStorybookFile = /\.stories\.(?:js|tsx?)/u.test(name);
+                  const isStorybookModule = /\.stories\.(?:js|tsx?)/u.test(
+                    name,
+                  );
                   return (
                     <ReactTippy
                       key={name}
@@ -112,15 +115,15 @@ export default function App() {
                       arrow={true}
                       animation="fade"
                       duration={250}
-                      className="file__tooltipped"
+                      className="module__tooltipped"
                       style={{ display: 'block' }}
                     >
                       <div
-                        className={classnames('file', {
-                          'file--has-been-converted': hasBeenConverted,
-                          'file--to-be-converted': !hasBeenConverted,
-                          'file--test': isTest,
-                          'file--storybook': isStorybookFile,
+                        className={classnames('module', {
+                          'module--has-been-converted': hasBeenConverted,
+                          'module--to-be-converted': !hasBeenConverted,
+                          'module--test': isTest,
+                          'module--storybook': isStorybookModule,
                         })}
                       />
                     </ReactTippy>

@@ -52,7 +52,6 @@ async function withFixtures(options, testSuite) {
 
   let webDriver;
   let driver;
-  const errors = [];
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
@@ -76,7 +75,7 @@ async function withFixtures(options, testSuite) {
       });
     }
     await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures);
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -117,7 +116,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions();
+      await driver.checkBrowserForExceptions(failOnConsoleError);
+      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
     let driverProxy;
@@ -145,21 +145,6 @@ async function withFixtures(options, testSuite) {
       mockServer,
       contractRegistry,
     });
-
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      errors.concat(await driver.checkBrowserForConsoleErrors(driver));
-      if (errors.length) {
-        const errorReports = errors.map((err) => err.message);
-        const errorMessage = `Errors found in browser console:\n${errorReports.join(
-          '\n',
-        )}`;
-        if (failOnConsoleError) {
-          throw new Error(errorMessage);
-        } else {
-          console.error(new Error(errorMessage));
-        }
-      }
-    }
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -168,21 +153,13 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (
-        errors.length === 0 &&
-        driver.exceptions.length > 0 &&
-        failOnConsoleError
-      ) {
+      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
          * proving more helpful context
          */
         await driver.navigate(PAGES.BACKGROUND);
-        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
-          '\n',
-        )}`;
-        throw Error(errorMessage);
       }
     }
     throw error;

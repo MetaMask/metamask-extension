@@ -6,7 +6,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES } from '../icon';
+import { ICON_NAMES, TEXT_DIRECTIONS } from '..';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -55,7 +55,11 @@ export default {
     disabled: {
       control: 'boolean',
     },
-    iconName: {
+    startIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
+    },
+    endIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -145,6 +149,15 @@ Href.args = {
   href: '/metamask',
 };
 
+export const ExternalLink = (args) => (
+  <ButtonBase {...args}>Anchor element with external link</ButtonBase>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io',
+  externalLink: true,
+};
+
 export const Disabled = (args) => (
   <ButtonBase {...args}>Disabled Button</ButtonBase>
 );
@@ -161,8 +174,36 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <ButtonBase {...args} icon={ICON_NAMES.ADD_SQUARE}>
+export const StartIconName = (args) => (
+  <ButtonBase {...args} startIconName={ICON_NAMES.ADD_SQUARE}>
     Button
   </ButtonBase>
+);
+
+export const EndIconName = (args) => (
+  <ButtonBase {...args} endIconName={ICON_NAMES.ARROW_2_RIGHT}>
+    Button
+  </ButtonBase>
+);
+
+export const Rtl = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <ButtonBase
+      {...args}
+      startIconName={ICON_NAMES.ADD_SQUARE}
+      endIconName={ICON_NAMES.ARROW_2_RIGHT}
+    >
+      Button Demo
+    </ButtonBase>
+    <ButtonBase
+      {...args}
+      startIconName={ICON_NAMES.ADD_SQUARE}
+      endIconName={ICON_NAMES.ARROW_2_RIGHT}
+      textProps={{
+        textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
+      }}
+    >
+      Button Demo
+    </ButtonBase>
+  </Box>
 );

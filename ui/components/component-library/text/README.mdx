@@ -20,9 +20,21 @@ The `Text` accepts all props below as well as all [Box](/docs/components-ui-box-
 
 ### Variant
 
-Use the `variant` prop and the `TEXT` object from `./ui/helpers/constants/design-system.js` to change the font size of the component.
+Use the `variant` prop and the `TextVariant` enum from `./ui/helpers/constants/design-system.js` to change the font size of the component.
 
-Optional: `TEXT_VARIANTS` from ./text object can also be used.
+`TextVariant` options:
+
+- TextVariant.displayMd (default renders as `h1` tag)
+- TextVariant.headingLg (default renders as `h2` tag)
+- TextVariant.headingMd (default renders as `h3` tag)
+- TextVariant.headingSm (default renders as `h4` tag)
+- TextVariant.bodyLgMedium (default renders as `p` tag)
+- TextVariant.bodyMd (default renders as `p` tag)
+- TextVariant.bodyMdBold (default renders as `p` tag)
+- TextVariant.bodySm (default renders as `p` tag)
+- TextVariant.bodySmBold (default renders as `p` tag)
+- TextVariant.bodyXs (default renders as `p` tag)
+- TextVariant.inherit (default renders as `span` tag)
 
 <Canvas>
   <Story id="components-componentlibrary-text--variant" />
@@ -47,10 +59,10 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 
 ### Color
 
-Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
+Use the `color` prop and the `TextColor` object from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
 
 <Canvas>
-  <Story id="components-componentlibrary-text--color" />
+  <Story id="components-componentlibrary-text--color-story" />
 </Canvas>
 
 ```jsx
@@ -332,3 +344,236 @@ Adds an additional class to the `Text` component
 ### Children
 
 The text content of the `Text` component
+
+---
+
+# Converting from `Typography` to `Text`
+
+The `Typography` component has been deprecated in favor of the `Text` component. Below are code examples converting from `Typography` to `Text`.
+
+### Variant
+
+Table below is the 1:1 mapping of `TypographyVariant` to `TextVariant` and the html element that needs to be rendered.
+
+The new `Text` component does not have matching default elements for `TypographyVariant.H5`, `TypographyVariant.H6`, `TypographyVariant.H7` or `TypographyVariant.H8` or `TypographyVariant.H9` variant.
+
+If you need to use these variants, please use the `as` prop to render the correct html element.
+
+| TypographyVariant                                          | Typography Tag | TextVariant           | Text Default Tag |
+| ---------------------------------------------------------- | -------------- | --------------------- | ---------------- |
+| [TypographyVariant.H1](#typographyvarianth1)               | h1             | TextVariant.displayMd | h1               |
+| [TypographyVariant.H2](#typographyvarianth2)               | h2             | TextVariant.headingLg | h2               |
+| [TypographyVariant.H3](#typographyvarianth3)               | h3             | TextVariant.headingMd | h3               |
+| [TypographyVariant.H4](#typographyvarianth4)               | h4             | TextVariant.headingSm | h4               |
+| [TypographyVariant.H5](#typographyvarianth5)               | h5             | TextVariant.bodyMd    | p                |
+| [TypographyVariant.H6](#typographyvarianth6)               | h6             | TextVariant.bodySm    | p                |
+| [TypographyVariant.Paragraph](#typographyvariantparagraph) | p              | TextVariant.bodyMd    | p                |
+| [TypographyVariant.H7](#typographyvarianth7)               | h6             | TextVariant.bodySm    | p                |
+| [TypographyVariant.H8](#typographyvarianth8)               | h6             | TextVariant.bodyXs    | p                |
+| [TypographyVariant.H9](#typographyvarianth9)               | h6             | TextVariant.bodyXs    | p                |
+
+#### TypographyVariant.H1
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typography variant={TypographyVariant.H1}>Demo</Typography>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.displayMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H2
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H2}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingLg}>Demo</Text>;
+```
+
+#### TypographyVariant.H3
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H3}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H4
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H4}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingSm}>Demo</Text>;
+```
+
+#### TypographyVariant.H5
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H5}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H6
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H6}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.Paragraph
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.Paragraph}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H7
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H7}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H8
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H8}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H9
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H9}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
+```
+
+### Align
+
+The prop name `align` has been deprecated in favor of `textAlign`
+
+Values and using the `TEXT_ALIGN` object from `./ui/helpers/constants/design-system.js` remain the same
+
+```jsx
+// Before
+<Typograpghy align={TEXT_ALIGN.CENTER}>Demo</Typograpghy>;
+
+// After
+<Text textAlign={TEXT_ALIGN.CENTER}>Demo</Text>;
+```
+
+### Box Props
+
+Box props are now integrated with the `Text` component. Valid box props: [Box](/?path=/story/components-ui-box--default-story)
+
+You no longer need to pass these props as an object through `boxProps`
+
+```jsx
+// Before
+<Typography
+  boxProps={{
+    backgroundColor: Color.infoMuted,
+    borderColor: Color.infoDefault,
+    padding: 4,
+    borderRadius: 4,
+  }}
+  color={Color.textDefault}
+>
+  Demo
+</Typography>;
+
+// After
+<Text
+  backgroundColor={Color.infoMuted}
+  borderColor={Color.infoDefault}
+  padding={4}
+  borderRadius={4}
+  color={Color.textDefault}
+>
+  Demo
+</Text>;
+```

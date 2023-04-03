@@ -212,7 +212,7 @@ describe('MetaMask Import UI', function () {
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey1);
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement({ text: 'Import', tag: 'span' });
 
         // should show the correct account name
         const importedAccountName = await driver.findElement(
@@ -239,7 +239,7 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement({ text: 'Import account', tag: 'div' });
         // enter private key
         await driver.fill('#private-key-box', testPrivateKey2);
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement({ text: 'Import', tag: 'span' });
 
         // should see new account in account menu
         const importedAccount2Name = await driver.findElement(
@@ -315,7 +315,7 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Import account', tag: 'div' });
 
-        await driver.clickElement('.new-account-import-form__select');
+        await driver.clickElement('.dropdown__select');
         await driver.clickElement({ text: 'JSON File', tag: 'option' });
 
         const fileInput = await driver.findElement('input[type="file"]');
@@ -330,7 +330,7 @@ describe('MetaMask Import UI', function () {
 
         await driver.fill('#json-password-box', 'foobarbazqux');
 
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement({ text: 'Import', tag: 'span' });
 
         // should show the correct account name
         const importedAccountName = await driver.findElement(
@@ -392,11 +392,11 @@ describe('MetaMask Import UI', function () {
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey);
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement({ text: 'Import', tag: 'span' });
 
         // error should occur
         await driver.waitForSelector({
-          css: '.error',
+          css: '.mm-help-text',
           text: 'The account you are trying to import is a duplicate',
         });
       },

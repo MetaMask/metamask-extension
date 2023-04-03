@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
+import { getNfts, getTokens } from '../ducks/metamask/metamask';
 import { getAssetDetails } from '../helpers/utils/token-util';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -11,7 +11,7 @@ import { useTokenTracker } from './useTokenTracker';
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();
   // state selectors
-  const collectibles = useSelector(getCollectibles);
+  const nfts = useSelector(getNfts);
   const tokens = useSelector(getTokens, isEqual);
   const currentToken = tokens.find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
@@ -36,7 +36,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
         tokenAddress,
         userAddress,
         transactionData,
-        collectibles,
+        nfts,
       );
       setCurrentAsset(assetDetails);
       dispatch(hideLoadingIndication());
@@ -57,7 +57,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     tokenAddress,
     userAddress,
     transactionData,
-    collectibles,
+    nfts,
     tokensWithBalances,
     prevTokenBalance,
   ]);

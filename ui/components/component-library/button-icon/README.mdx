@@ -34,10 +34,10 @@ import { ICON_NAMES } from '../icon';
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js`
-to change the size of `ButtonIcon`. Defaults to `SIZES.SM`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js`
+to change the size of `ButtonIcon`. Defaults to `Size.SM`
 
-Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of `SIZES`.
+Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of `Size`.
 
 Possible sizes include:
 
@@ -45,7 +45,7 @@ Possible sizes include:
 - `Size.LG` 32px
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonicon--size" />
+  <Story id="components-componentlibrary-buttonicon--size-story" />
 </Canvas>
 
 ```jsx
@@ -65,11 +65,12 @@ Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibil
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, ICON_NAMES } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 
 <ButtonIcon as="button" iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### As
@@ -86,11 +87,12 @@ Button `as` options:
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, ICON_NAMES } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 
 <ButtonIcon as="button" iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### Href
@@ -102,31 +104,33 @@ When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, ICON_NAMES } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 <ButtonIcon
   href="https://metamask.io/"
   target="_blank"
   iconName={ICON_NAMES.EXPORT}
-  color={COLORS.PRIMARY_DEFAULT}
+  color={Color.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```
 
 ### Color
 
-Use the `color` prop and the `COLORS` object to change the color of the `ButtonIcon`. Defaults to `COLORS.ICON_DEFAULT`.
+Use the `color` prop and the `Color` object to change the color of the `ButtonIcon`. Defaults to `Color.iconDefault`.
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonicon--color" />
+  <Story id="components-componentlibrary-buttonicon--color-story" />
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, ICON_NAMES } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 <ButtonIcon
   iconName={ICON_NAMES.EXPORT}
-  color={COLORS.PRIMARY_DEFAULT}
+  color={Color.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```

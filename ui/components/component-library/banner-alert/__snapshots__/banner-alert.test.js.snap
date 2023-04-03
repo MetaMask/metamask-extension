@@ -6,8 +6,8 @@ exports[`BannerAlert should render BannerAlert element correctly 1`] = `
     class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
     data-testid="bannerAlert"
   >
-    <div
-      class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-primary-default"
+    <span
+      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-primary-default"
       style="mask-image: url('./images/icons/info.svg');"
     />
     <div>

@@ -64,23 +64,24 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-function getMockNetworkController(
-  chainId = FAKE_CHAIN_ID,
-  provider = { type: NETWORK_TYPES.MAINNET },
-) {
-  let networkStore = { chainId, provider };
+function getMockNetworkController() {
+  let state = {
+    provider: {
+      type: NETWORK_TYPES.GOERLI,
+      chainId: FAKE_CHAIN_ID,
+    },
+    network: 'loading',
+  };
   const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
   const updateState = (newState) => {
-    networkStore = { ...networkStore, ...newState };
+    state = { ...state, ...newState };
     on.getCall(0).args[1]();
   };
   return {
     store: {
-      getState: () => networkStore,
+      getState: () => state,
       updateState,
     },
-    getCurrentChainId: () => networkStore.chainId,
-    getNetworkIdentifier: () => networkStore.provider.type,
     on,
   };
 }
@@ -118,6 +119,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
   category: 'Unit Test',
   successEvent: 'sample non-persisted event success',
   failureEvent: 'sample non-persisted event failure',
+  uniqueIdentifier: 'sample-non-persisted-event',
   properties: {
     test: true,
   },
@@ -132,8 +134,8 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId:
-      networkController.getCurrentChainId.bind(networkController),
+    getCurrentChainId: () =>
+      networkController.store.getState().provider.chainId,
     onNetworkDidChange: networkController.on.bind(
       networkController,
       NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -174,7 +176,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
-          messageId: Utils.generateRandomId(),
+          messageId: 'sample-non-persisted-event-failure',
           timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
@@ -206,8 +208,8 @@ describe('MetaMetricsController', function () {
       networkController.store.updateState({
         provider: {
           type: 'NEW_NETWORK',
+          chainId: '0xaab',
         },
-        chainId: '0xaab',
       });
       assert.strictEqual(metaMetricsController.chainId, '0xaab');
     });
@@ -932,17 +934,25 @@ describe('MetaMetricsController', function () {
           },
         },
         allTokens: MOCK_ALL_TOKENS,
-        frequentRpcListDetail: [
-          { chainId: CHAIN_IDS.MAINNET, ticker: CURRENCY_SYMBOLS.ETH },
-          { chainId: CHAIN_IDS.GOERLI, ticker: CURRENCY_SYMBOLS.TEST_ETH },
-          { chainId: '0xaf' },
-        ],
+        networkConfigurations: {
+          'network-configuration-id-1': {
+            chainId: CHAIN_IDS.MAINNET,
+            ticker: CURRENCY_SYMBOLS.ETH,
+          },
+          'network-configuration-id-2': {
+            chainId: CHAIN_IDS.GOERLI,
+            ticker: CURRENCY_SYMBOLS.TEST_ETH,
+          },
+          'network-configuration-id-3': { chainId: '0xaf' },
+        },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
+        security_providers: [],
       });
 
       assert.deepEqual(traits, {
@@ -960,6 +970,8 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        [TRAITS.DESKTOP_ENABLED]: false,
+        [TRAITS.SECURITY_PROVIDERS]: [],
       });
     });
 
@@ -971,16 +983,17 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        frequentRpcListDetail: [
-          { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.GOERLI },
-        ],
+        networkConfigurations: {
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -991,16 +1004,17 @@ describe('MetaMetricsController', function () {
         allTokens: {
           '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
         },
-        frequentRpcListDetail: [
-          { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.GOERLI },
-        ],
+        networkConfigurations: {
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         identities: [{}, {}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -1019,16 +1033,17 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        frequentRpcListDetail: [
-          { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.GOERLI },
-        ],
+        networkConfigurations: {
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1037,16 +1052,17 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        frequentRpcListDetail: [
-          { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.GOERLI },
-        ],
+        networkConfigurations: {
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.equal(updatedTraits, null);

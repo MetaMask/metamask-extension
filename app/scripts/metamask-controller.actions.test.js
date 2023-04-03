@@ -222,27 +222,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#addCustomNetwork', function () {
-    const customRpc = {
-      chainId: '0x1',
-      chainName: 'DUMMY_CHAIN_NAME',
-      rpcUrl: 'DUMMY_RPCURL',
-      ticker: 'DUMMY_TICKER',
-      blockExplorerUrl: 'DUMMY_EXPLORER',
-    };
-    it('two successive calls with custom RPC details give same result', async function () {
-      await metamaskController.addCustomNetwork(customRpc);
-      const rpcList1Length =
-        metamaskController.preferencesController.store.getState()
-          .frequentRpcListDetail.length;
-      await metamaskController.addCustomNetwork(customRpc);
-      const rpcList2Length =
-        metamaskController.preferencesController.store.getState()
-          .frequentRpcListDetail.length;
-      assert.equal(rpcList1Length, rpcList2Length);
-    });
-  });
-
   describe('#updateTransactionSendFlowHistory', function () {
     it('two sequential calls with same history give same result', async function () {
       const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';

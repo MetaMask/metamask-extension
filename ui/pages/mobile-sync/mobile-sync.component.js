@@ -338,7 +338,7 @@ export default class MobileSyncPage extends Component {
         <label className="input-label" htmlFor="password-box">
           {t('enterPasswordContinue')}
         </label>
-        <div className="input-group">
+        <div>
           <input
             type="password"
             placeholder={t('password')}

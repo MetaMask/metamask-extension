@@ -1,8 +1,8 @@
 import React from 'react';
-import CollectibleDefaultImage from '.';
+import NftDefaultImage from '.';
 
 export default {
-  title: 'Components/App/CollectibleDefaultImage',
+  title: 'Components/App/NftDefaultImage',
 
   argTypes: {
     name: {
@@ -24,7 +24,7 @@ export default {
 
 export const DefaultStory = (args) => (
   <div style={{ width: 200, height: 200 }}>
-    <CollectibleDefaultImage {...args} />
+    <NftDefaultImage {...args} />
   </div>
 );
 
@@ -32,11 +32,11 @@ DefaultStory.storyName = 'Default';
 
 export const HandleImageClick = (args) => (
   <div style={{ width: 200, height: 200 }}>
-    <CollectibleDefaultImage {...args} />
+    <NftDefaultImage {...args} />
   </div>
 );
 
 HandleImageClick.args = {
   // eslint-disable-next-line no-alert
-  handleImageClick: () => window.alert('CollectibleDefaultImage clicked!'),
+  handleImageClick: () => window.alert('NftDefaultImage clicked!'),
 };

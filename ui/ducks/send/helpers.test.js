@@ -54,7 +54,7 @@ describe('Send Slice Helpers', () => {
       });
     });
 
-    it('should generate a txParams for a collectible transfer', () => {
+    it('should generate a txParams for an NFT transfer', () => {
       const txParams = generateTransactionParams(
         getInitialSendStateWithExistingTxState({
           fromAccount: {

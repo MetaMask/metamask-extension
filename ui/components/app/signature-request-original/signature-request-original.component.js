@@ -22,9 +22,10 @@ import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -142,6 +143,15 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         <div className="request-signature__origin">
           <SiteOrigin
             siteOrigin={txData.msgParams.origin}

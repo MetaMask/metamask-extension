@@ -163,9 +163,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "affirmAgree": {
-    "message": "Concordo"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -234,12 +231,6 @@
   },
   "assets": {
     "message": "Ativos"
-  },
-  "attemptToCancel": {
-    "message": "Tentar cancelar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar essa tentativa não garante que a transação original será cancelada. Se a tentativa de cancelamento tiver sucesso, será cobrada a taxa de transação acima."
   },
   "attemptingConnect": {
     "message": "Tentando conexão com o blockchain."
@@ -326,12 +317,6 @@
   "buy": {
     "message": "Comprar"
   },
-  "buyWithWyre": {
-    "message": "Comprar $1 com Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -357,9 +342,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancellationGasFee": {
-    "message": "Taxa de gás por cancelamento"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -483,12 +465,6 @@
   },
   "continue": {
     "message": "Continuar"
-  },
-  "continueToTransak": {
-    "message": "Continuar para Transak"
-  },
-  "continueToWyre": {
-    "message": "Continuar para o Wyre"
   },
   "contract": {
     "message": "Contrato"
@@ -908,7 +884,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Ver detalhes",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Adicionado em",
@@ -1042,23 +1018,8 @@
   "gasUsed": {
     "message": "Gás usado"
   },
-  "gdprMessage": {
-    "message": "Conforme determinação da Lei Geral de Proteção de Dados (União Europeia) 2016/679, esses dados são agregados e, portanto, anônimos. Para obter mais informações relacionadas às nossas práticas de privacidade, confira nossa $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Política de Privacidade aqui",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Geral"
-  },
-  "getEther": {
-    "message": "Obter Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obtenha Ether de um faucet para $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Voltar"
@@ -1398,37 +1359,6 @@
   "metamaskVersion": {
     "message": "Versão da MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Sempre permitirá que você se exclua por meio das Configurações"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Nunca",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "A MetaMask..."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 coletarão seu endereço IP completo",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 coletarão chaves, endereços, transações, saldos, hashes ou qualquer outra informação pessoal",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 venderão dados em troca de lucro. Jamais!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Enviarão eventos anonimizados de cliques e visualização de página"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Ajude-nos a melhorar a MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "A MetaMask gostaria de reunir dados de uso para entender melhor como nossos usuários interagem com a extensão. Esses dados serão usados para melhorar continuamente a usabilidade e a experiência do usuário com o nosso produto e o ecossistema do Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1531,9 +1461,6 @@
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "O colecionável foi adicionado com sucesso!"
-  },
   "newContact": {
     "message": "Novo contato"
   },
@@ -1545,6 +1472,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
+  },
+  "newNftAddedMessage": {
+    "message": "O colecionável foi adicionado com sucesso!"
   },
   "newPassword": {
     "message": "Nova senha (no mínimo 8 caracteres)"
@@ -1579,9 +1509,6 @@
   },
   "noNFTs": {
     "message": "Ainda não há nenhum NFT"
-  },
-  "noThanks": {
-    "message": "Não, obrigado"
   },
   "noTransactions": {
     "message": "Você não tem transações"
@@ -1981,12 +1908,6 @@
   "reset": {
     "message": "Redefinir"
   },
-  "resetAccount": {
-    "message": "Redefinir conta"
-  },
-  "resetAccountDescription": {
-    "message": "A redefinição da sua conta limpará o histórico de transações. Isso não alterará os saldos nas suas contas nem exigirá a reintrodução da Frase de Recuperação Secreta."
-  },
   "restore": {
     "message": "Restaurar"
   },
@@ -1999,23 +1920,15 @@
   "revealSeedWords": {
     "message": "Revelar Frase de Recuperação Secreta"
   },
-  "revealSeedWordsDescription": {
-    "message": "Se você alguma vez mudar de navegador ou trocar de computador, precisará dessa Frase de Recuperação Secreta para acessar suas contas. Salve-as em um lugar seguro e secreto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NÃO compartilhe essa frase com ninguém!"
+    "message": "Essas palavras podem ser usadas para roubar todas as suas contas.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Novo URL da RPC"
   },
   "save": {
     "message": "Salvar"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvar como arquivo CSV"
   },
   "scanInstructions": {
     "message": "Posicione o QR code na frente da sua câmera"
@@ -2678,9 +2591,6 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "testFaucet": {
-    "message": "Testar faucet"
-  },
   "time": {
     "message": "Hora"
   },
@@ -2899,7 +2809,7 @@
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "updatedWithDate": {
     "message": "Atualizado em $1"
@@ -2910,10 +2820,10 @@
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
   },
   "usePhishingDetection": {
@@ -2939,9 +2849,6 @@
   "verifyThisUnconfirmedTokenOn": {
     "message": "Verifique esse token no $1 e confirme que é o token que você deseja negociar.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "Ver conta"
   },
   "viewAllDetails": {
     "message": "Ver todos os detalhes"
@@ -3042,9 +2949,6 @@
   "xOfYPending": {
     "message": "$1 de $2 pendente",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Sim, vamos tentar"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."

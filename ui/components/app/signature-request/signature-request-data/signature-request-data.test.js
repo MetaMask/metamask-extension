@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { sanitizeMessage } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
 import SignatureRequestData from './signature-request-data';
 
@@ -59,124 +60,65 @@ describe('Signature Request Data', () => {
       },
     };
 
-    let messageData;
     const store = configureMockStore()(mockStore);
 
-    beforeEach(() => {
-      messageData = {
-        domain: {
-          chainId: 97,
-          name: 'Ether Mail',
-          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-          version: '1',
+    const rawMessage = {
+      domain: {
+        chainId: 97,
+        name: 'Ether Mail',
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        version: '1',
+      },
+      message: {
+        contents: 'Hello, Bob!',
+        from: {
+          name: 'Cow',
+          wallets: [
+            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+            '0x06195827297c7A80a443b6894d3BDB8824b43896',
+          ],
         },
-        message: {
-          contents: 'Hello, Bob!',
-          from: {
-            name: 'Cow',
+        to: [
+          {
+            name: 'Bob',
             wallets: [
-              '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-              '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-              '0x06195827297c7A80a443b6894d3BDB8824b43896',
+              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+              '0xB0B0b0b0b0b0B000000000000000000000000000',
             ],
           },
-          to: [
-            {
-              name: 'Bob',
-              wallets: [
-                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
-                '0xB0B0b0b0b0b0B000000000000000000000000000',
-              ],
-            },
-          ],
-        },
-        primaryType: 'Mail',
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'version', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          Mail: [
-            { name: 'from', type: 'Person' },
-            { name: 'to', type: 'Person[]' },
-            { name: 'contents', type: 'string' },
-          ],
-          Person: [
-            { name: 'name', type: 'string' },
-            { name: 'wallets', type: 'address[]' },
-          ],
-        },
-      };
-    });
+        ],
+      },
+      primaryType: 'Mail',
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person[]' },
+          { name: 'contents', type: 'string' },
+        ],
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallets', type: 'address[]' },
+        ],
+      },
+    };
 
-    it('should render domain chainId', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
-      const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
-        store,
-      );
-
-      expect(getByText('97')).toBeInTheDocument();
-    });
-
-    it('should render domain name', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
-      const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
-        store,
-      );
-
-      expect(getByText('Ether Mail')).toBeInTheDocument();
-    });
-
-    it('should render Identicon for domain verifying contract', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
-      const iconImage = (
-        <Identicon
-          diameter={32}
-          address={msgParams.data.domain.verifyingContract}
-        />
-      );
-      expect(iconImage).toBeDefined();
-    });
-
-    it('should render domain verifying contract shorten address', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
-      const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
-        store,
-      );
-
-      expect(getByText('0xCcC...cccC')).toBeInTheDocument();
-    });
+    const messageData = sanitizeMessage(
+      rawMessage.message,
+      rawMessage.primaryType,
+      rawMessage.types,
+    );
 
     it('should render contents title', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -184,13 +126,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render contants text', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -198,13 +135,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render from title', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -212,13 +144,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render name title in "from" object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams.data.message.from} />,
+        <SignatureRequestData data={messageData.value.from.value} />,
         store,
       );
 
@@ -226,13 +153,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render name text in "from" object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -240,13 +162,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render wallets title in "from" object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams.data.message.from} />,
+        <SignatureRequestData data={messageData.value.from.value} />,
         store,
       );
 
@@ -254,28 +171,18 @@ describe('Signature Request Data', () => {
     });
 
     it('should render Identicon for first wallet in "from" object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const iconImage = (
         <Identicon
           diameter={32}
-          address={msgParams.data.message.from.wallets[0]}
+          address={messageData.value.from.value.wallets.value[0].value}
         />
       );
       expect(iconImage).toBeDefined();
     });
 
     it('should render first account name from wallets array if address exists in identities object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -283,28 +190,18 @@ describe('Signature Request Data', () => {
     });
 
     it('should render Identicon for second wallet in "from" object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const iconImage = (
         <Identicon
           diameter={32}
-          address={msgParams.data.message.from.wallets[1]}
+          address={messageData.value.from.value.wallets.value[1].value}
         />
       );
       expect(iconImage).toBeDefined();
     });
 
     it('should render second account name from wallets array if address exists in identities object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -312,28 +209,18 @@ describe('Signature Request Data', () => {
     });
 
     it('should render Identicon for third wallet in "from" object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const iconImage = (
         <Identicon
           diameter={32}
-          address={msgParams.data.message.from.wallets[2]}
+          address={messageData.value.from.value.wallets.value[2].value}
         />
       );
       expect(iconImage).toBeDefined();
     });
 
     it('should render third account name from wallets array if address exists in address book object', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -341,13 +228,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render name title in "to" array of objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams.data.message.to[0]} />,
+        <SignatureRequestData data={messageData.value.to.value[0].value} />,
         store,
       );
 
@@ -355,13 +237,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render name text in "to" array of objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams.data.message.to[0]} />,
+        <SignatureRequestData data={messageData.value.to.value[0].value} />,
         store,
       );
 
@@ -369,13 +246,8 @@ describe('Signature Request Data', () => {
     });
 
     it('should render wallets title in "to" array of objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams.data.message.to[0]} />,
+        <SignatureRequestData data={messageData.value.to.value[0].value} />,
         store,
       );
 
@@ -383,28 +255,18 @@ describe('Signature Request Data', () => {
     });
 
     it('should render Identicon for first wallet in "to" array of objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const iconImage = (
         <Identicon
           diameter={32}
-          address={msgParams.data.message.to[0].wallets[0]}
+          address={messageData.value.to.value[0].value.wallets.value[0].value}
         />
       );
       expect(iconImage).toBeDefined();
     });
 
     it('should render first shorten address from wallets array if address does not exists in identities and address book objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -412,28 +274,18 @@ describe('Signature Request Data', () => {
     });
 
     it('should render Identicon for second wallet in "to" array of objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const iconImage = (
         <Identicon
           diameter={32}
-          address={msgParams.data.message.to[0].wallets[1]}
+          address={messageData.value.to.value[0].value.wallets.value[1].value}
         />
       );
       expect(iconImage).toBeDefined();
     });
 
     it('should render second shorten address from wallets array if address does not exists in identities and address book objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -441,28 +293,18 @@ describe('Signature Request Data', () => {
     });
 
     it('should render Identicon for third wallet in "to" array of objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const iconImage = (
         <Identicon
           diameter={32}
-          address={msgParams.data.message.to[0].wallets[2]}
+          address={messageData.value.to.value[0].value.wallets.value[2].value}
         />
       );
       expect(iconImage).toBeDefined();
     });
 
     it('should render third shorten address from wallets array if address does not exists in identities and address book objects', () => {
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageData)),
-        version: 'V4',
-        origin: 'test',
-      };
       const { getByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={messageData.value} />,
         store,
       );
 
@@ -471,9 +313,9 @@ describe('Signature Request Data', () => {
 
     it('should escape RTL character in label or value', () => {
       const messageDataWithRTLCharacters = {
-        ...messageData,
+        ...rawMessage,
         message: {
-          ...messageData.message,
+          ...rawMessage.message,
           contents: 'Hello, \u202E Bob!',
           from: {
             'name\u202Ename': 'Cow \u202E Cow',
@@ -495,20 +337,20 @@ describe('Signature Request Data', () => {
           ],
         },
         types: {
-          ...messageData.message.types,
+          ...rawMessage.types,
           Person: [
             { name: 'name\u202Ename', type: 'string' },
             { name: 'wallets\u202Ewallets', type: 'address[]' },
           ],
         },
       };
-      const msgParams = {
-        data: JSON.parse(JSON.stringify(messageDataWithRTLCharacters)),
-        version: 'V4',
-        origin: 'test',
-      };
+      const data = sanitizeMessage(
+        messageDataWithRTLCharacters.message,
+        messageDataWithRTLCharacters.primaryType,
+        messageDataWithRTLCharacters.types,
+      );
       const { getByText, getAllByText } = renderWithProvider(
-        <SignatureRequestData data={msgParams} />,
+        <SignatureRequestData data={data.value} />,
         store,
       );
 

@@ -1,0 +1,8 @@
+.hold-to-reveal-modal {
+  position: relative;
+
+  &__close {
+    position: absolute;
+    right: 16px;
+  }
+}

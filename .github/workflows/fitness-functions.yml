@@ -22,7 +22,7 @@ jobs:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
-          git fetch origin $HEAD_REF
-          git fetch origin $BASE_REF
-          git diff origin/$BASE_REF origin/$HEAD_REF -- . ':(exclude)development/fitness-functions/*' > diff
+          # git fetch origin $HEAD_REF
+          # git fetch origin $BASE_REF
+          # git diff origin/$BASE_REF origin/$HEAD_REF -- . ':(exclude)development/fitness-functions/*' > diff
           # npm run fitness-functions -- "ci" "./diff"

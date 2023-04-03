@@ -75,12 +75,6 @@
   "asset": {
     "message": "Tillgång"
   },
-  "attemptToCancel": {
-    "message": "Vill du försöka att avbryta?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Att godkänna detta avbrytningsförsök garanterar inte att din ursprungliga överföring avbryts. Om avbrytningsförsöket lyckas kommer du att debiteras överföringsavgiften som nämns ovan."
-  },
   "attemptingConnect": {
     "message": "Försöker ansluta till blockkedja."
   },
@@ -130,17 +124,8 @@
   "browserNotSupported": {
     "message": "Din webbläsare stöds inte..."
   },
-  "buyWithWyre": {
-    "message": "Köp $1 med Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre låter dig använda ett kreditkort för att sätta in $1 direkt på ditt MetaMask-konto."
-  },
   "cancel": {
     "message": "Avbryt"
-  },
-  "cancellationGasFee": {
-    "message": "Gasavgift för avbrytning"
   },
   "cancelled": {
     "message": "Avbruten"
@@ -177,9 +162,6 @@
   },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
-  },
-  "continueToWyre": {
-    "message": "Fortsätt till Wyre"
   },
   "contractDeployment": {
     "message": "Kontraktplacering"
@@ -328,13 +310,6 @@
   },
   "general": {
     "message": "Allmänt"
-  },
-  "getEther": {
-    "message": "Skaffa Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Få Ether från en kran för $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli testnätverk"
@@ -629,35 +604,21 @@
   "reset": {
     "message": "Återställ"
   },
-  "resetAccount": {
-    "message": "Återställ konto"
-  },
-  "resetAccountDescription": {
-    "message": "Återställning av ditt konto rensar din transaktionshistorik"
-  },
   "restore": {
     "message": "Återställ"
   },
   "revealSeedWords": {
     "message": "Visa seed-ord"
   },
-  "revealSeedWordsDescription": {
-    "message": "Om du någonsin byter webbläsare eller dator kommer du behöva denna"
-  },
   "revealSeedWordsWarning": {
-    "message": "De här orden kan användas för att stjäla alla dina konton."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "DELA INTE frasen med någon!"
+    "message": "De här orden kan användas för att stjäla alla dina konton.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"
   },
   "save": {
     "message": "Spara"
-  },
-  "saveAsCsvFile": {
-    "message": "Spara som CSV-fil"
   },
   "scanInstructions": {
     "message": "Placera QR-koden framför din kamera"
@@ -791,9 +752,6 @@
   "terms": {
     "message": "Användarvillkor"
   },
-  "testFaucet": {
-    "message": "Test-faucet"
-  },
   "tips": {
     "message": "Donationer"
   },
@@ -906,9 +864,6 @@
   "userName": {
     "message": "Användarnamn"
   },
-  "viewAccount": {
-    "message": "Visa konto"
-  },
   "viewContact": {
     "message": "Visa kontakt"
   },
@@ -917,9 +872,6 @@
   },
   "welcomeBack": {
     "message": "Välkommen tillbaka!"
-  },
-  "yesLetsTry": {
-    "message": "Ja, låt oss försöka"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."

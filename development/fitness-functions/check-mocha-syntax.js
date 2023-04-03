@@ -1,4 +1,5 @@
 const {
+  EXCLUDE_E2E_TESTS_REGEX,
   filterDiffAdditions,
   filterDiffByFilePath,
   hasNumberOfCodeBlocksIncreased,
@@ -15,10 +16,9 @@ function checkMochaSyntax(diff) {
     'sinon.',
   ];
 
-  console.log(`Checking ${ruleHeading}...`);
+  console.log(`\nChecking ${ruleHeading}...`);
 
-  const jsFilesExcludingE2ETests = '^(?!.*/test/e2e/).*.(js|ts|jsx)$';
-  const diffByFilePath = filterDiffByFilePath(diff, jsFilesExcludingE2ETests);
+  const diffByFilePath = filterDiffByFilePath(diff, EXCLUDE_E2E_TESTS_REGEX);
   const diffAdditions = filterDiffAdditions(diffByFilePath);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);
 
@@ -30,7 +30,7 @@ function checkMochaSyntax(diff) {
 
   if (Object.values(hashmap).includes(true)) {
     console.error(
-      `...changes have not been committed.\nFor more info, see: https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#${ruleHeading}`,
+      `...changes have not been accepted by the fitness function.\nFor more info, see: https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#${ruleHeading}`,
     );
     process.exit(1);
   } else {

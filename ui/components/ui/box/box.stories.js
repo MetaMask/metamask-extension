@@ -522,7 +522,7 @@ export const BorderColorStory = () => {
       </Box>
       <Box
         padding={3}
-        backgroundColor={BackgroundColor.successDefault}
+        backgroundColor={BackgroundColor.successMuted}
         borderColor={BorderColor.successDefault}
         borderWidth={2}
         marginBottom={1}
@@ -546,7 +546,7 @@ export const BorderColorStory = () => {
 };
 BorderColorStory.storyName = 'BorderColor';
 
-export const BorderRadiusStories = () => {
+export const BorderRadiusStory = () => {
   return (
     <>
       <Box
@@ -634,7 +634,7 @@ export const BorderRadiusStories = () => {
     </>
   );
 };
-BorderRadiusStories.storyName = 'BorderRadius';
+BorderRadiusStory.storyName = 'BorderRadius';
 
 export const ResponsiveProps = () => {
   return (
