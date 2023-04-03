@@ -13,7 +13,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)

@@ -12,14 +12,12 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
-
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 import {
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
   HelpText,
-  Icon,
-  ICON_NAMES,
   Label,
   Text,
   TEXT_FIELD_SIZES,
