@@ -8,7 +8,6 @@ import Card from '../../ui/card';
 import {
   TextColor,
   IconColor,
-  FONT_WEIGHT,
   JustifyContent,
   FLEX_DIRECTION,
   OVERFLOW_WRAP,
@@ -222,9 +221,8 @@ export default function NftDetails({ nft }) {
               <div>
                 <Text
                   color={TextColor.textDefault}
-                  variant={TextVariant.bodySm}
+                  variant={TextVariant.bodySmBold}
                   as="h6"
-                  fontWeight={FONT_WEIGHT.BOLD}
                   className="nft-details__description"
                   marginBottom={2}
                 >
@@ -277,7 +275,7 @@ export default function NftDetails({ nft }) {
               <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
                 <Text
                   color={TextColor.textDefault}
-                  variant={TextVariant.bodySm}
+                  variant={TextVariant.bodySmBold}
                   as="h6"
                   marginBottom={4}
                   marginRight={2}
@@ -308,7 +306,7 @@ export default function NftDetails({ nft }) {
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Text
               color={TextColor.textDefault}
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodySmBold}
               as="h6"
               marginBottom={4}
               marginRight={2}
@@ -343,7 +341,7 @@ export default function NftDetails({ nft }) {
             <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
               <Text
                 color={TextColor.textDefault}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmBold}
                 as="h6"
                 marginBottom={4}
                 marginRight={2}
@@ -374,7 +372,7 @@ export default function NftDetails({ nft }) {
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Text
               color={TextColor.textDefault}
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodySmBold}
               as="h6"
               marginBottom={4}
               marginRight={2}
