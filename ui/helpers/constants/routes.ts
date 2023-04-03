@@ -22,6 +22,7 @@ const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
+const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
 ///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
@@ -157,6 +158,9 @@ const PATH_NAME_MAP = {
     'Decrypt Message Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional features done',
+  ///: END:ONLY_INCLUDE_IN
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
@@ -208,6 +212,7 @@ export {
   CONTACT_VIEW_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
   CUSTODY_ACCOUNT_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,

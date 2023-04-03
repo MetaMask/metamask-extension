@@ -4654,3 +4654,20 @@ export function requestUserApproval({
     }
   };
 }
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+export async function showInteractiveReplacementTokenBanner({
+  url,
+  oldRefreshToken,
+}) {
+  try {
+    await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
+      url,
+      oldRefreshToken,
+    ]);
+  } catch (err) {
+    if (err) {
+      throw new Error(err.message);
+    }
+  }
+}
+///: END:ONLY_INCLUDE_IN

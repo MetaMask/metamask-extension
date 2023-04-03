@@ -1,172 +1,201 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import copy from 'copy-to-clipboard';
-import Button from '../../components/ui/button';
-import CustodyLabels from '../../components/ui/custody-labels';
-import PulseLoader from '../../components/ui/pulse-loader';
-import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../helpers/constants/routes';
-import { MAINNET_DEFAULT_BLOCK_EXPLORER_URL } from '../../../shared/constants/swaps';
-import { SECOND } from '../../../shared/constants/time';
-import { shortenAddress } from '../../helpers/utils/util';
-import Tooltip from '../../components/ui/tooltip';
-import CopyIcon from '../../components/ui/icon/copy-icon.component';
-import OpenInNewTab from '../../components/ui/icon/open-in-new-tab.component';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { showInteractiveReplacementTokenBanner } from '../../../store/actions';
+import { getMetaMaskAccounts } from '../../../selectors';
+import Button from '../../../components/ui/button';
+import CustodyLabels from '../../../../components/institutional/custody-labels';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
+import { MAINNET_DEFAULT_BLOCK_EXPLORER_URL } from '../../../../shared/constants/swaps';
+import { SECOND } from '../../../../shared/constants/time';
+import { shortenAddress } from '../../../helpers/utils/util';
+import Tooltip from '../../../components/ui/tooltip';
+import CopyIcon from '../../../components/ui/icon/copy-icon.component';
+import OpenInNewTab from '../../../components/ui/icon/open-in-new-tab.component';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import Box from '../../../components/ui/box';
+import {
+  Text,
+  Label,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+  ButtonLink,
+} from '../../../components/component-library';
+import {
+  Color,
+  TextVariant,
+  JustifyContent,
+  BLOCK_SIZES,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
-export default class InteractiveReplacementTokenPage extends Component {
-  _isMounted = false;
+export default function InteractiveReplacementTokenPage({ history }) {
+  const timerRef = useRef(null);
+  const isMountedRef = useRef(false);
+  const dispatch = useDispatch();
+  const mmiActions = mmiActionsFactory();
+  const {
+    selectedAddress,
+    custodyAccountDetails,
+    interactiveReplacementToken,
+    mmiConfiguration,
+  } = useSelector((state) => state.metamask);
+  const { custodianName } =
+    custodyAccountDetails[toChecksumHexAddress(selectedAddress)] || {};
+  const { url } = interactiveReplacementToken || {};
+  const { custodians } = mmiConfiguration;
+  const custodian =
+    custodians.find((item) => item.name === custodianName) || {};
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const metaMaskAccounts = useSelector(getMetaMaskAccounts);
+  const connectRequests = useSelector(
+    (state) => state.metamask.institutionalFeatures?.connectRequests,
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [tokenAccounts, setTokenAccounts] = useState([]);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState(false);
+  const t = useI18nContext();
 
-  state = {
-    isLoading: false,
-    tokenAccounts: [],
-    copied: false,
-    error: false,
-  };
+  const {
+    removeAddTokenConnectRequest,
+    setCustodianNewRefreshToken,
+    getCustodianAccounts,
+  } = mmiActions();
 
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
+  const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
-  static propTypes = {
-    history: PropTypes.object,
-    metaMaskAccounts: PropTypes.object,
-    mostRecentOverviewPage: PropTypes.string,
-    removeAddTokenConnectRequest: PropTypes.func,
-    setCustodianNewRefreshToken: PropTypes.func,
-    connectRequests: PropTypes.arrayOf(PropTypes.object),
-    showInteractiveReplacementTokenBanner: PropTypes.func,
-    custodian: PropTypes.object,
-    getCustodianAccounts: PropTypes.func,
-    url: PropTypes.string,
-  };
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
 
-  componentDidMount() {
-    this._isMounted = true;
-    this.getTokenAccounts();
-  }
+  useEffect(() => {
+    const getTokenAccounts = async () => {
+      if (!connectRequest) {
+        history.push(mostRecentOverviewPage);
+        return;
+      }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+      try {
+        const custodianAccounts = await dispatch(
+          getCustodianAccounts(
+            connectRequest.token,
+            connectRequest.apiUrl,
+            connectRequest.service,
+            false,
+          ),
+        );
 
-  getTokenAccounts = async () => {
-    const {
-      connectRequests,
-      metaMaskAccounts,
-      history,
-      mostRecentOverviewPage,
-    } = this.props;
-    const connectRequest = connectRequests ? connectRequests[0] : undefined;
+        const filteredAccounts = custodianAccounts.filter(
+          (account) =>
+            metaMaskAccounts[account.address.toLowerCase()] !== undefined,
+        );
 
-    if (!connectRequest) {
-      history.push(mostRecentOverviewPage);
-      return;
-    }
-
-    try {
-      const custodianAccounts = await this.props.getCustodianAccounts(
-        connectRequest.token,
-        connectRequest.apiUrl,
-        connectRequest.service,
-        false,
-      );
-
-      const tokenAccounts = custodianAccounts
-        .filter((account) => metaMaskAccounts[account.address.toLowerCase()])
-        .map((account) => ({
+        const mappedAccounts = filteredAccounts.map((account) => ({
           address: account.address,
           name: account.name,
           labels: account.labels,
-          balance: metaMaskAccounts[account.address.toLowerCase()]?.balance,
+          balance:
+            metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
         }));
 
-      if (this._isMounted) {
-        this.setState({ tokenAccounts, isLoading: false });
+        if (isMountedRef.current) {
+          setTokenAccounts(mappedAccounts);
+          setIsLoading(false);
+        }
+      } catch (e) {
+        setError(true);
+        setIsLoading(false);
       }
-    } catch (e) {
-      this.setState({
-        error: true,
-        isLoading: false,
-      });
-    }
+    };
+
+    getTokenAccounts();
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  if (!connectRequest) {
+    history.push(mostRecentOverviewPage);
+    return null;
+  }
+
+  const onRemoveAddTokenConnectRequest = ({ origin, apiUrl, token }) => {
+    dispatch(
+      removeAddTokenConnectRequest({
+        origin,
+        apiUrl,
+        token,
+      }),
+    );
   };
 
-  removeAddTokenConnectRequest = ({ origin, apiUrl, token }) => {
-    this.props.removeAddTokenConnectRequest({
-      origin,
-      apiUrl,
-      token,
-    });
-  };
-
-  handleReject = () => {
-    const { connectRequests, history, mostRecentOverviewPage } = this.props;
-
-    this.removeAddTokenConnectRequest(connectRequests[0]);
+  const handleReject = () => {
+    onRemoveAddTokenConnectRequest(connectRequest);
     history.push(mostRecentOverviewPage);
   };
 
-  handleApprove = async () => {
-    const {
-      url,
-      custodian,
-      connectRequests,
-      setCustodianNewRefreshToken,
-      showInteractiveReplacementTokenBanner,
-      history,
-    } = this.props;
-
-    const connectRequest = connectRequests[0];
-
-    if (this.state.error) {
+  const handleApprove = async () => {
+    if (error) {
       global.platform.openTab({
         url,
       });
-      this.handleReject();
+      handleReject();
       return;
     }
 
-    this.setState({ isLoading: true });
+    setIsLoading(true);
 
     try {
-      this.state.tokenAccounts.forEach(
-        async (account) =>
-          await setCustodianNewRefreshToken({
-            address: account.address,
-            newAuthDetails: {
-              refreshToken: connectRequest.token,
-              refreshTokenUrl: connectRequest.apiUrl,
-            },
-          }),
+      await Promise.all(
+        tokenAccounts.map(async (account) => {
+          await dispatch(
+            setCustodianNewRefreshToken({
+              address: account.address,
+              newAuthDetails: {
+                refreshToken: connectRequest.token,
+                refreshTokenUrl: connectRequest.apiUrl,
+              },
+            }),
+          );
+        }),
       );
 
-      showInteractiveReplacementTokenBanner({});
+      dispatch(showInteractiveReplacementTokenBanner({}));
 
-      this.removeAddTokenConnectRequest(connectRequest);
+      onRemoveAddTokenConnectRequest(connectRequest);
 
       history.push({
         pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
         state: {
           imgSrc: custodian?.iconUrl,
-          title: this.context.t('custodianReplaceRefreshTokenChangedTitle'),
-          description: this.context.t(
-            'custodianReplaceRefreshTokenChangedSubtitle',
-          ),
+          title: t('custodianReplaceRefreshTokenChangedTitle'),
+          description: t(t('custodianReplaceRefreshTokenChangedSubtitle')),
         },
       });
 
-      this._isMounted && this.setState({ isLoading: false });
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     } catch (e) {
       console.error(e);
     }
   };
 
-  renderAccounts = () => {
-    const { tokenAccounts } = this.state;
+  const copyAddressButton = (account) => {
+    setCopied(true);
+    timerRef.current = setTimeout(() => setCopied(false), SECOND * 3);
+    copy(account.address);
+  };
 
-    const tooltipText = this.state.copied
-      ? this.context.t('copiedExclamation')
-      : this.context.t('copyToClipboard');
+  const renderAccounts = () => {
+    const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
 
     return (
       <div
@@ -212,14 +241,7 @@ export default class InteractiveReplacementTokenPage extends Component {
                     <Tooltip position="bottom" title={tooltipText}>
                       <button
                         className="interactive-replacement-token-page__accounts__item__address-clipboard"
-                        onClick={() => {
-                          this.setState({ copied: true });
-                          this.copyTimeout = setTimeout(
-                            () => this.setState({ copied: false }),
-                            SECOND * 3,
-                          );
-                          copy(account.address);
-                        }}
+                        onClick={() => copyAddressButton(account)}
                       >
                         <CopyIcon
                           size={12}
@@ -247,73 +269,65 @@ export default class InteractiveReplacementTokenPage extends Component {
     );
   };
 
-  render() {
-    const { history, mostRecentOverviewPage, connectRequests, custodian } =
-      this.props;
-    const { isLoading, error } = this.state;
-    const connectRequest = connectRequests ? connectRequests[0] : undefined;
-
-    if (!connectRequest) {
-      history.push(mostRecentOverviewPage);
-      return null;
-    }
-
-    return (
-      <div className="page-container">
-        <div className={`page-container__header ${error && 'error'}`}>
-          <div className="page-container__title">
-            {this.context.t('custodianReplaceRefreshTokenTitle')}{' '}
-            {error ? this.context.t('failed').toLowerCase() : ''}
+  return (
+    <div className="page-container">
+      <div className={`page-container__header ${error && 'error'}`}>
+        <div className="page-container__title">
+          {t('custodianReplaceRefreshTokenTitle')}{' '}
+          {error ? t('failed').toLowerCase() : ''}
+        </div>
+        {!error && (
+          <div className="page-container__subtitle">
+            {t('custodianReplaceRefreshTokenSubtitle')}
           </div>
-          {!error && (
-            <div className="page-container__subtitle">
-              {this.context.t('custodianReplaceRefreshTokenSubtitle')}
+        )}
+      </div>
+
+      <div className="page-container__content">
+        <div className="interactive-replacement-token-page">
+          {error ? (
+            <div className="interactive-replacement-token-page__accounts__error">
+              {t('custodianReplaceRefreshTokenChangedFailed', [
+                custodian.displayName || 'Custodian',
+              ])}
             </div>
-          )}
-        </div>
-
-        <div className="page-container__content">
-          <div className="interactive-replacement-token-page">
-            {error ? (
-              <div className="interactive-replacement-token-page__accounts__error">
-                {this.context.t('custodianReplaceRefreshTokenChangedFailed', [
-                  custodian.displayName || 'Custodian',
-                ])}
-              </div>
-            ) : null}
-            {this.renderAccounts()}
-          </div>
-        </div>
-
-        <div className="page-container__footer">
-          {isLoading ? (
-            <footer>
-              <PulseLoader />
-            </footer>
-          ) : (
-            <footer>
-              <Button
-                type="default"
-                large
-                className="page-container__footer-button"
-                onClick={this.handleReject}
-              >
-                {this.context.t('reject')}
-              </Button>
-              <Button
-                type="primary"
-                large
-                className="page-container__footer-button"
-                onClick={this.handleApprove}
-              >
-                {error
-                  ? custodian.displayName || 'Custodian'
-                  : this.context.t('approveButtonText')}
-              </Button>
-            </footer>
-          )}
+          ) : null}
+          {renderAccounts()}
         </div>
       </div>
-    );
-  }
+
+      <div className="page-container__footer">
+        {isLoading ? (
+          <footer>
+            <PulseLoader />
+          </footer>
+        ) : (
+          <footer>
+            <Button
+              type="default"
+              large
+              className="page-container__footer-button"
+              onClick={handleReject}
+            >
+              {t('reject')}
+            </Button>
+            <Button
+              type="primary"
+              large
+              className="page-container__footer-button"
+              onClick={handleApprove}
+            >
+              {error
+                ? custodian.displayName || 'Custodian'
+                : t('approveButtonText')}
+            </Button>
+          </footer>
+        )}
+      </div>
+    </div>
+  );
 }
+
+InteractiveReplacementTokenPage.propTypes = {
+  history: PropTypes.object,
+};
