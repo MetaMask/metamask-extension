@@ -32,7 +32,7 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { detectSIWE } from '../../../shared/modules/siwe';
 import PreferencesController from './preferences';
 
@@ -510,7 +510,7 @@ export default class SignController extends BaseControllerV2<
 
       this._metricsEvent({
         event: reason,
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         properties: {
           action: 'Sign Request',
           type: message.type,

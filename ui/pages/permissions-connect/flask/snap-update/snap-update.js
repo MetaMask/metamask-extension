@@ -91,12 +91,18 @@ export default function SnapUpdate({
     >
       <Box
         className="headers"
+        paddingLeft={4}
+        paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!hasError && (
-          <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+          <Text
+            paddingBottom={4}
+            paddingTop={4}
+            variant={TextVariant.headingLg}
+          >
             {t('snapUpdate')}
           </Text>
         )}
@@ -117,8 +123,6 @@ export default function SnapUpdate({
           <>
             <Text
               className="headers__permission-description"
-              paddingLeft={4}
-              paddingRight={4}
               paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
@@ -141,11 +145,7 @@ export default function SnapUpdate({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
-            >
+            <Text textAlign={TEXT_ALIGN.CENTER}>
               {t('snapUpdateRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,
