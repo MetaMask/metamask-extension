@@ -33,6 +33,7 @@ const baseStore = {
     unapprovedTxs: {
       1: {
         id: 1,
+        metamaskNetworkId: '5',
         txParams: {
           from: '0x0',
           to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
@@ -58,6 +59,7 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
+    networkId: '5',
     networkDetails: {
       EIPS: {},
     },
