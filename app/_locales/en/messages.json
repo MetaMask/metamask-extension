@@ -4227,7 +4227,7 @@
     "message": "Swap from"
   },
   "swapSwapSwitch": {
-    "message": "Switch from and to tokens"
+    "message": "Switch token order"
   },
   "swapSwapTo": {
     "message": "Swap to"
