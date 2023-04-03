@@ -920,6 +920,9 @@
   "custodianAccount": {
     "message": "Custodian account"
   },
+  "custodySessionExpired": {
+    "message": "Custodian session expired"
+  },
   "custom": {
     "message": "Advanced"
   },

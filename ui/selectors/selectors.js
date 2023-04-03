@@ -1400,6 +1400,18 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+/**
+ * Gets the Interactive Replacement Token, contains { url, oldRefreshToken }
+ *
+ * @param {object} state
+ * @returns {object}
+ */
+export function getInteractiveReplacementToken(state) {
+  return state.metamask.interactiveReplacementToken || {};
+}
+///: END:ONLY_INCLUDE_IN
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *
