@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
@@ -699,15 +699,15 @@ export default class Home extends PureComponent {
                     onClick={() => {
                       this.context.trackEvent(
                         {
-                          category: EVENT.CATEGORIES.HOME,
-                          event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                          category: MetaMetricsEventCategory.Home,
+                          event: MetaMetricsEventName.SupportLinkClicked,
                           properties: {
                             url: SUPPORT_LINK,
                           },
                         },
                         {
                           contextPropsIntoEventProperties: [
-                            CONTEXT_PROPS.PAGE_TITLE,
+                            MetaMetricsContextProp.PageTitle,
                           ],
                         },
                       );

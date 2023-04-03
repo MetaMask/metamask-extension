@@ -6,9 +6,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
@@ -209,8 +210,8 @@ export default class AccountMenu extends Component {
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
             this.context.trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.NavAccountSwitched,
               properties: {
                 location: 'Main Menu',
               },
@@ -360,10 +361,10 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+                account_type: MetaMetricsEventAccountType.Default,
                 location: 'Main Menu',
               },
             });
@@ -378,10 +379,10 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                account_type: MetaMetricsEventAccountType.Imported,
                 location: 'Main Menu',
               },
             });
@@ -396,10 +397,10 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+                account_type: MetaMetricsEventAccountType.Hardware,
                 location: 'Main Menu',
               },
             });
@@ -446,14 +447,16 @@ export default class AccountMenu extends Component {
           onClick={() => {
             trackEvent(
               {
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                category: MetaMetricsEventCategory.Navigation,
+                event: MetaMetricsEventName.SupportLinkClicked,
                 properties: {
                   url: supportLink,
                 },
               },
               {
-                contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                contextPropsIntoEventProperties: [
+                  MetaMetricsContextProp.PageTitle,
+                ],
               },
             );
             global.platform.openTab({ url: supportLink });
@@ -472,8 +475,8 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             history.push(SETTINGS_ROUTE);
             this.context.trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_SETTINGS_OPENED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.NavSettingsOpened,
               properties: {
                 location: 'Main Menu',
               },
