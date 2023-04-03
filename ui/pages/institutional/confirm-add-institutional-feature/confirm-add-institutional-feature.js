@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -31,10 +31,14 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   const trackEvent = useContext(MetaMetricsContext);
   const connectRequest = connectRequests[0];
 
-  if (!connectRequest) {
-    history.push(mostRecentOverviewPage);
-    return null;
-  }
+  useEffect(() => {
+    if (!connectRequest) {
+      history.push(mostRecentOverviewPage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!connectRequest) return null;
 
   const serviceLabel = connectRequest.labels.find(
     (label) => label.key === 'service',
