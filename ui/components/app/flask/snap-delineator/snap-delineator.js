@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BorderStyle,
-  Size,
   BorderColor,
   BorderRadius,
   AlignItems,
@@ -13,37 +12,60 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Icon, Text } from '../../../component-library';
+import {
+  AvatarIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+  Text,
+} from '../../../component-library';
+import {
+  DelineatorType,
+  getDelineatorTitle,
+} from '../../../../helpers/constants/flask';
 
-export const SnapDelineator = ({ snapName, children }) => {
+export const SnapDelineator = ({
+  snapName,
+  type = DelineatorType.default,
+  children,
+}) => {
   const t = useI18nContext();
-
+  const isError = type === DelineatorType.Error;
   return (
     <Box
       className="snap-delineator__wrapper"
       borderStyle={BorderStyle.solid}
-      borderColor={BorderColor.borderMuted}
+      borderColor={BorderColor.borderDefault}
       borderRadius={BorderRadius.LG}
+      backgroundColor={
+        isError ? BackgroundColor.errorMuted : BackgroundColor.backgroundDefault
+      }
     >
       <Box
         className="snap-delineator__header"
         alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.infoMuted}
-        paddingLeft={2}
-        paddingRight={2}
-        paddingTop={1}
-        paddingBottom={1}
+        padding={1}
       >
-        <Icon name="snaps" color={IconColor.infoDefault} size={Size.SM} />
+        <AvatarIcon
+          iconName={ICON_NAMES.SNAPS}
+          size={ICON_SIZES.XS}
+          backgroundColor={
+            isError ? IconColor.errorDefault : IconColor.infoDefault
+          }
+          margin={1}
+          iconProps={{
+            size: ICON_SIZES.XS,
+            color: IconColor.infoInverse,
+          }}
+        />
         <Text
           variant={TextVariant.bodySm}
-          color={TextColor.infoDefault}
+          color={isError ? TextColor.errorDefault : TextColor.default}
           className="snap-delineator__header__text"
           marginLeft={1}
           marginTop={0}
           marginBottom={0}
         >
-          {t('contentFromSnap', [snapName])}
+          {t(getDelineatorTitle(type), [snapName])}
         </Text>
       </Box>
       <Box className="snap-delineator__content" padding={4}>
@@ -55,5 +77,6 @@ export const SnapDelineator = ({ snapName, children }) => {
 
 SnapDelineator.propTypes = {
   snapName: PropTypes.string,
+  type: PropTypes.string,
   children: PropTypes.ReactNode,
 };

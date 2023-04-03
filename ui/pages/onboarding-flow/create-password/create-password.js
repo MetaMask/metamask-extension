@@ -31,7 +31,10 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 export default function CreatePassword({
@@ -141,8 +144,8 @@ export default function CreatePassword({
     }
 
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_ATTEMPTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
     });
 
     // If secretRecoveryPhrase is defined we are in import wallet flow

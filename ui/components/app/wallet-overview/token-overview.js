@@ -27,9 +27,10 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -100,8 +101,8 @@ const TokenOverview = ({ className, token }) => {
             onClick={() => {
               openBuyCryptoInPdapp();
               trackEvent({
-                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavBuyButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Token Overview',
                   text: 'Buy',
@@ -114,11 +115,11 @@ const TokenOverview = ({ className, token }) => {
             className="token-overview__button"
             onClick={async () => {
               trackEvent({
-                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavSendButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   token_symbol: token.symbol,
-                  location: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
+                  location: MetaMetricsSwapsEventSource.TokenView,
                   text: 'Send',
                 },
               });
@@ -158,11 +159,11 @@ const TokenOverview = ({ className, token }) => {
             onClick={() => {
               if (isSwapsChain) {
                 trackEvent({
-                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.SWAPS,
+                  event: MetaMetricsEventName.NavSwapButtonClicked,
+                  category: MetaMetricsEventCategory.Swaps,
                   properties: {
                     token_symbol: token.symbol,
-                    location: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
+                    location: MetaMetricsSwapsEventSource.TokenView,
                     text: 'Swap',
                   },
                 });
@@ -214,14 +215,16 @@ const TokenOverview = ({ className, token }) => {
               });
               trackEvent(
                 {
-                  category: EVENT.CATEGORIES.HOME,
-                  event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                  category: MetaMetricsEventCategory.Home,
+                  event: MetaMetricsEventName.PortfolioLinkClicked,
                   properties: {
                     url: portfolioUrl,
                   },
                 },
                 {
-                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  contextPropsIntoEventProperties: [
+                    MetaMetricsContextProp.PageTitle,
+                  ],
                 },
               );
             }}
