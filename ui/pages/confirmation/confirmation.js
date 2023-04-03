@@ -363,10 +363,7 @@ export default function ConfirmationPage({
           isSnapDialog && (
             <Box
               alignItems="center"
-              marginTop={4}
-              marginLeft={4}
-              marginRight={4}
-              marginBottom={4}
+              margin={4}
               flexDirection={FLEX_DIRECTION.COLUMN}
             >
               <SnapAuthorship snapId={pendingConfirmation?.origin} />
