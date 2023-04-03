@@ -34,7 +34,10 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 import { Setting } from './setting';
 
@@ -77,8 +80,8 @@ export default function PrivacySettings() {
     }
 
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_ADVANCED_SETTINGS,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
         show_incoming_tx: showIncomingTransactions,
         use_phising_detection: usePhishingDetection,
@@ -246,6 +249,7 @@ export default function PrivacySettings() {
                 <Box paddingTop={2}>
                   <TextField
                     style={{ width: '100%' }}
+                    inputProps={{ 'data-testid': 'ipfs-input' }}
                     onChange={(e) => {
                       handleIPFSChange(e.target.value);
                     }}

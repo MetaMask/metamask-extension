@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Ocorreu um erro com $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Carregando insight da transação..."
   },
@@ -3375,7 +3371,8 @@
     "message": "O snap só será executado se estiver ativado"
   },
   "snapsUIError": {
-    "message": "A IU especificada pelo snap é inválida."
+    "message": "A IU especificada pelo snap é inválida.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Algumas redes podem representar riscos de segurança e/ou privacidade. Tenha os riscos em mente antes de adicionar e usar uma rede."
@@ -3999,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "Isso se baseia em informações de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Esse serviço é experimental"
   },
   "time": {
     "message": "Hora"

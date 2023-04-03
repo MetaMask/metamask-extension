@@ -5,12 +5,19 @@ import {
   DISPLAY,
   TextColor,
   FLEX_DIRECTION,
+  TextVariant,
+  BorderStyle,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { Text } from '../../component-library';
+import {
+  Text,
+  Button,
+  BUTTON_TYPES,
+  BUTTON_SIZES,
+} from '../../component-library';
 import Box from '../../ui/box';
-import Button from '../../ui/button';
 
 const ComplianceSettings = () => {
   const t = useContext(I18nContext);
@@ -21,48 +28,48 @@ const ComplianceSettings = () => {
     Boolean(state.metamask.institutionalFeatures?.complianceProjectId),
   );
 
-  const disconnectFromCompliance = async () => {
-    await dispatch(mmiActions.deleteComplianceAuthData());
-  };
-
-  const renderDisconnect = () => {
-    return (
-      <Button
-        type="default"
-        large
-        onClick={disconnectFromCompliance}
-        data-testid="disconnect-compliance"
-      >
-        {t('disconnect')}
-      </Button>
-    );
-  };
-
-  const renderLinkButton = () => {
-    return (
-      <Button
-        type="primary"
-        data-testid="start-compliance"
-        onClick={() => {
-          global.platform.openTab({
-            url: 'https://start.compliance.codefi.network/',
-          });
-        }}
-      >
-        {t('openCodefiCompliance')}
-      </Button>
-    );
-  };
+  const linkButton = (
+    <Button
+      type={BUTTON_TYPES.LINK}
+      size={BUTTON_SIZES.LG}
+      data-testid="start-compliance"
+      onClick={() => {
+        global.platform.openTab({
+          url: 'https://start.compliance.codefi.network/',
+        });
+      }}
+    >
+      {t('openCodefiCompliance')}
+    </Button>
+  );
 
   return complianceActivated ? (
     <Box>
-      <Box className="institutional-feature__content">
+      <Text
+        variant={TextVariant.bodySm}
+        as="h6"
+        className="institutional-feature__content"
+      >
         {t('complianceSettingsExplanation')}
+      </Text>
+      <Box
+        padding={[4, 6]}
+        borderWidth={1}
+        borderStyle={BorderStyle.solid}
+        borderColor={BorderColor.borderMuted}
+        className="institutional-feature__footer"
+      >
+        <Button
+          size={BUTTON_SIZES.LG}
+          onClick={() => {
+            dispatch(mmiActions.deleteComplianceAuthData());
+          }}
+          data-testid="disconnect-compliance"
+        >
+          {t('disconnect')}
+        </Button>
+        {linkButton}
       </Box>
-      <footer className="institutional-feature__footer">
-        {renderDisconnect()}
-        {renderLinkButton()}
-      </footer>
     </Box>
   ) : (
     <Box
@@ -70,7 +77,10 @@ const ComplianceSettings = () => {
       color={TextColor.textAlternative}
       data-testid="institutional-content"
     >
-      <Box className="institutional-feature__content">
+      <Box
+        variant={TextVariant.bodySm}
+        className="institutional-feature__content"
+      >
         <Text paddingBottom={3}>{t('complianceBlurb0')}</Text>
         <Text paddingBottom={3}>{t('complianceBlurb1')}</Text>
         <Text paddingBottom={3}>{t('complianceBlurpStep0')}</Text>
@@ -87,9 +97,15 @@ const ComplianceSettings = () => {
         flexDirection={FLEX_DIRECTION.ROW}
         justifyContent={JustifyContent.center}
       >
-        <footer padding={[4, 6]} className="institutional-feature__footer">
-          {renderLinkButton()}
-        </footer>
+        <Box
+          padding={[4, 6]}
+          borderWidth={1}
+          borderStyle={BorderStyle.solid}
+          borderColor={BorderColor.borderMuted}
+          className="institutional-feature__footer"
+        >
+          {linkButton}
+        </Box>
       </Box>
     </Box>
   );

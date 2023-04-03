@@ -17,9 +17,9 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT_NAMES,
-  EVENT,
-  CONTEXT_PROPS,
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+  MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
@@ -35,8 +35,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         onClick={() => {
           history.push(CONNECTED_ROUTE);
           trackEvent({
-            event: EVENT_NAMES.NAV_CONNECTED_SITES_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavConnectedSitesOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
@@ -55,14 +55,16 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           });
           trackEvent(
             {
-              category: EVENT.CATEGORIES.HOME,
-              event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Home,
+              event: MetaMetricsEventName.PortfolioLinkClicked,
               properties: {
                 url: portfolioUrl,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
           closeMenu();
@@ -77,8 +79,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           onClick={() => {
             global.platform.openExtensionInBrowser();
             trackEvent({
-              event: EVENT_NAMES.APP_WINDOW_EXPANDED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Account Options',
               },
@@ -96,14 +98,16 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           global.platform.openTab({ url: SUPPORT_LINK });
           trackEvent(
             {
-              category: EVENT.CATEGORIES.HOME,
-              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Home,
+              event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_LINK,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
           closeMenu();
@@ -117,8 +121,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         onClick={() => {
           history.push(SETTINGS_ROUTE);
           trackEvent({
-            category: EVENT.CATEGORIES.NAVIGATION,
-            event: EVENT_NAMES.NAV_SETTINGS_OPENED,
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
               location: 'Main Menu',
             },

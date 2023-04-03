@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Ein Fehler ist mit $1: $2 aufgetreten",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Transaktions-Einsicht wird geladen ..."
   },
@@ -3375,7 +3371,8 @@
     "message": "Ein Snap wird nur ausgeführt, wenn er aktiviert ist"
   },
   "snapsUIError": {
-    "message": "Die vom Snap spezifizierte UI ist ungültig."
+    "message": "Die vom Snap spezifizierte UI ist ungültig.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Einige Netzwerke können Sicherheits- und/oder Datenschutzrisiken bergen. Informieren Sie sich über die Risiken, bevor Sie ein Netzwerk hinzufügen und nutzen."
@@ -3999,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "Dies basiert auf Informationen von "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Dieser Dienst ist experimentell"
   },
   "time": {
     "message": "Zeit"
