@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
@@ -25,6 +25,7 @@ import {
 } from '../../../../shared/constants/swaps';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { setSwapsErrorKey } from '../../../store/actions';
+import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
 
 export default function TransactionSettings({
   onSelect,
@@ -39,6 +40,7 @@ export default function TransactionSettings({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const swapsErrorKey = useSelector(getSwapsErrorKey);
   const [customValue, setCustomValue] = useState(() => {
     if (
       typeof currentSlippage === 'number' &&
@@ -93,7 +95,7 @@ export default function TransactionSettings({
       notificationSeverity = SEVERITIES.INFO;
       notificationText = t('swapSlippageZeroDescription');
       notificationTitle = t('swapSlippageZeroTitle');
-    } else {
+    } else if (swapsErrorKey) {
       dispatch(setSwapsErrorKey(''));
     }
   }
@@ -120,7 +122,7 @@ export default function TransactionSettings({
 
   return (
     <div className="transaction-settings">
-      <Popover title={t('transactionSettings')} onClose={() => onModalClose()}>
+      <Popover title={t('transactionSettings')} onClose={onModalClose}>
         <div className="transaction-settings__content">
           <>
             {smartTransactionsEnabled && (
