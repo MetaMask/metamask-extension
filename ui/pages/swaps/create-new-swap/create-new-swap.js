@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual';
 import Box from '../../../components/ui/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   navigateBackToBuildQuote,
   setSwapsFromToken,
@@ -28,7 +28,7 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
         onClick={async () => {
           trackEvent({
             event: 'Make Another Swap',
-            category: EVENT.CATEGORIES.SWAPS,
+            category: MetaMetricsEventCategory.Swaps,
             sensitiveProperties: sensitiveTrackingProperties,
           });
           history.push(DEFAULT_ROUTE); // It cleans up Swaps state.

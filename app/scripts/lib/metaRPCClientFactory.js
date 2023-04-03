@@ -1,5 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import SafeEventEmitter from 'safe-event-emitter';
+import SafeEventEmitter from '@metamask/safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
 
