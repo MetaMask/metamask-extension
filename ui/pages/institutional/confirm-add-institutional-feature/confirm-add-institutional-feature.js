@@ -31,12 +31,10 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   const trackEvent = useContext(MetaMetricsContext);
   const connectRequest = connectRequests[0];
 
-  useEffect(() => {
-    if (!connectRequest) {
-      history.push(mostRecentOverviewPage);
-    }
+  if (!connectRequest) {
+    history.push(mostRecentOverviewPage);
     return null;
-  }, [connectRequest, history, mostRecentOverviewPage]);
+  }
 
   const serviceLabel = connectRequest.labels.find(
     (label) => label.key === 'service',
