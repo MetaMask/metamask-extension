@@ -678,12 +678,6 @@
   "settings": {
     "message": "تنظیمات"
   },
-  "showAdvancedGasInline": {
-    "message": "کنترول های پیشرفته گاز"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "این را انتخاب نمایید تا قیمت گاز را نشان داده و کنترول ها را بصورت مستقیم در صفحات ارسال و تأیید محدود نماید."
-  },
   "showFiatConversionInTestnets": {
     "message": "نمایش تغییرات Testnets"
   },
