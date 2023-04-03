@@ -43,20 +43,6 @@ export default {
       page: README,
     },
   },
-  argTypes: {
-    name: {
-      options: Object.values(IconName),
-    },
-    size: {
-      options: Object.values(IconSize),
-    },
-    color: {
-      options: Object.values(IconColor),
-    },
-    className: {
-      control: 'text',
-    },
-  },
   args: {
     name: IconName.AddSquare,
     color: IconColor.inherit,
