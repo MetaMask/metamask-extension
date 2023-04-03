@@ -12,7 +12,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
@@ -82,7 +86,7 @@ export default class SecurityTab extends PureComponent {
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.SETTINGS,
+      category: MetaMetricsEventCategory.Settings,
       event: eventName,
       properties: {
         action: eventAction,
@@ -110,10 +114,10 @@ export default class SecurityTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.KEY_EXPORT_SELECTED,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.KeyExportSelected,
                   properties: {
-                    key_type: EVENT.KEY_TYPES.SRP,
+                    key_type: MetaMetricsEventKeyType.Srp,
                     location: 'Settings',
                   },
                 });
@@ -376,8 +380,8 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 this.toggleSetting(
                   value,
-                  EVENT_NAMES.KEY_AUTO_DETECT_TOKENS,
-                  EVENT_NAMES.KEY_AUTO_DETECT_TOKENS,
+                  MetaMetricsEventName.KeyAutoDetectTokens,
+                  MetaMetricsEventName.KeyAutoDetectTokens,
                   setUseTokenDetection,
                 );
               }}
@@ -410,8 +414,8 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 this.toggleSetting(
                   value,
-                  EVENT_NAMES.KEY_BATCH_ACCOUNT_BALANCE_REQUESTS,
-                  EVENT_NAMES.KEY_BATCH_ACCOUNT_BALANCE_REQUESTS,
+                  MetaMetricsEventName.KeyBatchAccountBalanceRequests,
+                  MetaMetricsEventName.KeyBatchAccountBalanceRequests,
                   setUseMultiAccountBalanceChecker,
                 );
               }}

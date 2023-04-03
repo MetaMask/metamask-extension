@@ -7,7 +7,7 @@ import {
   AbstractMessage,
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { detectSIWE } from '../../../shared/modules/siwe';
 import SignController, {
   SignControllerMessenger,
@@ -270,7 +270,7 @@ describe('SignController', () => {
       expect(metricsEventMock).toHaveBeenCalledTimes(6);
       expect(metricsEventMock).toHaveBeenLastCalledWith({
         event: 'Test Reason',
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         properties: {
           action: 'Sign Request',
           type: messageMock.type,

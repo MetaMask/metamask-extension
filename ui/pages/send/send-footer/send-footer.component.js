@@ -6,7 +6,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SEND_STAGES } from '../../../ducks/send';
 
 export default class SendFooter extends Component {
@@ -56,7 +56,7 @@ export default class SendFooter extends Component {
 
     Promise.resolve(promise).then(() => {
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
         properties: {
           action: 'Edit Screen',
@@ -78,7 +78,7 @@ export default class SendFooter extends Component {
       const errorMessage = sendErrors[errorField];
 
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Error',
         properties: {
           action: 'Edit Screen',
