@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.28.1]
 ### Changed
-- Fix master build  all validate-source-maps-beta steps in config.yml into the respective .sh file ([#18427](https://github.com/MetaMask/metamask-extension/pull/18427))
+- Fix release automation ([#18427](https://github.com/MetaMask/metamask-extension/pull/18427))
 
 ## [10.28.0]
 ### Added
