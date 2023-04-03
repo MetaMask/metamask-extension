@@ -29,7 +29,7 @@ const Tabs = ({
    * @private
    */
   const _findChildByKey = (tabKey) => {
-    return _getValidChildren().findIndex((c) => c?.tabKey === tabKey);
+    return _getValidChildren().findIndex((c) => c?.props.tabKey === tabKey);
   };
 
   const [activeTabIndex, setActiveTabIndex] = useState(() =>
@@ -47,7 +47,7 @@ const Tabs = ({
     const numberOfTabs = React.Children.count(_getValidChildren());
 
     return React.Children.map(_getValidChildren(), (child, index) => {
-      const tabKey = child?.tabKey;
+      const tabKey = child?.props.tabKey;
       return (
         child &&
         React.cloneElement(child, {
