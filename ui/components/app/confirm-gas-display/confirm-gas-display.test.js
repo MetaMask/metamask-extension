@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
@@ -49,9 +49,7 @@ const render = ({ transactionProp = {}, contextProps = {} } = {}) => {
 describe('ConfirmGasDisplay', () => {
   it('should match snapshot', async () => {
     const { container } = render();
-    await waitFor(() => {
-      expect(container).toMatchSnapshot();
-    });
+    expect(container).toMatchSnapshot();
   });
   it('should render gas display labels for EIP1559 transcations', async () => {
     render({
@@ -64,12 +62,10 @@ describe('ConfirmGasDisplay', () => {
         userFeeLevel: 'medium',
       },
     });
-    await waitFor(() => {
-      expect(screen.queryByText('Gas')).toBeInTheDocument();
-      expect(screen.queryByText('(estimated)')).toBeInTheDocument();
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
-    });
+    expect(screen.queryByText('Gas')).toBeInTheDocument();
+    expect(screen.queryByText('(estimated)')).toBeInTheDocument();
+    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
   });
   it('should render gas display labels for legacy transcations', async () => {
     render({
@@ -98,10 +94,8 @@ describe('ConfirmGasDisplay', () => {
         },
       },
     });
-    await waitFor(() => {
-      expect(screen.queryByText('Estimated gas fee')).toBeInTheDocument();
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
-    });
+    expect(screen.queryByText('Estimated gas fee')).toBeInTheDocument();
+    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
   });
 });
