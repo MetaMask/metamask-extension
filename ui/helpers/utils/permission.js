@@ -15,21 +15,13 @@ import {
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
-  AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  Icon,
   Text,
   ///: END:ONLY_INCLUDE_IN
   ICON_NAMES,
-  ICON_SIZES,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import {
-  IconColor,
-  Color,
-  FONT_WEIGHT,
-  TextVariant,
-} from '../constants/design-system';
+import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -39,63 +31,29 @@ import {
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-const RIGHT_WARNING_ICON = (
-  <Icon
-    name={ICON_NAMES.DANGER}
-    size={ICON_SIZES.SM}
-    color={IconColor.warningDefault}
-  />
-);
-
-const RIGHT_INFO_ICON = (
-  <Icon
-    name={ICON_NAMES.INFO}
-    size={ICON_SIZES.SM}
-    color={IconColor.iconMuted}
-  />
-);
-///: END:ONLY_INCLUDE_IN
-
-function getLeftIcon(iconName) {
-  return (
-    <AvatarIcon
-      iconName={iconName}
-      size={ICON_SIZES.SM}
-      iconProps={{
-        size: ICON_SIZES.XS,
-      }}
-    />
-  );
-}
-
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: getLeftIcon(ICON_NAMES.EYE),
-    rightIcon: null,
+    leftIcon: ICON_NAMES.EYE,
     weight: 2,
   }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   [RestrictedMethods.snap_confirm]: ({ t }) => ({
     label: t('permission_customConfirmation'),
     description: t('permission_customConfirmationDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.SECURITY_TICK),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.SECURITY_TICK,
     weight: 3,
   }),
   [RestrictedMethods.snap_dialog]: ({ t }) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.MESSAGES),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.MESSAGES,
     weight: 3,
   }),
   [RestrictedMethods.snap_notify]: ({ t }) => ({
     label: t('permission_notifications'),
     description: t('permission_notificationsDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.NOTIFICATION),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.NOTIFICATION,
     weight: 3,
   }),
   [RestrictedMethods.snap_getBip32PublicKey]: ({
@@ -105,8 +63,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   }) =>
     permissionValue.caveats[0].value.map(({ path, curve }, i) => {
       const baseDescription = {
-        leftIcon: getLeftIcon(ICON_NAMES.SECURITY_SEARCH),
-        rightIcon: RIGHT_WARNING_ICON,
+        leftIcon: ICON_NAMES.SECURITY_SEARCH,
         weight: 1,
         id: `public-key-access-bip32-${path
           .join('-')
@@ -176,8 +133,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   }) =>
     permissionValue.caveats[0].value.map(({ path, curve }, i) => {
       const baseDescription = {
-        leftIcon: getLeftIcon(ICON_NAMES.KEY),
-        rightIcon: RIGHT_WARNING_ICON,
+        leftIcon: ICON_NAMES.KEY,
         weight: 1,
         id: `key-access-bip32-${path
           .join('-')
@@ -261,8 +217,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             t('unrecognizedProtocol', [coinType])}
         </span>,
       ]),
-      leftIcon: getLeftIcon(ICON_NAMES.KEY),
-      rightIcon: RIGHT_WARNING_ICON,
+      leftIcon: ICON_NAMES.KEY,
       weight: 1,
       id: `key-access-bip44-${coinType}-${i}`,
       message: t('snapInstallWarningKeyAccess', [
@@ -284,22 +239,19 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
     label: t('permission_getEntropy'),
     description: t('permission_getEntropyDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.SECURITY_KEY),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.SECURITY_KEY,
     weight: 3,
   }),
   [RestrictedMethods.snap_manageState]: ({ t }) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.ADD_SQUARE),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.ADD_SQUARE,
     weight: 3,
   }),
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      leftIcon: getLeftIcon(ICON_NAMES.FLASH),
-      rightIcon: RIGHT_INFO_ICON,
+      leftIcon: ICON_NAMES.FLASH,
     };
 
     return Object.keys(snaps).map((snapId) => {
@@ -326,8 +278,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:network-access']]: ({ t }) => ({
     label: t('permission_accessNetwork'),
     description: t('permission_accessNetworkDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.GLOBAL),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.GLOBAL,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:webassembly']]: ({ t }) => ({
@@ -340,8 +291,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:long-running']]: ({ t }) => ({
     label: t('permission_longRunning'),
     description: t('permission_longRunningDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.LINK),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.LINK,
     weight: 3,
   }),
   [EndowmentPermissions['endowment:transaction-insight']]: ({
@@ -349,8 +299,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
   }) => {
     const baseDescription = {
-      leftIcon: getLeftIcon(ICON_NAMES.SPEEDOMETER),
-      rightIcon: RIGHT_INFO_ICON,
+      leftIcon: ICON_NAMES.SPEEDOMETER,
       weight: 3,
     };
 
@@ -371,7 +320,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         ...baseDescription,
         label: t('permission_transactionInsightOrigin'),
         description: t('permission_transactionInsightOriginDescription'),
-        leftIcon: getLeftIcon(ICON_NAMES.EXPLORE),
+        leftIcon: ICON_NAMES.EXPLORE,
       });
     }
 
@@ -380,8 +329,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:cronjob']]: ({ t }) => ({
     label: t('permission_cronjob'),
     description: t('permission_cronjobDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.CLOCK),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.CLOCK,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:ethereum-provider']]: ({
@@ -390,16 +338,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   }) => ({
     label: t('permission_ethereumProvider'),
     description: t('permission_ethereumProviderDescription'),
-    leftIcon: getLeftIcon(ICON_NAMES.ETHEREUM),
-    rightIcon: RIGHT_INFO_ICON,
+    leftIcon: ICON_NAMES.ETHEREUM,
     weight: 1,
     id: 'ethereum-provider-access',
     message: t('ethereumProviderAccess', [targetSubjectMetadata?.origin]),
   }),
   [EndowmentPermissions['endowment:rpc']]: ({ t, permissionValue }) => {
     const baseDescription = {
-      leftIcon: getLeftIcon(ICON_NAMES.HIERARCHY),
-      rightIcon: RIGHT_INFO_ICON,
+      leftIcon: ICON_NAMES.HIERARCHY,
       weight: 2,
     };
 
@@ -427,8 +373,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: getLeftIcon(ICON_NAMES.QUESTION),
-    rightIcon: null,
+    leftIcon: ICON_NAMES.QUESTION,
     weight: 4,
   }),
 });

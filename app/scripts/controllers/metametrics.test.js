@@ -5,7 +5,7 @@ import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  TRAITS,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import {
@@ -953,22 +953,26 @@ describe('MetaMetricsController', function () {
       });
 
       assert.deepEqual(traits, {
-        [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
-        [TRAITS.INSTALL_DATE_EXT]: '',
-        [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
-        [TRAITS.NETWORKS_ADDED]: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI, '0xaf'],
-        [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],
-        [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
-        [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
-        [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
-        [TRAITS.NUMBER_OF_NFTS]: 4,
-        [TRAITS.NUMBER_OF_TOKENS]: 5,
-        [TRAITS.OPENSEA_API_ENABLED]: true,
-        [TRAITS.THREE_BOX_ENABLED]: false,
-        [TRAITS.THEME]: 'default',
-        [TRAITS.TOKEN_DETECTION_ENABLED]: true,
-        [TRAITS.DESKTOP_ENABLED]: false,
-        [TRAITS.SECURITY_PROVIDERS]: [],
+        [MetaMetricsUserTrait.AddressBookEntries]: 3,
+        [MetaMetricsUserTrait.InstallDateExt]: '',
+        [MetaMetricsUserTrait.LedgerConnectionType]: 'web-hid',
+        [MetaMetricsUserTrait.NetworksAdded]: [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.GOERLI,
+          '0xaf',
+        ],
+        [MetaMetricsUserTrait.NetworksWithoutTicker]: ['0xaf'],
+        [MetaMetricsUserTrait.NftAutodetectionEnabled]: false,
+        [MetaMetricsUserTrait.NumberOfAccounts]: 2,
+        [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
+        [MetaMetricsUserTrait.NumberOfNfts]: 4,
+        [MetaMetricsUserTrait.NumberOfTokens]: 5,
+        [MetaMetricsUserTrait.OpenseaApiEnabled]: true,
+        [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
+        [MetaMetricsUserTrait.Theme]: 'default',
+        [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
+        [MetaMetricsUserTrait.DesktopEnabled]: false,
+        [MetaMetricsUserTrait.SecurityProviders]: [],
       });
     });
 
@@ -1015,10 +1019,10 @@ describe('MetaMetricsController', function () {
       });
 
       assert.deepEqual(updatedTraits, {
-        [TRAITS.ADDRESS_BOOK_ENTRIES]: 4,
-        [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
-        [TRAITS.NUMBER_OF_TOKENS]: 1,
-        [TRAITS.OPENSEA_API_ENABLED]: false,
+        [MetaMetricsUserTrait.AddressBookEntries]: 4,
+        [MetaMetricsUserTrait.NumberOfAccounts]: 3,
+        [MetaMetricsUserTrait.NumberOfTokens]: 1,
+        [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
       });
     });
 
