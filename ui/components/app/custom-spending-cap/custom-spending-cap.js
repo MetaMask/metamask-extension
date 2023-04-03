@@ -6,14 +6,13 @@ import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text } from '../../component-library'
+import { Text } from '../../component-library';
 import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   TEXT_ALIGN,
-  FONT_WEIGHT,
   TextVariant,
   JustifyContent,
   Size,
@@ -73,9 +72,8 @@ export default function CustomSpendingCap({
         description: t('inputLogicEqualOrSmallerNumber', [
           <Text
             key="custom-spending-cap"
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodySmBold}
             as="h6"
-            fontWeight={FONT_WEIGHT.BOLD}
             className="custom-spending-cap__input-value-and-token-name"
           >
             {replaceCommaToDot(inputNumber)} {tokenName}
@@ -146,15 +144,15 @@ export default function CustomSpendingCap({
     currentTokenBalance,
   )
     ? t('warningTooltipText', [
-      <Text
-        key="tooltip-text"
-        variant={TextVariant.bodySm}
-        fontWeight={FONT_WEIGHT.BOLD}
-        color={TextColor.errorDefault}
-      >
-        <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
-      </Text>,
-    ])
+        <Text
+          key="tooltip-text"
+          variant={TextVariant.bodySmBold}
+          as="h6"
+          color={TextColor.errorDefault}
+        >
+          <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
+        </Text>,
+      ])
     : t('inputLogicEmptyState');
 
   return (
@@ -252,9 +250,10 @@ export default function CustomSpendingCap({
             >
               <Text
                 color={TextColor.textDefault}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmBold}
                 as="h6"
-                boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+                paddingTop={2}
+                paddingBottom={2}
               >
                 {replaceCommaToDot(value)
                   ? customSpendingCapText
