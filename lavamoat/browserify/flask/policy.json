@@ -857,9 +857,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/desktop>@metamask/obs-store": true,
         "@metamask/desktop>eciesjs": true,
         "@metamask/desktop>otpauth": true,
-        "@metamask/obs-store": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
@@ -870,6 +870,24 @@
         "obj-multiplex": true,
         "uuid": true,
         "webextension-polyfill": true
+      }
+    },
+    "@metamask/desktop>@metamask/obs-store": {
+      "globals": {
+        "localStorage": true
+      },
+      "packages": {
+        "@metamask/desktop>@metamask/obs-store>through2": true,
+        "browserify>stream-browserify": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/desktop>@metamask/obs-store>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "@metamask/desktop>eciesjs": {
@@ -1393,9 +1411,6 @@
       }
     },
     "@metamask/obs-store": {
-      "globals": {
-        "localStorage": true
-      },
       "packages": {
         "@metamask/obs-store>through2": true,
         "browserify>stream-browserify": true,

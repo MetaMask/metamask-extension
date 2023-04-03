@@ -1327,9 +1327,6 @@
       }
     },
     "@metamask/obs-store": {
-      "globals": {
-        "localStorage": true
-      },
       "packages": {
         "@metamask/obs-store>through2": true,
         "browserify>stream-browserify": true,
