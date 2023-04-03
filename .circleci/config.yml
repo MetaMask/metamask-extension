@@ -1157,14 +1157,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+          name: Lint beta for firefox
+          command: |
+            .circleci/scripts/mozilla-lint-beta.sh
 
   test-mozilla-lint-desktop:
     executor: node-browsers
