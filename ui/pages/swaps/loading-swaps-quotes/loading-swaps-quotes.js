@@ -20,7 +20,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
 
@@ -48,7 +48,7 @@ export default function LoadingSwapsQuotes({
   );
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
-    category: EVENT.CATEGORIES.SWAPS,
+    category: MetaMetricsEventCategory.Swaps,
     sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,

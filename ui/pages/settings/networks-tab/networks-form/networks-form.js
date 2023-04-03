@@ -23,7 +23,7 @@ import {
 } from '../../../../store/actions';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
   infuraProjectId,
   FEATURED_RPCS,
@@ -510,7 +510,7 @@ const NetworksForm = ({
               },
             },
             {
-              source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
@@ -530,7 +530,7 @@ const NetworksForm = ({
             },
             {
               setActive: true,
-              source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
