@@ -1374,6 +1374,10 @@
   "errorWhileConnectingToRPC": {
     "message": "Error while connecting to the custom network."
   },
+  "errorWithSnap": {
+    "message": "Error with $1",
+    "description": "$1 represents the name of the snap"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1800,6 +1804,10 @@
   },
   "inputLogicHigherNumber": {
     "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
+  "insightsFromSnap": {
+    "message": "Insights from $1",
+    "description": "$1 represents the name of the snap"
   },
   "install": {
     "message": "Install"
@@ -3627,12 +3635,11 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "An error occured with $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
+  },
+  "snapsInvalidUIError": {
+    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
@@ -3647,7 +3654,8 @@
     "message": "A snap will only run if it is enabled"
   },
   "snapsUIError": {
-    "message": "The UI specified by the snap is invalid."
+    "message": "Contact the creators of $1 for further support.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."

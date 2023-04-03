@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Снапы"
   },
-  "snapsInsightError": {
-    "message": "Произошла ошибка с $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Загрузка аналитики по транзакции..."
   },
@@ -3375,7 +3371,8 @@
     "message": "Снап будет работать только в том случае, если он включен"
   },
   "snapsUIError": {
-    "message": "Пользовательский интерфейс, указанный привязкой, недействителен."
+    "message": "Пользовательский интерфейс, указанный привязкой, недействителен.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
