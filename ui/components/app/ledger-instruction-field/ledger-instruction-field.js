@@ -5,6 +5,7 @@ import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
   HardwareTransportStates,
+  HardwareWalletStates,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
 import {
@@ -15,6 +16,7 @@ import {
 import {
   setLedgerWebHidConnectedStatus,
   getLedgerWebHidConnectedStatus,
+  getHardwareWalletState,
   setLedgerTransportStatus,
   getLedgerTransportStatus,
 } from '../../../ducks/app/app';
@@ -61,6 +63,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
+  const hdWalletState = useSelector(getHardwareWalletState);
   const environmentType = getEnvironmentType();
   const environmentTypeIsFullScreen =
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -138,6 +141,11 @@ export default function LedgerInstructionField({ showDataInstruction }) {
       <div className="confirm-detail-row">
         <Dialog type="message">
           <div className="ledger-live-dialog">
+            {renderInstructionStep(
+              `- ${t('ledgerLocked')}`,
+              hdWalletState === HardwareWalletStates.locked,
+              TextColor.WARNING_DEFAULT,
+            )}
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
               `- ${t('ledgerConnectionInstructionStepOne')}`,
