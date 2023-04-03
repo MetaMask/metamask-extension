@@ -5,10 +5,11 @@ import { Redirect } from 'react-router-dom';
 import Identicon from '../../../../components/ui/identicon';
 import Button from '../../../../components/ui/button/button.component';
 import {
-  ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/icon/deprecated';
+
+import { ButtonIcon } from '../../../../components/component-library';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
