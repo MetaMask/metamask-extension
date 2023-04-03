@@ -18,7 +18,10 @@ import {
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
@@ -45,8 +48,9 @@ export default function SkipSRPBackup({ handleClose }) {
           <Button
             onClick={() => {
               trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CANCELED,
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletSecuritySkipCanceled,
               });
               handleClose();
             }}
@@ -63,8 +67,9 @@ export default function SkipSRPBackup({ handleClose }) {
             onClick={async () => {
               await dispatch(setSeedPhraseBackedUp(false));
               trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CONFIRMED,
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
               });
               history.push(ONBOARDING_COMPLETION_ROUTE);
             }}
