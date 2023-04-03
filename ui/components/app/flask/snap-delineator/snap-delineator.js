@@ -43,10 +43,7 @@ export const SnapDelineator = ({
       <Box
         className="snap-delineator__header"
         alignItems={AlignItems.center}
-        paddingLeft={1}
-        paddingRight={1}
-        paddingTop={1}
-        paddingBottom={1}
+        padding={1}
       >
         <AvatarIcon
           iconName={ICON_NAMES.SNAPS}
