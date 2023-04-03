@@ -341,8 +341,7 @@ export default function ConfirmationPage({
             pendingConfirmation.origin === 'metamask' && (
               <Box
                 alignItems={AlignItems.center}
-                marginTop={1}
-                paddingTop={1}
+                paddingTop={2}
                 paddingRight={4}
                 paddingLeft={4}
                 paddingBottom={4}
