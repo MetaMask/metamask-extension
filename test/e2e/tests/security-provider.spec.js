@@ -3,7 +3,8 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const OPENSEA_URL =
-  'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate';
+  'https://proxy.metafi.codefi.network/opensea/security/v1/validate';
+
 /**
  * @param {import('mockttp').Mockttp} mockServer - The mock server.
  */
