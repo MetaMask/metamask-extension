@@ -6,7 +6,10 @@ import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getOriginOfCurrentTab } from '../../../selectors';
@@ -44,8 +47,8 @@ export default function MenuBar() {
           ariaLabel={t('accountOptions')}
           onClick={() => {
             trackEvent({
-              event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.NavAccountMenuOpened,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Home',
               },

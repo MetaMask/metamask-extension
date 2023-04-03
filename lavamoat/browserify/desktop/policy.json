@@ -469,8 +469,8 @@
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": {
       "packages": {
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": true,
-        "browserify>stream-browserify": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/safe-event-emitter": true,
+        "browserify>stream-browserify": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": {
@@ -857,9 +857,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/desktop>@metamask/obs-store": true,
         "@metamask/desktop>eciesjs": true,
         "@metamask/desktop>otpauth": true,
-        "@metamask/obs-store": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
@@ -870,6 +870,24 @@
         "obj-multiplex": true,
         "uuid": true,
         "webextension-polyfill": true
+      }
+    },
+    "@metamask/desktop>@metamask/obs-store": {
+      "globals": {
+        "localStorage": true
+      },
+      "packages": {
+        "@metamask/desktop>@metamask/obs-store>through2": true,
+        "browserify>stream-browserify": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/desktop>@metamask/obs-store>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "@metamask/desktop>eciesjs": {
@@ -928,10 +946,10 @@
         "@metamask/eth-json-rpc-infura>@metamask/utils": true,
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
+        "@metamask/safe-event-emitter": true,
         "browserify>browser-resolve": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "lavamoat>json-stable-stringify": true,
         "vinyl>clone": true
       }
@@ -966,8 +984,8 @@
     },
     "@metamask/eth-json-rpc-provider": {
       "packages": {
-        "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/safe-event-emitter": true,
+        "json-rpc-engine": true
       }
     },
     "@metamask/eth-keyring-controller": {
@@ -1022,7 +1040,7 @@
     },
     "@metamask/eth-keyring-controller>obs-store": {
       "packages": {
-        "safe-event-emitter": true,
+        "@metamask/eth-token-tracker>safe-event-emitter": true,
         "watchify>xtend": true
       }
     },
@@ -1110,9 +1128,9 @@
         "@metamask/eth-token-tracker>eth-block-tracker": true,
         "@metamask/eth-token-tracker>ethjs": true,
         "@metamask/eth-token-tracker>human-standard-token-abi": true,
+        "@metamask/eth-token-tracker>safe-event-emitter": true,
         "ethjs-contract": true,
-        "ethjs-query": true,
-        "safe-event-emitter": true
+        "ethjs-query": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal": {
@@ -1144,8 +1162,8 @@
       },
       "packages": {
         "@metamask/eth-token-tracker>eth-block-tracker>pify": true,
-        "eth-query": true,
-        "safe-event-emitter": true
+        "@metamask/eth-token-tracker>safe-event-emitter": true,
+        "eth-query": true
       }
     },
     "@metamask/eth-token-tracker>ethjs": {
@@ -1202,6 +1220,15 @@
         "ethjs-query>ethjs-format": true,
         "ethjs-query>ethjs-rpc": true,
         "promise-to-callback": true
+      }
+    },
+    "@metamask/eth-token-tracker>safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>util": true,
+        "webpack>events": true
       }
     },
     "@metamask/etherscan-link": {
@@ -1393,13 +1420,10 @@
       }
     },
     "@metamask/obs-store": {
-      "globals": {
-        "localStorage": true
-      },
       "packages": {
         "@metamask/obs-store>through2": true,
-        "browserify>stream-browserify": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/safe-event-emitter": true,
+        "browserify>stream-browserify": true
       }
     },
     "@metamask/obs-store>through2": {
@@ -1608,6 +1632,14 @@
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>events": true
       }
     },
     "@metamask/scure-bip39": {
@@ -3121,10 +3153,10 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-block-tracker>pify": true,
-        "eth-query>json-rpc-random-id": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "eth-query>json-rpc-random-id": true
       }
     },
     "eth-block-tracker>@metamask/utils": {
@@ -3167,10 +3199,10 @@
         "console.error": true
       },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pify": true
       }
     },
@@ -4009,16 +4041,8 @@
     },
     "json-rpc-engine": {
       "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "json-rpc-engine>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>events": true
+        "@metamask/safe-event-emitter": true,
+        "eth-rpc-errors": true
       }
     },
     "json-rpc-middleware-stream": {
@@ -4027,7 +4051,7 @@
         "setTimeout": true
       },
       "packages": {
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
@@ -4736,15 +4760,6 @@
       },
       "packages": {
         "@babel/runtime": true
-      }
-    },
-    "safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>util": true,
-        "webpack>events": true
       }
     },
     "semver": {
