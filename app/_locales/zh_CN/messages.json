@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
   },
@@ -3375,7 +3371,8 @@
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"

@@ -12,7 +12,7 @@ import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import Typography from '../../../components/ui/typography';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 import {
   getNumberOfSettingsInSection,
@@ -356,7 +356,7 @@ export default class SettingsTab extends PureComponent {
 
     const onChange = (newTheme) => {
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.SETTINGS,
+        category: MetaMetricsEventCategory.Settings,
         event: 'Theme Changed',
         properties: {
           theme_selected: newTheme,
