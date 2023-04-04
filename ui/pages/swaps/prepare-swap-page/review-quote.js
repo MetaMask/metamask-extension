@@ -116,7 +116,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { BannerAlert, Text } from '../../../components/component-library';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -616,7 +616,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const trackAllAvailableQuotesOpened = () => {
     trackEvent({
       event: 'All Available Quotes Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -630,7 +630,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const trackQuoteDetailsOpened = () => {
     trackEvent({
       event: 'Quote Details Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -644,7 +644,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const trackEditSpendLimitOpened = () => {
     trackEvent({
       event: 'Edit Spend Limit Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         custom_spend_limit_set: originalApproveAmount === approveAmount,
@@ -656,7 +656,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const trackBestQuoteReviewedEvent = useCallback(() => {
     trackEvent({
       event: 'Best Quote Reviewed',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         network_fees: feeInFiat,
@@ -666,7 +666,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const trackViewQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Review Quote Component Loaded',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         response_time: currentTimestamp - reviewSwapClickedTimestamp,
@@ -1115,7 +1115,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                           /* istanbul ignore next */
                           trackEvent({
                             event: 'Clicked "Gas Fees: Learn More" Link',
-                            category: EVENT.CATEGORIES.SWAPS,
+                            category: MetaMetricsEventCategory.Swaps,
                           });
                           global.platform.openTab({
                             url: GAS_FEES_LEARN_MORE_URL,
