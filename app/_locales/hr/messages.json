@@ -671,12 +671,6 @@
   "settings": {
     "message": "Postavke"
   },
-  "showAdvancedGasInline": {
-    "message": "Napredno upravljanje gorivom"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Odaberite ovu stavku za prikaz cijene goriva i izravno ograničite kontrole prilikom slanja i potvrđivanja zaslona."
-  },
   "showFiatConversionInTestnets": {
     "message": "Prikaži konverziju na usluzi Testnets"
   },

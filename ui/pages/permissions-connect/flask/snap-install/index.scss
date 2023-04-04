@@ -1,11 +1,15 @@
 .snap-install {
   box-shadow: none;
 
-  .permissions-connect-permission-list {
-    padding: 0 24px;
+  .headers {
+    flex: 1;
 
-    .permission {
-      padding: 8px 0;
+    .loader-container {
+      height: 100%;
+    }
+
+    &__permission-description {
+      border-bottom: 1px solid var(--color-border-default);
     }
   }
 

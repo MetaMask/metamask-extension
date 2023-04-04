@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Προβολή στην Etherscan"
   },
-  "expandExperience": {
-    "message": "Επεκτείνετε την εμπειρία σας στο web3 με τα Snap του MetaMask"
-  },
   "expandView": {
     "message": "Ανάπτυξη Προβολής"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Παραμορφωμένα δεδομένα"
   },
-  "manageSnaps": {
-    "message": "Διαχειριστείτε τα εγκατεστημένα Snap σας"
-  },
   "max": {
     "message": "Μέγ."
   },
@@ -2187,9 +2181,6 @@
   "nextNonceWarning": {
     "message": "Το Nonce είναι υψηλότερο από το προτεινόμενο nonce του $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
@@ -3259,12 +3250,6 @@
   "show": {
     "message": "Εμφάνιση"
   },
-  "showAdvancedGasInline": {
-    "message": "Προωθημένος έλεγχος gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Επιλέξτε αυτό για να εμφανίσετε τις τιμές αερίου και να περιορίσετε τα στοιχεία ελέγχου απευθείας στις οθόνες αποστολής και επιβεβαίωσης."
-  },
   "showFiatConversionInTestnets": {
     "message": "Εμφάνιση Μετατροπής σε Δοκιμαστικά Δίκτυα"
   },
@@ -3364,22 +3349,11 @@
     "message": "Εκχωρείτε στο $2 βασική πρόσβαση στο snap \"$1\". Αυτό είναι αμετάκλητο και παρέχει στο \"$1\" τον έλεγχο των λογαριασμών και των περιουσιακών σας στοιχείων $2. Βεβαιωθείτε ότι εμπιστεύεστε το \"$1\" προτού συνεχίσετε.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Αυτό το snap αιτείται τις παρακάτω άδειες:"
-  },
   "snapUpdate": {
     "message": "Ενημέρωση Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "Το $1 χρειάζεται μια νεότερη έκδοση του snap σας.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightError": {
-    "message": "Παρουσιάστηκε ένα σφάλμα με $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Φόρτωση πληροφοριών συναλλαγών..."
@@ -3397,7 +3371,8 @@
     "message": "Ένα snap θα εκτελεστεί μόνο εάν είναι ενεργοποιημένο"
   },
   "snapsUIError": {
-    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη."
+    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Ορισμένα δίκτυα ενδέχεται να ενέχουν κινδύνους για την ασφάλεια ή/και το απόρρητο. Ενημερωθείτε για τους κινδύνους πριν προσθέσετε και χρησιμοποιήσετε ένα δίκτυο."

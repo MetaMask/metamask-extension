@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isFunction } from 'lodash';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatDate } from '../../../../helpers/utils/util';
-import Typography from '../../../ui/typography/typography';
-import { TextColor } from '../../../../helpers/constants/design-system';
+import PermissionCell from '../../permission-cell';
+import Box from '../../../ui/box';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -14,51 +12,50 @@ export default function UpdateSnapPermissionList({
 }) {
   const t = useI18nContext();
 
-  const Permissions = ({ className, permissions, subText }) => {
-    return getWeightedPermissions(t, permissions).map(
-      ({ label, rightIcon, permissionName, permissionValue }) => (
-        <div className={className} key={permissionName}>
-          <i className="fas fa-x" />
-          <div className="permission-description">
-            {label}
-            <Typography
-              color={TextColor.textAlternative}
-              boxProps={{ paddingTop: 1 }}
-              className="permission-description-subtext"
-            >
-              {isFunction(subText)
-                ? subText(permissionName, permissionValue)
-                : subText}
-            </Typography>
-          </div>
-          {rightIcon && <i className={rightIcon} />}
-        </div>
-      ),
-    );
-  };
-
   return (
-    <div className="update-snap-permission-list">
-      <Permissions
-        className="new-permission"
-        permissions={newPermissions}
-        subText={t('permissionRequested')}
-      />
-      <Permissions
-        className="approved-permission"
-        permissions={approvedPermissions}
-        subText={(_, permissionValue) => {
-          const { date } = permissionValue;
-          const formattedDate = formatDate(date, 'yyyy-MM-dd');
-          return t('approvedOn', [formattedDate]);
-        }}
-      />
-      <Permissions
-        className="revoked-permission"
-        permissions={revokedPermissions}
-        subText={t('permissionRevoked')}
-      />
-    </div>
+    <Box paddingTop={1}>
+      {getWeightedPermissions(t, newPermissions).map((permission, index) => {
+        return (
+          <PermissionCell
+            title={permission.label}
+            description={permission.description}
+            weight={permission.weight}
+            avatarIcon={permission.leftIcon}
+            dateApproved={permission?.permissionValue?.date}
+            key={`${permission.permissionName}-${index}`}
+          />
+        );
+      })}
+      {getWeightedPermissions(t, approvedPermissions).map(
+        (permission, index) => {
+          return (
+            <PermissionCell
+              title={permission.label}
+              description={permission.description}
+              weight={permission.weight}
+              avatarIcon={permission.leftIcon}
+              dateApproved={permission?.permissionValue?.date}
+              key={`${permission.permissionName}-${index}`}
+            />
+          );
+        },
+      )}
+      {getWeightedPermissions(t, revokedPermissions).map(
+        (permission, index) => {
+          return (
+            <PermissionCell
+              title={permission.label}
+              description={permission.description}
+              weight={permission.weight}
+              avatarIcon={permission.leftIcon}
+              dateApproved={permission?.permissionValue?.date}
+              key={`${permission.permissionName}-${index}`}
+              revoked
+            />
+          );
+        },
+      )}
+    </Box>
   );
 }
 

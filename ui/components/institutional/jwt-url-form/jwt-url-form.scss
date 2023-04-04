@@ -1,0 +1,30 @@
+.jwt-url-form {
+  &__instruction {
+    @include Paragraph;
+
+    align-self: flex-start;
+    font-size: 14px;
+  }
+
+  &__input {
+    @include Paragraph;
+
+    height: 54px;
+    width: 100%;
+    border-radius: 4px;
+    background-color: var(--color-background-default);
+    margin-top: 16px;
+    padding: 0 10px;
+  }
+
+  &__input-jwt {
+    @include Paragraph;
+
+    height: 154px;
+    width: 100%;
+    border-radius: 4px;
+    background-color: var(--color-background-default);
+    color: var(--color-text-default);
+    padding: 10px;
+  }
+}

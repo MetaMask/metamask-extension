@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Afficher sur Etherscan"
   },
-  "expandExperience": {
-    "message": "Développez votre expérience web3 avec les Snaps MetaMask"
-  },
   "expandView": {
     "message": "Agrandir la vue"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Données malformées"
   },
-  "manageSnaps": {
-    "message": "Gérez vos Snaps installés"
-  },
   "max": {
     "message": "Max."
   },
@@ -2187,9 +2181,6 @@
   "nextNonceWarning": {
     "message": "Le nonce est supérieur au nonce suggéré de $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
@@ -3259,12 +3250,6 @@
   "show": {
     "message": "Afficher"
   },
-  "showAdvancedGasInline": {
-    "message": "Contrôles de carburant avancés"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur les testnets"
   },
@@ -3364,22 +3349,11 @@
     "message": "Vous autorisez $2 à accéder à la clé du snap « $1 ». Cette action est irréversible et accorde à « $1 » le contrôle de vos comptes et actifs $2. Assurez-vous que vous faites confiance à « $1 » avant de continuer.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Ce snap demande les autorisations suivantes :"
-  },
   "snapUpdate": {
     "message": "Mettre à jour Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 a besoin d’une version plus récente de votre snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightError": {
-    "message": "Une erreur s’est produite avec $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Chargement de l’aperçu de transaction…"
@@ -3397,7 +3371,8 @@
     "message": "Un snap ne s’exécute que s’il est activé"
   },
   "snapsUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
+    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Certains réseaux peuvent présenter des risques pour la sécurité et/ou la vie privée. Informez-vous sur les risques avant d’ajouter et d’utiliser un réseau."

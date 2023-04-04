@@ -70,12 +70,12 @@ AvatarIcon.propTypes = {
    * The background color of the AvatarIcon
    * Defaults to BackgroundColor.primaryMuted
    */
-  backgroundColor: Box.propTypes.backgroundColor,
+  backgroundColor: PropTypes.oneOf(Object.values(BackgroundColor)),
   /**
    * The color of the text inside the AvatarIcon
    * Defaults to TextColor.primaryDefault
    */
-  color: Box.propTypes.color,
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * Additional classNames to be added to the AvatarIcon
    */

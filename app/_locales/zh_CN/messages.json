@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "在 Etherscan 上查看"
   },
-  "expandExperience": {
-    "message": "扩展MetaMask Snap的web3体验"
-  },
   "expandView": {
     "message": "展开视图"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "格式错误的数据"
   },
-  "manageSnaps": {
-    "message": "管理已安装的Snap"
-  },
   "max": {
     "message": "最大"
   },
@@ -2187,9 +2181,6 @@
   "nextNonceWarning": {
     "message": "Nonce 高于建议的 nouce 值 $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "非同质化代币(NFT)"
   },
   "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
@@ -3259,12 +3250,6 @@
   "show": {
     "message": "显示"
   },
-  "showAdvancedGasInline": {
-    "message": "高级燃料控制"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
-  },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
   },
@@ -3364,22 +3349,11 @@
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "此Snap正在请求以下权限："
-  },
   "snapUpdate": {
     "message": "更新Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1需要更新版本的snap。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
@@ -3397,7 +3371,8 @@
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"

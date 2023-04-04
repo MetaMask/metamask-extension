@@ -35,6 +35,7 @@ import {
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
+  isHardwareWallet,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -62,6 +63,7 @@ import { ConfirmPageContainerNavigation } from '../../components/app/confirm-pag
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { Icon, ICON_NAMES } from '../../components/component-library';
+import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -115,6 +117,7 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const isHardwareWalletConnected = useSelector(isHardwareWallet);
   let customTokenAmount = useSelector(getCustomTokenAmount);
   if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
     customTokenAmount = dappProposedTokenAmount;
@@ -499,6 +502,11 @@ export default function TokenAllowance({
           </Box>
         </Box>
       ) : null}
+      {!isFirstPage && isHardwareWalletConnected && (
+        <Box paddingLeft={2} paddingRight={2}>
+          <LedgerInstructionField showDataInstruction />
+        </Box>
+      )}
       <PageContainerFooter
         cancelText={t('reject')}
         submitText={isFirstPage ? t('next') : t('approveButtonText')}

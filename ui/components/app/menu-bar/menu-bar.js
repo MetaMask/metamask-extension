@@ -6,12 +6,16 @@ import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { GlobalMenu } from '../../multichain/global-menu';
 import AccountOptionsMenu from './account-options-menu';
 
 export default function MenuBar() {
@@ -29,7 +33,7 @@ export default function MenuBar() {
 
   return (
     <div className="menu-bar">
-      {showStatus ? (
+      {showStatus ? ( // TODO: Move the connection status menu icon to the correct position in header once we implement the new header
         <ConnectedStatusIndicator
           onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
         />
@@ -43,8 +47,8 @@ export default function MenuBar() {
           ariaLabel={t('accountOptions')}
           onClick={() => {
             trackEvent({
-              event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.NavAccountMenuOpened,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Home',
               },
@@ -53,12 +57,18 @@ export default function MenuBar() {
           }}
         />
       </span>
-      {accountOptionsMenuOpen ? (
-        <AccountOptionsMenu
-          anchorElement={ref.current}
-          onClose={() => setAccountOptionsMenuOpen(false)}
-        />
-      ) : null}
+      {accountOptionsMenuOpen &&
+        (process.env.MULTICHAIN ? (
+          <GlobalMenu
+            anchorElement={ref.current}
+            closeMenu={() => setAccountOptionsMenuOpen(false)}
+          />
+        ) : (
+          <AccountOptionsMenu
+            anchorElement={ref.current}
+            onClose={() => setAccountOptionsMenuOpen(false)}
+          />
+        ))}
     </div>
   );
 }
