@@ -79,6 +79,9 @@ function blockedDomainCheck() {
     'sharefile.com',
   ];
   const currentUrl = window.location.href;
+  if (currentUrl.startsWith(`file:/`)) {
+    return false;
+  }
   let currentRegex;
   for (let i = 0; i < blockedDomains.length; i++) {
     const blockedDomain = blockedDomains[i].replaceAll('.', '\\.');
