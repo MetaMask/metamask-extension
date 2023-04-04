@@ -19,7 +19,10 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -245,8 +248,8 @@ export default class AdvancedTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AccountReset,
                   properties: {},
                 });
                 showResetAccountConfirmationModal();

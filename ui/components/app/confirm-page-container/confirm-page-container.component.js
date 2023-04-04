@@ -44,7 +44,10 @@ import {
 } from '../../../selectors';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -250,8 +253,8 @@ const ConfirmPageContainer = (props) => {
                         onClick={() => {
                           openBuyCryptoInPdapp();
                           trackEvent({
-                            event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                            category: EVENT.CATEGORIES.NAVIGATION,
+                            event: MetaMetricsEventName.NavBuyButtonClicked,
+                            category: MetaMetricsEventCategory.Navigation,
                             properties: {
                               location: 'Transaction Confirmation',
                               text: 'Buy',

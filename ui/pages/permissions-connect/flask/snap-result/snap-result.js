@@ -49,6 +49,8 @@ export default function SnapResult({
     >
       <Box
         className="headers"
+        paddingLeft={4}
+        paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
@@ -69,7 +71,8 @@ export default function SnapResult({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             height={BLOCK_SIZES.FULL}
-            padding={2}
+            paddingTop={2}
+            paddingBottom={2}
           >
             <Text
               fontWeight={FONT_WEIGHT.BOLD}
