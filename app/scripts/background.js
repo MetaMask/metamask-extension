@@ -272,13 +272,9 @@ async function initialize() {
       'isFirstMetaMaskControllerSetup',
     ]);
 
-    if (isFirstMetaMaskControllerSetup === true) {
-      isFirstMetaMaskControllerSetup = false;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-    } else if (isFirstMetaMaskControllerSetup === undefined) {
-      isFirstMetaMaskControllerSetup = true;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-    }
+    isFirstMetaMaskControllerSetup =
+      isFirstMetaMaskControllerSetup === undefined;
+    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
 
     setupController(
       initState,
