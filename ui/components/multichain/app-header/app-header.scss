@@ -1,6 +1,7 @@
 .multichain-app-header {
   flex-flow: column nowrap;
   z-index: 55;
+  min-height: 64px;
 
   &__contents {
     display: grid;

@@ -1,4 +1,5 @@
 import React, { useContext, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -67,6 +68,7 @@ export const AppHeader = ({ onClick }) => {
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}
           margin={2}
+          justifyContent={JustifyContent.center}
         >
           <MetafoxLogo
             unsetIconHeight
@@ -197,4 +199,11 @@ export const AppHeader = ({ onClick }) => {
       </Box>
     </>
   );
+};
+
+AppHeader.propTypes = {
+  /**
+   * The onClick handler to be passed to the App Header component
+   */
+  onClick: PropTypes.func,
 };
