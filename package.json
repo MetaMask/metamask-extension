@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.27.0",
+  "version": "10.28.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -263,6 +263,7 @@
     "@metamask/snaps-ui": "^0.32.2",
     "@metamask/snaps-utils": "^0.32.2",
     "@metamask/subject-metadata-controller": "^1.0.0",
+    "@metamask/swappable-obj-proxy": "^2.1.0",
     "@metamask/utils": "^5.0.0",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
@@ -351,7 +352,6 @@
     "reselect": "^3.0.1",
     "ses": "^0.12.4",
     "single-call-balance-checker-abi": "^1.0.0",
-    "swappable-obj-proxy": "^1.1.0",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
