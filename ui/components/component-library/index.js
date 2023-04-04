@@ -23,7 +23,7 @@ export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
 export { FormTextField } from './form-text-field';
 export { HeaderBase } from './header-base';
 export { HelpText } from './help-text';
-export { Icon, ICON_NAMES, ICON_SIZES } from './icon';
+export { Icon, IconName, IconSize } from './icon';
 export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
