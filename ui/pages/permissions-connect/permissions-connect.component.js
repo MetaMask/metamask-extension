@@ -247,7 +247,7 @@ export default class PermissionConnect extends Component {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
     }
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,mmi)
     if (approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
     }
