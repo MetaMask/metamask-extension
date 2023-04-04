@@ -12,7 +12,8 @@ import {
 } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ICON_NAMES, Text } from '../../component-library';
+import { Text } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,

@@ -9,7 +9,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES } from '../icon';
+import { ICON_NAMES } from '../icon/deprecated';
 import { Text } from '../text';
 import { ButtonLink } from './button-link';
 import { BUTTON_LINK_SIZES } from './button-link.constants';

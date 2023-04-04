@@ -9,11 +9,11 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import {
-  ButtonIcon,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
