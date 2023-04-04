@@ -128,17 +128,17 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const usingWebHID = ledgerTransportType === LedgerTransportTypes.webhid;
 
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+  const isHdWalletLocked = hdWalletState === HardwareWalletStates.locked;
 
   return (
     <div>
       <div className="confirm-detail-row">
-        <BannerAlert severity={SEVERITIES.INFO}>
+        <BannerAlert severity={isHdWalletLocked ? SEVERITIES.WARNING : SEVERITIES.INFO}>
+          {renderInstructionStep(
+            t('ledgerLocked'),
+            isHdWalletLocked,
+          )}
           <div className="ledger-live-dialog">
-            {renderInstructionStep(
-              `- ${t('ledgerLocked')}`,
-              hdWalletState === HardwareWalletStates.locked,
-              TextColor.WARNING_DEFAULT,
-            )}
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
               `• ${t('ledgerConnectionInstructionStepOne')}`,
