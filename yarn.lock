@@ -4467,6 +4467,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/swappable-obj-proxy@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/swappable-obj-proxy@npm:2.1.0"
+  checksum: b15cebee7fb189d1143d3a755a38a7d88f56f91e1277425a51f63c50c432dfb4e6e22650ef67474ae4ef2a97344231af00be6780f126c47d401a23c8a8fb3c9c
+  languageName: node
+  linkType: hard
+
 "@metamask/test-dapp@npm:^5.6.0":
   version: 5.6.0
   resolution: "@metamask/test-dapp@npm:5.6.0"
@@ -24315,6 +24322,7 @@ __metadata:
     "@metamask/snaps-ui": ^0.32.2
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/subject-metadata-controller": ^1.0.0
+    "@metamask/swappable-obj-proxy": ^2.1.0
     "@metamask/test-dapp": ^5.6.0
     "@metamask/utils": ^5.0.0
     "@ngraveio/bc-ur": ^1.1.6
@@ -24553,7 +24561,6 @@ __metadata:
     string.prototype.matchall: ^4.0.2
     style-loader: ^0.21.0
     stylelint: ^13.6.1
-    swappable-obj-proxy: ^1.1.0
     terser: ^5.7.0
     through2: ^4.0.2
     ts-node: ^10.5.0
@@ -32603,13 +32610,6 @@ __metadata:
     lower-case: ^1.1.1
     upper-case: ^1.1.1
   checksum: 37b0c4988e12520fba54018f7fe259d62902e97349366209d2af9b1d5e741692c8f17da9d5e780c7bd1a56864bbb51d53eaf1a101a11afdfcae157912a3691d8
-  languageName: node
-  linkType: hard
-
-"swappable-obj-proxy@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "swappable-obj-proxy@npm:1.1.0"
-  checksum: 6b1d087e6d03fdb89f94bcb251a407d832964813ed9129f46096dcf99fdbd44398dadbed941dcaeb8d07b89e400fd603f9a589aa01938916b1d0d2a1c9906c65
   languageName: node
   linkType: hard
 
