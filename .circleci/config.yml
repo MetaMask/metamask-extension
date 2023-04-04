@@ -234,7 +234,9 @@ jobs:
   trigger-beta-build:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -263,7 +265,9 @@ jobs:
   create_release_pull_request:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -282,7 +286,9 @@ jobs:
   prep-deps:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
@@ -332,7 +338,9 @@ jobs:
   validate-lavamoat-config:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -347,7 +355,9 @@ jobs:
   prep-build:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -381,7 +391,9 @@ jobs:
   prep-build-desktop:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -405,7 +417,9 @@ jobs:
   prep-build-flask:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -445,7 +459,9 @@ jobs:
   prep-build-test-flask:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -466,7 +482,9 @@ jobs:
   prep-build-test-mv3:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -487,7 +505,9 @@ jobs:
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -508,7 +528,9 @@ jobs:
   prep-build-storybook:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -522,7 +544,9 @@ jobs:
   prep-build-ts-migration-dashboard:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -536,7 +560,9 @@ jobs:
   test-yarn-dedupe:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -546,7 +572,9 @@ jobs:
   test-lint:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -559,7 +587,9 @@ jobs:
   test-storybook:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -581,7 +611,9 @@ jobs:
   test-lint-lockfile:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -591,7 +623,9 @@ jobs:
   test-lint-changelog:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -617,7 +651,9 @@ jobs:
   test-deps-audit:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -627,7 +663,9 @@ jobs:
   test-deps-depcheck:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -638,7 +676,9 @@ jobs:
     executor: node-browsers
     parallelism: 8
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -675,7 +715,9 @@ jobs:
     executor: node-browsers
     parallelism: 8
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -703,7 +745,9 @@ jobs:
     executor: node-browsers
     parallelism: 4
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -740,7 +784,9 @@ jobs:
     executor: node-browsers
     parallelism: 4
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -777,7 +823,9 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 8
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -813,7 +861,9 @@ jobs:
   benchmark:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -839,7 +889,9 @@ jobs:
   user-actions-benchmark:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -865,7 +917,9 @@ jobs:
   stats-module-load-init:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -905,7 +959,9 @@ jobs:
   job-publish-prerelease:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -962,7 +1018,9 @@ jobs:
   job-publish-release:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -982,7 +1040,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -997,7 +1057,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1011,7 +1073,9 @@ jobs:
   test-unit-mocha:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1026,7 +1090,9 @@ jobs:
   test-unit-jest-development:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1043,7 +1109,9 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 12
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1059,7 +1127,9 @@ jobs:
   upload-and-validate-coverage:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - codecov/upload
@@ -1074,7 +1144,9 @@ jobs:
   test-unit-global:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1084,7 +1156,9 @@ jobs:
   validate-source-maps:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1094,7 +1168,9 @@ jobs:
   validate-source-maps-beta:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1105,7 +1181,9 @@ jobs:
   validate-source-maps-desktop:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1121,7 +1199,9 @@ jobs:
   validate-source-maps-flask:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1137,7 +1217,9 @@ jobs:
   test-mozilla-lint:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1147,7 +1229,9 @@ jobs:
   test-mozilla-lint-beta:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1158,7 +1242,9 @@ jobs:
   test-mozilla-lint-desktop:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1174,7 +1260,9 @@ jobs:
   test-mozilla-lint-flask:
     executor: node-browsers
     steps:
-      - checkout
+      - run:
+          name: Shallow git clone
+          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
