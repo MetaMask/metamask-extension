@@ -53,11 +53,16 @@ type Block = {
 };
 
 /**
- * Encodes both whether or not a provider is configured for an Infura network or
- * a non-Infura network; if for an Infura network, then which network; and if
- * for a non-Infura network, then whether the network is being operated locally
- * or remotely. Primarily used to build the network client and check the
- * availability of a network.
+ * Encodes a few pieces of information:
+ *
+ * - Whether or not a provider is configured for an Infura network or a
+ * non-Infura network.
+ * - If an Infura network, then which network.
+ * - If a non-Infura network, then whether the network exists locally or
+ * remotely.
+ *
+ * Primarily used to build the network client and check the availability of a
+ * network.
  */
 type ProviderType = BuiltInInfuraNetwork | typeof NETWORK_TYPES.RPC;
 
