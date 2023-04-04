@@ -1,7 +1,12 @@
 import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import AppStateController from './app-state';
 
+jest.mock('loglevel');
+
 let appStateController, mockStore;
+
 describe('AppStateController', () => {
   mockStore = new ObservableStore();
   const createAppStateController = (initState = {}) => {
@@ -23,8 +28,9 @@ describe('AppStateController', () => {
         subscribe: jest.fn(),
       },
       messenger: {
-        call: jest.fn(),
-        controllerName: 'AppStateController',
+        call: jest.fn(() => ({
+          catch: jest.fn(),
+        })),
       },
     });
   };
@@ -97,7 +103,7 @@ describe('AppStateController', () => {
       const resolveFn = jest.fn();
       appStateController.waitForUnlock(resolveFn, false);
       expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(appStateController._messenger.call).toHaveBeenCalledTimes(0);
+      expect(appStateController.messagingSystem.call).toHaveBeenCalledTimes(0);
     });
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
@@ -106,12 +112,12 @@ describe('AppStateController', () => {
       const resolveFn = jest.fn();
       appStateController.waitForUnlock(resolveFn, true);
 
-      expect(appStateController._messenger.call).toHaveBeenCalledTimes(1);
-      expect(appStateController._messenger.call).toHaveBeenCalledWith(
+      expect(appStateController.messagingSystem.call).toHaveBeenCalledTimes(1);
+      expect(appStateController.messagingSystem.call).toHaveBeenCalledWith(
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
-          origin: 'AppStateController',
+          origin: ORIGIN_METAMASK,
           type: 'unlock',
         }),
         true,
@@ -123,6 +129,9 @@ describe('AppStateController', () => {
     beforeEach(() => {
       jest.spyOn(appStateController, 'isUnlocked').mockReturnValue(false);
     });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     it('accepts approval request revolving all the related promises', async () => {
       const emitSpy = jest.spyOn(appStateController, 'emit');
       const resolveFn = jest.fn();
@@ -132,19 +141,57 @@ describe('AppStateController', () => {
 
       expect(emitSpy).toHaveBeenCalled();
       expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(appStateController._messenger.call).toHaveBeenCalled();
-      expect(appStateController._messenger.call).toHaveBeenCalledWith(
+      expect(appStateController.messagingSystem.call).toHaveBeenCalled();
+      expect(appStateController.messagingSystem.call).toHaveBeenCalledWith(
         'ApprovalController:acceptRequest',
         expect.any(String),
       );
     });
+
+    it('logs if rejecting approval request throws', async () => {
+      appStateController._approvalRequestId = 'mock-approval-request-id';
+      appStateController = new AppStateController({
+        addUnlockListener: jest.fn(),
+        isUnlocked: jest.fn(() => true),
+        onInactiveTimeout: jest.fn(),
+        showUnlockRequest: jest.fn(),
+        preferencesStore: {
+          subscribe: jest.fn(),
+          getState: jest.fn(() => ({
+            preferences: {
+              autoLockTimeLimit: 0,
+            },
+          })),
+        },
+        qrHardwareStore: {
+          subscribe: jest.fn(),
+        },
+        messenger: {
+          call: jest.fn(() => {
+            throw new Error('mock error');
+          }),
+        },
+      });
+
+      appStateController.handleUnlock();
+
+      expect(log.error).toHaveBeenCalledTimes(1);
+      expect(log.error).toHaveBeenCalledWith(
+        'Attempted to accept missing unlock approval request',
+      );
+    });
+
     it('returns without call messenger if no approval request in pending', async () => {
       const emitSpy = jest.spyOn(appStateController, 'emit');
 
       appStateController.handleUnlock();
 
       expect(emitSpy).toHaveBeenCalledTimes(0);
-      expect(appStateController._messenger.call).toHaveBeenCalledTimes(0);
+      expect(appStateController.messagingSystem.call).toHaveBeenCalledTimes(0);
+      expect(log.error).toHaveBeenCalledTimes(1);
+      expect(log.error).toHaveBeenCalledWith(
+        'Attempted to accept missing unlock approval request',
+      );
     });
   });
 
