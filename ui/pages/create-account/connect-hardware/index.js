@@ -5,17 +5,15 @@ import * as actions from '../../../store/actions';
 import { getMetaMaskAccountsConnected } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { SECOND } from '../../../../shared/constants/time';
-import {
   HD_PATHS,
   MEW_PATH,
   U2F_ERROR,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';

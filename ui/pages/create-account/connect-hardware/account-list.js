@@ -16,8 +16,8 @@ import {
   getMetaMaskAccountsConnected,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
-import { formatAccounts } from './utils';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { formatAccounts } from './utils';
 
 class AccountList extends Component {
   state = {
