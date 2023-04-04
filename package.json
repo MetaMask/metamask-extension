@@ -234,7 +234,7 @@
     "@metamask/eth-json-rpc-middleware": "^10.0.0",
     "@metamask/eth-keyring-controller": "^10.0.1",
     "@metamask/eth-ledger-bridge-keyring": "^0.13.0",
-    "@metamask/eth-snap-keyring": "git+git@work.github.com:MetaMask/eth-snap-keyring.git#5d6977f8eb1f093caac57951cd4cb611371ede34",
+    "@metamask/eth-snap-keyring": "git+git@github.com:MetaMask/eth-snap-keyring.git",
     "@metamask/eth-token-tracker": "^4.0.0",
     "@metamask/etherscan-link": "^2.2.0",
     "@metamask/gas-fee-controller": "^1.0.0",
