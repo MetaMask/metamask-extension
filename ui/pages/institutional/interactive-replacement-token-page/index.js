@@ -1,3 +1,3 @@
-import InteractiveReplacementTokenPage from './interactive-replacement-token-page.container';
+import InteractiveReplacementTokenPage from './interactive-replacement-token-page';
 
 export default InteractiveReplacementTokenPage;
