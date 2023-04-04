@@ -250,7 +250,7 @@ export default function CustomSpendingCap({
             >
               <Text
                 color={TextColor.textDefault}
-                variant={TextVariant.bodySmBold}
+                variant={TextVariant.bodySm}
                 as="h6"
                 paddingTop={2}
                 paddingBottom={2}
