@@ -1378,6 +1378,7 @@ export default class MetamaskController extends EventEmitter {
     if (isManifestV3) {
       if (isFirstMetaMaskControllerSetup === true) {
         this.resetStates(resetMethods);
+        browser.storage.session.set({ isFirstMetaMaskControllerSetup: false });
       }
     } else {
       // it's always the first time in MV2
@@ -1452,8 +1453,6 @@ export default class MetamaskController extends EventEmitter {
         console.error(err);
       }
     });
-
-    browser.storage.session.set({ isFirstMetaMaskControllerSetup: false });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
