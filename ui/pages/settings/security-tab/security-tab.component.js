@@ -122,10 +122,10 @@ export default class SecurityTab extends PureComponent {
                   },
                 });
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.SRP_REVEAL_CLICKED,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.SrpRevealClicked,
                   properties: {
-                    key_type: EVENT.KEY_TYPES.SRP,
+                    key_type: MetaMetricsEventKeyType.Srp,
                     location: 'Settings',
                   },
                 });

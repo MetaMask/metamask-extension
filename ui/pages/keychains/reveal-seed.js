@@ -299,7 +299,7 @@ const RevealSeedPage = () => {
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.SrpRevealDoneClicked,
+              event: MetaMetricsEventName.SrpRevealCloseClicked,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
               },

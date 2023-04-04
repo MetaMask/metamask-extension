@@ -42,7 +42,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const onMouseDown = () => {
     isLongPressing.current = true;
     trackEvent({
-      category: MetaMetricsEventCategory.key,
+      category: MetaMetricsEventCategory.Keys,
       event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
       properties: {
         key_type: MetaMetricsEventKeyType.Srp,
@@ -72,14 +72,14 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const triggerOnLongPressed = useCallback(
     (e) => {
       trackEvent({
-        category: MetaMetricsEventCategory.key,
+        category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       trackEvent({
-        category: MetaMetricsEventCategory.key,
+        category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealViewed,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,

@@ -90,21 +90,21 @@ describe('HoldToRevealButton', () => {
     await waitFor(() => {
       expect(circleUnlocked).toBeInTheDocument();
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.key,
+        category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(5, {
-        category: MetaMetricsEventCategory.key,
+        category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(6, {
-        category: MetaMetricsEventCategory.key,
+        category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealViewed,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
