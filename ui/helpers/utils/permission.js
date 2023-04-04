@@ -409,6 +409,7 @@ export const getPermissionDescription = ({
   t,
   permissionName,
   permissionValue,
+  targetSubjectMetadata,
 }) => {
   let value = PERMISSION_DESCRIPTIONS[UNKNOWN_PERMISSION];
 
@@ -416,7 +417,12 @@ export const getPermissionDescription = ({
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
 
-  const result = value({ t, permissionName, permissionValue });
+  const result = value({
+    t,
+    permissionName,
+    permissionValue,
+    targetSubjectMetadata,
+  });
   if (!Array.isArray(result)) {
     return [{ ...result, permissionName, permissionValue }];
   }
@@ -434,14 +440,20 @@ export const getPermissionDescription = ({
  *
  * @param {Function} t - The translation function
  * @param {object} permissions - The permissions object.
+ * @param {object} targetSubjectMetadata - The subject metadata.
  * @returns {PermissionLabelObject[]}
  */
-export function getWeightedPermissions(t, permissions) {
+export function getWeightedPermissions(t, permissions, targetSubjectMetadata) {
   return Object.entries(permissions)
     .reduce(
       (target, [permissionName, permissionValue]) =>
         target.concat(
-          getPermissionDescription({ t, permissionName, permissionValue }),
+          getPermissionDescription({
+            t,
+            permissionName,
+            permissionValue,
+            targetSubjectMetadata,
+          }),
         ),
       [],
     )
