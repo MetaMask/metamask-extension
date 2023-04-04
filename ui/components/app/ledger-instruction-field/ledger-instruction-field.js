@@ -133,11 +133,10 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   return (
     <div>
       <div className="confirm-detail-row">
-        <BannerAlert severity={isHdWalletLocked ? SEVERITIES.WARNING : SEVERITIES.INFO}>
-          {renderInstructionStep(
-            t('ledgerLocked'),
-            isHdWalletLocked,
-          )}
+        <BannerAlert
+          severity={isHdWalletLocked ? SEVERITIES.WARNING : SEVERITIES.INFO}
+        >
+          {renderInstructionStep(t('ledgerLocked'), isHdWalletLocked)}
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(

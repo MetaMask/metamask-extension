@@ -47,7 +47,7 @@ DefaultComponent.propTypes = {
  *
  * @param options0
  * @param options0.pollingRateMs
- * @param options0.headless 
+ * @param options0.headless
  * @param options0.onUpdate
  * @param options0.Component
  */
@@ -68,7 +68,9 @@ export default function HardwareWalletState({
 
   const updateHardwareLockState = useCallback(async () => {
     const unlocked = await isDeviceAccessible(device, path);
-    const state = unlocked ? HardwareWalletStates.unlocked : HardwareWalletStates.locked;
+    const state = unlocked
+      ? HardwareWalletStates.unlocked
+      : HardwareWalletStates.locked;
     setStatus(state);
     onUpdate?.(state);
     // dispatch a change action?
@@ -85,9 +87,10 @@ export default function HardwareWalletState({
   }, [pollingRateMs]);
 
   return (
-    !headless
-    && status === HardwareWalletStates.locked
-    && <Component {...props}>{t('ledgerLocked')}</Component>
+    !headless &&
+    status === HardwareWalletStates.locked && (
+      <Component {...props}>{t('ledgerLocked')}</Component>
+    )
   );
 }
 

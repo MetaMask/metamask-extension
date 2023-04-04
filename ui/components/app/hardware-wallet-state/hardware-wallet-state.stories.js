@@ -8,7 +8,9 @@ import { HardwareWalletStates } from '../../../../shared/constants/hardware-wall
 
 import HardwareWalletState from '.';
 
-const customStore = ({ hardwareWalletState = HardwareWalletStates.unknown } = {}) => {
+const customStore = ({
+  hardwareWalletState = HardwareWalletStates.unknown,
+} = {}) => {
   const data = cloneDeep({
     ...testData,
     appState: {
@@ -27,7 +29,7 @@ export default {
     },
     headless: {
       control: 'boolean',
-    },    
+    },
     onUpdate: {
       action: 'onUpdate',
     },
@@ -39,14 +41,18 @@ export default {
 };
 
 export const LockedStory = (args) => (
-  <Provider store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}>
+  <Provider
+    store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}
+  >
     <HardwareWalletState {...args} />
   </Provider>
 );
 LockedStory.storyName = 'Locked';
 
 export const UnlockedStory = (args) => (
-  <Provider store={customStore({ hardwareWalletState: HardwareWalletStates.unlocked })}>
+  <Provider
+    store={customStore({ hardwareWalletState: HardwareWalletStates.unlocked })}
+  >
     <HardwareWalletState {...args} />
   </Provider>
 );
@@ -60,7 +66,9 @@ export const DefaultStory = (args) => (
 DefaultStory.storyName = 'Default';
 
 export const CustomH1ComponentStory = (args) => (
-  <Provider store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}>
+  <Provider
+    store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}
+  >
     <HardwareWalletState
       Component={({ children, ...props }) => <h1 {...props}>{children}</h1>}
       {...args}
