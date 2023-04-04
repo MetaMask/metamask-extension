@@ -1016,9 +1016,12 @@ export default function PrepareSwap({
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
               })}
               onClick={() => {
-                onToSelect(selectedFromToken);
-                onFromSelect(selectedToToken);
-                setRotateSwitchTokens(!rotateSwitchTokens);
+                // If quotes are being loaded, disable the switch button.
+                if (!showQuotesLoadingAnimation) {
+                  onToSelect(selectedFromToken);
+                  onFromSelect(selectedToToken);
+                  setRotateSwitchTokens(!rotateSwitchTokens);
+                }
               }}
               style={{ cursor: 'pointer' }}
               title={t('swapSwapSwitch')}
