@@ -12,7 +12,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
@@ -32,8 +35,8 @@ export default function OnboardingPinExtension() {
     } else {
       await dispatch(setCompletedOnboarding());
       trackEvent({
-        category: EVENT.CATEGORIES.ONBOARDING,
-        event: EVENT_NAMES.ONBOARDING_WALLET_SETUP_COMPLETE,
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletSetupComplete,
         properties: {
           wallet_setup_type:
             firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT

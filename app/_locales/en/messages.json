@@ -1374,6 +1374,10 @@
   "errorWhileConnectingToRPC": {
     "message": "Error while connecting to the custom network."
   },
+  "errorWithSnap": {
+    "message": "Error with $1",
+    "description": "$1 represents the name of the snap"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1802,6 +1806,10 @@
   },
   "inputLogicHigherNumber": {
     "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
+  "insightsFromSnap": {
+    "message": "Insights from $1",
+    "description": "$1 represents the name of the snap"
   },
   "install": {
     "message": "Install"
@@ -2448,10 +2456,10 @@
     "message": "The Ethereum Merge is here!"
   },
   "notifications16ActionText": {
-    "message": "Enable security provider"
+    "message": "Enable security alerts"
   },
   "notifications16DescriptionOne": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request.",
+    "message": "Get alerts from third parties when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionThree": {
@@ -2459,11 +2467,11 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionTwo": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!",
+    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16Title": {
-    "message": "Stay safe with OpenSea"
+    "message": "Stay safe with security alerts"
   },
   "notifications17ActionText": {
     "message": "Enable NFT autodetection"
@@ -2921,7 +2929,7 @@
     "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
   },
   "permission_manageBip44Keys": {
-    "message": "Control your \"$1\" accounts and assets.",
+    "message": "Control your $1 accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageBip44KeysDescription": {
@@ -3629,12 +3637,11 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "An error occured with $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
+  },
+  "snapsInvalidUIError": {
+    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
@@ -3649,7 +3656,8 @@
     "message": "A snap will only run if it is enabled"
   },
   "snapsUIError": {
-    "message": "The UI specified by the snap is invalid."
+    "message": "Contact the creators of $1 for further support.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."

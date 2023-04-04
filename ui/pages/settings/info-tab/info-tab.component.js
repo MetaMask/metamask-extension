@@ -16,9 +16,9 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
@@ -127,14 +127,16 @@ export default class InfoTab extends PureComponent {
             onClick={() => {
               this.context.trackEvent(
                 {
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.SupportLinkClicked,
                   properties: {
                     url: SUPPORT_LINK,
                   },
                 },
                 {
-                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  contextPropsIntoEventProperties: [
+                    MetaMetricsContextProp.PageTitle,
+                  ],
                 },
               );
             }}
@@ -163,14 +165,16 @@ export default class InfoTab extends PureComponent {
             onClick={() => {
               this.context.trackEvent(
                 {
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.SupportLinkClicked,
                   properties: {
                     url: SUPPORT_REQUEST_LINK,
                   },
                 },
                 {
-                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  contextPropsIntoEventProperties: [
+                    MetaMetricsContextProp.PageTitle,
+                  ],
                 },
               );
             }}

@@ -20,7 +20,7 @@ import {
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 const DESKTOP_ERROR_DESKTOP_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.DESKTOP_OUTDATED}`;
 const DESKTOP_ERROR_EXTENSION_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.EXTENSION_OUTDATED}`;
@@ -45,7 +45,7 @@ export default function DesktopEnableButton() {
       await disableDesktop();
       setDesktopEnabled(false);
       trackEvent({
-        category: EVENT.CATEGORIES.DESKTOP,
+        category: MetaMetricsEventCategory.Desktop,
         event: DESKTOP_UPDATE_SETTINGS_EVENT,
         properties: {
           desktop_enabled: false,
@@ -90,7 +90,7 @@ export default function DesktopEnableButton() {
     }
 
     trackEvent({
-      category: EVENT.CATEGORIES.DESKTOP,
+      category: MetaMetricsEventCategory.Desktop,
       event: 'Desktop Button Clicked',
       properties: {
         button_action: 'Enable MetaMask Desktop',

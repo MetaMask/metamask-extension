@@ -17,8 +17,9 @@ import {
   stripHexPrefix,
 } from '../../../../../shared/modules/hexstring-utils';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import HoldToRevealModal from '../hold-to-reveal-modal/hold-to-reveal-modal';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -68,10 +69,10 @@ const ExportPrivateKeyModal = ({
       const privateKeyRetrieved = await exportAccount(passwordInput, address);
       trackEvent(
         {
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
           properties: {
-            key_type: EVENT.KEY_TYPES.PKEY,
+            key_type: MetaMetricsEventKeyType.Pkey,
           },
         },
         {},
@@ -82,10 +83,10 @@ const ExportPrivateKeyModal = ({
     } catch (e) {
       trackEvent(
         {
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_FAILED,
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportFailed,
           properties: {
-            key_type: EVENT.KEY_TYPES.PKEY,
+            key_type: MetaMetricsEventKeyType.Pkey,
             reason: 'incorrect_password',
           },
         },
@@ -134,17 +135,14 @@ const ExportPrivateKeyModal = ({
         color={Color.errorDefault}
         onClick={() => {
           copyToClipboard(plainKey);
-          trackEvent(
-            {
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_COPIED,
-              properties: {
-                key_type: EVENT.KEY_TYPES.PKEY,
-                copy_method: 'clipboard',
-              },
+          trackEvent({
+            category: MetaMetricsEventCategory.Keys,
+            event: MetaMetricsEventName.KeyExportCopied,
+            properties: {
+              key_type: MetaMetricsEventKeyType.Pkey,
+              copy_method: 'clipboard',
             },
-            {},
-          );
+          });
         }}
       >
         {plainKey}
@@ -168,16 +166,13 @@ const ExportPrivateKeyModal = ({
             width={BLOCK_SIZES.HALF}
             marginRight={4}
             onClick={() => {
-              trackEvent(
-                {
-                  category: EVENT.CATEGORIES.KEYS,
-                  event: EVENT_NAMES.KEY_EXPORT_CANCELED,
-                  properties: {
-                    key_type: EVENT.KEY_TYPES.PKEY,
-                  },
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.KeyExportCanceled,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Pkey,
                 },
-                {},
-              );
+              });
               hideModal();
             }}
           >
@@ -201,16 +196,13 @@ const ExportPrivateKeyModal = ({
             size={BUTTON_SIZES.LG}
             width={BLOCK_SIZES.HALF}
             onClick={() => {
-              trackEvent(
-                {
-                  category: EVENT.CATEGORIES.KEYS,
-                  event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
-                  properties: {
-                    key_type: EVENT.KEY_TYPES.PKEY,
-                  },
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.KeyExportRequested,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Pkey,
                 },
-                {},
-              );
+              });
 
               exportAccountAndGetPrivateKey(password, address);
             }}

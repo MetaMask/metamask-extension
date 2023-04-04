@@ -1,5 +1,6 @@
 import { TypographyVariant } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
+import { DelineatorType } from '../../../../../helpers/constants/flask';
 
 function getValues(pendingApproval, t, actions) {
   const {
@@ -20,6 +21,7 @@ function getValues(pendingApproval, t, actions) {
           element: 'SnapDelineator',
           key: 'snap-delineator',
           props: {
+            type: DelineatorType.Content,
             snapName,
           },
           // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
