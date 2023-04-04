@@ -195,11 +195,6 @@ type ProviderConfiguration = {
   rpcPrefs?: {
     blockExplorerUrl?: string;
   };
-  /**
-   * The ID of the network configuration associated with this provider
-   * configuration.
-   */
-  id?: NetworkConfigurationId;
 };
 
 /**
