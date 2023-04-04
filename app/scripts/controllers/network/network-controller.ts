@@ -299,7 +299,7 @@ type NetworkControllerOptions = {
  * TODO: Move this to @metamask/utils
  *
  * @param error - The object to check.
- * @returns True or false, depending on the result.
+ * @returns True if `error` has a `code`, false otherwise.
  */
 function isErrorWithCode(error: unknown): error is { code: string | number } {
   return typeof error === 'object' && error !== null && 'code' in error;
