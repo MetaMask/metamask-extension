@@ -5,7 +5,7 @@ import log from 'loglevel';
 import {
   createSwappableProxy,
   createEventEmitterProxy,
-} from 'swappable-obj-proxy';
+} from '@metamask/swappable-obj-proxy';
 import EthQuery from 'eth-query';
 // ControllerMessenger is referred to in the JSDocs
 // eslint-disable-next-line no-unused-vars
