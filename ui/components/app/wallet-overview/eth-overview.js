@@ -37,7 +37,10 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { ButtonIcon, BUTTON_ICON_SIZES } from '../../component-library';
+import {
+  ButtonIcon,
+  BUTTON_ICON_SIZES,
+} from '../../component-library/button-icon/deprecated';
 import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';

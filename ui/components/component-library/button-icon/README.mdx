@@ -34,15 +34,12 @@ import { IconName } from '../icon';
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js`
-to change the size of `ButtonIcon`. Defaults to `Size.SM`
-
-Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of `Size`.
+Use the `size` prop and the `ButtonIconSize` or `IconSize` enum from `./ui/components/component-library/icon` to change the size of `ButtonIcon`. Defaults to `ButtonIconSize.Sm`
 
 Possible sizes include:
 
-- `Size.SM` 24px
-- `Size.LG` 32px
+- `ButtonIconSize.Sm` 24px
+- `ButtonIconSize.Lg` 32px
 
 <Canvas>
   <Story id="components-componentlibrary-buttonicon--size-story" />
@@ -52,8 +49,8 @@ Possible sizes include:
 import { Size } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={Size.SM} iconName={IconName.Close} ariaLabel="Close"/>
-<ButtonIcon size={Size.LG} iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon size={ButtonIconSize.Sm} iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon size={ButtonIconSize.Lg} iconName={IconName.Close} ariaLabel="Close"/>
 ```
 
 ### Aria Label
