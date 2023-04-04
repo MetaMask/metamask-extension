@@ -24,6 +24,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
+  getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnap,
   ///: END:ONLY_INCLUDE_IN
@@ -34,6 +35,7 @@ import NetworkDisplay from '../../components/app/network-display/network-display
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, ICON_NAMES } from '../../components/component-library';
+import Loading from '../../components/ui/loading-screen';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -164,6 +166,7 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
+  const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
@@ -241,21 +244,32 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
+      approvalFlows.length === 0 &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
-    } else if (pendingConfirmations.length <= currentPendingConfirmation) {
+    } else if (
+      pendingConfirmations.length <= currentPendingConfirmation &&
+      currentPendingConfirmation > 0
+    ) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
   }, [
     pendingConfirmations,
+    approvalFlows,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
 
-  if (!pendingConfirmation) {
+  if (!pendingConfirmation && approvalFlows.length === 0) {
     return null;
+  }
+
+  if (approvalFlows.length > 0 && !pendingConfirmation) {
+    return (
+      <Loading loadingMessage={approvalFlows[approvalFlows.length - 1].id} />
+    );
   }
 
   const hasInputState = (type) => {

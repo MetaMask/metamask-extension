@@ -21,6 +21,7 @@ const addEthereumChain = {
     findNetworkConfigurationBy: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    startApprovalFlow: true,
   },
 };
 export default addEthereumChain;
@@ -37,6 +38,7 @@ async function addEthereumChainHandler(
     findNetworkConfigurationBy,
     setActiveNetwork,
     requestUserApproval,
+    startApprovalFlow,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -241,6 +243,11 @@ async function addEthereumChainHandler(
     );
   }
   let networkConfigurationId;
+
+  const approvalFlow = await startApprovalFlow({
+    id: 'add_swap_ethereum_chain',
+  });
+
   try {
     await requestUserApproval({
       origin,
@@ -271,6 +278,9 @@ async function addEthereumChainHandler(
     return end(error);
   }
 
+  // Simulate original race condition
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
   // Ask the user to switch the network
   try {
     await requestUserApproval({
@@ -293,5 +303,8 @@ async function addEthereumChainHandler(
       return end(error);
     }
   }
+
+  approvalFlow.end();
+
   return end();
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import { isComponent } from '@metamask/snaps-ui';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {

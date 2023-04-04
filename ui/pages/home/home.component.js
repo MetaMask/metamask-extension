@@ -67,11 +67,13 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
+  approvalFlows,
   isSigningQRHardwareTransaction,
 }) {
   return (
     isNotification &&
     totalUnapprovedCount === 0 &&
+    approvalFlows.length === 0 &&
     !isSigningQRHardwareTransaction
   );
 }
@@ -108,6 +110,7 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    approvalFlows: PropTypes.arrayOf(PropTypes.object).isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
@@ -194,6 +197,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
+      approvalFlows,
     } = this.props;
     if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
@@ -207,7 +211,7 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (suggestedAssets.length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
-    } else if (pendingConfirmations.length > 0) {
+    } else if (pendingConfirmations.length > 0 || approvalFlows.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
   }

@@ -549,6 +549,10 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
+export function getApprovalFlows(state) {
+  return state.metamask.approvalFlows;
+}
+
 function getSuggestedAssetCount(state) {
   const { suggestedAssets = [] } = state.metamask;
   return suggestedAssets.length;
