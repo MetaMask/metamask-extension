@@ -62,8 +62,7 @@ const InteractiveReplacementTokenNotification = () => {
       return;
     }
 
-    const token = await dispatch(mmiActions.getCustodianToken(custody));
-
+    const token = await dispatch(mmiActions.getCustodianToken());
     const custodyAccountDetails = await dispatch(
       mmiActions.getAllCustodianAccountsWithToken(
         keyring.type.split(' - ')[1],
@@ -76,11 +75,16 @@ const InteractiveReplacementTokenNotification = () => {
       interactiveReplacementToken.oldRefreshToken &&
       custodyAccountDetails &&
       Boolean(Object.keys(custodyAccountDetails).length);
-    const tokenAccount = custodyAccountDetails
-      .filter((item) => item.address.toLowerCase() === address.toLowerCase())
-      .map((item) => ({
-        token: item.authDetails?.refreshToken,
-      }))[0];
+
+    let tokenAccount;
+
+    if (Array.isArray(custodyAccountDetails)) {
+      tokenAccount = custodyAccountDetails
+        .filter((item) => item.address.toLowerCase() === address.toLowerCase())
+        .map((item) => ({
+          token: item.authDetails?.refreshToken,
+        }))[0];
+    }
 
     const refreshTokenAccount = await sha256(
       tokenAccount?.token + interactiveReplacementToken.url,
@@ -108,6 +112,7 @@ const InteractiveReplacementTokenNotification = () => {
       backgroundColor={BackgroundColor.errorAlternative}
       marginBottom={1}
       className="interactive-replacement-token-notification"
+      data-testid="interactive-replacement-token-notification"
     >
       <Icon
         name={ICON_NAMES.DANGER}
