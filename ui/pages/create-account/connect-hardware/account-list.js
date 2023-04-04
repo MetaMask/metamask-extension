@@ -10,7 +10,6 @@ import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   getCurrentChainId,
   getMetaMaskAccounts,
@@ -18,6 +17,7 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import { formatAccounts } from './utils';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 class AccountList extends Component {
   state = {
@@ -145,7 +145,7 @@ class AccountList extends Component {
                     rpcPrefs,
                   );
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.ACCOUNTS,
+                    category: MetaMetricsEventCategory.Accounts,
                     event: 'Clicked Block Explorer Link',
                     properties: {
                       actions: 'Hardware Connect',

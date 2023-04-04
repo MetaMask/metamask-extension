@@ -13,7 +13,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
@@ -47,8 +50,8 @@ export default function OnboardingWelcome() {
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
       properties: {
         account_type: 'metamask',
       },
@@ -59,8 +62,8 @@ export default function OnboardingWelcome() {
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_IMPORT_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletImportStarted,
       properties: {
         account_type: 'imported',
       },
@@ -69,8 +72,8 @@ export default function OnboardingWelcome() {
   };
 
   trackEvent({
-    category: EVENT.CATEGORIES.ONBOARDING,
-    event: EVENT_NAMES.ONBOARDING_WELCOME,
+    category: MetaMetricsEventCategory.Onboarding,
+    event: MetaMetricsEventName.OnboardingWelcome,
     properties: {
       message_title: t('welcomeToMetaMask'),
       app_version: global?.platform?.getVersion(),

@@ -5,6 +5,12 @@ import * as actions from '../../../store/actions';
 import { getMetaMaskAccountsConnected } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { SECOND } from '../../../../shared/constants/time';
+import {
   HD_PATHS,
   MEW_PATH,
   U2F_ERROR,
@@ -171,10 +177,10 @@ class ConnectHardwareForm extends Component {
     )
       .then((_) => {
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.ACCOUNTS,
-          event: EVENT_NAMES.ACCOUNT_ADDED,
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.AccountAdded,
           properties: {
-            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_type: MetaMetricsEventAccountType.Hardware,
             account_hardware_type: device,
           },
         });
@@ -182,10 +188,10 @@ class ConnectHardwareForm extends Component {
       })
       .catch((e) => {
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.ACCOUNTS,
-          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.AccountAddFailed,
           properties: {
-            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_type: MetaMetricsEventAccountType.Hardware,
             account_hardware_type: device,
             error: e.message,
           },
