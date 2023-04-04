@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
   },
-  "notifications17ActionText": {
-    "message": "セキュリティおよびプライバシー設定を表示"
-  },
-  "notifications17Title": {
-    "message": "セキュリティおよびプライバシー設定"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
