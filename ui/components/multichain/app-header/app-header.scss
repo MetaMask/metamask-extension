@@ -1,0 +1,48 @@
+.multichain-app-header {
+  flex-flow: column nowrap;
+  z-index: 55;
+
+  &__contents {
+    display: grid;
+    grid-template-columns: 30% minmax(30%, 1fr) 30%;
+    height: 64px;
+    @include screen-sm-max {
+      height: 100%;
+    }
+
+    @include screen-sm-min {
+      width: 85vw;
+    }
+
+    @include screen-md-min {
+      width: 80vw;
+    }
+
+    @include screen-lg-min {
+      width: 62vw;
+    }
+  }
+
+  &__lock-contents {
+    flex-flow: row nowrap;
+    height: 64px;
+    @include screen-sm-max {
+      height: 100%;
+    }
+
+    @include screen-sm-min {
+      width: 85vw;
+    }
+
+    @include screen-md-min {
+      width: 80vw;
+    }
+
+    @include screen-lg-min {
+      width: 62vw;
+    }
+  }
+}
+.multichain-app-header-shadow {
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+}
