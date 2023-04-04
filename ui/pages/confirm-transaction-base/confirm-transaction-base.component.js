@@ -15,7 +15,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import HardwareWalletState from '../../components/app/hardware-wallet-state';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import {
   TransactionType,
   TransactionStatus,
@@ -283,7 +283,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'User clicks "Edit" on gas',
       properties: {
         action: 'Confirm Screen',
@@ -689,7 +689,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'Edit Transaction',
       properties: {
         action: 'Confirm Screen',
@@ -898,7 +898,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'Confirm: Started',
       properties: {
         action: 'Confirm Screen',
