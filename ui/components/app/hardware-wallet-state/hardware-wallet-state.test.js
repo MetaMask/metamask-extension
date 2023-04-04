@@ -47,6 +47,15 @@ describe('HardwareWalletState Component', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should render empty when headless with locked state', () => {
+    const { container } = renderWithProvider(
+      <HardwareWalletState headless />,
+      customStore({ hardwareWalletState: HardwareWalletStates.locked }),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('should call onUpdate handler', async () => {
     let status = HardwareWalletStates.unlocked;
     const handler = (state) => {

@@ -25,12 +25,16 @@ export default {
     pollingRateMs: {
       control: 'number',
     },
+    headless: {
+      control: 'boolean',
+    },    
     onUpdate: {
       action: 'onUpdate',
     },
   },
   args: {
     pollingRateMs: 2000,
+    headless: false,
   },
 };
 

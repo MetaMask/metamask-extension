@@ -47,11 +47,13 @@ DefaultComponent.propTypes = {
  *
  * @param options0
  * @param options0.pollingRateMs
+ * @param options0.headless 
  * @param options0.onUpdate
  * @param options0.Component
  */
 export default function HardwareWalletState({
   pollingRateMs = HARDWARE_CHECK_RATE,
+  headless = false,
   onUpdate,
   Component = DefaultComponent,
   ...props
@@ -83,13 +85,17 @@ export default function HardwareWalletState({
   }, [pollingRateMs]);
 
   return (
-    status === HardwareWalletStates.locked && <Component {...props}>{t('ledgerLocked')}</Component>
+    !headless
+    && status === HardwareWalletStates.locked
+    && <Component {...props}>{t('ledgerLocked')}</Component>
   );
 }
 
 HardwareWalletState.propTypes = {
   // number of milliseconds between polling checks
   pollingRateMs: PropTypes.number,
+  // whether or not to render component
+  headless: PropTypes.bool,
   // invoked with each updated status (locked/unlocked)
   onUpdate: PropTypes.func,
   // component to be rendered (default: BannerAlert)

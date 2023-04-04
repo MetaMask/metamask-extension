@@ -22,6 +22,8 @@ exports[`HardwareWalletState Component should call onUpdate handler 1`] = `
 
 exports[`HardwareWalletState Component should match default snapshot 1`] = `<div />`;
 
+exports[`HardwareWalletState Component should render empty when headless with locked state 1`] = `<div />`;
+
 exports[`HardwareWalletState Component should render empty with unlocked state 1`] = `<div />`;
 
 exports[`HardwareWalletState Component should render message with locked state 1`] = `
