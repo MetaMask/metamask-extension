@@ -38,7 +38,9 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!connectRequest) return null;
+  if (!connectRequest) {
+    return null;
+  }
 
   const serviceLabel = connectRequest.labels.find(
     (label) => label.key === 'service',
