@@ -5,7 +5,8 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ButtonLink, ButtonPrimary, Icon, ICON_NAMES } from '..';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
+import { ButtonLink, ButtonPrimary } from '..';
 import README from './README.mdx';
 import { BannerTip, BannerTipLogoType } from '.';
 
