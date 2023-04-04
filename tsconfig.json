@@ -29,5 +29,8 @@
     "development/ts-migration-dashboard/build/**/*",
     "development/ts-migration-dashboard/intermediate/**/*"
   ],
-  "extends": "@tsconfig/node16/tsconfig.json"
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "paths": {
+    "*": ["./types/*"]
+  }
 }
