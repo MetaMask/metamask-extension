@@ -27,6 +27,8 @@ describe('TermsOfUsePopup', () => {
 
   it('renders TermsOfUse component and shows Terms of Use text', () => {
     render();
-    expect(screen.getByText('Terms of Use')).toBeInTheDocument();
+    expect(
+      screen.getByText('Our Terms of Use have updated'),
+    ).toBeInTheDocument();
   });
 });
