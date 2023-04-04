@@ -268,13 +268,16 @@ async function initialize() {
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
-    let { isFirstMetaMaskControllerSetup } = await browser.storage.session.get([
-      'isFirstMetaMaskControllerSetup',
-    ]);
+    let isFirstMetaMaskControllerSetup;
+    if (isManifestV3) {
+      const sessionData = await browser.storage.session.get([
+        'isFirstMetaMaskControllerSetup',
+      ]);
 
-    isFirstMetaMaskControllerSetup =
-      isFirstMetaMaskControllerSetup === undefined;
-    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+      isFirstMetaMaskControllerSetup =
+        sessionData?.isFirstMetaMaskControllerSetup === undefined;
+      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+    }
 
     setupController(
       initState,
