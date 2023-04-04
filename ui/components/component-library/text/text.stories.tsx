@@ -1,4 +1,5 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   DISPLAY,
   BackgroundColor,
@@ -16,115 +17,20 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { ValidTags, Text } from './text';
-import { TEXT_DIRECTIONS } from './text.constants';
-
 import README from './README.mdx';
-
-const sizeKnobOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
+import { Text } from './text';
+import { ValidTag, TextDirection } from './text.types';
 
 export default {
   title: 'Components/ComponentLibrary/Text',
+  component: Text,
 
   parameters: {
     docs: {
       page: README,
     },
   },
-  argTypes: {
-    variant: {
-      control: { type: 'select' },
-      options: Object.values(TextVariant),
-    },
-    color: {
-      control: { type: 'select' },
-      options: Object.values(TextColor),
-    },
-    fontWeight: {
-      control: { type: 'select' },
-      options: Object.values(FONT_WEIGHT),
-    },
-    fontStyle: {
-      control: { type: 'select' },
-      options: Object.values(FONT_STYLE),
-    },
-    textTransform: {
-      control: { type: 'select' },
-      options: Object.values(TEXT_TRANSFORM),
-    },
-    align: {
-      control: { type: 'select' },
-      options: Object.values(TEXT_ALIGN),
-    },
-    overflowWrap: {
-      control: { type: 'select' },
-      options: Object.values(OVERFLOW_WRAP),
-    },
-    ellipsis: {
-      control: { type: 'boolean' },
-    },
-    as: {
-      control: { type: 'select' },
-      options: ValidTags,
-    },
-    textDirection: {
-      control: { type: 'select' },
-      options: Object.values(TEXT_DIRECTIONS),
-    },
-    className: {
-      control: { type: 'text' },
-    },
-    children: {
-      control: { type: 'text' },
-    },
-    display: {
-      options: Object.values(DISPLAY),
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    backgroundColor: {
-      options: Object.values(BackgroundColor),
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    borderColor: {
-      options: Object.values(BorderColor),
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    padding: {
-      options: sizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    margin: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginTop: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeKnobOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-  },
-};
+} as ComponentMeta<typeof Text>;
 
 function renderBackgroundColor(color) {
   let bgColor;
@@ -164,13 +70,17 @@ function renderBackgroundColor(color) {
   return bgColor;
 }
 
-export const DefaultStory = (args) => <Text {...args}>{args.children}</Text>;
+const Template: ComponentStory<typeof Text> = (args) => (
+  <Text {...args}>{args.children}</Text>
+);
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   children: 'The quick orange fox jumped over the lazy dog.',
 };
+
+DefaultStory.storyName = 'Default';
 
 export const Variant = (args) => (
   <>
@@ -182,7 +92,7 @@ export const Variant = (args) => (
   </>
 );
 
-export const ColorStory = (args) => {
+export const ColorStory: ComponentStory<typeof Text> = (args) => {
   // Index of last valid color in TextColor array
   return (
     <>
@@ -203,7 +113,7 @@ export const ColorStory = (args) => {
 };
 ColorStory.storyName = 'Color';
 
-export const FontWeight = (args) => (
+export const FontWeight: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(FONT_WEIGHT).map((weight) => (
       <Text {...args} fontWeight={weight} key={weight}>
@@ -213,7 +123,7 @@ export const FontWeight = (args) => (
   </>
 );
 
-export const FontStyle = (args) => (
+export const FontStyle: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(FONT_STYLE).map((style) => (
       <Text {...args} fontStyle={style} key={style}>
@@ -223,7 +133,7 @@ export const FontStyle = (args) => (
   </>
 );
 
-export const TextTransform = (args) => (
+export const TextTransform: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(TEXT_TRANSFORM).map((transform) => (
       <Text {...args} textTransform={transform} key={transform}>
@@ -233,7 +143,7 @@ export const TextTransform = (args) => (
   </>
 );
 
-export const TextAlign = (args) => (
+export const TextAlign: ComponentStory<typeof Text> = (args) => (
   <>
     {Object.values(TEXT_ALIGN).map((align) => (
       <Text {...args} textAlign={align} key={align}>
@@ -243,11 +153,11 @@ export const TextAlign = (args) => (
   </>
 );
 
-export const OverflowWrap = (args) => (
+export const OverflowWrap: ComponentStory<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.warningDefault}
     display={DISPLAY.BLOCK}
-    width={FRACTIONS.ONE_THIRD}
+    style={{ width: 200 }}
   >
     <Text {...args} overflowWrap={OVERFLOW_WRAP.NORMAL}>
       {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
@@ -258,7 +168,7 @@ export const OverflowWrap = (args) => (
   </Box>
 );
 
-export const Ellipsis = (args) => (
+export const Ellipsis: ComponentStory<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.primaryDefault}
     display={DISPLAY.BLOCK}
@@ -273,16 +183,23 @@ export const Ellipsis = (args) => (
   </Box>
 );
 
-export const As = (args) => (
+export const As: ComponentStory<typeof Text> = (args) => (
   <>
-    {ValidTags.map((tag) => {
-      if (tag === 'input') {
-        return <Text key={tag} {...args} as={tag} placeholder={tag} />;
+    {Object.keys(ValidTag).map((tag) => {
+      if (ValidTag[tag] === ValidTag.Input) {
+        return (
+          <Text
+            key={ValidTag[tag]}
+            {...args}
+            as={ValidTag[tag]}
+            placeholder={ValidTag[tag]}
+          />
+        );
       }
       return (
-        <div key={tag}>
-          <Text {...args} as={tag}>
-            {tag}
+        <div key={ValidTag[tag]}>
+          <Text {...args} as={ValidTag[tag]}>
+            {ValidTag[tag]}
           </Text>
         </div>
       );
@@ -290,21 +207,21 @@ export const As = (args) => (
   </>
 );
 
-export const TextDirection = (args) => (
+export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
   <Box
     style={{ maxWidth: 300 }}
     display={DISPLAY.FLEX}
     flexDirection={FLEX_DIRECTION.COLUMN}
     gap={4}
   >
-    <Text {...args} textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+    <Text {...args} textDirection={TextDirection.LeftToRight}>
       This is left to right (ltr) for English and most languages
     </Text>
-    <Text {...args} textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+    <Text {...args} textDirection={TextDirection.RightToLeft}>
       This is right to left (rtl) for use with other laguanges such as Arabic.
       This Enlgish example is incorrect usage.
     </Text>
-    <Text {...args} textDirection={TEXT_DIRECTIONS.AUTO}>
+    <Text {...args} textDirection={TextDirection.Auto}>
       Let the user agent decide with the auto option
     </Text>
   </Box>

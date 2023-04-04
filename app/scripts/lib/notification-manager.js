@@ -1,4 +1,4 @@
-import EventEmitter from 'safe-event-emitter';
+import EventEmitter from '@metamask/safe-event-emitter';
 import ExtensionPlatform from '../platforms/extension';
 
 const NOTIFICATION_HEIGHT = 620;

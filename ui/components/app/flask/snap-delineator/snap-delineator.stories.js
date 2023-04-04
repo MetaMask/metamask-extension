@@ -6,5 +6,5 @@ export default {
 };
 
 export const DefaultStory = () => (
-  <SnapDelineator snapId="foo">Children</SnapDelineator>
+  <SnapDelineator snapName="foo">Children</SnapDelineator>
 );
