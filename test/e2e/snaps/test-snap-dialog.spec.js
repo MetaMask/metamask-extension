@@ -216,7 +216,6 @@ describe('Test Snap Dialog', function () {
 
         // check result is equal to '2323'
         result = await driver.findElement('#dialogResult');
-        // await driver.delay(1000);
         assert.equal(await result.getText(), '"2323"');
       },
     );
