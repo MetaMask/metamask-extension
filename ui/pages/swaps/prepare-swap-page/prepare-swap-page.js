@@ -442,11 +442,7 @@ export default function PrepareSwap({
       });
     }
     dispatch(setSwapsFromToken(token));
-    onInputChange(
-      token?.address ? fromTokenInputValue : '',
-      token.string,
-      token.decimals,
-    );
+    onInputChange(fromTokenInputValue, token.string, token.decimals);
   };
 
   const blockExplorerTokenLink = getTokenTrackerLink(
