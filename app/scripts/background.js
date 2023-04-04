@@ -80,7 +80,6 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
-global.METAMASK_NOTIFIER = notificationManager;
 
 let popupIsOpen = false;
 let notificationIsOpen = false;
