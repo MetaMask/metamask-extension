@@ -508,7 +508,7 @@ export class NetworkController extends EventEmitter {
       state.networkConfigurations || buildDefaultNetworkConfigurationsState(),
     );
 
-    this.store = new ComposedStore({
+    this.store = new ComposedStore<CompositeState>({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
       networkId: this.networkIdStore,
