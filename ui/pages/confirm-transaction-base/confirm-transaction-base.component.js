@@ -15,6 +15,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import HardwareWalletState from '../../components/app/hardware-wallet-state';
+import { HardwareWalletStates } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import {
   TransactionType,
@@ -580,11 +581,12 @@ export default class ConfirmTransactionBase extends Component {
     const renderHardwareWalletState = () => (
       <HardwareWalletState
         key="hw-locked-error"
-        initialStatus="unlocked"
-        marginTop={5}
         onUpdate={(status) =>
-          this.setState({ hardwareLocked: status === 'locked' })
+          this.setState({
+            hardwareLocked: status === HardwareWalletStates.locked,
+          })
         }
+        headless
       />
     );
 

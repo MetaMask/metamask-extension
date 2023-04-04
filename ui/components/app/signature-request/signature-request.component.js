@@ -15,9 +15,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
+import { HardwareWalletStates } from '../../../../shared/constants/hardware-wallets';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import HardwareWalletState from '../hardware-wallet-state';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
@@ -254,13 +255,14 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         {isHardwareWallet ? (
-          <div className="signature-request__error-container">
-            <HardwareWalletState
-              onUpdate={(status) =>
-                this.setState({ hardwareLocked: status === 'locked' })
-              }
-            />
-          </div>
+          <HardwareWalletState
+            onUpdate={(status) =>
+              this.setState({
+                hardwareLocked: status === HardwareWalletStates.locked,
+              })
+            }
+            headless
+          />
         ) : null}
         <div className="signature-request-content">
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&

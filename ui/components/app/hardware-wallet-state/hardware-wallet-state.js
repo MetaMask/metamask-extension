@@ -26,7 +26,7 @@ import { BannerAlert } from '../../component-library';
  * @param options0.children
  */
 const DefaultComponent = ({
-  severity = SEVERITIES.DANGER,
+  severity = SEVERITIES.WARNING,
   children,
   ...props
 }) => (

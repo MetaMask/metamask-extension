@@ -5,6 +5,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { HardwareWalletStates } from '../../../../shared/constants/hardware-wallets';
 import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
@@ -156,13 +157,14 @@ export default class SignatureRequestOriginal extends Component {
           />
         ) : null}
         {isHardwareWallet ? (
-          <div className="signature-request__error-container">
-            <HardwareWalletState
-              onUpdate={(status) =>
-                this.setState({ hardwareLocked: status === 'locked' })
-              }
-            />
-          </div>
+          <HardwareWalletState
+            onUpdate={(status) =>
+              this.setState({
+                hardwareLocked: status === HardwareWalletStates.locked,
+              })
+            }
+            headless
+          />
         ) : null}
         <div className="request-signature__origin">
           <SiteOrigin
