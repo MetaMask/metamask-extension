@@ -298,7 +298,7 @@ describe('Reveal Seed Page', () => {
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
         category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealDoneClicked,
+        event: MetaMetricsEventName.SrpRevealCloseClicked,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
