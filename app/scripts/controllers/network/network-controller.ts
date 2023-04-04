@@ -314,7 +314,7 @@ function isErrorWithCode(error: unknown): error is { code: string | number } {
 function assertNetworkId(value: any): asserts value is NetworkId {
   assert(
     /^\d+$/u.test(value) && !Number.isNaN(Number(value)),
-    'value cannot be converted to a number',
+    'value is not a number',
   );
 }
 
