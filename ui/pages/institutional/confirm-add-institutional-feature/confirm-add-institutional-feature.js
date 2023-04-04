@@ -35,8 +35,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
     if (!connectRequest) {
       history.push(mostRecentOverviewPage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [connectRequest, history, mostRecentOverviewPage]);
 
   if (!connectRequest) {
     return null;
@@ -58,10 +57,15 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   };
 
   const handleConnectError = ({ message }) => {
-    let error = message.startsWith('401') ? t('projectIdInvalid') : message;
-    if (!error) {
-      error = 'Connection error';
+    let error = message;
+    if (message.startsWith('401')) {
+      error = t('projectIdInvalid');
     }
+
+    if (!error) {
+      error = t('connectionError');
+    }
+
     setIsLoading(false);
     setConnectError(error);
     sendEvent({ actions: 'Institutional feature RPC error' });
@@ -112,7 +116,10 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   });
 
   return (
-    <Box className="page-container">
+    <Box
+      className="page-container"
+      data-testid="confirm-add-institutional-feature"
+    >
       <Box className="page-container__header">
         <Text className="page-container__title">
           {t('institutionalFeatures')}
@@ -153,7 +160,11 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
         </Text>
       </Box>
       {connectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={4}>
+        <Text
+          textAlign={TEXT_ALIGN.CENTER}
+          marginTop={4}
+          data-testid="connect-error-message"
+        >
           {connectError}
         </Text>
       )}

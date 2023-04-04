@@ -82,6 +82,10 @@ describe('Confirm Add Institutional Feature', function () {
     render();
     fireEvent.click(screen.queryByText('Cancel'));
     expect(mockRemoveConnectInstitutionalFeature).toHaveBeenCalledTimes(1);
+    expect(mockRemoveConnectInstitutionalFeature).toHaveBeenCalledWith({
+      origin: connectRequests[0].origin,
+      projectId: connectRequests[0].token.projectId,
+    });
     expect(props.history.push).toHaveBeenCalledTimes(1);
   });
 
@@ -89,15 +93,19 @@ describe('Confirm Add Institutional Feature', function () {
     render();
     fireEvent.click(screen.queryByText('Confirm'));
     expect(mockSetComplianceAuthData).toHaveBeenCalledTimes(1);
+    expect(mockSetComplianceAuthData).toHaveBeenCalledWith({
+      clientId: connectRequests[0].token.clientId,
+      projectId: connectRequests[0].token.projectId,
+    });
   });
 
   it('handles error', () => {
     mockSetComplianceAuthData = jest
       .fn()
       .mockReturnValue(new Error('Async error message'));
-    const { container } = render();
+    const { queryByTestId } = render();
     fireEvent.click(screen.queryByText('Confirm'));
-    expect(container).toMatchSnapshot();
+    expect(queryByTestId('connect-error-message')).toBeInTheDocument();
   });
 
   it('does not render without connectRequest', () => {
@@ -106,7 +114,9 @@ describe('Confirm Add Institutional Feature', function () {
         connectRequests: [],
       },
     };
-    const { container } = render({ newState });
-    expect(container).toMatchSnapshot();
+    const { queryByTestId } = render({ newState });
+    expect(
+      queryByTestId('confirm-add-institutional-feature'),
+    ).not.toBeInTheDocument();
   });
 });

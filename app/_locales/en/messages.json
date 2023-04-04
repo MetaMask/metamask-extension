@@ -786,6 +786,9 @@
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
   },
+  "connectionError": {
+    "message": "Connection error"
+  },
   "contactUs": {
     "message": "Contact us"
   },
