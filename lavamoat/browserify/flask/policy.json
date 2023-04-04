@@ -878,8 +878,8 @@
       },
       "packages": {
         "@metamask/desktop>@metamask/obs-store>through2": true,
-        "browserify>stream-browserify": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/safe-event-emitter": true,
+        "browserify>stream-browserify": true
       }
     },
     "@metamask/desktop>@metamask/obs-store>through2": {
