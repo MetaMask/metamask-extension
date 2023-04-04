@@ -29,7 +29,7 @@ export default {
         key: 'contacts',
       },
       {
-        icon: <i className="fa fa-flask" />,
+        icon: <Icon name={ICON_NAMES.SNAPS} />,
         content: 'Snaps',
         key: 'snaps',
       },
