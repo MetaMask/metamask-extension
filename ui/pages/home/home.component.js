@@ -32,11 +32,10 @@ import {
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
-  ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
-  Text,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon, Text } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,

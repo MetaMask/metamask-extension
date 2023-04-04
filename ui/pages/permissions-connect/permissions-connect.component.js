@@ -13,7 +13,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -247,7 +247,7 @@ export default class PermissionConnect extends Component {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
     }
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,mmi)
     if (approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
     }

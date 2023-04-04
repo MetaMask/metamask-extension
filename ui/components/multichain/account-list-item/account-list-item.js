@@ -13,12 +13,14 @@ import {
   AvatarAccount,
   ButtonIcon,
   Text,
-  ICON_NAMES,
-  ICON_SIZES,
   AvatarFavicon,
   Tag,
   ButtonLink,
 } from '../../component-library';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 import {
   Color,
   TEXT_ALIGN,

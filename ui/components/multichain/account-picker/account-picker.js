@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
   Button,
-  ICON_NAMES,
   AvatarAccount,
   AvatarAccountVariant,
   Text,
-  Icon,
 } from '../../component-library';
+import { ICON_NAMES, Icon } from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   BackgroundColor,

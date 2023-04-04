@@ -4,7 +4,7 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { Icon, ICON_NAMES } from '..';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 import { BannerBase } from './banner-base';
 
 describe('BannerBase', () => {
