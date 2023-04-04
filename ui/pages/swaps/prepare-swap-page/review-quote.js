@@ -1099,7 +1099,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 {t('transactionDetailGasHeading')}
               </Text>
               <InfoTooltip
-                position="top"
+                position="left"
                 contentText={
                   <>
                     <p className="fee-card__info-tooltip-paragraph">
