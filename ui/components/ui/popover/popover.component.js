@@ -19,12 +19,11 @@ import {
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import {
-  ButtonIcon,
-  Text,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../component-library';
+} from '../../component-library/icon/deprecated';
+import { ButtonIcon, Text } from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],

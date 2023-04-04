@@ -17,12 +17,14 @@ import { disableSnap, enableSnap } from '../../../../store/actions';
 import { getSnaps } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
-  BannerTip,
-  BannerTipLogoType,
-  ButtonLink,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
+} from '../../../../components/component-library/icon/deprecated';
+import {
+  BannerTip,
+  BannerTipLogoType,
+  ButtonLink,
   Text,
 } from '../../../../components/component-library';
 

@@ -4,7 +4,8 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { ButtonLink, ICON_NAMES } from '../../component-library';
+import { ButtonLink } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,
