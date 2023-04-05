@@ -20,10 +20,10 @@ import {
   AvatarToken,
   Button,
   ButtonIcon,
-  ICON_NAMES,
-  Icon,
   Text,
 } from '..';
+
+import { ICON_NAMES, Icon } from '../icon/deprecated';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
 import { TextField } from './text-field';
