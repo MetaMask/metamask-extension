@@ -11,13 +11,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { AvatarIcon, Text } from '../../component-library';
 import {
-  AvatarIcon,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-  Text,
-} from '../../component-library';
+} from '../../component-library/icon/deprecated';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';

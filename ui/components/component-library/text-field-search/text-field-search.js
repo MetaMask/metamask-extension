@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { Size } from '../../../helpers/constants/design-system';
 
 import { ButtonIcon } from '../button-icon';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 import { TextField, TEXT_FIELD_TYPES } from '../text-field';
 
 export const TextFieldSearch = ({
