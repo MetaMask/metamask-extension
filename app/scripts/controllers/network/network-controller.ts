@@ -8,10 +8,7 @@ import {
   SwappableProxy,
 } from '@metamask/swappable-obj-proxy';
 import EthQuery from 'eth-query';
-import {
-  ExtractEventHandler,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { v4 as uuid } from 'uuid';
 import { Hex, isPlainObject } from '@metamask/utils';
 import { errorCodes } from 'eth-rpc-errors';
