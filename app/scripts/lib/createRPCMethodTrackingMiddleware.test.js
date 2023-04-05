@@ -1,11 +1,11 @@
 import { errorCodes } from 'eth-rpc-errors';
+import { detectSIWE } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { detectSIWE } from '../../../shared/modules/siwe';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -56,7 +56,7 @@ function getNext(timeout = 500) {
 const waitForSeconds = async (seconds) =>
   await new Promise((resolve) => setTimeout(resolve, SECOND * seconds));
 
-jest.mock('../../../shared/modules/siwe', () => ({
+jest.mock('@metamask/controller-utils', () => ({
   detectSIWE: jest.fn().mockImplementation(() => {
     return { isSIWEMessage: false };
   }),

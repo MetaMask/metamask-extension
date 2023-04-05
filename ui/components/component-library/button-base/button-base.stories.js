@@ -7,7 +7,8 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, TextDirection } from '..';
+import { TextDirection } from '..';
+import { ICON_NAMES } from '../icon/deprecated';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';

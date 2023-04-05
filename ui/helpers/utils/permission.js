@@ -18,8 +18,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   Text,
   ///: END:ONLY_INCLUDE_IN
-  ICON_NAMES,
 } from '../../components/component-library';
+import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
 import {

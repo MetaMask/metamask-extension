@@ -23,7 +23,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../components/component-library/icon/deprecated';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {

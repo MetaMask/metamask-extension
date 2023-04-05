@@ -7,7 +7,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { ButtonIcon, ICON_NAMES } from '../../../components/component-library';
+import { ICON_NAMES } from '../../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../../components/component-library';
 import { Color } from '../../../helpers/constants/design-system';
 
 const AssetOptions = ({
