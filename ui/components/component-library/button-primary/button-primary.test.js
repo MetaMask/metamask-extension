@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { ICON_NAMES } from '..';
+import { ICON_NAMES } from '../icon/deprecated';
 import { ButtonPrimary } from './button-primary';
 import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 
