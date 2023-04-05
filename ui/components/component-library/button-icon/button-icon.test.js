@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '..';
+import { ICON_NAMES } from '../icon/deprecated';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 import { ButtonIcon } from './button-icon';
 

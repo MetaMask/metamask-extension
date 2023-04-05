@@ -13,7 +13,10 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
