@@ -10,6 +10,7 @@ const { BuildType } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
+const { getEnvironment } = require('./utils');
 
 module.exports = createManifestTasks;
 
@@ -120,6 +121,8 @@ function createManifestTasks({
     const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
     const snowStr = shouldIncludeSnow ? ' snow' : '';
 
+    const environment = getEnvironment({ buildTarget: entryTask });
+
     // Get the first 8 characters of the git revision id
     const gitRevisionStr = childProcess
       .execSync('git rev-parse HEAD')
@@ -131,7 +134,7 @@ function createManifestTasks({
       buildType,
     )}${mv3Str}${lavamoatStr}${snowStr}`;
 
-    manifest.description = `${entryTask} build from git id: ${gitRevisionStr}`;
+    manifest.description = `${environment} build from git id: ${gitRevisionStr}`;
   }
 
   // helper for merging obj value
