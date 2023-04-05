@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 import { Text } from '../text';
 import Box from '../../ui/box';
 import {

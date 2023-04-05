@@ -14,7 +14,11 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();

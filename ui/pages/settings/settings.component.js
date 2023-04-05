@@ -27,11 +27,11 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
+import { ButtonIcon } from '../../components/component-library';
 import {
   Icon,
-  ButtonIcon,
   ICON_NAMES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
 import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
