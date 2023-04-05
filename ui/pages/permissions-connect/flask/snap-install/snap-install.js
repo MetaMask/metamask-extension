@@ -123,6 +123,7 @@ export default function SnapInstall({
             </Text>
             <PermissionsConnectPermissionList
               permissions={requestState.permissions || {}}
+              targetSubjectMetadata={targetSubjectMetadata}
             />
           </>
         )}
