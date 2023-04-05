@@ -4,7 +4,8 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { ButtonLink, ICON_NAMES } from '../../component-library';
+import { ButtonLink } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,
@@ -14,7 +15,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
@@ -47,8 +51,8 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
             trackEvent({
-              event: EVENT_NAMES.TOKEN_IMPORT_BUTTON_CLICKED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Home',
               },

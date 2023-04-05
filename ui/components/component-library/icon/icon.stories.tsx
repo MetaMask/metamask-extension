@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
+
 import {
-  Size,
   AlignItems,
   DISPLAY,
   IconColor,
@@ -20,91 +21,38 @@ import Box from '../../ui/box/box';
 import {
   ButtonIcon,
   ButtonLink,
-  ICON_NAMES,
-  ICON_SIZES,
-  Icon,
   Label,
   Text,
   TextField,
   TextFieldSearch,
+  TEXT_FIELD_SIZES,
+  BUTTON_ICON_SIZES,
+  BUTTON_LINK_SIZES,
 } from '..';
+
+import { Icon } from './icon';
+import { IconName, IconSize } from './icon.types';
 
 import README from './README.mdx';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
-
 export default {
   title: 'Components/ComponentLibrary/Icon',
-
   component: Icon,
   parameters: {
     docs: {
       page: README,
     },
   },
-  argTypes: {
-    name: {
-      control: 'select',
-      options: Object.values(ICON_NAMES),
-    },
-    size: {
-      control: 'select',
-      options: Object.values(ICON_SIZES),
-    },
-    color: {
-      control: 'select',
-      options: Object.values(IconColor),
-    },
-    className: {
-      control: 'text',
-    },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-  },
   args: {
-    name: ICON_NAMES.ADD_SQUARE,
+    name: IconName.AddSquare,
     color: IconColor.inherit,
-    size: Size.MD,
+    size: IconSize.Md,
   },
-};
+} as ComponentMeta<typeof Icon>;
 
-export const DefaultStory = (args) => {
+export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
   const [search, setSearch] = useState('');
-  const iconList = Object.keys(ICON_NAMES)
+  const iconList = Object.keys(IconName)
     .filter(
       (item) =>
         search === '' ||
@@ -138,7 +86,7 @@ export const DefaultStory = (args) => {
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
           {/* TODO replace with FormTextField */}
-          <Label htmlFor="icon-search">Name</Label>
+          <Label htmlFor="icon-search">IconName</Label>
           <TextFieldSearch
             id="icon-search"
             marginBottom={4}
@@ -161,7 +109,7 @@ export const DefaultStory = (args) => {
             return (
               <Box
                 borderColor={BorderColor.borderMuted}
-                borderRadius={Size.MD}
+                borderRadius={BorderRadius.MD}
                 display={DISPLAY.FLEX}
                 flexDirection={FLEX_DIRECTION.COLUMN}
                 alignItems={AlignItems.center}
@@ -169,12 +117,12 @@ export const DefaultStory = (args) => {
                 padding={4}
                 key={item}
               >
-                <Icon marginBottom={2} {...args} name={ICON_NAMES[item]} />
+                <Icon marginBottom={2} {...args} name={IconName[item]} />
                 <TextField
                   placeholder={item}
                   value={item}
                   readOnly
-                  size={Size.SM}
+                  size={TEXT_FIELD_SIZES.SM}
                   inputProps={{
                     variant: TextVariant.bodyXs,
                     textAlign: TEXT_ALIGN.CENTER,
@@ -182,8 +130,8 @@ export const DefaultStory = (args) => {
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   endAccessory={
                     <ButtonIcon
-                      iconName={ICON_NAMES.COPY}
-                      size={Size.SM}
+                      iconName={IconName.Copy}
+                      size={BUTTON_ICON_SIZES.SM}
                       color={IconColor.iconAlternative}
                       ariaLabel="Copy to clipboard"
                       title="Copy to clipboard"
@@ -206,7 +154,7 @@ export const DefaultStory = (args) => {
         <Text>
           No matches. Please try again or ask in the{' '}
           <ButtonLink
-            size={Size.inherit}
+            size={BUTTON_LINK_SIZES.INHERIT}
             color={Color.primaryDefault}
             href="https://consensys.slack.com/archives/C0354T27M5M"
             target="_blank"
@@ -221,14 +169,14 @@ export const DefaultStory = (args) => {
 };
 DefaultStory.storyName = 'Default';
 
-export const Name = (args) => (
+export const Name: ComponentStory<typeof Icon> = (args) => (
   <>
     <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={2}>
-      {Object.keys(ICON_NAMES).map((item) => {
+      {Object.keys(IconName).map((item) => {
         return (
           <Box
             borderColor={BorderColor.borderMuted}
-            borderRadius={Size.MD}
+            borderRadius={BorderRadius.MD}
             display={DISPLAY.FLEX}
             flexDirection={FLEX_DIRECTION.COLUMN}
             alignItems={AlignItems.center}
@@ -236,7 +184,7 @@ export const Name = (args) => (
             padding={4}
             key={item}
           >
-            <Icon {...args} name={ICON_NAMES[item]} />
+            <Icon {...args} name={IconName[item]} />
           </Box>
         );
       })}
@@ -244,7 +192,7 @@ export const Name = (args) => (
   </>
 );
 
-export const SizeStory = (args) => (
+export const SizeStory: ComponentStory<typeof Icon> = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
@@ -252,49 +200,49 @@ export const SizeStory = (args) => (
       gap={1}
       marginBottom={4}
     >
-      <Icon {...args} size={Size.XS} />
-      <Icon {...args} size={Size.SM} />
-      <Icon {...args} size={Size.MD} />
-      <Icon {...args} size={Size.LG} />
-      <Icon {...args} size={Size.XL} />
+      <Icon {...args} size={IconSize.Xs} />
+      <Icon {...args} size={IconSize.Sm} />
+      <Icon {...args} size={IconSize.Md} />
+      <Icon {...args} size={IconSize.Lg} />
+      <Icon {...args} size={IconSize.Xl} />
     </Box>
     <Text variant={TextVariant.displayMd}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.headingLg}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.headingMd}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.headingSm}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.bodyLgMedium}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.bodyMd}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.bodySm}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
     <Text variant={TextVariant.bodyXs}>
       inherits the font-size of the parent element.{' '}
-      <Icon {...args} size={Size.inherit} />
+      <Icon {...args} size={IconSize.Inherit} />
     </Text>
   </>
 );
 SizeStory.storyName = 'Size';
 
-export const ColorStory = (args) => (
+export const ColorStory: ComponentStory<typeof Icon> = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline}>
     <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.inherit} />
@@ -379,7 +327,7 @@ export const LayoutAndSpacing = () => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
     <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
       <Icon
-        name={ICON_NAMES.CHECK}
+        name={IconName.Check}
         color={IconColor.successDefault}
         marginRight={1}
       />
@@ -397,7 +345,7 @@ export const LayoutAndSpacing = () => (
         0x79fAaFe7B6D5DB5D8c63FE88DFF0AF1Fe53358db
       </Text>
       <Icon
-        name={ICON_NAMES.COPY}
+        name={IconName.Copy}
         color={IconColor.primaryDefault}
         marginLeft={1}
       />
@@ -410,22 +358,18 @@ export const LayoutAndSpacing = () => (
       borderColor={BorderColor.borderMuted}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Icon
-        name={ICON_NAMES.ADD}
-        color={IconColor.iconDefault}
-        marginRight={2}
-      />
+      <Icon name={IconName.Add} color={IconColor.iconDefault} marginRight={2} />
       <Text>Create account</Text>
     </Box>
     <Label>
       Custom spending cap{' '}
-      <Icon name={ICON_NAMES.INFO} size={ICON_SIZES.AUTO} marginLeft={1} />
+      <Icon name={IconName.Info} size={IconSize.Inherit} marginLeft={1} />
     </Label>
     <div>
       <Text>
         <Icon
-          name={ICON_NAMES.WARNING}
-          size={ICON_SIZES.AUTO}
+          name={IconName.Warning}
+          size={IconSize.Inherit}
           marginLeft={1}
           color={IconColor.warningDefault}
         />{' '}

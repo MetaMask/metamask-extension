@@ -5,7 +5,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES } from '../icon';
+import { ICON_NAMES } from '../icon/deprecated';
 import { ButtonPrimary } from './button-primary';
 
 import README from './README.mdx';

@@ -14,7 +14,7 @@ import {
   HardwareAffiliateTutorialLinks,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import { openWindow } from '../../../helpers/utils/window';
 
@@ -242,7 +242,7 @@ export default class SelectHardware extends Component {
                   type="secondary"
                   onClick={() => {
                     this.context.trackEvent({
-                      category: EVENT.CATEGORIES.NAVIGATION,
+                      category: MetaMetricsEventCategory.Navigation,
                       event: 'Clicked Ledger Buy Now',
                     });
                     openWindow(HardwareAffiliateLinks.ledger);
@@ -255,7 +255,7 @@ export default class SelectHardware extends Component {
                   type="secondary"
                   onClick={() => {
                     this.context.trackEvent({
-                      category: EVENT.CATEGORIES.NAVIGATION,
+                      category: MetaMetricsEventCategory.Navigation,
                       event: 'Clicked Ledger Tutorial',
                     });
                     openWindow(HardwareAffiliateTutorialLinks.ledger);
@@ -310,7 +310,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked GridPlus Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.gridplus);
@@ -323,7 +323,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked GidPlus Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.gridplus);
@@ -376,7 +376,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked Trezor Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.trezor);
@@ -389,7 +389,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked Trezor Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.trezor);
@@ -430,7 +430,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked Keystone Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.keystone);
@@ -443,7 +443,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked Keystone Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.keystone);
@@ -465,7 +465,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked AirGap Vault Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.airgap);
@@ -478,7 +478,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked AirGap Vault Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.airgap);
@@ -500,7 +500,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked CoolWallet Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.coolwallet);
@@ -513,7 +513,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked CoolWallet Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.coolwallet);
@@ -533,7 +533,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked DCent Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.dcent);
@@ -546,7 +546,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => {
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  category: MetaMetricsEventCategory.Navigation,
                   event: 'Clicked DCent Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.dcent);

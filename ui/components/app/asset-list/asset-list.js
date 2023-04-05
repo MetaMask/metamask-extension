@@ -24,7 +24,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import {
   DetectedTokensBanner,
@@ -110,8 +113,8 @@ const AssetList = ({ onClickAsset }) => {
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
           trackEvent({
-            event: EVENT_NAMES.TOKEN_SCREEN_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               token_symbol: primaryCurrencyProperties.suffix,
               location: 'Home',

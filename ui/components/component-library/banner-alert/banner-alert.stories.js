@@ -7,7 +7,8 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, ButtonLink, ButtonPrimary } from '..';
+import { ButtonLink, ButtonPrimary } from '..';
+import { ICON_NAMES } from '../icon/deprecated';
 import README from './README.mdx';
 import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
 

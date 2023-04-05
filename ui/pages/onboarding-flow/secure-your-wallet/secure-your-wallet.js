@@ -19,7 +19,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
@@ -38,16 +41,16 @@ export default function SecureYourWallet() {
 
   const handleClickRecommended = () => {
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletSecurityStarted,
     });
     history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_INITIATED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
     });
     setShowSkipSRPBackupPopover(true);
   };
@@ -105,8 +108,8 @@ export default function SecureYourWallet() {
           className="secure-your-wallet__video"
           onPlay={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.ONBOARDING,
-              event: EVENT_NAMES.ONBOARDING_WALLET_VIDEO_PLAY,
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.OnboardingWalletVideoPlay,
             });
           }}
           controls

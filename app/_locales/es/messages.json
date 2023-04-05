@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Complementos"
   },
-  "snapsInsightError": {
-    "message": "Ocurrió un error con $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Cargando información de transacción..."
   },
@@ -3375,7 +3371,8 @@
     "message": "Un complemento solo se ejecutará si está habilitado"
   },
   "snapsUIError": {
-    "message": "La IU especificada por el complemento no es válida."
+    "message": "La IU especificada por el complemento no es válida.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Algunas redes pueden presentar riesgos de seguridad y/o privacidad. Comprenda los riesgos antes de agregar y utilizar una red."
