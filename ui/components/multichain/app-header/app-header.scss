@@ -5,7 +5,7 @@
 
   &__contents {
     display: grid;
-    grid-template-columns: 30% minmax(30%, 1fr) 30%;
+    grid-template-columns: 1fr 2fr 1fr;
     height: 64px;
 
     @include screen-sm-max {

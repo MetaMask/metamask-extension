@@ -149,7 +149,6 @@ export const AppHeader = ({ onClick }) => {
                     iconName={ICON_NAMES.MORE_VERTICAL}
                     data-testid="account-options-menu-button"
                     ariaLabel="NEEDS NEW TRANSLATED LABEL"
-                    size={Size.MD}
                     onClick={() => {
                       trackEvent({
                         event: MetaMetricsEventName.NavAccountMenuOpened,
