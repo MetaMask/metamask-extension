@@ -2609,7 +2609,7 @@ export default class TransactionController extends EventEmitter {
     const id = this._getApprovalId(txMeta);
     const { origin } = txMeta;
     const type = MESSAGE_TYPE.TRANSACTION;
-    const requestState = { txId: txMeta.id };
+    const requestData = { txId: txMeta.id };
 
     this.messagingSystem
       .call(
@@ -2618,7 +2618,7 @@ export default class TransactionController extends EventEmitter {
           id,
           origin,
           type,
-          requestState,
+          requestData,
         },
         true,
       )

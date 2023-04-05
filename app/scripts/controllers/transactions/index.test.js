@@ -509,7 +509,7 @@ describe('Transaction Controller', function () {
         {
           id: String(txMeta.id),
           origin: ORIGIN_METAMASK,
-          requestState: { txId: txMeta.id },
+          requestData: { txId: txMeta.id },
           type: MESSAGE_TYPE.TRANSACTION,
         },
         true, // Show popup
