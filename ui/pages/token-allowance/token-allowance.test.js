@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
 
-const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
+const mockTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const state = {
   appState: {
     customTokenAmount: '1',
@@ -54,7 +54,7 @@ const state = {
     knownMethodData: {},
     tokens: [
       {
-        address: testTokenAddress,
+        address: mockTokenAddress,
         symbol: 'SNX',
         decimals: 18,
         image: 'testImage',
@@ -119,7 +119,7 @@ jest.mock('react-router-dom', () => {
       push: jest.fn(),
     }),
     useParams: () => ({
-      address: testTokenAddress,
+      address: mockTokenAddress,
     }),
   };
 });

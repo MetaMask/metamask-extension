@@ -6,7 +6,7 @@ import Identicon from '../../components/ui/identicon';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import TokenDetailsPage from './token-details-page';
 
-const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
+const mockTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const state = {
   metamask: {
     selectedAddress: '0xAddress',
@@ -218,7 +218,7 @@ const state = {
     },
     tokens: [
       {
-        address: testTokenAddress,
+        address: mockTokenAddress,
         symbol: 'SNX',
         decimals: 18,
         image: 'testImage',
@@ -243,7 +243,7 @@ jest.mock('react-router-dom', () => {
       push: jest.fn(),
     }),
     useParams: () => ({
-      address: testTokenAddress,
+      address: mockTokenAddress,
     }),
   };
 });
@@ -265,10 +265,10 @@ describe('TokenDetailsPage', () => {
 
   it('should render an icon image', () => {
     const token = state.metamask.tokens.find(({ address }) =>
-      isEqualCaseInsensitive(address, testTokenAddress),
+      isEqualCaseInsensitive(address, mockTokenAddress),
     );
     const iconImage = (
-      <Identicon diameter={32} address={testTokenAddress} image={token.image} />
+      <Identicon diameter={32} address={mockTokenAddress} image={token.image} />
     );
     expect(iconImage).toBeDefined();
   });
@@ -282,7 +282,7 @@ describe('TokenDetailsPage', () => {
   it('should render token contract address in token details page', () => {
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
-    expect(getByText(testTokenAddress)).toBeInTheDocument();
+    expect(getByText(mockTokenAddress)).toBeInTheDocument();
   });
 
   it('should call copy button when click is simulated', () => {

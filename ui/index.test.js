@@ -1,6 +1,6 @@
 import { setupLocale } from '../shared/lib/error-utils';
 
-const enMessages = {
+const mockENMessages = {
   troubleStarting: {
     message:
       'MetaMask had trouble starting. This error could be intermittent, so try restarting the extension.',
@@ -16,7 +16,7 @@ const enMessages = {
   },
 };
 
-const esMessages = {
+const mockESMessages = {
   troubleStarting: {
     message:
       'MetaMask tuvo problemas para iniciarse. Este error podría ser intermitente, así que intente reiniciar la extensión.',
@@ -30,7 +30,9 @@ const esMessages = {
 };
 
 jest.mock('./helpers/utils/i18n-helper', () => ({
-  fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
+  fetchLocale: jest.fn((locale) =>
+    locale === 'en' ? mockENMessages : mockESMessages,
+  ),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
 
@@ -40,15 +42,15 @@ describe('Index Tests', () => {
     const { currentLocaleMessages: clm, enLocaleMessages: elm } = result;
     expect(clm).toBeDefined();
     expect(elm).toBeDefined();
-    expect(clm.troubleStarting).toStrictEqual(enMessages.troubleStarting);
+    expect(clm.troubleStarting).toStrictEqual(mockENMessages.troubleStarting);
 
-    expect(clm.restartMetamask).toStrictEqual(enMessages.restartMetamask);
+    expect(clm.restartMetamask).toStrictEqual(mockENMessages.restartMetamask);
 
     expect(clm.stillGettingMessage).toStrictEqual(
-      enMessages.stillGettingMessage,
+      mockENMessages.stillGettingMessage,
     );
 
-    expect(clm.sendBugReport).toStrictEqual(enMessages.sendBugReport);
+    expect(clm.sendBugReport).toStrictEqual(mockENMessages.sendBugReport);
 
     result = await setupLocale('es');
 
@@ -56,15 +58,15 @@ describe('Index Tests', () => {
     expect(clm2).toBeDefined();
     expect(elm2).toBeDefined();
 
-    expect(clm2.troubleStarting).toStrictEqual(esMessages.troubleStarting);
+    expect(clm2.troubleStarting).toStrictEqual(mockESMessages.troubleStarting);
 
-    expect(clm2.restartMetamask).toStrictEqual(esMessages.restartMetamask);
+    expect(clm2.restartMetamask).toStrictEqual(mockESMessages.restartMetamask);
 
     expect(clm2.stillGettingMessage).toBeUndefined();
     expect(elm2.stillGettingMessage).toStrictEqual(
-      enMessages.stillGettingMessage,
+      mockENMessages.stillGettingMessage,
     );
 
-    expect(clm2.sendBugReport).toStrictEqual(esMessages.sendBugReport);
+    expect(clm2.sendBugReport).toStrictEqual(mockESMessages.sendBugReport);
   });
 });

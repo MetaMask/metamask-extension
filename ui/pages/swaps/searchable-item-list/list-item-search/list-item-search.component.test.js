@@ -9,7 +9,7 @@ import {
 } from '../../../../../test/jest';
 import ListItemSearch from './list-item-search.component';
 
-const token = {
+const mockToken = {
   erc20: true,
   symbol: 'BAT',
   decimals: 18,
@@ -21,7 +21,7 @@ jest.mock('../../swaps.util', () => {
   return {
     ...original,
     fetchToken: jest.fn(() => {
-      return token;
+      return mockToken;
     }),
   };
 });
@@ -100,12 +100,12 @@ describe('ListItemSearch', () => {
       store,
     );
     const input = getByTestId('search-list-items');
-    await fireEvent.change(input, { target: { value: token.address } });
+    await fireEvent.change(input, { target: { value: mockToken.address } });
     await jest.runAllTimers();
-    expect(props.setSearchQuery).toHaveBeenCalledWith(token.address);
+    expect(props.setSearchQuery).toHaveBeenCalledWith(mockToken.address);
     expect(props.onSearch).toHaveBeenCalledWith({
-      searchQuery: token.address,
-      results: [token],
+      searchQuery: mockToken.address,
+      results: [mockToken],
     });
   });
 });
