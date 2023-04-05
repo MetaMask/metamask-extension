@@ -654,6 +654,12 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "complianceActivatedDesc": {
+    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
+  },
+  "complianceActivatedTitle": {
+    "message": "Your compliance feature is activated"
+  },
   "complianceBlurb0": {
     "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
   },
@@ -779,6 +785,9 @@
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
+  },
+  "connectionError": {
+    "message": "Connection error"
   },
   "contactUs": {
     "message": "Contact us"
@@ -1707,6 +1716,9 @@
   "holdToRevealTitle": {
     "message": "Keep your SRP safe"
   },
+  "id": {
+    "message": "Id"
+  },
   "ignoreAll": {
     "message": "Ignore all"
   },
@@ -1811,6 +1823,9 @@
   },
   "install": {
     "message": "Install"
+  },
+  "institutionalFeatures": {
+    "message": "Institutional Features"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -2140,6 +2155,9 @@
   },
   "mmiAddToken": {
     "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
+  "mmiAuthenticate": {
+    "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
@@ -3064,6 +3082,12 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
+  },
+  "projectIdInvalid": {
+    "message": "Provided Project ID is invalid"
+  },
+  "projectName": {
+    "message": "Project Name"
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
