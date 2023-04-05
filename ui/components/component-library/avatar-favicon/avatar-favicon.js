@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, Icon } from '../icon';
+import { ICON_NAMES, Icon } from '../icon/deprecated';
 import {
   BorderColor,
   Size,
