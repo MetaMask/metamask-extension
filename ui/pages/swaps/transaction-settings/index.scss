@@ -74,6 +74,7 @@
       background: var(--color-primary-default);
       color: var(--color-primary-inverse);
       font-weight: inherit;
+      outline: none;
 
       &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
         color: var(--color-primary-inverse);
