@@ -547,7 +547,7 @@ describe('Transaction Controller', function () {
         {
           id: String(secondTxMeta.id),
           origin: ORIGIN_METAMASK,
-          requestState: { txId: secondTxMeta.id },
+          requestData: { txId: secondTxMeta.id },
           type: MESSAGE_TYPE.TRANSACTION,
         },
         true, // Show popup
