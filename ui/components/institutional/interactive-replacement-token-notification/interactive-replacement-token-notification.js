@@ -29,7 +29,7 @@ import {
 
 import Box from '../../ui/box';
 
-const InteractiveReplacementTokenNotification = () => {
+const InteractiveReplacementTokenNotification = ({ isVisible }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
@@ -41,7 +41,7 @@ const InteractiveReplacementTokenNotification = () => {
     getInteractiveReplacementToken,
   );
 
-  const [showNotification, setShowNotification] = useState(false);
+  const [showNotification, setShowNotification] = useState(isVisible);
 
   useEffect(() => {
     handleShowNotification();
@@ -109,7 +109,7 @@ const InteractiveReplacementTokenNotification = () => {
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       padding={[1, 2]}
-      backgroundColor={BackgroundColor.errorAlternative}
+      backgroundColor={BackgroundColor.backgroundAlternative}
       marginBottom={1}
       className="interactive-replacement-token-notification"
       data-testid="interactive-replacement-token-notification"
@@ -123,6 +123,7 @@ const InteractiveReplacementTokenNotification = () => {
       <ButtonLink
         data-testid="show-modal"
         size={Size.auto}
+        marginLeft={1}
         onClick={() => {
           dispatch(mmiActions.showInteractiveReplacementTokenModal());
         }}

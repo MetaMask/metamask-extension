@@ -22,7 +22,7 @@ const mockedGetAllCustodianAccountsWithToken = jest.fn().mockReturnValue({
   type: 'TYPE',
   payload: [
     {
-      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+      address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
       authDetails: { refreshToken: 'def' },
     },
   ],
@@ -38,12 +38,12 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 }));
 
 describe('Interactive Replacement Token Notification', () => {
-  const selectedAddress = '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f';
+  const selectedAddress = '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281';
 
   const identities = {
-    '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
-      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-      name: 'Account 1',
+    '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+      address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+      name: 'Custodian A',
     },
   };
 
@@ -62,7 +62,7 @@ describe('Interactive Replacement Token Notification', () => {
       keyrings: [
         {
           type: KeyringType.imported,
-          accounts: ['0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', '0x2'],
+          accounts: ['0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281', '0x2'],
         },
         {
           type: KeyringType.ledger,
@@ -92,11 +92,7 @@ describe('Interactive Replacement Token Notification', () => {
         keyrings: [
           {
             type: 'Custody - Saturn',
-            accounts: ['0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', '0x2'],
-          },
-          {
-            type: KeyringType.ledger,
-            accounts: [],
+            accounts: ['0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281'],
           },
         ],
       },
@@ -130,7 +126,7 @@ describe('Interactive Replacement Token Notification', () => {
         keyrings: [
           {
             type: 'Custody - Saturn',
-            accounts: ['0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', '0x2'],
+            accounts: ['0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281', '0x2'],
           },
           {
             type: KeyringType.ledger,
