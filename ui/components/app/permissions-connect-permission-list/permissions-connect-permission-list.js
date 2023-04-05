@@ -1,37 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getWeightedPermissions } from '../../../helpers/utils/permission';
+import {
+  getRightIcon,
+  getWeightedPermissions,
+} from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import PermissionCell from '../permission-cell';
-import Box from '../../ui/box';
 
-export default function PermissionsConnectPermissionList({
-  permissions,
-  targetSubjectMetadata,
-}) {
+/**
+ * Get one or more permission descriptions for a permission name.
+ *
+ * @param permission - The permission to render.
+ * @param index - The index of the permission.
+ * @returns {JSX.Element} A permission description node.
+ */
+function getDescriptionNode(permission, index) {
+  const { label, leftIcon, permissionName } = permission;
+
+  return (
+    <div className="permission" key={`${permissionName}-${index}`}>
+      {typeof leftIcon === 'string' ? <i className={leftIcon} /> : leftIcon}
+      {label}
+      {getRightIcon(permission)}
+    </div>
+  );
+}
+
+export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
 
   return (
-    <Box paddingTop={2} paddingBottom={2}>
-      {getWeightedPermissions(t, permissions, targetSubjectMetadata).map(
-        (permission, index) => {
-          return (
-            <PermissionCell
-              title={permission.label}
-              description={permission.description}
-              weight={permission.weight}
-              avatarIcon={permission.leftIcon}
-              dateApproved={permission?.permissionValue?.date}
-              key={`${permission.permissionName}-${index}`}
-            />
-          );
-        },
-      )}
-    </Box>
+    <div className="permissions-connect-permission-list">
+      {getWeightedPermissions(t, permissions).map(getDescriptionNode)}
+    </div>
   );
 }
 
 PermissionsConnectPermissionList.propTypes = {
   permissions: PropTypes.object.isRequired,
-  targetSubjectMetadata: PropTypes.object.isRequired,
 };

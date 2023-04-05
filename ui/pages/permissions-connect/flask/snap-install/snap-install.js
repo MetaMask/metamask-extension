@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
@@ -21,6 +20,7 @@ import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
+import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
 
 export default function SnapInstall({
   request,
@@ -121,7 +121,7 @@ export default function SnapInstall({
                 <b key="2">{snapName}</b>,
               ])}
             </Text>
-            <PermissionsConnectPermissionList
+            <SnapPermissionsList
               permissions={requestState.permissions || {}}
               targetSubjectMetadata={targetSubjectMetadata}
             />

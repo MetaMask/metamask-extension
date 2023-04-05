@@ -15,11 +15,15 @@ import {
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
+  AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   Text,
   ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
-import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library/icon/deprecated';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
 import {
@@ -31,10 +35,23 @@ import {
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+function getLeftIcon(iconName) {
+  return (
+    <AvatarIcon
+      iconName={iconName}
+      size={ICON_SIZES.SM}
+      iconProps={{
+        size: ICON_SIZES.XS,
+      }}
+    />
+  );
+}
+
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: ICON_NAMES.EYE,
+    leftIcon: getLeftIcon(ICON_NAMES.EYE),
+    rightIcon: null,
     weight: 2,
   }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -373,7 +390,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: ICON_NAMES.QUESTION,
+    leftIcon: getLeftIcon(ICON_NAMES.QUESTION),
+    rightIcon: null,
     weight: 4,
   }),
 });
