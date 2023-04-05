@@ -135,6 +135,7 @@ export default function SnapUpdate({
               approvedPermissions={approvedPermissions}
               revokedPermissions={revokedPermissions}
               newPermissions={newPermissions}
+              targetSubjectMetadata={targetSubjectMetadata}
             />
           </>
         )}

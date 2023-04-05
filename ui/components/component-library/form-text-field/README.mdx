@@ -99,7 +99,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  ICON_NAMES,
+  IconName,
   Text,
 } from '../../component-library';
 
@@ -229,7 +229,7 @@ return (
         <ButtonPrimary type="submit">Submit</ButtonPrimary>
       </Box>
     </Box>
-    <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
+    <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
       Clear form
     </ButtonSecondary>
     {submitted === FORM_STATE.SUCCESS && (
@@ -264,7 +264,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon/deprecated'
+import { Icon, IconName } from '..'
 import {
   ButtonLink,
   FormTextField,
@@ -293,8 +293,8 @@ import {
       Custom spending cap
     </Label>
     <Icon
-      name={ICON_NAMES.INFO}
-      size={Size.SM}
+      name={IconName.Info}
+      size={IconSize.Sm}
       marginLeft={1}
       color={IconColor.iconAlternative}
     />
