@@ -13,7 +13,8 @@ import {
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import { BadgeWrapper, Icon, ICON_NAMES } from '../../component-library';
+import { BadgeWrapper } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
