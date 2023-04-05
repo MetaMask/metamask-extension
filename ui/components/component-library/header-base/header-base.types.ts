@@ -1,5 +1,6 @@
 import React from 'react';
 import type { BoxProps } from '../../ui/box/box.d';
+import type { TextProps } from '../text/text.types';
 
 export interface HeaderBaseProps extends BoxProps {
   /**
@@ -7,9 +8,9 @@ export interface HeaderBaseProps extends BoxProps {
    */
   children?: React.ReactNode;
   /**
-   * Use the `childrenWrapperProps` prop to define the props to the children wrapper
+   * Use the `childrenWrapperProps` prop to define the props to the children wrapper accepts all Text props
    */
-  childrenWrapperProps?: BoxProps;
+  childrenWrapperProps?: TextProps;
   /**
    * The start(default left) content area of HeaderBase
    */

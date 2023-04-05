@@ -3,9 +3,12 @@ import classnames from 'classnames';
 import {
   BLOCK_SIZES,
   DISPLAY,
+  TextVariant,
+  TEXT_ALIGN,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
+import { Text } from '..';
 
 import { HeaderBaseProps } from './header-base.types';
 
@@ -70,7 +73,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
     >
       {startAccessory && (
         <Box
-          className="mm-header-base__start-accessory"
           ref={startAccessoryRef}
           style={
             children
@@ -85,20 +87,20 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
         </Box>
       )}
       {children && (
-        <Box
-          className="mm-header-base__children"
+        <Text
+          variant={TextVariant.headingSm}
+          textAlign={TEXT_ALIGN.CENTER}
           width={BLOCK_SIZES.FULL}
-          style={getTitleStyles}
           {...childrenWrapperProps}
+          style={{ ...getTitleStyles }}
         >
           {children}
-        </Box>
+        </Text>
       )}
       {endAccessory && (
         <Box
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.flexEnd}
-          className="mm-header-base__end-accessory"
           ref={endAccessoryRef}
           style={
             children

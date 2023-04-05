@@ -8,12 +8,15 @@ import {
   BUTTON_ICON_SIZES,
   BUTTON_SIZES,
   Text,
+  AvatarAccount,
 } from '..';
 import {
+  FLEX_DIRECTION,
   AlignItems,
   BackgroundColor,
   TextVariant,
-  TEXT_ALIGN,
+  JustifyContent,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { HeaderBase } from './header-base';
 import README from './README.mdx';
@@ -35,11 +38,7 @@ const Template: ComponentStory<typeof HeaderBase> = (args) => (
 export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
-  children: (
-    <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
-      Title is sentence case no period
-    </Text>
-  ),
+  children: 'Title is sentence case no period',
   startAccessory: (
     <ButtonIcon
       size={BUTTON_ICON_SIZES.SM}
@@ -60,11 +59,40 @@ DefaultStory.storyName = 'Default';
 
 export const Children = (args) => {
   return (
-    <HeaderBase {...args}>
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+    <>
+      <HeaderBase marginBottom={4} {...args}>
         Title is sentence case no period
-      </Text>
-    </HeaderBase>
+      </HeaderBase>
+      <HeaderBase
+        childrenWrapperProps={{
+          variant: TextVariant.bodyLgMedium,
+        }}
+        marginBottom={4}
+        {...args}
+      >
+        Updating variant of Text component to bodyLgMedium using
+        childrenWrapperProps
+      </HeaderBase>
+      <HeaderBase
+        childrenWrapperProps={{
+          as: 'div',
+          display: DISPLAY.FLEX,
+          flexDirection: FLEX_DIRECTION.COLUMN,
+          justifyContent: JustifyContent.center,
+          alignItems: AlignItems.center,
+        }}
+        marginBottom={4}
+        {...args}
+      >
+        <AvatarAccount
+          marginBottom={2}
+          address="0x1234567890123456789012345678901234567890"
+        />
+        <Text variant={TextVariant.headingMd}>
+          Custom header with multiple children
+        </Text>
+      </HeaderBase>
+    </>
   );
 };
 
@@ -81,9 +109,7 @@ export const StartAccessory = (args) => {
       }
       {...args}
     >
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
-        Title is sentence case no period
-      </Text>
+      Title is sentence case no period
     </HeaderBase>
   );
 };
@@ -101,9 +127,7 @@ export const EndAccessory = (args) => {
       }
       {...args}
     >
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
-        Title is sentence case no period
-      </Text>
+      Title is sentence case no period
     </HeaderBase>
   );
 };
@@ -112,14 +136,14 @@ export const UseCaseDemos = (args) => (
   <>
     <Text>children only assigned</Text>
     <Box backgroundColor={BackgroundColor.warningAlternative}>
-      <HeaderBase marginBottom={4} {...args}>
-        <Text
-          variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
-          backgroundColor={BackgroundColor.primaryAlternative}
-        >
-          Title is sentence case no period
-        </Text>
+      <HeaderBase
+        marginBottom={4}
+        childrenWrapperProps={{
+          backgroundColor: BackgroundColor.primaryAlternative,
+        }}
+        {...args}
+      >
+        Title is sentence case no period
       </HeaderBase>
     </Box>
     <Text>children and endAccessory assigned </Text>
@@ -134,15 +158,12 @@ export const UseCaseDemos = (args) => (
             ariaLabel="close"
           />
         }
+        childrenWrapperProps={{
+          backgroundColor: BackgroundColor.primaryAlternative,
+        }}
         {...args}
       >
-        <Text
-          variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
-          backgroundColor={BackgroundColor.primaryAlternative}
-        >
-          Title is sentence case no period
-        </Text>
+        Title is sentence case no period
       </HeaderBase>
     </Box>
     <Text>children and startAccessory assigned </Text>
@@ -157,15 +178,12 @@ export const UseCaseDemos = (args) => (
             ariaLabel="back"
           />
         }
+        childrenWrapperProps={{
+          backgroundColor: BackgroundColor.primaryAlternative,
+        }}
         {...args}
       >
-        <Text
-          variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
-          backgroundColor={BackgroundColor.primaryAlternative}
-        >
-          Title is sentence case no period
-        </Text>
+        Title is sentence case no period
       </HeaderBase>
     </Box>
     <Text>children, startAccessory, and endAccessory assigned </Text>
@@ -188,15 +206,12 @@ export const UseCaseDemos = (args) => (
             ariaLabel="close"
           />
         }
+        childrenWrapperProps={{
+          backgroundColor: BackgroundColor.primaryAlternative,
+        }}
         {...args}
       >
-        <Text
-          variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
-          backgroundColor={BackgroundColor.primaryAlternative}
-        >
-          Title is sentence case no period
-        </Text>
+        Title is sentence case no period
       </HeaderBase>
     </Box>
     <Text>children, startAccessory, and endAccessory assigned </Text>
@@ -220,15 +235,12 @@ export const UseCaseDemos = (args) => (
             ariaLabel="close"
           />
         }
+        childrenWrapperProps={{
+          backgroundColor: BackgroundColor.primaryAlternative,
+        }}
         {...args}
       >
-        <Text
-          variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
-          backgroundColor={BackgroundColor.primaryAlternative}
-        >
-          Title is sentence case no period
-        </Text>
+        Title is sentence case no period
       </HeaderBase>
     </Box>
     <Text>
@@ -255,15 +267,12 @@ export const UseCaseDemos = (args) => (
             Download
           </Button>
         }
+        childrenWrapperProps={{
+          backgroundColor: BackgroundColor.primaryAlternative,
+        }}
         {...args}
       >
-        <Text
-          variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
-          backgroundColor={BackgroundColor.primaryAlternative}
-        >
-          Title is sentence case no period
-        </Text>
+        Title is sentence case no period
       </HeaderBase>
     </Box>
     <Text>startAccessory and endAccessory assigned </Text>
@@ -287,7 +296,7 @@ export const UseCaseDemos = (args) => (
           />
         }
         {...args}
-      ></HeaderBase>
+      />
     </Box>
   </>
 );

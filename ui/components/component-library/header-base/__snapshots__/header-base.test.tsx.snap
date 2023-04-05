@@ -7,11 +7,11 @@ exports[`HeaderBase should render HeaderBase element correctly 1`] = `
     data-testid="header-base"
     title="HeaderBase test"
   >
-    <div
-      class="box mm-header-base__children box--flex-direction-row box--width-full"
+    <h4
+      class="box mm-text mm-text--heading-sm mm-text--text-align-center box--flex-direction-row box--width-full box--color-text-default"
     >
       should render HeaderBase element correctly
-    </div>
+    </h4>
   </div>
 </div>
 `;

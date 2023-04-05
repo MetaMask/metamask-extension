@@ -55,7 +55,19 @@ describe('HeaderBase', () => {
         }
       />,
     );
-
     expect(getByTestId('end-accessory')).toBeDefined();
+  });
+
+  it('should render HeaderBase with childrenWrapperProps', () => {
+    const { getByTestId } = render(
+      <HeaderBase
+        childrenWrapperProps={{
+          'data-testid': 'children-wrapper',
+        }}
+      >
+        HeaderBase children test
+      </HeaderBase>,
+    );
+    expect(getByTestId('children-wrapper')).toBeDefined();
   });
 });

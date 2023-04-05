@@ -43,6 +43,8 @@ export enum ValidTag {
   Input = 'input',
 }
 
+type TextAlign = typeof TEXT_ALIGN[keyof typeof TEXT_ALIGN];
+
 export interface TextProps extends BoxProps {
   /**
    * The text content of the Text component
@@ -88,7 +90,7 @@ export interface TextProps extends BoxProps {
    * The text-align of the Text component. Should use the TEXT_ALIGN object from
    * ./ui/helpers/constants/design-system.js
    */
-  textAlign?: keyof typeof TEXT_ALIGN;
+  textAlign?: TextAlign;
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
