@@ -36,7 +36,7 @@ const ComplianceModal = () => {
       submitText={t('openCodefiCompliance')}
       submitType="primary"
     >
-      <Box className="compliance-modal">
+      <Box>
         <Box
           as="header"
           display={DISPLAY.FLEX}
@@ -65,11 +65,19 @@ const ComplianceModal = () => {
             onClick={handleClose}
           />
         </Box>
-        <Text data-testid="compliance-info" paddingBottom={3}>
+        <Text
+          data-testid="compliance-info"
+          paddingBottom={3}
+          color={TextColor.textAlternative}
+        >
           {t('complianceBlurb0')}
         </Text>
-        <Text paddingBottom={3}>{t('complianceBlurb1')}</Text>
-        <Text paddingBottom={3}>{t('complianceBlurpStep0')}</Text>
+        <Text paddingBottom={3} color={TextColor.textAlternative}>
+          {t('complianceBlurb1')}
+        </Text>
+        <Text paddingBottom={3} color={TextColor.textAlternative}>
+          {t('complianceBlurpStep0')}
+        </Text>
         <ol data-testid="compliance-bullets">
           <li>{t('complianceBlurbStep1')}</li>
           <li>{t('complianceBlurbStep2')}</li>

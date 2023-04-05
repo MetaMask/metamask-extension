@@ -9,7 +9,7 @@ exports[`ComplianceModal should render the correct content 1`] = `
       class="modal-container__content"
     >
       <div
-        class="box compliance-modal box--flex-direction-row"
+        class="box box--flex-direction-row"
       >
         <header
           class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
@@ -41,18 +41,18 @@ exports[`ComplianceModal should render the correct content 1`] = `
           </button>
         </header>
         <p
-          class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
+          class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-alternative"
           data-testid="compliance-info"
         >
           [complianceBlurb0]
         </p>
         <p
-          class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
+          class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-alternative"
         >
           [complianceBlurb1]
         </p>
         <p
-          class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-default"
+          class="box mm-text mm-text--body-md box--padding-bottom-3 box--flex-direction-row box--color-text-alternative"
         >
           [complianceBlurpStep0]
         </p>
