@@ -26,8 +26,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
-import { IconName } from '../icon';
+import { ButtonIcon, IconName } from '../ui/component-library';
 
 <ButtonIcon iconName={IconName.Close} ariaLabel="Close" />;
 ```
@@ -45,7 +44,7 @@ Possible sizes include:
 - `Size.LG` 32px
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonicon--size-story" />
+  <Story id="components-componentlibrary-buttonicon--size" />
 </Canvas>
 
 ```jsx
@@ -70,7 +69,7 @@ import { Color } from '../../../helpers/constants/design-system';
 
 
 <ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={IconColor.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### As
@@ -92,7 +91,7 @@ import { Color } from '../../../helpers/constants/design-system';
 
 
 <ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={IconColor.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### Href
@@ -111,14 +110,14 @@ import { Color } from '../../../helpers/constants/design-system';
   href="https://metamask.io/"
   target="_blank"
   iconName={IconName.Export}
-  color={Color.primaryDefault}
+  color={IconColor.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```
 
 ### Color
 
-Use the `color` prop and the `Color` object to change the color of the `ButtonIcon`. Defaults to `Color.iconDefault`.
+Use the `color` prop and the `Color` object to change the color of the `ButtonIcon`. Defaults to `IconColor.iconDefault`.
 
 <Canvas>
   <Story id="components-componentlibrary-buttonicon--color-story" />
@@ -130,7 +129,7 @@ import { Color } from '../../../helpers/constants/design-system';
 
 <ButtonIcon
   iconName={IconName.Export}
-  color={Color.primaryDefault}
+  color={IconColor.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```

@@ -1,38 +1,19 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   AlignItems,
-  Color,
+  IconColor,
   DISPLAY,
   FLEX_DIRECTION,
-  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { IconName } from '..';
+import { IconName } from '../icon';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 import { ButtonIcon } from './button-icon';
 import README from './README.mdx';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
-
 export default {
   title: 'Components/ComponentLibrary/ButtonIcon',
-
   component: ButtonIcon,
   parameters: {
     docs: {
@@ -52,7 +33,7 @@ export default {
     },
     color: {
       control: 'select',
-      options: Object.values(Color),
+      options: Object.values(IconColor),
     },
     disabled: {
       control: 'boolean',
@@ -68,30 +49,14 @@ export default {
       control: 'select',
       options: Object.values(BUTTON_ICON_SIZES),
     },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
   },
-};
+} as ComponentMeta<typeof ButtonIcon>;
 
-export const DefaultStory = (args) => <ButtonIcon {...args} />;
+const Template: ComponentStory<typeof ButtonIcon> = (args) => (
+  <ButtonIcon {...args} />
+);
+
+export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   iconName: IconName.Close,
@@ -100,7 +65,7 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
-export const IconNameStory = (args) => <ButtonIcon {...args} />;
+export const IconNameStory = Template.bind({});
 
 IconNameStory.args = {
   iconName: IconName.Close,
@@ -109,7 +74,7 @@ IconNameStory.args = {
 
 IconNameStory.storyName = 'IconName';
 
-export const SizeStory = (args) => (
+export const Size: ComponentStory<typeof ButtonIcon> = (args) => (
   <Box
     display={DISPLAY.FLEX}
     alignItems={AlignItems.baseline}
@@ -118,23 +83,21 @@ export const SizeStory = (args) => (
   >
     <ButtonIcon
       {...args}
-      size={Size.SM}
+      size={BUTTON_ICON_SIZES.SM}
       iconName={IconName.Close}
       ariaLabel="Close"
     />
     <ButtonIcon
       {...args}
-      size={Size.LG}
-      color={Color.primaryDefault}
+      size={BUTTON_ICON_SIZES.LG}
+      color={IconColor.primaryDefault}
       iconName={IconName.Close}
       ariaLabel="Close"
     />
   </Box>
 );
 
-SizeStory.storyName = 'Size';
-
-export const AriaLabel = (args) => (
+export const AriaLabel: ComponentStory<typeof ButtonIcon> = (args) => (
   <>
     <ButtonIcon
       as="button"
@@ -146,7 +109,7 @@ export const AriaLabel = (args) => (
       as="a"
       href="https://metamask.io/"
       target="_blank"
-      color={Color.primaryDefault}
+      color={IconColor.primaryDefault}
       iconName={IconName.Export}
       ariaLabel="Visit MetaMask.io"
       {...args}
@@ -154,40 +117,40 @@ export const AriaLabel = (args) => (
   </>
 );
 
-export const As = (args) => (
+export const As: ComponentStory<typeof ButtonIcon> = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
     <ButtonIcon {...args} iconName={IconName.Close} ariaLabel="close" />
     <ButtonIcon
       as="a"
       href="#"
       {...args}
-      color={Color.primaryDefault}
+      color={IconColor.primaryDefault}
       iconName={IconName.Export}
       ariaLabel="demo"
     />
   </Box>
 );
 
-export const Href = (args) => (
+export const Href: ComponentStory<typeof ButtonIcon> = (args) => (
   <ButtonIcon iconName={IconName.Export} {...args} target="_blank" />
 );
 
 Href.args = {
   ariaLabel: 'Visit Metamask.io',
   href: 'https://metamask.io/',
-  color: Color.primaryDefault,
+  color: IconColor.primaryDefault,
 };
 
-export const ColorStory = (args) => (
+export const ColorStory: ComponentStory<typeof ButtonIcon> = (args) => (
   <ButtonIcon {...args} iconName={IconName.Close} ariaLabel="close" />
 );
 ColorStory.storyName = 'Color';
 
 ColorStory.args = {
-  color: Color.primaryDefault,
+  color: IconColor.primaryDefault,
 };
 
-export const Disabled = (args) => (
+export const Disabled: ComponentStory<typeof ButtonIcon> = (args) => (
   <ButtonIcon {...args} iconName={IconName.Close} ariaLabel="close" />
 );
 
