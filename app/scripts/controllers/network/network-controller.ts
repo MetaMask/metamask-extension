@@ -8,7 +8,10 @@ import {
   SwappableProxy,
 } from '@metamask/swappable-obj-proxy';
 import EthQuery from 'eth-query';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import {
+  ExtractEventHandler,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import { v4 as uuid } from 'uuid';
 import { Hex, isPlainObject } from '@metamask/utils';
 import { errorCodes } from 'eth-rpc-errors';
@@ -108,18 +111,18 @@ export enum NetworkControllerEventType {
  * switched, but the new provider has not been created and no state changes have
  * occurred yet.
  */
-type NetworkControllerNetworkWillChangeEvent = {
+export type NetworkControllerNetworkWillChangeEvent = {
   type: NetworkControllerEventType.NetworkWillChange;
-  payload: [];
+  payload: never[];
 };
 
 /**
  * `networkDidChange` is published after a provider has been created for a newly
  * switched network (but before the network has been confirmed to be available).
  */
-type NetworkControllerNetworkDidChangeEvent = {
+export type NetworkControllerNetworkDidChangeEvent = {
   type: NetworkControllerEventType.NetworkDidChange;
-  payload: [];
+  payload: never[];
 };
 
 /**
@@ -127,9 +130,9 @@ type NetworkControllerNetworkDidChangeEvent = {
  * network, but when Infura returns an error blocking the user based on their
  * location.
  */
-type NetworkControllerInfuraIsBlockedEvent = {
+export type NetworkControllerInfuraIsBlockedEvent = {
   type: NetworkControllerEventType.InfuraIsBlocked;
-  payload: [];
+  payload: never[];
 };
 
 /**
@@ -137,9 +140,9 @@ type NetworkControllerInfuraIsBlockedEvent = {
  * Infura network and Infura does not return an error blocking the user based on
  * their location, or the network is switched to a non-Infura network.
  */
-type NetworkControllerInfuraIsUnblockedEvent = {
+export type NetworkControllerInfuraIsUnblockedEvent = {
   type: NetworkControllerEventType.InfuraIsUnblocked;
-  payload: [];
+  payload: never[];
 };
 
 /**
@@ -150,6 +153,18 @@ export type NetworkControllerEvent =
   | NetworkControllerNetworkWillChangeEvent
   | NetworkControllerInfuraIsBlockedEvent
   | NetworkControllerInfuraIsUnblockedEvent;
+
+// type A<E extends NetworkControllerEvent> = ExtractEventHandler<E, E['type']>;
+// type B<E extends NetworkControllerEvent> = (...payload: E['payload']) => void;
+
+// type X = A<
+// | NetworkControllerNetworkDidChangeEvent
+// | NetworkControllerNetworkWillChangeEvent
+// >;
+// type Y = B<
+// | NetworkControllerNetworkDidChangeEvent
+// | NetworkControllerNetworkWillChangeEvent
+// >;
 
 /**
  * The messenger that the NetworkController uses to publish events.
@@ -509,7 +524,7 @@ export class NetworkController extends EventEmitter {
       state.networkConfigurations || buildDefaultNetworkConfigurationsState(),
     );
 
-    this.store = new ComposedStore<CompositeState>({
+    this.store = new ComposedStore<NetworkControllerState>({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
       networkId: this.networkIdStore,

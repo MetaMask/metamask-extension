@@ -16,7 +16,6 @@ import {
   NetworkController,
   NetworkControllerEvent,
   NetworkControllerEventType,
-  NetworkControllerMessenger,
   NetworkControllerOptions,
   NetworkControllerState,
   ProviderConfiguration,
@@ -791,11 +790,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsBlocked or infuraIsUnblocked, depending on whether Infura is blocking requests', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -809,7 +809,7 @@ describe('NetworkController', () => {
               network.mockEssentialRpcCalls();
 
               const infuraIsUnblocked = await waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsUnblocked,
                 operation: async () => {
                   await controller.initializeProvider();
@@ -891,7 +891,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -940,18 +939,18 @@ describe('NetworkController', () => {
       });
 
       it('emits infuraIsUnblocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -967,7 +966,7 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
 
             const infuraIsUnblocked = await waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.InfuraIsUnblocked,
               operation: async () => {
                 await controller.initializeProvider();
@@ -980,18 +979,18 @@ describe('NetworkController', () => {
       });
 
       it('does not emit infuraIsBlocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -1007,7 +1006,7 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
 
             const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.InfuraIsBlocked,
               count: 0,
               operation: async () => {
@@ -1029,7 +1028,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -1065,7 +1063,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -1406,41 +1403,49 @@ describe('NetworkController', () => {
       });
 
       it('does not emit infuraIsUnblocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
-        await withController({ messenger }, async ({ controller, network }) => {
-          network.mockEssentialRpcCalls();
+        await withController(
+          { messenger: restrictedMessenger },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
 
-          const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
-            messenger,
-            eventType: NetworkControllerEventType.InfuraIsUnblocked,
-            count: 0,
-            operation: async () => {
-              await controller.lookupNetwork();
-            },
-          });
+            const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
+              messenger: unrestrictedMessenger,
+              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              count: 0,
+              operation: async () => {
+                await controller.lookupNetwork();
+              },
+            });
 
-          expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
-        });
+            expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+          },
+        );
       });
 
       it('does not emit infuraIsBlocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
-        await withController({ messenger }, async ({ controller, network }) => {
-          network.mockEssentialRpcCalls();
+        await withController(
+          { messenger: restrictedMessenger },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
 
-          const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
-            messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
-            count: 0,
-            operation: async () => {
-              await controller.lookupNetwork();
-            },
-          });
+            const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
+              messenger: unrestrictedMessenger,
+              eventType: NetworkControllerEventType.InfuraIsBlocked,
+              count: 0,
+              operation: async () => {
+                await controller.lookupNetwork();
+              },
+            });
 
-          expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
-        });
+            expect(await promiseForNoInfuraIsBlockedEvents).toBeTruthy();
+          },
+        );
       });
     });
 
@@ -1476,12 +1481,13 @@ describe('NetworkController', () => {
       });
 
       it('does not emit infuraIsUnblocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         /* @ts-expect-error We are intentionally not including a chainId in the provider config. */
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
@@ -1494,7 +1500,7 @@ describe('NetworkController', () => {
             await controller.initializeProvider();
 
             const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.InfuraIsUnblocked,
               count: 0,
               operation: async () => {
@@ -1508,12 +1514,13 @@ describe('NetworkController', () => {
       });
 
       it('does not emit infuraIsBlocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         /* @ts-expect-error We are intentionally not including a chainId in the provider config. */
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
@@ -1526,7 +1533,7 @@ describe('NetworkController', () => {
             await controller.initializeProvider();
 
             const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.InfuraIsBlocked,
               count: 0,
               operation: async () => {
@@ -1712,11 +1719,12 @@ describe('NetworkController', () => {
           });
 
           it('emits infuraIsUnblocked', async () => {
-            const messenger = buildMessenger();
+            const { unrestrictedMessenger, restrictedMessenger } =
+              buildMessengerGroup();
 
             await withController(
               {
-                messenger,
+                messenger: restrictedMessenger,
                 state: {
                   provider: {
                     type: networkType,
@@ -1740,7 +1748,7 @@ describe('NetworkController', () => {
                 });
 
                 const infuraIsUnblocked = await waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
                   operation: async () => {
                     await controller.lookupNetwork();
@@ -1914,11 +1922,12 @@ describe('NetworkController', () => {
           });
 
           it('emits infuraIsBlocked', async () => {
-            const messenger = buildMessenger();
+            const { unrestrictedMessenger, restrictedMessenger } =
+              buildMessengerGroup();
 
             await withController(
               {
-                messenger,
+                messenger: restrictedMessenger,
                 state: {
                   provider: {
                     type: networkType,
@@ -1942,7 +1951,7 @@ describe('NetworkController', () => {
                 });
 
                 const infuraIsBlocked = await waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsBlocked,
                   operation: async () => {
                     await controller.lookupNetwork();
@@ -1955,11 +1964,12 @@ describe('NetworkController', () => {
           });
 
           it('does not emit infuraIsUnblocked', async () => {
-            const messenger = buildMessenger();
+            const { unrestrictedMessenger, restrictedMessenger } =
+              buildMessengerGroup();
 
             await withController(
               {
-                messenger,
+                messenger: restrictedMessenger,
                 state: {
                   provider: {
                     type: networkType,
@@ -1984,7 +1994,7 @@ describe('NetworkController', () => {
 
                 const promiseForNoInfuraIsUnblockedEvents =
                   waitForPublishedEvents({
-                    messenger,
+                    messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.InfuraIsUnblocked,
                     count: 0,
                     operation: async () => {
@@ -2288,11 +2298,12 @@ describe('NetworkController', () => {
           });
 
           it('does not emit infuraIsBlocked', async () => {
-            const messenger = buildMessenger();
+            const { unrestrictedMessenger, restrictedMessenger } =
+              buildMessengerGroup();
 
             await withController(
               {
-                messenger,
+                messenger: restrictedMessenger,
                 state: {
                   provider: {
                     type: networkType,
@@ -2317,7 +2328,7 @@ describe('NetworkController', () => {
 
                 const promiseForNoInfuraIsBlockedEvents =
                   waitForPublishedEvents({
-                    messenger,
+                    messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.InfuraIsBlocked,
                     count: 0,
                     operation: async () => {
@@ -2331,11 +2342,12 @@ describe('NetworkController', () => {
           });
 
           it('does not emit infuraIsUnblocked', async () => {
-            const messenger = buildMessenger();
+            const { unrestrictedMessenger, restrictedMessenger } =
+              buildMessengerGroup();
 
             await withController(
               {
-                messenger,
+                messenger: restrictedMessenger,
                 state: {
                   provider: {
                     type: networkType,
@@ -2360,7 +2372,7 @@ describe('NetworkController', () => {
 
                 const promiseForNoInfuraIsUnblockedEvents =
                   waitForPublishedEvents({
-                    messenger,
+                    messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.InfuraIsUnblocked,
                     count: 0,
                     operation: async () => {
@@ -2640,11 +2652,12 @@ describe('NetworkController', () => {
               );
             }
 
-            const messenger = buildMessenger();
+            const { unrestrictedMessenger, restrictedMessenger } =
+              buildMessengerGroup();
 
             await withController(
               {
-                messenger,
+                messenger: restrictedMessenger,
                 state: {
                   provider: {
                     type: networkType,
@@ -2659,7 +2672,7 @@ describe('NetworkController', () => {
                   eth_getBlockByNumber: {
                     beforeCompleting: async () => {
                       await waitForPublishedEvents({
-                        messenger,
+                        messenger: unrestrictedMessenger,
                         eventType: NetworkControllerEventType.NetworkDidChange,
                         operation: async () => {
                           await waitForStateChanges({
@@ -2692,12 +2705,12 @@ describe('NetworkController', () => {
                 });
                 const promiseForNoInfuraIsUnblockedEvents =
                   waitForPublishedEvents({
-                    messenger,
+                    messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.InfuraIsUnblocked,
                     count: 0,
                   });
                 const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsBlocked,
                 });
 
@@ -2885,11 +2898,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsUnblocked', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -2915,7 +2929,7 @@ describe('NetworkController', () => {
               });
 
               const infuraIsUnblocked = await waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsUnblocked,
                 operation: async () => {
                   await controller.lookupNetwork();
@@ -3145,11 +3159,12 @@ describe('NetworkController', () => {
         });
 
         it('does not emit infuraIsBlocked', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -3175,7 +3190,7 @@ describe('NetworkController', () => {
               });
 
               const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsBlocked,
                 count: 0,
                 operation: async () => {
@@ -3189,11 +3204,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsUnblocked', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -3219,7 +3235,7 @@ describe('NetworkController', () => {
               });
 
               const infuraIsUnblocked = await waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsUnblocked,
                 operation: async () => {
                   await controller.lookupNetwork();
@@ -3412,11 +3428,12 @@ describe('NetworkController', () => {
         });
 
         it('does not emit infuraIsBlocked', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -3439,7 +3456,7 @@ describe('NetworkController', () => {
               });
 
               const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsBlocked,
                 count: 0,
                 operation: async () => {
@@ -3453,11 +3470,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsUnblocked', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -3480,7 +3498,7 @@ describe('NetworkController', () => {
               });
 
               const infuraIsUnblocked = await waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsUnblocked,
                 operation: async () => {
                   await controller.lookupNetwork();
@@ -3720,11 +3738,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -3764,12 +3783,12 @@ describe('NetworkController', () => {
               });
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsBlocked,
               });
 
@@ -4009,11 +4028,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -4053,12 +4073,12 @@ describe('NetworkController', () => {
               });
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsBlocked,
               });
 
@@ -4111,7 +4131,6 @@ describe('NetworkController', () => {
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
               ticker: 'TEST',
-              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId2: {
@@ -4153,7 +4172,6 @@ describe('NetworkController', () => {
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999',
               ticker: 'RPC',
-              id: 'testNetworkConfigurationId2',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
@@ -4191,18 +4209,18 @@ describe('NetworkController', () => {
     });
 
     it('emits networkWillChange before making any changes to the network status', async () => {
-      const messenger = buildMessenger();
+      const { unrestrictedMessenger, restrictedMessenger } =
+        buildMessengerGroup();
 
       await withController(
         {
-          messenger,
+          messenger: restrictedMessenger,
           state: {
             provider: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
               ticker: 'TEST2',
-              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
@@ -4243,7 +4261,7 @@ describe('NetworkController', () => {
           expect(initialNetworkStatus).toBe('available');
 
           const networkWillChange = await waitForPublishedEvents({
-            messenger,
+            messenger: unrestrictedMessenger,
             eventType: NetworkControllerEventType.NetworkWillChange,
             operation: () => {
               controller.setActiveNetwork('testNetworkConfigurationId2');
@@ -4268,7 +4286,6 @@ describe('NetworkController', () => {
               rpcUrl: 'http://mock-rpc-url-2',
               chainId: '0xtest2',
               ticker: 'TEST2',
-              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
@@ -4328,7 +4345,6 @@ describe('NetworkController', () => {
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
               ticker: 'TEST1',
-              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
@@ -4470,11 +4486,12 @@ describe('NetworkController', () => {
     });
 
     it('emits networkDidChange', async () => {
-      const messenger = buildMessenger();
+      const { unrestrictedMessenger, restrictedMessenger } =
+        buildMessengerGroup();
 
       await withController(
         {
-          messenger,
+          messenger: restrictedMessenger,
           state: {
             networkConfigurations: {
               testNetworkConfigurationId: {
@@ -4493,7 +4510,7 @@ describe('NetworkController', () => {
           network.mockEssentialRpcCalls();
 
           const networkDidChange = await waitForPublishedEvents({
-            messenger,
+            messenger: unrestrictedMessenger,
             eventType: NetworkControllerEventType.NetworkDidChange,
             operation: () => {
               controller.setActiveNetwork('testNetworkConfigurationId');
@@ -4506,11 +4523,12 @@ describe('NetworkController', () => {
     });
 
     it('emits infuraIsUnblocked', async () => {
-      const messenger = buildMessenger();
+      const { unrestrictedMessenger, restrictedMessenger } =
+        buildMessengerGroup();
 
       await withController(
         {
-          messenger,
+          messenger: restrictedMessenger,
           state: {
             networkConfigurations: {
               testNetworkConfigurationId: {
@@ -4529,7 +4547,7 @@ describe('NetworkController', () => {
           network.mockEssentialRpcCalls();
 
           const infuraIsUnblocked = await waitForPublishedEvents({
-            messenger,
+            messenger: unrestrictedMessenger,
             eventType: NetworkControllerEventType.InfuraIsUnblocked,
             operation: () => {
               controller.setActiveNetwork('testNetworkConfigurationId');
@@ -4640,7 +4658,6 @@ describe('NetworkController', () => {
                   rpcPrefs: {
                     blockExplorerUrl: 'test-block-explorer-2.com',
                   },
-                  id: 'testNetworkConfigurationId2',
                 },
                 networkConfigurations: {
                   testNetworkConfigurationId1: {
@@ -4685,7 +4702,6 @@ describe('NetworkController', () => {
                 rpcPrefs: {
                   blockExplorerUrl: 'test-block-explorer-2.com',
                 },
-                id: 'testNetworkConfigurationId2',
               });
             },
           );
@@ -4704,7 +4720,6 @@ describe('NetworkController', () => {
                   rpcPrefs: {
                     blockExplorerUrl: 'test-block-explorer-2.com',
                   },
-                  id: 'testNetworkConfigurationId2',
                 },
                 networkConfigurations: {
                   testNetworkConfigurationId1: {
@@ -4754,24 +4769,28 @@ describe('NetworkController', () => {
         });
 
         it('emits networkWillChange', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
-          await withController({ messenger }, async ({ controller }) => {
-            const network = new InfuraNetworkCommunications({
-              infuraNetwork: networkType,
-            });
-            network.mockEssentialRpcCalls();
+          await withController(
+            { messenger: restrictedMessenger },
+            async ({ controller }) => {
+              const network = new InfuraNetworkCommunications({
+                infuraNetwork: networkType,
+              });
+              network.mockEssentialRpcCalls();
 
-            const networkWillChange = await waitForPublishedEvents({
-              messenger,
-              eventType: NetworkControllerEventType.NetworkWillChange,
-              operation: () => {
-                controller.setProviderType(networkType);
-              },
-            });
+              const networkWillChange = await waitForPublishedEvents({
+                messenger: unrestrictedMessenger,
+                eventType: NetworkControllerEventType.NetworkWillChange,
+                operation: () => {
+                  controller.setProviderType(networkType);
+                },
+              });
 
-            expect(networkWillChange).toBeTruthy();
-          });
+              expect(networkWillChange).toBeTruthy();
+            },
+          );
         });
 
         it('resets the network status to "unknown" before emitting networkDidChange', async () => {
@@ -4779,11 +4798,10 @@ describe('NetworkController', () => {
             {
               state: {
                 provider: {
+                  type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0xtest',
                   ticker: 'TEST',
-                  id: 'testNetworkConfigurationId',
-                  type: 'rpc',
                 },
                 networkConfigurations: {
                   testNetworkConfigurationId: {
@@ -4835,7 +4853,6 @@ describe('NetworkController', () => {
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0xtest',
                   ticker: 'TEST',
-                  id: 'testNetworkConfigurationId',
                 },
                 networkConfigurations: {
                   testNetworkConfigurationId: {
@@ -4927,53 +4944,62 @@ describe('NetworkController', () => {
         });
 
         it('emits networkDidChange', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
-          await withController({ messenger }, async ({ controller }) => {
-            const network = new InfuraNetworkCommunications({
-              infuraNetwork: networkType,
-            });
-            network.mockEssentialRpcCalls();
+          await withController(
+            { messenger: restrictedMessenger },
+            async ({ controller }) => {
+              const network = new InfuraNetworkCommunications({
+                infuraNetwork: networkType,
+              });
+              network.mockEssentialRpcCalls();
 
-            const networkDidChange = await waitForPublishedEvents({
-              messenger,
-              eventType: NetworkControllerEventType.NetworkDidChange,
-              operation: () => {
-                controller.setProviderType(networkType);
-              },
-            });
+              const networkDidChange = await waitForPublishedEvents({
+                messenger: unrestrictedMessenger,
+                eventType: NetworkControllerEventType.NetworkDidChange,
+                operation: () => {
+                  controller.setProviderType(networkType);
+                },
+              });
 
-            expect(networkDidChange).toBeTruthy();
-          });
+              expect(networkDidChange).toBeTruthy();
+            },
+          );
         });
 
         it('emits infuraIsBlocked or infuraIsUnblocked, depending on whether Infura is blocking requests', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
-          await withController({ messenger }, async ({ controller }) => {
-            const network = new InfuraNetworkCommunications({
-              infuraNetwork: networkType,
-            });
-            network.mockEssentialRpcCalls({
-              eth_getBlockByNumber: {
-                response: BLOCKED_INFURA_RESPONSE,
-              },
-            });
-            const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
-              messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
-              count: 0,
-            });
-            const promiseForInfuraIsBlocked = waitForPublishedEvents({
-              messenger,
-              eventType: NetworkControllerEventType.InfuraIsBlocked,
-            });
+          await withController(
+            { messenger: restrictedMessenger },
+            async ({ controller }) => {
+              const network = new InfuraNetworkCommunications({
+                infuraNetwork: networkType,
+              });
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              const promiseForNoInfuraIsUnblockedEvents =
+                waitForPublishedEvents({
+                  messenger: unrestrictedMessenger,
+                  eventType: NetworkControllerEventType.InfuraIsUnblocked,
+                  count: 0,
+                });
+              const promiseForInfuraIsBlocked = waitForPublishedEvents({
+                messenger: unrestrictedMessenger,
+                eventType: NetworkControllerEventType.InfuraIsBlocked,
+              });
 
-            controller.setProviderType(networkType);
+              controller.setProviderType(networkType);
 
-            expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
-            expect(await promiseForInfuraIsBlocked).toBeTruthy();
-          });
+              expect(await promiseForNoInfuraIsUnblockedEvents).toBeTruthy();
+              expect(await promiseForInfuraIsBlocked).toBeTruthy();
+            },
+          );
         });
 
         it('determines the status of the network, storing it in state', async () => {
@@ -5066,11 +5092,12 @@ describe('NetworkController', () => {
     for (const { networkType, chainId } of INFURA_NETWORKS) {
       describe(`when the type in the provider configuration is "${networkType}"`, () => {
         it('emits networkWillChange', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -5084,7 +5111,7 @@ describe('NetworkController', () => {
               network.mockEssentialRpcCalls();
 
               const networkWillChange = await waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.NetworkWillChange,
                 operation: () => {
                   controller.resetConnection();
@@ -5245,11 +5272,12 @@ describe('NetworkController', () => {
         });
 
         it('emits networkDidChange', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -5263,7 +5291,7 @@ describe('NetworkController', () => {
               network.mockEssentialRpcCalls();
 
               const networkDidChange = await waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.NetworkDidChange,
                 operation: () => {
                   controller.resetConnection();
@@ -5276,11 +5304,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsBlocked or infuraIsUnblocked, depending on whether Infura is blocking requests', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -5298,12 +5327,12 @@ describe('NetworkController', () => {
               });
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsBlocked,
               });
 
@@ -5389,18 +5418,18 @@ describe('NetworkController', () => {
 
     describe(`when the type in the provider configuration is "rpc"`, () => {
       it('emits networkWillChange', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5416,7 +5445,7 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
 
             const networkWillChange = await waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.NetworkWillChange,
               operation: () => {
                 controller.resetConnection();
@@ -5437,7 +5466,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5487,7 +5515,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5542,7 +5569,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5583,7 +5609,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5620,18 +5645,18 @@ describe('NetworkController', () => {
       });
 
       it('emits networkDidChange', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5647,7 +5672,7 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
 
             const networkDidChange = await waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.NetworkDidChange,
               operation: () => {
                 controller.resetConnection();
@@ -5660,18 +5685,18 @@ describe('NetworkController', () => {
       });
 
       it('emits infuraIsUnblocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5687,7 +5712,7 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls();
 
             const infuraIsUnblocked = await waitForPublishedEvents({
-              messenger,
+              messenger: unrestrictedMessenger,
               eventType: NetworkControllerEventType.InfuraIsUnblocked,
               operation: () => {
                 controller.resetConnection();
@@ -5708,7 +5733,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5750,7 +5774,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -5808,7 +5831,6 @@ describe('NetworkController', () => {
                   rpcPrefs: {
                     blockExplorerUrl: 'https://test-block-explorer-1.com',
                   },
-                  id: 'testNetworkConfigurationId1',
                 },
                 networkConfigurations: {
                   testNetworkConfigurationId1: {
@@ -5856,7 +5878,6 @@ describe('NetworkController', () => {
                 rpcPrefs: {
                   blockExplorerUrl: 'https://test-block-explorer-2.com',
                 },
-                id: 'testNetworkConfigurationId2',
               });
 
               await waitForLookupNetworkToComplete({
@@ -5874,18 +5895,18 @@ describe('NetworkController', () => {
                 rpcPrefs: {
                   blockExplorerUrl: 'https://test-block-explorer-1.com',
                 },
-                id: 'testNetworkConfigurationId1',
               });
             },
           );
         });
 
         it('emits networkWillChange', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -5925,7 +5946,7 @@ describe('NetworkController', () => {
                 controller,
                 operation: async () => {
                   const networkWillChange = await waitForPublishedEvents({
-                    messenger,
+                    messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.NetworkWillChange,
                     operation: () => {
                       controller.rollbackToPreviousProvider();
@@ -6190,11 +6211,12 @@ describe('NetworkController', () => {
         });
 
         it('emits networkDidChange', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -6235,7 +6257,7 @@ describe('NetworkController', () => {
                 controller,
                 operation: async () => {
                   const networkDidChange = await waitForPublishedEvents({
-                    messenger,
+                    messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.NetworkDidChange,
                     operation: () => {
                       controller.rollbackToPreviousProvider();
@@ -6249,11 +6271,12 @@ describe('NetworkController', () => {
         });
 
         it('emits infuraIsBlocked or infuraIsUnblocked, depending on whether Infura is blocking requests for the previous network', async () => {
-          const messenger = buildMessenger();
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
 
           await withController(
             {
-              messenger,
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: networkType,
@@ -6289,12 +6312,12 @@ describe('NetworkController', () => {
               });
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
-                messenger,
+                messenger: unrestrictedMessenger,
                 eventType: NetworkControllerEventType.InfuraIsBlocked,
               });
 
@@ -6450,7 +6473,6 @@ describe('NetworkController', () => {
                 rpcPrefs: {
                   blockExplorerUrl: 'test-block-explorer-2.com',
                 },
-                id: 'testNetworkConfigurationId2',
               },
               networkDetails: {
                 EIPS: {
@@ -6520,25 +6542,24 @@ describe('NetworkController', () => {
               rpcPrefs: {
                 blockExplorerUrl: 'test-block-explorer-2.com',
               },
-              id: 'testNetworkConfigurationId2',
             });
           },
         );
       });
 
       it('emits networkWillChange', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url-2',
                 chainId: '0x1337',
                 ticker: 'TEST2',
-                id: 'testNetworkConfigurationId2',
               },
               networkConfigurations: {
                 testNetworkConfigurationId1: {
@@ -6573,7 +6594,7 @@ describe('NetworkController', () => {
               controller,
               operation: async () => {
                 const networkWillChange = await waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.NetworkWillChange,
                   operation: () => {
                     controller.rollbackToPreviousProvider();
@@ -6596,7 +6617,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6654,7 +6674,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6722,7 +6741,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6778,7 +6796,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6820,18 +6837,18 @@ describe('NetworkController', () => {
       });
 
       it('emits networkDidChange', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6861,7 +6878,7 @@ describe('NetworkController', () => {
               controller,
               operation: async () => {
                 const networkDidChange = await waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.NetworkDidChange,
                   operation: () => {
                     controller.rollbackToPreviousProvider();
@@ -6875,18 +6892,18 @@ describe('NetworkController', () => {
       });
 
       it('emits infuraIsUnblocked', async () => {
-        const messenger = buildMessenger();
+        const { unrestrictedMessenger, restrictedMessenger } =
+          buildMessengerGroup();
 
         await withController(
           {
-            messenger,
+            messenger: restrictedMessenger,
             state: {
               provider: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6916,7 +6933,7 @@ describe('NetworkController', () => {
               controller,
               operation: async () => {
                 const infuraIsUnblocked = await waitForPublishedEvents({
-                  messenger,
+                  messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
                   operation: () => {
                     controller.rollbackToPreviousProvider();
@@ -6939,7 +6956,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -6994,7 +7010,6 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
                 ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
               },
               networkConfigurations: {
                 testNetworkConfigurationId: {
@@ -7424,7 +7439,6 @@ describe('NetworkController', () => {
         rpcUrl: 'https://mock-rpc-url',
         chainId: '0xtest' as const,
         ticker: 'TEST',
-        id: 'testNetworkConfigurationId',
       };
       await withController(
         {
@@ -7469,7 +7483,6 @@ describe('NetworkController', () => {
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0xtest',
               ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
             },
             networkConfigurations: {
               testNetworkConfigurationId: {
@@ -7520,7 +7533,6 @@ describe('NetworkController', () => {
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0xtest',
               ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
             },
             networkConfigurations: {
               testNetworkConfigurationId: {
@@ -7588,7 +7600,6 @@ describe('NetworkController', () => {
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0xtest',
               ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
             },
             networkConfigurations: {
               testNetworkConfigurationId: {
@@ -7663,24 +7674,31 @@ describe('NetworkController', () => {
 });
 
 /**
- * Builds the controller messenger that NetworkController is designed to work
- * with.
+ * Builds the set of controller messengers that recognizes the events that
+ * NetworkController emits: one designed to be used directly by
+ * NetworkController, and one designed to be used in tests.
  *
  * @returns The controller messenger.
  */
-function buildMessenger(): NetworkControllerMessenger {
-  return new ControllerMessenger<never, NetworkControllerEvent>().getRestricted(
-    {
-      name: 'NetworkController',
-      allowedActions: [],
-      allowedEvents: [
-        NetworkControllerEventType.NetworkDidChange,
-        NetworkControllerEventType.NetworkWillChange,
-        NetworkControllerEventType.InfuraIsBlocked,
-        NetworkControllerEventType.InfuraIsUnblocked,
-      ],
-    },
-  );
+function buildMessengerGroup() {
+  const unrestrictedMessenger = new ControllerMessenger<
+    never,
+    NetworkControllerEvent
+  >();
+  const restrictedMessenger = unrestrictedMessenger.getRestricted<
+    'NetworkController',
+    never,
+    NetworkControllerEventType
+  >({
+    name: 'NetworkController',
+    allowedEvents: [
+      NetworkControllerEventType.NetworkDidChange,
+      NetworkControllerEventType.NetworkWillChange,
+      NetworkControllerEventType.InfuraIsBlocked,
+      NetworkControllerEventType.InfuraIsUnblocked,
+    ],
+  });
+  return { unrestrictedMessenger, restrictedMessenger };
 }
 
 /**
@@ -7691,8 +7709,9 @@ function buildMessenger(): NetworkControllerMessenger {
  * @returns The controller options.
  */
 function buildDefaultNetworkControllerOptions() {
+  const { restrictedMessenger } = buildMessengerGroup();
   return {
-    messenger: buildMessenger(),
+    messenger: restrictedMessenger,
     infuraProjectId: DEFAULT_INFURA_PROJECT_ID,
     trackMetaMetricsEvent: jest.fn(),
   };
@@ -8022,7 +8041,7 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
     // do nothing
   },
 }: {
-  messenger: NetworkControllerMessenger;
+  messenger: ControllerMessenger<never, NetworkControllerEvent>;
   eventType: E['type'];
   count?: number;
   filter?: (payload: E['payload']) => boolean;
@@ -8032,12 +8051,13 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
 }): Promise<E['payload'][]> {
   const promiseForEventPayloads = new Promise<E['payload'][]>(
     (resolve, reject) => {
-      // We need to declare this variable first, then assign it later, so that
-      // ESLint won't complain that resetTimer is referring to this variable
-      // before it's declared. And we need to use let so that we can assign it
-      // below.
+      // Everything depends on `eventListener` circularly, so we need to declare
+      // it up front. We also can't use `const` as we assign the variable below.
+      // Also, we have to use `any` because `subscribe` and `unsubscribe` don't
+      // directly read the payload type off of the given event, it infers it,
+      // but in a way that makes it very difficult to mimic here.
       /* eslint-disable-next-line prefer-const */
-      let eventListener: (...args: E['payload']) => void;
+      let eventListener: any;
       let timer: NodeJS.Timeout | undefined;
       const allEventPayloads: E['payload'][] = [];
       const interestingEventPayloads: E['payload'][] = [];
@@ -8046,7 +8066,7 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
       const end = () => {
         if (!alreadyEnded) {
           alreadyEnded = true;
-          messenger.unsubscribe(eventType.toString(), eventListener);
+          messenger.unsubscribe(eventType, eventListener);
           Promise.resolve(beforeResolving()).then(() => {
             if (interestingEventPayloads.length === expectedNumberOfEvents) {
               resolve(interestingEventPayloads);
@@ -8079,7 +8099,7 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
         }, timeBeforeAssumingNoMoreEvents);
       };
 
-      eventListener = (...payload) => {
+      eventListener = (...payload: E['payload']) => {
         allEventPayloads.push(payload);
 
         if (isEventPayloadInteresting(payload)) {
@@ -8093,7 +8113,7 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
         }
       };
 
-      messenger.subscribe(eventType.toString(), eventListener);
+      messenger.subscribe(eventType, eventListener);
       resetTimer();
     },
   );
