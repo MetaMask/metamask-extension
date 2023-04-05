@@ -1067,7 +1067,7 @@ export class NetworkController extends EventEmitter {
       referrer,
       source,
     }: {
-      setActive: boolean;
+      setActive?: boolean;
       referrer: string;
       source: string;
     },
