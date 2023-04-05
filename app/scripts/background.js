@@ -22,7 +22,6 @@ import {
   MESSAGE_TYPE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
-import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -420,7 +419,6 @@ export function setupController(initState, initLangCode, overrides) {
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
-    openPopup,
     // initial state
     initState,
     // initial locale code
@@ -826,22 +824,6 @@ async function triggerUi() {
       uiIsTriggering = false;
     }
   }
-}
-
-/**
- * Opens the browser popup for user confirmation of watchAsset
- * then it waits until user interact with the UI
- */
-async function openPopup() {
-  await triggerUi();
-  await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (!notificationIsOpen) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, SECOND);
-  });
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
