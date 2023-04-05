@@ -4,7 +4,10 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   CONNECTED_ACCOUNTS_ROUTE,
   DEFAULT_ROUTE,
@@ -21,9 +24,9 @@ import {
 import {
   AvatarNetwork,
   ButtonIcon,
-  ICON_NAMES,
   PickerNetwork,
 } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   getCurrentNetwork,
   getOriginOfCurrentTab,
@@ -110,7 +113,7 @@ export const AppHeader = ({ onClick }) => {
                 <AvatarNetwork
                   name={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
-                  size={Size.MD}
+                  size={Size.SM}
                   onClick={() => dispatch(toggleNetworkMenu())}
                 />
               ) : (
@@ -146,10 +149,11 @@ export const AppHeader = ({ onClick }) => {
                     iconName={ICON_NAMES.MORE_VERTICAL}
                     data-testid="account-options-menu-button"
                     ariaLabel="NEEDS NEW TRANSLATED LABEL"
+                    size={Size.MD}
                     onClick={() => {
                       trackEvent({
-                        event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
-                        category: EVENT.CATEGORIES.NAVIGATION,
+                        event: MetaMetricsEventName.NavAccountMenuOpened,
+                        category: MetaMetricsEventCategory.Navigation,
                         properties: {
                           location: 'Home',
                         },
