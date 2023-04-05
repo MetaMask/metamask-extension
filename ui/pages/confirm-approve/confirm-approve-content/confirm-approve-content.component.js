@@ -28,10 +28,9 @@ import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
   ICON_NAMES,
-  ButtonIcon,
   Icon,
-  Text,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
+import { ButtonIcon, Text } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
