@@ -4150,13 +4150,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/obs-store@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/obs-store@npm:8.0.0"
+"@metamask/obs-store@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/obs-store@npm:8.1.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     through2: ^2.0.3
-  checksum: 232362e65a3563f0bd3299cec48f5adb37e68d4f066b7de90f2b044480d3b16c2d918c12d672c825e1d9b55344ae818fb8494d91129e4613555097653b9bb887
+  checksum: 92356067fa3517526d656f2f0bdfbc4d39f65e27fb30d84240cfc9c1aa9cd5d743498952df18ed8efbb8887b6cc1bc1fab37bde3fb0fc059539e0dfcc67ff86f
   languageName: node
   linkType: hard
 
@@ -24306,7 +24306,7 @@ __metadata:
     "@metamask/message-manager": ^2.1.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
-    "@metamask/obs-store": ^8.0.0
+    "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^3.1.0
     "@metamask/phishing-controller": ^2.0.0
     "@metamask/phishing-warning": ^2.1.0
