@@ -206,7 +206,7 @@ describe('MetaMaskController', function () {
         ]),
       );
 
-    sandbox.replace(browser.storage, 'session', {
+    sandbox.replace(browser, 'storage.session', {
       set: sandbox.stub(),
     });
 
