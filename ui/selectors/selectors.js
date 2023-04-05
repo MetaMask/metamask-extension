@@ -487,7 +487,6 @@ export function getTotalUnapprovedCount(state) {
     unapprovedMsgCount = 0,
     unapprovedPersonalMsgCount = 0,
     unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
     pendingApprovalCount = 0,
   } = state.metamask;
@@ -496,7 +495,6 @@ export function getTotalUnapprovedCount(state) {
     unapprovedMsgCount +
     unapprovedPersonalMsgCount +
     unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
     unapprovedTypedMessagesCount +
     getUnapprovedTxCount(state) +
     pendingApprovalCount +
