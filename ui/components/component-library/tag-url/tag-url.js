@@ -15,7 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonLink } from '../button-link';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 
 export const TagUrl = ({
   label,

@@ -13,12 +13,11 @@ import {
   Color,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
+import { ButtonIcon, Text } from '../../../components/component-library';
 import {
-  ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
-  Text,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
 import Box from '../../../components/ui/box';
 import ComplianceSettings from '../../../components/institutional/compliance-settings';
 

@@ -35,7 +35,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../components/component-library/icon/deprecated';
 
 export default function CreatePassword({
   createNewAccount,

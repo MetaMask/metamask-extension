@@ -13,7 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 

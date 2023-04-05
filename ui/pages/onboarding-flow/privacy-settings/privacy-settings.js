@@ -25,7 +25,8 @@ import {
   setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, TextField } from '../../../components/component-library';
+import { TextField } from '../../../components/component-library';
+import { Icon } from '../../../components/component-library/icon/deprecated';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import {
