@@ -159,8 +159,6 @@ export type NetworkControllerMessenger = RestrictedControllerMessenger<
   never,
   NetworkControllerEvent,
   never,
-  // TODO: Why is this `string` and not `NetworkControllerEventType`?
-  // Also this breaks `waitForPublishedEvents` — why?
   string
 >;
 
