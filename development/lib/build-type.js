@@ -19,7 +19,7 @@ const {
 const yaml = require('js-yaml');
 const { uniqWith } = require('lodash');
 
-const BUILDSYML_PATH = path.resolve('./builds.yml');
+const BUILDS_YML_PATH = path.resolve('./builds.yml');
 
 /**
  * @type {import('superstruct').Infer<typeof BuildTypesStruct> | null}
@@ -64,7 +64,6 @@ const BuildTypeStruct = object({
   features: optional(unique(array(string()))),
   isPrerelease: optional(boolean()),
   env: optional(EnvArrayStruct),
-  var: optional(record(string(), any())),
   // TODO(ritave): Check if the paths exist
   assets: optional(array(object({ src: string(), dest: string() }))),
 });
@@ -86,7 +85,7 @@ const FeaturesStruct = refine(
         if (typeof env !== 'string') {
           if (definitions.has(env.key)) {
             isValid = false;
-            yield `Multiple defined feature have a definition of "${env}" env variable, resulting in a conflict`;
+            yield `Multiple defined features have a definition of "${env}" env variable, resulting in a conflict`;
           }
           definitions.add(env.key);
         }
@@ -121,7 +120,7 @@ function loadBuildTypesConfig() {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
-  const buildsData = yaml.load(fs.readFileSync(BUILDSYML_PATH, 'utf8'), {
+  const buildsData = yaml.load(fs.readFileSync(BUILDS_YML_PATH, 'utf8'), {
     json: true,
   });
   const [err, result] = validate(buildsData, BuildTypesStruct, {
@@ -148,7 +147,7 @@ function constructFailureMessage(structError) {
     .failures()
     .map(
       (failure) =>
-        `${failure.message} (${BUILDSYML_PATH}:.${failure.path.join('/')})`,
+        `${failure.message} (${BUILDS_YML_PATH}:.${failure.path.join('/')})`,
     )
     .join('\n  -> ')}
 `;

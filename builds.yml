@@ -4,6 +4,7 @@
 # TODO(ritave): Remove build code modifying hardcoded variables
 # TODO(ritave): Tree shaking was removing folders with the name of a build type -> flask remove /flask/ folders.
 #               It should also remove feature folders
+# TODO(ritave): Warn if not all of declared variables have been defined / used
 
 # The priority order of variable definitions (most important to least important):
 # hardcoded build code; environment variables; .metamaskprodrc; .metamaskrc; builds.yml:.buildTypes.<type>.env; builds.yml:.features.<feature>.env; builds.yml:.env
@@ -22,19 +23,14 @@ buildTypes:
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
-      - ALLOW_LOCAL_SNAPS: false
-      - REQUIRE_SNAPS_ALLOWLIST: true
+      - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+      #- ALLOW_LOCAL_SNAPS: false
+      # Snaps in main extension require MetaMask signed allow list
+      #- REQUIRE_SNAPS_ALLOWLIST: true
     features:
       - build-main
-    # Variables that modify the build process itself
-    # It's an escape hatch for backwards compatibility
-    # for things that were hard-coded in.
-    # The end goal is not to have those when build targets are supported
-    var:
-      # Variables used to remove hardcoded switches
-      # in backwards compatible way
-      infuraProjectKey: INFURA_PROD_PROJECT_ID
-      segmentWriteKey: SEGMENT_PROD_WRITE_KEY
+      - snaps
 
   beta:
     features:
@@ -42,6 +38,8 @@ buildTypes:
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -49,9 +47,6 @@ buildTypes:
     assets:
       - src: ./app/build-types/beta/images/
         dest: images
-    var:
-      infuraProjectKey: INFURA_BETA_PROJECT_ID
-      segmentWriteKey: SEGMENT_BETA_WRITE_KEY
 
   flask:
     # Code surrounded using code fences for that feature
@@ -66,14 +61,13 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
+      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new'
     assets:
       - src: ./app/build-types/flask/images/
         dest: images
-    var:
-      infuraProjectKey: INFURA_FLASK_PROJECT_ID
-      segmentWriteKey: SEGMENT_FLASK_WRITE_KEY
 
   # TODO(ritave): Remove this build type as it was merged into Flask
   desktop:
@@ -91,6 +85,8 @@ buildTypes:
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
 
@@ -100,9 +96,6 @@ buildTypes:
     assets:
       - src: ./app/build-types/mmi/images/
         dest: images
-    var:
-      infuraEnvKey: INFURA_MMI_PROJECT_ID
-      segmentWriteKey: SEGMENT_MMI_WRITE_KEY
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
@@ -169,6 +162,13 @@ env:
   - OPENSEA_KEY: null
   - ETHERSCAN_KEY: null
   # also INFURA_PROJECT_ID below
+
+  ###
+  # Build system backwards compatibility
+  ###
+
+  - INFURA_ENV_KEY_REF
+  - SEGMENT_WRITE_KEY_REF
 
   ###
   # Variables that are modified with hardcoded code
