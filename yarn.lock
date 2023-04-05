@@ -3621,7 +3621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^4.0.1":
+"@metamask/assets-controllers@npm:4.0.1":
   version: 4.0.1
   resolution: "@metamask/assets-controllers@npm:4.0.1"
   dependencies:
@@ -3650,6 +3650,38 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^4.0.0
   checksum: 18d3212640a50d2ff56134bceb275718880b80fccddc8b52b325f9119a6fb06919935320b9604550bbda1fc73f13122b3d185330cb423a616daf8f465ace29e8
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A4.0.1#./.yarn/patches/@metamask-assets-controllers-npm-4.0.1-2cb3225e77.patch::locator=metamask-crx%40workspace%3A.":
+  version: 4.0.1
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A4.0.1#./.yarn/patches/@metamask-assets-controllers-npm-4.0.1-2cb3225e77.patch::version=4.0.1&hash=c0151e&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethersproject/bignumber": ^5.7.0
+    "@ethersproject/contracts": ^5.7.0
+    "@ethersproject/providers": ^5.7.0
+    "@metamask/abi-utils": ^1.1.0
+    "@metamask/base-controller": ^1.1.2
+    "@metamask/contract-metadata": ^2.1.0
+    "@metamask/controller-utils": ^2.0.0
+    "@metamask/metamask-eth-abis": 3.0.0
+    "@metamask/network-controller": ^4.0.0
+    "@metamask/preferences-controller": ^1.0.2
+    "@metamask/utils": ^3.3.1
+    "@types/uuid": ^8.3.0
+    abort-controller: ^3.0.0
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.0
+    ethereumjs-util: ^7.0.10
+    immer: ^9.0.6
+    multiformats: ^9.5.2
+    single-call-balance-checker-abi: ^1.0.0
+    uuid: ^8.3.2
+  peerDependencies:
+    "@metamask/network-controller": ^4.0.0
+  checksum: ec7c6b69b6078df313501e5d3cd5a8b75238ae1d5b61ac128e684cb579190f5c9b96227461d535dfc0a11a1aa6fe8b8d646b0a4e40ae1dd69cbc83d6a22d3959
   languageName: node
   linkType: hard
 
