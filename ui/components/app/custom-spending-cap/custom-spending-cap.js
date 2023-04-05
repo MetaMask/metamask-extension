@@ -6,8 +6,8 @@ import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text } from '../../component-library';
-import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
+import { Text, ButtonLink } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,
