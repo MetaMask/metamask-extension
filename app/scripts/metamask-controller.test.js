@@ -30,6 +30,11 @@ const browserPolyfillMock = {
     },
     getPlatformInfo: async () => 'mac',
   },
+  storage: {
+    session: {
+      set: () => undefined,
+    },
+  },
 };
 
 let loggerMiddlewareMock;
@@ -201,6 +206,10 @@ describe('MetaMaskController', function () {
         ]),
       );
 
+    sandbox.replace(browser.storage, 'session', {
+      set: sandbox.stub(),
+    });
+
     sandbox.replace(browser, 'runtime', {
       sendMessage: sandbox.stub().rejects(),
     });
@@ -224,6 +233,7 @@ describe('MetaMaskController', function () {
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
+      isFirstMetaMaskControllerSetup: true,
     });
 
     // add sinon method spies
@@ -248,13 +258,37 @@ describe('MetaMaskController', function () {
 
   describe('should reset states on first time profile load', function () {
     it('should reset state', function () {
-      assert(metamaskController.resetStates.calledOnce);
-      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+      assert(metamaskController.resetStates.callCount === 1);
+      assert.deepEqual(browser.storage.session.set.callCount === 1);
+      assert.deepEqual(browser.storage.session.set.getCall(0).args[0], {
+        isFirstMetaMaskControllerSetup: false,
+      });
     });
 
-    it('should not reset states if already set', function () {
-      // global.isFirstTime should also remain false
-      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    it('should not reset states if isFirstMetaMaskControllerSetup is false', function () {
+      const metamaskController2 = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: {
+          encrypt(_, object) {
+            this.object = object;
+            return Promise.resolve('mock-encrypted');
+          },
+          decrypt() {
+            return Promise.resolve(this.object);
+          },
+        },
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: false,
+      });
+      assert(metamaskController2.resetStates.callCount === 0);
+      assert.deepEqual(browser.storage.session.set.callCount === 0);
     });
   });
 
