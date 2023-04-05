@@ -62,7 +62,10 @@ import {
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];

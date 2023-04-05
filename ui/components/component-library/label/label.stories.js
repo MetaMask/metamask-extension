@@ -9,7 +9,8 @@ import {
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES, TextField } from '..';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
+import { TextField } from '..';
 
 import { Label } from './label';
 
