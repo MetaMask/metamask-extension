@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Icon, ICON_NAMES } from '..';
+import { Icon, IconName } from '..';
 import { HeaderBase } from './header-base';
 
 describe('HeaderBase', () => {
@@ -39,7 +39,7 @@ describe('HeaderBase', () => {
     const { getByTestId } = render(
       <HeaderBase
         startAccessory={
-          <Icon data-testid="start-accessory" name={ICON_NAMES.ADD_SQUARE} />
+          <Icon data-testid="start-accessory" name={IconName.AddSquare} />
         }
       />,
     );
@@ -51,7 +51,7 @@ describe('HeaderBase', () => {
     const { getByTestId } = render(
       <HeaderBase
         endAccessory={
-          <Icon data-testid="end-accessory" name={ICON_NAMES.ADD_SQUARE} />
+          <Icon data-testid="end-accessory" name={IconName.AddSquare} />
         }
       />,
     );

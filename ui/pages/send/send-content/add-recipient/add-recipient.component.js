@@ -8,7 +8,10 @@ import RecipientGroup from '../../../../components/app/contact-list/recipient-gr
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
 import Confusable from '../../../../components/ui/confusable';
-import { Icon, ICON_NAMES } from '../../../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../../components/component-library/icon/deprecated';
 
 export default class AddRecipient extends Component {
   static propTypes = {
