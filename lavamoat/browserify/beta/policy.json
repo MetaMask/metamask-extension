@@ -695,6 +695,9 @@
       }
     },
     "@metamask/approval-controller": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "@metamask/approval-controller>nanoid": true,
         "@metamask/base-controller": true,
