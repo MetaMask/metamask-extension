@@ -308,7 +308,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      openPopup: opts.openPopup,
       onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         NetworkControllerEventType.InfuraIsBlocked,
