@@ -165,7 +165,7 @@ describe('MetaMask Reducers', () => {
       },
     );
 
-    expect(state.isNetworktMenuOpen).toStrictEqual(true);
+    expect(state.isNetworkMenuOpen).toStrictEqual(true);
   });
 
   it('updates value of tx by id', () => {
