@@ -31,9 +31,7 @@ const browserPolyfillMock = {
     getPlatformInfo: async () => 'mac',
   },
   storage: {
-    session: {
-      set: sinon.spy(),
-    },
+    session: {},
   },
 };
 
@@ -82,6 +80,10 @@ function MockEthContract() {
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
   'ethjs-contract': MockEthContract,
+}).default;
+
+const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
+  '../../shared/modules/mv3.utils': { isManifestV3: true },
 }).default;
 
 const currentNetworkId = '5';
@@ -173,10 +175,13 @@ describe('MetaMaskController', function () {
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
+  browserPolyfillMock.storage.session.set = sandbox.spy();
+
   before(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
     sinon.spy(MetaMaskController.prototype, 'resetStates');
+    sinon.spy(MetaMaskControllerMV3.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -253,9 +258,36 @@ describe('MetaMaskController', function () {
   });
 
   describe('should reset states on first time profile load', function () {
-    it('should reset state', function () {
-      assert(metamaskController.resetStates.callCount === 1);
-      assert.deepEqual(browserPolyfillMock.storage.session.set.callCount === 1);
+    it('in mv2, it should reset state without attempting to call browser storage', function () {
+      assert.equal(metamaskController.resetStates.callCount, 1);
+      assert.equal(browserPolyfillMock.storage.session.set.callCount, 0);
+    });
+
+    it('in mv3, it should reset state', function () {
+      MetaMaskControllerMV3.prototype.resetStates.resetHistory();
+      const metamaskControllerMV3 = new MetaMaskControllerMV3({
+        showUserConfirmation: noop,
+        encryptor: {
+          encrypt(_, object) {
+            this.object = object;
+            return Promise.resolve('mock-encrypted');
+          },
+          decrypt() {
+            return Promise.resolve(this.object);
+          },
+        },
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+      });
+      assert.equal(metamaskControllerMV3.resetStates.callCount, 1);
+      assert.equal(browserPolyfillMock.storage.session.set.callCount, 1);
       assert.deepEqual(
         browserPolyfillMock.storage.session.set.getCall(0).args[0],
         {
@@ -264,8 +296,10 @@ describe('MetaMaskController', function () {
       );
     });
 
-    it('should not reset states if isFirstMetaMaskControllerSetup is false', function () {
-      const metamaskController2 = new MetaMaskController({
+    it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
+      MetaMaskControllerMV3.prototype.resetStates.resetHistory();
+      browserPolyfillMock.storage.session.set.resetHistory();
+      const metamaskControllerMV3 = new MetaMaskControllerMV3({
         showUserConfirmation: noop,
         encryptor: {
           encrypt(_, object) {
@@ -286,8 +320,8 @@ describe('MetaMaskController', function () {
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: false,
       });
-      assert(metamaskController2.resetStates.callCount === 0);
-      assert.deepEqual(browserPolyfillMock.storage.session.set.callCount === 0);
+      assert.equal(metamaskControllerMV3.resetStates.callCount, 0);
+      assert.equal(browserPolyfillMock.storage.session.set.callCount, 0);
     });
   });
 
