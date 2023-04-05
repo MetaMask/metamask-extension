@@ -4,7 +4,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
 
 const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
   return (

@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
 import { AVATAR_BASE_SIZES } from './avatar-base.constants';
