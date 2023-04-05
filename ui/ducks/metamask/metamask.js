@@ -28,7 +28,7 @@ const initialState = {
   isAccountMenuOpen: false,
   identities: {},
   unapprovedTxs: {},
-  frequentRpcList: [],
+  networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
   pendingTokens: {},
@@ -166,6 +166,15 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    case actionConstants.FORCE_DISABLE_DESKTOP: {
+      return {
+        ...metamaskState,
+        desktopEnabled: false,
+      };
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     default:
       return metamaskState;
   }
@@ -227,11 +236,11 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDropdownState(state) {
-  return state.metamask.collectiblesDropdownState;
+export function getNftsDropdownState(state) {
+  return state.metamask.nftsDropdownState;
 }
 
-export const getCollectibles = (state) => {
+export const getNfts = (state) => {
   const {
     metamask: {
       allNfts,
@@ -245,7 +254,7 @@ export const getCollectibles = (state) => {
   return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
-export const getCollectibleContracts = (state) => {
+export const getNftContracts = (state) => {
   const {
     metamask: {
       allNftContracts,

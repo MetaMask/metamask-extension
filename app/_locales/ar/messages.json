@@ -79,12 +79,6 @@
   "asset": {
     "message": "الأصل"
   },
-  "attemptToCancel": {
-    "message": "هل تحاول الإلغاء؟"
-  },
-  "attemptToCancelDescription": {
-    "message": "تقديم هذه المحاولة لا يضمن أنه سيتم إلغاء معاملتك الأصلية. إذا نجحت محاولة الإلغاء ، فسيتم فرض رسوم المعاملة المذكورة أعلاه."
-  },
   "attemptingConnect": {
     "message": "محاولة الاتصال بسلسلة الكتل."
   },
@@ -134,20 +128,11 @@
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
   },
-  "buyWithWyre": {
-    "message": "قم بشراء عملة إيثير بواسطة Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع 1$ مباشرة في حساب MetaMask الخاص بك."
-  },
   "bytes": {
     "message": "بايتات"
   },
   "cancel": {
     "message": "إلغاء"
-  },
-  "cancellationGasFee": {
-    "message": "رسوم الإلغاء بعملة جاس"
   },
   "cancelled": {
     "message": "تم الإلغاء"
@@ -187,9 +172,6 @@
   },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
-  },
-  "continueToWyre": {
-    "message": "الاستمرار إلى Wyre"
   },
   "contractDeployment": {
     "message": "نشر العقد"
@@ -338,13 +320,6 @@
   },
   "general": {
     "message": "عام"
-  },
-  "getEther": {
-    "message": "احصل على إيثر"
-  },
-  "getEtherFromFaucet": {
-    "message": "احصل على الأثير من صنبور مقابل $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "شبكة اختبار Goerli "
@@ -642,35 +617,21 @@
   "reset": {
     "message": "إعادة"
   },
-  "resetAccount": {
-    "message": "إعادة تعيين الحساب"
-  },
-  "resetAccountDescription": {
-    "message": "ستؤدي إعادة تعيين حسابك إلى مسح سجل معاملتك."
-  },
   "restore": {
     "message": "استعادة"
   },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
-  "revealSeedWordsDescription": {
-    "message": "إذا كنت تنوي تغيير المتصفحات أو نقل أجهزة الكمبيوتر في أي وقت، فسوف تحتاج إلى عبارة الأمان هذه للوصول إلى حساباتك. احفظها في مكان آمن وسري."
-  },
   "revealSeedWordsWarning": {
-    "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "لا تشارك هذه الجملة مع أي شخص آخر!"
+    "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
   },
   "save": {
     "message": "حفظ"
-  },
-  "saveAsCsvFile": {
-    "message": "حفظ كملف CSV"
   },
   "scanInstructions": {
     "message": "ضع رمز الاستجابة السريعة أمام الكاميرا"
@@ -807,9 +768,6 @@
   "terms": {
     "message": "شروط الاستخدام"
   },
-  "testFaucet": {
-    "message": "اختبار Faucet"
-  },
   "tips": {
     "message": "المكافآت"
   },
@@ -928,9 +886,6 @@
   "userName": {
     "message": "اسم المستخدم"
   },
-  "viewAccount": {
-    "message": "عرض حساب"
-  },
   "viewContact": {
     "message": "عرض جهة الاتصال"
   },
@@ -939,9 +894,6 @@
   },
   "welcomeBack": {
     "message": "نرحب بعودتك!"
-  },
-  "yesLetsTry": {
-    "message": "نعم، دعنا نجرب"
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."

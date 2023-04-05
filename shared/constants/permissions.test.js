@@ -11,7 +11,10 @@ describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
       Object.keys(endowmentPermissionBuilders)
-        .filter((targetKey) => !ExcludedSnapEndowments.has(targetKey))
+        .filter(
+          (targetKey) =>
+            !Object.keys(ExcludedSnapEndowments).includes(targetKey),
+        )
         .sort(),
     );
   });
@@ -23,7 +26,8 @@ describe('RestrictedMethods', () => {
       [
         'eth_accounts',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
-          (targetKey) => !ExcludedSnapPermissions.has(targetKey),
+          (targetKey) =>
+            !Object.keys(ExcludedSnapPermissions).includes(targetKey),
         ),
       ].sort(),
     );

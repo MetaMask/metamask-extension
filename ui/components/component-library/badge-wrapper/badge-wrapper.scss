@@ -1,0 +1,80 @@
+/**
+* Mixin that renders the CSS values for badge positions and value
+*/
+@mixin badgePosition($position, $value) {
+  @if $position == top-right {
+    top: $value;
+    right: $value;
+    transform: scale(1) translate(50%, -50%);
+    transform-origin: 100% 0%;
+  }
+
+  @else if $position == bottom-right {
+    bottom: $value;
+    right: $value;
+    transform: scale(1) translate(50%, 50%);
+    transform-origin: 100% 100%;
+  }
+
+  @else if $position == top-left {
+    top: $value;
+    left: $value;
+    transform: scale(1) translate(-50%, -50%);
+    transform-origin: 0% 0%;
+  }
+
+  @else if $position == bottom-left {
+    bottom: $value;
+    left: $value;
+    transform: scale(1) translate(-50%, 50%);
+    transform-origin: 0% 100%;
+  }
+}
+
+.mm-badge-wrapper {
+  --badge-wrapper-position-circular: 14%;
+  --badge-wrapper-position-rectangular: 0;
+
+  position: relative;
+  align-self: start; // prevents stretching of badge-wrapper when in flexbox container to maintain badge positioning
+
+  &__badge-container {
+    position: absolute;
+
+    &--circular {
+      &-top-right {
+        @include badgePosition('top-right', var(--badge-wrapper-position-circular));
+      }
+
+      &-bottom-right {
+        @include badgePosition('bottom-right', var(--badge-wrapper-position-circular));
+      }
+
+      &-top-left {
+        @include badgePosition('top-left', var(--badge-wrapper-position-circular));
+      }
+
+      &-bottom-left {
+        @include badgePosition('bottom-left', var(--badge-wrapper-position-circular));
+      }
+    }
+
+    &--rectangular {
+      &-top-right {
+        @include badgePosition('top-right', var(--badge-wrapper-position-rectangular));
+      }
+
+      &-bottom-right {
+        @include badgePosition('bottom-right', var(--badge-wrapper-position-rectangular));
+      }
+
+      &-top-left {
+        @include badgePosition('top-left', var(--badge-wrapper-position-rectangular));
+      }
+
+      &-bottom-left {
+        @include badgePosition('bottom-left', var(--badge-wrapper-position-rectangular));
+      }
+    }
+  }
+}

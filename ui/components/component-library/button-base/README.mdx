@@ -19,19 +19,19 @@ The `ButtonBase` accepts all props below as well as all [Box](/docs/components-u
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js`
-to change the size of `ButtonBase`. Defaults to `SIZES.MD`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js`
+to change the size of `ButtonBase`. Defaults to `Size.MD`
 
-Optional: `BUTTON_BASE_SIZES` from `./button-base` object can be used instead of `SIZES`.
+Optional: `BUTTON_BASE_SIZES` from `./button-base` object can be used instead of `Size`.
 
 Possible sizes include:
 
-- `SIZES.SM` 32px
-- `SIZES.MD` 40px
-- `SIZES.LG` 48px
+- `Size.SM` 32px
+- `Size.MD` 40px
+- `Size.LG` 48px
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonbase--size" />
+  <Story id="components-componentlibrary-buttonbase--size-story" />
 </Canvas>
 
 ```jsx
@@ -98,6 +98,20 @@ import { ButtonBase } from '../../component-library';
 <ButtonBase href="/metamask">Anchor Element</ButtonBase>;
 ```
 
+### External link
+
+When an `externalLink` prop is passed it will change the element to an anchor(`a`) tag and add the `target="_blank"` and `rel="noopener noreferrer"` attributes.
+
+  <Story id="components-componentlibrary-buttonbase--external-link" />
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonBase>;
+```
+
 ### Disabled
 
 Use the boolean `disabled` prop to disable button
@@ -128,15 +142,56 @@ import { ButtonBase } from '../../component-library';
 
 ### Icon Name
 
-Use the `iconName` prop and the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
+Use the `startIconName` and/or `endIconName` prop with the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonbase--icon" />
+  <Story id="components-componentlibrary-buttonbase--start-icon-name" />
 </Canvas>
 
 ```jsx
 import { ButtonBase } from '../../component-library';
 import { ICON_NAMES } from '../icon';
 
-<ButtonBase icon={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
+<ButtonBase startIconName={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--end-icon-name" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+import { ICON_NAMES } from '../icon';
+
+<ButtonBase endIconName={ICON_NAMES.ARROW_2_RIGHT}>Button</ButtonBase>;
+```
+
+### RTL
+
+For RTL language support use the `textProps` prop to pass a `textDirection` prop.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--rtl" />
+</Canvas>
+
+```jsx
+import { ButtonBase, ICON_NAMES } from '../../component-library';
+
+<>
+  <ButtonBase
+    startIconName={ICON_NAMES.ADD_SQUARE}
+    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+  >
+    Button Demo
+  </ButtonBase>
+  <ButtonBase
+    startIconName={ICON_NAMES.ADD_SQUARE}
+    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+    textProps={{
+      textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
+    }}
+  >
+    Button Demo
+  </ButtonBase>
+</>;
 ```

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { useHistory } from 'react-router-dom';
@@ -7,7 +7,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { ICON_NAMES } from '../../../components/component-library';
+import { ButtonIcon, ICON_NAMES } from '../../../components/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 const AssetOptions = ({
   onRemove,
@@ -18,11 +19,10 @@ const AssetOptions = ({
   isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
-  const [assetOptionsButtonElement, setAssetOptionsButtonElement] =
-    useState(null);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const history = useHistory();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+  const ref = useRef(false);
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -34,17 +34,18 @@ const AssetOptions = ({
   };
 
   return (
-    <>
-      <button
-        className="fas fa-ellipsis-v asset-options__button"
+    <div ref={ref}>
+      <ButtonIcon
+        className="asset-options__button"
         data-testid="asset-options__button"
         onClick={() => setAssetOptionsOpen(true)}
-        ref={setAssetOptionsButtonElement}
-        title={t('assetOptions')}
+        ariaLabel={t('assetOptions')}
+        iconName={ICON_NAMES.MORE_VERTICAL}
+        color={Color.textDefault}
       />
       {assetOptionsOpen ? (
         <Menu
-          anchorElement={assetOptionsButtonElement}
+          anchorElement={ref.current}
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
@@ -99,7 +100,7 @@ const AssetOptions = ({
           )}
         </Menu>
       ) : null}
-    </>
+    </div>
   );
 };
 

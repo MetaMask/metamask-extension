@@ -19,7 +19,7 @@ export default {
   args: {
     tabs: [
       {
-        icon: <i className="fa fa-cog" />,
+        icon: <Icon name={ICON_NAMES.SETTING} />,
         content: 'General',
         key: 'general',
       },

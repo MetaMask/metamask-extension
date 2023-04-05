@@ -38,19 +38,19 @@ import { Icon, ICON_NAMES } from '../../component-library';
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `Icon`. Defaults to `SIZES.SM`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Icon`. Defaults to `Size.SM`
 
 Possible sizes include:
 
-- `SIZES.XS` 12px
-- `SIZES.SM` 16px
-- `SIZES.MD` 20px
-- `SIZES.LG` 24px
-- `SIZES.XL` 32px
-- `SIZES.INHERIT` inherits the font-size from parent element. This is useful for inline icons in text.
+- `Size.XS` 12px
+- `Size.SM` 16px
+- `Size.MD` 20px
+- `Size.LG` 24px
+- `Size.XL` 32px
+- `Size.inherit` inherits the font-size from parent element. This is useful for inline icons in text.
 
 <Canvas>
-  <Story id="components-componentlibrary-icon--size" />
+  <Story id="components-componentlibrary-icon--size-story" />
 </Canvas>
 
 ```jsx
@@ -70,10 +70,10 @@ import { Icon, ICON_NAMES } from '../../component-library';
 
 ### Color
 
-Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of `Icon`. Defaults to `COLORS.INHERIT` which will use the text color of the parent element. This is useful for inline icons.
+Use the `color` prop and the `Color` object from `./ui/helpers/constants/design-system.js` to change the color of `Icon`. Defaults to `Color.inherit` which will use the text color of the parent element. This is useful for inline icons.
 
 <Canvas>
-  <Story id="components-componentlibrary-icon--color" />
+  <Story id="components-componentlibrary-icon--color-story" />
 </Canvas>
 
 ```jsx
@@ -119,7 +119,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { ICON_NAMES, Icon, Text } from '../../component-library';
+import { ICON_NAMES, Icon, Text, Label } from '../../component-library';
 
 <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
@@ -158,6 +158,21 @@ import { ICON_NAMES, Icon, Text } from '../../component-library';
     <Icon name={ICON_NAMES.ADD} color={IconColor.iconDefault} marginRight={2} />
     <Text>Create account</Text>
   </Box>
+  <Label>
+    Custom spending cap{' '}
+    <Icon name={ICON_NAMES.INFO} size={ICON_SIZES.AUTO} marginLeft={1} />
+  </Label>
+  <div>
+    <Text>
+      <Icon
+        name={ICON_NAMES.WARNING}
+        size={ICON_SIZES.AUTO}
+        marginLeft={1}
+        color={IconColor.warningDefault}
+      />{' '}
+      Warning
+    </Text>
+  </div>
 </Box>;
 ```
 

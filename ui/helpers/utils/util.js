@@ -445,11 +445,14 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   // Primary type can be an array.
   const isArray = primaryType && isArrayType(primaryType);
   if (isArray) {
-    return msg.map((value) =>
-      sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
-    );
+    return {
+      value: msg.map((value) =>
+        sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
+      ),
+      type: primaryType,
+    };
   } else if (isSolidityType(primaryType)) {
-    return msg;
+    return { value: msg, type: primaryType };
   }
 
   // If not, assume to be struct
@@ -460,7 +463,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
     throw new Error(`Invalid primary type definition`);
   }
 
-  const sanitizedMessage = {};
+  const sanitizedStruct = {};
   const msgKeys = Object.keys(msg);
   msgKeys.forEach((msgKey) => {
     const definedType = Object.values(baseTypeDefinitions).find(
@@ -471,13 +474,13 @@ export const sanitizeMessage = (msg, primaryType, types) => {
       return;
     }
 
-    sanitizedMessage[msgKey] = sanitizeMessage(
+    sanitizedStruct[msgKey] = sanitizeMessage(
       msg[msgKey],
       definedType.type,
       types,
     );
   });
-  return sanitizedMessage;
+  return { value: sanitizedStruct, type: primaryType };
 };
 
 export function getAssetImageURL(image, ipfsGateway) {

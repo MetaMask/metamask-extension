@@ -11,9 +11,12 @@ import {
   JustifyContent,
   AlignItems,
   TextColor,
+  Size,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import Button from '../../../ui/button';
 import Box from '../../../ui/box/box';
+import { Icon, ICON_NAMES } from '../../../component-library';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();
@@ -32,7 +35,12 @@ export default function SnapContentFooter({ snapName, snapId }) {
       paddingBottom={4}
       className="snap-content-footer"
     >
-      <i className="fas fa-exclamation-circle fa-sm" />
+      <Icon
+        name={ICON_NAMES.WARNING}
+        size={Size.SM}
+        color={IconColor.iconMuted}
+        paddingRight={1}
+      />
       <Typography color={TextColor.textMuted} variant={TypographyVariant.H7}>
         {t('snapContent', [
           <Button type="inline" onClick={handleNameClick} key="button">

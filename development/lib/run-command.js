@@ -1,3 +1,4 @@
+const fs = require('fs');
 const spawn = require('cross-spawn');
 
 /**
@@ -87,17 +88,22 @@ async function runCommand(command, args) {
  *
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
+ * @param {string} output - The output file to write to
  */
-async function runInShell(command, args) {
+async function runInShell(command, args, output) {
   let errorSignal;
   let errorCode;
   const internalError = new Error('Internal');
   try {
     await new Promise((resolve, reject) => {
-      const childProcess = spawn(command, args, {
-        encoding: 'utf8',
-        stdio: 'inherit',
-      });
+      const childProcess = spawn(command, args);
+      childProcess.stdout.setEncoding('utf8');
+      childProcess.stderr.setEncoding('utf8');
+      childProcess.stdout.pipe(process.stdout);
+      childProcess.stderr.pipe(process.stderr);
+      if (output) {
+        childProcess.stdout.pipe(fs.createWriteStream(output));
+      }
 
       childProcess.once('exit', (code, signal) => {
         if (code === 0) {

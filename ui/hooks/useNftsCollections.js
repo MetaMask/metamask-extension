@@ -1,79 +1,80 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import {
-  getCollectibles,
-  getCollectibleContracts,
-} from '../ducks/metamask/metamask';
+import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { usePrevious } from './usePrevious';
+import { useI18nContext } from './useI18nContext';
 
-export function useCollectiblesCollections() {
+export function useNftsCollections() {
+  const t = useI18nContext();
+  const previouslyOwnedText = t('nftsPreviouslyOwned');
+  const unknownCollectionText = t('unknownCollection');
+
   const [collections, setCollections] = useState({});
   const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
-    collectionName: 'Previously Owned',
-    collectibles: [],
+    collectionName: previouslyOwnedText,
+    nfts: [],
   });
-  const collectibles = useSelector(getCollectibles);
-  const [collectiblesLoading, setCollectiblesLoading] = useState(
-    () => collectibles?.length >= 0,
-  );
+  const nfts = useSelector(getNfts);
+  const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
-  const collectibleContracts = useSelector(getCollectibleContracts);
-  const prevCollectibles = usePrevious(collectibles);
+  const nftContracts = useSelector(getNftContracts);
+  const prevNfts = usePrevious(nfts);
   const prevChainId = usePrevious(chainId);
   const prevSelectedAddress = usePrevious(selectedAddress);
+
   useEffect(() => {
     const getCollections = () => {
-      setCollectiblesLoading(true);
+      setNftsLoading(true);
       if (selectedAddress === undefined || chainId === undefined) {
         return;
       }
       const newCollections = {};
       const newPreviouslyOwnedCollections = {
-        collectionName: 'Previously Owned',
-        collectibles: [],
+        collectionName: previouslyOwnedText,
+        nfts: [],
       };
 
-      collectibles.forEach((collectible) => {
-        if (collectible?.isCurrentlyOwned === false) {
-          newPreviouslyOwnedCollections.collectibles.push(collectible);
-        } else if (newCollections[collectible.address]) {
-          newCollections[collectible.address].collectibles.push(collectible);
+      nfts.forEach((nft) => {
+        if (nft?.isCurrentlyOwned === false) {
+          newPreviouslyOwnedCollections.nfts.push(nft);
+        } else if (newCollections[nft.address]) {
+          newCollections[nft.address].nfts.push(nft);
         } else {
-          const collectionContract = collectibleContracts.find(
-            ({ address }) => address === collectible.address,
+          const collectionContract = nftContracts.find(
+            ({ address }) => address === nft.address,
           );
-          newCollections[collectible.address] = {
-            collectionName: collectionContract?.name || collectible.name,
-            collectionImage: collectionContract?.logo || collectible.image,
-            collectibles: [collectible],
+          newCollections[nft.address] = {
+            collectionName: collectionContract?.name || unknownCollectionText,
+            collectionImage: collectionContract?.logo || nft.image,
+            nfts: [nft],
           };
         }
       });
       setCollections(newCollections);
       setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
-      setCollectiblesLoading(false);
+      setNftsLoading(false);
     };
 
     if (
-      !isEqual(prevCollectibles, collectibles) ||
+      !isEqual(prevNfts, nfts) ||
       !isEqual(prevSelectedAddress, selectedAddress) ||
       !isEqual(prevChainId, chainId)
     ) {
       getCollections();
     }
   }, [
-    collectibles,
-    prevCollectibles,
-    collectibleContracts,
-    setCollectiblesLoading,
+    nfts,
+    prevNfts,
+    nftContracts,
+    setNftsLoading,
     chainId,
     prevChainId,
     selectedAddress,
     prevSelectedAddress,
   ]);
 
-  return { collectiblesLoading, collections, previouslyOwnedCollection };
+  return { nftsLoading, collections, previouslyOwnedCollection };
 }

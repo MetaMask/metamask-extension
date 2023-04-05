@@ -1,9 +1,11 @@
 .mm-form-text-field {
-  --help-text-opacity-disabled: 0.5;
+  --text-opacity-disabled: 0.5;
 
   &--disabled {
+    .mm-form-text-field__label,
     .mm-form-text-field__help-text {
-      opacity: var(--help-text-opacity-disabled);
+      opacity: var(--text-opacity-disabled);
+      cursor: default;
     }
   }
 }

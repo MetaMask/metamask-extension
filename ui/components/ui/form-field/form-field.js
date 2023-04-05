@@ -26,6 +26,7 @@ export default function FormField({
   TooltipCustomComponent,
   titleDetail = '',
   titleDetailWrapperProps,
+  titleHeadingWrapperProps,
   error,
   onChange = undefined,
   value = 0,
@@ -55,6 +56,7 @@ export default function FormField({
             className="form-field__heading-title"
             display={DISPLAY.FLEX}
             alignItems={AlignItems.baseline}
+            {...titleHeadingWrapperProps}
           >
             {TitleTextCustomComponent ||
               (titleText && (
@@ -208,6 +210,13 @@ FormField.propTypes = {
    * Accepts all props of the Box component
    */
   titleDetailWrapperProps: PropTypes.shape({
+    ...Box.propTypes,
+  }),
+  /**
+   * Props to pass to wrapping Box component of the titleHeading component
+   * Accepts all props of the Box component
+   */
+  titleHeadingWrapperProps: PropTypes.shape({
     ...Box.propTypes,
   }),
   /**

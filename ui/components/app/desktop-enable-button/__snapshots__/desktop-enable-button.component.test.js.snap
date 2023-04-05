@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Desktop Enable Button should match snapshot 1`] = `
+<div>
+  <button
+    class="button btn--rounded btn-primary btn--large"
+    role="button"
+    tabindex="0"
+  >
+    Enable Desktop App
+  </button>
+</div>
+`;

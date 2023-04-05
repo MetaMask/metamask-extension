@@ -75,12 +75,6 @@
   "asset": {
     "message": "Ressurs"
   },
-  "attemptToCancel": {
-    "message": "Forsøk å avbryte"
-  },
-  "attemptToCancelDescription": {
-    "message": "Å sende inn dette forsøket garanterer ikke at den opprinnelige transaksjonen blir kansellert. Hvis kanselleringsforsøket lykkes, vil du bli belastet transaksjonsgebyret ovenfor."
-  },
   "attemptingConnect": {
     "message": "Prøver å opprette forbindelse med blokkjede"
   },
@@ -130,17 +124,8 @@
   "browserNotSupported": {
     "message": "Nettleseren din støttes ikke ..."
   },
-  "buyWithWyre": {
-    "message": "Kjøp $1 med Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre lar deg bruke et kredittkort for å sette inn $1 rett på MetaMask-kontoen din."
-  },
   "cancel": {
     "message": "Avbryt"
-  },
-  "cancellationGasFee": {
-    "message": "Kansellering gassavgift"
   },
   "cancelled": {
     "message": "Avbrutt"
@@ -180,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
-  },
-  "continueToWyre": {
-    "message": "Fortsett til Wyre "
   },
   "contractDeployment": {
     "message": "Distribusjon av kontrakten"
@@ -331,13 +313,6 @@
   },
   "general": {
     "message": "Generell"
-  },
-  "getEther": {
-    "message": "Skaff Ether "
-  },
-  "getEtherFromFaucet": {
-    "message": "Få Ether fra en kran for $1",
-    "description": "Displays network name for Ether faucet"
   },
   "hardware": {
     "message": "Maskinvare"
@@ -629,35 +604,21 @@
   "reset": {
     "message": "Tilbakestill"
   },
-  "resetAccount": {
-    "message": "Tilbakestill konto"
-  },
-  "resetAccountDescription": {
-    "message": "Hvis du tilbakestiller kontoen din vil transaksjonshistorien din slettes. "
-  },
   "restore": {
     "message": "Gjenopprett"
   },
   "revealSeedWords": {
     "message": "Vis frøord"
   },
-  "revealSeedWordsDescription": {
-    "message": "Hvis du noen gang bytter nettlesere eller flytter datamaskiner, trenger du denne mnemoniske gjenopprettingsfrasen for å få tilgang til kontoene dine. Lagre dem på et trygt og hemmelig sted."
-  },
   "revealSeedWordsWarning": {
-    "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "IKKE del denne frasen med noen! "
+    "message": "Disse ordene kan brukes for å stjele alle kontoene dine. ",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "NY RPC-URL "
   },
   "save": {
     "message": "Lagre"
-  },
-  "saveAsCsvFile": {
-    "message": "Lagre som CSV-fil "
   },
   "scanInstructions": {
     "message": "Plasser QR-koden foran kameraet ditt"
@@ -788,9 +749,6 @@
   "terms": {
     "message": "Brukervilkår"
   },
-  "testFaucet": {
-    "message": "Testkran"
-  },
   "to": {
     "message": "Til "
   },
@@ -906,9 +864,6 @@
   "userName": {
     "message": "Brukernavn"
   },
-  "viewAccount": {
-    "message": "Se konto"
-  },
   "viewContact": {
     "message": "Se kontrakt"
   },
@@ -917,9 +872,6 @@
   },
   "welcomeBack": {
     "message": "Velkommen tilbake!"
-  },
-  "yesLetsTry": {
-    "message": "Ja, la oss prøve"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."

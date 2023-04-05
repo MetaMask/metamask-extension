@@ -75,12 +75,6 @@
   "asset": {
     "message": "Актив"
   },
-  "attemptToCancel": {
-    "message": "Спробувати скасувати?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Виконання цієї спроби не гарантує скасування початкової транзакції. Якщо спроба скасування вдасться, з вас буде стягнуто зазначену вище комісію."
-  },
   "attemptingConnect": {
     "message": "Спроба підключення до розподіленої бази даних."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
-  "buyWithWyre": {
-    "message": "Купити $1 через Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre дає змогу використовувати кредитну картку для внесення валюти $1 безпосередньо у свій гаманець MetaMask."
-  },
   "bytes": {
     "message": "Байти"
   },
   "cancel": {
     "message": "Скасувати"
-  },
-  "cancellationGasFee": {
-    "message": "Вартість пального за скасування"
   },
   "cancelled": {
     "message": "Скасовано"
@@ -183,9 +168,6 @@
   },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Продовжити у Wyre"
   },
   "contractDeployment": {
     "message": "Розгортання контракту"
@@ -338,13 +320,6 @@
   },
   "general": {
     "message": "Загальні"
-  },
-  "getEther": {
-    "message": "Отримати Ефір"
-  },
-  "getEtherFromFaucet": {
-    "message": "Отримайте Ether з крану за $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Тестова мережа Goerli "
@@ -645,35 +620,21 @@
   "reset": {
     "message": "Скинути"
   },
-  "resetAccount": {
-    "message": "Перезапустити обліковий запис"
-  },
-  "resetAccountDescription": {
-    "message": "Перезапуск вашого облікового запису очистить історію ваших транзакцій."
-  },
   "restore": {
     "message": "Відновити"
   },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
-  "revealSeedWordsDescription": {
-    "message": "При зміні браузера або комп'ютера, вам знадобиться seed-фраза для отримання доступу до ваших облікових записів. Збережіть її у надійному місці."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "НЕ передавайте цю фразу нікому!"
+    "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Новий RPC URL"
   },
   "save": {
     "message": "Зберегти"
-  },
-  "saveAsCsvFile": {
-    "message": "Зберегти як файл CSV"
   },
   "scanInstructions": {
     "message": "Розташуйте QR-код перед вашою камерою"
@@ -810,9 +771,6 @@
   "terms": {
     "message": "Умови використання"
   },
-  "testFaucet": {
-    "message": "Тестовий кран"
-  },
   "tips": {
     "message": "Чайові"
   },
@@ -931,9 +889,6 @@
   "userName": {
     "message": "Ім’я користувача"
   },
-  "viewAccount": {
-    "message": "Переглянути обліковий запис"
-  },
   "viewContact": {
     "message": "Переглянути контакт"
   },
@@ -942,9 +897,6 @@
   },
   "welcomeBack": {
     "message": "З поверненням!"
-  },
-  "yesLetsTry": {
-    "message": "Так, давайте спробуємо"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
