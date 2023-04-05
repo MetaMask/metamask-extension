@@ -7,6 +7,7 @@
     display: grid;
     grid-template-columns: 30% minmax(30%, 1fr) 30%;
     height: 64px;
+
     @include screen-sm-max {
       height: 100%;
     }
@@ -27,6 +28,7 @@
   &__lock-contents {
     flex-flow: row nowrap;
     height: 64px;
+
     @include screen-sm-max {
       height: 100%;
     }
@@ -44,6 +46,7 @@
     }
   }
 }
+
 .multichain-app-header-shadow {
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 }
