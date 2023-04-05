@@ -58,7 +58,7 @@ import {
   CronjobController,
   JsonSnapsRegistry,
   SnapController,
-  IframeExecutionService,
+  WebWorkerExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
@@ -772,7 +772,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
+      documentUrl: new URL('https://execution.metamask.io/0.15.1/worker/pool/'),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
@@ -781,7 +781,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapExecutionService =
       this.opts.overrides?.createSnapExecutionService?.(
         snapExecutionServiceArgs,
-      ) || new IframeExecutionService(snapExecutionServiceArgs);
+      ) || new WebWorkerExecutionService(snapExecutionServiceArgs);
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
