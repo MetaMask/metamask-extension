@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { BannerBase, Icon, ICON_NAMES } from '..';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
+import { BannerBase } from '..';
 
 import {
   BackgroundColor,
