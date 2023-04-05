@@ -116,7 +116,13 @@ export default function LedgerInstructionField({ showDataInstruction }) {
     };
     determineTransportStatus();
     initialConnectedDeviceCheck();
-  }, [dispatch, ledgerTransportType, webHidConnectedStatus, transportStatus]);
+  }, [
+    dispatch,
+    ledgerTransportType,
+    webHidConnectedStatus,
+    transportStatus,
+    hdWalletState,
+  ]);
 
   useEffect(() => {
     return () => {
