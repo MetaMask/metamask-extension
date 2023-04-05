@@ -71,6 +71,7 @@ export const AppHeader = ({ onClick }) => {
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}
           margin={2}
+          data-testid="app-header-logo"
           justifyContent={JustifyContent.center}
         >
           <MetafoxLogo
