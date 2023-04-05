@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import TabBar from '.';
 
 export default {

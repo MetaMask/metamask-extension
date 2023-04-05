@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { Color, SEVERITIES } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 
 import { HelpText } from './help-text';
 

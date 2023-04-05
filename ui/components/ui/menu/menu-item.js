@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Text, Icon, ICON_SIZES } from '../../component-library';
+import { Text } from '../../component-library';
+import { Icon, ICON_SIZES } from '../../component-library/icon/deprecated';
 import { TextVariant } from '../../../helpers/constants/design-system';
 
 const MenuItem = ({

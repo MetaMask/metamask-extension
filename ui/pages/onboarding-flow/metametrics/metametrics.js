@@ -28,7 +28,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
 
 import Box from '../../../components/ui/box/box';
 

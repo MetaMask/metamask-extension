@@ -7,7 +7,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
 import Typography from '../../ui/typography';
-import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ButtonLink } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
