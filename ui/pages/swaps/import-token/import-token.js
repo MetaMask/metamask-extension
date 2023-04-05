@@ -5,10 +5,10 @@ import UrlIcon from '../../../components/ui/url-icon';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { Text } from '../../../components/component-library';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
-  TypographyVariant,
+  TextVariant,
   FONT_WEIGHT,
   AlignItems,
   DISPLAY,
@@ -62,21 +62,22 @@ export default function ImportToken({
           fallbackClassName="import-token__token-icon"
           name={tokenForImport.symbol}
         />
-        <Typography
-          ariant={TypographyVariant.H4}
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
           fontWeight={FONT_WEIGHT.BOLD}
           boxProps={{ marginTop: 2, marginBottom: 3 }}
         >
           {tokenForImport.name || ''}
-        </Typography>
-        <Typography variant={TypographyVariant.H6}>{t('contract')}:</Typography>
-        <Typography
+        </Text>
+        <Text variant={TextVariant.bodySm} as="h6">{t('contract')}:</Text>
+        <Text
+          variant={TextVariant.bodySm}
           className="import-token__contract-address"
-          variant={TypographyVariant.H7}
-          boxProps={{ marginBottom: 6 }}
-        >
+          as="h6"
+          boxProps={{ marginBottom: 6 }}>
           {tokenForImport.address || ''}
-        </Typography>
+        </Text>
       </Box>
     </Popover>
   );
