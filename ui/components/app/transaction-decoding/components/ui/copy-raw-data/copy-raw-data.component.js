@@ -4,7 +4,10 @@ import Tooltip from '../../../../../ui/tooltip/tooltip';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
 import { useCopyToClipboard } from '../../../../../../hooks/useCopyToClipboard';
-import { Icon, ICON_NAMES } from '../../../../../component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../../../component-library/icon/deprecated';
 import { IconColor } from '../../../../../../helpers/constants/design-system';
 
 const CopyRawData = ({ data }) => {

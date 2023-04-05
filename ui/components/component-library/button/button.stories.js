@@ -6,7 +6,7 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '../icon';
+import { ICON_NAMES } from '../icon/deprecated';
 import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
 import Box from '../../ui/box/box';
 import { Text } from '../text';

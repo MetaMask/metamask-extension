@@ -37,10 +37,10 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import {
-  ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../components/component-library';
 
 export default function AddNft() {
   const t = useI18nContext();

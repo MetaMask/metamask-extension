@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import Box from '../../ui/box/box';
+import Box from '../../../ui/box/box';
 
 import {
   Size,
   IconColor,
   DISPLAY,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
 import { ICON_SIZES, ICON_NAMES } from './icon.constants';
 

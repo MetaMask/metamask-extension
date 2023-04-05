@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Typography from '../typography';
 import Tooltip from '../tooltip';
 
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import FormField from '.';
