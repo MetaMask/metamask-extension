@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES } from '..';
+import { Icon, ICON_NAMES } from '../icon/deprecated';
 
 import { HelpText } from './help-text';
 

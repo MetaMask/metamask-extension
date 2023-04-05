@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import ApproveContentCard from './approve-content-card';
 
 export default {

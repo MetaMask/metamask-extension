@@ -33,7 +33,6 @@ import {
   RejectRequest,
 } from '@metamask/approval-controller';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { detectSIWE } from '../../../shared/modules/siwe';
 import PreferencesController from './preferences';
 
 const controllerName = 'SignController';
@@ -321,11 +320,8 @@ export default class SignController extends BaseControllerV2<
     msgParams: PersonalMessageParams,
     req: OriginalRequest,
   ): Promise<string> {
-    const ethereumSignInData = this._getEthereumSignInData(msgParams);
-    const finalMsgParams = { ...msgParams, siwe: ethereumSignInData };
-
     return this._personalMessageManager.addUnapprovedMessageAsync(
-      finalMsgParams,
+      msgParams,
       req,
     );
   }
@@ -616,10 +612,6 @@ export default class SignController extends BaseControllerV2<
       ...this.state.unapprovedPersonalMsgs,
       ...this.state.unapprovedTypedMessages,
     }[messageId];
-  }
-
-  private _getEthereumSignInData(messgeParams: PersonalMessageParams): any {
-    return detectSIWE(messgeParams);
   }
 
   private _requestApproval(
