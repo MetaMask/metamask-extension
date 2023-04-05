@@ -32,7 +32,7 @@ const browserPolyfillMock = {
   },
   storage: {
     session: {
-      set: () => undefined,
+      set: sinon.spy(),
     },
   },
 };
@@ -206,10 +206,6 @@ describe('MetaMaskController', function () {
         ]),
       );
 
-    sandbox.replace(browser, 'storage.session', {
-      set: sandbox.stub(),
-    });
-
     sandbox.replace(browser, 'runtime', {
       sendMessage: sandbox.stub().rejects(),
     });
@@ -259,10 +255,13 @@ describe('MetaMaskController', function () {
   describe('should reset states on first time profile load', function () {
     it('should reset state', function () {
       assert(metamaskController.resetStates.callCount === 1);
-      assert.deepEqual(browser.storage.session.set.callCount === 1);
-      assert.deepEqual(browser.storage.session.set.getCall(0).args[0], {
-        isFirstMetaMaskControllerSetup: false,
-      });
+      assert.deepEqual(browserPolyfillMock.storage.session.set.callCount === 1);
+      assert.deepEqual(
+        browserPolyfillMock.storage.session.set.getCall(0).args[0],
+        {
+          isFirstMetaMaskControllerSetup: false,
+        },
+      );
     });
 
     it('should not reset states if isFirstMetaMaskControllerSetup is false', function () {
@@ -288,7 +287,7 @@ describe('MetaMaskController', function () {
         isFirstMetaMaskControllerSetup: false,
       });
       assert(metamaskController2.resetStates.callCount === 0);
-      assert.deepEqual(browser.storage.session.set.callCount === 0);
+      assert.deepEqual(browserPolyfillMock.storage.session.set.callCount === 0);
     });
   });
 
