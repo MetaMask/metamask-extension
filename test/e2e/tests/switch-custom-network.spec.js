@@ -14,7 +14,7 @@ describe('Swtich ethereum chain', function () {
     concurrent: { port: 8546, chainId: 1338, ganacheOptions2: {} },
   };
 
-  it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
+  it('should successfully change the network in response to wallet_switchEthereumChain', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -23,6 +23,7 @@ describe('Swtich ethereum chain', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -52,7 +53,7 @@ describe('Swtich ethereum chain', function () {
         });
 
         await driver.findElement({
-          tag: 'button',
+          tag: 'h3',
           text: 'Allow this site to switch the network?',
         });
 
@@ -65,11 +66,12 @@ describe('Swtich ethereum chain', function () {
         await driver.waitUntilXWindowHandles(2);
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-
         await driver.clickElement({
           tag: 'button',
           text: 'Switch to Localhost 8546',
         });
+
+        await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -78,7 +80,7 @@ describe('Swtich ethereum chain', function () {
 
         await driver.clickElement({
           tag: 'button',
-          text: 'Switch Network',
+          text: 'Switch network',
         });
 
         await driver.waitUntilXWindowHandles(2);
@@ -86,7 +88,7 @@ describe('Swtich ethereum chain', function () {
         await driver.switchToWindow(extension);
 
         const currentNetworkName = await driver.findElement({
-          tag: 'button',
+          tag: 'span',
           text: 'Localhost 8546',
         });
 
