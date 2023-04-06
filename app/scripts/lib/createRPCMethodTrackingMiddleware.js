@@ -1,12 +1,13 @@
 import { errorCodes } from 'eth-rpc-errors';
+import { detectSIWE } from '@metamask/controller-utils';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { SECOND } from '../../../shared/constants/time';
-import { detectSIWE } from '../../../shared/modules/siwe';
+
 import {
-  EVENT,
-  EVENT_NAMES,
-  METAMETRIC_KEY_OPT,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 
 /**
@@ -46,50 +47,50 @@ const RATE_LIMIT_MAP = {
  */
 const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.ETH_SIGN]: {
-    APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
-    FAILED: EVENT_NAMES.SIGNATURE_FAILED,
-    REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
-    REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
+    APPROVED: MetaMetricsEventName.SignatureApproved,
+    FAILED: MetaMetricsEventName.SignatureFailed,
+    REJECTED: MetaMetricsEventName.SignatureRejected,
+    REQUESTED: MetaMetricsEventName.SignatureRequested,
   },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: {
-    APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
-    REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
-    REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
+    APPROVED: MetaMetricsEventName.SignatureApproved,
+    REJECTED: MetaMetricsEventName.SignatureRejected,
+    REQUESTED: MetaMetricsEventName.SignatureRequested,
   },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: {
-    APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
-    REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
-    REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
+    APPROVED: MetaMetricsEventName.SignatureApproved,
+    REJECTED: MetaMetricsEventName.SignatureRejected,
+    REQUESTED: MetaMetricsEventName.SignatureRequested,
   },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: {
-    APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
-    REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
-    REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
+    APPROVED: MetaMetricsEventName.SignatureApproved,
+    REJECTED: MetaMetricsEventName.SignatureRejected,
+    REQUESTED: MetaMetricsEventName.SignatureRequested,
   },
   [MESSAGE_TYPE.PERSONAL_SIGN]: {
-    APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
-    REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
-    REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
+    APPROVED: MetaMetricsEventName.SignatureApproved,
+    REJECTED: MetaMetricsEventName.SignatureRejected,
+    REQUESTED: MetaMetricsEventName.SignatureRequested,
   },
   [MESSAGE_TYPE.ETH_DECRYPT]: {
-    APPROVED: EVENT_NAMES.DECRYPTION_APPROVED,
-    REJECTED: EVENT_NAMES.DECRYPTION_REJECTED,
-    REQUESTED: EVENT_NAMES.DECRYPTION_REQUESTED,
+    APPROVED: MetaMetricsEventName.DecryptionApproved,
+    REJECTED: MetaMetricsEventName.DecryptionRejected,
+    REQUESTED: MetaMetricsEventName.DecryptionRequested,
   },
   [MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY]: {
-    APPROVED: EVENT_NAMES.ENCRYPTION_PUBLIC_KEY_APPROVED,
-    REJECTED: EVENT_NAMES.ENCRYPTION_PUBLIC_KEY_REJECTED,
-    REQUESTED: EVENT_NAMES.ENCRYPTION_PUBLIC_KEY_REQUESTED,
+    APPROVED: MetaMetricsEventName.EncryptionPublicKeyApproved,
+    REJECTED: MetaMetricsEventName.EncryptionPublicKeyRejected,
+    REQUESTED: MetaMetricsEventName.EncryptionPublicKeyRequested,
   },
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: {
-    APPROVED: EVENT_NAMES.PERMISSIONS_APPROVED,
-    REJECTED: EVENT_NAMES.PERMISSIONS_REJECTED,
-    REQUESTED: EVENT_NAMES.PERMISSIONS_REQUESTED,
+    APPROVED: MetaMetricsEventName.PermissionsApproved,
+    REJECTED: MetaMetricsEventName.PermissionsRejected,
+    REQUESTED: MetaMetricsEventName.PermissionsRequested,
   },
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: {
-    APPROVED: EVENT_NAMES.PERMISSIONS_APPROVED,
-    REJECTED: EVENT_NAMES.PERMISSIONS_REJECTED,
-    REQUESTED: EVENT_NAMES.PERMISSIONS_REQUESTED,
+    APPROVED: MetaMetricsEventName.PermissionsApproved,
+    REJECTED: MetaMetricsEventName.PermissionsRejected,
+    REQUESTED: MetaMetricsEventName.PermissionsRequested,
   },
 };
 
@@ -162,9 +163,9 @@ export default function createRPCMethodTrackingMiddleware({
       // 'Provider Method Called'.
       const event = eventType
         ? eventType.REQUESTED
-        : EVENT_NAMES.PROVIDER_METHOD_CALLED;
+        : MetaMetricsEventName.ProviderMethodCalled;
 
-      if (event === EVENT_NAMES.SIGNATURE_REQUESTED) {
+      if (event === MetaMetricsEventName.SignatureRequested) {
         eventProperties.signature_type = method;
 
         const data = req?.params?.[0];
@@ -190,11 +191,11 @@ export default function createRPCMethodTrackingMiddleware({
 
           if (securityProviderResponse?.flagAsDangerous === 1) {
             eventProperties.ui_customizations = [
-              METAMETRIC_KEY_OPT.ui_customizations.flaggedAsMalicious,
+              MetaMetricsEventUiCustomization.FlaggedAsMalicious,
             ];
           } else if (securityProviderResponse?.flagAsDangerous === 2) {
             eventProperties.ui_customizations = [
-              METAMETRIC_KEY_OPT.ui_customizations.flaggedAsSafetyUnknown,
+              MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
             ];
           }
 
@@ -203,7 +204,7 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               eventProperties.ui_customizations = (
                 eventProperties.ui_customizations || []
-              ).concat(METAMETRIC_KEY_OPT.ui_customizations.SIWE);
+              ).concat(MetaMetricsEventUiCustomization.Siwe);
             }
           }
         } catch (e) {
@@ -217,7 +218,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       trackEvent({
         event,
-        category: EVENT.CATEGORIES.INPAGE_PROVIDER,
+        category: MetaMetricsEventCategory.InpageProvider,
         referrer: {
           url: origin,
         },
@@ -253,7 +254,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       trackEvent({
         event,
-        category: EVENT.CATEGORIES.INPAGE_PROVIDER,
+        category: MetaMetricsEventCategory.InpageProvider,
         referrer: {
           url: origin,
         },

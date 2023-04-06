@@ -6,7 +6,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Icon, ICON_NAMES } from '../../../component-library';
+import { Icon, ICON_NAMES } from '../../../component-library/icon/deprecated';
 
 const SignatureRequestSIWEIcon = () => {
   return (

@@ -298,9 +298,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerSupportEIP1559()
           .build(),
-        ganacheOptions,
+        ganacheOptions: {
+          ...ganacheOptions,
+          hardfork: 'london',
+        },
         title: this.test.title,
       },
       async ({ driver }) => {
