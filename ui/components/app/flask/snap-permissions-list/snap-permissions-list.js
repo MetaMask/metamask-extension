@@ -12,7 +12,7 @@ export default function SnapPermissionsList({
   const t = useI18nContext();
 
   return (
-    <Box paddingTop={2} paddingBottom={2}>
+    <Box paddingTop={2} paddingBottom={2} className="snap-permissions-list">
       {getWeightedPermissions(t, permissions, targetSubjectMetadata).map(
         (permission, index) => {
           return (

@@ -87,12 +87,16 @@ export default function SnapInstall({
         className="headers"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        paddingLeft={4}
-        paddingRight={4}
       >
-        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
+        <Box paddingLeft={4} paddingRight={4}>
+          <SnapAuthorship snapId={targetSubjectMetadata.origin} />
+        </Box>
         {!hasError && (
-          <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+          <Text
+            variant={TextVariant.headingLg}
+            paddingTop={4}
+            paddingBottom={2}
+          >
             {t('snapInstall')}
           </Text>
         )}
@@ -114,6 +118,8 @@ export default function SnapInstall({
             <Text
               className="headers__permission-description"
               paddingBottom={4}
+              paddingLeft={4}
+              paddingRight={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapInstallRequestsPermission', [
