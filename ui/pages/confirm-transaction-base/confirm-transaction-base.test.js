@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { domainInitialState } from '../../ducks/domains';
 
@@ -33,6 +33,7 @@ const baseStore = {
     unapprovedTxs: {
       1: {
         id: 1,
+        metamaskNetworkId: '5',
         txParams: {
           from: '0x0',
           to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
@@ -54,10 +55,11 @@ const baseStore = {
     selectedAddress: '0x0',
     keyrings: [
       {
-        type: HardwareKeyringTypes.hdKeyTree,
+        type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
       },
     ],
+    networkId: '5',
     networkDetails: {
       EIPS: {},
     },

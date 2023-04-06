@@ -4,6 +4,9 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ACTION_QUEUE_METRICS_E2E_TEST,
+} = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 
 function defaultFixture() {
@@ -180,7 +183,8 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        network: '1337',
+        networkId: '1337',
+        networkStatus: 'available',
         provider: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -245,8 +249,6 @@ function defaultFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        transactionSecurityCheckEnabled: true,
-        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -310,9 +312,11 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
-        network: '1337',
+        networkId: '1337',
+        networkStatus: 'available',
         provider: {
           ticker: 'ETH',
           type: 'rpc',
@@ -360,8 +364,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        transactionSecurityCheckEnabled: true,
-        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -488,15 +490,6 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
-    return this;
-  }
-
-  withNetworkControllerSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
     return this;
   }
 

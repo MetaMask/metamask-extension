@@ -329,9 +329,6 @@
     "message": "Разрешить $1 снять и потратить до следующей суммы:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Всегда обязательно проводите собственную комплексную проверку, прежде чем утверждать какие-либо запросы."
-  },
   "amount": {
     "message": "Сумма"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
+  },
+  "connectingToLineaTestnet": {
+    "message": "Подключение к тестовой сети Linea..."
   },
   "connectingToMainnet": {
     "message": "Подключение к сети Ethereum Mainnet..."
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Включить поставщика услуг безопасности"
-  },
   "enableSmartTransactions": {
     "message": "Включить смарт-транзакции"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Посмотреть на Etherscan"
-  },
-  "expandExperience": {
-    "message": "Расширьте свои возможности web3 с помощью MetaMask Snaps"
   },
   "expandView": {
     "message": "Развернуть представление"
@@ -1515,9 +1509,6 @@
   },
   "general": {
     "message": "Общее"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Получайте предупреждения от OpenSea всякий раз, когда вы получаете заведомо вредоносный запрос."
   },
   "goBack": {
     "message": "Назад"
@@ -1892,6 +1883,9 @@
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
   },
+  "lineatestnet": {
+    "message": "Тестовая сеть Linea Goerli"
+  },
   "link": {
     "message": "Привязать"
   },
@@ -1951,9 +1945,6 @@
   },
   "malformedData": {
     "message": "Искаженные данные"
-  },
-  "manageSnaps": {
-    "message": "Управляйте установленными снапами"
   },
   "max": {
     "message": "Макс."
@@ -2188,9 +2179,6 @@
     "message": "Одноразовый номер больше, чем предложенный одноразовый номер $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
   },
@@ -2274,9 +2262,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notNow": {
-    "message": "Не сейчас"
   },
   "notifications": {
     "message": "Уведомления"
@@ -2607,12 +2592,6 @@
   },
   "openSea": {
     "message": "OpenSea (бета-версия)"
-  },
-  "openSeaAltText": {
-    "message": "Поставщик услуг безопасности OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea является первым поставщиком услуг безопасности для этой функции. Скоро появятся новые поставщики!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3247,6 @@
   "show": {
     "message": "Показать"
   },
-  "showAdvancedGasInline": {
-    "message": "Расширенное управление газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Выберите это, чтобы отображать цену газа и управление лимитами непосредственно на экранах отправки и подтверждения."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показывать конвертацию в тестовых сетях"
   },
@@ -3379,10 +3352,6 @@
   "snaps": {
     "message": "Снапы"
   },
-  "snapsInsightError": {
-    "message": "Произошла ошибка с $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Загрузка аналитики по транзакции..."
   },
@@ -3399,7 +3368,8 @@
     "message": "Снап будет работать только в том случае, если он включен"
   },
   "snapsUIError": {
-    "message": "Пользовательский интерфейс, указанный привязкой, недействителен."
+    "message": "Пользовательский интерфейс, указанный привязкой, недействителен.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
@@ -3507,9 +3477,6 @@
   },
   "statusNotConnected": {
     "message": "Не подключено"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Оставайтесь в безопасности с OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Подключите Lattice1"
@@ -4026,9 +3993,6 @@
   },
   "thisIsBasedOn": {
     "message": "Это основано на информации от "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Этот сервис является экспериментальным"
   },
   "time": {
     "message": "Время"

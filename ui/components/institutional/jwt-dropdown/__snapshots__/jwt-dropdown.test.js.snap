@@ -6,7 +6,7 @@ exports[`JwtDropdown should render the Jwt dropdown component 1`] = `
     class="box box--flex-direction-row"
   >
     <p
-      class="box mm-text custody-search-jwt__select-title mm-text--body-md mm-text--color-text-default box--padding-1 box--flex-direction-row"
+      class="box mm-text custody-search-jwt__select-title mm-text--body-md box--padding-1 box--flex-direction-row box--color-text-default"
     >
       [selectJWT]
     </p>

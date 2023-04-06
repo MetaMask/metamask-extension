@@ -30,7 +30,10 @@ import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { EVENT_NAMES, EVENT } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IN
@@ -191,11 +194,11 @@ export default function OnboardingFlow() {
           href={TWITTER_URL}
           onClick={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.ONBOARDING,
-              event: EVENT_NAMES.ONBOARDING_TWITTER_CLICK,
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
                 text: t('followUsOnTwitter'),
-                location: EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+                location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
               },
             });

@@ -5,15 +5,18 @@ import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
 import {
-  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
@@ -47,8 +50,8 @@ export default function OnboardingWelcome() {
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
       properties: {
         account_type: 'metamask',
       },
@@ -59,8 +62,8 @@ export default function OnboardingWelcome() {
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_IMPORT_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletImportStarted,
       properties: {
         account_type: 'imported',
       },
@@ -69,8 +72,8 @@ export default function OnboardingWelcome() {
   };
 
   trackEvent({
-    category: EVENT.CATEGORIES.ONBOARDING,
-    event: EVENT_NAMES.ONBOARDING_WELCOME,
+    category: MetaMetricsEventCategory.Onboarding,
+    event: MetaMetricsEventName.OnboardingWelcome,
     properties: {
       message_title: t('welcomeToMetaMask'),
       app_version: global?.platform?.getVersion(),
@@ -81,16 +84,17 @@ export default function OnboardingWelcome() {
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
-          <Typography
-            variant={TypographyVariant.H2}
-            align={TEXT_ALIGN.CENTER}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeToMetaMask')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
+          </Text>
+          <Text textAlign={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
             {t('welcomeToMetaMaskIntro')}
-          </Typography>
+          </Text>
           <div className="onboarding-welcome__mascot">
             <Mascot
               animationEventEmitter={eventEmitter}
@@ -100,16 +104,17 @@ export default function OnboardingWelcome() {
           </div>
         </div>
         <div>
-          <Typography
-            variant={TypographyVariant.H2}
-            align={TEXT_ALIGN.CENTER}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeExploreTitle')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          </Text>
+          <Text textAlign={TEXT_ALIGN.CENTER}>
             {t('welcomeExploreDescription')}
-          </Typography>
+          </Text>
           <div className="onboarding-welcome__image">
             <img
               src="/images/onboarding-welcome-say-hello.svg"
@@ -120,16 +125,17 @@ export default function OnboardingWelcome() {
           </div>
         </div>
         <div>
-          <Typography
-            variant={TypographyVariant.H2}
-            align={TEXT_ALIGN.CENTER}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeLoginTitle')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          </Text>
+          <Text textAlign={TEXT_ALIGN.CENTER}>
             {t('welcomeLoginDescription')}
-          </Typography>
+          </Text>
           <div className="onboarding-welcome__image">
             <img
               src="/images/onboarding-welcome-decentralised-apps.svg"

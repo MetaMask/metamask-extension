@@ -14,7 +14,7 @@ import UserPreferencedCurrencyDisplay from '../../components/app/user-preference
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import {
   TransactionType,
   TransactionStatus,
@@ -58,6 +58,8 @@ import {
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
 import { ConfirmData } from '../../components/app/confirm-data';
+import { ConfirmTitle } from '../../components/app/confirm-title';
+import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -108,7 +110,6 @@ export default class ConfirmTransactionBase extends Component {
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
-    hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     customTokenAmount: PropTypes.string,
     dappProposedTokenAmount: PropTypes.string,
@@ -278,7 +279,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'User clicks "Edit" on gas',
       properties: {
         action: 'Confirm Screen',
@@ -673,7 +674,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'Edit Transaction',
       properties: {
         action: 'Confirm Screen',
@@ -839,38 +840,24 @@ export default class ConfirmTransactionBase extends Component {
   renderTitleComponent() {
     const { title, hexTransactionAmount, txData } = this.props;
 
-    // Title string passed in by props takes priority
-    if (title) {
-      return null;
-    }
-
-    const isContractInteraction =
-      txData.type === TransactionType.contractInteraction;
-
     return (
-      <UserPreferencedCurrencyDisplay
-        value={hexTransactionAmount}
-        type={PRIMARY}
-        showEthLogo
-        ethLogoHeight={24}
-        hideLabel={!isContractInteraction}
-        showCurrencySuffix={isContractInteraction}
+      <ConfirmTitle
+        title={title}
+        hexTransactionAmount={hexTransactionAmount}
+        txData={txData}
       />
     );
   }
 
   renderSubtitleComponent() {
-    const { subtitleComponent, hexTransactionAmount } = this.props;
+    const { subtitleComponent, hexTransactionAmount, txData } = this.props;
 
     return (
-      subtitleComponent || (
-        <UserPreferencedCurrencyDisplay
-          value={hexTransactionAmount}
-          type={SECONDARY}
-          showEthLogo
-          hideLabel
-        />
-      )
+      <ConfirmSubTitle
+        hexTransactionAmount={hexTransactionAmount}
+        subtitleComponent={subtitleComponent}
+        txData={txData}
+      />
     );
   }
 
@@ -896,7 +883,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'Confirm: Started',
       properties: {
         action: 'Confirm Screen',
@@ -948,8 +935,6 @@ export default class ConfirmTransactionBase extends Component {
       toEns,
       toNickname,
       methodData,
-      title,
-      hideSubtitle,
       tokenAddress,
       contentComponent,
       onEdit,
@@ -1026,11 +1011,9 @@ export default class ConfirmTransactionBase extends Component {
           toNickname={toNickname}
           showEdit={!isContractInteractionFromDapp && Boolean(onEdit)}
           action={functionType}
-          title={title}
           image={image}
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
-          hideSubtitle={hideSubtitle}
           detailsComponent={this.renderDetails()}
           dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}

@@ -329,9 +329,6 @@
     "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Gehen Sie immer mit Sorgfalt vor, bevor Sie irgendwelche Anfragen genehmigen."
-  },
   "amount": {
     "message": "Betrag"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Verbindungsaufbau zum Linea-Testnetzwerk"
   },
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Mainnet"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Sicherheitsanbieter aktivieren"
-  },
   "enableSmartTransactions": {
     "message": "Intelligente Transaktionen ermöglichen"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Auf Etherscan anzeigen"
-  },
-  "expandExperience": {
-    "message": "Erweitern Sie Ihre Web3-Erfahrung"
   },
   "expandView": {
     "message": "Ansicht erweitern"
@@ -1515,9 +1509,6 @@
   },
   "general": {
     "message": "Allgemein"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Erhalten Sie Warnungen von OpenSea, wenn Sie eine bekannte bösartige Anfrage erhalten."
   },
   "goBack": {
     "message": "Zurück"
@@ -1892,6 +1883,9 @@
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
   },
+  "lineatestnet": {
+    "message": "Linea-Testnetzwerk"
+  },
   "link": {
     "message": "Link"
   },
@@ -1951,9 +1945,6 @@
   },
   "malformedData": {
     "message": "Fehlerhafte Daten"
-  },
-  "manageSnaps": {
-    "message": "Verwalten Sie Ihre installierten Snaps"
   },
   "max": {
     "message": "Max."
@@ -2188,9 +2179,6 @@
     "message": "Nonce ist höher als vorgeschlagen nonce von $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
   },
@@ -2274,9 +2262,6 @@
   },
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
-  },
-  "notNow": {
-    "message": "Nicht jetzt"
   },
   "notifications": {
     "message": "Benachrichtigungen"
@@ -2607,12 +2592,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea-Sicherheitsanbieter"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea ist der erset Sicherheitsanbieter für diese Funktion. Mehr Anbieter folgen in Kürze!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3247,6 @@
   "show": {
     "message": "Zeigen"
   },
-  "showAdvancedGasInline": {
-    "message": "Erweiterte Gaskontrollen"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Wählen Sie dies aus, um den Gaspreis und die Limitkontrollen direkt auf den Senden- und Bestätigen-Bildschirmen anzuzeigen."
-  },
   "showFiatConversionInTestnets": {
     "message": "Umwandlung auf Testnets anzeigen"
   },
@@ -3379,10 +3352,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Ein Fehler ist mit $1: $2 aufgetreten",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Transaktions-Einsicht wird geladen ..."
   },
@@ -3399,7 +3368,8 @@
     "message": "Ein Snap wird nur ausgeführt, wenn er aktiviert ist"
   },
   "snapsUIError": {
-    "message": "Die vom Snap spezifizierte UI ist ungültig."
+    "message": "Die vom Snap spezifizierte UI ist ungültig.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Einige Netzwerke können Sicherheits- und/oder Datenschutzrisiken bergen. Informieren Sie sich über die Risiken, bevor Sie ein Netzwerk hinzufügen und nutzen."
@@ -3507,9 +3477,6 @@
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Mit OpenSea sicher bleiben"
   },
   "step1LatticeWallet": {
     "message": "Verbinden Sie Ihr Lattice1"
@@ -4026,9 +3993,6 @@
   },
   "thisIsBasedOn": {
     "message": "Dies basiert auf Informationen von "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Dieser Dienst ist experimentell"
   },
   "time": {
     "message": "Zeit"

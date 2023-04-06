@@ -103,6 +103,9 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
+  "ShowMore": {
+    "message": "Show more"
+  },
   "about": {
     "message": "About"
   },
@@ -150,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activated": {
+    "message": "Active"
+  },
   "active": {
     "message": "Active"
   },
@@ -170,6 +176,9 @@
   },
   "addANickname": {
     "message": "Add a nickname"
+  },
+  "addAccount": {
+    "message": "Add account"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -257,6 +266,9 @@
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
   },
+  "addNewToken": {
+    "message": "Add new token"
+  },
   "addSuggestedTokens": {
     "message": "Add suggested tokens"
   },
@@ -318,6 +330,10 @@
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
+  "allYourNFTsOf": {
+    "message": "All of your NFTs from $1",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -332,11 +348,11 @@
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Always be sure to do your own due diligence before approving any requests."
-  },
   "amount": {
     "message": "Amount"
+  },
+  "apiUrl": {
+    "message": "API URL"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -365,6 +381,10 @@
     "message": "Allow access to and transfer of all your $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
+  "approveAllTokensTitleWithoutSymbol": {
+    "message": "Allow access to and transfer all of your NFTs from $1?",
+    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "approveAndInstall": {
     "message": "Approve & install"
   },
@@ -380,6 +400,10 @@
   },
   "approveTokenDescription": {
     "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenDescriptionWithoutSymbol": {
+    "message": "This allows a third party to access and transfer all of your NFTs from $1 without further notice until you revoke its access.",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
     "message": "Allow access to and transfer of your $1?",
@@ -624,8 +648,44 @@
   "close": {
     "message": "Close"
   },
+  "codefiCompliance": {
+    "message": "Codefi Compliance"
+  },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "complianceActivatedDesc": {
+    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
+  },
+  "complianceActivatedTitle": {
+    "message": "Your compliance feature is activated"
+  },
+  "complianceBlurb0": {
+    "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
+  },
+  "complianceBlurb1": {
+    "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
+  },
+  "complianceBlurbStep1": {
+    "message": "Sign up to Codefi Compliance below"
+  },
+  "complianceBlurbStep2": {
+    "message": "Create an organisation"
+  },
+  "complianceBlurbStep3": {
+    "message": "Create a project"
+  },
+  "complianceBlurbStep4": {
+    "message": "Set your compliance settings"
+  },
+  "complianceBlurbStep5": {
+    "message": "Click the \"Enable Compliance in MMI\" button"
+  },
+  "complianceBlurpStep0": {
+    "message": "Steps to enable AML/CFT Compliance:"
+  },
+  "complianceSettingsExplanation": {
+    "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
   },
   "confirm": {
     "message": "Confirm"
@@ -717,11 +777,17 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connecting to Linea Goerli test network"
+  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
+  },
+  "connectionError": {
+    "message": "Connection error"
   },
   "contactUs": {
     "message": "Contact us"
@@ -856,6 +922,12 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodian": {
+    "message": "Custodian"
+  },
+  "custodianAccount": {
+    "message": "Custodian account"
   },
   "custom": {
     "message": "Advanced"
@@ -1228,9 +1300,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Enable security provider"
-  },
   "enableSmartTransactions": {
     "message": "Enable smart transactions"
   },
@@ -1314,8 +1383,16 @@
   "errorWhileConnectingToRPC": {
     "message": "Error while connecting to the custom network."
   },
+  "errorWithSnap": {
+    "message": "Error with $1",
+    "description": "$1 represents the name of the snap"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
+  },
+  "ethereumProviderAccess": {
+    "message": "Grant Ethereum provider access to $1",
+    "description": "The parameter is the name of the requesting origin"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum public address"
@@ -1329,17 +1406,20 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
-  "expandExperience": {
-    "message": "Expand your web3 experience with MetaMask Snaps"
-  },
   "expandView": {
     "message": "Expand view"
   },
   "experimental": {
     "message": "Experimental"
   },
+  "exploreMetaMaskSnaps": {
+    "message": "Explore MetaMask Snaps"
+  },
   "exportPrivateKey": {
     "message": "Export private key"
+  },
+  "extendWalletWithSnaps": {
+    "message": "Extend the wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -1369,6 +1449,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileTooBig": {
+    "message": "The dropped file is too big."
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "See details",
@@ -1525,9 +1608,6 @@
   "general": {
     "message": "General"
   },
-  "getWarningsFromOpenSea": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request."
-  },
   "goBack": {
     "message": "Go back"
   },
@@ -1545,6 +1625,9 @@
   },
   "hardware": {
     "message": "Hardware"
+  },
+  "hardwareWallet": {
+    "message": "Hardware wallet"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -1629,6 +1712,9 @@
   },
   "holdToRevealTitle": {
     "message": "Keep your SRP safe"
+  },
+  "id": {
+    "message": "Id"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -1728,8 +1814,15 @@
   "inputLogicHigherNumber": {
     "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
+  "insightsFromSnap": {
+    "message": "Insights from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "install": {
     "message": "Install"
+  },
+  "institutionalFeatures": {
+    "message": "Institutional Features"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -1919,6 +2012,9 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
+  },
   "link": {
     "message": "Link"
   },
@@ -1942,6 +2038,9 @@
   },
   "lock": {
     "message": "Lock"
+  },
+  "lockMetaMask": {
+    "message": "Lock MetaMask"
   },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
@@ -1978,9 +2077,6 @@
   },
   "malformedData": {
     "message": "Malformed data"
-  },
-  "manageSnaps": {
-    "message": "Manage your installed snaps"
   },
   "max": {
     "message": "Max"
@@ -2057,6 +2153,12 @@
   "missingToken": {
     "message": "Don't see your token?"
   },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
+  "mmiAuthenticate": {
+    "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
+  },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
@@ -2107,6 +2209,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkMenuHeading": {
+    "message": "Select a network"
   },
   "networkName": {
     "message": "Network name"
@@ -2218,9 +2323,6 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
@@ -2251,6 +2353,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nftsPreviouslyOwned": {
+    "message": "Previously Owned"
+  },
   "nickname": {
     "message": "Nickname"
   },
@@ -2270,7 +2375,7 @@
     "message": "No NFTs yet"
   },
   "noSnaps": {
-    "message": "No Snaps installed"
+    "message": "You don't have any snaps installed."
   },
   "noThanksVariant2": {
     "message": "No, thanks."
@@ -2304,9 +2409,6 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
-  },
-  "notNow": {
-    "message": "Not now"
   },
   "notifications": {
     "message": "Notifications"
@@ -2370,10 +2472,10 @@
     "message": "The Ethereum Merge is here!"
   },
   "notifications16ActionText": {
-    "message": "Enable security provider"
+    "message": "Enable security alerts"
   },
   "notifications16DescriptionOne": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request.",
+    "message": "Get alerts from third parties when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionThree": {
@@ -2381,11 +2483,11 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16DescriptionTwo": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!",
+    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications16Title": {
-    "message": "Stay safe with OpenSea"
+    "message": "Stay safe with security alerts"
   },
   "notifications17ActionText": {
     "message": "Enable NFT autodetection"
@@ -2658,6 +2760,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCodefiCompliance": {
+    "message": "Open Codefi Compliance"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2667,12 +2772,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea security provider"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -2773,21 +2872,41 @@
     "message": "Access the internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
+  "permission_accessNetworkDescription": {
+    "message": "Allow the snap to access the internet. This can be used to both send and receive data with third-party servers.",
+    "description": "An extended description of the `endowment:network-access` permission."
+  },
   "permission_accessSnap": {
     "message": "Connect to the $1 snap.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+  },
+  "permission_accessSnapDescription": {
+    "message": "Allow the website or snap to interact with $1.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
     "message": "Schedule and execute periodic actions.",
     "description": "The description for the `snap_cronjob` permission"
   },
+  "permission_cronjobDescription": {
+    "message": "Allow the snap to perform actions that run periodically at fixed times, dates, or intervals. This can be used to trigger time-sensitive interactions or notifications.",
+    "description": "An extended description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_customConfirmationDescription": {
+    "message": "Allow the snap to display MetaMask popups with custom text, and buttons to approve or reject an action.",
+    "description": "An extended description for the `snap_confirm` permission"
+  },
   "permission_dialog": {
     "message": "Display dialog windows in MetaMask.",
     "description": "The description for the `snap_dialog` permission"
+  },
+  "permission_dialogDescription": {
+    "message": "Allow the snap to display MetaMask popups with custom text, input field, and buttons to approve or reject an action.\nCan be used to create e.g. alerts, confirmations, and opt-in flows for a snap.",
+    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "See address, account balance, activity and suggest transactions to approve",
@@ -2797,21 +2916,41 @@
     "message": "Access the Ethereum provider.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
+  "permission_ethereumProviderDescription": {
+    "message": "Allow the snap to communicate with MetaMask directly, in order for it to read data from the blockchain and suggest messages and transactions.",
+    "description": "An extended description for the `endowment:ethereum-provider` permission"
+  },
   "permission_getEntropy": {
     "message": "Derive arbitrary keys unique to this snap.",
     "description": "The description for the `snap_getEntropy` permission"
+  },
+  "permission_getEntropyDescription": {
+    "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
+    "description": "An extended description for the `snap_getEntropy` permission"
   },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
   },
+  "permission_longRunningDescription": {
+    "message": "Allow the snap to run indefinitely while, for example, processing large amounts of data.",
+    "description": "An extended description for the `endowment:long-running` permission"
+  },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
+  "permission_manageBip32KeysDescription": {
+    "message": "Allow the snap to derive BIP-32 key pairs based on your Secret Recovery Phrase without exposing it. This grants full access to all accounts and assets on $1.\nWith the power to manage keys, the snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
+  },
   "permission_manageBip44Keys": {
-    "message": "Control your \"$1\" accounts and assets.",
+    "message": "Control your $1 accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+  },
+  "permission_manageBip44KeysDescription": {
+    "message": "Allow the snap to derive BIP-44 key pairs based on your Secret Recovery Phrase without exposing it. This grants full access to all accounts and assets on $1.\nWith the power to manage keys, the snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "Control your $1 accounts and assets.",
@@ -2821,21 +2960,41 @@
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
   },
+  "permission_manageStateDescription": {
+    "message": "Allow the snap to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
+    "description": "An extended description for the `snap_manageState` permission"
+  },
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
+  },
+  "permission_notificationsDescription": {
+    "message": "Allow the snap to display notifications within MetaMask. A short notification text can be triggered by a snap for actionable or time-sensitive information.",
+    "description": "An extended description for the `snap_notify` permission"
   },
   "permission_rpc": {
     "message": "Allow $1 to communicate directly with this snap.",
     "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
+  "permission_rpcDescription": {
+    "message": "Allow $1 to send messages to the snap and receive a response from the snap.",
+    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
+  "permission_transactionInsightDescription": {
+    "message": "Allow the snap to decode transactions and show insights within the MetaMask UI. This can be used for anti-phishing and security solutions.",
+    "description": "An extended description for the `endowment:transaction-insight` permission"
+  },
   "permission_transactionInsightOrigin": {
     "message": "See the origins of websites that suggest transactions",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOriginDescription": {
+    "message": "Allow the snap to see the origin (URI) of websites that suggest transactions. This can be used for anti-phishing and security solutions.",
+    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
@@ -2845,6 +3004,10 @@
     "message": "View your public key for $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
+  "permission_viewBip32PublicKeysDescription": {
+    "message": "Allow the snap to view your public keys (and addresses) for $1. This does not grant any control of accounts or assets.",
+    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
+  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "View your public key for $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -2852,6 +3015,10 @@
   "permission_webAssembly": {
     "message": "Support for WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
+  },
+  "permission_webAssemblyDescription": {
+    "message": "Allow the snap to access low-level execution environments via WebAssembly.",
+    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Permissions"
@@ -2871,6 +3038,9 @@
   },
   "portfolio": {
     "message": "Portfolio"
+  },
+  "portfolioView": {
+    "message": "Portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -2912,6 +3082,12 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
+  },
+  "projectIdInvalid": {
+    "message": "Provided Project ID is invalid"
+  },
+  "projectName": {
+    "message": "Project Name"
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
@@ -3132,15 +3308,23 @@
     "message": "Reveal seed phrase"
   },
   "reviewSpendingCap": {
-    "message": "Review your spending cap"
+    "message": "Review the spending cap for your"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
+  "revokeAllTokensTitleWithoutSymbol": {
+    "message": "Revoke permission to access and transfer all of your NFTs from $1?",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "revokeApproveForAllDescription": {
     "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
     "description": "$1 is either a string or link of a given token symbol or name"
+  },
+  "revokeApproveForAllDescriptionWithoutSymbol": {
+    "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -3263,6 +3447,9 @@
   "selectHdPath": {
     "message": "Select HD path"
   },
+  "selectJWT": {
+    "message": "Select token"
+  },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
   },
@@ -3334,12 +3521,6 @@
   },
   "show": {
     "message": "Show"
-  },
-  "showAdvancedGasInline": {
-    "message": "Advanced gas controls"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
@@ -3448,7 +3629,11 @@
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 key access to $1",
+    "message": "Grant $2 account control to $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Grant $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapResultError": {
@@ -3474,12 +3659,11 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "An error occured with $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
+  },
+  "snapsInvalidUIError": {
+    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
@@ -3494,7 +3678,8 @@
     "message": "A snap will only run if it is enabled"
   },
   "snapsUIError": {
-    "message": "The UI specified by the snap is invalid."
+    "message": "Contact the creators of $1 for further support.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
@@ -3603,8 +3788,8 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "staySafeWithOpenSea": {
-    "message": "Stay safe with OpenSea"
+  "statusNotConnectedAccount": {
+    "message": "No accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
@@ -3935,7 +4120,7 @@
     "message": "Select a quote"
   },
   "swapSelectAToken": {
-    "message": "Select a token"
+    "message": "Select token"
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
@@ -4107,6 +4292,9 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUse": {
+    "message": "terms of use"
+  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4119,11 +4307,15 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisCollection": {
+    "message": "this collection"
+  },
   "thisIsBasedOn": {
     "message": "This is based on information from "
   },
   "thisServiceIsExperimental": {
-    "message": "This service is experimental"
+    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
+    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"
@@ -4196,6 +4388,12 @@
   },
   "tooltipApproveButton": {
     "message": "I understand"
+  },
+  "tooltipSatusConnected": {
+    "message": "connected"
+  },
+  "tooltipSatusNotConnected": {
+    "message": "not connected"
   },
   "total": {
     "message": "Total"
@@ -4507,6 +4705,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnExplorer": {
+    "message": "View on explorer"
   },
   "viewOnOpensea": {
     "message": "View on Opensea"

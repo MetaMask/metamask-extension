@@ -51,7 +51,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  EVENT,
+  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -4350,7 +4350,7 @@ export async function setSmartTransactionsOptInStatus(
   trackMetaMetricsEvent({
     actionId: generateActionId(),
     event: 'STX OptIn',
-    category: EVENT.CATEGORIES.SWAPS,
+    category: MetaMetricsEventCategory.Swaps,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,
@@ -4575,12 +4575,11 @@ export function hideBetaHeader() {
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
-      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4589,19 +4588,6 @@ export function setTransactionSecurityCheckEnabled(
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
-}
-
-export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    await submitRequestToBackground(
-      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
-    );
-  };
 }
 
 // QR Hardware Wallets
