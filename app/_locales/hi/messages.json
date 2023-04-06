@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
   },
-  "notifications17ActionText": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
-  },
-  "notifications17Title": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobile उपयोगकर्ता अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

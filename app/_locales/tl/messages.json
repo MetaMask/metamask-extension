@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "Narito na ang Ethereum Merge!"
   },
-  "notifications17ActionText": {
-    "message": "Ipakita ang mga setting ng Seguridad at Pagkapribado"
-  },
-  "notifications17Title": {
-    "message": "Mga Setting ng Seguridad at Pagkapribado"
-  },
   "notifications1Description": {
     "message": "Ang mga user ng MetaMask Mobile ay maaari na ngayong mag-swap ng mga token sa loob ng kanilang mobile wallet. I-scan ang QR code para makuha ang mobile app at magsimulang mag-swap.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

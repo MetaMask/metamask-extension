@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "Ethereum Merge ist da!"
   },
-  "notifications17ActionText": {
-    "message": "Sicherheits- und Datenschutzeinstellungen anzeigen"
-  },
-  "notifications17Title": {
-    "message": "Sicherheits- und Datenschutzeinstellungen"
-  },
   "notifications1Description": {
     "message": "Mobile MetaMask-Anwender können jetzt Token in ihren mobilen Wallets swappen. Scannen Sie den QR-Code, um die mobile App zu erhalten und mit dem Swapping zu beginnen.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

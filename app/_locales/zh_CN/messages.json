@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "以太坊合并来了！"
   },
-  "notifications17ActionText": {
-    "message": "显示安全和隐私设置"
-  },
-  "notifications17Title": {
-    "message": "安全和隐私设置"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

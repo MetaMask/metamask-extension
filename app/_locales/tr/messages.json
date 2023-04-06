@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "Ethereum Birleşmesi başladı!"
   },
-  "notifications17ActionText": {
-    "message": "Güvenlik ve Gizlilik ayarlarını göster"
-  },
-  "notifications17Title": {
-    "message": "Güvenlik ve Gizlilik Ayarları"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobil kullanıcıları artık mobil cüzdanları içinde token takas edebilirler. Mobil uygulamayı edinmek ve takas yapmaya başlamak için QR kodunu tarayın.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
