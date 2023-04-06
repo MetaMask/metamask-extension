@@ -10,10 +10,9 @@ import {
   AlignItems,
   BorderRadius,
   TextVariant,
-  TEXT_TRANSFORM,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text';
+import { Text, ValidTag } from '../text';
 
 import { AvatarBaseProps, AvatarBaseSizes } from './avatar-base.types';
 
@@ -23,7 +22,7 @@ export const AvatarBase = ({
   backgroundColor = BackgroundColor.backgroundAlternative,
   borderColor = BorderColor.borderDefault,
   color = TextColor.textDefault,
-  className,
+  className = '',
   ...props
 }: AvatarBaseProps) => {
   let fallbackTextVariant;
@@ -42,13 +41,13 @@ export const AvatarBase = ({
         `mm-avatar-base--size-${size}`,
         className,
       )}
-      as="div"
+      as={ValidTag.Div}
       display={DISPLAY.FLEX}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.full}
       variant={fallbackTextVariant}
-      textTransform={TEXT_TRANSFORM.UPPERCASE}
+      textTransform="UPPERCASE"
       {...{ backgroundColor, borderColor, color, ...props }}
     >
       {children}

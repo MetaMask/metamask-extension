@@ -6,7 +6,7 @@ import {
   TextColor,
   BackgroundColor,
   BorderColor,
-  Color,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -125,7 +125,7 @@ export const Children = (args: AvatarBaseProps) => (
       backgroundColor={BackgroundColor.infoMuted}
       borderColor={BorderColor.infoMuted}
     >
-      <Icon name={IconName.User} color={Color.infoDefault} />
+      <Icon name={IconName.User} color={IconColor.infoDefault} />
     </AvatarBase>
   </Box>
 );

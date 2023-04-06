@@ -2,7 +2,12 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { Color, TextColor } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderColor,
+  Color,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 import { AvatarBase } from './avatar-base';
 import { AvatarBaseSizes } from './avatar-base.types';
@@ -85,11 +90,11 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          backgroundColor={TextColor.successDefault}
+          backgroundColor={BackgroundColor.successDefault}
           data-testid={Color.successDefault}
         />
         <AvatarBase
-          backgroundColor={TextColor.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           data-testid={Color.errorDefault}
         />
       </>,
@@ -106,11 +111,11 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          borderColor={Color.successDefault}
+          borderColor={BorderColor.successDefault}
           data-testid={Color.successDefault}
         />
         <AvatarBase
-          borderColor={Color.errorDefault}
+          borderColor={BorderColor.errorDefault}
           data-testid={Color.errorDefault}
         />
       </>,
