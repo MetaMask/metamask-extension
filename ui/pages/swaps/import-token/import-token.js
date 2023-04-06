@@ -66,7 +66,8 @@ export default function ImportToken({
           variant={TextVariant.headingSm}
           as="h4"
           fontWeight={FONT_WEIGHT.BOLD}
-          boxProps={{ marginTop: 2, marginBottom: 3 }}
+          marginTop={2}
+          marginBottom={3}
         >
           {tokenForImport.name || ''}
         </Text>
@@ -77,7 +78,7 @@ export default function ImportToken({
           variant={TextVariant.bodySm}
           className="import-token__contract-address"
           as="h6"
-          boxProps={{ marginBottom: 6 }}
+          marginBottom={6}
         >
           {tokenForImport.address || ''}
         </Text>
