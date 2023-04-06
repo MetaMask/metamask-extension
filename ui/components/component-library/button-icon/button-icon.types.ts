@@ -43,7 +43,7 @@ export interface ButtonIconProps extends BoxProps {
   iconProps?: object;
   /**
    * The size of the ButtonIcon.
-   * Possible values could be 'Size.SM' 24px, 'Size.LG' 32px,
+   * Possible values could be 'ButtonIconSize.Sm' 24px, 'ButtonIconSize.Lg' 32px,
    */
   size?: ButtonIconSize;
 }

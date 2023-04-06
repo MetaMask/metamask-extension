@@ -1,14 +1,8 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
-import {
-  IconName,
-  Button,
-  ButtonIcon,
-  ButtonIconSize,
-  BUTTON_SIZES,
-  Text,
-} from '..';
+import { IconName, Button, BUTTON_SIZES, Text } from '..';
+import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import {
   AlignItems,
   BackgroundColor,
