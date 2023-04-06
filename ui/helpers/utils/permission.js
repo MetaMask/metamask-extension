@@ -18,6 +18,7 @@ import {
   AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   Text,
+  Icon,
   ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
 import {
@@ -25,7 +26,12 @@ import {
   ICON_SIZES,
 } from '../../components/component-library/icon/deprecated';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
+import {
+  Color,
+  FONT_WEIGHT,
+  IconColor,
+  TextVariant,
+} from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -34,6 +40,16 @@ import {
 ///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const RIGHT_INFO_ICON = (
+  <Icon
+    name={ICON_NAMES.INFO}
+    size={ICON_SIZES.SM}
+    color={IconColor.iconMuted}
+  />
+);
+///: END:ONLY_INCLUDE_IN
 
 function getLeftIcon(iconName) {
   return (
@@ -268,7 +284,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      leftIcon: ICON_NAMES.FLASH,
+      leftIcon: getLeftIcon(ICON_NAMES.FLASH),
+      rightIcon: RIGHT_INFO_ICON,
     };
 
     return Object.keys(snaps).map((snapId) => {
