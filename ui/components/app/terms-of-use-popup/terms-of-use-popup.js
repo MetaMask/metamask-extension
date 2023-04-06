@@ -46,6 +46,7 @@ export default function TermsOfUsePopup({ onAccept }) {
             className="terms-of-use__button"
             onClick={onAccept}
             disabled={!isTermsOfUseChecked}
+            data-testid="terms-of-use-accept-button"
           >
             {t('accept')}
           </Button>
@@ -1127,7 +1128,7 @@ export default function TermsOfUsePopup({ onAccept }) {
             <CheckBox
               id="terms-of-use__checkbox"
               className="terms-of-use__checkbox"
-              dataTestId="terms-of-use__checkbox"
+              dataTestId="terms-of-use-checkbox"
               checked={isTermsOfUseChecked}
               onClick={() => {
                 setIsTermsOfUseChecked(!isTermsOfUseChecked);
