@@ -20,8 +20,11 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import Typography from '../../ui/typography';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
+import {
+  TextVariant,
+  TEXT_ALIGN,
+} from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
@@ -41,7 +44,10 @@ import {
 } from '../../../selectors';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -233,7 +239,11 @@ const ConfirmPageContainer = (props) => {
             <ActionableMessage
               message={
                 isBuyableChain ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    textAlign={TEXT_ALIGN.LEFT}
+                    as="h6"
+                  >
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
@@ -243,8 +253,8 @@ const ConfirmPageContainer = (props) => {
                         onClick={() => {
                           openBuyCryptoInPdapp();
                           trackEvent({
-                            event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                            category: EVENT.CATEGORIES.NAVIGATION,
+                            event: MetaMetricsEventName.NavBuyButtonClicked,
+                            category: MetaMetricsEventCategory.Navigation,
                             properties: {
                               location: 'Transaction Confirmation',
                               text: 'Buy',
@@ -256,14 +266,18 @@ const ConfirmPageContainer = (props) => {
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
                     ])}
-                  </Typography>
+                  </Text>
                 ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    textAlign={TEXT_ALIGN.LEFT}
+                    as="h6"
+                  >
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
                     ])}
-                  </Typography>
+                  </Text>
                 )
               }
               useIcon

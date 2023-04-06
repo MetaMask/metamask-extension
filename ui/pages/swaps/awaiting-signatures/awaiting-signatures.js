@@ -33,7 +33,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
@@ -58,7 +58,7 @@ export default function AwaitingSignatures() {
   useEffect(() => {
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         needs_two_confirmations: needsTwoConfirmations,
         token_from: sourceTokenInfo?.symbol,

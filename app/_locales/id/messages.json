@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "Terjadi kesalahan dengan $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Memuat wawasan transaksi..."
   },
@@ -3375,7 +3371,8 @@
     "message": "Snap hanya akan beroperasi jika diaktifkan"
   },
   "snapsUIError": {
-    "message": "UI yang ditentukan oleh snap tidak valid."
+    "message": "UI yang ditentukan oleh snap tidak valid.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan & menggunakan jaringan."
@@ -3999,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "Hal ini berdasarkan informasi dari "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental"
   },
   "time": {
     "message": "Waktu"

@@ -72,7 +72,8 @@
     "featureFlags": {
       "showIncomingTransactions": true
     },
-    "network": "5",
+    "networkId": "5",
+    "networkStatus": "available",
     "provider": {
       "type": "rpc",
       "chainId": "0x5",

@@ -13,6 +13,7 @@ import {
   TEXT_ALIGN,
   FRACTIONS,
   TextColor,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
 import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import Box from '../../../../components/ui/box';
@@ -34,6 +35,7 @@ import {
   getSubjectsWithSnapPermission,
   getPermissions,
   getPermissionSubjects,
+  getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { formatDate } from '../../../../helpers/utils/util';
 
@@ -64,6 +66,9 @@ function ViewSnap() {
     (state) => snap && getPermissions(state, snap.id),
   );
   const subjects = useSelector((state) => getPermissionSubjects(state));
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, snap?.id),
+  );
   const dispatch = useDispatch();
 
   const onToggle = () => {
@@ -176,9 +181,10 @@ function ViewSnap() {
             >
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
-            <Box width={FRACTIONS.TEN_TWELFTHS}>
+            <Box width={BLOCK_SIZES.FULL}>
               <PermissionsConnectPermissionList
                 permissions={permissions ?? {}}
+                targetSubjectMetadata={targetSubjectMetadata}
               />
             </Box>
           </div>

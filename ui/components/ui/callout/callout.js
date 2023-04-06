@@ -5,7 +5,11 @@ import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
-import { ButtonIcon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { ButtonIcon } from '../../component-library';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export default function Callout({
   severity,

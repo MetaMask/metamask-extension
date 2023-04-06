@@ -3355,10 +3355,6 @@
   "snaps": {
     "message": "スナップ"
   },
-  "snapsInsightError": {
-    "message": "$1 でエラーが発生しました: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
   },
@@ -3375,7 +3371,8 @@
     "message": "スナップは有効になっている場合にのみ実行されます"
   },
   "snapsUIError": {
-    "message": "スナップにより指定された UI が無効です。"
+    "message": "スナップにより指定された UI が無効です。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
@@ -3999,9 +3996,6 @@
   },
   "thisIsBasedOn": {
     "message": "これは次の情報源からの情報に基づくものです: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは実験段階です"
   },
   "time": {
     "message": "時間"
