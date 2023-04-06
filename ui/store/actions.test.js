@@ -7,7 +7,7 @@ import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { EVENT } from '../../shared/constants/metametrics';
+import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
 
@@ -1385,14 +1385,14 @@ describe('Actions', () => {
 
       await store.dispatch(
         actions.upsertNetworkConfiguration(networkConfiguration, {
-          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
         }),
       );
 
       expect(
         upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
           referrer: ORIGIN_METAMASK,
-          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
           setActive: undefined,
         }),
       ).toBe(true);

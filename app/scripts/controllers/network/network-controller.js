@@ -5,7 +5,7 @@ import log from 'loglevel';
 import {
   createSwappableProxy,
   createEventEmitterProxy,
-} from 'swappable-obj-proxy';
+} from '@metamask/swappable-obj-proxy';
 import EthQuery from 'eth-query';
 // ControllerMessenger is referred to in the JSDocs
 // eslint-disable-next-line no-unused-vars
@@ -26,7 +26,7 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { createNetworkClient } from './create-network-client';
 
 /**
@@ -645,7 +645,7 @@ export default class NetworkController extends EventEmitter {
     if (!oldNetworkConfigurationId) {
       this._trackMetaMetricsEvent({
         event: 'Custom Network Added',
-        category: EVENT.CATEGORIES.NETWORK,
+        category: MetaMetricsEventCategory.Network,
         referrer: {
           url: referrer,
         },

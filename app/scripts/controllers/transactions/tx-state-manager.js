@@ -1,4 +1,4 @@
-import EventEmitter from 'safe-event-emitter';
+import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';

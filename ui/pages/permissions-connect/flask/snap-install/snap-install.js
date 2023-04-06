@@ -87,6 +87,8 @@ export default function SnapInstall({
         className="headers"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        paddingLeft={4}
+        paddingRight={4}
       >
         <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!hasError && (
@@ -111,8 +113,6 @@ export default function SnapInstall({
           <>
             <Text
               className="headers__permission-description"
-              paddingLeft={4}
-              paddingRight={4}
               paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
@@ -123,6 +123,7 @@ export default function SnapInstall({
             </Text>
             <PermissionsConnectPermissionList
               permissions={requestState.permissions || {}}
+              targetSubjectMetadata={targetSubjectMetadata}
             />
           </>
         )}
@@ -133,11 +134,7 @@ export default function SnapInstall({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
-            >
+            <Text textAlign={TEXT_ALIGN.CENTER}>
               {t('snapInstallRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,

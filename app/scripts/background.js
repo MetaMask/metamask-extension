@@ -24,11 +24,11 @@ import {
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
-  REJECT_NOTFICIATION_CLOSE,
-  REJECT_NOTFICIATION_CLOSE_SIG,
-  EVENT,
-  EVENT_NAMES,
-  TRAITS,
+  REJECT_NOTIFICATION_CLOSE,
+  REJECT_NOTIFICATION_CLOSE_SIG,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -556,6 +556,10 @@ export function setupController(initState, initLangCode, overrides) {
           if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
             // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
             remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+
+            controller.appStateController.setServiceWorkerLastActiveTime(
+              Date.now(),
+            );
           }
         });
       }
@@ -734,13 +738,13 @@ export function setupController(initState, initLangCode, overrides) {
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved(REJECT_NOTFICIATION_CLOSE_SIG);
+    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
     controller.decryptMessageManager.messages
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>
         controller.decryptMessageManager.rejectMsg(
           tx.id,
-          REJECT_NOTFICIATION_CLOSE,
+          REJECT_NOTIFICATION_CLOSE,
         ),
       );
     controller.encryptionPublicKeyManager.messages
@@ -748,7 +752,7 @@ export function setupController(initState, initLangCode, overrides) {
       .forEach((tx) =>
         controller.encryptionPublicKeyManager.rejectMsg(
           tx.id,
-          REJECT_NOTFICIATION_CLOSE,
+          REJECT_NOTIFICATION_CLOSE,
         ),
       );
 
@@ -844,11 +848,13 @@ async function openPopup() {
 const addAppInstalledEvent = () => {
   if (controller) {
     controller.metaMetricsController.updateTraits({
-      [TRAITS.INSTALL_DATE_EXT]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+      [MetaMetricsUserTrait.InstallDateExt]: new Date()
+        .toISOString()
+        .split('T')[0], // yyyy-mm-dd
     });
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: EVENT.CATEGORIES.APP,
-      event: EVENT_NAMES.APP_INSTALLED,
+      category: MetaMetricsEventCategory.App,
+      event: MetaMetricsEventName.AppInstalled,
       properties: {},
     });
     return;
