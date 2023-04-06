@@ -8,7 +8,7 @@ const baseManifest = process.env.ENABLE_MV3
   : require('../../app/manifest/v2/_base.json');
 const { BuildType } = require('../lib/build-type');
 
-const { TASKS } = require('./constants');
+const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment } = require('./utils');
 
@@ -43,6 +43,9 @@ function createManifestTasks({
           await getBuildModifications(buildType, platform),
           customArrayMerge,
         );
+
+        modifyNameAndDescForNonProd(result);
+
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
         await writeJson(result, path.join(dir, 'manifest.json'));
@@ -107,8 +110,6 @@ function createManifestTasks({
           const manifest = await readJson(manifestPath);
           transformFn(manifest);
 
-          modifyNameAndDescForDev(manifest);
-
           await writeJson(manifest, manifestPath);
         }),
       );
@@ -116,12 +117,16 @@ function createManifestTasks({
   }
 
   // For non-production builds only, modify the extension's name and description
-  function modifyNameAndDescForDev(manifest) {
+  function modifyNameAndDescForNonProd(manifest) {
+    const environment = getEnvironment({ buildTarget: entryTask });
+
+    if (environment === ENVIRONMENT.PRODUCTION) {
+      return;
+    }
+
     const mv3Str = process.env.ENABLE_MV3 ? ' MV3' : '';
     const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
     const snowStr = shouldIncludeSnow ? ' snow' : '';
-
-    const environment = getEnvironment({ buildTarget: entryTask });
 
     // Get the first 8 characters of the git revision id
     const gitRevisionStr = childProcess
