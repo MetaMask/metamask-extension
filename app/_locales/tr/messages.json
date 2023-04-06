@@ -1596,7 +1596,7 @@
     "message": "GKİ'yi göstermek için basılı tut"
   },
   "holdToRevealContent1": {
-    "message": "Gizli Kurtarma İfadeniz: $1$",
+    "message": "Gizli Kurtarma İfadeniz: $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
   },
   "holdToRevealContent2": {
