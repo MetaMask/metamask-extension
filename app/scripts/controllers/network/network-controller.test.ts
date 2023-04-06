@@ -57,8 +57,8 @@ type MockJsonRpcRequestBody = {
  * A composite form of a prototypical JSON-RPC response body.
  */
 type MockJsonRpcResponseBody = {
-  id?: number;
-  jsonrpc?: string;
+  id?: number | string;
+  jsonrpc?: '2.0';
   result?: unknown;
   error?: string | null;
 };
@@ -4157,7 +4157,6 @@ describe('NetworkController', () => {
             rpcUrl: 'https://mock-rpc-url-1',
             chainId: '0x111',
             ticker: 'TEST',
-            id: 'testNetworkConfigurationId1',
           });
         },
       );
@@ -5878,6 +5877,7 @@ describe('NetworkController', () => {
                 rpcPrefs: {
                   blockExplorerUrl: 'https://test-block-explorer-2.com',
                 },
+                id: 'testNetworkConfigurationId2',
               });
 
               await waitForLookupNetworkToComplete({
