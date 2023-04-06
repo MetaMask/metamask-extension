@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
-import { ICON_NAMES } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import { Menu, MenuItem } from '.';
 
 export default {

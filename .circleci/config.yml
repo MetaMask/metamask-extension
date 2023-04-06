@@ -1098,12 +1098,6 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
-      - run:
           name: Validate source maps
           command: |
             .circleci/scripts/validate-source-maps-beta.sh

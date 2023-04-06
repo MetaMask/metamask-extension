@@ -16,7 +16,11 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 import Box from '../../ui/box/box';
 
 const AssetListItem = ({
