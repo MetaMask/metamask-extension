@@ -45,7 +45,7 @@ export const ButtonIcon = React.forwardRef(
           className,
         )}
         color={color}
-        {...(disabled ? { disabled: true } : {})}
+        {...(disabled ? { disabled } : {})}
         display={DISPLAY.INLINE_FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
