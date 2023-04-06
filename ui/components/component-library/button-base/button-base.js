@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon/deprecated';
+import { IconName, Icon, IconSize } from '../icon';
 import { Text } from '../text';
 
 import {
@@ -12,7 +12,6 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-  Size,
   BorderRadius,
   BackgroundColor,
   IconColor,
@@ -75,7 +74,7 @@ export const ButtonBase = ({
       {startIconName && (
         <Icon
           name={startIconName}
-          size={Size.SM}
+          size={IconSize.Sm}
           marginInlineEnd={1}
           {...startIconProps}
           color={loading ? IconColor.transparent : startIconProps?.color}
@@ -102,7 +101,7 @@ export const ButtonBase = ({
       {endIconName && (
         <Icon
           name={endIconName}
-          size={Size.SM}
+          size={IconSize.Sm}
           marginInlineStart={1}
           {...endIconProps}
           color={loading ? IconColor.transparent : endIconProps?.color}
@@ -111,9 +110,9 @@ export const ButtonBase = ({
       {loading && (
         <Icon
           className="mm-button-base__icon-loading"
-          name={ICON_NAMES.LOADING}
+          name={IconName.Loading}
           color={color}
-          size={Size.MD}
+          size={IconSize.Md}
           {...iconLoadingProps}
         />
       )}
@@ -160,26 +159,26 @@ ButtonBase.propTypes = {
   externalLink: PropTypes.bool,
   /**
    * Add icon to start (left side) of button text passing icon name
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  startIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  startIconName: PropTypes.oneOf(Object.values(IconName)),
   /**
    * iconProps accepts all the props from Icon
    */
-  startIconProps: PropTypes.shape(Icon.PropTypes),
+  startIconProps: PropTypes.object,
   /**
    * Add icon to end (right side) of button text passing icon name
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  endIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  endIconName: PropTypes.oneOf(Object.values(IconName)),
   /**
    * iconProps accepts all the props from Icon
    */
-  endIconProps: PropTypes.shape(Icon.PropTypes),
+  endIconProps: PropTypes.object,
   /**
    * iconLoadingProps accepts all the props from Icon
    */
-  iconLoadingProps: PropTypes.shape(Icon.PropTypes),
+  iconLoadingProps: PropTypes.object,
   /**
    * Boolean to show loading spinner in button
    */
