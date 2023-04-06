@@ -5,8 +5,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { Icon, ICON_NAMES } from '../icon/deprecated';
-import { ButtonLink, ButtonPrimary } from '..';
+import { ButtonLink, ButtonPrimary, Icon, IconName } from '..';
 import README from './README.mdx';
 import { BannerTip, BannerTipLogoType } from '.';
 
@@ -141,7 +140,7 @@ ActionButton.args = {
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    iconName: ICON_NAMES.ARROW_2_RIGHT,
+    iconName: IconName.Arrow2Right,
     iconPositionRight: true,
   },
   children:
@@ -176,7 +175,7 @@ export const StartAccessory = (args) => {
   return (
     <BannerTip
       {...args}
-      startAccessory={<Icon name={ICON_NAMES.MESSAGES} />}
+      startAccessory={<Icon name={IconName.Messages} />}
       title="StartAccessory"
       onClose={() => console.log('close button clicked')}
     >
