@@ -15,7 +15,7 @@ export interface ButtonIconProps extends BoxProps {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    */
-  as?: keyof HTMLElementTagNameMap;
+  as?: keyof JSX.IntrinsicElements;
   /**
    * An additional className to apply to the ButtonIcon.
    */
@@ -28,7 +28,7 @@ export interface ButtonIconProps extends BoxProps {
   /**
    * Boolean to disable button
    */
-  disabled?: bool;
+  disabled?: boolean;
   /**
    * When an `href` prop is passed, ButtonIcon will automatically change the root element to be an `a` (anchor) tag
    */
@@ -45,5 +45,5 @@ export interface ButtonIconProps extends BoxProps {
    * The size of the ButtonIcon.
    * Possible values could be 'Size.SM' 24px, 'Size.LG' 32px,
    */
-  size?: ButtonIconSize | IconSize;
+  size?: ButtonIconSize;
 }

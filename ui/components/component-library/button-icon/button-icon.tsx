@@ -38,20 +38,20 @@ export const ButtonIcon = React.forwardRef(
         as={Tag}
         className={classnames(
           'mm-button-icon',
-          `mm-button-icon--size-${size}`,
+          `mm-button-icon--size-${String(size)}`,
           {
-            'mm-button-icon--disabled': disabled,
+            'mm-button-icon--disabled': Boolean(disabled),
           },
           className,
         )}
         color={color}
-        disabled={disabled}
+        {...(disabled ? { disabled: true } : {})}
         display={DISPLAY.INLINE_FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.transparent}
-        href={href}
+        {...(href ? { href } : {})}
         ref={ref}
         {...props}
       >

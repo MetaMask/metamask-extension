@@ -16,7 +16,11 @@ export const Icon = ({
   ...props
 }: IconProps) => (
   <Box
-    className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
+    className={classnames(
+      className,
+      'mm-icon',
+      `mm-icon--size-${String(size)}`,
+    )}
     as="span"
     display={DISPLAY.INLINE_BLOCK}
     color={color}
