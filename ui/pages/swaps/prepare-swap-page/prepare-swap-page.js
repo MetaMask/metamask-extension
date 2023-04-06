@@ -615,7 +615,6 @@ export default function PrepareSwap({
     !fromTokenAddress ||
     Number(maxSlippage) < 0 ||
     Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-    transactionSettingsOpened ||
     (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
 
   // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
