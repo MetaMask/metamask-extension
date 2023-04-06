@@ -130,8 +130,8 @@ import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import Mascot from '../../../components/ui/mascot';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   TextField,
   ButtonLink,
   Text,
@@ -1005,8 +1005,8 @@ export default function PrepareSwap({
               title={t('swapSwapSwitch')}
             >
               <Icon
-                name={ICON_NAMES.ARROW_2_DOWN}
-                size={ICON_SIZES.LG}
+                name={IconName.Arrow2Down}
+                size={IconSize.Lg}
                 color={IconColor.iconAlternative}
               />
             </div>

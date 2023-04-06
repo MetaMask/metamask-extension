@@ -15,8 +15,8 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../components/component-library';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
@@ -215,11 +215,7 @@ export default function DropdownSearchList({
               </div>
             </div>
           </div>
-          <Icon
-            name={ICON_NAMES.ARROW_DOWN}
-            size={ICON_SIZES.XS}
-            marginRight={3}
-          />
+          <Icon name={IconName.ArrowDown} size={IconSize.Xs} marginRight={3} />
         </div>
       )}
       {isOpen && (

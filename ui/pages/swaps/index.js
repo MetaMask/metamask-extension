@@ -88,11 +88,7 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../components/component-library';
+import { Icon, IconName, IconSize } from '../../components/component-library';
 import Box from '../../components/ui/box';
 import {
   DISPLAY,
@@ -406,8 +402,8 @@ export default function Swap() {
                 marginLeft={4}
               >
                 <Icon
-                  name={ICON_NAMES.ARROW_2_LEFT}
-                  size={ICON_SIZES.LG}
+                  name={IconName.Arrow2Left}
+                  size={IconSize.Lg}
                   color={IconColor.iconAlternative}
                   onClick={async () => {
                     clearTemporaryTokenRef.current();
@@ -444,8 +440,8 @@ export default function Swap() {
               marginRight={4}
             >
               <Icon
-                name={ICON_NAMES.SETTING}
-                size={ICON_SIZES.LG}
+                name={IconName.Setting}
+                size={IconSize.Lg}
                 color={IconColor.iconAlternative}
                 onClick={() => {
                   dispatch(setTransactionSettingsOpened(true));

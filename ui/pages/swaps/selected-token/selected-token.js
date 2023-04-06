@@ -4,8 +4,8 @@ import classnames from 'classnames';
 
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import UrlIcon from '../../../components/ui/url-icon';
@@ -50,8 +50,8 @@ export default function SelectedToken({ onClick, selectedToken }) {
         </div>
       </div>
       <Icon
-        name={ICON_NAMES.ARROW_DOWN}
-        size={ICON_SIZES.XS}
+        name={IconName.ArrowDown}
+        size={IconSize.Xs}
         marginRight={3}
         color={IconColor.iconAlternative}
       />
