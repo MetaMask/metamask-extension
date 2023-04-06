@@ -62,7 +62,6 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
-import browser from 'webextension-polyfill';
 import {
   AssetType,
   TransactionStatus,
