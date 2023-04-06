@@ -5,6 +5,7 @@ export default class SelfConnect {
     this._openConnectorTab(appUrl);
   }
 
+  // Thanks https://github.com/GridPlus/eth-lattice-keyring/blob/master/index.js
   async _openConnectorTab(url) {
     try {
       const browserTab = window.open(url);
