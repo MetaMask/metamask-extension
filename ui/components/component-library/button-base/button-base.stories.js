@@ -7,8 +7,8 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { TextDirection } from '..';
-import { ICON_NAMES } from '../icon/deprecated';
+import { TextDirection, IconName } from '..';
+
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -59,11 +59,11 @@ export default {
     },
     startIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
     endIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
     loading: {
       control: 'boolean',
@@ -177,13 +177,13 @@ Loading.args = {
 };
 
 export const StartIconName = (args) => (
-  <ButtonBase {...args} startIconName={ICON_NAMES.ADD_SQUARE}>
+  <ButtonBase {...args} startIconName={IconName.AddSquare}>
     Button
   </ButtonBase>
 );
 
 export const EndIconName = (args) => (
-  <ButtonBase {...args} endIconName={ICON_NAMES.ARROW_2_RIGHT}>
+  <ButtonBase {...args} endIconName={IconName.Arrow2Right}>
     Button
   </ButtonBase>
 );
@@ -192,15 +192,15 @@ export const Rtl = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
     <ButtonBase
       {...args}
-      startIconName={ICON_NAMES.ADD_SQUARE}
-      endIconName={ICON_NAMES.ARROW_2_RIGHT}
+      startIconName={IconName.AddSquare}
+      endIconName={IconName.Arrow2Right}
     >
       Button Demo
     </ButtonBase>
     <ButtonBase
       {...args}
-      startIconName={ICON_NAMES.ADD_SQUARE}
-      endIconName={ICON_NAMES.ARROW_2_RIGHT}
+      startIconName={IconName.AddSquare}
+      endIconName={IconName.Arrow2Right}
       textDirection={TextDirection.RightToLeft}
     >
       Button Demo
