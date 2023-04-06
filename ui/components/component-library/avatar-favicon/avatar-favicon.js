@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, Icon } from '../icon/deprecated';
+import { IconName, Icon } from '../icon';
 import {
   BorderColor,
   Size,
@@ -43,7 +43,7 @@ export const AvatarFavicon = ({
         />
       ) : (
         <Icon
-          name={ICON_NAMES.GLOBAL}
+          name={IconName.Global}
           color={IconColor.iconDefault}
           size={size}
           {...fallbackIconProps}
@@ -65,7 +65,7 @@ AvatarFavicon.propTypes = {
   /**
    * Props for the fallback icon. All Icon props can be used
    */
-  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
+  fallbackIconProps: PropTypes.object,
   /**
    * The size of the AvatarFavicon
    * Possible values could be 'Size.XS' 16px, 'Size.SM' 24px, 'Size.MD' 32px, 'Size.LG' 40px, 'Size.XL' 48px
