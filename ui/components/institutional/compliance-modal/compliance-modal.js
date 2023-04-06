@@ -4,12 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { hideModal } from '../../../store/actions';
 import Modal from '../../app/modal';
 import Box from '../../ui/box';
-import {
-  Text,
-  ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library';
+import { Text, ButtonIcon, IconSize, IconName } from '../../component-library';
 import {
   AlignItems,
   JustifyContent,
@@ -59,8 +54,8 @@ const ComplianceModal = () => {
           </Box>
           <ButtonIcon
             data-testid="compliance-modal-close"
-            iconName={ICON_NAMES.CLOSE}
-            size={ICON_SIZES.SM}
+            iconName={IconName.Close}
+            size={IconSize.Sm}
             ariaLabel={t('close')}
             onClick={handleClose}
           />
