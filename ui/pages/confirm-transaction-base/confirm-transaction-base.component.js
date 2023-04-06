@@ -493,9 +493,8 @@ export default class ConfirmTransactionBase extends Component {
             )
           }
           detailText={
-            !isMultiLayerFeeNetwork &&
             useCurrencyRateCheck && (
-              <div className="confirm-page-container-content__currency-container test">
+              <div className="confirm-page-container-content__currency-container">
                 {renderHeartBeatIfNotInTest()}
                 <UserPreferencedCurrencyDisplay
                   type={SECONDARY}

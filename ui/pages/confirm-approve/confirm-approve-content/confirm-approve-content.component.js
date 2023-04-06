@@ -32,6 +32,9 @@ import {
   Icon,
   Text,
 } from '../../../components/component-library';
+import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -63,6 +66,7 @@ export default class ConfirmApproveContent extends Component {
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
     supportsEIP1559: PropTypes.bool,
     assetName: PropTypes.string,
@@ -75,6 +79,7 @@ export default class ConfirmApproveContent extends Component {
     setUserAcknowledgedGasMissing: PropTypes.func,
     renderSimulationFailureWarning: PropTypes.bool,
     useCurrencyRateCheck: PropTypes.bool,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   state = {
@@ -155,12 +160,14 @@ export default class ConfirmApproveContent extends Component {
       ethTransactionTotal,
       fiatTransactionTotal,
       hexTransactionTotal,
+      hexMinimumTransactionFee,
       txData,
       isMultiLayerFeeNetwork,
       supportsEIP1559,
       userAcknowledgedGasMissing,
       renderSimulationFailureWarning,
       useCurrencyRateCheck,
+      useNativeCurrencyAsPrimaryCurrency,
     } = this.props;
     if (
       !isMultiLayerFeeNetwork &&
@@ -177,10 +184,27 @@ export default class ConfirmApproveContent extends Component {
       <div className="confirm-approve-content__transaction-details-content">
         {isMultiLayerFeeNetwork ? (
           <div className="confirm-approve-content__transaction-details-extra-content">
-            <div className="confirm-approve-content__transaction-details-content__labelled-fee">
-              <span>{t('transactionDetailLayer2GasHeading')}</span>
-              {`${ethTransactionTotal} ${nativeCurrency}`}
-            </div>
+            <TransactionDetailItem
+              key="total-item"
+              detailTitle={t('transactionDetailLayer2GasHeading')}
+              detailTotal={
+                <UserPreferencedCurrencyDisplay
+                  type={PRIMARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  numberOfDecimals={18}
+                />
+              }
+              detailText={
+                <UserPreferencedCurrencyDisplay
+                  type={SECONDARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                />
+              }
+              noBold
+              flexWidthValues
+            />
             <MultiLayerFeeMessage
               transaction={txData}
               layer2fee={hexTransactionTotal}

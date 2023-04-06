@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
+
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
@@ -16,10 +18,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
+import { getPreferences } from '../../../selectors';
 import GasDetailsItem from '../gas-details-item/gas-details-item';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 
 export default function ApproveContentCard({
   showHeader = true,
@@ -37,6 +43,7 @@ export default function ApproveContentCard({
   ethTransactionTotal,
   nativeCurrency,
   fullTxData,
+  hexMinimumTransactionFee,
   hexTransactionTotal,
   fiatTransactionTotal,
   currentCurrency,
@@ -48,6 +55,7 @@ export default function ApproveContentCard({
   useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   return (
     <Box
@@ -126,20 +134,27 @@ export default function ApproveContentCard({
                   flexDirection={FLEX_DIRECTION.COLUMN}
                   className="approve-content-card-container__transaction-details-extra-content"
                 >
-                  <Box
-                    display={DISPLAY.FLEX}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text
-                      variant={TextVariant.bodySm}
-                      fontWeight={FONT_WEIGHT.NORMAL}
-                      color={TextColor.textMuted}
-                      as="h6"
-                    >
-                      <span>{t('transactionDetailLayer2GasHeading')}</span>
-                      {`${ethTransactionTotal} ${nativeCurrency}`}
-                    </Text>
-                  </Box>
+                  <TransactionDetailItem
+                    key="total-item"
+                    detailTitle={t('transactionDetailLayer2GasHeading')}
+                    detailTotal={
+                      <UserPreferencedCurrencyDisplay
+                        type={PRIMARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                        numberOfDecimals={18}
+                      />
+                    }
+                    detailText={
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    }
+                    noBold
+                    flexWidthValues
+                  />
                   <MultiLayerFeeMessage
                     transaction={fullTxData}
                     layer2fee={hexTransactionTotal}
@@ -303,6 +318,10 @@ ApproveContentCard.propTypes = {
    * Total sum of the transaction converted to hex value
    */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Minimum transaction fee converted to hex value
+   */
+  hexMinimumTransactionFee: PropTypes.string,
   /**
    * Total sum of the transaction in fiat currency
    */
