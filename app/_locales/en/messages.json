@@ -2805,6 +2805,10 @@
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
   },
+  "permission_manageAccounts": {
+    "message": "Control accounts handled by snaps",
+    "description": "The description for `snap_manageAccounts` permission"
+  },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
@@ -2820,10 +2824,6 @@
   "permission_manageState": {
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageAccounts": {
-    "message": "Control accounts handled by snaps",
-    "description": "The description for `snap_manageAccounts` permission"
   },
   "permission_notifications": {
     "message": "Show notifications.",
