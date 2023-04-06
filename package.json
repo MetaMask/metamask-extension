@@ -368,6 +368,7 @@
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.5.5",
     "@ethersproject/bignumber": "^5.7.0",
+    "@json-rpc-specification/meta-schema": "^1.0.6",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@lavamoat/lavapack": "^5.0.0",
     "@metamask/auto-changelog": "^2.1.0",

@@ -1,14 +1,13 @@
-import nock from 'nock';
+import nock, { Scope as NockScope } from 'nock';
 import sinon from 'sinon';
+import { JSONRPCResponse } from '@json-rpc-specification/meta-schema';
 import EthQuery from 'eth-query';
-import { createNetworkClient } from '../create-network-client';
-
-/**
- * @typedef {import('nock').Scope} NockScope
- *
- * A object returned by the `nock` function for mocking requests to a particular
- * base URL.
- */
+import { Hex } from '@metamask/utils';
+import { BuiltInInfuraNetwork } from '../../../../../shared/constants/network';
+import {
+  createNetworkClient,
+  NetworkClientType,
+} from '../create-network-client';
 
 /**
  * A dummy value for the `infuraProjectId` option that `createInfuraClient`
@@ -41,9 +40,9 @@ const originalSetTimeout = setTimeout;
  * keeps failing, you can set `process.env.DEBUG_PROVIDER_TESTS` to `1`. This
  * will turn on some extra logging.
  *
- * @param {any[]} args - The arguments that `console.log` takes.
+ * @param args - The arguments that `console.log` takes.
  */
-function debug(...args) {
+function debug(...args: any) {
   if (process.env.DEBUG_PROVIDER_TESTS === '1') {
     console.log(...args);
   }
@@ -52,96 +51,89 @@ function debug(...args) {
 /**
  * Builds a Nock scope object for mocking provider requests.
  *
- * @param {string} rpcUrl - The URL of the RPC endpoint.
- * @returns {NockScope} The nock scope.
+ * @param rpcUrl - The URL of the RPC endpoint.
+ * @returns The nock scope.
  */
-function buildScopeForMockingRequests(rpcUrl) {
+function buildScopeForMockingRequests(rpcUrl: string): NockScope {
   return nock(rpcUrl).filteringRequestBody((body) => {
     debug('Nock Received Request: ', body);
     return body;
   });
 }
 
-/**
- * @typedef {{ nockScope: NockScope, blockNumber: string }} MockBlockTrackerRequestOptions
- *
- * The options to `mockNextBlockTrackerRequest` and `mockAllBlockTrackerRequests`.
- */
+type Request = { method: string; params?: any[] };
+type Response = {
+  id?: number | string;
+  jsonrpc?: '2.0';
+  error?: any;
+  result?: any;
+  httpStatus?: number;
+};
+type ResponseBody = { body: JSONRPCResponse };
+type BodyOrResponse = ResponseBody | Response;
+type CurriedMockRpcCallOptions = {
+  request: Request;
+  // The response data.
+  response?: BodyOrResponse;
+  /**
+   * An error to throw while making the request.
+   * Takes precedence over `response`.
+   */
+  error?: Error | string;
+  /**
+   * The amount of time that should pass before the
+   * request resolves with the response.
+   */
+  delay?: number;
+  /**
+   * The number of times that the request is
+   * expected to be made.
+   */
+  times?: number;
+};
 
-/**
- * Mocks the next request for the latest block that the block tracker will make.
- *
- * @param {MockBlockTrackerRequestOptions} args - The arguments.
- * @param {NockScope} args.nockScope - A nock scope (a set of mocked requests
- * scoped to a certain base URL).
- * @param {string} args.blockNumber - The block number that the block tracker
- * should report, as a 0x-prefixed hex string.
- */
-async function mockNextBlockTrackerRequest({
-  nockScope,
-  blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
-}) {
-  await mockRpcCall({
-    nockScope,
-    request: { method: 'eth_blockNumber', params: [] },
-    response: { result: blockNumber },
-  });
-}
+type MockRpcCallOptions = {
+  // A nock scope (a set of mocked requests scoped to a certain base URL).
+  nockScope: nock.Scope;
+} & CurriedMockRpcCallOptions;
 
-/**
- * Mocks all requests for the latest block that the block tracker will make.
- *
- * @param {MockBlockTrackerRequestOptions} args - The arguments.
- * @param {NockScope} args.nockScope - A nock scope (a set of mocked requests
- * scoped to a certain base URL).
- * @param {string} args.blockNumber - The block number that the block tracker
- * should report, as a 0x-prefixed hex string.
- */
-async function mockAllBlockTrackerRequests({
-  nockScope,
-  blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
-}) {
-  await mockRpcCall({
-    nockScope,
-    request: { method: 'eth_blockNumber', params: [] },
-    response: { result: blockNumber },
-  }).persist();
-}
-
-/**
- * @typedef {{ nockScope: NockScope, request: object, response: object, delay?: number }} MockRpcCallOptions
- *
- * The options to `mockRpcCall`.
- */
+type MockRpcCallResult = nock.Interceptor | nock.Scope;
 
 /**
  * Mocks a JSON-RPC request sent to the provider with the given response.
  * Provider type is inferred from the base url set on the nockScope.
  *
- * @param {MockRpcCallOptions} args - The arguments.
- * @param {NockScope} args.nockScope - A nock scope (a set of mocked requests
- * scoped to a certain base URL).
- * @param {object} args.request - The request data.
- * @param {{body: string} | {httpStatus?: number; id?: number; method?: string; params?: string[]}} [args.response] - Information
- * concerning the response that the request should have. If a `body` property is
- * present, this is taken as the complete response body. If an `httpStatus`
- * property is present, then it is taken as the HTTP status code to respond
- * with. Properties other than these two are used to build a complete response
- * body (including `id` and `jsonrpc` properties).
- * @param {Error | string} [args.error] - An error to throw while making the
- * request. Takes precedence over `response`.
- * @param {number} [args.delay] - The amount of time that should pass before the
- * request resolves with the response.
- * @param {number} [args.times] - The number of times that the request is
- * expected to be made.
- * @returns {NockScope} The nock scope.
+ * @param args - The arguments.
+ * @param args.nockScope - A nock scope (a set of mocked requests scoped to a
+ * certain base URL).
+ * @param args.request - The request data.
+ * @param args.response - Information concerning the response that the request
+ * should have. If a `body` property is present, this is taken as the complete
+ * response body. If an `httpStatus` property is present, then it is taken as
+ * the HTTP status code to respond with. Properties other than these two are
+ * used to build a complete response body (including `id` and `jsonrpc`
+ * properties).
+ * @param args.error - An error to throw while making the request. Takes
+ * precedence over `response`.
+ * @param args.delay - The amount of time that should pass before the request
+ * resolves with the response.
+ * @param args.times - The number of times that the request is expected to be
+ * made.
+ * @returns The nock scope.
  */
-function mockRpcCall({ nockScope, request, response, error, delay, times }) {
+function mockRpcCall({
+  nockScope,
+  request,
+  response,
+  error,
+  delay,
+  times,
+}: MockRpcCallOptions): MockRpcCallResult {
   // eth-query always passes `params`, so even if we don't supply this property,
   // for consistency with makeRpcCall, assume that the `body` contains it
   const { method, params = [], ...rest } = request;
   let httpStatus = 200;
-  let completeResponse = { id: 2, jsonrpc: '2.0' };
+  let completeResponse: JSONRPCResponse = { id: 2, jsonrpc: '2.0' };
   if (response !== undefined) {
     if ('body' in response) {
       completeResponse = response.body;
@@ -156,7 +148,7 @@ function mockRpcCall({ nockScope, request, response, error, delay, times }) {
       }
     }
   }
-  const url = nockScope.basePath.includes('infura.io')
+  const url = (nockScope as any).basePath.includes('infura.io')
     ? `/v3/${MOCK_INFURA_PROJECT_ID}`
     : '/';
 
@@ -189,7 +181,7 @@ function mockRpcCall({ nockScope, request, response, error, delay, times }) {
   if (error !== undefined) {
     return nockRequest.replyWithError(error);
   } else if (completeResponse !== undefined) {
-    return nockRequest.reply(httpStatus, (_, requestBody) => {
+    return nockRequest.reply(httpStatus, (_, requestBody: any) => {
       if (response !== undefined && !('body' in response)) {
         if (response.id === undefined) {
           completeResponse.id = requestBody.id;
@@ -204,16 +196,63 @@ function mockRpcCall({ nockScope, request, response, error, delay, times }) {
   return nockRequest;
 }
 
+type MockBlockTrackerRequestOptions = {
+  /**
+   * A nock scope (a set of mocked requests scoped to a certain base url).
+   */
+  nockScope: NockScope;
+  /**
+   * The block number that the block tracker should report, as a 0x-prefixed hex
+   * string.
+   */
+  blockNumber: string;
+};
+
+const mockNextBlockTrackerRequest = ({
+  nockScope,
+  blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
+}: MockBlockTrackerRequestOptions) => {
+  mockRpcCall({
+    nockScope,
+    request: { method: 'eth_blockNumber', params: [] },
+    response: { result: blockNumber },
+  });
+};
+
+/**
+ * Mocks all requests for the latest block that the block tracker will make.
+ *
+ * @param args - The arguments.
+ * @param args.nockScope - A nock scope (a set of mocked requests scoped to a
+ * certain base URL).
+ * @param args.blockNumber - The block number that the block tracker should
+ * report, as a 0x-prefixed hex string.
+ */
+async function mockAllBlockTrackerRequests({
+  nockScope,
+  blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
+}: MockBlockTrackerRequestOptions) {
+  const result = await mockRpcCall({
+    nockScope,
+    request: { method: 'eth_blockNumber', params: [] },
+    response: { result: blockNumber },
+  });
+
+  if ('persist' in result) {
+    result.persist();
+  }
+}
+
 /**
  * Makes a JSON-RPC call through the given eth-query object.
  *
- * @param {any} ethQuery - The eth-query object.
- * @param {object} request - The request data.
- * @returns {Promise<any>} A promise that either resolves with the result from
- * the JSON-RPC response if it is successful or rejects with the error from the
- * JSON-RPC response otherwise.
+ * @param ethQuery - The eth-query object.
+ * @param request - The request data.
+ * @returns A promise that either resolves with the result from the JSON-RPC
+ * response if it is successful or rejects with the error from the JSON-RPC
+ * response otherwise.
  */
-function makeRpcCall(ethQuery, request) {
+function makeRpcCall(ethQuery: EthQuery, request: Request) {
   return new Promise((resolve, reject) => {
     debug('[makeRpcCall] making request', request);
     ethQuery.sendAsync(request, (error, result) => {
@@ -227,41 +266,43 @@ function makeRpcCall(ethQuery, request) {
   });
 }
 
-/**
- * @typedef {{providerType: 'infura' | 'custom', infuraNetwork?: string}} WithMockedCommunicationsOptions
- *
- * The options bag that `Communications` takes.
- */
+export type ProviderType = 'infura' | 'custom';
 
-/**
- * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string, infuraNetwork: string}} Communications
- *
- * Provides methods to mock different kinds of requests to the provider.
- */
+export type MockOptions = {
+  infuraNetwork?: BuiltInInfuraNetwork;
+  providerType: ProviderType;
+  customRpcUrl?: string;
+  customChainId?: Hex;
+};
 
-/**
- * @typedef {(comms: Communications) => Promise<any>} WithMockedCommunicationsCallback
- *
- * The callback that `mockingCommunications` takes.
- */
+export type MockCommunications = {
+  mockNextBlockTrackerRequest: (options?: any) => void;
+  mockAllBlockTrackerRequests: (options?: any) => void;
+  mockRpcCall: (options: CurriedMockRpcCallOptions) => MockRpcCallResult;
+  rpcUrl: string;
+  infuraNetwork: BuiltInInfuraNetwork;
+};
 
 /**
  * Sets up request mocks for requests to the provider.
  *
- * @param {WithMockedCommunicationsOptions} options - An options bag.
- * @param {"infura" | "custom"} options.providerType - The type of network
- * client being tested.
- * @param {string} [options.infuraNetwork] - The name of the Infura network being
- * tested, assuming that `providerType` is "infura" (default: "mainnet").
- * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
- * assuming that `providerType` is "custom".
- * @param {WithMockedCommunicationsCallback} fn - A function which will be
- * called with an object that allows interaction with the network client.
- * @returns {Promise<any>} The return value of the given function.
+ * @param options - An options bag.
+ * @param options.providerType - The type of network client being tested.
+ * @param options.infuraNetwork - The name of the Infura network being tested,
+ * assuming that `providerType` is "infura" (default: "mainnet").
+ * @param options.customRpcUrl - The URL of the custom RPC endpoint, assuming
+ * that `providerType` is "custom".
+ * @param fn - A function which will be called with an object that allows
+ * interaction with the network client.
+ * @returns The return value of the given function.
  */
 export async function withMockedCommunications(
-  { providerType, infuraNetwork = 'mainnet', customRpcUrl = MOCK_RPC_URL },
-  fn,
+  {
+    providerType,
+    infuraNetwork = 'mainnet',
+    customRpcUrl = MOCK_RPC_URL,
+  }: MockOptions,
+  fn: (comms: MockCommunications) => Promise<void>,
 ) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(
@@ -274,11 +315,11 @@ export async function withMockedCommunications(
       ? `https://${infuraNetwork}.infura.io`
       : customRpcUrl;
   const nockScope = buildScopeForMockingRequests(rpcUrl);
-  const curriedMockNextBlockTrackerRequest = (localOptions) =>
+  const curriedMockNextBlockTrackerRequest = (localOptions: any) =>
     mockNextBlockTrackerRequest({ nockScope, ...localOptions });
-  const curriedMockAllBlockTrackerRequests = (localOptions) =>
+  const curriedMockAllBlockTrackerRequests = (localOptions: any) =>
     mockAllBlockTrackerRequests({ nockScope, ...localOptions });
-  const curriedMockRpcCall = (localOptions) =>
+  const curriedMockRpcCall = (localOptions: any) =>
     mockRpcCall({ nockScope, ...localOptions });
 
   const comms = {
@@ -297,12 +338,12 @@ export async function withMockedCommunications(
   }
 }
 
-/**
- * @typedef {{blockTracker: import('eth-block-tracker').PollingBlockTracker, clock: sinon.SinonFakeTimers, makeRpcCall: (request: Partial<JsonRpcRequest>) => Promise<any>, makeRpcCallsInSeries: (requests: Partial<JsonRpcRequest>[]) => Promise<any>}} MockNetworkClient
- *
- * Provides methods to interact with the suite of middleware that
- * `createInfuraClient` or `createJsonRpcClient` exposes.
- */
+type MockNetworkClient = {
+  blockTracker: any;
+  clock: sinon.SinonFakeTimers;
+  makeRpcCall: (request: Request) => Promise<any>;
+  makeRpcCallsInSeries: (requests: Request[]) => Promise<any[]>;
+};
 
 /**
  * Some middleware contain logic which retries the request if some condition
@@ -321,14 +362,14 @@ export async function withMockedCommunications(
  * `setTimeout` handler.
  */
 export async function waitForPromiseToBeFulfilledAfterRunningAllTimers(
-  promise,
-  clock,
+  promise: any,
+  clock: any,
 ) {
   let hasPromiseBeenFulfilled = false;
   let numTimesClockHasBeenAdvanced = 0;
 
   promise
-    .catch((error) => {
+    .catch((error: any) => {
       // This is used to silence Node.js warnings about the rejection
       // being handled asynchronously. The error is handled later when
       // `promise` is awaited, but we log it here anyway in case it gets
@@ -351,35 +392,21 @@ export async function waitForPromiseToBeFulfilledAfterRunningAllTimers(
 }
 
 /**
- * @typedef {{providerType: "infura" | "custom", infuraNetwork?: string, customRpcUrl?: string, customChainId?: string}} WithClientOptions
- *
- * The options bag that `withNetworkClient` takes.
- */
-
-/**
- * @typedef {(client: MockNetworkClient) => Promise<any>} WithClientCallback
- *
- * The callback that `withNetworkClient` takes.
- */
-
-/**
  * Builds a provider from the middleware (for the provider type) along with a
  * block tracker, runs the given function with those two things, and then
  * ensures the block tracker is stopped at the end.
  *
- * @param {WithClientOptions} options - An options bag.
- * @param {"infura" | "custom"} options.providerType - The type of network
- * client being tested.
- * @param {string} [options.infuraNetwork] - The name of the Infura network being
- * tested, assuming that `providerType` is "infura" (default: "mainnet").
- * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
- * assuming that `providerType` is "custom".
- * @param {string} [options.customChainId] - The chain id belonging to the
- * custom RPC endpoint, assuming that `providerType` is "custom" (default:
- * "0x1").
- * @param {WithClientCallback} fn - A function which will be called with an
- * object that allows interaction with the network client.
- * @returns {Promise<any>} The return value of the given function.
+ * @param options - An options bag.
+ * @param options.providerType - The type of network client being tested.
+ * @param options.infuraNetwork - The name of the Infura network being tested,
+ * assuming that `providerType` is "infura" (default: "mainnet").
+ * @param options.customRpcUrl - The URL of the custom RPC endpoint, assuming
+ * that `providerType` is "custom".
+ * @param options.customChainId - The chain id belonging to the custom RPC
+ * endpoint, assuming that `providerType` is "custom" (default: "0x1").
+ * @param fn - A function which will be called with an object that allows
+ * interaction with the network client.
+ * @returns The return value of the given function.
  */
 export async function withNetworkClient(
   {
@@ -387,8 +414,8 @@ export async function withNetworkClient(
     infuraNetwork = 'mainnet',
     customRpcUrl = MOCK_RPC_URL,
     customChainId = '0x1',
-  },
-  fn,
+  }: MockOptions,
+  fn: (client: MockNetworkClient) => Promise<any>,
 ) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(
@@ -414,20 +441,21 @@ export async function withNetworkClient(
       ? createNetworkClient({
           network: infuraNetwork,
           infuraProjectId: MOCK_INFURA_PROJECT_ID,
-          type: 'infura',
+          type: NetworkClientType.Infura,
         })
       : createNetworkClient({
           chainId: customChainId,
           rpcUrl: customRpcUrl,
-          type: 'custom',
+          type: NetworkClientType.Custom,
         });
   process.env.IN_TEST = inTest;
 
   const { provider, blockTracker } = clientUnderTest;
 
   const ethQuery = new EthQuery(provider);
-  const curriedMakeRpcCall = (request) => makeRpcCall(ethQuery, request);
-  const makeRpcCallsInSeries = async (requests) => {
+  const curriedMakeRpcCall = (request: Request) =>
+    makeRpcCall(ethQuery, request);
+  const makeRpcCallsInSeries = async (requests: Request[]) => {
     const responses = [];
     for (const request of requests) {
       responses.push(await curriedMakeRpcCall(request));
@@ -451,6 +479,13 @@ export async function withNetworkClient(
   }
 }
 
+type BuildMockParamsOptions = {
+  // The block parameter value to set.
+  blockParam: any;
+  // The index of the block parameter.
+  blockParamIndex: number;
+};
+
 /**
  * Build mock parameters for a JSON-RPC call.
  *
@@ -460,16 +495,15 @@ export async function withNetworkClient(
  * The block parameter can be set to a custom value. If no value is given, it
  * is set as undefined.
  *
- * @param {object} args - Arguments.
- * @param {number} args.blockParamIndex - The index of the block parameter.
- * @param {any} [args.blockParam] - The block parameter value to set.
- * @returns {any[]} The mock params.
+ * @param args - Arguments.
+ * @param args.blockParamIndex - The index of the block parameter.
+ * @param args.blockParam - The block parameter value to set.
+ * @returns The mock params.
  */
-export function buildMockParams({ blockParam, blockParamIndex }) {
-  if (blockParamIndex === undefined) {
-    throw new Error(`Missing 'blockParamIndex'`);
-  }
-
+export function buildMockParams({
+  blockParam,
+  blockParamIndex,
+}: BuildMockParamsOptions) {
   const params = new Array(blockParamIndex).fill('some value');
   params[blockParamIndex] = blockParam;
 
@@ -480,18 +514,18 @@ export function buildMockParams({ blockParam, blockParamIndex }) {
  * Returns a partial JSON-RPC request object, with the "block" param replaced
  * with the given value.
  *
- * @param {object} request - The request object.
- * @param {string} request.method - The request method.
- * @param {params} [request.params] - The request params.
- * @param {number} blockParamIndex - The index within the `params` array of the
- * block param.
- * @param {any} blockParam - The desired block param value.
- * @returns {object} The updated request object.
+ * @param request - The request object.
+ * @param request.method - The request method.
+ * @param request.params - The request params.
+ * @param blockParamIndex - The index within the `params` array of the block
+ * param.
+ * @param blockParam - The desired block param value.
+ * @returns The updated request object.
  */
 export function buildRequestWithReplacedBlockParam(
-  { method, params = [] },
-  blockParamIndex,
-  blockParam,
+  { method, params = [] }: Request,
+  blockParamIndex: number,
+  blockParam: any,
 ) {
   const updatedParams = params.slice();
   updatedParams[blockParamIndex] = blockParam;
