@@ -77,7 +77,8 @@ export default function ImportToken({
           variant={TextVariant.bodySm}
           className="import-token__contract-address"
           as="h6"
-          boxProps={{ marginBottom: 6 }}>
+          boxProps={{ marginBottom: 6 }}
+        >
           {tokenForImport.address || ''}
         </Text>
       </Box>
