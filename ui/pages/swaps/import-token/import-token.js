@@ -70,7 +70,9 @@ export default function ImportToken({
         >
           {tokenForImport.name || ''}
         </Text>
-        <Text variant={TextVariant.bodySm} as="h6">{t('contract')}:</Text>
+        <Text variant={TextVariant.bodySm} as="h6">
+          {t('contract')}:
+        </Text>
         <Text
           variant={TextVariant.bodySm}
           className="import-token__contract-address"
