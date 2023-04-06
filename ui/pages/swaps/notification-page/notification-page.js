@@ -14,7 +14,7 @@ import {
   TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Text, Icon, ICON_NAMES } from '../../../components/component-library';
+import { Text, Icon, IconName } from '../../../components/component-library';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import SwapsFooter from '../swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
@@ -48,7 +48,7 @@ export default function NotificationPage({ notificationKey }) {
       >
         <Box marginTop={8} marginBottom={4}>
           <Icon
-            name={ICON_NAMES.WARNING}
+            name={IconName.Warning}
             color={IconColor.iconMuted}
             className="notification-page__warning-icon"
           />

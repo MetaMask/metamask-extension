@@ -11,7 +11,7 @@ import {
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function ExchangeRateDisplay({
@@ -95,7 +95,7 @@ export default function ExchangeRateDisplay({
         </span>
       </Box>
       <Icon
-        name={ICON_NAMES.SWAP_HORIZONTAL}
+        name={IconName.SwapHorizontal}
         onClick={() => {
           setShowPrimaryToSecondary(!showPrimaryToSecondary);
         }}
