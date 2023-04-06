@@ -130,15 +130,6 @@ export type BackgroundColorArray = [
   BackgroundColor?,
   BackgroundColor?,
 ];
-
-interface BoxDisabledProp {
-  disabled?: boolean;
-}
-
-interface BoxHrefProp {
-  href?: string;
-}
-
 export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The content of the Box component.
@@ -335,12 +326,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Use the as prop to change the underlying HTML element of the Box component.
    */
-  as?:
-    | ('button' & BoxDisabledProp)
-    | ('input' & BoxDisabledProp)
-    | ('select' & BoxDisabledProp)
-    | ('a' & BoxHrefProp)
-    | keyof JSX.IntrinsicElements;
+  as?: keyof JSX.IntrinsicElements;
   /**
    * The text-color of the Box component.
    * Use TextColor enum from '../../../helpers/constants/design-system';
