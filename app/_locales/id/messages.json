@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "Penggabungan Ethereum telah tiba!"
   },
-  "notifications17ActionText": {
-    "message": "Tampilkan pengaturan Keamanan & Privasi"
-  },
-  "notifications17Title": {
-    "message": "Pengaturan Keamanan & Privasi"
-  },
   "notifications1Description": {
     "message": "Pengguna MetaMask Mobile kini bisa menukar token di dalam dompet seluler mereka. Pindai kode QR untuk mendapatkan aplikasi seluler dan mulai menukar.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

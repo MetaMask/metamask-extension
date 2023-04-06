@@ -1604,11 +1604,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "これは誰にも教えないでください。$1$2",
+    "message": "これは誰にも教えないでください。$1、$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask サポートがこの情報を尋ねることはなく、",
+    "message": "MetaMask サポートがこの情報を尋ねることはなく",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2335,12 +2335,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
-  },
-  "notifications17ActionText": {
-    "message": "セキュリティおよびプライバシー設定を表示"
-  },
-  "notifications17Title": {
-    "message": "セキュリティおよびプライバシー設定"
   },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",

@@ -2366,40 +2366,37 @@
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
   },
-  "notifications16ActionText": {
+  "notifications18ActionText": {
     "message": "Enable security alerts"
   },
-  "notifications16DescriptionOne": {
+  "notifications18DescriptionOne": {
     "message": "Get alerts from third parties when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-  "notifications16DescriptionThree": {
+  "notifications18DescriptionThree": {
     "message": "Always be sure to do your own due diligence before approving any requests.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-  "notifications16DescriptionTwo": {
+  "notifications18DescriptionTwo": {
     "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-  "notifications16Title": {
-    "message": "Stay safe with security alerts"
-  },
-  "notifications17ActionText": {
+  "notifications19ActionText": {
     "message": "Enable NFT autodetection"
   },
-  "notifications17DescriptionOne": {
+  "notifications19DescriptionOne": {
     "message": "Two ways you can get started:",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
-  "notifications17DescriptionThree": {
+  "notifications19DescriptionThree": {
     "message": "We only support ERC-721 at the moment.",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
-  "notifications17DescriptionTwo": {
+  "notifications19DescriptionTwo": {
     "message": "Manually add your NFTs, or turn on NFT autodetection in Settings > Experimental.",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
-  "notifications17Title": {
+  "notifications19Title": {
     "message": "See your NFTs like never before"
   },
   "notifications1Description": {

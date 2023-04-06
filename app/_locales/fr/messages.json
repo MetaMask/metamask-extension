@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "La fusion Ethereum est en marche !"
   },
-  "notifications17ActionText": {
-    "message": "Afficher les paramètres de sécurité et de confidentialité"
-  },
-  "notifications17Title": {
-    "message": "Paramètres de sécurité et de confidentialité"
-  },
   "notifications1Description": {
     "message": "Les utilisateurs de MetaMask Mobile peuvent désormais échanger des jetons dans leur portefeuille mobile. Scannez le code QR pour obtenir l’application mobile et commencez à échanger.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

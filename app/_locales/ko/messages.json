@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "이더리움 머지가 완료되었습니다!"
   },
-  "notifications17ActionText": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
-  "notifications17Title": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
   "notifications1Description": {
     "message": "MetaMask 모바일 사용자는 이제 모바일 지갑에서 토큰을 스왑할 수 있습니다. QR 코드를 스캔하여 모바일 앱을 설치하고 스왑을 시작하세요.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

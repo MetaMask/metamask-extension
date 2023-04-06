@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "Ethereum Merge уже досутпно!"
   },
-  "notifications17ActionText": {
-    "message": "Показать настройки безопасности и конфиденциальности"
-  },
-  "notifications17Title": {
-    "message": "Настройки безопасности и конфиденциальности"
-  },
   "notifications1Description": {
     "message": "Теперь пользователи MetaMask Mobile могут обменивать токены в своем мобильном кошельке. Отсканируйте QR-код, чтобы скачать мобильное приложение и начать обмен.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

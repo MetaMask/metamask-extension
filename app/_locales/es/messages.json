@@ -2336,12 +2336,6 @@
   "notifications15Title": {
     "message": "¡La Fusión de Ethereum está aquí!"
   },
-  "notifications17ActionText": {
-    "message": "Mostrar configuración de seguridad y privacidad"
-  },
-  "notifications17Title": {
-    "message": "Configuración de Seguridad y privacidad"
-  },
   "notifications1Description": {
     "message": "Los usuarios de la aplicación móvil de MetaMask ahora pueden canjear tokens en su cartera móvil. Escanee el código QR para obtener la aplicación móvil y comience a canjear.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

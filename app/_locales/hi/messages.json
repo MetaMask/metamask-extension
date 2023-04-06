@@ -1604,11 +1604,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "इसे किसी के साथ साझा न करें। $1$2",
+    "message": "इसे किसी के साथ साझा न करें। $1,$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा,",
+    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2335,12 +2335,6 @@
   },
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
-  },
-  "notifications17ActionText": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
-  },
-  "notifications17Title": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile उपयोगकर्ता अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",

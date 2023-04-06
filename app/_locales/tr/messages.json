@@ -1596,7 +1596,7 @@
     "message": "GKİ'yi göstermek için basılı tut"
   },
   "holdToRevealContent1": {
-    "message": "Gizli Kurtarma İfadeniz: $1$",
+    "message": "Gizli Kurtarma İfadeniz: $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
   },
   "holdToRevealContent2": {
@@ -2335,12 +2335,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Birleşmesi başladı!"
-  },
-  "notifications17ActionText": {
-    "message": "Güvenlik ve Gizlilik ayarlarını göster"
-  },
-  "notifications17Title": {
-    "message": "Güvenlik ve Gizlilik Ayarları"
   },
   "notifications1Description": {
     "message": "MetaMask Mobil kullanıcıları artık mobil cüzdanları içinde token takas edebilirler. Mobil uygulamayı edinmek ve takas yapmaya başlamak için QR kodunu tarayın.",
