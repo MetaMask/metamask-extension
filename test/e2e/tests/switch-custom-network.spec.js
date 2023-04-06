@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
-describe('Swtich ethereum chain', function () {
+describe('Switch Ethereum chain', () => {
   const ganacheOptions = {
     accounts: [
       {
