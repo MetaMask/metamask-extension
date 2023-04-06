@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
-import { Icon, ICON_NAMES } from '../icon/deprecated';
+import { IconName, Icon, IconSize } from '../icon';
 import { Text } from '../text';
 import Box from '../../ui/box';
 import {
@@ -48,9 +48,9 @@ export const PickerNetwork = ({
       </Text>
       <Icon
         className="mm-picker-network__arrow-down-icon"
-        name={ICON_NAMES.ARROW_DOWN}
+        name={IconName.ArrowDown}
         color={IconColor.iconDefault}
-        size={Size.XS}
+        size={IconSize.Xs}
         {...iconProps}
       />
     </Box>
@@ -73,7 +73,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from Icon
    */
-  iconProps: PropTypes.shape(Icon.PropTypes),
+  iconProps: PropTypes.object,
   /**
    * The text content of the PickerNetwork component
    */
