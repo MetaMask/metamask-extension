@@ -144,7 +144,7 @@ import { ButtonBase } from '../../component-library';
 
 ### Icon Name
 
-Use the `startIconName` and/or `endIconName` prop with the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
+Use the `startIconName` and/or `endIconName` prop with the `IconName` enum from `./ui/components/component-library` to select icon.
 
 <Canvas>
   <Story id="components-componentlibrary-buttonbase--start-icon-name" />
@@ -152,9 +152,9 @@ Use the `startIconName` and/or `endIconName` prop with the `ICON_NAMES` object f
 
 ```jsx
 import { ButtonBase } from '../../component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<ButtonBase startIconName={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
+<ButtonBase startIconName={IconName.AddSquare}>Button</ButtonBase>;
 ```
 
 <Canvas>
@@ -163,9 +163,9 @@ import { ICON_NAMES } from '../icon';
 
 ```jsx
 import { ButtonBase } from '../../component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<ButtonBase endIconName={ICON_NAMES.ARROW_2_RIGHT}>Button</ButtonBase>;
+<ButtonBase endIconName={IconName.Arrow2Right}>Button</ButtonBase>;
 ```
 
 ### RTL
@@ -177,18 +177,18 @@ For RTL language support use the `textDirection` prop.
 </Canvas>
 
 ```jsx
-import { ButtonBase, ICON_NAMES, TextDirection } from '../../component-library';
+import { ButtonBase, IconName, TextDirection } from '../../component-library';
 
 <>
   <ButtonBase
-    startIconName={ICON_NAMES.ADD_SQUARE}
-    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+    startIconName={IconName.AddSquare}
+    endIconName={IconName.Arrow2Right}
   >
     Button Demo
   </ButtonBase>
   <ButtonBase
-    startIconName={ICON_NAMES.ADD_SQUARE}
-    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+    startIconName={IconName.AddSquare}
+    endIconName={IconName.Arrow2Right}
     textDirection={TextDirection.RightToLeft}
   >
     Button Demo

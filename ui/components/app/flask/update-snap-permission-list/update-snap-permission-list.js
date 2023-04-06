@@ -9,24 +9,13 @@ export default function UpdateSnapPermissionList({
   approvedPermissions,
   revokedPermissions,
   newPermissions,
+  targetSubjectMetadata,
 }) {
   const t = useI18nContext();
 
   return (
     <Box paddingTop={1}>
-      {getWeightedPermissions(t, newPermissions).map((permission, index) => {
-        return (
-          <PermissionCell
-            title={permission.label}
-            description={permission.description}
-            weight={permission.weight}
-            avatarIcon={permission.leftIcon}
-            dateApproved={permission?.permissionValue?.date}
-            key={`${permission.permissionName}-${index}`}
-          />
-        );
-      })}
-      {getWeightedPermissions(t, approvedPermissions).map(
+      {getWeightedPermissions(t, newPermissions, targetSubjectMetadata).map(
         (permission, index) => {
           return (
             <PermissionCell
@@ -40,7 +29,23 @@ export default function UpdateSnapPermissionList({
           );
         },
       )}
-      {getWeightedPermissions(t, revokedPermissions).map(
+      {getWeightedPermissions(
+        t,
+        approvedPermissions,
+        targetSubjectMetadata,
+      ).map((permission, index) => {
+        return (
+          <PermissionCell
+            title={permission.label}
+            description={permission.description}
+            weight={permission.weight}
+            avatarIcon={permission.leftIcon}
+            dateApproved={permission?.permissionValue?.date}
+            key={`${permission.permissionName}-${index}`}
+          />
+        );
+      })}
+      {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
         (permission, index) => {
           return (
             <PermissionCell
@@ -72,4 +77,5 @@ UpdateSnapPermissionList.propTypes = {
    * New permissions that are being requested
    */
   newPermissions: PropTypes.object.isRequired,
+  targetSubjectMetadata: PropTypes.object.isRequired,
 };
