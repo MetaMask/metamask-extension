@@ -34,7 +34,7 @@ import { IconName } from '../icon';
 
 ### Size
 
-Use the `size` prop and the `ButtonIconSize` or `IconSize` enum from `./ui/components/component-library/icon` to change the size of `ButtonIcon`. Defaults to `ButtonIconSize.Sm`
+Use the `size` prop and the `ButtonIconSize` enum from `./ui/components/component-library/icon` to change the size of `ButtonIcon`. Defaults to `ButtonIconSize.Sm`
 
 Possible sizes include:
 
@@ -46,7 +46,7 @@ Possible sizes include:
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
+import { ButtonIconSize } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
 <ButtonIcon size={ButtonIconSize.Sm} iconName={IconName.Close} ariaLabel="Close"/>
