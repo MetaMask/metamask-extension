@@ -959,9 +959,7 @@ jobs:
   job-publish-prerelease:
     executor: node-browsers
     steps:
-      - run:
-          name: Shallow git clone
-          command: git clone --depth 1 https://github.com/MetaMask/metamask-extension --branch "$CIRCLE_BRANCH" .
+      - checkout
       - attach_workspace:
           at: .
       - run:
