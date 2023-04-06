@@ -15,7 +15,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
 import { Color } from '../../../helpers/constants/design-system';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';

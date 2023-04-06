@@ -4036,18 +4036,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/message-manager@npm:2.0.0"
+"@metamask/message-manager@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/message-manager@npm:2.1.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.0.0
+    "@metamask/controller-utils": ^3.1.0
     "@types/uuid": ^8.3.0
     eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: f130b5c58fbbb5ccd69da32cfa43839a09dec906974c6d0f6e2d46f15d1a872c564b0c880aac2979b7ffc8d00bcf328bf1989cb133cc41bc612e1e6e16ef9ef5
+  checksum: f3a233a84aec73051f8f1183dab32c4d9a976edaa3c6461b118a8e6f20cf43f8757827ad6c877aed635ef850944ce054af03b34592f5b72f5d0667fa8b179dc9
   languageName: node
   linkType: hard
 
@@ -5117,7 +5117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spruceid/siwe-parser@npm:1.1.3, @spruceid/siwe-parser@npm:^1.1.3":
+"@spruceid/siwe-parser@npm:1.1.3":
   version: 1.1.3
   resolution: "@spruceid/siwe-parser@npm:1.1.3"
   dependencies:
@@ -24283,7 +24283,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^1.0.0
+    "@metamask/controller-utils": ^3.1.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
@@ -24303,7 +24303,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^2.0.0
+    "@metamask/message-manager": ^2.1.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^8.0.0
@@ -24334,7 +24334,6 @@ __metadata:
     "@sentry/integrations": ^6.0.0
     "@sentry/types": ^6.0.1
     "@sentry/utils": ^6.0.1
-    "@spruceid/siwe-parser": ^1.1.3
     "@storybook/addon-a11y": ^6.5.13
     "@storybook/addon-actions": ^6.5.13
     "@storybook/addon-essentials": ^6.5.13

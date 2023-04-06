@@ -4,12 +4,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
 import Typography from '../typography';
+import { ButtonLink } from '../../component-library';
 import {
-  ButtonLink,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../component-library';
+} from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,

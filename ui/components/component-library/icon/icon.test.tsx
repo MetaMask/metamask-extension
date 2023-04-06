@@ -1,14 +1,14 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Size, IconColor } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from './icon.constants';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { IconName, IconSize } from './icon.types';
 import { Icon } from './icon';
 
 describe('Icon', () => {
   it('should render correctly', () => {
     const { getByTestId, container } = render(
-      <Icon name={ICON_NAMES.ADD_SQUARE} data-testid="icon" />,
+      <Icon name={IconName.AddSquare} data-testid="icon" />,
     );
     expect(getByTestId('icon')).toBeDefined();
     expect(container.querySelector('svg')).toBeDefined();
@@ -17,7 +17,7 @@ describe('Icon', () => {
   it('should render with a custom class', () => {
     const { getByTestId } = render(
       <Icon
-        name={ICON_NAMES.ADD_SQUARE}
+        name={IconName.AddSquare}
         data-testid="icon"
         className="test-class"
       />,
@@ -34,7 +34,7 @@ describe('Icon', () => {
      */
     const { getByTestId } = render(
       <Icon
-        name={ICON_NAMES.ADD_SQUARE}
+        name={IconName.AddSquare}
         data-testid="icon"
         aria-label="test aria label"
       />,
@@ -47,10 +47,10 @@ describe('Icon', () => {
   it('should render with different icons using mask-image and image urls', () => {
     const { getByTestId } = render(
       <>
-        <Icon name={ICON_NAMES.ADD_SQUARE} data-testid="add-square" />
-        <Icon name={ICON_NAMES.BANK} data-testid="bank" />
-        <Icon name={ICON_NAMES.BOOKMARK} data-testid="bookmark" />
-        <Icon name={ICON_NAMES.CALCULATOR} data-testid="calculator" />
+        <Icon name={IconName.AddSquare} data-testid="add-square" />
+        <Icon name={IconName.Bank} data-testid="bank" />
+        <Icon name={IconName.Bookmark} data-testid="bookmark" />
+        <Icon name={IconName.Calculator} data-testid="calculator" />
       </>,
     );
     expect(window.getComputedStyle(getByTestId('add-square')).maskImage).toBe(
@@ -70,34 +70,34 @@ describe('Icon', () => {
     const { getByTestId } = render(
       <>
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
-          size={Size.XS}
+          name={IconName.AddSquare}
+          size={IconSize.Xs}
           data-testid="icon-xs"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
-          size={Size.SM}
+          name={IconName.AddSquare}
+          size={IconSize.Sm}
           data-testid="icon-sm"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
-          size={Size.MD}
+          name={IconName.AddSquare}
+          size={IconSize.Md}
           data-testid="icon-md"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
-          size={Size.LG}
+          name={IconName.AddSquare}
+          size={IconSize.Lg}
           data-testid="icon-lg"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
-          size={Size.XL}
+          name={IconName.AddSquare}
+          size={IconSize.Xl}
           data-testid="icon-xl"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
-          size={Size.inherit}
-          data-testid="icon-auto"
+          name={IconName.AddSquare}
+          size={IconSize.Inherit}
+          data-testid="icon-inherit"
         />
       </>,
     );
@@ -106,23 +106,23 @@ describe('Icon', () => {
     expect(getByTestId('icon-md')).toHaveClass('mm-icon--size-md');
     expect(getByTestId('icon-lg')).toHaveClass('mm-icon--size-lg');
     expect(getByTestId('icon-xl')).toHaveClass('mm-icon--size-xl');
-    expect(getByTestId('icon-auto')).toHaveClass('mm-icon--size-inherit');
+    expect(getByTestId('icon-inherit')).toHaveClass('mm-icon--size-inherit');
   });
   it('should render with icon colors', () => {
     const { getByTestId } = render(
       <>
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
+          name={IconName.AddSquare}
           color={IconColor.iconDefault}
           data-testid="icon-color-default"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
+          name={IconName.AddSquare}
           color={IconColor.iconAlternative}
           data-testid="icon-color-alternative"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE}
+          name={IconName.AddSquare}
           color={IconColor.iconMuted}
           data-testid="icon-color-muted"
         />
