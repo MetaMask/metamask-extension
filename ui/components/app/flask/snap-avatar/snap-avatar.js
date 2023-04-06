@@ -15,11 +15,13 @@ import {
   AvatarFavicon,
   BadgeWrapper,
   BadgeWrapperPosition,
-  ICON_NAMES,
-  ICON_SIZES,
   AvatarIcon,
   AvatarBase,
 } from '../../../component-library';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../component-library/icon/deprecated';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
 const SnapAvatar = ({ snapId, className }) => {

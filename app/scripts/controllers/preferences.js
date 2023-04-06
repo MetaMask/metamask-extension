@@ -73,7 +73,6 @@ export default class PreferencesController {
     this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
-    this.openPopup = opts.openPopup;
     this.tokenListController = opts.tokenListController;
 
     this._subscribeToInfuraAvailability();

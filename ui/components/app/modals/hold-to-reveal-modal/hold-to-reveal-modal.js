@@ -7,8 +7,8 @@ import {
   Button,
   BUTTON_TYPES,
   ButtonIcon,
-  ICON_NAMES,
 } from '../../../component-library';
+import { ICON_NAMES } from '../../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,

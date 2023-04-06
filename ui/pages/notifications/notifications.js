@@ -17,10 +17,10 @@ import {
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  ButtonIcon,
   ICON_SIZES,
   ICON_NAMES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../components/component-library';
 import { Color } from '../../helpers/constants/design-system';
 
 export function NotificationItem({ notification, snaps, onItemClick }) {
