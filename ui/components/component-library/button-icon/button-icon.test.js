@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '..';
+import { IconName } from '..';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 import { ButtonIcon } from './button-icon';
 
@@ -11,7 +11,7 @@ describe('ButtonIcon', () => {
     const { getByTestId, container } = render(
       <ButtonIcon
         data-testid="button-icon"
-        iconName={ICON_NAMES.ADD_SQUARE}
+        iconName={IconName.AddSquare}
         ariaLabel="add"
       />,
     );
@@ -25,7 +25,7 @@ describe('ButtonIcon', () => {
       <ButtonIcon
         as="a"
         data-testid="button-icon"
-        iconName={ICON_NAMES.ADD_SQUARE}
+        iconName={IconName.AddSquare}
         ariaLabel="add"
       />,
     );
@@ -39,7 +39,7 @@ describe('ButtonIcon', () => {
       <ButtonIcon
         href="/metamask"
         data-testid="button-icon"
-        iconName={ICON_NAMES.ADD_SQUARE}
+        iconName={IconName.AddSquare}
         ariaLabel="add"
       />,
     );
@@ -51,13 +51,13 @@ describe('ButtonIcon', () => {
     const { getByTestId } = render(
       <>
         <ButtonIcon
-          iconName={ICON_NAMES.ADD_SQUARE}
+          iconName={IconName.AddSquare}
           ariaLabel="add"
           size={BUTTON_ICON_SIZES.SM}
           data-testid={BUTTON_ICON_SIZES.SM}
         />
         <ButtonIcon
-          iconName={ICON_NAMES.ADD_SQUARE}
+          iconName={IconName.AddSquare}
           ariaLabel="add"
           size={BUTTON_ICON_SIZES.LG}
           data-testid={BUTTON_ICON_SIZES.LG}
@@ -76,13 +76,13 @@ describe('ButtonIcon', () => {
     const { getByTestId } = render(
       <>
         <ButtonIcon
-          iconName={ICON_NAMES.ADD_SQUARE}
+          iconName={IconName.AddSquare}
           ariaLabel="add"
           color={IconColor.iconDefault}
           data-testid={IconColor.iconDefault}
         />
         <ButtonIcon
-          iconName={ICON_NAMES.ADD_SQUARE}
+          iconName={IconName.AddSquare}
           ariaLabel="add"
           color={IconColor.errorDefault}
           data-testid={IconColor.errorDefault}
@@ -102,7 +102,7 @@ describe('ButtonIcon', () => {
       <ButtonIcon
         data-testid="classname"
         className="mm-button-icon--test"
-        iconName={ICON_NAMES.ADD_SQUARE}
+        iconName={IconName.AddSquare}
         ariaLabel="add"
       />,
     );
@@ -115,7 +115,7 @@ describe('ButtonIcon', () => {
         <ButtonIcon
           disabled
           data-testid="disabled"
-          iconName={ICON_NAMES.ADD_SQUARE}
+          iconName={IconName.AddSquare}
           ariaLabel="add"
         />
       </>,
@@ -128,7 +128,7 @@ describe('ButtonIcon', () => {
     const { getByTestId } = render(
       <ButtonIcon
         data-testid="icon"
-        iconName={ICON_NAMES.ADD_SQUARE}
+        iconName={IconName.AddSquare}
         ariaLabel="add"
         iconProps={{ 'data-testid': 'button-icon' }}
       />,
@@ -139,7 +139,7 @@ describe('ButtonIcon', () => {
 
   it('should render with aria-label', () => {
     const { getByLabelText } = render(
-      <ButtonIcon iconName={ICON_NAMES.ADD_SQUARE} ariaLabel="add" />,
+      <ButtonIcon iconName={IconName.AddSquare} ariaLabel="add" />,
     );
 
     expect(getByLabelText('add')).toBeDefined();

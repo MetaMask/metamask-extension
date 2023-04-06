@@ -337,7 +337,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The ref of the Box component.
    */
-  ref?: React.RefObject<HTMLElement>;
+  ref?: React.Ref<HTMLElement>;
 }
 
 declare const Box: React.FC<BoxProps>;

@@ -24,6 +24,11 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  NetworkStatus,
+  SEPOLIA_DISPLAY_NAME,
+  GOERLI_DISPLAY_NAME,
+  ETH_TOKEN_IMAGE_URL,
+  LINEA_TESTNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -77,16 +82,13 @@ import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
 /**
- * One of the only remaining valid uses of selecting the network subkey of the
- * metamask state tree is to determine if the network is currently 'loading'.
+ * Returns true if the currently selected network is inaccessible or whether no
+ * provider has been set yet for the currently selected network.
  *
- * This will be used for all cases where this state key is accessed only for that
- * purpose.
- *
- * @param {object} state - redux state object
+ * @param {object} state - Redux state object.
  */
 export function isNetworkLoading(state) {
-  return state.metamask.network === 'loading';
+  return state.metamask.networkStatus !== NetworkStatus.Available;
 }
 
 export function getNetworkIdentifier(state) {
@@ -177,10 +179,6 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function isEIP1559Account() {
-  return true;
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -189,9 +187,7 @@ export function isEIP1559Account() {
  */
 export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkSupports1559 && accountSupports1559;
+  return networkSupports1559;
 }
 
 /**
@@ -202,9 +198,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkNotSupports1559 || accountSupports1559 === false;
+  return networkNotSupports1559;
 }
 
 /**
@@ -256,7 +250,7 @@ export function getAccountType(state) {
  * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.network;
+  return state.metamask.networkId ?? 'loading';
 }
 
 export const getMetaMaskAccounts = createSelector(
@@ -962,8 +956,10 @@ function getAllowedAnnouncementIds(state) {
     13: false,
     14: false,
     15: false,
-    16: true,
-    17: true,
+    16: false,
+    17: false,
+    18: true,
+    19: true,
   };
 }
 
@@ -1124,6 +1120,63 @@ export function getProvider(state) {
 
 export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
+}
+
+export function getAllNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+  const showTestnetNetworks = getShowTestNetworks(state);
+  const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
+
+  const networks = [];
+  // Mainnet always first
+  networks.push({
+    chainId: CHAIN_IDS.MAINNET,
+    nickname: MAINNET_DISPLAY_NAME,
+    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+    rpcPrefs: {
+      imageUrl: ETH_TOKEN_IMAGE_URL,
+    },
+    providerType: NETWORK_TYPES.MAINNET,
+  });
+  // Custom networks added
+  networks.push(
+    ...Object.entries(networkConfigurations)
+      .filter(
+        ([, network]) =>
+          !localhostFilter(network) && network.chainId !== CHAIN_IDS.MAINNET,
+      )
+      .map(([, network]) => network),
+  );
+  // Test networks if flag is on
+  if (showTestnetNetworks) {
+    networks.push(
+      ...[
+        {
+          chainId: CHAIN_IDS.GOERLI,
+          nickname: GOERLI_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+          providerType: NETWORK_TYPES.GOERLI,
+        },
+        {
+          chainId: CHAIN_IDS.SEPOLIA,
+          nickname: SEPOLIA_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+          providerType: NETWORK_TYPES.SEPOLIA,
+        },
+        {
+          chainId: CHAIN_IDS.LINEA_TESTNET,
+          nickname: LINEA_TESTNET_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+          provderType: NETWORK_TYPES.LINEA_TESTNET,
+        },
+      ], // Localhosts
+      ...Object.entries(networkConfigurations)
+        .filter(([, network]) => localhostFilter(network))
+        .map(([, network]) => network),
+    );
+  }
+
+  return networks;
 }
 
 export function getIsOptimism(state) {
