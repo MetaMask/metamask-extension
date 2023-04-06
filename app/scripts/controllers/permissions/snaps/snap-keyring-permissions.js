@@ -1,10 +1,5 @@
 import { PermissionType } from '@metamask/permission-controller';
 
-const NotificationType = {
-  InApp: 'inApp',
-  Native: 'native',
-};
-
 const methodName = 'snap_manageAccounts';
 
 const methodHooks = {
@@ -14,7 +9,8 @@ const methodHooks = {
 
 const snapKeyringPermissionBuilder = {
   targetKey: methodName,
-  specificationBuilder: ({ allowedCaveats = null, methodHooks }) => {
+  // eslint-disable-next-line no-shadow
+  specificationBuilder: ({ methodHooks }) => {
     return {
       permissionType: PermissionType.RestrictedMethod,
       targetKey: methodName,
