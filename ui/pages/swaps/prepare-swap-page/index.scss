@@ -267,9 +267,14 @@
     background: var(--color-background-default-hover);
     border: 1px solid var(--color-border-muted);
     transition: all 0.3s linear;
+    cursor: pointer;
 
     &--rotate {
       transform: rotate(360deg);
+    }
+
+    &--disabled {
+      cursor: not-allowed;
     }
   }
 

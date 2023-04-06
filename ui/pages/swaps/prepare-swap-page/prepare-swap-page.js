@@ -991,6 +991,8 @@ export default function PrepareSwap({
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
+                'prepare-swap-page__switch-tokens--disabled':
+                  showQuotesLoadingAnimation,
               })}
               onClick={() => {
                 // If quotes are being loaded, disable the switch button.
@@ -1000,7 +1002,6 @@ export default function PrepareSwap({
                   setRotateSwitchTokens(!rotateSwitchTokens);
                 }
               }}
-              style={{ cursor: 'pointer' }}
               title={t('swapSwapSwitch')}
             >
               <Icon
