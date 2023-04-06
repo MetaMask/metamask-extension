@@ -39,6 +39,8 @@ describe('Swtich ethereum chain', function () {
           text: 'Add Localhost 8546',
         });
 
+        await driver.waitUntilXWindowHandles(3);
+
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
