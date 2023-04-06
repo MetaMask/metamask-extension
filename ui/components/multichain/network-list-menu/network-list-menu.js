@@ -10,6 +10,7 @@ import {
   showModal,
   setShowTestNetworks,
   setProviderType,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
@@ -58,16 +59,17 @@ export const NetworkListMenu = ({ onClose }) => {
                 key={network.id || network.chainId}
                 selected={isCurrentNetwork}
                 onClick={() => {
+                  dispatch(toggleNetworkMenu());
                   if (network.providerType) {
                     dispatch(setProviderType(network.providerType));
                   } else {
                     dispatch(setActiveNetwork(network.id));
                   }
-                  onClose();
                 }}
                 onDeleteClick={
                   canDeleteNetwork
                     ? () => {
+                        dispatch(toggleNetworkMenu());
                         dispatch(
                           showModal({
                             name: 'CONFIRM_DELETE_NETWORK',
@@ -75,7 +77,6 @@ export const NetworkListMenu = ({ onClose }) => {
                             onConfirm: () => undefined,
                           }),
                         );
-                        onClose();
                       }
                     : null
                 }
@@ -104,6 +105,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 : global.platform.openExtensionInBrowser(
                     ADD_POPULAR_CUSTOM_NETWORK,
                   );
+              dispatch(toggleNetworkMenu());
             }}
           >
             {t('addNetwork')}

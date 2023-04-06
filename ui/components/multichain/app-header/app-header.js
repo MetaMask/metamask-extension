@@ -119,8 +119,8 @@ export const AppHeader = ({ onClick }) => {
                 />
               ) : (
                 <PickerNetwork
-                  label={currentNetwork.nickname}
-                  src={currentNetwork.rpcPrefs?.imageUrl}
+                  label={currentNetwork?.nickname}
+                  src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={() => dispatch(toggleNetworkMenu())}
                 />
               )}
@@ -184,8 +184,8 @@ export const AppHeader = ({ onClick }) => {
               gap={2}
             >
               <PickerNetwork
-                label={currentNetwork.nickname}
-                src={currentNetwork.rpcPrefs?.imageUrl}
+                label={currentNetwork?.nickname}
+                src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={() => dispatch(toggleNetworkMenu())}
               />
               <MetafoxLogo
