@@ -11,7 +11,6 @@ const RULES: IRule[] = [
   {
     name: "Don't add JS or JSX files to the `shared` directory",
     fn: preventJavaScriptFileAdditions,
-    docURL: '',
   },
 ];
 
@@ -21,10 +20,8 @@ interface IRule {
   docURL?: string;
 }
 
-function runFitnessFunctionRule(
-  { name, fn, docURL }: IRule,
-  diff: string,
-): void {
+function runFitnessFunctionRule(rule: IRule, diff: string): void {
+  const { name, fn, docURL } = rule;
   console.log(`Checking rule "${name}"...`);
 
   const hasRulePassed: boolean = fn(diff) as boolean;
@@ -33,7 +30,7 @@ function runFitnessFunctionRule(
   } else {
     console.log(`...FAILED. Changes not accepted by the fitness function.`);
 
-    if (docURL !== '') {
+    if (docURL) {
       console.log(`For more info: ${docURL}.`);
     }
 

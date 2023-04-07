@@ -4,8 +4,8 @@ import {
 } from '../common/test-data';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
 
-describe('preventJavaScriptFileAdditions()', () => {
-  it('should pass when receiving an empty diff', () => {
+describe('preventJavaScriptFileAdditions()', (): void => {
+  it('should pass when receiving an empty diff', (): void => {
     const testDiff = '';
 
     const hasRulePassed = preventJavaScriptFileAdditions(testDiff);
@@ -13,7 +13,7 @@ describe('preventJavaScriptFileAdditions()', () => {
     expect(hasRulePassed).toBe(true);
   });
 
-  it('should pass when receiving a diff with a new TS file on the shared folder', () => {
+  it('should pass when receiving a diff with a new TS file on the shared folder', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
       generateModifyFilesDiff('old-file.js', undefined, 'pong'),
@@ -25,7 +25,7 @@ describe('preventJavaScriptFileAdditions()', () => {
     expect(hasRulePassed).toBe(true);
   });
 
-  it('should not pass when receiving a diff with a new JS file on the shared folder', () => {
+  it('should not pass when receiving a diff with a new JS file on the shared folder', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
       generateModifyFilesDiff('old-file.js', undefined, 'pong'),
@@ -37,7 +37,7 @@ describe('preventJavaScriptFileAdditions()', () => {
     expect(hasRulePassed).toBe(false);
   });
 
-  it('should not pass when receiving a diff with a new JSX file on the shared folder', () => {
+  it('should not pass when receiving a diff with a new JSX file on the shared folder', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
       generateModifyFilesDiff('old-file.js', undefined, 'pong'),

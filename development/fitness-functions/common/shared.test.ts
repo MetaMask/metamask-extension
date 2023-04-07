@@ -6,8 +6,8 @@ import {
 } from './shared';
 import { generateCreateFileDiff, generateModifyFilesDiff } from './test-data';
 
-describe('filterDiffLineAdditions()', () => {
-  it('should return code additions in the diff', () => {
+describe('filterDiffLineAdditions()', (): void => {
+  it('should return code additions in the diff', (): void => {
     const testFilePath = 'new-file.js';
     const testAddition = 'foo';
     const testFileDiff = generateCreateFileDiff(testFilePath, testAddition);
@@ -19,8 +19,8 @@ describe('filterDiffLineAdditions()', () => {
   });
 });
 
-describe('filterDiffFileCreations()', () => {
-  it('should return code additions in the diff', () => {
+describe('filterDiffFileCreations()', (): void => {
+  it('should return code additions in the diff', (): void => {
     const testFileDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
       generateCreateFileDiff('old-file.js', 'ping'),
@@ -41,8 +41,8 @@ describe('filterDiffFileCreations()', () => {
   });
 });
 
-describe('hasNumberOfCodeBlocksIncreased()', () => {
-  it('should show which code blocks have increased', () => {
+describe('hasNumberOfCodeBlocksIncreased()', (): void => {
+  it('should show which code blocks have increased', (): void => {
     const testDiffFragment = `
     +foo
     +bar
@@ -59,14 +59,14 @@ describe('hasNumberOfCodeBlocksIncreased()', () => {
   });
 });
 
-describe('filterDiffByFilePath()', () => {
+describe('filterDiffByFilePath()', (): void => {
   const testFileDiff = [
     generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
     generateModifyFilesDiff('old-file.js', 'ping', 'pong'),
     generateModifyFilesDiff('old-file.jsx', 'yin', 'yang'),
   ].join('');
 
-  it('should return the right diff for a generic matcher', () => {
+  it('should return the right diff for a generic matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
       '.*/.*.(js|ts)$|.*.(js|ts)$',
@@ -92,7 +92,7 @@ describe('filterDiffByFilePath()', () => {
     `);
   });
 
-  it('should return the right diff for a specific file in any dir matcher', () => {
+  it('should return the right diff for a specific file in any dir matcher', (): void => {
     const actualResult = filterDiffByFilePath(testFileDiff, '.*old-file.js$');
 
     expect(actualResult).toMatchInlineSnapshot(`
@@ -107,7 +107,7 @@ describe('filterDiffByFilePath()', () => {
     `);
   });
 
-  it('should return the right diff for a multiple file extension (OR) matcher', () => {
+  it('should return the right diff for a multiple file extension (OR) matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
       '^(./)*old-file.(js|ts|jsx)$',
@@ -133,7 +133,7 @@ describe('filterDiffByFilePath()', () => {
     `);
   });
 
-  it('should return the right diff for a file name negation matcher', () => {
+  it('should return the right diff for a file name negation matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
       '^(?!.*old-file.js$).*.[a-zA-Z]+$',

@@ -14,7 +14,7 @@ const codeBlocks = [
   'sinon.',
 ];
 
-function preventSinonAssertSyntax(diff: string) {
+function preventSinonAssertSyntax(diff: string): boolean {
   const diffByFilePath = filterDiffByFilePath(diff, EXCLUDE_E2E_TESTS_REGEX);
   const diffAdditions = filterDiffLineAdditions(diffByFilePath);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);

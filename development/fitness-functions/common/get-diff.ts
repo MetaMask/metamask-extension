@@ -18,7 +18,7 @@ function getDiffByAutomationType(
       process.exit(1);
     }
 
-    diff = getDiff(optionalArguments[0]);
+    diff = getCIDiff(optionalArguments[0]);
   } else if (automationType === AUTOMATION_TYPE.PRE_COMMIT_HOOK) {
     diff = getPreCommitHookDiff();
   } else if (automationType === AUTOMATION_TYPE.PRE_PUSH_HOOK) {
@@ -28,7 +28,7 @@ function getDiffByAutomationType(
   return diff;
 }
 
-function getDiff(path: string): string {
+function getCIDiff(path: string): string {
   return fs.readFileSync(path, {
     encoding: 'utf8',
     flag: 'r',

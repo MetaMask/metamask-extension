@@ -1,7 +1,7 @@
 const generateCreateFileDiff = (
   filePath = 'file.txt',
   content = 'Lorem ipsum',
-) => `
+): string => `
 diff --git a/${filePath} b/${filePath}
 new file mode 100644
 index 000000000..30d74d258
@@ -15,7 +15,7 @@ const generateModifyFilesDiff = (
   filePath = 'file.txt',
   addition = 'Lorem ipsum',
   removal = '',
-) => {
+): string => {
   const additionBlock = addition
     ? `
 @@ -1,3 +1,8 @@

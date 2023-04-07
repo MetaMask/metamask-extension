@@ -4,7 +4,7 @@ import {
   filterDiffFileCreations,
 } from '../common/shared';
 
-function preventJavaScriptFileAdditions(diff: string) {
+function preventJavaScriptFileAdditions(diff: string): boolean {
   const sharedFolderDiff = filterDiffByFilePath(diff, SHARED_FOLDER_JS_REGEX);
   const sharedFolderCreationDiff = filterDiffFileCreations(sharedFolderDiff);
 

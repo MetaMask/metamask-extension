@@ -1,7 +1,7 @@
 import { EXCLUDE_E2E_TESTS_REGEX, SHARED_FOLDER_JS_REGEX } from './constants';
 
-describe('Regular Expressions used in Fitness Functions', () => {
-  describe(`EXCLUDE_E2E_TESTS_REGEX "${EXCLUDE_E2E_TESTS_REGEX}"`, () => {
+describe('Regular Expressions used in Fitness Functions', (): void => {
+  describe(`EXCLUDE_E2E_TESTS_REGEX "${EXCLUDE_E2E_TESTS_REGEX}"`, (): void => {
     const PATHS_IT_SHOULD_MATCH = [
       'file.js',
       'path/file.js',
@@ -40,9 +40,9 @@ describe('Regular Expressions used in Fitness Functions', () => {
       'development/fitness-functions/much/longer/path/file.tsx',
     ];
 
-    describe('included paths', () => {
-      PATHS_IT_SHOULD_MATCH.forEach((path) => {
-        it(`should match "${path}"`, () => {
+    describe('included paths', (): void => {
+      PATHS_IT_SHOULD_MATCH.forEach((path: string): void => {
+        it(`should match "${path}"`, (): void => {
           const result = new RegExp(EXCLUDE_E2E_TESTS_REGEX, 'u').test(path);
 
           expect(result).toStrictEqual(true);
@@ -50,9 +50,9 @@ describe('Regular Expressions used in Fitness Functions', () => {
       });
     });
 
-    describe('excluded paths', () => {
-      PATHS_IT_SHOULD_NOT_MATCH.forEach((path) => {
-        it(`should not match "${path}"`, () => {
+    describe('excluded paths', (): void => {
+      PATHS_IT_SHOULD_NOT_MATCH.forEach((path: string): void => {
+        it(`should not match "${path}"`, (): void => {
           const result = new RegExp(EXCLUDE_E2E_TESTS_REGEX, 'u').test(path);
 
           expect(result).toStrictEqual(false);
@@ -61,7 +61,7 @@ describe('Regular Expressions used in Fitness Functions', () => {
     });
   });
 
-  describe(`SHARED_FOLDER_JS_REGEX "${SHARED_FOLDER_JS_REGEX}"`, () => {
+  describe(`SHARED_FOLDER_JS_REGEX "${SHARED_FOLDER_JS_REGEX}"`, (): void => {
     const PATHS_IT_SHOULD_MATCH = [
       'shared/file.js',
       'shared/path/file.js',
@@ -82,9 +82,9 @@ describe('Regular Expressions used in Fitness Functions', () => {
       'much/longer/path/file.tsx',
     ];
 
-    describe('included paths', () => {
-      PATHS_IT_SHOULD_MATCH.forEach((path) => {
-        it(`should match "${path}"`, () => {
+    describe('included paths', (): void => {
+      PATHS_IT_SHOULD_MATCH.forEach((path: string): void => {
+        it(`should match "${path}"`, (): void => {
           const result = new RegExp(SHARED_FOLDER_JS_REGEX, 'u').test(path);
 
           expect(result).toStrictEqual(true);
@@ -92,9 +92,9 @@ describe('Regular Expressions used in Fitness Functions', () => {
       });
     });
 
-    describe('excluded paths', () => {
-      PATHS_IT_SHOULD_NOT_MATCH.forEach((path) => {
-        it(`should not match "${path}"`, () => {
+    describe('excluded paths', (): void => {
+      PATHS_IT_SHOULD_NOT_MATCH.forEach((path: string): void => {
+        it(`should not match "${path}"`, (): void => {
           const result = new RegExp(SHARED_FOLDER_JS_REGEX, 'u').test(path);
 
           expect(result).toStrictEqual(false);
