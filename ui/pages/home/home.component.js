@@ -339,6 +339,7 @@ export default class Home extends PureComponent {
                   iconName={ICON_NAMES.CLOSE}
                   size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }
