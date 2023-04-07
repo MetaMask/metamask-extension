@@ -1,8 +1,8 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const { AUTOMATION_TYPE } = require('./constants');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import { AUTOMATION_TYPE } from './constants';
 
-function getDiffByAutomationType(automationType) {
+function getDiffByAutomationType(automationType: AUTOMATION_TYPE) {
   if (!Object.values(AUTOMATION_TYPE).includes(automationType)) {
     console.error('Invalid automation type.');
     process.exit(1);
@@ -45,4 +45,4 @@ function getPrePushHookDiff() {
     .trim();
 }
 
-module.exports = { getDiffByAutomationType };
+export { getDiffByAutomationType };

@@ -1,7 +1,4 @@
-const {
-  EXCLUDE_E2E_TESTS_REGEX,
-  SHARED_FOLDER_JS_REGEX,
-} = require('./constants');
+import { EXCLUDE_E2E_TESTS_REGEX, SHARED_FOLDER_JS_REGEX } from './constants';
 
 describe('Regular Expressions used in Fitness Functions', () => {
   describe(`EXCLUDE_E2E_TESTS_REGEX "${EXCLUDE_E2E_TESTS_REGEX}"`, () => {

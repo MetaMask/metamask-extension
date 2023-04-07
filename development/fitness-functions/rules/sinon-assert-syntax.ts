@@ -1,9 +1,9 @@
-const { EXCLUDE_E2E_TESTS_REGEX } = require('../common/constants');
-const {
+import { EXCLUDE_E2E_TESTS_REGEX } from '../common/constants';
+import {
   filterDiffLineAdditions,
   filterDiffByFilePath,
   hasNumberOfCodeBlocksIncreased,
-} = require('../common/shared');
+} from '../common/shared';
 
 const codeBlocks = [
   "import { strict as assert } from 'assert';",
@@ -14,7 +14,7 @@ const codeBlocks = [
   'sinon.',
 ];
 
-function preventSinonAssertSyntax(diff) {
+function preventSinonAssertSyntax(diff: string) {
   const diffByFilePath = filterDiffByFilePath(diff, EXCLUDE_E2E_TESTS_REGEX);
   const diffAdditions = filterDiffLineAdditions(diffByFilePath);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);
@@ -27,4 +27,4 @@ function preventSinonAssertSyntax(diff) {
   return true;
 }
 
-module.exports = { preventSinonAssertSyntax };
+export { preventSinonAssertSyntax };

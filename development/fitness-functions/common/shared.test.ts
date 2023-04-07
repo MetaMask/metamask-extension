@@ -1,13 +1,10 @@
-const {
+import {
   filterDiffLineAdditions,
   hasNumberOfCodeBlocksIncreased,
   filterDiffByFilePath,
   filterDiffFileCreations,
-} = require('./shared');
-const {
-  generateCreateFileDiff,
-  generateModifyFilesDiff,
-} = require('./test-data');
+} from './shared';
+import { generateCreateFileDiff, generateModifyFilesDiff } from './test-data';
 
 describe('filterDiffLineAdditions()', () => {
   it('should return code additions in the diff', () => {

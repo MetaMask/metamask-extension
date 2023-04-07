@@ -1,11 +1,11 @@
-const { generateModifyFilesDiff } = require('../common/test-data');
-const { checkMochaSyntax } = require('./sinon-assert-syntax');
+import { generateModifyFilesDiff } from '../common/test-data';
+import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 
-describe('checkMochaSyntax()', () => {
+describe('preventSinonAssertSyntax()', () => {
   it('should pass when receiving an empty diff', () => {
     const testDiff = '';
 
-    const hasRulePassed = checkMochaSyntax(testDiff);
+    const hasRulePassed = preventSinonAssertSyntax(testDiff);
 
     expect(hasRulePassed).toBe(true);
   });
@@ -14,15 +14,15 @@ describe('checkMochaSyntax()', () => {
     const infringingExpression = 'assert.equal';
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('old-file.js', null, 'pong'),
+      generateModifyFilesDiff('old-file.js', undefined, 'pong'),
       generateModifyFilesDiff(
         'test.js',
         `yada yada ${infringingExpression} yada yada`,
-        null,
+        undefined,
       ),
     ].join('');
 
-    const hasRulePassed = checkMochaSyntax(testDiff);
+    const hasRulePassed = preventSinonAssertSyntax(testDiff);
 
     expect(hasRulePassed).toBe(false);
   });

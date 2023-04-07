@@ -37,4 +37,4 @@ ${additionBlock}
 ${removalBlock}`;
 };
 
-module.exports = { generateCreateFileDiff, generateModifyFilesDiff };
+export { generateCreateFileDiff, generateModifyFilesDiff };

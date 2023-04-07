@@ -1,10 +1,10 @@
-const { SHARED_FOLDER_JS_REGEX } = require('../common/constants');
-const {
+import { SHARED_FOLDER_JS_REGEX } from '../common/constants';
+import {
   filterDiffByFilePath,
   filterDiffFileCreations,
-} = require('../common/shared');
+} from '../common/shared';
 
-function preventJavaScriptFileAdditions(diff) {
+function preventJavaScriptFileAdditions(diff: string) {
   const sharedFolderDiff = filterDiffByFilePath(diff, SHARED_FOLDER_JS_REGEX);
   const sharedFolderCreationDiff = filterDiffFileCreations(sharedFolderDiff);
 
@@ -15,4 +15,4 @@ function preventJavaScriptFileAdditions(diff) {
   return true;
 }
 
-module.exports = { preventJavaScriptFileAdditions };
+export { preventJavaScriptFileAdditions };

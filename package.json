@@ -91,7 +91,7 @@
     "test-storybook": "test-storybook -c .storybook",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\"",
     "githooks:install": "husky install",
-    "fitness-functions": "node development/fitness-functions/index.js",
+    "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js"
   },
   "resolutions": {

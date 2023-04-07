@@ -1,5 +1,5 @@
-const { preventSinonAssertSyntax } = require('./sinon-assert-syntax');
-const { preventJavaScriptFileAdditions } = require('./javascript-additions');
+import { preventSinonAssertSyntax } from './sinon-assert-syntax';
+import { preventJavaScriptFileAdditions } from './javascript-additions';
 
 const RULES = [
   {
@@ -32,4 +32,4 @@ function runFitnessFunctionRule({ name, fn, docURL }, diff) {
   }
 }
 
-module.exports = { RULES, runFitnessFunctionRule };
+export { RULES, runFitnessFunctionRule };

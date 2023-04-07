@@ -1,8 +1,8 @@
-const {
+import {
   generateModifyFilesDiff,
   generateCreateFileDiff,
-} = require('../common/test-data');
-const { preventJavaScriptFileAdditions } = require('./javascript-additions');
+} from '../common/test-data';
+import { preventJavaScriptFileAdditions } from './javascript-additions';
 
 describe('preventJavaScriptFileAdditions()', () => {
   it('should pass when receiving an empty diff', () => {
@@ -16,7 +16,7 @@ describe('preventJavaScriptFileAdditions()', () => {
   it('should pass when receiving a diff with a new TS file on the shared folder', () => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('old-file.js', null, 'pong'),
+      generateModifyFilesDiff('old-file.js', undefined, 'pong'),
       generateCreateFileDiff('shared/test.ts', 'yada yada yada yada'),
     ].join('');
 
@@ -28,7 +28,7 @@ describe('preventJavaScriptFileAdditions()', () => {
   it('should not pass when receiving a diff with a new JS file on the shared folder', () => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('old-file.js', null, 'pong'),
+      generateModifyFilesDiff('old-file.js', undefined, 'pong'),
       generateCreateFileDiff('shared/test.js', 'yada yada yada yada'),
     ].join('');
 
@@ -40,7 +40,7 @@ describe('preventJavaScriptFileAdditions()', () => {
   it('should not pass when receiving a diff with a new JSX file on the shared folder', () => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('old-file.js', null, 'pong'),
+      generateModifyFilesDiff('old-file.js', undefined, 'pong'),
       generateCreateFileDiff('shared/test.jsx', 'yada yada yada yada'),
     ].join('');
 

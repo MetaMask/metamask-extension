@@ -1,4 +1,4 @@
-function filterDiffByFilePath(diff, regex) {
+function filterDiffByFilePath(diff: string, regex: string) {
   // split by `diff --git` and remove the first element which is empty
   const diffBlocks = diff.split(`diff --git`).slice(1);
 
@@ -32,7 +32,7 @@ function filterDiffByFilePath(diff, regex) {
   return filteredDiff;
 }
 
-function filterDiffLineAdditions(diff) {
+function filterDiffLineAdditions(diff: string) {
   const diffLines = diff.split('\n');
 
   const diffAdditionLines = diffLines.filter((line) => {
@@ -44,7 +44,7 @@ function filterDiffLineAdditions(diff) {
   return diffAdditionLines.join('/n');
 }
 
-function filterDiffFileCreations(diff) {
+function filterDiffFileCreations(diff: string) {
   // split by `diff --git` and remove the first element which is empty
   const diffBlocks = diff.split(`diff --git`).slice(1);
 
@@ -67,10 +67,13 @@ function filterDiffFileCreations(diff) {
   return filteredDiff;
 }
 
-function hasNumberOfCodeBlocksIncreased(diffFragment, codeBlocks) {
+function hasNumberOfCodeBlocksIncreased(
+  diffFragment: string,
+  codeBlocks: string[],
+) {
   const diffLines = diffFragment.split('\n');
 
-  const codeBlockFound = {};
+  const codeBlockFound: { [codeBlock: string]: boolean } = {};
 
   for (const codeBlock of codeBlocks) {
     codeBlockFound[codeBlock] = false;
@@ -86,7 +89,7 @@ function hasNumberOfCodeBlocksIncreased(diffFragment, codeBlocks) {
   return codeBlockFound;
 }
 
-module.exports = {
+export {
   filterDiffByFilePath,
   filterDiffLineAdditions,
   filterDiffFileCreations,
