@@ -11,9 +11,14 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon } from '../icon';
+import { Icon, IconSize } from '../icon';
 
 import { ButtonIconSize, ButtonIconProps } from './button-icon.types';
+
+const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
+  [ButtonIconSize.Sm]: IconSize.Sm,
+  [ButtonIconSize.Lg]: IconSize.Lg,
+};
 
 export const ButtonIcon = React.forwardRef(
   (
@@ -32,6 +37,7 @@ export const ButtonIcon = React.forwardRef(
     ref: React.Ref<HTMLElement>,
   ) => {
     const Tag = href ? 'a' : as;
+    const isDisabled = disabled && Tag === 'button';
     return (
       <Box
         aria-label={ariaLabel}
@@ -45,7 +51,7 @@ export const ButtonIcon = React.forwardRef(
           className,
         )}
         color={color}
-        {...(disabled ? { disabled } : {})}
+        {...(isDisabled ? { disabled: true } : {})} // only allow disabled attribute to be passed down to the Box when the as prop is equal to a button element
         display={DISPLAY.INLINE_FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
@@ -55,7 +61,11 @@ export const ButtonIcon = React.forwardRef(
         ref={ref}
         {...props}
       >
-        <Icon name={iconName} size={size} {...iconProps} />
+        <Icon
+          name={iconName}
+          size={buttonIconSizeToIconSize[size]}
+          {...iconProps}
+        />
       </Box>
     );
   },

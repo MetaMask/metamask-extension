@@ -160,7 +160,7 @@ export interface IconProps extends BoxProps {
    * Possible values could be IconSize.Xs (12px), IconSize.Sm (16px), IconSize.Md (20px), IconSize.Lg (24px), IconSize.Xl (32px), IconSize.Inherit (inherits font-size).
    * Default value is IconSize.Md (20px).
    */
-  size?: IconSize | keyof IconSize;
+  size?: IconSize;
   /**
    * The color of the icon.
    * Defaults to IconColor.inherit.

@@ -1,10 +1,11 @@
 import type { BoxProps } from '../../ui/box/box.d';
-import { IconName, IconSize } from '../icon';
-import { Color, IconColor } from '../../../helpers/constants/design-system';
+import { IconName } from '../icon';
+import type { IconProps } from '../icon';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 export enum ButtonIconSize {
-  Sm = IconSize.Sm,
-  Lg = IconSize.Lg,
+  Sm = 'sm',
+  Lg = 'lg',
 }
 
 export interface ButtonIconProps extends BoxProps {
@@ -15,7 +16,7 @@ export interface ButtonIconProps extends BoxProps {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    */
-  as?: keyof JSX.IntrinsicElements;
+  as?: 'button' | 'a';
   /**
    * An additional className to apply to the ButtonIcon.
    */
@@ -24,7 +25,7 @@ export interface ButtonIconProps extends BoxProps {
    * The color of the ButtonIcon component should use the IconColor object from
    * ./ui/helpers/constants/design-system.js
    */
-  color?: IconColor | Color;
+  color?: IconColor;
   /**
    * Boolean to disable button
    */
@@ -40,7 +41,7 @@ export interface ButtonIconProps extends BoxProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps?: object;
+  iconProps?: IconProps;
   /**
    * The size of the ButtonIcon.
    * Possible values could be 'ButtonIconSize.Sm' 24px, 'ButtonIconSize.Lg' 32px,
