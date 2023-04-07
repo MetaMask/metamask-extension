@@ -38,7 +38,7 @@ export default class NotificationManager extends EventEmitter {
   async showPopup(setCurrentPopupId, currentPopupId) {
     this._popupId = currentPopupId;
     this._setCurrentPopupId = setCurrentPopupId;
-    const popup = await this._getPopup(currentPopupId);
+    const popup = await this._getPopup();
     // Bring focus to chrome popup
     if (popup) {
       // bring focus to existing chrome popup
