@@ -2,7 +2,9 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import { AUTOMATION_TYPE } from './constants';
 
-function getDiffByAutomationType(automationType: AUTOMATION_TYPE) {
+function getDiffByAutomationType(
+  automationType: AUTOMATION_TYPE,
+): string | undefined {
   if (!Object.values(AUTOMATION_TYPE).includes(automationType)) {
     console.error('Invalid automation type.');
     process.exit(1);
@@ -16,10 +18,7 @@ function getDiffByAutomationType(automationType: AUTOMATION_TYPE) {
       process.exit(1);
     }
 
-    diff = fs.readFileSync(optionalArguments[0], {
-      encoding: 'utf8',
-      flag: 'r',
-    });
+    diff = getDiff(optionalArguments[0]);
   } else if (automationType === AUTOMATION_TYPE.PRE_COMMIT_HOOK) {
     diff = getPreCommitHookDiff();
   } else if (automationType === AUTOMATION_TYPE.PRE_PUSH_HOOK) {
@@ -29,11 +28,18 @@ function getDiffByAutomationType(automationType: AUTOMATION_TYPE) {
   return diff;
 }
 
-function getPreCommitHookDiff() {
+function getDiff(path: string): string {
+  return fs.readFileSync(path, {
+    encoding: 'utf8',
+    flag: 'r',
+  });
+}
+
+function getPreCommitHookDiff(): string {
   return execSync(`git diff --cached HEAD`).toString().trim();
 }
 
-function getPrePushHookDiff() {
+function getPrePushHookDiff(): string {
   const currentBranch = execSync(`git rev-parse --abbrev-ref HEAD`)
     .toString()
     .trim();

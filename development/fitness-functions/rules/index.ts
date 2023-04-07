@@ -1,7 +1,7 @@
 import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
 
-const RULES = [
+const RULES: IRule[] = [
   {
     name: "Don't use `sinon` or `assert` in unit tests",
     fn: preventSinonAssertSyntax,
@@ -15,10 +15,19 @@ const RULES = [
   },
 ];
 
-function runFitnessFunctionRule({ name, fn, docURL }, diff) {
+interface IRule {
+  name: string;
+  fn: (diff: string) => boolean;
+  docURL?: string;
+}
+
+function runFitnessFunctionRule(
+  { name, fn, docURL }: IRule,
+  diff: string,
+): void {
   console.log(`Checking rule "${name}"...`);
 
-  const hasRulePassed = fn(diff);
+  const hasRulePassed: boolean = fn(diff) as boolean;
   if (hasRulePassed === true) {
     console.log(`...OK`);
   } else {
@@ -33,3 +42,4 @@ function runFitnessFunctionRule({ name, fn, docURL }, diff) {
 }
 
 export { RULES, runFitnessFunctionRule };
+export type { IRule };
