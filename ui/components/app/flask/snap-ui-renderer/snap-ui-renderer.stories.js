@@ -27,10 +27,7 @@ const DATA = panel([
 ]);
 
 export const DefaultStory = (args) => (
-  <SnapUIRenderer
-    snapId="local:http://localhost:8080/"
-    data={args.data}
-  />
+  <SnapUIRenderer snapId="local:http://localhost:8080/" data={args.data} />
 );
 
 DefaultStory.args = {
@@ -42,5 +39,5 @@ export const ErrorStory = (args) => (
 );
 
 ErrorStory.args = {
-  data: "foo",
+  data: 'foo',
 };
