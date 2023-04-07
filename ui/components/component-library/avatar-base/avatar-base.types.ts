@@ -1,16 +1,15 @@
 import {
   BackgroundColor,
   BorderColor,
-  Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 
 export enum AvatarBaseSizes {
-  XS = Size.XS,
-  SM = Size.SM,
-  MD = Size.MD,
-  LG = Size.LG,
-  XL = Size.XL,
+  XS = 'xs',
+  SM = 'sm',
+  MD = 'md',
+  LG = 'lg',
+  XL = 'xl',
 }
 
 export interface AvatarBaseProps {
