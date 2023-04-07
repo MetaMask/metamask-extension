@@ -23,12 +23,12 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-address">
-      <Text variant={TextVariant.bodySm} as="h7" color={TextColor.textDefault}>
+      <Text variant={TextVariant.bodySm} as="h6" color={TextColor.textDefault}>
         {`${t('tokenAddress')}:`}
       </Text>
       <Text
         variant={TextVariant.bodySm}
-        as="h7"
+        as="h6"
         color={TextColor.primaryDefault}
         marginLeft={2}
         marginRight={2}
