@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -62,7 +61,7 @@ describe('Test Snap RPC', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
         await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-1');
         await driver.clickElement(
@@ -127,14 +126,11 @@ describe('Test Snap RPC', function () {
         await driver.delay(1000);
         await driver.clickElement('#sendRpc');
 
-        // delay for result creation
-        await driver.delay(2500);
-
-        const confirmResult = await driver.findElement('#rpcResult');
-        assert.equal(
-          await confirmResult.getText(),
-          '"0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
-        );
+        // check result with waitForSelector
+        await driver.waitForSelector({
+          css: '#rpcResult',
+          text: '"0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
+        });
       },
     );
   });
