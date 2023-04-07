@@ -6,17 +6,6 @@
     background-color: var(--color-border-default);
   }
 
-  &__password-input {
-    @include Paragraph;
-
-    padding: 10px 0 13px 17px;
-    width: 291px;
-    height: 44px;
-    background: var(--color-background-default);
-    color: var(--color-text-default);
-    border: 1px solid var(--color-border-default);
-  }
-
   &__password::-webkit-input-placeholder {
     color: var(--color-text-muted);
   }

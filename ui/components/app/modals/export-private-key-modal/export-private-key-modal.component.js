@@ -10,6 +10,8 @@ import {
   BannerAlert,
   Button,
   Text,
+  TextField,
+  TEXT_FIELD_TYPES,
 } from '../../../component-library';
 import AccountModalContainer from '../account-modal-container';
 import {
@@ -115,9 +117,9 @@ const ExportPrivateKeyModal = ({
 
     if (!privateKeyInput) {
       return (
-        <input
-          aria-label="input-password"
-          type="password"
+        <TextField
+          placeholder={t('enterPassword')}
+          type={TEXT_FIELD_TYPES.PASSWORD}
           className="export-private-key-modal__password-input"
           onChange={(event) => setPassword(event.target.value)}
         />

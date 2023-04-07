@@ -70,7 +70,7 @@ describe('Export Private Key Modal', () => {
   });
 
   it('renders hold to reveal after entering password', async () => {
-    const { queryByText, getByLabelText } = renderWithProvider(
+    const { queryByText, getByPlaceholderText } = renderWithProvider(
       <ExportPrivateKeyModal />,
       mockStore,
     );
@@ -78,7 +78,7 @@ describe('Export Private Key Modal', () => {
     const nextButton = queryByText('Confirm');
     expect(nextButton).toBeInTheDocument();
 
-    const input = getByLabelText('input-password');
+    const input = getByPlaceholderText('Enter password');
 
     fireEvent.change(input, {
       target: { value: 'password' },
@@ -93,15 +93,13 @@ describe('Export Private Key Modal', () => {
   });
 
   it('provides password after passing hold to reveal', async () => {
-    const { queryByText, getByLabelText, getByText } = renderWithProvider(
-      <ExportPrivateKeyModal />,
-      mockStore,
-    );
+    const { queryByText, getByLabelText, getByText, getByPlaceholderText } =
+      renderWithProvider(<ExportPrivateKeyModal />, mockStore);
 
     const nextButton = queryByText('Confirm');
     expect(nextButton).toBeInTheDocument();
 
-    const input = getByLabelText('input-password');
+    const input = getByPlaceholderText('Enter password');
     fireEvent.change(input, {
       target: { value: 'password' },
     });
