@@ -74,8 +74,40 @@ import {
 } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
-import { getPermissionSubjects } from './permissions';
+import {
+  getFirstPermissionRequest,
+  getFirstSnapInstallOrUpdateRequest,
+  getPermissionSubjects,
+} from './permissions';
 ///: END:ONLY_INCLUDE_IN
+
+export function getFirstPermissionRequestId(state) {
+  let firstPermissionsRequest, firstPermissionsRequestId;
+  firstPermissionsRequest = getFirstPermissionRequest(state);
+  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+
+  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (!firstPermissionsRequest) {
+    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
+    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  return firstPermissionsRequestId;
+}
+
+export function getApprovalFlowLoadingText(state) {
+  return state.metamask.approvalFlowLoadingText;
+}
+
+export function hasPendingConfirmation(state) {
+  return (
+    state.metamask.suggestedAssets.length > 0 ||
+    Boolean(getFirstPermissionRequestId(state))
+  );
+}
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no

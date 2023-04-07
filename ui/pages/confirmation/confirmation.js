@@ -24,12 +24,14 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
+  getApprovalFlowLoadingText,
   getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnap,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
+  hasPendingConfirmation,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -175,6 +177,8 @@ export default function ConfirmationPage({
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const unnaprovedTxsCount = useSelector(getUnapprovedTxCount);
+  const hasPendingConfirmations = useSelector(hasPendingConfirmation);
+  const approvalFlowLoadingText = useSelector(getApprovalFlowLoadingText);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -244,7 +248,7 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
-      approvalFlows.length === 0 &&
+      (approvalFlows.length === 0 || hasPendingConfirmations) &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
@@ -260,6 +264,7 @@ export default function ConfirmationPage({
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
+    hasPendingConfirmations,
   ]);
 
   if (!pendingConfirmation && approvalFlows.length === 0) {
@@ -267,9 +272,7 @@ export default function ConfirmationPage({
   }
 
   if (approvalFlows.length > 0 && !pendingConfirmation) {
-    return (
-      <Loading loadingMessage={approvalFlows[approvalFlows.length - 1].id} />
-    );
+    return <Loading loadingMessage={approvalFlowLoadingText} />;
   }
 
   const hasInputState = (type) => {
