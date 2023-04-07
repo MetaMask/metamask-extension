@@ -165,7 +165,7 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_RIGHT}
+                name={ICON_NAMES.ARROW_2_UP_RIGHT}
                 color={IconColor.primaryInverse}
               />
             }
