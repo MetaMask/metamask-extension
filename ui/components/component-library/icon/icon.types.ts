@@ -26,6 +26,7 @@ export enum IconName {
   Arrow2Left = 'arrow-2-left',
   Arrow2Right = 'arrow-2-right',
   Arrow2Up = 'arrow-2-up',
+  Arrow2UpRight = 'arrow-2-up-right',
   ArrowDoubleLeft = 'arrow-double-left',
   ArrowDoubleRight = 'arrow-double-right',
   ArrowDown = 'arrow-down',
