@@ -82,7 +82,7 @@ describe('Test Snap Notification', function () {
 
         // switch back to the extension page
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1500);
+        await driver.delay(1000);
 
         // check to see that there is one notification
         const notificationResult = await driver.findElement(
@@ -92,14 +92,14 @@ describe('Test Snap Notification', function () {
 
         // try to click on the account menu icon (via xpath)
         await driver.clickElement('.account-menu__icon');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
           text: 'Notifications',
           tag: 'div',
         });
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // look for the correct text in notifications (via xpath)
         const notificationResultMessage = await driver.findElement(
