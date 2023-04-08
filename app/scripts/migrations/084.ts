@@ -1,11 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
-import { v4 } from 'uuid';
+import { isObject } from '@metamask/utils';
 
 export const version = 84;
 
 /**
- * Ensure that each networkConfigurations object in state.NetworkController.networkConfigurations has an 
+ * Ensure that each networkConfigurations object in state.NetworkController.networkConfigurations has an
  * `id` property which matches the key pointing that object
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
@@ -25,21 +24,28 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (
-    !isObject(state.NetworkController)
-  ) {
+  if (!isObject(state.NetworkController)) {
     return state;
   }
-  const NetworkController: any = state.NetworkController;
+  const { NetworkController }: any = state;
 
-  const networkConfigurations: Record<string, object> = NetworkController.networkConfigurations;
+  const {
+    networkConfigurations,
+  }: { networkConfigurations: Record<string, object> } = NetworkController;
 
   const newNetworkConfigurations: Record<string, object> = {};
 
   for (const networkConfigurationId in networkConfigurations) {
-    newNetworkConfigurations[networkConfigurationId] = {
-      ...networkConfigurations[networkConfigurationId],
-      id: networkConfigurationId,
+    if (
+      Object.prototype.hasOwnProperty.call(
+        networkConfigurations,
+        networkConfigurationId,
+      )
+    ) {
+      newNetworkConfigurations[networkConfigurationId] = {
+        ...networkConfigurations[networkConfigurationId],
+        id: networkConfigurationId,
+      };
     }
   }
 
