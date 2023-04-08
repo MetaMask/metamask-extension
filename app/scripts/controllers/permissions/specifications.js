@@ -61,8 +61,7 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
       decorator: (method, caveat) => {
         return async (args) => {
           const result = await method(args);
-          return result
-            .filter((account) => caveat.value.includes(account));
+          return result.filter((account) => caveat.value.includes(account));
         };
       },
 
