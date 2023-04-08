@@ -24,11 +24,6 @@ describe('Show account details', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('[data-testid="popover-scroll-button"]');
-        await driver.delay(1000);
-        await driver.clickElement('[data-testid="terms-of-use-checkbox"]');
-        await driver.clickElement('[data-testid="terms-of-use-accept-button"]');
-
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
