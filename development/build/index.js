@@ -147,6 +147,9 @@ async function defineAndRunBuildTasks() {
     browserPlatforms,
     browserVersionMap,
     buildType,
+    applyLavaMoat,
+    shouldIncludeSnow,
+    entryTask,
   });
 
   const styleTasks = createStyleTasks({ livereload });
