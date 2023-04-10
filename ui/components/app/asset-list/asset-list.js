@@ -35,7 +35,7 @@ import {
   MultichainImportTokenLink,
 } from '../../multichain';
 import { Text } from '../../component-library';
-import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
+import DetectedTokensLink from './detected-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
