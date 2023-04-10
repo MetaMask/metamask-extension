@@ -93,11 +93,7 @@ export default function CountdownTimer({
   const formattedTimer = Duration.fromMillis(timer).toFormat('m:ss');
   let time;
   if (timeOnly) {
-    time = (
-      <div className="countdown-timer__time" data-testid="countdown-timer__time">
-        {formattedTimer}
-      </div>
-    );
+    time = <div className="countdown-timer__time">{formattedTimer}</div>;
   } else if (labelKey) {
     time = t(labelKey, [
       <div key="countdown-time-1" className="countdown-timer__time">

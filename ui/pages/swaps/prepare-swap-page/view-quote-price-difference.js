@@ -68,7 +68,11 @@ export default function ViewQuotePriceDifference(props) {
         width={BLOCK_SIZES.FULL}
       >
         <Box>
-          <Text variant={TextVariant.bodyMd} as="h6">
+          <Text
+            variant={TextVariant.bodyMd}
+            as="h6"
+            data-testid="mm-banner__body"
+          >
             {priceDifferenceMessage}
           </Text>
           {!acknowledged && (
