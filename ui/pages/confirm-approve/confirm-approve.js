@@ -65,7 +65,7 @@ export default function ConfirmApprove({
   isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
-  const { txParams: { data: transactionData } = {} } = transaction;
+  const { txParams, txParams: { data: transactionData } = {} } = transaction;
 
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -177,6 +177,7 @@ export default function ConfirmApprove({
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
           <TokenAllowance
+            txParams={txParams}
             origin={formattedOrigin}
             siteImage={siteImage}
             showCustomizeGasModal={approveTransaction}
@@ -315,6 +316,7 @@ export default function ConfirmApprove({
 }
 
 ConfirmApprove.propTypes = {
+  txParams: PropTypes.object,
   assetStandard: PropTypes.string,
   assetName: PropTypes.string,
   tokenAddress: PropTypes.string,

@@ -22,6 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
@@ -29,9 +30,13 @@ import {
   DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { estimateGas } from '../../../store/actions';
+import { getCustomTxParamsData } from '../../../pages/confirm-approve/confirm-approve.util';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
+  txParams,
   tokenName,
   currentTokenBalance,
   dappProposedValue,
@@ -41,6 +46,7 @@ export default function CustomSpendingCap({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const { updateTransaction } = useGasFeeContext();
 
   const value = useSelector(getCustomTokenAmount);
 
@@ -96,7 +102,7 @@ export default function CustomSpendingCap({
     getInputTextLogic(value).description,
   );
 
-  const handleChange = (valueInput) => {
+  const handleChange = async (valueInput) => {
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
@@ -127,6 +133,20 @@ export default function CustomSpendingCap({
     }
 
     dispatch(setCustomTokenAmount(String(valueInput)));
+
+    const newData = getCustomTxParamsData(txParams.data, {
+      customPermissionAmount: valueInput,
+      decimals,
+    });
+    const { from, to, value: txValue } = txParams;
+    let estimatedGasLimit = await estimateGas({
+      from,
+      to,
+      value: txValue,
+      data: newData,
+    });
+    estimatedGasLimit = addHexPrefix(estimatedGasLimit);
+    await updateTransaction({ gasLimit: estimatedGasLimit });
   };
 
   useEffect(() => {
@@ -268,6 +288,10 @@ export default function CustomSpendingCap({
 }
 
 CustomSpendingCap.propTypes = {
+  /**
+   * Transaction params
+   */
+  txParams: PropTypes.object,
   /**
    * Displayed the token name currently tracked in description related to the input state
    */
