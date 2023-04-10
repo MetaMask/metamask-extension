@@ -200,8 +200,9 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       className="hold-to-reveal-button__button-hold"
+      textProps={{ display: DISPLAY.FLEX, alignItems: AlignItems.center }}
     >
-      <Box className="hold-to-reveal-button__icon-container">
+      <Box className="hold-to-reveal-button__icon-container" marginRight={2}>
         {renderPreCompleteContent()}
         {renderPostCompleteContent()}
       </Box>

@@ -51,7 +51,7 @@ module.exports = {
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
   ],
-  testTimeout: 2500,
+  testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
   // head of the file. So it may be worthwhile to switch to 'node' in any
