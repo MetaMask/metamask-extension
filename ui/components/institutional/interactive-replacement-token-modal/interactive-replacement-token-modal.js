@@ -1,9 +1,11 @@
-import React, { useCallback, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../app/modal';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hideModal } from '../../../store/actions';
+import { getSelectedAddress } from '../../../selectors/selectors';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   Text,
   Button,
@@ -12,14 +14,27 @@ import {
 } from '../../component-library';
 import Box from '../../ui/box';
 
-// hideModal: PropTypes.func,
-// custodian: PropTypes.object,
-// url: PropTypes.string
-
 const InteractiveReplacementTokenModal = (props) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
+
+  const { url } = useSelector(
+    (state) => state.metamask.interactiveReplacementToken || {},
+  );
+
+  const { custodians } = useSelector(
+    (state) => state.metamask.mmiConfiguration,
+  );
+  const address = useSelector(getSelectedAddress);
+  const custodyAccountDetails = useSelector(
+    (state) =>
+      state.metamask.custodyAccountDetails[toChecksumHexAddress(address)],
+  );
+
+  const custodianName = custodyAccountDetails?.custodianName;
+  const custodian =
+    custodians.find((item) => item.name === custodianName) || {};
 
   const renderCustodyInfo = () => {
     let img;
@@ -75,10 +90,10 @@ const InteractiveReplacementTokenModal = (props) => {
   };
 
   const handleSubmit = () => {
-    const { url } = props;
     global.platform.openTab({
       url,
     });
+
     trackEvent({
       category: 'MMI',
       event: 'User clicked refresh token link',
@@ -89,7 +104,7 @@ const InteractiveReplacementTokenModal = (props) => {
     dispatch(hideModal());
   };
 
-  const { custodian } = props;
+  // const { custodian } = props;
 
   return (
     <Modal
@@ -98,9 +113,8 @@ const InteractiveReplacementTokenModal = (props) => {
       onSubmit={handleSubmit}
       submitText={custodian.displayName || 'Custodian'}
       cancelText={t('cancel')}
-      containerClass="compliance-modal-container"
     >
-      <Box className="interactive-replacement-token-modal">
+      <Box className="interactive-replacement-token-modal" data-testid="interactive-replacement-token-modal">
         {renderCustodyInfo(custodian)}
       </Box>
     </Modal>
