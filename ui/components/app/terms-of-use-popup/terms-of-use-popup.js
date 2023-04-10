@@ -1,14 +1,20 @@
 import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import {
   AlignItems,
   FLEX_DIRECTION,
   TextVariant,
+  Color,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import {
+  Text,
+  Button,
+  BUTTON_TYPES,
+  ButtonLink,
+  Label,
+} from '../../component-library';
 import Box from '../../ui/box';
 import CheckBox from '../../ui/check-box/check-box.component';
 
@@ -42,7 +48,7 @@ export default function TermsOfUsePopup({ onAccept }) {
       footer={
         <>
           <Button
-            type="primary"
+            type={BUTTON_TYPES.PRIMARY}
             className="terms-of-use__button"
             onClick={onAccept}
             disabled={!isTermsOfUseChecked}
@@ -51,7 +57,7 @@ export default function TermsOfUsePopup({ onAccept }) {
             {t('accept')}
           </Button>
           <Text as="p" marginTop={4} className="terms-of-use__footer-text">
-            Please scroll to read all sections
+            {t('termsOfUseFooterText')}
           </Text>
         </>
       }
@@ -97,14 +103,15 @@ export default function TermsOfUsePopup({ onAccept }) {
             issued by ConsenSys from time to time and (2) consent to the
             collection, use, disclosure and other handling of information as
             described in our{' '}
-            <a
+            <ButtonLink
               href="https://consensys.net/privacy-policy/"
               target="_blank"
               rel="noopener noreferrer"
-              className="terms-of-use__content__link"
+              color={Color.primaryDefault}
+              variant={TextVariant.bodySm}
             >
               Privacy Policy.
-            </a>{' '}
+            </ButtonLink>{' '}
             If you do not agree to the Terms or perform any and all obligations
             you accept under the Terms, then you may not access or use the
             Offerings.&nbsp;
@@ -1078,13 +1085,15 @@ export default function TermsOfUsePopup({ onAccept }) {
           </Text>
           <Text variant={TextVariant.bodySm} marginBottom={4}>
             “Privacy Policy” means the privacy policy located at{' '}
-            <a
+            <ButtonLink
               href="https://consensys.net/privacy-policy"
               target="_blank"
               rel="noopener noreferrer"
+              color={Color.primaryDefault}
+              variant={TextVariant.bodySm}
             >
               https://consensys.net/privacy-policy
-            </a>{' '}
+            </ButtonLink>{' '}
             (and any successor or related locations designated by us), as it may
             be updated by us from time to time.
           </Text>
@@ -1134,18 +1143,14 @@ export default function TermsOfUsePopup({ onAccept }) {
                 setIsTermsOfUseChecked(!isTermsOfUseChecked);
               }}
             />
-            <label
-              className="terms-of-use__checkbox-label"
-              htmlFor="terms-of-use__checkbox"
-            >
+            <Label htmlFor="terms-of-use__checkbox">
               <Text variant={TextVariant.bodyMdBold} as="span" ref={bottomRef}>
-                I agree to the Terms of Use, which apply to my use of MetaMask
-                and all of its features
+                {t('termsOfUseAgreeText')}
               </Text>
-            </label>
+            </Label>
           </Box>
         </Box>
-      </div>
+      </Box>
     </Popover>
   );
 }

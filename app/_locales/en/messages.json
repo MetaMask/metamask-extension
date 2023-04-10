@@ -4317,6 +4317,12 @@
   "termsOfUse": {
     "message": "terms of use"
   },
+  "termsOfUseAgreeText": {
+    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+  },
+  "termsOfUseFooterText": {
+    "message": "Please scroll to read all sections"
+  },
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
   },

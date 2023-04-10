@@ -1,10 +1,5 @@
 .popover-wrap.terms-of-use__popover {
   .terms-of-use {
-    &__content {
-      display: flex;
-      flex-direction: column;
-    }
-
     &__terms-list {
       list-style: decimal none outside;
     }

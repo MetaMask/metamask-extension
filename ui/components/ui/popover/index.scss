@@ -68,10 +68,8 @@
     right: 12px;
     height: 32px;
     width: 32px;
-    border-radius: 14px;
-    border: 1px solid var(--color-border-default);
-    background: var(--color-background-alternative);
-    color: var(--color-icon-default);
+    border-radius: 50%;
+    border: 1px solid var(--color-primary-default);
     z-index: 201;
     cursor: pointer;
     opacity: 0.8;
