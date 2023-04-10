@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "¡La Fusión de Ethereum está aquí!"
   },
-  "notifications17ActionText": {
-    "message": "Mostrar configuración de seguridad y privacidad"
-  },
-  "notifications17Title": {
-    "message": "Configuración de Seguridad y privacidad"
-  },
   "notifications1Description": {
     "message": "Los usuarios de la aplicación móvil de MetaMask ahora pueden canjear tokens en su cartera móvil. Escanee el código QR para obtener la aplicación móvil y comience a canjear.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -3250,12 +3244,6 @@
   "show": {
     "message": "Mostrar"
   },
-  "showAdvancedGasInline": {
-    "message": "Controles avanzados de gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Seleccione esta opción para mostrar el precio del gas y limitar los controles directamente en las pantallas de envío y confirmación."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversión en redes de prueba"
   },
@@ -3361,10 +3349,6 @@
   "snaps": {
     "message": "Complementos"
   },
-  "snapsInsightError": {
-    "message": "Ocurrió un error con $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Cargando información de transacción..."
   },
@@ -3381,7 +3365,8 @@
     "message": "Un complemento solo se ejecutará si está habilitado"
   },
   "snapsUIError": {
-    "message": "La IU especificada por el complemento no es válida."
+    "message": "La IU especificada por el complemento no es válida.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Algunas redes pueden presentar riesgos de seguridad y/o privacidad. Comprenda los riesgos antes de agregar y utilizar una red."
@@ -4005,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Esto se basa en información de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Este servicio es experimental"
   },
   "time": {
     "message": "Tiempo"

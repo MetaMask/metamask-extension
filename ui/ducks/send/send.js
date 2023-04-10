@@ -505,7 +505,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee({
+      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
         txParams: {
           gasPrice: draftTransaction.gas.gasPrice,
           gas: draftTransaction.gas.gasLimit,

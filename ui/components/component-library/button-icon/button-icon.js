@@ -13,7 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, IconName } from '../icon';
 
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
@@ -84,9 +84,9 @@ ButtonIcon.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
+  iconName: PropTypes.oneOf(Object.values(IconName)).isRequired,
   /**
    * iconProps accepts all the props from Icon
    */
