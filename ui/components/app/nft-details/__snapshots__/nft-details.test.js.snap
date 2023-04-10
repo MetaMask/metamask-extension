@@ -56,12 +56,12 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
       >
         <div>
           <h4
-            class="box box--margin-top-1 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--heading-sm box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             MUNK #1
           </h4>
           <h5
-            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h5 typography--weight-normal typography--style-normal typography--color-text-muted typography--overflowwrap-break-word"
+            class="box mm-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-muted"
           >
             #
             1
@@ -88,7 +88,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
         >
           Last sold
         </h6>
@@ -96,7 +96,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
           >
             1/18/2023
           </h6>
@@ -106,7 +106,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
         >
           Last price sold
         </h6>
@@ -114,7 +114,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
           >
             0.0049 ETH
           </h6>
@@ -124,12 +124,12 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
         >
           Source
         </h6>
         <h6
-          class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography nft-details__image-source typography--h6 typography--weight-normal typography--style-normal typography--color-primary-default"
+          class="box mm-text nft-details__image-source mm-text--body-sm box--margin-bottom-4 box--flex-direction-row box--color-primary-default"
         >
           <a
             href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
@@ -145,7 +145,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
         >
           Contract address
         </h6>
@@ -153,7 +153,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
           >
             0xDc7...6414
           </h6>
@@ -182,11 +182,11 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           </div>
         </div>
       </div>
-      <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+      <h7
+        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
       >
         Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on.
-      </h6>
+      </h7>
     </div>
   </div>
 </div>
