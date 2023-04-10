@@ -63,6 +63,7 @@ const DetectedTokenSelectionPopover = ({
         className="detected-token-selection-popover__import-button"
         type="primary"
         onClick={onImport}
+        disabled={selectedTokens.length === 0}
       >
         {t('importWithCount', [numOfTokensImporting])}
       </Button>

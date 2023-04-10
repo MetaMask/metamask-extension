@@ -1,6 +1,5 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { object } from '@storybook/addon-knobs';
 import { panel, text, heading, divider, copyable } from '@metamask/snaps-ui';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
@@ -10,8 +9,13 @@ const store = configureStore(testData);
 
 export default {
   title: 'Components/App/SnapUIRenderer',
-
+  component: SnapUIRenderer,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
+  argTypes: {
+    data: {
+      control: 'object',
+    },
+  },
 };
 
 const DATA = panel([
@@ -22,13 +26,18 @@ const DATA = panel([
   copyable('Text you can copy'),
 ]);
 
-export const DefaultStory = () => (
-  <SnapUIRenderer
-    snapId="local:http://localhost:8080/"
-    data={object('data', DATA)}
-  />
+export const DefaultStory = (args) => (
+  <SnapUIRenderer snapId="local:http://localhost:8080/" data={args.data} />
 );
 
-export const ErrorStory = () => (
-  <SnapUIRenderer snapId="local:http://localhost:8080/" data="foo" />
+DefaultStory.args = {
+  data: DATA,
+};
+
+export const ErrorStory = (args) => (
+  <SnapUIRenderer snapId="local:http://localhost:8080/" data={args.data} />
 );
+
+ErrorStory.args = {
+  data: 'foo',
+};

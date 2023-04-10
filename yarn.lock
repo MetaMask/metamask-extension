@@ -3586,12 +3586,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/announcement-controller@npm:1.0.0"
+"@metamask/announcement-controller@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@metamask/announcement-controller@npm:2.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-  checksum: 013c370484bf38d724e1ac5988043bc9b14391908f1ffe02b2b68e15c4ee65ce84d3622f510c830112bb742c69adea213547aeb858d079d626a081bbc2bb664f
+    "@metamask/base-controller": ^1.1.2
+  checksum: 170db513315dc81f131fc38a560a6d8959c4af9111a26c4f263847ab41cf2520a6dc4c77cfe40d8566ca4e87c3fe85a67def9e5499e9ccd02678792f4a8b9e56
   languageName: node
   linkType: hard
 
@@ -4036,18 +4036,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/message-manager@npm:2.0.0"
+"@metamask/message-manager@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/message-manager@npm:2.1.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.0.0
+    "@metamask/controller-utils": ^3.1.0
     "@types/uuid": ^8.3.0
     eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: f130b5c58fbbb5ccd69da32cfa43839a09dec906974c6d0f6e2d46f15d1a872c564b0c880aac2979b7ffc8d00bcf328bf1989cb133cc41bc612e1e6e16ef9ef5
+  checksum: f3a233a84aec73051f8f1183dab32c4d9a976edaa3c6461b118a8e6f20cf43f8757827ad6c877aed635ef850944ce054af03b34592f5b72f5d0667fa8b179dc9
   languageName: node
   linkType: hard
 
@@ -4464,6 +4464,13 @@ __metadata:
     "@metamask/types": ^1.1.0
     immer: ^9.0.6
   checksum: 2997a7b6e2ae17e80c2f2a42fbcf7b6fdbcbebc782c9eedec98a4f38c1089192fde9a83c2021f7d602e1e67e2cc9af2fbc345bb3775a27970c92533fadfe8f96
+  languageName: node
+  linkType: hard
+
+"@metamask/swappable-obj-proxy@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/swappable-obj-proxy@npm:2.1.0"
+  checksum: b15cebee7fb189d1143d3a755a38a7d88f56f91e1277425a51f63c50c432dfb4e6e22650ef67474ae4ef2a97344231af00be6780f126c47d401a23c8a8fb3c9c
   languageName: node
   linkType: hard
 
@@ -5110,7 +5117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spruceid/siwe-parser@npm:1.1.3, @spruceid/siwe-parser@npm:^1.1.3":
+"@spruceid/siwe-parser@npm:1.1.3":
   version: 1.1.3
   resolution: "@spruceid/siwe-parser@npm:1.1.3"
   dependencies:
@@ -24270,13 +24277,13 @@ __metadata:
     "@lavamoat/snow": ^1.5.0
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
-    "@metamask/announcement-controller": ^1.0.0
+    "@metamask/announcement-controller": ^2.0.1
     "@metamask/approval-controller": ^1.0.0
     "@metamask/assets-controllers": ^4.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^1.0.0
+    "@metamask/controller-utils": ^3.1.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
@@ -24296,7 +24303,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^2.0.0
+    "@metamask/message-manager": ^2.1.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^8.0.0
@@ -24315,6 +24322,7 @@ __metadata:
     "@metamask/snaps-ui": ^0.32.2
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/subject-metadata-controller": ^1.0.0
+    "@metamask/swappable-obj-proxy": ^2.1.0
     "@metamask/test-dapp": ^5.6.0
     "@metamask/utils": ^5.0.0
     "@ngraveio/bc-ur": ^1.1.6
@@ -24326,7 +24334,6 @@ __metadata:
     "@sentry/integrations": ^6.0.0
     "@sentry/types": ^6.0.1
     "@sentry/utils": ^6.0.1
-    "@spruceid/siwe-parser": ^1.1.3
     "@storybook/addon-a11y": ^6.5.13
     "@storybook/addon-actions": ^6.5.13
     "@storybook/addon-essentials": ^6.5.13
@@ -24553,7 +24560,6 @@ __metadata:
     string.prototype.matchall: ^4.0.2
     style-loader: ^0.21.0
     stylelint: ^13.6.1
-    swappable-obj-proxy: ^1.1.0
     terser: ^5.7.0
     through2: ^4.0.2
     ts-node: ^10.5.0
@@ -32606,13 +32612,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swappable-obj-proxy@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "swappable-obj-proxy@npm:1.1.0"
-  checksum: 6b1d087e6d03fdb89f94bcb251a407d832964813ed9129f46096dcf99fdbd44398dadbed941dcaeb8d07b89e400fd603f9a589aa01938916b1d0d2a1c9906c65
-  languageName: node
-  linkType: hard
-
 "symbol-observable@npm:^2.0.3":
   version: 2.0.3
   resolution: "symbol-observable@npm:2.0.3"
@@ -34617,14 +34616,14 @@ __metadata:
   linkType: hard
 
 "vm2@npm:^3.9.3":
-  version: 3.9.11
-  resolution: "vm2@npm:3.9.11"
+  version: 3.9.15
+  resolution: "vm2@npm:3.9.15"
   dependencies:
     acorn: ^8.7.0
     acorn-walk: ^8.2.0
   bin:
     vm2: bin/vm2
-  checksum: aab39e6e4b59146d24abacd79f490e854a6e058a8b23d93d2be5aca7720778e2605d2cc028ccc4a5f50d3d91b0c38be9a6247a80d2da1a6de09425cc437770b4
+  checksum: 1df70d5a88173651c0062901aba67e5edfeeb3f699fe6c305f5efb6a5a7391e5724cbf98a6516600b65016c6824dc07cc79947ea4222f8537ae1d9ce0b730ad7
   languageName: node
   linkType: hard
 

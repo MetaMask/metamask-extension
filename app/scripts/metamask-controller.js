@@ -62,7 +62,6 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
-import browser from 'webextension-polyfill';
 import {
   AssetType,
   TransactionStatus,
@@ -204,6 +203,8 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
+    const { isFirstMetaMaskControllerSetup } = opts;
+
     this.defaultMaxListeners = 20;
 
     this.sendUpdate = debounce(
@@ -307,7 +308,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      openPopup: opts.openPopup,
       onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         NetworkControllerEventTypes.InfuraIsBlocked,
@@ -548,10 +548,14 @@ export default class MetamaskController extends EventEmitter {
       this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
 
-    this.announcementController = new AnnouncementController(
-      { allAnnouncements: UI_NOTIFICATIONS },
-      initState.AnnouncementController,
-    );
+    const announcementMessenger = this.controllerMessenger.getRestricted({
+      name: 'AnnouncementController',
+    });
+    this.announcementController = new AnnouncementController({
+      messenger: announcementMessenger,
+      allAnnouncements: UI_NOTIFICATIONS,
+      state: initState.AnnouncementController,
+    });
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
@@ -639,6 +643,12 @@ export default class MetamaskController extends EventEmitter {
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
+      initState:
+        isManifestV3 &&
+        isFirstMetaMaskControllerSetup === false &&
+        initState.AccountTracker?.accounts
+          ? { accounts: initState.AccountTracker.accounts }
+          : { accounts: {} },
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -1370,8 +1380,11 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3) {
-      if (globalThis.isFirstTimeProfileLoaded === true) {
+      if (isFirstMetaMaskControllerSetup === true) {
         this.resetStates(resetMethods);
+        this.extension.storage.session.set({
+          isFirstMetaMaskControllerSetup: false,
+        });
       }
     } else {
       // it's always the first time in MV2
@@ -1446,8 +1459,6 @@ export default class MetamaskController extends EventEmitter {
         console.error(err);
       }
     });
-
-    globalThis.isFirstTimeProfileLoaded = false;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -2680,10 +2691,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitEncryptionKey() {
     try {
-      const { loginToken, loginSalt } = await browser.storage.session.get([
-        'loginToken',
-        'loginSalt',
-      ]);
+      const { loginToken, loginSalt } =
+        await this.extension.storage.session.get(['loginToken', 'loginSalt']);
       if (loginToken && loginSalt) {
         const { vault } = this.keyringController.store.getState();
 
@@ -2708,7 +2717,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async clearLoginArtifacts() {
-    await browser.storage.session.remove(['loginToken', 'loginSalt']);
+    await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
   }
 
   /**
@@ -4126,7 +4135,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (isManifestV3) {
-      await browser.storage.session.set({ loginToken, loginSalt });
+      await this.extension.storage.session.set({ loginToken, loginSalt });
     }
 
     if (!addresses.length) {

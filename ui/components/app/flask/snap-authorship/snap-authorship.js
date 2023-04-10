@@ -20,12 +20,11 @@ import {
   getSnapName,
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
+import { Text, ButtonIcon } from '../../../component-library';
 import {
   ICON_NAMES,
   ICON_SIZES,
-  Text,
-  ButtonIcon,
-} from '../../../component-library';
+} from '../../../component-library/icon/deprecated';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 

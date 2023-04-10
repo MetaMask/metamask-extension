@@ -1,8 +1,9 @@
 import { errorCodes } from 'eth-rpc-errors';
+import { detectSIWE } from '@metamask/controller-utils';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { SECOND } from '../../../shared/constants/time';
-import { detectSIWE } from '../../../shared/modules/siwe';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

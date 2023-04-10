@@ -35,7 +35,7 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
 
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import { IconColor } from '../../../helpers/constants/design-system';
 import WalletOverview from './wallet-overview';
 
@@ -139,7 +139,7 @@ const TokenOverview = ({ className, token }) => {
             }}
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_RIGHT}
+                name={ICON_NAMES.ARROW_2_UP_RIGHT}
                 color={IconColor.primaryInverse}
               />
             }
