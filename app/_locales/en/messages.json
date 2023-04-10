@@ -929,9 +929,6 @@
   "custodianAccount": {
     "message": "Custodian account"
   },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Your custodian session has expired"
-  },
   "custodyRefreshTokenModalDescription": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -943,6 +940,9 @@
   },
   "custodyRefreshTokenModalSubtitle": {
     "message": "Why am I seeing this?"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
   },
   "custom": {
     "message": "Advanced"
