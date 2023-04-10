@@ -33,7 +33,7 @@ export default function MenuBar() {
 
   return (
     <div className="menu-bar">
-      {showStatus ? ( // TODO: Move the connection status menu icon to the correct position in header once we implement the new header
+      {showStatus ? (
         <ConnectedStatusIndicator
           onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
         />
