@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "Narito na ang Ethereum Merge!"
   },
-  "notifications17ActionText": {
-    "message": "Ipakita ang mga setting ng Seguridad at Pagkapribado"
-  },
-  "notifications17Title": {
-    "message": "Mga Setting ng Seguridad at Pagkapribado"
-  },
   "notifications1Description": {
     "message": "Ang mga user ng MetaMask Mobile ay maaari na ngayong mag-swap ng mga token sa loob ng kanilang mobile wallet. I-scan ang QR code para makuha ang mobile app at magsimulang mag-swap.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -3355,10 +3349,6 @@
   "snaps": {
     "message": "Mga Snap"
   },
-  "snapsInsightError": {
-    "message": "Nagkaroon ng error sa $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Naglo-load ng insight sa transaksyon..."
   },
@@ -3375,7 +3365,8 @@
     "message": "Tatakbo lamang ang snap kapag pinagana ito"
   },
   "snapsUIError": {
-    "message": "Ang UI na tinukoy sa pamamagitan ng snap ay hindi wasto."
+    "message": "Ang UI na tinukoy sa pamamagitan ng snap ay hindi wasto.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Maaaring magdulot ang ilang network ng mga panganib sa seguridad at/o pagkapribado. Unawain ang mga panganib bago idagdag o gamitin ang isang network."
@@ -3999,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Ito ay batay sa impormasyon mula sa "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Eksperimental ang serbisyong ito"
   },
   "time": {
     "message": "Oras"

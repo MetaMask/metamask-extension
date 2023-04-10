@@ -3,7 +3,7 @@ import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -196,7 +196,7 @@ export default class SignatureRequest extends PureComponent {
     const onSign = (event) => {
       sign(event);
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Confirm',
         properties: {
           action: 'Sign Request',
@@ -210,7 +210,7 @@ export default class SignatureRequest extends PureComponent {
     const onCancel = (event) => {
       cancel(event);
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Cancel',
         properties: {
           action: 'Sign Request',

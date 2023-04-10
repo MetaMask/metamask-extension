@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "以太坊合并来了！"
   },
-  "notifications17ActionText": {
-    "message": "显示安全和隐私设置"
-  },
-  "notifications17Title": {
-    "message": "安全和隐私设置"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -3355,10 +3349,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
   },
@@ -3375,7 +3365,8 @@
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
@@ -3999,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "所根据的信息是来自"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的"
   },
   "time": {
     "message": "时间"

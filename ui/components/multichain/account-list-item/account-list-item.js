@@ -13,11 +13,14 @@ import {
   AvatarAccount,
   ButtonIcon,
   Text,
-  ICON_NAMES,
-  ICON_SIZES,
   AvatarFavicon,
   Tag,
+  ButtonLink,
 } from '../../component-library';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 import {
   Color,
   TEXT_ALIGN,
@@ -87,9 +90,7 @@ export const AccountListItem = ({
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
       })}
-      as="button"
-      onClick={(e) => {
-        e.preventDefault();
+      onClick={() => {
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
@@ -121,17 +122,24 @@ export const AccountListItem = ({
             gap={2}
           >
             <Text ellipsis as="div">
-              {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-                <Tooltip
-                  title={identity.name}
-                  position="bottom"
-                  wrapperClassName="multichain-account-list-item__tooltip"
-                >
-                  {identity.name}
-                </Tooltip>
-              ) : (
-                identity.name
-              )}
+              <ButtonLink
+                onClick={onClick}
+                className="multichain-account-list-item__account-name"
+                color={Color.textDefault}
+                ellipsis
+              >
+                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                  <Tooltip
+                    title={identity.name}
+                    position="bottom"
+                    wrapperClassName="multichain-account-list-item__tooltip"
+                  >
+                    {identity.name}
+                  </Tooltip>
+                ) : (
+                  identity.name
+                )}
+              </ButtonLink>
             </Text>
             <Box
               display={DISPLAY.FLEX}
@@ -194,13 +202,6 @@ export const AccountListItem = ({
           onClick={(e) => {
             e.stopPropagation();
             setAccountOptionsMenuOpen(true);
-          }}
-          as="div"
-          tabIndex={0}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              setAccountOptionsMenuOpen(true);
-            }
           }}
           data-testid="account-list-item-menu-button"
         />

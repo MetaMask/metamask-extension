@@ -13,7 +13,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
   TransactionStatus,
@@ -65,7 +65,7 @@ function TransactionListItemInner({
       event.stopPropagation();
       trackEvent({
         event: 'Clicked "Speed Up"',
-        category: EVENT.CATEGORIES.NAVIGATION,
+        category: MetaMetricsEventCategory.Navigation,
         properties: {
           action: 'Activity Log',
           legacy_event: true,
@@ -86,7 +86,7 @@ function TransactionListItemInner({
       event.stopPropagation();
       trackEvent({
         event: 'Clicked "Cancel"',
-        category: EVENT.CATEGORIES.NAVIGATION,
+        category: MetaMetricsEventCategory.Navigation,
         properties: {
           action: 'Activity Log',
           legacy_event: true,

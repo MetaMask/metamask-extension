@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { ICON_NAMES } from '..';
+import { IconName } from '..';
 import {
   BackgroundColor,
   IconColor,
@@ -13,7 +13,7 @@ describe('AvatarIcon', () => {
   it('should render correctly', () => {
     const { getByTestId, container } = render(
       <AvatarIcon
-        iconName={ICON_NAMES.SWAP_HORIZONTAL}
+        iconName={IconName.SwapHorizontal}
         data-testid="avatar-icon"
       />,
     );
@@ -25,27 +25,27 @@ describe('AvatarIcon', () => {
     const { getByTestId } = render(
       <>
         <AvatarIcon
-          iconName={ICON_NAMES.SWAP_HORIZONTAL}
+          iconName={IconName.SwapHorizontal}
           size={AVATAR_ICON_SIZES.XS}
           data-testid={AVATAR_ICON_SIZES.XS}
         />
         <AvatarIcon
-          iconName={ICON_NAMES.SWAP_HORIZONTAL}
+          iconName={IconName.SwapHorizontal}
           size={AVATAR_ICON_SIZES.SM}
           data-testid={AVATAR_ICON_SIZES.SM}
         />
         <AvatarIcon
-          iconName={ICON_NAMES.SWAP_HORIZONTAL}
+          iconName={IconName.SwapHorizontal}
           size={AVATAR_ICON_SIZES.MD}
           data-testid={AVATAR_ICON_SIZES.MD}
         />
         <AvatarIcon
-          iconName={ICON_NAMES.SWAP_HORIZONTAL}
+          iconName={IconName.SwapHorizontal}
           size={AVATAR_ICON_SIZES.LG}
           data-testid={AVATAR_ICON_SIZES.LG}
         />
         <AvatarIcon
-          iconName={ICON_NAMES.SWAP_HORIZONTAL}
+          iconName={IconName.SwapHorizontal}
           size={AVATAR_ICON_SIZES.XL}
           data-testid={AVATAR_ICON_SIZES.XL}
         />
@@ -71,7 +71,7 @@ describe('AvatarIcon', () => {
   it('should render with added classname', () => {
     const { getByTestId } = render(
       <AvatarIcon
-        iconName={ICON_NAMES.SWAP_HORIZONTAL}
+        iconName={IconName.SwapHorizontal}
         className="mm-avatar-icon--test"
         data-testid="classname"
       />,
@@ -82,7 +82,7 @@ describe('AvatarIcon', () => {
   it('should render with icon', () => {
     const { getByTestId } = render(
       <AvatarIcon
-        iconName={ICON_NAMES.SWAP_HORIZONTAL}
+        iconName={IconName.SwapHorizontal}
         iconProps={{ 'data-testid': 'avatar-icon' }}
       />,
     );
@@ -93,7 +93,7 @@ describe('AvatarIcon', () => {
   it('should render with success color icon and background color', () => {
     const { getByTestId } = render(
       <AvatarIcon
-        iconName={ICON_NAMES.SWAP_HORIZONTAL}
+        iconName={IconName.SwapHorizontal}
         color={IconColor.successDefault}
         backgroundColor={BackgroundColor.successMuted}
         data-testid="success"

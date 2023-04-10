@@ -296,7 +296,7 @@ exports[`Account Menu Render Content should not render keyring label if keyring 
         class="account-menu__item__icon"
       >
         <span
-          arialabel="Settings"
+          aria-label="Settings"
           class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
           style="mask-image: url('./images/icons/setting.svg');"
         />
