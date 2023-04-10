@@ -11,7 +11,7 @@ import {
   BorderRadius,
   TextVariant,
   TEXT_TRANSFORM,
-} from "../../../helpers/constants/design-system";
+} from '../../../helpers/constants/design-system';
 
 import { Text, ValidTag } from '../text';
 
