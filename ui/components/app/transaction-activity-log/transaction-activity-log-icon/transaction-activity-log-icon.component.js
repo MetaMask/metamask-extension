@@ -12,7 +12,11 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../component-library/icon/deprecated';
 import { Color } from '../../../../helpers/constants/design-system';
 
 export const ACTIVITY_ICONS = {

@@ -15,7 +15,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import { AvatarIcon, ICON_NAMES, Text } from '../../../component-library';
+import { AvatarIcon, Text } from '../../../component-library';
+import { ICON_NAMES } from '../../../component-library/icon/deprecated';
 import Box from '../../../ui/box/box';
 
 /**
