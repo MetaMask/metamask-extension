@@ -63,13 +63,10 @@ describe('Address Book', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-2 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-2 ETH',
+        });
       },
     );
   });

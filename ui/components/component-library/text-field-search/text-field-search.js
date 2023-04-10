@@ -4,8 +4,7 @@ import classnames from 'classnames';
 
 import { Size } from '../../../helpers/constants/design-system';
 
-import { ButtonIcon } from '../button-icon';
-import { Icon, ICON_NAMES } from '../icon';
+import { ButtonIcon, Icon, IconName, IconSize } from '..';
 import { TextField, TEXT_FIELD_TYPES } from '../text-field';
 
 export const TextFieldSearch = ({
@@ -30,7 +29,7 @@ export const TextFieldSearch = ({
           <ButtonIcon
             className="mm-text-field__button-clear"
             ariaLabel="Clear" // TODO: i18n
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             size={Size.SM}
             onClick={clearButtonOnClick}
             {...clearButtonProps}
@@ -41,7 +40,7 @@ export const TextFieldSearch = ({
         endAccessory
       )
     }
-    startAccessory={<Icon name={ICON_NAMES.SEARCH} size={Size.SM} />}
+    startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
     inputProps={{
       marginRight: showClearButton ? 6 : 0,
       ...inputProps,

@@ -14,7 +14,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon';
+import { IconName, Icon } from '../icon';
 import { AvatarBase } from '../avatar-base';
 
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
@@ -27,39 +27,37 @@ export const AvatarIcon = ({
   iconProps,
   iconName,
   ...props
-}) => {
-  return (
-    <AvatarBase
+}) => (
+  <AvatarBase
+    size={size}
+    display={DISPLAY.FLEX}
+    alignItems={AlignItems.center}
+    justifyContent={JustifyContent.center}
+    color={color}
+    backgroundColor={backgroundColor}
+    borderColor={BorderColor.transparent}
+    className={classnames('mm-avatar-icon', className)}
+    {...props}
+  >
+    <Icon
+      color={IconColor.inherit}
+      name={iconName}
       size={size}
-      display={DISPLAY.FLEX}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      color={color}
-      backgroundColor={backgroundColor}
-      borderColor={BorderColor.transparent}
-      className={classnames('mm-avatar-icon', className)}
-      {...props}
-    >
-      <Icon
-        color={IconColor.inherit}
-        name={iconName}
-        size={size}
-        {...iconProps}
-      />
-    </AvatarBase>
-  );
-};
+      {...iconProps}
+    />
+  </AvatarBase>
+);
 
 AvatarIcon.propTypes = {
   /**
    *
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
+  iconName: PropTypes.oneOf(Object.values(IconName)).isRequired,
   /**
    * Props for the icon inside AvatarIcon. All Icon props can be used
    */
-  iconProps: PropTypes.shape(Icon.PropTypes),
+  iconProps: PropTypes.object,
   /**
    * The size of the AvatarIcon
    * Possible values could be 'SIZES.XS' 16px, 'SIZES.SM' 24px, 'SIZES.MD' 32px, 'SIZES.LG' 40px, 'SIZES.XL' 48px

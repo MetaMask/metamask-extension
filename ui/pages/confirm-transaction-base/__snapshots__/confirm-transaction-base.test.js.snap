@@ -254,7 +254,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="confirm-page-container-summary__title"
         >
           <h3
-            class="box mm-text confirm-page-container-summary__title-text mm-text--heading-md mm-text--color-text-default box--flex-direction-row"
+            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
             <div
               class="currency-display-component"
@@ -278,35 +278,41 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="tabs"
+        class="box tabs box--flex-direction-row"
       >
         <ul
-          class="tabs__list"
+          class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
         >
           <li
-            class="tab confirm-page-container-content__tab tab--active"
+            class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Details
             </button>
           </li>
           <li
-            class="tab confirm-page-container-content__tab"
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Data
             </button>
           </li>
           <li
-            class="tab confirm-page-container-content__tab"
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Hex
             </button>
           </li>
         </ul>
         <div
-          class="tabs__content"
+          class="box tabs__content box--flex-direction-row"
         >
           <div
             class="confirm-page-container-content__details"

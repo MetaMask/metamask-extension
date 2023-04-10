@@ -100,7 +100,7 @@ describe('Test Snap TxInsights', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(2000);
+        await driver.delay(1000);
         await driver.clickElement({
           text: 'TxInsightsTest',
           tag: 'button',
