@@ -3586,12 +3586,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/announcement-controller@npm:1.0.0"
+"@metamask/announcement-controller@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@metamask/announcement-controller@npm:2.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-  checksum: 013c370484bf38d724e1ac5988043bc9b14391908f1ffe02b2b68e15c4ee65ce84d3622f510c830112bb742c69adea213547aeb858d079d626a081bbc2bb664f
+    "@metamask/base-controller": ^1.1.2
+  checksum: 170db513315dc81f131fc38a560a6d8959c4af9111a26c4f263847ab41cf2520a6dc4c77cfe40d8566ca4e87c3fe85a67def9e5499e9ccd02678792f4a8b9e56
   languageName: node
   linkType: hard
 
@@ -24293,7 +24293,7 @@ __metadata:
     "@lavamoat/snow": ^1.5.0
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
-    "@metamask/announcement-controller": ^1.0.0
+    "@metamask/announcement-controller": ^2.0.1
     "@metamask/approval-controller": ^1.0.0
     "@metamask/assets-controllers": ^4.0.1
     "@metamask/auto-changelog": ^2.1.0
@@ -34633,14 +34633,14 @@ __metadata:
   linkType: hard
 
 "vm2@npm:^3.9.3":
-  version: 3.9.11
-  resolution: "vm2@npm:3.9.11"
+  version: 3.9.15
+  resolution: "vm2@npm:3.9.15"
   dependencies:
     acorn: ^8.7.0
     acorn-walk: ^8.2.0
   bin:
     vm2: bin/vm2
-  checksum: aab39e6e4b59146d24abacd79f490e854a6e058a8b23d93d2be5aca7720778e2605d2cc028ccc4a5f50d3d91b0c38be9a6247a80d2da1a6de09425cc437770b4
+  checksum: 1df70d5a88173651c0062901aba67e5edfeeb3f699fe6c305f5efb6a5a7391e5724cbf98a6516600b65016c6824dc07cc79947ea4222f8537ae1d9ce0b730ad7
   languageName: node
   linkType: hard
 
