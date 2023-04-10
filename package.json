@@ -227,7 +227,7 @@
     "@lavamoat/snow": "^1.5.0",
     "@material-ui/core": "^4.11.0",
     "@metamask/address-book-controller": "^1.0.0",
-    "@metamask/announcement-controller": "^1.0.0",
+    "@metamask/announcement-controller": "^2.0.1",
     "@metamask/approval-controller": "^1.0.0",
     "@metamask/assets-controllers": "^4.0.1",
     "@metamask/base-controller": "^1.0.0",
