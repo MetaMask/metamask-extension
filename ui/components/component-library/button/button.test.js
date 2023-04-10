@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { ICON_NAMES } from '..';
+import { IconName } from '..';
 import { BUTTON_SIZES, BUTTON_TYPES } from './button.constants';
 import { Button } from './button';
 
@@ -134,7 +134,7 @@ describe('Button', () => {
     const { getByTestId } = render(
       <Button
         data-testid="icon"
-        startIconName={ICON_NAMES.ADD_SQUARE}
+        startIconName={IconName.AddSquare}
         startIconProps={{ 'data-testid': 'start-button-icon' }}
       >
         Button

@@ -19,8 +19,10 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
+    const networkControllerMessenger = new ControllerMessenger();
     network = new NetworkController({
       infuraProjectId: 'foo',
+      messenger: networkControllerMessenger,
       state: {
         provider: {
           type: 'mainnet',
@@ -50,6 +52,8 @@ describe('preferences controller', function () {
       network,
       provider,
       tokenListController,
+      onInfuraIsBlocked: sinon.spy(),
+      onInfuraIsUnblocked: sinon.spy(),
     });
   });
 
@@ -327,30 +331,6 @@ describe('preferences controller', function () {
       assert.equal(
         preferencesController.store.getState().useCurrencyRateCheck,
         false,
-      );
-    });
-  });
-
-  describe('setOpenSeaTransactionSecurityProviderPopoverHasBeenShown', function () {
-    it('should default to value "false"', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(
-        state.openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        false,
-      );
-    });
-
-    it('should set the openSeaTransactionSecurityProviderPopoverHasBeenShown to true', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(
-        state.openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        false,
-      );
-      preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown();
-      assert.equal(
-        preferencesController.store.getState()
-          .openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        true,
       );
     });
   });

@@ -329,9 +329,6 @@
     "message": "Izinkan $1 untuk ditarik dan digunakan hingga jumlah berikut:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Selalu pastikan untuk melakukan uji tuntas Anda sendiri sebelum menyetujui permintaan apa pun."
-  },
   "amount": {
     "message": "Jumlah"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Aktifkan penyedia keamanan"
-  },
   "enableSmartTransactions": {
     "message": "Aktifkan transaksi pintar"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Umum"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Dapatkan peringatan dari OpenSea setiap kali Anda menerima permintaan berbahaya yang diketahui."
   },
   "goBack": {
     "message": "Kembali"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Gas tidak cukup"
   },
-  "notNow": {
-    "message": "Tidak sekarang"
-  },
   "notifications": {
     "message": "Notifikasi"
   },
@@ -2338,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Penggabungan Ethereum telah tiba!"
-  },
-  "notifications17ActionText": {
-    "message": "Tampilkan pengaturan Keamanan & Privasi"
-  },
-  "notifications17Title": {
-    "message": "Pengaturan Keamanan & Privasi"
   },
   "notifications1Description": {
     "message": "Pengguna MetaMask Mobile kini bisa menukar token di dalam dompet seluler mereka. Pindai kode QR untuk mendapatkan aplikasi seluler dan mulai menukar.",
@@ -2607,12 +2589,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Penyedia keamanan OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea merupakan penyedia keamanan pertama untuk fitur ini. Penyedia lainnya akan segera hadir!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3244,6 @@
   "show": {
     "message": "Tampil"
   },
-  "showAdvancedGasInline": {
-    "message": "Kontrol gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menampilkan biaya gas dan kontrol batas secara langsung di layar kirim dan konfirmasi."
-  },
   "showFiatConversionInTestnets": {
     "message": "Tampilkan konversi di jaringan uji"
   },
@@ -3379,10 +3349,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "Terjadi kesalahan dengan $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Memuat wawasan transaksi..."
   },
@@ -3399,7 +3365,8 @@
     "message": "Snap hanya akan beroperasi jika diaktifkan"
   },
   "snapsUIError": {
-    "message": "UI yang ditentukan oleh snap tidak valid."
+    "message": "UI yang ditentukan oleh snap tidak valid.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan & menggunakan jaringan."
@@ -3507,9 +3474,6 @@
   },
   "statusNotConnected": {
     "message": "Tidak terhubung"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Tetap aman bersama OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Hubungkan Lattice1 Anda"
@@ -4026,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Hal ini berdasarkan informasi dari "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental"
   },
   "time": {
     "message": "Waktu"

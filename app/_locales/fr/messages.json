@@ -329,9 +329,6 @@
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
-  },
   "amount": {
     "message": "Montant"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Activer le fournisseur de services de sécurité"
-  },
   "enableSmartTransactions": {
     "message": "Activer les transactions intelligentes"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Général"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "OpenSea vous avertira dès que vous recevrez une requête malveillante."
   },
   "goBack": {
     "message": "Retour"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Pas assez de gaz"
   },
-  "notNow": {
-    "message": "Pas maintenant"
-  },
   "notifications": {
     "message": "Notifications"
   },
@@ -2338,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "La fusion Ethereum est en marche !"
-  },
-  "notifications17ActionText": {
-    "message": "Afficher les paramètres de sécurité et de confidentialité"
-  },
-  "notifications17Title": {
-    "message": "Paramètres de sécurité et de confidentialité"
   },
   "notifications1Description": {
     "message": "Les utilisateurs de MetaMask Mobile peuvent désormais échanger des jetons dans leur portefeuille mobile. Scannez le code QR pour obtenir l’application mobile et commencez à échanger.",
@@ -2607,12 +2589,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Fournisseur de services de sécurité OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea est le premier fournisseur de services de sécurité à offrir cette fonctionnalité. D’autres fournisseurs seront bientôt ajoutés !"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3244,6 @@
   "show": {
     "message": "Afficher"
   },
-  "showAdvancedGasInline": {
-    "message": "Contrôles de carburant avancés"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur les testnets"
   },
@@ -3379,10 +3349,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Une erreur s’est produite avec $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Chargement de l’aperçu de transaction…"
   },
@@ -3399,7 +3365,8 @@
     "message": "Un snap ne s’exécute que s’il est activé"
   },
   "snapsUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
+    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Certains réseaux peuvent présenter des risques pour la sécurité et/ou la vie privée. Informez-vous sur les risques avant d’ajouter et d’utiliser un réseau."
@@ -3507,9 +3474,6 @@
   },
   "statusNotConnected": {
     "message": "Non connecté"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Restez en sécurité avec OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Connectez votre Lattice1"
@@ -4026,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Ces informations proviennent de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ce service est expérimental"
   },
   "time": {
     "message": "Temps"

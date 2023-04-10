@@ -329,9 +329,6 @@
     "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Φροντίστε πάντα να κάνετε τη δική σας επιμελή έρευνα προτού εγκρίνετε οποιαδήποτε αιτήματα."
-  },
   "amount": {
     "message": "Ποσό"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Ενεργοποίηση παρόχου ασφάλειας"
-  },
   "enableSmartTransactions": {
     "message": "Ενεργοποίηση Έξυπνων Συναλλαγών"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Γενικά"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Λάβετε προειδοποιήσεις από το OpenSea όποτε λαβαίνετε ένα αναγνωρισμένο κακόβουλο αίτημα."
   },
   "goBack": {
     "message": "Μετάβαση Πίσω"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Δεν Υπάρχει Αρκετό τέλος συναλλαγής"
   },
-  "notNow": {
-    "message": "Όχι τώρα"
-  },
   "notifications": {
     "message": "Ειδοποιήσεις"
   },
@@ -2338,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
-  },
-  "notifications17ActionText": {
-    "message": "Εμφάνιση ρυθμίσεων Ασφάλειας & Απορρήτου"
-  },
-  "notifications17Title": {
-    "message": "Ρυθμίσεις Ασφάλειας & Απορρήτου"
   },
   "notifications1Description": {
     "message": "Οι χρήστες του MetaMask Mobile μπορούν τώρα να ανταλλάξουν tokens μέσα στο κινητό τους πορτοφόλι. Σαρώστε τον κωδικό QR για να πάρετε την εφαρμογή για κινητά και να αρχίσετε να ανταλλάζετε.",
@@ -2607,12 +2589,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Πάροχος ασφάλειας OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "Το OpenSea είναι ο πρώτος πάροχος ασφάλειας για αυτή τη λειτουργία. Σύντομα θα προστεθούν και άλλοι πάροχοι!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3244,6 @@
   "show": {
     "message": "Εμφάνιση"
   },
-  "showAdvancedGasInline": {
-    "message": "Προωθημένος έλεγχος gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Επιλέξτε αυτό για να εμφανίσετε τις τιμές αερίου και να περιορίσετε τα στοιχεία ελέγχου απευθείας στις οθόνες αποστολής και επιβεβαίωσης."
-  },
   "showFiatConversionInTestnets": {
     "message": "Εμφάνιση Μετατροπής σε Δοκιμαστικά Δίκτυα"
   },
@@ -3379,10 +3349,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Παρουσιάστηκε ένα σφάλμα με $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Φόρτωση πληροφοριών συναλλαγών..."
   },
@@ -3399,7 +3365,8 @@
     "message": "Ένα snap θα εκτελεστεί μόνο εάν είναι ενεργοποιημένο"
   },
   "snapsUIError": {
-    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη."
+    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Ορισμένα δίκτυα ενδέχεται να ενέχουν κινδύνους για την ασφάλεια ή/και το απόρρητο. Ενημερωθείτε για τους κινδύνους πριν προσθέσετε και χρησιμοποιήσετε ένα δίκτυο."
@@ -3507,9 +3474,6 @@
   },
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Μείνετε ασφαλείς με το OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Συνδέστε το Lattice1 σας"
@@ -4026,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Αυτό βασίζεται σε πληροφορίες από"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική"
   },
   "time": {
     "message": "Ώρα"

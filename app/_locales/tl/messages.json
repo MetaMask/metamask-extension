@@ -329,9 +329,6 @@
     "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Laging siguraduhin na gawin ang iyong sariling angkop na pagsusumikap bago aprubahan ang anumang mga kahilingan."
-  },
   "amount": {
     "message": "Halaga"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Paganahin ang tagapagbigay ng seguridad"
-  },
   "enableSmartTransactions": {
     "message": "Payagan ang mga smart transaction"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Makakuha ng mga babala mula sa OpenSea sa tuwing makakatanggap ka ng kilalang malisyosong kahilingan."
   },
   "goBack": {
     "message": "Bumalik"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
   },
-  "notNow": {
-    "message": "Hindi ngayon"
-  },
   "notifications": {
     "message": "Mga Abiso"
   },
@@ -2338,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Narito na ang Ethereum Merge!"
-  },
-  "notifications17ActionText": {
-    "message": "Ipakita ang mga setting ng Seguridad at Pagkapribado"
-  },
-  "notifications17Title": {
-    "message": "Mga Setting ng Seguridad at Pagkapribado"
   },
   "notifications1Description": {
     "message": "Ang mga user ng MetaMask Mobile ay maaari na ngayong mag-swap ng mga token sa loob ng kanilang mobile wallet. I-scan ang QR code para makuha ang mobile app at magsimulang mag-swap.",
@@ -2607,12 +2589,6 @@
   },
   "openSea": {
     "message": "OpenSea na (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Tagapagbigay ng seguridad ng OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "Ang OpenSea ay ang unang tagapagbigay ng seguridad para sa tampok na ito. Marami pang mga provider ang paparating!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3268,12 +3244,6 @@
   "show": {
     "message": "Ipakita"
   },
-  "showAdvancedGasInline": {
-    "message": "Mga advanced na kontrol sa gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Piliin ito para direktang maipakita ang presyo ng gas at mga kontrol sa limitasyon sa mga screen ng pagpapadala at pagkumpirma."
-  },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa Testnets"
   },
@@ -3379,10 +3349,6 @@
   "snaps": {
     "message": "Mga Snap"
   },
-  "snapsInsightError": {
-    "message": "Nagkaroon ng error sa $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Naglo-load ng insight sa transaksyon..."
   },
@@ -3399,7 +3365,8 @@
     "message": "Tatakbo lamang ang snap kapag pinagana ito"
   },
   "snapsUIError": {
-    "message": "Ang UI na tinukoy sa pamamagitan ng snap ay hindi wasto."
+    "message": "Ang UI na tinukoy sa pamamagitan ng snap ay hindi wasto.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Maaaring magdulot ang ilang network ng mga panganib sa seguridad at/o pagkapribado. Unawain ang mga panganib bago idagdag o gamitin ang isang network."
@@ -3507,9 +3474,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Manatiling ligtas sa OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Ikonekta ang iyong Lattice1"
@@ -4026,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Ito ay batay sa impormasyon mula sa "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Eksperimental ang serbisyong ito"
   },
   "time": {
     "message": "Oras"

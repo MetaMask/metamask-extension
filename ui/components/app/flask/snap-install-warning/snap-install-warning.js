@@ -6,12 +6,18 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box/check-box.component';
 
 import {
+  BackgroundColor,
+  IconColor,
   TextVariant,
   TEXT_ALIGN,
+  Size,
+  JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import { Text } from '../../../component-library';
+import { AvatarIcon, Text } from '../../../component-library';
+import { ICON_NAMES } from '../../../component-library/icon/deprecated';
+import Box from '../../../ui/box/box';
 
 /**
  * a very simple reducer using produce from Immer to keep checkboxes state manipulation
@@ -47,13 +53,6 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
       <div className="snap-install-warning__footer">
         <Button
           className="snap-install-warning__footer-button"
-          type="default"
-          onClick={onCancel}
-        >
-          {t('cancel')}
-        </Button>
-        <Button
-          className="snap-install-warning__footer-button"
           type="primary"
           disabled={!isAllChecked}
           onClick={onSubmit}
@@ -67,8 +66,6 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
   return (
     <Popover
       className="snap-install-warning"
-      title={t('snapInstallWarningHeading')}
-      centerTitle
       footer={<SnapInstallWarningFooter />}
       headerProps={{ padding: [6, 6, 0] }}
       contentProps={{
@@ -78,7 +75,24 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
         paddingBottom: [6, 4],
       }}
       footerProps={{ padding: [4, 6] }}
+      onClose={onCancel}
     >
+      <Box justifyContent={JustifyContent.center} marginBottom={6}>
+        <AvatarIcon
+          iconName={ICON_NAMES.DANGER}
+          backgroundColor={BackgroundColor.warningMuted}
+          color={IconColor.warningDefault}
+          size={Size.LG}
+        />
+      </Box>
+      <Text
+        paddingBottom={6}
+        textAlign={TEXT_ALIGN.CENTER}
+        variant={TextVariant.headingSm}
+        as="h2"
+      >
+        {t('snapInstallWarningHeading')}
+      </Text>
       <Text paddingBottom={6} textAlign={TEXT_ALIGN.CENTER}>
         {warnings.length > 1
           ? t('snapInstallWarningCheckPlural')
