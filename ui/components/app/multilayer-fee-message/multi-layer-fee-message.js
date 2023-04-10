@@ -20,7 +20,8 @@ export default function MultilayerFeeMessage({
 
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
 
-  let layer1Total = 'unknown';
+  let layer1Total = t('unknown');
+  let feeTotalInFiat = t('unknown');
 
   if (fetchedLayer1Total !== null) {
     const layer1TotalBN = new Numeric(
@@ -31,6 +32,15 @@ export default function MultilayerFeeMessage({
     layer1Total = `${layer1TotalBN
       .toDenomination(EtherDenomination.ETH)
       .toFixed(12)} ${nativeCurrency}`;
+
+    feeTotalInFiat = (
+      <UserPreferencedCurrencyDisplay
+        type={SECONDARY}
+        value={fetchedLayer1Total}
+        showFiat
+        hideLabel
+      />
+    );
   }
 
   const totalInWeiHex = sumHexes(
@@ -58,15 +68,6 @@ export default function MultilayerFeeMessage({
     };
     getEstimatedL1Fee();
   }, [transaction]);
-
-  const feeTotalInFiat = (
-    <UserPreferencedCurrencyDisplay
-      type={SECONDARY}
-      value={fetchedLayer1Total}
-      showFiat
-      hideLabel
-    />
-  );
 
   const totalInFiat = (
     <UserPreferencedCurrencyDisplay
