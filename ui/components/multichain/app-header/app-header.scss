@@ -23,6 +23,17 @@
     @include screen-lg-min {
       width: 62vw;
     }
+
+    &--avatar-network {
+      background-color: transparent;
+      width: min-content;
+
+      &:hover,
+      &:active {
+        box-shadow: none;
+        background: transparent;
+      }
+    }
   }
 
   &__lock-contents {
@@ -49,4 +60,9 @@
 
 .multichain-app-header-shadow {
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+}
+
+.multichain-app-header-logo {
+  height: 75px;
+  flex: 0 0 auto;
 }

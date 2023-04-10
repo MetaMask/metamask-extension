@@ -23,6 +23,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  Button,
   ButtonIcon,
   PickerNetwork,
 } from '../../component-library';
@@ -67,10 +68,10 @@ export const AppHeader = ({ onClick }) => {
     <>
       {isUnlocked && !popupStatus ? (
         <Box
-          style={{ height: '75px', flex: '0 0 auto' }}
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}
           margin={2}
+          className="multichain-app-header-logo"
           data-testid="app-header-logo"
           justifyContent={JustifyContent.center}
         >
@@ -111,12 +112,18 @@ export const AppHeader = ({ onClick }) => {
               gap={2}
             >
               {popupStatus ? (
-                <AvatarNetwork
-                  name={currentNetwork?.nickname}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  size={Size.SM}
-                  onClick={() => dispatch(toggleNetworkMenu())}
-                />
+                <Button
+                  className="multichain-app-header__contents--avatar-network"
+                  justifyContent={JustifyContent.flexStart}
+                  padding={2}
+                >
+                  <AvatarNetwork
+                    name={currentNetwork?.nickname}
+                    src={currentNetwork?.rpcPrefs?.imageUrl}
+                    size={Size.SM}
+                    onClick={() => dispatch(toggleNetworkMenu())}
+                  />
+                </Button>
               ) : (
                 <PickerNetwork
                   label={currentNetwork?.nickname}
@@ -149,7 +156,7 @@ export const AppHeader = ({ onClick }) => {
                   <ButtonIcon
                     iconName={ICON_NAMES.MORE_VERTICAL}
                     data-testid="account-options-menu-button"
-                    ariaLabel="NEEDS NEW TRANSLATED LABEL"
+                    ariaLabel="NEEDS NEW TRANSLATED LABEL" // TODO: Update the label
                     onClick={() => {
                       trackEvent({
                         event: MetaMetricsEventName.NavAccountMenuOpened,
@@ -207,7 +214,7 @@ export const AppHeader = ({ onClick }) => {
 
 AppHeader.propTypes = {
   /**
-   * The onClick handler to be passed to the App Header component
+   * The onClick handler to be passed to the MetaMask Logo in the App Header
    */
   onClick: PropTypes.func,
 };

@@ -16,7 +16,6 @@ import { getOriginOfCurrentTab } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import { ICON_NAMES } from '../../component-library/icon/deprecated';
-import { GlobalMenu } from '../../multichain/global-menu';
 import AccountOptionsMenu from './account-options-menu';
 
 export default function MenuBar() {
@@ -58,18 +57,12 @@ export default function MenuBar() {
           }}
         />
       </span>
-      {accountOptionsMenuOpen &&
-        (process.env.MULTICHAIN ? (
-          <GlobalMenu
-            anchorElement={ref.current}
-            closeMenu={() => setAccountOptionsMenuOpen(false)}
-          />
-        ) : (
-          <AccountOptionsMenu
-            anchorElement={ref.current}
-            onClose={() => setAccountOptionsMenuOpen(false)}
-          />
-        ))}
+      {accountOptionsMenuOpen && (
+        <AccountOptionsMenu
+          anchorElement={ref.current}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+        />
+      )}
     </div>
   );
 }
