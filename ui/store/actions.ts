@@ -27,8 +27,10 @@ import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
+  getMetaMaskIdentities,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getProvider,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -442,7 +444,7 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldIdentities = getState().metamask.identities;
+    const oldIdentities = getMetaMaskIdentities(getState());
     dispatch(showLoadingIndication());
 
     let newIdentities;
@@ -2635,7 +2637,7 @@ export function addToAddressBook(
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getState().metamask.provider;
+    const { chainId } = getProvider(getState());
 
     let set;
     try {
@@ -4070,7 +4072,7 @@ export function getNextNonce(): ThunkAction<
   AnyAction
 > {
   return async (dispatch, getState) => {
-    const address = getState().metamask.selectedAddress;
+    const address = getSelectedAddress(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
