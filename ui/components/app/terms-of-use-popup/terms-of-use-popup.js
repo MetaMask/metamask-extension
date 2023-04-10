@@ -56,7 +56,7 @@ export default function TermsOfUsePopup({ onAccept }) {
         </>
       }
     >
-      <div className="terms-of-use">
+      <Box className="terms-of-use">
         <Box
           className="terms-of-use__content"
           marginBottom={4}
