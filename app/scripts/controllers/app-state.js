@@ -178,7 +178,6 @@ export default class AppStateController extends EventEmitter {
    * @param {number} lastAgreed - timestamp when user last accepted the terms of use
    */
   setTermsOfUseLastAgreed(lastAgreed) {
-    console.log('setTermsOfUseLastAgreed', lastAgreed);
     this.store.updateState({
       termsOfUseLastAgreed: lastAgreed,
     });
