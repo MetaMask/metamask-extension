@@ -6,15 +6,21 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hideModal } from '../../../store/actions';
 import { getSelectedAddress } from '../../../selectors/selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import {
-  Text,
-  Button,
-  BUTTON_TYPES,
-  BUTTON_SIZES,
-} from '../../component-library';
+import { Text } from '../../component-library';
 import Box from '../../ui/box';
+import {
+  BLOCK_SIZES,
+  BackgroundColor,
+  DISPLAY,
+  FLEX_WRAP,
+  FLEX_DIRECTION,
+  BorderRadius,
+  FONT_WEIGHT,
+  TEXT_ALIGN,
+  AlignItems,
+} from '../../../helpers/constants/design-system';
 
-const InteractiveReplacementTokenModal = (props) => {
+const InteractiveReplacementTokenModal = () => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
@@ -41,17 +47,20 @@ const InteractiveReplacementTokenModal = (props) => {
 
     if (custodian.iconUrl) {
       img = (
-        <Box className="interactive-replacement-token-modal__img-container">
-          <img
-            className="interactive-replacement-token-modal__img"
-            src={custodian.iconUrl}
-            alt={custodian.displayName}
-          />
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          alignItems={AlignItems.center}
+          paddingTop={5}
+        >
+          <Box display={DISPLAY.BLOCK} textAlign={TEXT_ALIGN.CENTER}>
+            <img src={custodian.iconUrl} width={45} alt={custodian.displayName} />
+          </Box>
         </Box>
       );
     } else {
       img = (
-        <Box className="interactive-replacement-token-modal__img">
+        <Box display={DISPLAY.BLOCK} textAlign={TEXT_ALIGN.CENTER}>
           <Text>{custodian.displayName}</Text>
         </Box>
       );
@@ -60,28 +69,39 @@ const InteractiveReplacementTokenModal = (props) => {
     return (
       <>
         {img}
-        <Text as="p" className="interactive-replacement-token-modal__title">
+        <Text
+          as="h4"
+          paddingTop={4}
+          textAlign={TEXT_ALIGN.CENTER}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('custodyRefreshTokenModalTitle')}
         </Text>
         <Text
           as="p"
-          className="interactive-replacement-token-modal__description"
+          paddingTop={4}
+          paddingBottom={6}
+          textAlign={TEXT_ALIGN.LEFT}
         >
           {t('custodyRefreshTokenModalDescription', [custodian.displayName])}
         </Text>
-        <Text as="p" className="interactive-replacement-token-modal__subtitle">
+        <Text as="p" fontWeight={FONT_WEIGHT.MEDIUM}>
           {t('custodyRefreshTokenModalSubtitle')}
         </Text>
         <Text
           as="p"
-          className="interactive-replacement-token-modal__description"
+          paddingTop={4}
+          paddingBottom={6}
+          textAlign={TEXT_ALIGN.LEFT}
         >
           {t('custodyRefreshTokenModalDescription1')}
         </Text>
         <Text
           as="p"
           marginTop={4}
-          className="interactive-replacement-token-modal__description"
+          paddingTop={4}
+          paddingBottom={6}
+          textAlign={TEXT_ALIGN.LEFT}
         >
           {t('custodyRefreshTokenModalDescription2')}
         </Text>
@@ -104,8 +124,6 @@ const InteractiveReplacementTokenModal = (props) => {
     dispatch(hideModal());
   };
 
-  // const { custodian } = props;
-
   return (
     <Modal
       onCancel={handleClose}
@@ -114,7 +132,15 @@ const InteractiveReplacementTokenModal = (props) => {
       submitText={custodian.displayName || 'Custodian'}
       cancelText={t('cancel')}
     >
-      <Box className="interactive-replacement-token-modal" data-testid="interactive-replacement-token-modal">
+      <Box
+        width={BLOCK_SIZES.FULL}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        display={DISPLAY.FLEX}
+        flexWrap={FLEX_WRAP.WRAP}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        borderRadius={BorderRadius.SM}
+        data-testid="interactive-replacement-token-modal"
+      >
         {renderCustodyInfo(custodian)}
       </Box>
     </Modal>
