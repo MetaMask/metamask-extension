@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  Size,
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES, TextField } from '..';
+import { TextField, Icon, IconName, IconSize } from '..';
 
 import { Label } from './label';
 
@@ -56,8 +55,8 @@ export const Children = (args) => (
       Text and icon
       <Icon
         color={IconColor.iconAlternative}
-        name={ICON_NAMES.INFO}
-        size={Size.inherit}
+        name={IconName.Info}
+        size={IconSize.Inherit}
       />
     </Label>
     <Label

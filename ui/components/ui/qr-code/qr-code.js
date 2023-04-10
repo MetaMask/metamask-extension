@@ -7,9 +7,13 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Tooltip from '../tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import { AddressCopyButton } from '../../multichain/address-copy-button';
 import Box from '../box/box';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export default connect(mapStateToProps)(QrCodeView);
 

@@ -62,7 +62,6 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
-import browser from 'webextension-polyfill';
 import {
   AssetType,
   TransactionStatus,
@@ -104,7 +103,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
 
 import {
   getTokenIdParam,
@@ -200,6 +202,8 @@ export default class MetamaskController extends EventEmitter {
    */
   constructor(opts) {
     super();
+
+    const { isFirstMetaMaskControllerSetup } = opts;
 
     this.defaultMaxListeners = 20;
 
@@ -304,7 +308,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      openPopup: opts.openPopup,
       onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         NetworkControllerEventTypes.InfuraIsBlocked,
@@ -399,8 +402,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
           this.metaMetricsController.trackEvent({
-            event: EVENT_NAMES.NFT_ADDED,
-            category: EVENT.CATEGORIES.WALLET,
+            event: MetaMetricsEventName.NftAdded,
+            category: MetaMetricsEventCategory.Wallet,
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
@@ -545,10 +548,14 @@ export default class MetamaskController extends EventEmitter {
       this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
 
-    this.announcementController = new AnnouncementController(
-      { allAnnouncements: UI_NOTIFICATIONS },
-      initState.AnnouncementController,
-    );
+    const announcementMessenger = this.controllerMessenger.getRestricted({
+      name: 'AnnouncementController',
+    });
+    this.announcementController = new AnnouncementController({
+      messenger: announcementMessenger,
+      allAnnouncements: UI_NOTIFICATIONS,
+      state: initState.AnnouncementController,
+    });
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
@@ -636,6 +643,12 @@ export default class MetamaskController extends EventEmitter {
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
+      initState:
+        isManifestV3 &&
+        isFirstMetaMaskControllerSetup === false &&
+        initState.AccountTracker?.accounts
+          ? { accounts: initState.AccountTracker.accounts }
+          : { accounts: {} },
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -1069,7 +1082,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.trackEvent(
             {
               event: 'Tx Status Update: On-Chain Failure',
-              category: EVENT.CATEGORIES.BACKGROUND,
+              category: MetaMetricsEventCategory.Background,
               properties: {
                 action: 'Transactions',
                 errorMessage: txMeta.simulationFails?.reason,
@@ -1199,8 +1212,8 @@ export default class MetamaskController extends EventEmitter {
       const { serviceWorkerLastActiveTime } =
         this.appStateController.store.getState();
       const metametricsPayload = {
-        category: EVENT.SOURCE.SERVICE_WORKERS,
-        event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        category: MetaMetricsEventCategory.ServiceWorkers,
+        event: MetaMetricsEventName.ServiceWorkerRestarted,
         properties: {
           service_worker_restarted_time:
             Date.now() - serviceWorkerLastActiveTime,
@@ -1370,8 +1383,11 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3) {
-      if (globalThis.isFirstTimeProfileLoaded === true) {
+      if (isFirstMetaMaskControllerSetup === true) {
         this.resetStates(resetMethods);
+        this.extension.storage.session.set({
+          isFirstMetaMaskControllerSetup: false,
+        });
       }
     } else {
       // it's always the first time in MV2
@@ -1446,8 +1462,6 @@ export default class MetamaskController extends EventEmitter {
         console.error(err);
       }
     });
-
-    globalThis.isFirstTimeProfileLoaded = false;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -1622,7 +1636,7 @@ export default class MetamaskController extends EventEmitter {
       (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Installed',
-          category: EVENT.CATEGORIES.SNAPS,
+          category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
             version: truncatedSnap.version,
@@ -1636,7 +1650,7 @@ export default class MetamaskController extends EventEmitter {
       (newSnap, oldVersion) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Updated',
-          category: EVENT.CATEGORIES.SNAPS,
+          category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: newSnap.id,
             old_version: oldVersion,
@@ -2680,10 +2694,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitEncryptionKey() {
     try {
-      const { loginToken, loginSalt } = await browser.storage.session.get([
-        'loginToken',
-        'loginSalt',
-      ]);
+      const { loginToken, loginSalt } =
+        await this.extension.storage.session.get(['loginToken', 'loginSalt']);
       if (loginToken && loginSalt) {
         const { vault } = this.keyringController.store.getState();
 
@@ -2708,7 +2720,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async clearLoginArtifacts() {
-    await browser.storage.session.remove(['loginToken', 'loginSalt']);
+    await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
   }
 
   /**
@@ -3543,8 +3555,8 @@ export default class MetamaskController extends EventEmitter {
       if (usePhishDetect && phishingTestResponse?.result) {
         this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({
-          event: EVENT_NAMES.PHISHING_PAGE_DISPLAYED,
-          category: EVENT.CATEGORIES.PHISHING,
+          event: MetaMetricsEventName.PhishingPageDisplayed,
+          category: MetaMetricsEventCategory.Phishing,
           properties: {
             url: hostname,
           },
@@ -4126,7 +4138,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (isManifestV3) {
-      await browser.storage.session.set({ loginToken, loginSalt });
+      await this.extension.storage.session.set({ loginToken, loginSalt });
     }
 
     if (!addresses.length) {

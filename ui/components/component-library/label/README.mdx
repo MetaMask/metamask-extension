@@ -32,15 +32,15 @@ The `children` of the label can be text or a react node
 
 ```jsx
 import { DISPLAY, AlignItems, FLEX_DIRECTION, Size, IconColor } from '../../../helpers/constants/design-system';
-import { Label, TextField, Icon, ICON_NAMES } from '../../component-library';
+import { Label, TextField, Icon, IconName, IconSize } from '../../component-library';
 
 <Label>Plain text</Label>
 <Label display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
   Text and icon
       <Icon
         color={IconColor.iconAlternative}
-        name={ICON_NAMES.INFO}
-        size={Size.inherit}
+        name={IconName.Info}
+        size={IconSize.Inherit}
       />
 </Label>
 <Label
