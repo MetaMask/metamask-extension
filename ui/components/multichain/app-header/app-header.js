@@ -115,7 +115,6 @@ export const AppHeader = ({ onClick }) => {
                 <Button
                   className="multichain-app-header__contents--avatar-network"
                   justifyContent={JustifyContent.flexStart}
-                  padding={2}
                 >
                   <AvatarNetwork
                     name={currentNetwork?.nickname}
