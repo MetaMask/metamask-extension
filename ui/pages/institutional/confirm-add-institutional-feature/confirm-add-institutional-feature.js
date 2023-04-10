@@ -7,7 +7,11 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { Text, BUTTON_SIZES, BUTTON_TYPES } from '../../../components/component-library';
+import {
+  Text,
+  BUTTON_SIZES,
+  BUTTON_TYPES,
+} from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,

@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
-import InteractiveReplacementTokenModal from './';
+import InteractiveReplacementTokenModal from '.';
 
 describe('Interactive Replacement Token Modal', function () {
   const mockStore = {
