@@ -3,16 +3,16 @@
 exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
 <div>
   <div
-    class="box jwt-url-form box--margin-bottom-8 box--display-flex box--flex-direction-row box--align-items-flex-start"
+    class="box jwt-url-form box--margin-bottom-8 box--display-flex box--flex-direction-column box--align-items-flex-start"
   >
     <div
-      class="box jwt-url-form__jwt-container box--margin-bottom-6 box--flex-direction-row"
+      class="box jwt-url-form__jwt-container box--margin-top-4 box--margin-bottom-6 box--display-flex box--flex-direction-column box--align-items-center box--width-full"
     >
       <div
         class="box box--flex-direction-row"
       >
         <p
-          class="box mm-text jwt-url-form__instruction mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+          class="box mm-text jwt-url-form__instruction mm-text--body-md box--display-block box--flex-direction-row box--color-text-default"
         >
           input text
         </p>
@@ -25,10 +25,10 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
       </div>
     </div>
     <div
-      class="box jwt-url-form__jwt-apiUrlInput box--flex-direction-row"
+      class="box box--flex-direction-row box--width-full"
     >
       <p
-        class="box mm-text jwt-url-form__instruction mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text jwt-url-form__instruction mm-text--body-md box--display-block box--flex-direction-row box--color-text-default"
       />
       <div
         class="box box--flex-direction-row"

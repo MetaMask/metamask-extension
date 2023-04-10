@@ -8,7 +8,7 @@ import {
 } from '../../../../../ducks/send';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { EVENT } from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../../../shared/constants/metametrics';
 
 export default function AmountMaxButton() {
   const isDraftTransactionInvalid = useSelector(isSendFormInvalid);
@@ -20,7 +20,7 @@ export default function AmountMaxButton() {
   const onMaxClick = () => {
     trackEvent({
       event: 'Clicked "Amount Max"',
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       properties: {
         action: 'Edit Screen',
         legacy_event: true,

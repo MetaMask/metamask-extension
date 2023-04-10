@@ -8,7 +8,7 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -116,7 +116,7 @@ export default class PermissionPageContainer extends Component {
 
   componentDidMount() {
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.AUTH,
+      category: MetaMetricsEventCategory.Auth,
       event: 'Tab Opened',
       properties: {
         action: 'Connect',

@@ -2,11 +2,11 @@
 
 exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance 1`] = `
 <div>
-  <button
+  <div
     class="box multichain-account-list-item box--padding-4 box--display-flex box--gap-2 box--flex-direction-row box--background-color-transparent"
   >
     <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
         class="mm-avatar-account__jazzicon"
@@ -58,15 +58,23 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between"
         >
           <div
-            class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+            class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
-            Test Account
+            <button
+              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
+            >
+              <span
+                class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
+              >
+                Test Account
+              </span>
+            </button>
           </div>
           <div
             class="box box--display-flex box--flex-direction-row box--align-items-center"
           >
             <div
-              class="box mm-text mm-text--body-md mm-text--text-align-end mm-text--color-text-default box--flex-direction-row"
+              class="box mm-text mm-text--body-md mm-text--text-align-end box--flex-direction-row box--color-text-default"
             >
               <div
                 class="currency-display-component"
@@ -94,12 +102,12 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
       >
         <p
-          class="box mm-text mm-text--body-sm mm-text--color-text-alternative box--flex-direction-row"
+          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
         >
           0x0dc...e7bc
         </p>
         <div
-          class="box mm-text mm-text--body-sm mm-text--text-align-end mm-text--color-text-alternative box--flex-direction-row"
+          class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
         >
           <div
             class="currency-display-component"
@@ -123,18 +131,17 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
       </div>
     </div>
     <div>
-      <div
+      <button
         aria-label="Test Account Options"
         class="box mm-button-icon mm-button-icon--size-sm box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
         data-testid="account-list-item-menu-button"
-        tabindex="0"
       >
         <span
           class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
           style="mask-image: url('./images/icons/more-vertical.svg');"
         />
-      </div>
+      </button>
     </div>
-  </button>
+  </div>
 </div>
 `;

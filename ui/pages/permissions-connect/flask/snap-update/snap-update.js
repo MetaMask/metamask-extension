@@ -18,7 +18,7 @@ import UpdateSnapPermissionList from '../../../../components/app/flask/update-sn
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -91,15 +91,18 @@ export default function SnapUpdate({
     >
       <Box
         className="headers"
+        paddingLeft={4}
+        paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <SnapsAuthorshipPill
-          snapId={targetSubjectMetadata.origin}
-          version={requestState.newVersion}
-        />
+        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!hasError && (
-          <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+          <Text
+            paddingBottom={4}
+            paddingTop={4}
+            variant={TextVariant.headingLg}
+          >
             {t('snapUpdate')}
           </Text>
         )}
@@ -120,8 +123,6 @@ export default function SnapUpdate({
           <>
             <Text
               className="headers__permission-description"
-              paddingLeft={4}
-              paddingRight={4}
               paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
@@ -134,6 +135,7 @@ export default function SnapUpdate({
               approvedPermissions={approvedPermissions}
               revokedPermissions={revokedPermissions}
               newPermissions={newPermissions}
+              targetSubjectMetadata={targetSubjectMetadata}
             />
           </>
         )}
@@ -144,11 +146,7 @@ export default function SnapUpdate({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
-            >
+            <Text textAlign={TEXT_ALIGN.CENTER}>
               {t('snapUpdateRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,
