@@ -38,6 +38,7 @@ export const TextField = ({
   readOnly,
   required,
   size = Size.MD,
+  testId,
   type = 'text',
   truncate = true,
   value,
@@ -116,6 +117,7 @@ export const TextField = ({
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         backgroundColor={BackgroundColor.transparent}
+        data-testid={testId}
         defaultValue={defaultValue}
         disabled={disabled}
         focused={focused.toString()}

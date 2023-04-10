@@ -78,6 +78,7 @@ export default function ExchangeRateDisplay({
         alignItems={AlignItems.center}
         onClick={onQuotesClick}
         className="exchange-rate-display__quote-rate"
+        data-testid="exchange-rate-display__quote-rate"
       >
         <span>1</span>
         <span

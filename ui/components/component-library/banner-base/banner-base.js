@@ -46,6 +46,7 @@ export const BannerBase = ({
           <Text
             className="mm-banner-base__title"
             variant={TextVariant.bodyLgMedium}
+            data-testid="mm-banner__title"
             as="h5"
             {...titleProps}
           >

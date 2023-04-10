@@ -216,6 +216,7 @@ const EthOverview = ({ className }) => {
               }
             }}
             label={t('swap')}
+            data-testid="eth-overview-swap"
             tooltipRender={
               isSwapsChain
                 ? null

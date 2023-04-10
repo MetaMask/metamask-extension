@@ -291,7 +291,10 @@ export default function TransactionSettings({
                 severity={notificationSeverity}
                 title={notificationTitle}
               >
-                <Typography variant={TypographyVariant.H6}>
+                <Typography
+                  variant={TypographyVariant.H6}
+                  testid="mm-banner__body"
+                >
                   {notificationText}
                 </Typography>
               </BannerAlert>

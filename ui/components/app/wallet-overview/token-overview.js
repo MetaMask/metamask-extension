@@ -184,6 +184,7 @@ const TokenOverview = ({ className, token }) => {
               }
             }}
             label={t('swap')}
+            data-testid="eth-overview-swap"
             tooltipRender={
               isSwapsChain
                 ? null

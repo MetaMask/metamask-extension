@@ -1021,7 +1021,11 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                   severity={SEVERITIES.INFO}
                   title={t('notEnoughBalance')}
                 >
-                  <Text variant={TextVariant.bodyMd} as="h6">
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    as="h6"
+                    data-testid="mm-banner__body"
+                  >
                     {actionableBalanceErrorMessage}
                   </Text>
                 </BannerAlert>
@@ -1148,6 +1152,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 as="h6"
                 color={TextColor.textAlternative}
                 marginLeft={1}
+                data-testid="review-quote__gas-fees"
               >
                 {` ${feeInFiat}`}
               </Text>

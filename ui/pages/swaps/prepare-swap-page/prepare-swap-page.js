@@ -902,6 +902,7 @@ export default function PrepareSwap({
             <SelectedToken
               onClick={onSwapFromOpen}
               selectedToken={selectedFromToken}
+              testId="prepare-swap-page__swap-from"
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <TextField
@@ -911,6 +912,7 @@ export default function PrepareSwap({
                 onChange={onTextFieldChange}
                 value={fromTokenInputValue}
                 truncate={false}
+                testId="prepare-swap-page__from-amount"
               />
             </Box>
           </Box>
@@ -1021,11 +1023,15 @@ export default function PrepareSwap({
             <SelectedToken
               onClick={onSwapToOpen}
               selectedToken={selectedToToken}
+              testId="prepare-swap-page__swap-to"
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              <Text variant={TextVariant.headingSm} as="h6">
+              <Text
+                variant={TextVariant.headingSm}
+                as="h6"
+                data-testid="prepare-swap-page__receive-amount"
+              >
                 {receiveToAmount &&
-                  !isReviewSwapButtonDisabled &&
                   toPrecisionWithoutTrailingZeros(receiveToAmount, 6)}
               </Text>
             </Box>
@@ -1045,7 +1051,11 @@ export default function PrepareSwap({
               width={BLOCK_SIZES.FULL}
             >
               <Box>
-                <Text variant={TextVariant.bodyMd} as="h6">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  data-testid="mm-banner__body"
+                >
                   {tokenVerifiedOn1Source
                     ? t('swapTokenVerifiedOn1SourceDescription', [
                         selectedToToken?.symbol,

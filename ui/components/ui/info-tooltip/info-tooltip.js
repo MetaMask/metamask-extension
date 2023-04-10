@@ -19,7 +19,7 @@ export default function InfoTooltip({
   iconFillColor = 'var(--color-icon-alternative)',
 }) {
   return (
-    <div className="info-tooltip">
+    <div className="info-tooltip" data-testid="info-tooltip">
       <Tooltip
         interactive
         position={position}

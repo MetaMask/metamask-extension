@@ -120,7 +120,7 @@ export default function ListWithSearch({
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <TextFieldSearch
-          id="icon-search"
+          id="token-list__text-search"
           marginBottom={4}
           onChange={(e) => handleSearch(e.target.value)}
           clearButtonOnClick={handleOnClear}

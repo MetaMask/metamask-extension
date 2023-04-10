@@ -11,7 +11,7 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import UrlIcon from '../../../components/ui/url-icon';
 import { I18nContext } from '../../../contexts/i18n';
 
-export default function SelectedToken({ onClick, selectedToken }) {
+export default function SelectedToken({ onClick, selectedToken, testId }) {
   const t = useContext(I18nContext);
   return (
     <div
@@ -36,6 +36,7 @@ export default function SelectedToken({ onClick, selectedToken }) {
         <div className="dropdown-search-list__labels">
           <div className="dropdown-search-list__item-labels">
             <span
+              data-testid={testId}
               className={classnames(
                 'dropdown-search-list__closed-primary-label',
                 {

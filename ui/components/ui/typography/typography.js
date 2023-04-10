@@ -81,6 +81,7 @@ export default function Typography({
   boxProps = {},
   className,
   children,
+  testid,
 }) {
   let Tag = as ?? variant;
   let strongTagFontWeight;
@@ -123,6 +124,7 @@ export default function Typography({
         <Tag
           className={classnames(boxClassName, computedClassName)}
           title={title}
+          data-testid={testid}
         >
           {children}
         </Tag>
