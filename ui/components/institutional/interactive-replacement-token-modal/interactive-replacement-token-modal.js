@@ -54,7 +54,11 @@ const InteractiveReplacementTokenModal = () => {
           paddingTop={5}
         >
           <Box display={DISPLAY.BLOCK} textAlign={TEXT_ALIGN.CENTER}>
-            <img src={custodian.iconUrl} width={45} alt={custodian.displayName} />
+            <img
+              src={custodian.iconUrl}
+              width={45}
+              alt={custodian.displayName}
+            />
           </Box>
         </Box>
       );
