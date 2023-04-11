@@ -63,6 +63,11 @@ export interface PopoverProps extends BoxProps {
    */
   onClose?: func;
   /**
+   * The onClick handler for the close `ButtonIcon`
+   * When passed this will allow for the close `ButtonIcon` to show
+   */
+  offset?: array;
+  /**
    * The props to pass to the close `ButtonIcon`
    */
   closeButtonProps?: ButtonIconProps;

@@ -13,7 +13,7 @@ import {
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ButtonIcon, ICON_NAMES, Text } from '..';
+import { ButtonIcon, IconName, Text } from '..';
 import { PopoverPosition, PopoverProps } from '.';
 
 type PopoverPosition = Placement;
@@ -31,6 +31,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       hasArrow = false,
       matchWidth,
       preventOverflow = false,
+      offset = [0, 8],
       flip = false,
       referenceHidden = false,
       referenceElement,
@@ -72,7 +73,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
         {
           name: 'offset',
           options: {
-            offset: [0, 8],
+            offset,
           },
         },
       ],
@@ -118,7 +119,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
         >
           {onBack && (
             <ButtonIcon
-              iconName={ICON_NAMES.ARROW_LEFT}
+              iconName={IconName.ArrowLeft}
               className="mm-popover__header-button-back"
               size={Size.SM}
               ariaLabel="back"
@@ -137,7 +138,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
 
           {onClose && (
             <ButtonIcon
-              iconName={ICON_NAMES.CLOSE}
+              iconName={IconName.Close}
               className="mm-popover__header-button-close"
               size={Size.SM}
               ariaLabel="close"
