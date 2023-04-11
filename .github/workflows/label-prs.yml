@@ -10,10 +10,18 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/github-script@v6
-        env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        with:
-          script: npm run label-prs -- process.env.HEAD_REF
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Run fitness functions
+      env:
+        HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      run: |
+        npm run label-prs -- process.env.HEAD_REF
