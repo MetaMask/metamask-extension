@@ -87,7 +87,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
           >
             <span>
                
-              This allows the contract to spend 
+              This allows the third party to spend 
               <h6
                 class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
               >
