@@ -1,4 +1,9 @@
 import { toChecksumAddress } from 'ethereumjs-util';
+import {
+  getSelectedIdentity,
+  getAccountType,
+  getProvider,
+} from '../../selectors';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;
@@ -43,4 +48,21 @@ export function getCustodianIconForAddress(state, address) {
   }
 
   return custodianIcon;
+}
+
+export function getIsCustodianSupportedChain(state) {
+  const selectedIdentity = getSelectedIdentity(state);
+  const accountType = getAccountType(state);
+  const provider = getProvider(state);
+
+  const supportedChains =
+    accountType === 'custody'
+      ? getCustodyAccountSupportedChains(state, selectedIdentity.address)
+      : null;
+
+  return supportedChains?.supportedChains
+    ? supportedChains.supportedChains.includes(
+        Number(provider.chainId).toString(),
+      )
+    : true;
 }
