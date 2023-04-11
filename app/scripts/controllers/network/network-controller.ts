@@ -151,18 +151,6 @@ export type NetworkControllerEvent =
   | NetworkControllerInfuraIsBlockedEvent
   | NetworkControllerInfuraIsUnblockedEvent;
 
-// type A<E extends NetworkControllerEvent> = ExtractEventHandler<E, E['type']>;
-// type B<E extends NetworkControllerEvent> = (...payload: E['payload']) => void;
-
-// type X = A<
-// | NetworkControllerNetworkDidChangeEvent
-// | NetworkControllerNetworkWillChangeEvent
-// >;
-// type Y = B<
-// | NetworkControllerNetworkDidChangeEvent
-// | NetworkControllerNetworkWillChangeEvent
-// >;
-
 /**
  * The messenger that the NetworkController uses to publish events.
  */
@@ -171,7 +159,7 @@ export type NetworkControllerMessenger = RestrictedControllerMessenger<
   never,
   NetworkControllerEvent,
   never,
-  string
+  NetworkControllerEventType
 >;
 
 /**
