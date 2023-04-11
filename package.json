@@ -95,7 +95,7 @@
     "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
     "validate-branch-name": "validate-branch-name",
-    "label-prs": "ts-node .github/scripts/label-prs.ts"
+    "label-prs": "ts-node ./.github/scripts/label-prs.ts"
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",

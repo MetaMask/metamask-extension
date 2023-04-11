@@ -16,4 +16,4 @@ jobs:
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         with:
-          script: npm run stuff -- process.env.HEAD_REF
+          script: npm run label-prs -- process.env.HEAD_REF
