@@ -223,7 +223,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
           >
-            Verify contract details
+            Verify third-party details
           </h6>
         </a>
       </div>
