@@ -8056,6 +8056,11 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
       // Also, we have to use `any` because `subscribe` and `unsubscribe` don't
       // directly read the payload type off of the given event, it infers it,
       // but in a way that makes it very difficult to mimic here.
+      //
+      // We're also using `any` here because there seems to be some mismatch
+      // between the signature of `subscribe` and the way that we're using it.
+      // Try changing this to either `(...args: E['payload']) => void` or
+      // `ExtractEventHandler<E, E['type']>` to see the issue.
       /* eslint-disable-next-line prefer-const */
       let eventListener: any;
       let timer: NodeJS.Timeout | undefined;
