@@ -329,9 +329,6 @@
     "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Talepleri onaylamadan önce her zaman bunu gerekli özeni göstererek yaptığınızdan emin olun."
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli test ağına bağlanılıyor"
   },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet ağına bağlanıyor"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Güvenlik sağlayıcısını etkinleştir"
-  },
   "enableSmartTransactions": {
     "message": "Akıllı işlemleri etkinleştir"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Etherscan'de görüntüle"
-  },
-  "expandExperience": {
-    "message": "MetaMask Snap'leri ile web3 deneyimini genişlet"
   },
   "expandView": {
     "message": "Görünümü genişlet"
@@ -1519,9 +1513,6 @@
   "general": {
     "message": "Genel"
   },
-  "getWarningsFromOpenSea": {
-    "message": "Bilinen bir kötü amaçlı talep aldığınızda OpenSea'den uyarı alın."
-  },
   "goBack": {
     "message": "Geri git"
   },
@@ -1602,7 +1593,7 @@
     "message": "GKİ'yi göstermek için basılı tut"
   },
   "holdToRevealContent1": {
-    "message": "Gizli Kurtarma İfadeniz: $1$",
+    "message": "Gizli Kurtarma İfadeniz: $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
   },
   "holdToRevealContent2": {
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "Bu tokenleri içe aktarmak ister misiniz?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test ağı"
+  },
   "link": {
     "message": "Bağlantı"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "Hatalı biçimlendirilmiş veri"
-  },
-  "manageSnaps": {
-    "message": "Yüklü snap'lerini yönet"
   },
   "max": {
     "message": "Maksimum"
@@ -2191,9 +2182,6 @@
     "message": "Geçici anahtar, önerilen $1 geçici anahtarından daha büyük",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Sahiplik bilgileri eşleşmediği için NFT eklenemiyor. Doğru bilgileri girdiğinizden emin olun."
   },
@@ -2278,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
   },
-  "notNow": {
-    "message": "Şimdi değil"
-  },
   "notifications": {
     "message": "Bildirimler"
   },
@@ -2341,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Birleşmesi başladı!"
-  },
-  "notifications17ActionText": {
-    "message": "Güvenlik ve Gizlilik ayarlarını göster"
-  },
-  "notifications17Title": {
-    "message": "Güvenlik ve Gizlilik Ayarları"
   },
   "notifications1Description": {
     "message": "MetaMask Mobil kullanıcıları artık mobil cüzdanları içinde token takas edebilirler. Mobil uygulamayı edinmek ve takas yapmaya başlamak için QR kodunu tarayın.",
@@ -2610,12 +2589,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea güvenlik sağlayıcısı"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea bu özellik için birinci güvenlik sağlayıcısıdır. Daha fazla sağlayıcı çok yakında gelecektir!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3271,12 +3244,6 @@
   "show": {
     "message": "Göster"
   },
-  "showAdvancedGasInline": {
-    "message": "Gelişmiş gaz kontrolleri"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
-  },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında dönüşümü göster"
   },
@@ -3382,10 +3349,6 @@
   "snaps": {
     "message": "Snap'ler"
   },
-  "snapsInsightError": {
-    "message": "$1: $2 ile ilgili bir hata oldu",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "İşlem ayrıntıları yükleniyor..."
   },
@@ -3402,7 +3365,8 @@
     "message": "Bir snap yalnızca etkinleştirilmişse çalışır"
   },
   "snapsUIError": {
-    "message": "Snap tarafından belirtilen Kullanıcı Arayüzü geçersiz."
+    "message": "Snap tarafından belirtilen Kullanıcı Arayüzü geçersiz.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
@@ -3510,9 +3474,6 @@
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea ile güvende kalın"
   },
   "step1LatticeWallet": {
     "message": "Lattice1'inizi bağlayın"
@@ -4029,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Bu, şu kaynaktan alınan bilgilere dayanır: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Bu hizmet deneyseldir"
   },
   "time": {
     "message": "Zaman"

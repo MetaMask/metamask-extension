@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -65,10 +65,10 @@ const state = {
       },
     ],
     unapprovedTxs: {},
-    keyringTypes: [HardwareKeyringTypes.ledger],
+    keyringTypes: [KeyringType.ledger],
     keyrings: [
       {
-        type: HardwareKeyringTypes.ledger,
+        type: KeyringType.ledger,
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
@@ -237,16 +237,16 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Set a spending cap for your')).toBeInTheDocument();
   });
 
-  it('should click Verify contract details and show popup Contract details, then close popup', () => {
+  it('should click Verify third-party details and show popup Third-party details, then close popup', () => {
     const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
-    const verifyContractDetails = getByText('Verify contract details');
-    fireEvent.click(verifyContractDetails);
+    const verifyThirdPartyDetails = getByText('Verify third-party details');
+    fireEvent.click(verifyThirdPartyDetails);
 
-    expect(getByText('Contract details')).toBeInTheDocument();
+    expect(getByText('Third-party details')).toBeInTheDocument();
 
     const gotIt = getByText('Got it');
     fireEvent.click(gotIt);

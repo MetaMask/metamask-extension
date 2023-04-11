@@ -17,14 +17,18 @@ import {
   getFirstTimeFlowType,
 } from '../../../selectors';
 
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
 
 import Box from '../../../components/ui/box/box';
 
@@ -43,13 +47,13 @@ export default function OnboardingMetametrics() {
     try {
       trackEvent(
         {
-          category: EVENT.CATEGORIES.ONBOARDING,
-          event: EVENT_NAMES.WALLET_SETUP_STARTED,
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
             account_type:
               firstTimeFlowType === 'create'
-                ? EVENT.ACCOUNT_TYPES.DEFAULT
-                : EVENT.ACCOUNT_TYPES.IMPORTED,
+                ? MetaMetricsEventAccountType.Default
+                : MetaMetricsEventAccountType.Imported,
           },
         },
         {

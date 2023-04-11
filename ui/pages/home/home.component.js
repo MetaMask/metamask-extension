@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
@@ -32,11 +32,10 @@ import {
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
-  ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
-  Text,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon, Text } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -54,7 +53,6 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -632,7 +630,6 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {showWhatsNew ? <OpenSeaWhatsNewPopover /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
@@ -701,15 +698,15 @@ export default class Home extends PureComponent {
                     onClick={() => {
                       this.context.trackEvent(
                         {
-                          category: EVENT.CATEGORIES.HOME,
-                          event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                          category: MetaMetricsEventCategory.Home,
+                          event: MetaMetricsEventName.SupportLinkClicked,
                           properties: {
                             url: SUPPORT_LINK,
                           },
                         },
                         {
                           contextPropsIntoEventProperties: [
-                            CONTEXT_PROPS.PAGE_TITLE,
+                            MetaMetricsContextProp.PageTitle,
                           ],
                         },
                       );

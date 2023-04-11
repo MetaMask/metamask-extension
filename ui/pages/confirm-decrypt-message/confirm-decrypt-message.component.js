@@ -9,11 +9,14 @@ import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
@@ -52,7 +55,7 @@ export default class ConfirmDecryptMessage extends Component {
   copyMessage = () => {
     copyToClipboard(this.state.rawMessage);
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.MESSAGES,
+      category: MetaMetricsEventCategory.Messages,
       event: 'Copy',
       properties: {
         action: 'Decrypt Message Copy',
@@ -286,7 +289,7 @@ export default class ConfirmDecryptMessage extends Component {
         onCancel={async (event) => {
           await cancelDecryptMessage(txData, event);
           trackEvent({
-            category: EVENT.CATEGORIES.MESSAGES,
+            category: MetaMetricsEventCategory.Messages,
             event: 'Cancel',
             properties: {
               action: 'Decrypt Message Request',
@@ -299,7 +302,7 @@ export default class ConfirmDecryptMessage extends Component {
         onSubmit={async (event) => {
           await decryptMessage(txData, event);
           trackEvent({
-            category: EVENT.CATEGORIES.MESSAGES,
+            category: MetaMetricsEventCategory.Messages,
             event: 'Confirm',
             properties: {
               action: 'Decrypt Message Request',

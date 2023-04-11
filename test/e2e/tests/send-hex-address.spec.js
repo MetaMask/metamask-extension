@@ -129,13 +129,14 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        const balanceAfterDeployment = await ganacheServer.getBalance();
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: '24.9977 ETH',
+          text: `${balanceAfterDeployment} ETH`,
         });
 
         // Send TST
@@ -167,7 +168,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
@@ -194,13 +194,14 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        const balanceAfterDeployment = await ganacheServer.getBalance();
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: '24.9977 ETH',
+          text: `${balanceAfterDeployment} ETH`,
         });
 
         // Send TST
@@ -232,7 +233,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',

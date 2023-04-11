@@ -329,9 +329,6 @@
     "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Nhớ luôn tự thẩm định trước khi phê duyệt bất kỳ yêu cầu nào."
-  },
   "amount": {
     "message": "Số tiền"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Đang kết nối với mạng thử nghiệm Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Đang kết nối với mạng chính thức của Ethereum"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Kích hoạt nhà cung cấp bảo mật"
-  },
   "enableSmartTransactions": {
     "message": "Bật giao dịch thông minh"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Xem trên Etherscan"
-  },
-  "expandExperience": {
-    "message": "Mở rộng trải nghiệm web3 của bạn với MetaMask Snap"
   },
   "expandView": {
     "message": "Mở rộng cửa sổ xem"
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Chung"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Nhận cảnh báo từ OpenSea bất cứ khi nào bạn nhận được một yêu cầu độc hại đã biết."
   },
   "goBack": {
     "message": "Quay Lại"
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "Bạn có muốn nhập những token này không?"
   },
+  "lineatestnet": {
+    "message": "Mạng thử nghiệm Linea Goerli"
+  },
   "link": {
     "message": "Liên kết"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "Dữ liệu không đúng định dạng"
-  },
-  "manageSnaps": {
-    "message": "Quản lý các Snap đã cài đặt"
   },
   "max": {
     "message": "Tối đa"
@@ -2191,9 +2182,6 @@
     "message": "Số chỉ dùng một lần lớn hơn số chỉ dùng một lần gợi ý là $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
   },
@@ -2278,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Không đủ gas"
   },
-  "notNow": {
-    "message": "Không phải bây giờ"
-  },
   "notifications": {
     "message": "Thông báo"
   },
@@ -2341,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Hợp nhất Ethereum đã được triển khai!"
-  },
-  "notifications17ActionText": {
-    "message": "Hiển thị cài đặt Bảo mật và Quyền riêng tư"
-  },
-  "notifications17Title": {
-    "message": "Cài đặt Bảo mật và Quyền riêng tư"
   },
   "notifications1Description": {
     "message": "Giờ đây, người dùng MetaMask trên điện thoại di động có thể hoán đổi token trong ví di động của họ. Quét mã QR để tải ứng dụng di động và bắt đầu hoán đổi.",
@@ -2610,12 +2589,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Nhà cung cấp bảo mật OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea là nhà cung cấp bảo mật đầu tiên cho tính năng này. Sắp có thêm nhiều nhà cung cấp khác!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3271,12 +3244,6 @@
   "show": {
     "message": "Hiển thị"
   },
-  "showAdvancedGasInline": {
-    "message": "Quyền kiểm soát gas nâng cao"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chọn tùy chọn này để hiển thị các quyền kiểm soát giá gas và giới hạn ngay trên màn hình gửi và xác nhận."
-  },
   "showFiatConversionInTestnets": {
     "message": "Hiển thị tỷ lệ quy đổi trên các mạng thử nghiệm"
   },
@@ -3382,10 +3349,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "Đã xảy ra lỗi với $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Đang tải thông tin chi tiết về giao dịch..."
   },
@@ -3402,7 +3365,8 @@
     "message": "Snap chỉ hoạt động khi đã bật"
   },
   "snapsUIError": {
-    "message": "Giao diện người dùng được chỉ định bởi snap không hợp lệ."
+    "message": "Giao diện người dùng được chỉ định bởi snap không hợp lệ.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Một số mạng có thể gây ra rủi ro về bảo mật và/hoặc quyền riêng tư. Bạn cần hiểu rõ các rủi ro này trước khi thêm và sử dụng mạng."
@@ -3510,9 +3474,6 @@
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Đảm bảo an toàn với OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Kết nối với Lattice1"
@@ -4029,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Điều này dựa trên thông tin từ "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm"
   },
   "time": {
     "message": "Thời gian"
