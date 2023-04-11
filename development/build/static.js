@@ -165,8 +165,8 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: ``,
     },
     {
-      src: `./app/loading.html`,
-      dest: `loading.html`,
+      src: `./app/ensLoading.html`,
+      dest: `ensLoading.html`,
     },
     {
       src: `./app/unsLoading.html`,

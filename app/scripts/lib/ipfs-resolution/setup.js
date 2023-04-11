@@ -1,7 +1,7 @@
 import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
 import browser from 'webextension-polyfill';
-import { udTlds } from '@unstoppabledomains/tldsresolverkeys';
+import { udTlds as supportedUnsTopLevelDomains } from '@unstoppabledomains/tldsresolverkeys';
 
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import resolveEnsToIpfsContentId from './ens-resolver';
@@ -9,7 +9,9 @@ import resolveUnsToIpfsContentId from './uns-resolver';
 
 const fetchWithTimeout = getFetchWithTimeout();
 const supportedEnsTopLevelDomains = ['eth'];
-const combinedSupportedTlds = udTlds.concat(supportedEnsTopLevelDomains);
+const combinedSupportedTlds = supportedUnsTopLevelDomains.concat(
+  supportedEnsTopLevelDomains,
+);
 
 export default function setupIpfsResolver({
   provider,
@@ -60,7 +62,7 @@ export default function setupIpfsResolver({
   async function attemptResolveUns(tabId, domainName) {
     const ipfsGateway = getIpfsGateway();
     browser.tabs.update(tabId, { url: `unsLoading.html` });
-    let url = `http://unstoppabledomains.com/search?searchTerm=${domainName}`;
+    let url = `https://unstoppabledomains.com/search?searchTerm=${domainName}`;
     try {
       const ipfsHash = await resolveUnsToIpfsContentId(domainName);
       if (ipfsHash) {
@@ -81,7 +83,7 @@ export default function setupIpfsResolver({
     fragment,
   }) {
     const ipfsGateway = getIpfsGateway();
-    browser.tabs.update(tabId, { url: `loading.html` });
+    browser.tabs.update(tabId, { url: `ensLoading.html` });
     let url = `https://app.ens.domains/name/${name}`;
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({
