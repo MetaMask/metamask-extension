@@ -2486,12 +2486,11 @@
     "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-<<<<<<< HEAD
+
   "notifications18Title": {
     "message": "Stay safe with security alerts"
   },
-=======
->>>>>>> master
+
   "notifications19ActionText": {
     "message": "Enable NFT autodetection"
   },
