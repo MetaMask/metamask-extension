@@ -62,16 +62,11 @@ const getDefaultState = () => ({
 
 export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
-  securityProviderResponse?: Record<string, Json> | undefined;
 };
 
-export type StateMessage = Omit<
-  Required<AbstractMessage>,
-  'securityProviderResponse'
-> & {
+export type StateMessage = Required<AbstractMessage> & {
   msgParams: Required<AbstractMessageParams>;
-  securityProviderResponse?: Record<string, Json> | undefined;
-};
+} & Json;
 
 export type SignControllerState = {
   unapprovedMsgs: Record<string, StateMessage>;
@@ -587,16 +582,17 @@ export default class SignController extends BaseControllerV2<
     const { messageParams, ...coreMessageData } = coreMessage;
 
     // Core message managers use messageParams but frontend uses msgParams with lots of references
-    const stateMessage: StateMessage = {
+    const stateMessage = {
       ...coreMessageData,
       rawSig: coreMessage.rawSig as string,
       msgParams: {
         ...messageParams,
         origin: messageParams.origin as string,
       },
-      securityProviderResponse: coreMessage.securityProviderResponse,
+      securityProviderResponse:
+        coreMessage.securityProviderResponse || new Map(),
     };
-    return stateMessage;
+    return stateMessage as StateMessage;
   }
 
   private _normalizeMsgData(data: string) {
