@@ -23,17 +23,22 @@ import { IconColor, Size } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../shared/constants/metametrics';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
+import { ButtonIcon } from '../../component-library';
 import {
   Icon,
-  ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../component-library';
+} from '../../component-library/icon/deprecated';
+
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -127,8 +132,8 @@ class NetworkDropdown extends Component {
     const { trackEvent } = this.context;
 
     trackEvent({
-      category: EVENT.CATEGORIES.NAVIGATION,
-      event: EVENT_NAMES.NAV_NETWORK_SWITCHED,
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.NavNetworkSwitched,
       properties: {
         from_network: providerType,
         to_network: newProviderType,
@@ -286,22 +291,20 @@ class NetworkDropdown extends Component {
   }
 
   renderNonInfuraDefaultNetwork(networkConfigurations, network) {
-    const {
-      provider: { type: providerType },
-      setActiveNetwork,
-      upsertNetworkConfiguration,
-    } = this.props;
+    const { provider, setActiveNetwork, upsertNetworkConfiguration } =
+      this.props;
 
-    const isCurrentRpcTarget = providerType === NETWORK_TYPES.RPC;
+    const { chainId, ticker, blockExplorerUrl } = BUILT_IN_NETWORKS[network];
+    const networkName = NETWORK_TO_NAME_MAP[network];
+    const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+
+    const isCurrentRpcTarget =
+      provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
     return (
       <DropdownMenuItem
         key={network}
         closeMenu={this.props.hideNetworkDropdown}
         onClick={async () => {
-          const { chainId, ticker, blockExplorerUrl } =
-            BUILT_IN_NETWORKS[network];
-          const networkName = NETWORK_TO_NAME_MAP[network];
-
           const networkConfiguration = pickBy(
             networkConfigurations,
             (config) => config.rpcUrl === CHAIN_ID_TO_RPC_URL_MAP[chainId],
@@ -310,7 +313,6 @@ class NetworkDropdown extends Component {
           let configurationId = null;
           // eslint-disable-next-line no-extra-boolean-cast, no-implicit-coercion
           if (!!networkConfiguration) {
-            const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
             configurationId = await upsertNetworkConfiguration(
               {
                 rpcUrl,
@@ -323,7 +325,7 @@ class NetworkDropdown extends Component {
               },
               {
                 setActive: true,
-                source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+                source: MetaMetricsNetworkEventSource.CustomNetworkForm,
               },
             );
           }
@@ -346,7 +348,7 @@ class NetworkDropdown extends Component {
           data-testid={`${network}-network-item`}
           style={{
             color:
-              providerType === network
+              provider.type === network
                 ? 'var(--color-text-default)'
                 : 'var(--color-text-alternative)',
           }}

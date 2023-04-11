@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash';
+import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
@@ -300,6 +300,13 @@ export const BUILT_IN_NETWORKS = {
     chainId: CHAIN_IDS.LOCALHOST,
   },
 } as const;
+
+export const BUILT_IN_INFURA_NETWORKS = pick(
+  BUILT_IN_NETWORKS,
+  INFURA_PROVIDER_TYPES,
+);
+
+export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
@@ -681,4 +688,31 @@ export const FEATURED_RPCS: RPCDefinition[] = [
 ];
 
 export const SHOULD_SHOW_LINEA_TESTNET_NETWORK =
-  new Date().getTime() > Date.UTC(2023, 2, 28);
+  new Date().getTime() > Date.UTC(2023, 2, 28, 8);
+
+/**
+ * Represents the availability state of the currently selected network.
+ */
+export enum NetworkStatus {
+  /**
+   * The network may or may not be able to receive requests, but either no
+   * attempt has been made to determine this, or an attempt was made but was
+   * unsuccessful.
+   */
+  Unknown = 'unknown',
+  /**
+   * The network is able to receive and respond to requests.
+   */
+  Available = 'available',
+  /**
+   * The network is unable to receive and respond to requests for unknown
+   * reasons.
+   */
+  Unavailable = 'unavailable',
+  /**
+   * The network is not only unavailable, but is also inaccessible for the user
+   * specifically based on their location. This state only applies to Infura
+   * networks.
+   */
+  Blocked = 'blocked',
+}

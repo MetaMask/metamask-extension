@@ -291,9 +291,9 @@ export function testsForProviderType(providerType) {
         // tests on the core side.
 
         { name: 'net_listening', numberOfParameters: 0 },
-
-        { name: 'eth_subscribe', numberOfParameters: 1 },
-        { name: 'eth_unsubscribe', numberOfParameters: 1 },
+        // TODO: Methods to add back when we add testing for subscribe middleware
+        // { name: 'eth_subscribe', numberOfParameters: 1 },
+        // { name: 'eth_unsubscribe', numberOfParameters: 1 },
         { name: 'custom_rpc_method', numberOfParameters: 1 },
         { name: 'net_peerCount', numberOfParameters: 0 },
         { name: 'parity_nextNonce', numberOfParameters: 1 },

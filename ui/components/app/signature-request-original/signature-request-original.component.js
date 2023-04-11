@@ -154,6 +154,7 @@ export default class SignatureRequestOriginal extends Component {
         ) : null}
         <div className="request-signature__origin">
           <SiteOrigin
+            title={txData.msgParams.origin}
             siteOrigin={txData.msgParams.origin}
             iconSrc={targetSubjectMetadata?.iconUrl}
             iconName={

@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "Ethereum Merge уже досутпно!"
   },
-  "notifications17ActionText": {
-    "message": "Показать настройки безопасности и конфиденциальности"
-  },
-  "notifications17Title": {
-    "message": "Настройки безопасности и конфиденциальности"
-  },
   "notifications1Description": {
     "message": "Теперь пользователи MetaMask Mobile могут обменивать токены в своем мобильном кошельке. Отсканируйте QR-код, чтобы скачать мобильное приложение и начать обмен.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -3250,12 +3244,6 @@
   "show": {
     "message": "Показать"
   },
-  "showAdvancedGasInline": {
-    "message": "Расширенное управление газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Выберите это, чтобы отображать цену газа и управление лимитами непосредственно на экранах отправки и подтверждения."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показывать конвертацию в тестовых сетях"
   },
@@ -3361,10 +3349,6 @@
   "snaps": {
     "message": "Снапы"
   },
-  "snapsInsightError": {
-    "message": "Произошла ошибка с $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Загрузка аналитики по транзакции..."
   },
@@ -3381,7 +3365,8 @@
     "message": "Снап будет работать только в том случае, если он включен"
   },
   "snapsUIError": {
-    "message": "Пользовательский интерфейс, указанный привязкой, недействителен."
+    "message": "Пользовательский интерфейс, указанный привязкой, недействителен.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
@@ -4005,9 +3990,6 @@
   },
   "thisIsBasedOn": {
     "message": "Это основано на информации от "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Этот сервис является экспериментальным"
   },
   "time": {
     "message": "Время"

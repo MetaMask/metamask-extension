@@ -16,6 +16,7 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         >
           <div
             class="site-origin"
+            title="https://example-dapp.website"
           >
             <div
               class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"

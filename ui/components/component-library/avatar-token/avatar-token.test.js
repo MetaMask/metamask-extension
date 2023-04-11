@@ -73,10 +73,10 @@ describe('AvatarToken', () => {
       </>,
     );
     expect(getByTestId(TextColor.successDefault)).toHaveClass(
-      `mm-text--color-${TextColor.successDefault}`,
+      `box--color-${TextColor.successDefault}`,
     );
     expect(getByTestId(TextColor.errorDefault)).toHaveClass(
-      `mm-text--color-${TextColor.errorDefault}`,
+      `box--color-${TextColor.errorDefault}`,
     );
   });
   // background color

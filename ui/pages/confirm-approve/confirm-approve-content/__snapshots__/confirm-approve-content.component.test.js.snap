@@ -21,7 +21,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm mm-text--color-text-alternative box--margin-left-1 box--flex-direction-row"
+          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -57,7 +57,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -135,7 +135,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
@@ -148,7 +148,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </a>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold mm-text--color-text-default box--flex-direction-row"
+              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
@@ -197,7 +197,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm mm-text--color-text-alternative box--margin-left-1 box--flex-direction-row"
+          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -244,7 +244,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -322,7 +322,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
@@ -335,7 +335,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </a>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold mm-text--color-text-default box--flex-direction-row"
+              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
@@ -384,7 +384,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm mm-text--color-text-alternative box--margin-left-1 box--flex-direction-row"
+          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -431,7 +431,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -509,7 +509,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
@@ -522,7 +522,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </a>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold mm-text--color-text-default box--flex-direction-row"
+              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
@@ -571,7 +571,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm mm-text--color-text-alternative box--margin-left-1 box--flex-direction-row"
+          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -618,7 +618,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -696,7 +696,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
@@ -709,7 +709,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </a>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold mm-text--color-text-default box--flex-direction-row"
+              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
