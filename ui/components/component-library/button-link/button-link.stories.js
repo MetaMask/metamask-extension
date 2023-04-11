@@ -9,7 +9,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES } from '../icon/deprecated';
+import { IconName } from '..';
 import { Text } from '../text';
 import { ButtonLink } from './button-link';
 import { BUTTON_LINK_SIZES } from './button-link.constants';
@@ -73,12 +73,12 @@ export default {
     },
     startIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
       table: { category: 'button base props' },
     },
     endIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
       table: { category: 'button base props' },
     },
     startIconProps: {

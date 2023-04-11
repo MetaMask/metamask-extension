@@ -896,13 +896,12 @@ export default function ViewQuote() {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
               value: '0x0', // For approval txs we need to use "0x0" here.
             },
-            chainId,
           });
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }
