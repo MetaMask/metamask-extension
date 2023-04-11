@@ -44,7 +44,9 @@ export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
 };
 
-export type StateMessage = Required<AbstractMessage> & {
+export type StateMessage = Required<
+  Omit<AbstractMessage, 'securityProviderResponse'>
+> & {
   msgParams: string;
 };
 
