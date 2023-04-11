@@ -141,4 +141,114 @@ describe('migration #84', () => {
     };
     expect(newStorage).toStrictEqual(expectedNewStorage);
   });
+
+  it('should not modify state if state.NetworkController is undefined', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        testProperty: 'testValue',
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    const expectedNewStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        testProperty: 'testValue',
+      },
+    };
+    expect(newStorage).toStrictEqual(expectedNewStorage);
+  });
+
+  it('should not modify state if state.NetworkController is not an object', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: false,
+        testProperty: 'testValue',
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    const expectedNewStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: false,
+        testProperty: 'testValue',
+      },
+    };
+    expect(newStorage).toStrictEqual(expectedNewStorage);
+  });
+
+  it('should not modify state if state.NetworkController.networkConfigurations is undefined', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: {
+          testNetworkControllerProperty: 'testNetworkControllerValue',
+          networkConfigurations: undefined,
+        },
+        testProperty: 'testValue',
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    const expectedNewStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: {
+          testNetworkControllerProperty: 'testNetworkControllerValue',
+          networkConfigurations: undefined,
+        },
+        testProperty: 'testValue',
+      },
+    };
+    expect(newStorage).toStrictEqual(expectedNewStorage);
+  });
+
+  it('should not modify state if state.NetworkController.networkConfigurations is an empty object', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: {
+          testNetworkControllerProperty: 'testNetworkControllerValue',
+          networkConfigurations: {},
+        },
+        testProperty: 'testValue',
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    const expectedNewStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: {
+          testNetworkControllerProperty: 'testNetworkControllerValue',
+          networkConfigurations: {},
+        },
+        testProperty: 'testValue',
+      },
+    };
+    expect(newStorage).toStrictEqual(expectedNewStorage);
+  });
 });
