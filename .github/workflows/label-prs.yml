@@ -20,7 +20,13 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Run fitness functions
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Install dependencies
+      run: yarn
+
+    - name: Run PR labelling script
       env:
         HEAD_REF: ${{ github.event.pull_request.head.ref }}
       run: |
