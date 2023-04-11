@@ -27,7 +27,7 @@ function transformState(state: Record<string, unknown>) {
   if (!isObject(state.NetworkController)) {
     return state;
   }
-  const { NetworkController }: any = state;
+  const { NetworkController } = state;
 
   const {
     networkConfigurations,
