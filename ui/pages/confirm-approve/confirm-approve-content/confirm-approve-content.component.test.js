@@ -56,7 +56,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -119,7 +119,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -181,7 +181,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -239,7 +239,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
