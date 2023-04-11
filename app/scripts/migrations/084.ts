@@ -37,7 +37,6 @@ function transformState(state: Record<string, unknown>) {
     networkConfigurations,
   }: { networkConfigurations: Record<string, object> } = NetworkController;
 
-
   const newNetworkConfigurations: Record<string, Record<string, unknown>> = {};
 
   for (const networkConfigurationId of Object.keys(networkConfigurations)) {
