@@ -7,6 +7,7 @@ import {
   FLEX_DIRECTION,
   TextVariant,
   Color,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   Text,
@@ -56,7 +57,12 @@ export default function TermsOfUsePopup({ onAccept }) {
           >
             {t('accept')}
           </Button>
-          <Text as="p" marginTop={4} className="terms-of-use__footer-text">
+          <Text
+            as="p"
+            marginTop={4}
+            className="terms-of-use__footer-text"
+            color={TextColor.textAlternative}
+          >
             {t('termsOfUseFooterText')}
           </Text>
         </>
