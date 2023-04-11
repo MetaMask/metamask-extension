@@ -35,18 +35,11 @@ function transformState(state: Record<string, unknown>) {
 
   const newNetworkConfigurations: Record<string, Record<string, unknown>> = {};
 
-  for (const networkConfigurationId in networkConfigurations) {
-    if (
-      Object.prototype.hasOwnProperty.call(
-        networkConfigurations,
-        networkConfigurationId,
-      )
-    ) {
-      newNetworkConfigurations[networkConfigurationId] = {
-        ...networkConfigurations[networkConfigurationId],
-        id: networkConfigurationId,
-      };
-    }
+  for (const networkConfigurationId of Object.keys(networkConfigurations)) {
+    newNetworkConfigurations[networkConfigurationId] = {
+      ...networkConfigurations[networkConfigurationId],
+      id: networkConfigurationId,
+    };
   }
 
   return {
