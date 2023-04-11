@@ -104,5 +104,6 @@ describe('CustodyAccountList', () => {
     fireEvent.click(addAccountsButton);
 
     expect(onAddAccountsMock).toHaveBeenCalledTimes(1);
+    expect(onAddAccountsMock).toHaveBeenCalledWith('Test');
   });
 });

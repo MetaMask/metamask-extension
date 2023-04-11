@@ -7,11 +7,11 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
-  Color,
   TextVariant,
   JustifyContent,
   BLOCK_SIZES,
   DISPLAY,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box';
@@ -19,8 +19,8 @@ import {
   Text,
   Label,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   ButtonLink,
 } from '../../../../components/component-library';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
@@ -43,10 +43,6 @@ export default function CustodyAccountList({
   const [copied, handleCopy] = useCopyToClipboard();
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const disabled = Object.keys(selectedAccounts).length === 0;
-  const buttonProps = {};
-  if (disabled) {
-    buttonProps.disabled = true;
-  }
 
   return (
     <>
@@ -134,9 +130,9 @@ export default function CustodyAccountList({
                     >
                       {shortenAddress(account.address)}
                       <Icon
-                        name={ICON_NAMES.EXPORT}
-                        size={ICON_SIZES.SM}
-                        color={Color.primaryDefault}
+                        name={IconSize.EXPORT}
+                        size={IconName.SM}
+                        color={IconColor.primaryDefault}
                         marginLeft={1}
                       />
                     </ButtonLink>
@@ -150,9 +146,9 @@ export default function CustodyAccountList({
                         onClick={() => handleCopy(account.address)}
                       >
                         <Icon
-                          name={ICON_NAMES.COPY}
-                          size={ICON_SIZES.XS}
-                          color={Color.iconMuted}
+                          name={IconSize.COPY}
+                          size={IconName.XS}
+                          color={IconColor.iconMuted}
                         />
                       </button>
                     </Tooltip>
