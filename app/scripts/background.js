@@ -727,7 +727,6 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
@@ -736,7 +735,6 @@ export function setupController(
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
-      unapprovedTxCount +
       unapprovedDecryptMsgCount +
       unapprovedEncryptionPublicKeyMsgCount +
       pendingApprovalCount +
