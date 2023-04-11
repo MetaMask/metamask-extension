@@ -15,10 +15,10 @@ import {
 
 import { Text, ValidTag } from '../text';
 
-import { AvatarBaseProps, AvatarBaseSizes } from './avatar-base.types';
+import { AvatarBaseProps, AvatarBaseSize } from './avatar-base.types';
 
 export const AvatarBase = ({
-  size = AvatarBaseSizes.MD,
+  size = AvatarBaseSize.Md,
   children,
   backgroundColor = BackgroundColor.backgroundAlternative,
   borderColor = BorderColor.borderDefault,
@@ -28,9 +28,9 @@ export const AvatarBase = ({
 }: AvatarBaseProps) => {
   let fallbackTextVariant;
 
-  if (size === AvatarBaseSizes.LG || size === AvatarBaseSizes.XL) {
+  if (size === AvatarBaseSize.Lg || size === AvatarBaseSize.Xl) {
     fallbackTextVariant = TextVariant.bodyLgMedium;
-  } else if (size === AvatarBaseSizes.SM || size === AvatarBaseSizes.MD) {
+  } else if (size === AvatarBaseSize.Sm || size === AvatarBaseSize.Md) {
     fallbackTextVariant = TextVariant.bodySm;
   } else {
     fallbackTextVariant = TextVariant.bodyXs;
@@ -48,7 +48,7 @@ export const AvatarBase = ({
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.full}
       variant={fallbackTextVariant}
-      textTransform={TEXT_TRANSFORM.UPPERCASE}
+      textTransform={TEXT_TRANSFORM.UPPERCASE as 'UPPERCASE'}
       {...{ backgroundColor, borderColor, color, ...props }}
     >
       {children}

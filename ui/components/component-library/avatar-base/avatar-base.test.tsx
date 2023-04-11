@@ -10,7 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { AvatarBase } from './avatar-base';
-import { AvatarBaseSizes } from './avatar-base.types';
+import { AvatarBaseSize } from './avatar-base.types';
 
 describe('AvatarBase', () => {
   it('should render correctly', () => {
@@ -23,11 +23,11 @@ describe('AvatarBase', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <AvatarBase size={AvatarBaseSizes.XS} data-testid="avatar-base-xs" />
-        <AvatarBase size={AvatarBaseSizes.SM} data-testid="avatar-base-sm" />
-        <AvatarBase size={AvatarBaseSizes.MD} data-testid="avatar-base-md" />
-        <AvatarBase size={AvatarBaseSizes.LG} data-testid="avatar-base-lg" />
-        <AvatarBase size={AvatarBaseSizes.XL} data-testid="avatar-base-xl" />
+        <AvatarBase size={AvatarBaseSize.Xs} data-testid="avatar-base-xs" />
+        <AvatarBase size={AvatarBaseSize.Sm} data-testid="avatar-base-sm" />
+        <AvatarBase size={AvatarBaseSize.Md} data-testid="avatar-base-md" />
+        <AvatarBase size={AvatarBaseSize.Lg} data-testid="avatar-base-lg" />
+        <AvatarBase size={AvatarBaseSize.Xl} data-testid="avatar-base-xl" />
       </>,
     );
     expect(getByTestId('avatar-base-xs')).toHaveClass(
