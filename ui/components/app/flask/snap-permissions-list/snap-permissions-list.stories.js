@@ -3,7 +3,7 @@ import React from 'react';
 import SnapPermissionsList from '.';
 
 export default {
-  title: 'Components/App/flask/PermissionsConnectList',
+  title: 'Components/App/flask/SnapPermissionsList',
 
   component: SnapPermissionsList,
   argTypes: {
