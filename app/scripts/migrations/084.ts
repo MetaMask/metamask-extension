@@ -27,11 +27,16 @@ function transformState(state: Record<string, unknown>) {
   if (!isObject(state.NetworkController)) {
     return state;
   }
-  const { NetworkController } = state;
+  const { NetworkController }: any = state;
+
+  if (!isObject(NetworkController.networkConfigurations)) {
+    return state;
+  }
 
   const {
     networkConfigurations,
   }: { networkConfigurations: Record<string, object> } = NetworkController;
+
 
   const newNetworkConfigurations: Record<string, Record<string, unknown>> = {};
 
