@@ -177,7 +177,6 @@ export default function ConfirmApprove({
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
           <TokenAllowance
-            txParams={txParams}
             origin={formattedOrigin}
             siteImage={siteImage}
             showCustomizeGasModal={approveTransaction}

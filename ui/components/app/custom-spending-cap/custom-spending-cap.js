@@ -291,7 +291,7 @@ CustomSpendingCap.propTypes = {
   /**
    * Transaction params
    */
-  txParams: PropTypes.object,
+  txParams: PropTypes.object.isRequired,
   /**
    * Displayed the token name currently tracked in description related to the input state
    */

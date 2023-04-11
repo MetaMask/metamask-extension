@@ -71,7 +71,6 @@ import LedgerInstructionField from '../../components/app/ledger-instruction-fiel
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
 export default function TokenAllowance({
-  txParams,
   origin,
   siteImage,
   showCustomizeGasModal,
@@ -393,7 +392,7 @@ export default function TokenAllowance({
       <Box margin={[4, 4, 3, 4]}>
         {isFirstPage ? (
           <CustomSpendingCap
-            txParams={txParams}
+            txParams={txData?.txParams}
             tokenName={tokenSymbol}
             currentTokenBalance={currentTokenBalance}
             dappProposedValue={dappProposedTokenAmount}
@@ -546,10 +545,6 @@ export default function TokenAllowance({
 }
 
 TokenAllowance.propTypes = {
-  /**
-   * Transaction params
-   */
-  txParams: PropTypes.object,
   /**
    * Dapp URL
    */
