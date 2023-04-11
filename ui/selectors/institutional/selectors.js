@@ -1,9 +1,5 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import {
-  getSelectedIdentity,
-  getAccountType,
-  getProvider,
-} from '../../selectors';
+import { getSelectedIdentity, getAccountType, getProvider } from '../selectors';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;

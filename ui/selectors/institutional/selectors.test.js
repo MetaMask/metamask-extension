@@ -69,21 +69,21 @@ describe('Institutional selectors', () => {
   describe('getWaitForConfirmDeepLinkDialog', () => {
     it('extracts a state property', () => {
       const result = getWaitForConfirmDeepLinkDialog(state);
-      expect(result).toEqual(state.metamask.waitForConfirmDeepLinkDialog);
+      expect(result).toStrictEqual(state.metamask.waitForConfirmDeepLinkDialog);
     });
   });
 
   describe('getCustodyAccountDetails', () => {
     it('extracts a state property', () => {
       const result = getCustodyAccountDetails(state);
-      expect(result).toEqual(state.metamask.custodyAccountDetails);
+      expect(result).toStrictEqual(state.metamask.custodyAccountDetails);
     });
   });
 
   describe('getTransactionStatusMap', () => {
     it('extracts a state property', () => {
       const result = getTransactionStatusMap(state);
-      expect(result).toEqual(state.metamask.custodyStatusMaps);
+      expect(result).toStrictEqual(state.metamask.custodyStatusMaps);
     });
   });
 
@@ -93,7 +93,7 @@ describe('Institutional selectors', () => {
         state,
         '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
       );
-      expect(result).toEqual(
+      expect(result).toStrictEqual(
         state.metamask.custodianSupportedChains[
           toChecksumAddress('0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275')
         ],
@@ -104,21 +104,25 @@ describe('Institutional selectors', () => {
   describe('getMmiPortfolioEnabled', () => {
     it('extracts a state property', () => {
       const result = getMmiPortfolioEnabled(state);
-      expect(result).toEqual(state.metamask.mmiConfiguration.portfolio.enabled);
+      expect(result).toStrictEqual(
+        state.metamask.mmiConfiguration.portfolio.enabled,
+      );
     });
   });
 
   describe('getMmiPortfolioUrl', () => {
     it('extracts a state property', () => {
       const result = getMmiPortfolioUrl(state);
-      expect(result).toEqual(state.metamask.mmiConfiguration.portfolio.url);
+      expect(result).toStrictEqual(
+        state.metamask.mmiConfiguration.portfolio.url,
+      );
     });
   });
 
   describe('getConfiguredCustodians', () => {
     it('extracts a state property', () => {
       const result = getConfiguredCustodians(state);
-      expect(result).toEqual(state.metamask.mmiConfiguration.custodians);
+      expect(result).toStrictEqual(state.metamask.mmiConfiguration.custodians);
     });
   });
 
@@ -129,7 +133,7 @@ describe('Institutional selectors', () => {
         '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
       );
 
-      expect(result).toEqual(
+      expect(result).toStrictEqual(
         state.metamask.mmiConfiguration.custodians[0].iconUrl,
       );
     });
@@ -141,7 +145,7 @@ describe('Institutional selectors', () => {
         state,
         '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
       );
-      expect(result).toEqual(true);
+      expect(result).toStrictEqual(true);
     });
   });
 });
