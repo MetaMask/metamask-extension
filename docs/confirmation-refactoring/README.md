@@ -1,13 +1,13 @@
 # Confirmation Pages Refactoring
 
-The document details about refactoring confirmation pages. It describes the current code and improved proposed architecture.
+The following pages document the ongoing refactoring efforts of confirmation pages. They describe the current (2023) code and proposed changes.
 
-1. [Signature Request Pages](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/signature-request)
+1. [Signature Request Pages](./signature-request/README.md)
 
-2. [Confirmation Pages Routing](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-pages-routing)
+2. [Confirmation Pages Routing](./confirmation-pages-routing/README.md)
 
-3. [Confirmation Page Structure](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-page=structure)
+3. [Confirmation Page Structure](./confirmation-page=structure/README.md)
 
-4. [Confirmation State Management](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-state-management)
+4. [Confirmation State Management](./confirmation-state-management/README.md)
 
-5. [Confirmation Backend Architecture](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-backend-architecture)
+5. [Confirmation Backend Architecture](./confirmation-backend-architecture/README.md)
