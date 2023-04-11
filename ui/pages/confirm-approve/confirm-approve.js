@@ -65,7 +65,7 @@ export default function ConfirmApprove({
   isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
-  const { txParams, txParams: { data: transactionData } = {} } = transaction;
+  const { txParams: { data: transactionData } = {} } = transaction;
 
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
