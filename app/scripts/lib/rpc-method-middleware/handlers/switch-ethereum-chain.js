@@ -115,7 +115,7 @@ async function switchEthereumChainHandler(
       ) {
         setProviderType(approvedRequestData.type);
       } else {
-        await setActiveNetwork(approvedRequestData);
+        await setActiveNetwork(approvedRequestData.id);
       }
       res.result = null;
     } catch (error) {

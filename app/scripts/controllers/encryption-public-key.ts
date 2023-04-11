@@ -23,7 +23,7 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { KeyringType } from '../../../shared/constants/keyring';
 
 const controllerName = 'EncryptionPublicKeyController';
@@ -314,7 +314,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     if (reason) {
       this._metricsEvent({
         event: reason,
-        category: EVENT.CATEGORIES.MESSAGES,
+        category: MetaMetricsEventCategory.Messages,
         properties: {
           action: 'Encryption public key Request',
         },

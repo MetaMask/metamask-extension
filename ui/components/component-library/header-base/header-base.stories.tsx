@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
 import {
-  ICON_NAMES,
+  IconName,
   Button,
   ButtonIcon,
   BUTTON_ICON_SIZES,
@@ -43,14 +43,14 @@ DefaultStory.args = {
   startAccessory: (
     <ButtonIcon
       size={BUTTON_ICON_SIZES.SM}
-      iconName={ICON_NAMES.ARROW_LEFT}
+      iconName={IconName.ArrowLeft}
       ariaLabel="back"
     />
   ),
   endAccessory: (
     <ButtonIcon
       size={BUTTON_ICON_SIZES.SM}
-      iconName={ICON_NAMES.CLOSE}
+      iconName={IconName.Close}
       ariaLabel="close"
     />
   ),
@@ -75,7 +75,7 @@ export const StartAccessory = (args) => {
       startAccessory={
         <ButtonIcon
           size={BUTTON_ICON_SIZES.SM}
-          iconName={ICON_NAMES.ARROW_LEFT}
+          iconName={IconName.ArrowLeft}
           ariaLabel="back"
         />
       }
@@ -95,7 +95,7 @@ export const EndAccessory = (args) => {
       endAccessory={
         <ButtonIcon
           size={BUTTON_ICON_SIZES.SM}
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.Close}
           ariaLabel="close"
         />
       }
@@ -130,7 +130,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -153,7 +153,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.successAlternative}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.ARROW_LEFT}
+            iconName={IconName.ArrowLeft}
             ariaLabel="back"
           />
         }
@@ -176,7 +176,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.successAlternative}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.ARROW_LEFT}
+            iconName={IconName.ArrowLeft}
             ariaLabel="back"
           />
         }
@@ -184,7 +184,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -216,7 +216,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -243,7 +243,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.successAlternative}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -282,7 +282,7 @@ export const UseCaseDemos = (args) => (
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
             size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }

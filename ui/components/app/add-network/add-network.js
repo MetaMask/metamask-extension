@@ -36,8 +36,13 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { Icon, ICON_NAMES, ICON_SIZES, Text } from '../../component-library';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { Text } from '../../component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
+import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);
@@ -267,7 +272,8 @@ const AddNetwork = () => {
                             imageUrl: item.rpcPrefs?.imageUrl,
                             chainName: item.nickname,
                             referrer: ORIGIN_METAMASK,
-                            source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
+                            source:
+                              MetaMetricsNetworkEventSource.PopularNetworkList,
                           },
                         }),
                       );

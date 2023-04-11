@@ -701,7 +701,7 @@ jobs:
 
   test-e2e-firefox-snaps:
     executor: node-browsers
-    parallelism: 2
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -738,7 +738,7 @@ jobs:
 
   test-e2e-chrome-snaps:
     executor: node-browsers
-    parallelism: 2
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -1097,12 +1097,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
       - run:
           name: Validate source maps
           command: |

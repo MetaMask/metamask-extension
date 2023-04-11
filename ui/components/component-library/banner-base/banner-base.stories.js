@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from '@storybook/addons';
 import { Size } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES, ButtonLink, ButtonPrimary } from '..';
+import { ButtonLink, ButtonPrimary, Icon, IconName, IconSize } from '..';
 import { BannerBase } from './banner-base';
 import README from './README.mdx';
 
@@ -95,7 +95,7 @@ DefaultStory.args = {
   title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
-  startAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
+  startAccessory: <Icon name={IconName.Info} size={IconSize.Lg} />,
 };
 
 DefaultStory.storyName = 'Default';
@@ -143,7 +143,7 @@ ActionButton.args = {
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    endIconName: ICON_NAMES.ARROW_2_RIGHT,
+    endIconName: IconName.Arrow2Right,
   },
   children:
     'Use actionButtonLabel for action text, actionButtonOnClick for the onClick handler, and actionButtonProps to pass any ButtonLink prop types such as iconName',
@@ -181,5 +181,5 @@ StartAccessory.args = {
   title: 'Start accessory demo',
   children:
     'The info icon on the left is passed through the startAccessory prop',
-  startAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
+  startAccessory: <Icon name={IconName.Info} size={IconSize.Lg} />,
 };
