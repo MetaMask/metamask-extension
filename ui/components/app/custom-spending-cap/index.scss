@@ -3,30 +3,33 @@
     display: contents;
   }
 
-  &__max-button {
+  &__max {
     position: relative;
+    margin-top: -30px;
+
+    &--with-error-message {
+      margin-top: -66px;
+    }
   }
 
   &__input {
     width: 100%;
+  }
 
-    &--button {
-      background: none;
-      color: var(--color-primary-default);
-    }
+  &__description {
+    word-break: break-word;
 
-    &--max-button {
-      color: var(--color-text-alternative);
-      background: none;
-      position: absolute;
-      margin-top: 55px;
-      margin-inline-start: -75px;
-      z-index: 1;
+    &--with-error-message {
+      margin-top: 30px;
     }
   }
 
   #custom-spending-cap-input-value {
     color: var(--color-error-default);
+    padding-inline-end: 60px;
+  }
+
+  #custom-spending-cap {
     padding-inline-end: 60px;
   }
 

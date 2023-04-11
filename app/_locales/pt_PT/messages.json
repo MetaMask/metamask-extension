@@ -62,17 +62,11 @@
   "edit": {
     "message": "Editar"
   },
-  "endOfFlowMessage9": {
-    "message": "Obtenha mais informações."
-  },
   "fast": {
     "message": "Rápido"
   },
   "forgetDevice": {
     "message": "Esquecer este dispositivo"
-  },
-  "getStarted": {
-    "message": "Começar"
   },
   "here": {
     "message": "aqui",
@@ -163,9 +157,6 @@
   },
   "userName": {
     "message": "Nome de utilizador"
-  },
-  "viewAccount": {
-    "message": "Ver Conta"
   },
   "welcomeBack": {
     "message": "Bem-vindo de volta!"

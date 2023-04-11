@@ -7,12 +7,12 @@ import { AvatarNetwork } from './avatar-network';
 The `AvatarNetwork` is a component responsible for display of the image of a given network
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--default-story" />
+  <Story id="components-componentlibrary-avatarnetwork--default-story" />
 </Canvas>
 
 ## Props
 
-The `AvatarNetwork` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story) component props
+The `AvatarNetwork` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={AvatarNetwork} />
 
@@ -30,38 +30,98 @@ Possible sizes include:
 
 Defaults to `md`
 
-<Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--size" />
-</Canvas>
-
-###  Network Name
-
-Use the `networkName` prop to set the initial alphabet of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `networkImageUrl` prop.
+The fallback display of the `AvatarNetwork` is a circle with the initial letter of the network name. The size of the initial letter is calculated based on the size of the `AvatarNetwork` component.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-name" />
+  <Story id="components-componentlibrary-avatarnetwork--size-story" />
 </Canvas>
 
-###  Network Image Url
+```jsx
+import { Size } from '../../../helpers/constants/design-system';
+import { AvatarNetwork } from '../../component-library';
+<AvatarNetwork size={Size.XS} />
+<AvatarNetwork size={Size.SM} />
+<AvatarNetwork size={Size.MD} />
+<AvatarNetwork size={Size.LG} />
+<AvatarNetwork size={Size.XL} />
+```
 
-Use the `networkImageUrl` prop to set the image to be rendered of the `AvatarNetwork`.
+### Name
+
+Use the `name` prop to set the initial letter of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `src` prop.
+
+Use `Text` component props to change the `variant`, `font-weight`, `font-family`, etc.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-image-url" />
+  <Story id="components-componentlibrary-avatarnetwork--name" />
 </Canvas>
+
+```jsx
+import { AvatarNetwork } from '../../component-library';
+<AvatarNetwork name="Arbitrum One" />;
+```
+
+### Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarNetwork`.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarnetwork--src" />
+</Canvas>
+
+```jsx
+import { AvatarNetwork } from '../../component-library';
+<AvatarNetwork src="./images/matic-token.png" />
+<AvatarNetwork src="./images/arbitrum.svg" />
+<AvatarNetwork src="./images/optimism.svg" />
+<AvatarNetwork src="./images/avax-token.png" />
+<AvatarNetwork src="./images/palm.svg" />
+<AvatarNetwork src="./images/bsc-filled.svg" />
+<AvatarNetwork src="./images/fantom-opera.svg" />
+<AvatarNetwork src="./images/harmony-one.svg" />
+<AvatarNetwork src="./images/aurora.png" />
+```
 
 ### Show Halo
 
-If we want to display the component with halo effect. Only works if an image url is supplied to `networkImageUrl`
+Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--show-halo" />
+  <Story id="components-componentlibrary-avatarnetwork--show-halo" />
 </Canvas>
+
+```jsx
+import { AvatarNetwork } from '../../component-library';
+<AvatarNetwork src="./images/arbitrum.svg" showHalo />;
+```
 
 ### Color, Background Color And Border Color
 
-Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarNetwork`.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--color-background-color-and-border-color" />
+  <Story id="components-componentlibrary-avatarnetwork--color-background-color-and-border-color" />
 </Canvas>
+
+```jsx
+import { TextColor,
+           BackgroundColor,
+           BorderColor } from '../../../helpers/constants/design-system';
+import { AvatarNetwork } from '../../component-library';
+<AvatarNetwork
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
+      name="G"
+      color={Color.goerliInverse}
+>
+  G
+</AvatarNetwork>
+<AvatarNetwork
+   backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
+      name="S"
+      color={Color.goerliInverse}
+>
+  S
+</AvatarNetwork>
+```

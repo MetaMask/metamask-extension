@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
+import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../contexts/i18n';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
@@ -11,18 +12,26 @@ import {
   addFiat,
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util';
-import { ETH, PRIMARY } from '../../helpers/constants/common';
-import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util';
+import { PRIMARY } from '../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
+  getCurrentChainId,
   getCurrentCurrency,
+  getRpcPrefsForCurrentProvider,
+  getSelectedAddress,
 } from '../../selectors';
 import {
   getConversionRate,
   getNativeCurrency,
+  getNftContracts,
 } from '../../ducks/metamask/metamask';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
-import { hexWEIToDecETH } from '../../../shared/lib/transactions-controller-utils';
+import { TokenStandard } from '../../../shared/constants/transaction';
+import {
+  getWeiHexFromDecimalValue,
+  hexWEIToDecETH,
+} from '../../../shared/modules/conversion.utils';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -43,16 +52,79 @@ export default function ConfirmTokenTransactionBase({
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const chainId = useSelector(getCurrentChainId);
+  const userAddress = useSelector(getSelectedAddress);
+  const nftCollections = useSelector(getNftContracts);
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
   );
 
-  let title, subtitle;
-  if (assetStandard === ERC721 || assetStandard === ERC1155) {
-    title = assetName;
+  const getTitleTokenDescription = (renderType) => {
+    const useBlockExplorer =
+      rpcPrefs?.blockExplorerUrl ||
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
+
+    const nftCollection = nftCollections.find(
+      (collection) =>
+        collection.address.toLowerCase() === tokenAddress.toLowerCase(),
+    );
+    const titleTokenDescription =
+      tokenSymbol || nftCollection?.name || t('unknownCollection');
+
+    if (renderType === 'text') {
+      return titleTokenDescription;
+    }
+
+    if (useBlockExplorer) {
+      const blockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        userAddress,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+      const blockExplorerElement = (
+        <>
+          <a
+            href={blockExplorerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={tokenAddress}
+            className="confirm-approve-content__approval-asset-link"
+          >
+            {titleTokenDescription}
+          </a>
+        </>
+      );
+      return blockExplorerElement;
+    }
+    return (
+      <>
+        <span
+          className="confirm-approve-content__approval-asset-title"
+          title={tokenAddress}
+        >
+          {titleTokenDescription}
+        </span>
+      </>
+    );
+  };
+
+  const assetImage = image;
+  let title, subtitle, subtotalDisplay;
+  if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
+    title = assetName || getTitleTokenDescription();
     subtitle = `#${tokenId}`;
-  } else if (assetStandard === ERC20) {
+    subtotalDisplay =
+      assetName || `${getTitleTokenDescription('text')} #${tokenId}`;
+  } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
 
@@ -69,8 +141,8 @@ export default function ConfirmTokenTransactionBase({
 
     return getWeiHexFromDecimalValue({
       value: decimalEthValue,
-      fromCurrency: ETH,
-      fromDenomination: ETH,
+      fromCurrency: EtherDenomination.ETH,
+      fromDenomination: EtherDenomination.ETH,
     });
   }, [tokenAmount, contractExchangeRate]);
 
@@ -116,13 +188,13 @@ export default function ConfirmTokenTransactionBase({
   return (
     <ConfirmTransactionBase
       toAddress={toAddress}
-      image={image}
+      image={assetImage}
       onEdit={onEdit}
       tokenAddress={tokenAddress}
       title={title}
       subtitleComponent={subtitleComponent()}
-      primaryTotalTextOverride={`${title} + ${ethTransactionTotal} ${nativeCurrency}`}
-      primaryTotalTextOverrideMaxAmount={`${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
+      primaryTotalTextOverride={`${subtotalDisplay} + ${ethTransactionTotal} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount={`${subtotalDisplay} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );

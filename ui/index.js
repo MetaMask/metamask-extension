@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
 import { getEnvironmentType } from '../app/scripts/lib/util';
-import { ALERT_TYPES } from '../shared/constants/alerts';
+import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
@@ -53,15 +53,42 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  let desktopEnabled = false;
+
+  backgroundConnection.getDesktopEnabled(function (err, result) {
+    if (err) {
+      return;
+    }
+
+    desktopEnabled = result;
+  });
+  ///: END:ONLY_INCLUDE_IN
+
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      cb(err, metamaskState);
+      cb(
+        err,
+        {
+          ...metamaskState,
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          desktopEnabled,
+          ///: END:ONLY_INCLUDE_IN
+        },
+        backgroundConnection,
+      );
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupDebuggingHelpers(store);
-      cb(null, store);
+      cb(
+        null,
+        store,
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      );
     });
   });
 }
@@ -90,6 +117,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     appState: {},
 
     localeMessages: {
+      currentLocale: metamaskState.currentLocale,
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
@@ -114,7 +142,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState[ALERT_TYPES.unconnectedAccount] = {
+      draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
       };
       actions.setUnconnectedAccountAlertShown(origin);
@@ -132,7 +160,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
-    metamaskState.network,
+    metamaskState.networkId,
     metamaskState.provider.chainId,
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
@@ -164,6 +192,15 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 function setupDebuggingHelpers(store) {
+  /**
+   * The following stateHook is a method intended to throw an error, used in
+   * our E2E test to ensure that errors are attempted to be sent to sentry.
+   */
+  window.stateHooks.throwTestError = async function () {
+    const error = new Error('Test Error');
+    error.name = 'TestError';
+    throw error;
+  };
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();

@@ -5,6 +5,7 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
+import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -13,10 +14,14 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
+import {
+  AssetType,
+  TokenStandard,
 } from '../../../shared/constants/transaction';
 
 function getTokenName(name, symbol) {
@@ -117,16 +122,16 @@ const ConfirmAddSuggestedToken = () => {
         await dispatch(acceptWatchAsset(id));
 
         trackEvent({
-          event: EVENT_NAMES.TOKEN_ADDED,
-          category: EVENT.CATEGORIES.WALLET,
+          event: MetaMetricsEventName.TokenAdded,
+          category: MetaMetricsEventCategory.Wallet,
           sensitiveProperties: {
             token_symbol: asset.symbol,
             token_contract_address: asset.address,
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
-            source: EVENT.SOURCE.TOKEN.DAPP,
-            token_standard: TOKEN_STANDARDS.ERC20,
-            asset_type: ASSET_TYPES.TOKEN,
+            source: MetaMetricsTokenEventSource.Dapp,
+            token_standard: TokenStandard.ERC20,
+            asset_type: AssetType.token,
           },
         });
       }),
@@ -193,32 +198,18 @@ const ConfirmAddSuggestedToken = () => {
           </div>
         </div>
       </div>
-      <div className="page-container__footer">
-        <footer>
-          <Button
-            type="secondary"
-            large
-            className="page-container__footer-button"
-            onClick={async () => {
-              await Promise.all(
-                suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
-              );
-              history.push(mostRecentOverviewPage);
-            }}
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            disabled={suggestedAssets.length === 0}
-            onClick={handleAddTokensClick}
-          >
-            {t('addToken')}
-          </Button>
-        </footer>
-      </div>
+      <PageContainerFooter
+        cancelText={t('cancel')}
+        submitText={t('addToken')}
+        onCancel={async () => {
+          await Promise.all(
+            suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
+          );
+          history.push(mostRecentOverviewPage);
+        }}
+        onSubmit={handleAddTokensClick}
+        disabled={suggestedAssets.length === 0}
+      />
     </div>
   );
 };

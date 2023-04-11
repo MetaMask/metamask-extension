@@ -4,7 +4,7 @@ import { bufferToHex } from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
@@ -41,6 +41,14 @@ export default class DecryptMessageManager extends EventEmitter {
       unapprovedDecryptMsgs: {},
       unapprovedDecryptMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedDecryptMsgs: {},
+        unapprovedDecryptMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = opts.metricsEvent;
   }
@@ -214,9 +222,9 @@ export default class DecryptMessageManager extends EventEmitter {
    * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
-  prepMsgForDecryption(msgParams) {
+  async prepMsgForDecryption(msgParams) {
     delete msgParams.metamaskId;
-    return Promise.resolve(msgParams);
+    return msgParams;
   }
 
   /**
@@ -229,7 +237,7 @@ export default class DecryptMessageManager extends EventEmitter {
     if (reason) {
       this.metricsEvent({
         event: reason,
-        category: EVENT.CATEGORIES.MESSAGES,
+        category: MetaMetricsEventCategory.Messages,
         properties: {
           action: 'Decrypt Message Request',
         },

@@ -25,15 +25,15 @@ import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import {
   BLOCK_SIZES,
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   DISPLAY,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
@@ -58,7 +58,7 @@ export default function AwaitingSignatures() {
   useEffect(() => {
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         needs_two_confirmations: needsTwoConfirmations,
         token_from: sourceTokenInfo?.symbol,
@@ -87,20 +87,23 @@ export default function AwaitingSignatures() {
         paddingLeft={8}
         paddingRight={8}
         height={BLOCK_SIZES.FULL}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         display={DISPLAY.FLEX}
         className="awaiting-signatures__content"
       >
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
         </Box>
-        <Typography color={COLORS.TEXT_DEFAULT} variant={TYPOGRAPHY.H3}>
+        <Typography
+          color={TextColor.textDefault}
+          variant={TypographyVariant.H3}
+        >
           {headerText}
         </Typography>
         {needsTwoConfirmations && (
           <>
             <Typography
-              variant={TYPOGRAPHY.Paragraph}
+              variant={TypographyVariant.paragraph}
               boxProps={{ marginTop: 2 }}
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -139,7 +142,7 @@ export default function AwaitingSignatures() {
                 ])}
               </li>
             </ul>
-            <Typography variant={TYPOGRAPHY.Paragraph}>
+            <Typography variant={TypographyVariant.paragraph}>
               {t('swapGasFeesSplit')}
             </Typography>
           </>

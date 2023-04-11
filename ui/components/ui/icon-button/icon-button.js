@@ -25,9 +25,7 @@ export default function IconButton({
     >
       {renderWrapper(
         <>
-          <div className="icon-button__circle">
-            <Icon />
-          </div>
+          <div className="icon-button__circle">{Icon}</div>
           <span>{label}</span>
         </>,
       )}
@@ -37,7 +35,7 @@ export default function IconButton({
 
 IconButton.propTypes = {
   onClick: PropTypes.func.isRequired,
-  Icon: PropTypes.func.isRequired,
+  Icon: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,

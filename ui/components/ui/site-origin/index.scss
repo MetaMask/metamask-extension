@@ -1,6 +1,7 @@
 .site-origin {
   overflow: hidden;
   max-width: 100%;
+  text-overflow: ellipsis;
 
   .chip {
     max-width: 100%;

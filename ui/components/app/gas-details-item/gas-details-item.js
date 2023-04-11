@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getPreferences } from '../../../selectors';
+import { getPreferences, getUseCurrencyRateCheck } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -29,6 +29,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
   }
@@ -37,16 +39,18 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     <TransactionDetailItem
       key="gas-item"
       detailTitle={<GasDetailsItemTitle />}
-      detailTitleColor={COLORS.TEXT_DEFAULT}
+      detailTitleColor={TextColor.textDefault}
       detailText={
-        <div className="gas-details-item__currency-container">
-          <LoadingHeartBeat estimateUsed={estimateUsed} />
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
-        </div>
+        useCurrencyRateCheck && (
+          <div className="gas-details-item__currency-container">
+            <LoadingHeartBeat estimateUsed={estimateUsed} />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={hexMinimumTransactionFee}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          </div>
+        )
       }
       detailTotal={
         <div className="gas-details-item__currency-container">

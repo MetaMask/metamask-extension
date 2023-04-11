@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
+import { IconName } from '..';
 import { BUTTON_SIZES, BUTTON_TYPES } from './button.constants';
 import { Button } from './button';
 
@@ -11,7 +12,7 @@ describe('Button', () => {
     );
     expect(getByText('Button')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
-    expect(getByTestId('button')).toHaveClass('mm-button');
+    expect(getByTestId('button')).toHaveClass('mm-button-base');
     expect(container).toMatchSnapshot();
   });
 
@@ -21,7 +22,7 @@ describe('Button', () => {
         Button
       </Button>,
     );
-    expect(getByTestId('button')).toHaveClass('mm-button');
+    expect(getByTestId('button')).toHaveClass('mm-button-base');
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
   });
@@ -32,14 +33,14 @@ describe('Button', () => {
         Visit Site
       </Button>,
     );
-    expect(getByTestId('button')).toHaveClass('mm-button');
+    expect(getByTestId('button')).toHaveClass('mm-button-base');
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
   });
 
   it('should render button as block', () => {
     const { getByTestId } = render(<Button block data-testid="block" />);
-    expect(getByTestId('block')).toHaveClass(`mm-button--block`);
+    expect(getByTestId('block')).toHaveClass(`mm-button-base--block`);
   });
 
   it('should render with different button types', () => {
@@ -75,11 +76,11 @@ describe('Button', () => {
     const { getByTestId } = render(
       <>
         <Button
-          size={BUTTON_SIZES.AUTO}
+          size={BUTTON_SIZES.INHERIT}
           type={BUTTON_TYPES.LINK}
-          data-testid={BUTTON_SIZES.AUTO}
+          data-testid={BUTTON_SIZES.INHERIT}
         >
-          Button {BUTTON_SIZES.AUTO}
+          Button {BUTTON_SIZES.INHERIT}
         </Button>
         <Button size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM}>
           Button {BUTTON_SIZES.SM}
@@ -92,27 +93,27 @@ describe('Button', () => {
         </Button>
       </>,
     );
-    expect(getByTestId(BUTTON_SIZES.AUTO)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.AUTO}`,
+    expect(getByTestId(BUTTON_SIZES.INHERIT)).toHaveClass(
+      `mm-button-link--size-${BUTTON_SIZES.INHERIT}`,
     );
     expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.SM}`,
+      `mm-button-base--size-${BUTTON_SIZES.SM}`,
     );
     expect(getByTestId(BUTTON_SIZES.MD)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.MD}`,
+      `mm-button-base--size-${BUTTON_SIZES.MD}`,
     );
     expect(getByTestId(BUTTON_SIZES.LG)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.LG}`,
+      `mm-button-base--size-${BUTTON_SIZES.LG}`,
     );
   });
 
   it('should render with added classname', () => {
     const { getByTestId } = render(
-      <Button data-testid="classname" className="mm-button--test">
+      <Button data-testid="classname" className="mm-button-base--test">
         Button
       </Button>,
     );
-    expect(getByTestId('classname')).toHaveClass('mm-button--test');
+    expect(getByTestId('classname')).toHaveClass('mm-button-base--test');
   });
 
   it('should render with different button states', () => {
@@ -126,21 +127,21 @@ describe('Button', () => {
         </Button>
       </>,
     );
-    expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
-    expect(getByTestId('disabled')).toHaveClass(`mm-button--disabled`);
+    expect(getByTestId('loading')).toHaveClass(`mm-button-base--loading`);
+    expect(getByTestId('disabled')).toHaveClass(`mm-button-base--disabled`);
   });
   it('should render with icon', () => {
     const { getByTestId } = render(
       <Button
         data-testid="icon"
-        icon="add-square-filled"
-        iconProps={{ 'data-testid': 'base-button-icon' }}
+        startIconName={IconName.AddSquare}
+        startIconProps={{ 'data-testid': 'start-button-icon' }}
       >
         Button
       </Button>,
     );
 
-    expect(getByTestId('base-button-icon')).toBeDefined();
+    expect(getByTestId('start-button-icon')).toBeDefined();
   });
 });
 

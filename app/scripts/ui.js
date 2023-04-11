@@ -18,8 +18,14 @@ import {
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
+import {
+  getErrorHtml,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  registerDesktopErrorActions,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -29,8 +35,8 @@ const container = document.getElementById('app-content');
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
-const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
 // Service Worker Keep Alive Message Constants
+const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const ACK_KEEP_ALIVE_WAIT_TIME = 60_000; // 1 minute
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
@@ -40,33 +46,35 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
-let lastMessageRecievedTimestamp = Date.now();
+let lastMessageReceivedTimestamp = Date.now();
+
+let extensionPort;
+let ackTimeoutToDisplayError;
+
 /*
  * As long as UI is open it will keep sending messages to service worker
  * In service worker as this message is received
  * if service worker is inactive it is reactivated and script re-loaded
  * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
  */
-let extensionPort;
-let timeoutHandle;
-
 if (isManifestV3) {
   // Checking for SW aliveness (or stuckness) flow
   // 1. Check if we have an extensionPort, if yes
   // 2a. Send a keep alive message to the background via extensionPort
   // 2b. Add a listener to it (if not already added)
   // 3a. Set a timeout to check if we have received an ACK from background
-  // 3b. If we have not received an ACK within Xs, we know the background is stuck or dead
+  // 3b. If we have not received an ACK within ACK_KEEP_ALIVE_WAIT_TIME,
+  //     we know the background is stuck or dead
   // 4. If we recieve an ACK_KEEP_ALIVE_MESSAGE from the service worker, we know it is alive
 
   const ackKeepAliveListener = (message) => {
     if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
-      lastMessageRecievedTimestamp = Date.now();
-      clearTimeout(timeoutHandle);
+      lastMessageReceivedTimestamp = Date.now();
+      clearTimeout(ackTimeoutToDisplayError);
     }
   };
 
-  const handle = setInterval(() => {
+  const keepAliveInterval = setInterval(() => {
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
     if (extensionPort !== null && extensionPort !== undefined) {
@@ -77,12 +85,12 @@ if (isManifestV3) {
       }
     }
 
-    timeoutHandle = setTimeout(() => {
+    ackTimeoutToDisplayError = setTimeout(() => {
       if (
-        Date.now() - lastMessageRecievedTimestamp >
+        Date.now() - lastMessageReceivedTimestamp >
         ACK_KEEP_ALIVE_WAIT_TIME
       ) {
-        clearInterval(handle);
+        clearInterval(keepAliveInterval);
         displayCriticalError(
           'somethingIsWrong',
           new Error("Something's gone wrong. Try reloading the page."),
@@ -110,18 +118,17 @@ async function start() {
   const activeTab = await queryCurrentActiveTab(windowType);
 
   let loadPhishingWarningPage;
-  /**
-   * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-   * Code below ensures that UI is rendered only after background is ready.
-   */
+
   if (isManifestV3) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-     * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
+     * Code below ensures that UI is rendered only after "CONNECTION_READY" or "startUISync"
+     * messages are received thus the background is ready, and ensures that streams and
+     * phishing warning page load only after the "startUISync" message is received.
      * In case the UI is already rendered, only update the streams.
      */
     const messageListener = async (message) => {
-      if (message?.name === 'CONNECTION_READY') {
+      if (message?.data?.method === 'startUISync') {
         if (isUIInitialised) {
           // Currently when service worker is revived we create new streams
           // in later version we might try to improve it by reviving same streams.
@@ -147,10 +154,8 @@ async function start() {
      * worker has been registered, so that the warning page works offline.
      */
     loadPhishingWarningPage = async function () {
-      const currentPlatform = getPlatform();
-
-      // Check session storage for whether we've already initalized the phishing warning
-      // service worker this browser session and do not attempt to re-initialize if so.
+      // Check session storage for whether we've already initialized the phishing warning
+      // service worker in this browser session and do not attempt to re-initialize if so.
       const phishingSWMemoryFetch = await browser.storage.session.get(
         PHISHING_WARNING_SW_STORAGE_KEY,
       );
@@ -159,7 +164,9 @@ async function start() {
         return;
       }
 
+      const currentPlatform = getPlatform();
       let iframe;
+
       try {
         const extensionStartupPhishingPageUrl = new URL(
           process.env.PHISHING_WARNING_PAGE_URL,
@@ -195,7 +202,9 @@ async function start() {
           () => deferredReject(new PhishingWarningPageTimeoutError()),
           PHISHING_WARNING_PAGE_TIMEOUT,
         );
+
         await loadComplete;
+
         // store a flag in sessions storage that we've already loaded the service worker
         // and don't need to try again
         if (currentPlatform === PLATFORM_FIREFOX) {
@@ -225,12 +234,13 @@ async function start() {
     };
 
     // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
-    // it also creates new streams and attach event listeners to them
+    // it also creates new streams and attaches event listeners to them
     const resetExtensionStreamAndListeners = () => {
       extensionPort.onMessage.removeListener(messageListener);
       extensionPort.onDisconnect.removeListener(
         resetExtensionStreamAndListeners,
       );
+
       // message below will try to activate service worker
       // in MV3 is likely that reason of stream closing is service worker going in-active
       browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
@@ -248,28 +258,55 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
-    initializeUi(tab, connectionStream, (err, store) => {
-      if (err) {
-        // if there's an error, store will be = metamaskState
-        displayCriticalError('troubleStarting', err, store);
-        return;
-      }
-      isUIInitialised = true;
+    initializeUi(
+      tab,
+      connectionStream,
+      (
+        err,
+        store,
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      ) => {
+        if (err) {
+          // if there's an error, store will be = metamaskState
+          displayCriticalError(
+            'troubleStarting',
+            err,
+            store,
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            backgroundConnection,
+            ///: END:ONLY_INCLUDE_IN
+          );
+          return;
+        }
+        isUIInitialised = true;
 
-      const state = store.getState();
-      const { metamask: { completedOnboarding } = {} } = state;
+        const state = store.getState();
+        const { metamask: { completedOnboarding } = {} } = state;
 
-      if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
-        global.platform.openExtensionInBrowser();
-      }
-    });
+        if (
+          !completedOnboarding &&
+          windowType !== ENVIRONMENT_TYPE_FULLSCREEN
+        ) {
+          global.platform.openExtensionInBrowser();
+        }
+      },
+    );
   }
 
   // Function to update new backgroundConnection in the UI
   function updateUiStreams() {
     connectToAccountManager(connectionStream, (err, backgroundConnection) => {
       if (err) {
-        displayCriticalError('troubleStarting', err);
+        displayCriticalError(
+          'troubleStarting',
+          err,
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          undefined,
+          backgroundConnection,
+          ///: END:ONLY_INCLUDE_IN
+        );
         return;
       }
 
@@ -279,33 +316,39 @@ async function start() {
 }
 
 async function queryCurrentActiveTab(windowType) {
-  return new Promise((resolve) => {
-    // At the time of writing we only have the `activeTab` permission which means
-    // that this query will only succeed in the popup context (i.e. after a "browserAction")
-    if (windowType !== ENVIRONMENT_TYPE_POPUP) {
-      resolve({});
-      return;
-    }
+  // At the time of writing we only have the `activeTab` permission which means
+  // that this query will only succeed in the popup context (i.e. after a "browserAction")
+  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+    return {};
+  }
 
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      const [activeTab] = tabs;
-      const { id, title, url } = activeTab;
-      const { origin, protocol } = url ? new URL(url) : {};
-
-      if (!origin || origin === 'null') {
-        resolve({});
-        return;
-      }
-
-      resolve({ id, title, origin, protocol, url });
+  const tabs = await browser.tabs
+    .query({ active: true, currentWindow: true })
+    .catch((e) => {
+      checkForLastErrorAndLog() || log.error(e);
     });
-  });
+
+  const [activeTab] = tabs;
+  const { id, title, url } = activeTab;
+  const { origin, protocol } = url ? new URL(url) : {};
+
+  if (!origin || origin === 'null') {
+    return {};
+  }
+
+  return { id, title, origin, protocol, url };
 }
 
 function initializeUi(activeTab, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      cb(err, null);
+      cb(
+        err,
+        null,
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      );
       return;
     }
 
@@ -320,14 +363,32 @@ function initializeUi(activeTab, connectionStream, cb) {
   });
 }
 
-async function displayCriticalError(errorKey, err, metamaskState) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
+async function displayCriticalError(
+  errorKey,
+  err,
+  metamaskState,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  backgroundConnection,
+  ///: END:ONLY_INCLUDE_IN
+) {
+  const html = await getErrorHtml(
+    errorKey,
+    SUPPORT_LINK,
+    metamaskState,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    err,
+    ///: END:ONLY_INCLUDE_IN
+  );
 
   container.innerHTML = html;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  registerDesktopErrorActions(backgroundConnection, browser);
+  ///: END:ONLY_INCLUDE_IN
+
   const button = document.getElementById('critical-error-button');
 
-  button.addEventListener('click', (_) => {
+  button?.addEventListener('click', (_) => {
     browser.runtime.reload();
   });
 

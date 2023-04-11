@@ -96,9 +96,6 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,

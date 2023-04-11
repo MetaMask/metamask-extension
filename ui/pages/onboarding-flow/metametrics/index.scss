@@ -8,25 +8,16 @@
 
   ul {
     margin: 24px 0 0 0;
+    width: 100%;
 
     li {
       padding-bottom: 20px;
       display: flex;
+
+      > span {
+        width: 90%;
+      }
     }
-  }
-
-  .fa {
-    width: 16px;
-  }
-
-  .fa-check {
-    margin-inline-end: 12px;
-    color: var(--color-success-default);
-  }
-
-  .fa-times {
-    margin-inline-end: 12px;
-    color: var(--color-error-default);
   }
 
   &__terms a {
@@ -35,16 +26,14 @@
 
   &__buttons {
     margin-top: 24px;
-    width: 100%;
 
     @include screen-sm-min {
       margin-top: 40px;
-      justify-content: space-between;
-      display: flex;
     }
 
     button {
       margin-bottom: 24px;
+      width: 50%;
 
       @include screen-sm-min {
         width: 200px;

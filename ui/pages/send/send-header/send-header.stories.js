@@ -13,7 +13,7 @@ import SendHeader from './send-header.component';
 
 export default {
   title: 'Pages/Send/SendHeader',
-  id: __filename,
+
   argTypes: {
     asset: {
       control: {

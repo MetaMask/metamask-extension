@@ -1,13 +1,17 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Color } from '../../../helpers/constants/design-system';
+import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
+import { ButtonIcon } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 
-class EditableLabel extends Component {
+export default class EditableLabel extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     defaultValue: PropTypes.string,
     className: PropTypes.string,
-    accountsNames: PropTypes.array,
+    accounts: PropTypes.array,
   };
 
   static contextTypes = {
@@ -19,91 +23,70 @@ class EditableLabel extends Component {
     value: this.props.defaultValue || '',
   };
 
-  handleSubmit() {
-    const { value } = this.state;
-    const { accountsNames } = this.props;
-
-    if (value === '' || accountsNames.includes(value)) {
+  async handleSubmit(isValidAccountName) {
+    if (!isValidAccountName) {
       return;
     }
 
-    Promise.resolve(this.props.onSubmit(value)).then(() =>
-      this.setState({ isEditing: false }),
-    );
+    await this.props.onSubmit(this.state.value);
+    this.setState({ isEditing: false });
   }
 
   renderEditing() {
-    const { value } = this.state;
-    const { accountsNames } = this.props;
+    const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
+      this.props.accounts,
+      this.context,
+      this.state.value,
+      this.props.defaultValue,
+    );
 
-    return [
-      <input
-        key={1}
-        type="text"
-        required
-        dir="auto"
-        value={this.state.value}
-        onKeyPress={(event) => {
-          if (event.key === 'Enter') {
-            this.handleSubmit();
-          }
-        }}
-        onChange={(event) => this.setState({ value: event.target.value })}
-        data-testid="editable-input"
-        className={classnames('large-input', 'editable-label__input', {
-          'editable-label__input--error':
-            value === '' || accountsNames.includes(value),
-        })}
-        autoFocus
-      />,
-      <button
-        className="editable-label__icon-button"
-        key={2}
-        onClick={() => this.handleSubmit()}
-      >
-        <i className="fa fa-check editable-label__icon" />
-      </button>,
-    ];
+    return (
+      <div className={classnames('editable-label', this.props.className)}>
+        <input
+          type="text"
+          required
+          dir="auto"
+          value={this.state.value}
+          onKeyPress={(event) => {
+            if (event.key === 'Enter') {
+              this.handleSubmit(isValidAccountName);
+            }
+          }}
+          onChange={(event) => this.setState({ value: event.target.value })}
+          data-testid="editable-input"
+          className={classnames('large-input', 'editable-label__input', {
+            'editable-label__input--error': !isValidAccountName,
+          })}
+          autoFocus
+        />
+        <ButtonIcon
+          iconName={ICON_NAMES.CHECK}
+          className="editable-label__icon-button"
+          onClick={() => this.handleSubmit(isValidAccountName)}
+        />
+        <div className="editable-label__error editable-label__error-amount">
+          {errorMessage}
+        </div>
+      </div>
+    );
   }
 
   renderReadonly() {
-    return [
-      <div key={1} className="editable-label__value">
-        {this.state.value}
-      </div>,
-      <button
-        key={2}
-        className="editable-label__icon-button"
-        data-testid="editable-label-button"
-        onClick={() => this.setState({ isEditing: true })}
-      >
-        <i className="fas fa-pencil-alt editable-label__icon" />
-      </button>,
-    ];
+    return (
+      <div className={classnames('editable-label', this.props.className)}>
+        <div className="editable-label__value">{this.state.value}</div>
+        <ButtonIcon
+          iconName={ICON_NAMES.EDIT}
+          ariaLabel={this.context.t('edit')}
+          data-testid="editable-label-button"
+          onClick={() => this.setState({ isEditing: true })}
+          color={Color.iconDefault}
+        />
+      </div>
+    );
   }
 
   render() {
-    const { isEditing, value } = this.state;
-    const { className, accountsNames } = this.props;
-
-    return (
-      <>
-        <div className={classnames('editable-label', className)}>
-          {isEditing ? this.renderEditing() : this.renderReadonly()}
-        </div>
-        {accountsNames.includes(value) ? (
-          <div
-            className={classnames(
-              'editable-label__error',
-              'editable-label__error-amount',
-            )}
-          >
-            {this.context.t('accountNameDuplicate')}
-          </div>
-        ) : null}
-      </>
-    );
+    return this.state.isEditing ? this.renderEditing() : this.renderReadonly();
   }
 }
-
-export default EditableLabel;

@@ -1,20 +1,23 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
-import BigNumber from 'bignumber.js';
-import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
+import BigNumberjs from 'bignumber.js';
+import {
+  CHAIN_IDS,
+  NETWORK_IDS,
+  NetworkStatus,
+} from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
 } from '../../../shared/constants/smartTransactions';
 import SwapsController, { utils } from './swaps';
-import { NETWORK_EVENTS } from './network';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -98,16 +101,11 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 function getMockNetworkController() {
   return {
     store: {
-      getState: () => {
-        return {
-          network: NETWORK_IDS.GOERLI,
-        };
-      },
+      getState: sinon.stub().returns({
+        networkId: NETWORK_IDS.GOERLI,
+        networkStatus: NetworkStatus.Available,
+      }),
     },
-    on: sinon
-      .stub()
-      .withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE)
-      .callsArgAsync(1),
   };
 }
 
@@ -151,7 +149,7 @@ const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
     gasFeeEstimates: {
       high: '150',
     },
-    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+    gasEstimateType: GasEstimateTypes.legacy,
   };
 });
 
@@ -162,6 +160,7 @@ describe('SwapsController', function () {
     return new SwapsController({
       getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       networkController: getMockNetworkController(),
+      onNetworkDidChange: sinon.stub(),
       provider,
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -209,9 +208,11 @@ describe('SwapsController', function () {
 
     it('should replace ethers instance when network changes', function () {
       const networkController = getMockNetworkController();
+      const onNetworkDidChange = sinon.stub();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
+        onNetworkDidChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -219,9 +220,13 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const onNetworkDidChange = networkController.on.getCall(0).args[1];
+      const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
-      onNetworkDidChange(NETWORK_IDS.MAINNET);
+      networkController.store.getState.returns({
+        networkId: NETWORK_IDS.MAINNET,
+        networkStatus: NetworkStatus.Available,
+      });
+      changeNetwork(NETWORK_IDS.MAINNET);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -233,9 +238,11 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to loading', function () {
       const networkController = getMockNetworkController();
+      const onNetworkDidChange = sinon.stub();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
+        onNetworkDidChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -243,9 +250,13 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const onNetworkDidChange = networkController.on.getCall(0).args[1];
+      const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
-      onNetworkDidChange('loading');
+      networkController.store.getState.returns({
+        networkId: null,
+        networkStatus: NetworkStatus.Unknown,
+      });
+      changeNetwork('loading');
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -257,9 +268,11 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to the same network', function () {
       const networkController = getMockNetworkController();
+      const onNetworkDidChange = sinon.stub();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
+        onNetworkDidChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -267,9 +280,13 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const onNetworkDidChange = networkController.on.getCall(0).args[1];
+      const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
-      onNetworkDidChange(NETWORK_IDS.GOERLI);
+      networkController.store.getState.returns({
+        networkId: NETWORK_IDS.GOERLI,
+        networkStatus: NetworkStatus.Available,
+      });
+      changeNetwork(NETWORK_IDS.GOERLI);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -373,7 +390,7 @@ describe('SwapsController', function () {
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
-          `0x${new BigNumber(maxGas, 10)
+          `0x${new BigNumberjs(maxGas, 10)
             .minus(estimatedRefund, 10)
             .toString(16)}`,
         );
@@ -667,7 +684,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -711,7 +728,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         const allowanceStub = sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -734,7 +751,7 @@ describe('SwapsController', function () {
         // Ensure approval is required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(0));
+          .resolves(BigNumber.from(0));
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnStub = sandbox
@@ -759,7 +776,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -777,7 +794,7 @@ describe('SwapsController', function () {
         const bestQuote = {
           ...getMockQuotes()[TEST_AGG_ID_1],
           aggregator: bestAggId,
-          destinationAmount: ethers.BigNumber.from(
+          destinationAmount: BigNumber.from(
             getMockQuotes()[TEST_AGG_ID_1].destinationAmount,
           )
             .add((100e18).toString())
@@ -789,7 +806,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -806,7 +823,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         swapsController.getTokenRatesState = () => ({
           contractExchangeRates: {},

@@ -12,16 +12,22 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../component-library/icon/deprecated';
+import { Color } from '../../../../helpers/constants/design-system';
 
-export const imageHash = {
-  [TRANSACTION_CREATED_EVENT]: 'fa-plus',
-  [TRANSACTION_SUBMITTED_EVENT]: 'fa-arrow-up',
-  [TRANSACTION_RESUBMITTED_EVENT]: 'fa-retweet',
-  [TRANSACTION_CONFIRMED_EVENT]: 'fa-check',
-  [TRANSACTION_DROPPED_EVENT]: 'fa-times',
-  [TRANSACTION_ERRORED_EVENT]: 'fa-exclamation',
-  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: 'fa-times',
-  [TRANSACTION_CANCEL_SUCCESS_EVENT]: 'fa-times',
+export const ACTIVITY_ICONS = {
+  [TRANSACTION_CREATED_EVENT]: ICON_NAMES.ADD,
+  [TRANSACTION_SUBMITTED_EVENT]: ICON_NAMES.ARROW_UP,
+  [TRANSACTION_RESUBMITTED_EVENT]: ICON_NAMES.PROGRAMMING_ARROWS,
+  [TRANSACTION_CONFIRMED_EVENT]: ICON_NAMES.CHECK,
+  [TRANSACTION_DROPPED_EVENT]: ICON_NAMES.CLOSE,
+  [TRANSACTION_ERRORED_EVENT]: ICON_NAMES.DANGER,
+  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: ICON_NAMES.CLOSE,
+  [TRANSACTION_CANCEL_SUCCESS_EVENT]: ICON_NAMES.CLOSE,
 };
 
 export default class TransactionActivityLogIcon extends PureComponent {
@@ -31,23 +37,17 @@ export default class TransactionActivityLogIcon extends PureComponent {
 
   static propTypes = {
     className: PropTypes.string,
-    eventKey: PropTypes.oneOf(Object.keys(imageHash)),
+    eventKey: PropTypes.oneOf(Object.keys(ACTIVITY_ICONS)),
   };
 
   render() {
     const { className, eventKey } = this.props;
-    const iconClassName = imageHash[eventKey];
+    const icon = ACTIVITY_ICONS[eventKey];
 
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
-        {iconClassName ? (
-          <i
-            className={classnames(
-              'fa',
-              'transaction-activity-log-icon__icon',
-              iconClassName,
-            )}
-          />
+        {icon ? (
+          <Icon name={icon} color={Color.iconDefault} size={ICON_SIZES.SM} />
         ) : null}
       </div>
     );

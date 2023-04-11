@@ -4,7 +4,7 @@ import PermissionsConnectList from '.';
 
 export default {
   title: 'Components/App/PermissionsConnectList',
-  id: __filename,
+
   component: PermissionsConnectList,
   argTypes: {
     permissions: {
@@ -19,6 +19,19 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   permissions: {
-    eth_accounts: true,
+    eth_accounts: {},
+    snap_dialog: {},
+    snap_getBip32PublicKey: {
+      caveats: [
+        {
+          value: [
+            {
+              path: ['m', `44'`, `0'`],
+              curve: 'secp256k1',
+            },
+          ],
+        },
+      ],
+    },
   },
 };

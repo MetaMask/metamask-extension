@@ -11,7 +11,7 @@ import {
   resetSendState,
   SEND_STAGES,
 } from '../../../ducks/send';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 
 export default function SendHeader() {
   const history = useHistory();
@@ -26,7 +26,7 @@ export default function SendHeader() {
     history.push(mostRecentOverviewPage);
   };
 
-  let title = asset?.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');
+  let title = asset?.type === AssetType.native ? t('send') : t('sendTokens');
 
   if (
     draftTransactionExists === false ||

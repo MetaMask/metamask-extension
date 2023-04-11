@@ -27,10 +27,10 @@ const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
 
+const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
-const phishingWarningManifest = require('../../node_modules/@metamask/phishing-warning/package.json');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
 const {
@@ -38,6 +38,7 @@ const {
   isTestBuild,
   getEnvironment,
   logError,
+  wrapAgainstScuttling,
 } = require('./utils');
 
 const {
@@ -49,6 +50,51 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+
+// map dist files to bag of needed native APIs against LM scuttling
+const scuttlingConfigBase = {
+  'sentry-install.js': {
+    // globals sentry need to function
+    window: '',
+    navigator: '',
+    location: '',
+    Uint16Array: '',
+    fetch: '',
+    String: '',
+    Math: '',
+    Object: '',
+    Symbol: '',
+    Function: '',
+    Array: '',
+    Boolean: '',
+    Number: '',
+    Request: '',
+    Date: '',
+    JSON: '',
+    encodeURIComponent: '',
+    crypto: '',
+    // {clear/set}Timeout are "this sensitive"
+    clearTimeout: 'window',
+    setTimeout: 'window',
+    // sentry special props
+    __SENTRY__: '',
+    sentryHooks: '',
+    sentry: '',
+    appState: '',
+    extra: '',
+    stateHooks: '',
+  },
+};
+
+const mv3ScuttlingConfig = { ...scuttlingConfigBase };
+
+const standardScuttlingConfig = {
+  ...scuttlingConfigBase,
+  'sentry-install.js': {
+    ...scuttlingConfigBase['sentry-install.js'],
+    document: '',
+  },
+};
 
 /**
  * Get the appropriate Infura project ID.
@@ -72,6 +118,8 @@ function getInfuraProjectId({ buildType, config, environment, testing }) {
     return config.INFURA_BETA_PROJECT_ID;
   } else if (buildType === BuildType.flask) {
     return config.INFURA_FLASK_PROJECT_ID;
+  } else if (buildType === BuildType.mmi) {
+    return config.INFURA_MMI_PROJECT_ID;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -95,6 +143,8 @@ function getSegmentWriteKey({ buildType, config, environment }) {
     return config.SEGMENT_BETA_WRITE_KEY;
   } else if (buildType === BuildType.flask) {
     return config.SEGMENT_FLASK_WRITE_KEY;
+  } else if (buildType === BuildType.mmi) {
+    return config.SEGMENT_MMI_WRITE_KEY;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -320,6 +370,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
+      applyLavaMoat,
     });
   }
 
@@ -343,6 +394,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
+      applyLavaMoat,
     });
   }
 
@@ -370,6 +422,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         version,
+        applyLavaMoat,
       }),
       createNormalBundle({
         buildTarget,
@@ -382,6 +435,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         version,
+        applyLavaMoat,
       }),
     );
   }
@@ -456,6 +510,7 @@ async function createManifestV3AppInitializationBundle({
     policyOnly,
     shouldLintFenceFiles,
     version,
+    applyLavaMoat,
   })();
 
   // Code below is used to set statsMode to true when testing in MV3
@@ -643,6 +698,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              isMMI: buildType === 'mmi',
             });
             break;
           }
@@ -721,6 +777,7 @@ function createFactoredBuild({
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
+ * @param {boolean} options.applyLavaMoat - Whether to apply LavaMoat or not
  * @returns {Function} A function that creates the bundle.
  */
 function createNormalBundle({
@@ -735,6 +792,7 @@ function createNormalBundle({
   policyOnly,
   shouldLintFenceFiles,
   version,
+  applyLavaMoat,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -763,6 +821,7 @@ function createNormalBundle({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      applyLavaMoat,
     });
 
     // set bundle entries
@@ -812,6 +871,7 @@ function setupBundlerDefaults(
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
+    applyLavaMoat,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -827,6 +887,17 @@ function setupBundlerDefaults(
         babelify,
         // Run TypeScript files through Babel
         { extensions },
+      ],
+      // Transpile libraries that use ES2020 unsupported by Chrome v78
+      [
+        babelify,
+        {
+          only: [
+            './**/node_modules/@ethereumjs/util',
+            './**/node_modules/superstruct',
+          ],
+          global: true,
+        },
       ],
       // Inline `fs.readFileSync` files
       brfs,
@@ -844,6 +915,9 @@ function setupBundlerDefaults(
     bundlerOpts.manualIgnore.push('react-devtools');
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
+
+  // This dependency uses WASM which we cannot execute in accordance with our CSP
+  bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
 
   // Inject environment variables via node-style `process.env`
   if (envVars) {
@@ -867,6 +941,8 @@ function setupBundlerDefaults(
 
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
+    // Setup wrapping of code against scuttling (before sourcemaps generation)
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
   }
 }
 
@@ -920,6 +996,31 @@ function setupMinification(buildConfiguration) {
   });
 }
 
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
+  const scuttlingConfig =
+    envVars.ENABLE_MV3 === 'true'
+      ? mv3ScuttlingConfig
+      : standardScuttlingConfig;
+  const { events } = buildConfiguration;
+  events.on('configurePipeline', ({ pipeline }) => {
+    pipeline.get('scuttle').push(
+      through.obj(
+        callbackify(async (file, _enc) => {
+          const configForFile = scuttlingConfig[file.relative];
+          if (applyLavaMoat && configForFile) {
+            const wrapped = wrapAgainstScuttling(
+              file.contents.toString(),
+              configForFile,
+            );
+            file.contents = Buffer.from(wrapped, 'utf8');
+          }
+          return file;
+        }),
+      ),
+    );
+  });
+}
+
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
@@ -964,6 +1065,8 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       'groups',
       [],
       'vinyl',
+      [],
+      'scuttle',
       [],
       'sourcemaps:init',
       [],
@@ -1018,8 +1121,9 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
-    COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
+    MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
+    ENABLE_MV3: config.ENABLE_MV3,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
@@ -1027,12 +1131,11 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
-    METAMASK_DEBUG: devMode,
+    METAMASK_DEBUG: devMode || config.METAMASK_DEBUG === '1',
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    ONBOARDING_V2: config.ONBOARDING_V2 === '1',
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
     PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
@@ -1041,9 +1144,13 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
     SENTRY_DSN: config.SENTRY_DSN,
     SENTRY_DSN_DEV: config.SENTRY_DSN_DEV,
-    SIWE_V1: config.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
     TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
+    TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
+    // Desktop
+    COMPATIBILITY_VERSION_EXTENSION: config.COMPATIBILITY_VERSION_EXTENSION,
+    DISABLE_WEB_SOCKET_ENCRYPTION: config.DISABLE_WEB_SOCKET_ENCRYPTION === '1',
+    SKIP_OTP_PAIRING_FLOW: config.SKIP_OTP_PAIRING_FLOW === '1',
   };
 }
 
@@ -1053,6 +1160,7 @@ function renderHtmlFile({
   commonSet,
   browserPlatforms,
   applyLavaMoat,
+  isMMI,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1064,7 +1172,11 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, {
+    jsBundles,
+    applyLavaMoat,
+    isMMI,
+  });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

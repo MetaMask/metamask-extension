@@ -3,7 +3,7 @@ import NftInfo from './nft-info';
 
 export default {
   title: 'Components/UI/NftInfo',
-  id: __filename,
+
   argTypes: {
     assetName: {
       control: { type: 'text' },

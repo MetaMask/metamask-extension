@@ -3,7 +3,7 @@ import PermissionsRedirect from '.';
 
 export default {
   title: 'Pages/PermissionsConnect/Redirect/PermissionsRedirect',
-  id: __filename,
+
   argTypes: {
     subjectMetadata: {
       control: 'object',

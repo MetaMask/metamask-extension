@@ -2,31 +2,49 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
-import { ButtonIcon } from '../button-icon';
-import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase, TEXT_FIELD_BASE_TYPES } from '../text-field-base';
-import { TextField } from '../text-field';
+import { ButtonIcon, Icon, IconName, IconSize } from '..';
+import { TextField, TEXT_FIELD_TYPES } from '../text-field';
 
 export const TextFieldSearch = ({
-  value,
-  onChange,
-  showClearButton = true,
+  className,
+  showClearButton = true, // only works with a controlled input
   clearButtonOnClick,
   clearButtonProps,
-  className,
+  endAccessory,
+  inputProps,
+  value,
+  onChange,
   ...props
 }) => (
   <TextField
     className={classnames('mm-text-field-search', className)}
     value={value}
     onChange={onChange}
-    type={TEXT_FIELD_BASE_TYPES.SEARCH}
-    leftAccessory={<Icon name={ICON_NAMES.SEARCH_FILLED} size={SIZES.SM} />}
-    showClearButton={showClearButton}
-    clearButtonOnClick={clearButtonOnClick}
-    clearButtonProps={clearButtonProps}
+    type={TEXT_FIELD_TYPES.SEARCH}
+    endAccessory={
+      value && showClearButton ? (
+        <>
+          <ButtonIcon
+            className="mm-text-field__button-clear"
+            ariaLabel="Clear" // TODO: i18n
+            iconName={IconName.Close}
+            size={Size.SM}
+            onClick={clearButtonOnClick}
+            {...clearButtonProps}
+          />
+          {endAccessory}
+        </>
+      ) : (
+        endAccessory
+      )
+    }
+    startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
+    inputProps={{
+      marginRight: showClearButton ? 6 : 0,
+      ...inputProps,
+    }}
     {...props}
   />
 );
@@ -35,20 +53,35 @@ TextFieldSearch.propTypes = {
   /**
    * The value of the TextFieldSearch
    */
-  value: TextFieldBase.propTypes.value,
+  value: TextField.propTypes.value,
   /**
    * The onChange handler of the TextFieldSearch
    */
-  onChange: TextFieldBase.propTypes.onChange,
+  onChange: TextField.propTypes.onChange,
   /**
-   * Show a clear button to clear the input
+   * The clear button for the TextFieldSearch.
    * Defaults to true
    */
   showClearButton: PropTypes.bool,
   /**
    * The onClick handler for the clear button
+   * Required unless showClearButton is false
+   *
+   * @param {object} props - The props passed to the component.
+   * @param {string} propName - The prop name in this case 'id'.
+   * @param {string} componentName - The name of the component.
    */
-  clearButtonOnClick: PropTypes.func,
+  clearButtonOnClick: (props, propName, componentName) => {
+    if (
+      props.showClearButton &&
+      (!props[propName] || !props.clearButtonProps?.onClick)
+    ) {
+      return new Error(
+        `${propName} is required unless showClearButton is false. Warning coming from ${componentName} ui/components/component-library/text-field-search/text-field-search.js`,
+      );
+    }
+    return null;
+  },
   /**
    * The props to pass to the clear button
    */
@@ -57,6 +90,18 @@ TextFieldSearch.propTypes = {
    * An additional className to apply to the TextFieldSearch
    */
   className: PropTypes.string,
+  /**
+   * Component to appear on the right side of the input
+   */
+  endAccessory: PropTypes.node,
+  /**
+   * Attributes applied to the `input` element.
+   */
+  inputProps: PropTypes.object,
+  /**
+   * FormTextField accepts all the props from TextField and Box
+   */
+  ...TextField.propTypes,
 };
 
 TextFieldSearch.displayName = 'TextFieldSearch';

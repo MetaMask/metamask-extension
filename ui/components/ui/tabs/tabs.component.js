@@ -1,107 +1,101 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Box from '../box';
+import {
+  BackgroundColor,
+  DISPLAY,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 
-export default class Tabs extends Component {
-  static defaultProps = {
-    defaultActiveTabName: null,
-    onTabClick: null,
-    tabsClassName: undefined,
-    subHeader: null,
+const Tabs = ({
+  defaultActiveTabKey,
+  onTabClick,
+  children,
+  tabsClassName,
+  subHeader,
+}) => {
+  // This ignores any 'null' child elements that are a result of a conditional
+  // based on a feature flag setting.
+  const _getValidChildren = () => {
+    return React.Children.toArray(children).filter(Boolean);
   };
 
-  static propTypes = {
-    defaultActiveTabName: PropTypes.string,
-    onTabClick: PropTypes.func,
-    children: PropTypes.node.isRequired,
-    tabsClassName: PropTypes.string,
-    subHeader: PropTypes.node,
+  /**
+   * Returns the index of the child with the given key
+   *
+   * @param {string} tabKey - the name to search for
+   * @returns {number} the index of the child with the given name
+   * @private
+   */
+  const _findChildByKey = (tabKey) => {
+    return _getValidChildren().findIndex((c) => c?.props.tabKey === tabKey);
   };
 
-  state = {
-    activeTabIndex: Math.max(
-      this._findChildByName(this.props.defaultActiveTabName),
-      0,
-    ),
-  };
+  const [activeTabIndex, setActiveTabIndex] = useState(() =>
+    Math.max(_findChildByKey(defaultActiveTabKey), 0),
+  );
 
-  handleTabClick(tabIndex, tabName) {
-    const { onTabClick } = this.props;
-    const { activeTabIndex } = this.state;
-
+  const handleTabClick = (tabIndex, tabKey) => {
     if (tabIndex !== activeTabIndex) {
-      this.setState(
-        {
-          activeTabIndex: tabIndex,
-        },
-        () => {
-          if (onTabClick) {
-            onTabClick(tabName);
-          }
-        },
-      );
+      setActiveTabIndex(tabIndex);
+      onTabClick?.(tabKey);
     }
-  }
+  };
 
-  renderTabs() {
-    const numberOfTabs = React.Children.count(this._getValidChildren());
+  const renderTabs = () => {
+    const numberOfTabs = React.Children.count(_getValidChildren());
 
-    return React.Children.map(this._getValidChildren(), (child, index) => {
-      const tabName = child?.props.name;
+    return React.Children.map(_getValidChildren(), (child, index) => {
+      const tabKey = child?.props.tabKey;
       return (
         child &&
         React.cloneElement(child, {
-          onClick: (idx) => this.handleTabClick(idx, tabName),
+          onClick: (idx) => handleTabClick(idx, tabKey),
           tabIndex: index,
-          isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
+          isActive: numberOfTabs > 1 && index === activeTabIndex,
         })
       );
     });
-  }
-
-  renderActiveTabContent() {
-    const children = this._getValidChildren();
-    const { activeTabIndex } = this.state;
+  };
+  const renderActiveTabContent = () => {
+    const validChildren = _getValidChildren();
 
     if (
-      (Array.isArray(children) && !children[activeTabIndex]) ||
-      (!Array.isArray(children) && activeTabIndex !== 0)
+      (Array.isArray(validChildren) && !validChildren[activeTabIndex]) ||
+      (!Array.isArray(validChildren) && activeTabIndex !== 0)
     ) {
       throw new Error(`Tab at index '${activeTabIndex}' does not exist`);
     }
 
-    return children[activeTabIndex]
-      ? children[activeTabIndex].props.children
-      : children.props.children;
-  }
+    return validChildren[activeTabIndex]
+      ? validChildren[activeTabIndex].props.children
+      : validChildren.props.children;
+  };
 
-  render() {
-    const { tabsClassName, subHeader } = this.props;
-    return (
-      <div className="tabs">
-        <ul className={classnames('tabs__list', tabsClassName)}>
-          {this.renderTabs()}
-        </ul>
-        {subHeader}
-        <div className="tabs__content">{this.renderActiveTabContent()}</div>
-      </div>
-    );
-  }
+  return (
+    <Box className="tabs">
+      <Box
+        as="ul"
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.flexStart}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        className={classnames('tabs__list', tabsClassName)}
+        gap={1}
+      >
+        {renderTabs()}
+      </Box>
+      {subHeader}
+      <Box className="tabs__content">{renderActiveTabContent()}</Box>
+    </Box>
+  );
+};
 
-  /**
-   * Returns the index of the child with the given name
-   *
-   * @param {string} name - the name to search for
-   * @returns {number} the index of the child with the given name
-   * @private
-   */
-  _findChildByName(name) {
-    return this._getValidChildren().findIndex((c) => c?.props.name === name);
-  }
-
-  // This ignores any 'null' child elements that are a result of a conditional
-  // based on a feature flag setting.
-  _getValidChildren() {
-    return React.Children.toArray(this.props.children).filter(Boolean);
-  }
-}
+export default Tabs;
+Tabs.propTypes = {
+  defaultActiveTabKey: PropTypes.string,
+  onTabClick: PropTypes.func,
+  children: PropTypes.node.isRequired,
+  tabsClassName: PropTypes.string,
+  subHeader: PropTypes.node,
+};

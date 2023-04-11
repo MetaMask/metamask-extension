@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
+import { IconName } from '..';
 import { ButtonPrimary } from './button-primary';
 import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 
@@ -13,7 +14,7 @@ describe('ButtonPrimary', () => {
     );
     expect(getByText('Button Primary')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
-    expect(getByTestId('button-primary')).toHaveClass('mm-button');
+    expect(getByTestId('button-primary')).toHaveClass('mm-button-base');
     expect(container).toMatchSnapshot();
   });
 
@@ -21,14 +22,14 @@ describe('ButtonPrimary', () => {
     const { getByTestId, container } = render(
       <ButtonPrimary as="a" data-testid="button-primary" />,
     );
-    expect(getByTestId('button-primary')).toHaveClass('mm-button');
+    expect(getByTestId('button-primary')).toHaveClass('mm-button-base');
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
   });
 
   it('should render button as block', () => {
     const { getByTestId } = render(<ButtonPrimary block data-testid="block" />);
-    expect(getByTestId('block')).toHaveClass(`mm-button--block`);
+    expect(getByTestId('block')).toHaveClass(`mm-button-base--block`);
   });
 
   it('should render with added classname', () => {
@@ -57,13 +58,13 @@ describe('ButtonPrimary', () => {
     );
 
     expect(getByTestId(BUTTON_PRIMARY_SIZES.SM)).toHaveClass(
-      `mm-button--size-${BUTTON_PRIMARY_SIZES.SM}`,
+      `mm-button-base--size-${BUTTON_PRIMARY_SIZES.SM}`,
     );
     expect(getByTestId(BUTTON_PRIMARY_SIZES.MD)).toHaveClass(
-      `mm-button--size-${BUTTON_PRIMARY_SIZES.MD}`,
+      `mm-button-base--size-${BUTTON_PRIMARY_SIZES.MD}`,
     );
     expect(getByTestId(BUTTON_PRIMARY_SIZES.LG)).toHaveClass(
-      `mm-button--size-${BUTTON_PRIMARY_SIZES.LG}`,
+      `mm-button-base--size-${BUTTON_PRIMARY_SIZES.LG}`,
     );
   });
 
@@ -84,15 +85,15 @@ describe('ButtonPrimary', () => {
         <ButtonPrimary disabled data-testid="disabled" />
       </>,
     );
-    expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
-    expect(getByTestId('disabled')).toHaveClass(`mm-button--disabled`);
+    expect(getByTestId('loading')).toHaveClass(`mm-button-base--loading`);
+    expect(getByTestId('disabled')).toHaveClass(`mm-button-base--disabled`);
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonPrimary data-testid="icon" icon="add-square-filled" />,
+      <ButtonPrimary data-testid="icon" startIconName={IconName.AddSquare} />,
     );
 
-    const icons = container.getElementsByClassName('icon').length;
+    const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
   });
 });

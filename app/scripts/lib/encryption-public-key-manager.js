@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 
@@ -36,6 +36,14 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       unapprovedEncryptionPublicKeyMsgs: {},
       unapprovedEncryptionPublicKeyMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedEncryptionPublicKeyMsgs: {},
+        unapprovedEncryptionPublicKeyMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = opts.metricsEvent;
   }
@@ -202,9 +210,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
-  prepMsgForEncryptionPublicKey(msgParams) {
+  async prepMsgForEncryptionPublicKey(msgParams) {
     delete msgParams.metamaskId;
-    return Promise.resolve(msgParams);
+    return msgParams;
   }
 
   /**
@@ -217,7 +225,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
     if (reason) {
       this.metricsEvent({
         event: reason,
-        category: EVENT.CATEGORIES.MESSAGES,
+        category: MetaMetricsEventCategory.Messages,
         properties: {
           action: 'Encryption public key Request',
         },

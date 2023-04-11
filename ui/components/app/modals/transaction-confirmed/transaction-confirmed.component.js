@@ -1,6 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../component-library/icon/deprecated';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class TransactionConfirmed extends PureComponent {
   static contextTypes = {
@@ -28,9 +34,10 @@ export default class TransactionConfirmed extends PureComponent {
     return (
       <Modal onSubmit={this.handleSubmit} submitText={t('ok')}>
         <div className="transaction-confirmed__content">
-          <i
-            className="fa fa-check-circle fa-3x"
-            style={{ color: 'var(--color-success-default)' }}
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            size={ICON_SIZES.XL}
           />
           <div className="transaction-confirmed__title">
             {`${t('confirmed')}!`}

@@ -5,12 +5,12 @@ import UrlIcon from '../../../components/ui/url-icon';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { Text } from '../../../components/component-library';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
-  TYPOGRAPHY,
+  TextVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 
@@ -51,7 +51,7 @@ export default function ImportToken({
         paddingRight={6}
         paddingBottom={4}
         paddingLeft={4}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         display={DISPLAY.FLEX}
         className="import-token"
       >
@@ -62,21 +62,26 @@ export default function ImportToken({
           fallbackClassName="import-token__token-icon"
           name={tokenForImport.symbol}
         />
-        <Typography
-          ariant={TYPOGRAPHY.H4}
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
           fontWeight={FONT_WEIGHT.BOLD}
-          boxProps={{ marginTop: 2, marginBottom: 3 }}
+          marginTop={2}
+          marginBottom={3}
         >
           {tokenForImport.name || ''}
-        </Typography>
-        <Typography variant={TYPOGRAPHY.H6}>{t('contract')}:</Typography>
-        <Typography
+        </Text>
+        <Text variant={TextVariant.bodySm} as="h6">
+          {t('contract')}:
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
           className="import-token__contract-address"
-          variant={TYPOGRAPHY.H7}
-          boxProps={{ marginBottom: 6 }}
+          as="h6"
+          marginBottom={6}
         >
           {tokenForImport.address || ''}
-        </Typography>
+        </Text>
       </Box>
     </Popover>
   );

@@ -5,18 +5,19 @@ import Tabs from './tabs.component';
 
 export default {
   title: 'Components/UI/Tabs',
-  id: __filename,
+
   argTypes: {
     tabs: {
       control: 'object',
       name: 'Tabs',
     },
-    defaultActiveTabName: {
+    defaultActiveTabKey: {
       control: {
         type: 'text',
       },
     },
     onTabClick: { action: 'onTabClick' },
+    onChange: { action: 'onChange' },
   },
   args: {
     tabs: [
@@ -29,7 +30,7 @@ export default {
 
 function renderTab({ name, content }, index) {
   return (
-    <Tab name={name} key={name + index}>
+    <Tab tabKey={name} key={name + index} name={name}>
       {content}
     </Tab>
   );
@@ -38,20 +39,28 @@ function renderTab({ name, content }, index) {
 export const DefaultStory = (args) => {
   return (
     <Tabs
-      defaultActiveTabName={args.defaultActiveTabName}
+      defaultActiveTabKey={args.defaultActiveTabKey}
       onTabClick={args.onTabClick}
     >
-      {args.tabs.map((tabProps, i) => renderTab(tabProps, i))}
+      {args.tabs.map((tabProps, i) => renderTab(tabProps, i, args.t))}
+    </Tabs>
+  );
+};
+
+DefaultStory.storyName = 'Default';
+
+export const DropdownStory = (args) => {
+  return (
+    <Tabs>
       <DropdownTab
         options={[
           { name: 'Insight Snap', value: 'Insight Snap' },
           { name: 'Tenderly Insight', value: 'Tenderly Insight' },
         ]}
+        onChange={args.onChange}
       >
         This is a dropdown Tab
       </DropdownTab>
     </Tabs>
   );
 };
-
-DefaultStory.storyName = 'Default';

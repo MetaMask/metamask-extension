@@ -1,0 +1,46 @@
+diff --git a/dist/secp256k1-adapter.js b/dist/secp256k1-adapter.js
+index e4d053a3a828f07046b360f5990a8fcbfcc5a92d..fdc14f61d8718e9514d8a81bbb7b4e9d58132432 100644
+--- a/dist/secp256k1-adapter.js
++++ b/dist/secp256k1-adapter.js
+@@ -2,7 +2,7 @@
+ 
+ var secp256k1 = require('ethereum-cryptography/secp256k1');
+ 
+-var secp256k1v3 = require('./secp256k1-lib/index');
++function getSecp256k1 () { return require('./secp256k1-lib/index'); }
+ var der = require('./secp256k1-lib/der');
+ 
+ /**
+@@ -28,6 +28,7 @@ var privateKeyVerify = function privateKeyVerify(privateKey) {
+  * @return {boolean}
+  */
+ var privateKeyExport = function privateKeyExport(privateKey, compressed) {
++  var secp256k1v3 = getSecp256k1();
+   // privateKeyExport method is not part of secp256k1 v4 package
+   // this implementation is based on v3
+   if (privateKey.length !== 32) {
+@@ -77,7 +78,7 @@ var privateKeyModInverse = function privateKeyModInverse(privateKey) {
+   if (privateKey.length !== 32) {
+     throw new Error('private key length is invalid');
+   }
+-
++  var secp256k1v3 = getSecp256k1();
+   return Buffer.from(secp256k1v3.privateKeyModInverse(Uint8Array.from(privateKey)));
+ };
+ 
+@@ -223,6 +224,7 @@ var signatureImportLax = function signatureImportLax(signature) {
+   if (signature.length === 0) {
+     throw new RangeError('signature length is invalid');
+   }
++  var secp256k1v3 = getSecp256k1();
+ 
+   var sigObj = der.signatureImportLax(signature);
+   if (sigObj === null) {
+@@ -351,6 +353,7 @@ var ecdhUnsafe = function ecdhUnsafe(publicKey, privateKey, compressed) {
+   if (privateKey.length !== 32) {
+     throw new RangeError('private key length is invalid');
+   }
++  var secp256k1v3 = getSecp256k1();
+ 
+   return Buffer.from(secp256k1v3.ecdhUnsafe(Uint8Array.from(publicKey), Uint8Array.from(privateKey), compressed));
+ };

@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
-} from '../../../../shared/constants/gas';
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+  Color,
+  TextColor,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -13,6 +14,11 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();
@@ -23,7 +29,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    supportsEIP1559V2,
+    supportsEIP1559,
     transaction,
   } = useGasFeeContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -31,19 +37,19 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const editEnabled =
     !hasSimulationError || userAcknowledgedGasMissing === true;
 
-  if (!supportsEIP1559V2 || !estimateUsed || !editEnabled) {
+  if (!supportsEIP1559 || !estimateUsed || !editEnabled) {
     return null;
   }
 
   let icon = estimateUsed;
   let title = estimateUsed;
   if (
-    estimateUsed === PRIORITY_LEVELS.HIGH &&
-    editGasMode === EDIT_GAS_MODES.SWAPS
+    estimateUsed === PriorityLevels.high &&
+    editGasMode === EditGasModes.swaps
   ) {
     icon = 'swapSuggested';
     title = 'swapSuggested';
-  } else if (estimateUsed === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
+  } else if (estimateUsed === PriorityLevels.tenPercentIncreased) {
     icon = undefined;
     title = 'tenPercentIncreased';
   }
@@ -71,7 +77,11 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
-        <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+        <Icon
+          name={ICON_NAMES.ARROW_RIGHT}
+          color={Color.primaryDefault}
+          size={ICON_SIZES.XS}
+        />
       </button>
       {estimateUsed === 'custom' && (
         <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>
@@ -82,19 +92,19 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
             <div className="edit-gas-fee-button__tooltip">
               {transaction?.origin && (
                 <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  variant={TypographyVariant.H7}
+                  color={TextColor.textAlternative}
                 >
                   {t('dappSuggestedTooltip', [transaction.origin])}
                 </Typography>
               )}
-              <Typography variant={TYPOGRAPHY.H7}>
+              <Typography variant={TypographyVariant.H7}>
                 <b>{t('maxBaseFee')}</b> {maxFeePerGas}
               </Typography>
-              <Typography variant={TYPOGRAPHY.H7}>
+              <Typography variant={TypographyVariant.H7}>
                 <b>{t('maxPriorityFee')}</b> {maxPriorityFeePerGas}
               </Typography>
-              <Typography variant={TYPOGRAPHY.H7}>
+              <Typography variant={TypographyVariant.H7}>
                 <b>{t('gasLimit')}</b> {gasLimit}
               </Typography>
             </div>

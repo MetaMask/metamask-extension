@@ -1,14 +1,11 @@
 import log from 'loglevel';
-import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../../shared/modules/conversion.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC20 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../shared/modules/Numeric';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -189,21 +186,19 @@ export function getTokenFiatAmount(
     return undefined;
   }
 
-  const currentTokenToFiatRate = multiplyCurrencies(
-    contractExchangeRate,
-    conversionRate,
-    {
-      multiplicandBase: 10,
-      multiplierBase: 10,
-    },
-  );
-  const currentTokenInFiat = conversionUtil(tokenAmount, {
-    fromNumericBase: 'dec',
-    fromCurrency: tokenSymbol,
-    toCurrency: currentCurrency.toUpperCase(),
-    numberOfDecimals: 2,
-    conversionRate: currentTokenToFiatRate,
-  });
+  const currentTokenToFiatRate = new Numeric(contractExchangeRate, 10)
+    .times(new Numeric(conversionRate, 10))
+    .toString();
+
+  let currentTokenInFiat = new Numeric(tokenAmount, 10);
+
+  if (tokenSymbol !== currentCurrency.toUpperCase() && currentTokenToFiatRate) {
+    currentTokenInFiat = currentTokenInFiat.applyConversionRate(
+      currentTokenToFiatRate,
+    );
+  }
+
+  currentTokenInFiat = currentTokenInFiat.round(2).toString();
   let result;
   if (hideCurrencySymbol) {
     result = formatCurrency(currentTokenInFiat, currentCurrency);
@@ -222,7 +217,7 @@ export async function getAssetDetails(
   tokenAddress,
   currentUserAddress,
   transactionData,
-  existingCollectibles,
+  existingNfts,
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
@@ -239,18 +234,18 @@ export async function getAssetDetails(
 
   let tokenDetails;
 
-  // if a tokenId is present check if there is a collectible in state matching the address/tokenId
+  // if a tokenId is present check if there is an NFT in state matching the address/tokenId
   // and avoid unnecessary network requests to query token details we already have
-  if (existingCollectibles?.length && tokenId) {
-    const existingCollectible = existingCollectibles.find(
+  if (existingNfts?.length && tokenId) {
+    const existingNft = existingNfts.find(
       ({ address, tokenId: _tokenId }) =>
         isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
     );
 
-    if (existingCollectible) {
+    if (existingNft) {
       return {
         toAddress,
-        ...existingCollectible,
+        ...existingNft,
       };
     }
   }
@@ -278,11 +273,11 @@ export async function getAssetDetails(
   const decimals =
     tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
 
-  if (tokenDetails?.standard === ERC20) {
+  if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;
   }
 
-  // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
+  // else if not an NFT already in state or standard === ERC20 return tokenDetails and tokenId
   return {
     tokenAmount,
     toAddress,

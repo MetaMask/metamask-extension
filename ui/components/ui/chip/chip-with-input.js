@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BorderColor } from '../../../helpers/constants/design-system';
 import Chip from '.';
 
 export function ChipWithInput({
   dataTestId,
   className,
-  borderColor = COLORS.BORDER_DEFAULT,
+  borderColor = BorderColor.borderDefault,
   inputValue,
   setInputValue,
 }) {
@@ -33,7 +33,7 @@ export function ChipWithInput({
 
 ChipWithInput.propTypes = {
   dataTestId: PropTypes.string,
-  borderColor: PropTypes.oneOf(Object.values(COLORS)),
+  borderColor: PropTypes.oneOf(Object.values(BorderColor)),
   className: PropTypes.string,
   inputValue: PropTypes.string,
   setInputValue: PropTypes.func,

@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendContent Component render should render a SendRowErrorMessage with and errorType props if showError is true 1`] = `
+<div>
+  <div
+    class="send-v2__form-row"
+  >
+    <div
+      class="send-v2__form-label"
+    >
+      mockLabel
+    </div>
+    <div
+      class="send-v2__form-field-container"
+    >
+      <div
+        class="send-v2__form-field"
+      >
+        <span>
+          Mock Form Field
+        </span>
+      </div>
+      <div>
+        <div
+          class="send-v2__error send-v2__error-amount"
+        >
+          Insufficient funds.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SendContent Component render should render with children 1`] = `
+<div>
+  <div
+    class="send-v2__form-row"
+  >
+    <div
+      class="send-v2__form-label"
+    >
+      mockLabel
+      <span>
+        Mock Custom Label Content
+      </span>
+    </div>
+    <div
+      class="send-v2__form-field"
+    >
+      <span>
+        Mock Form Field
+      </span>
+    </div>
+  </div>
+</div>
+`;

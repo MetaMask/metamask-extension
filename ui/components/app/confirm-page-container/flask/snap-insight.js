@@ -1,23 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { useSelector } from 'react-redux';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import Typography from '../../../ui/typography/typography';
+import { Text } from '../../../component-library';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
-import SnapContentFooter from '../../flask/snap-content-footer/snap-content-footer';
 import Box from '../../../ui/box/box';
-import ActionableMessage from '../../../ui/actionable-message/actionable-message';
+import { SnapUIRenderer } from '../../flask/snap-ui-renderer';
+import { SnapDelineator } from '../../flask/snap-delineator';
+import { DelineatorType } from '../../../../helpers/constants/flask';
+import { getSnapName } from '../../../../helpers/utils/util';
+import { Copyable } from '../../flask/copyable';
+import { getTargetSubjectMetadata } from '../../../../selectors';
 
-export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
+export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
   const t = useI18nContext();
   const {
     data: response,
@@ -26,10 +31,17 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
   } = useTransactionInsightSnap({
     transaction,
     chainId,
+    origin,
     snapId: selectedSnap.id,
   });
 
-  const data = response?.insights;
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, selectedSnap.id),
+  );
+
+  const snapName = getSnapName(selectedSnap.id, targetSubjectMetadata);
+
+  const data = response?.content;
 
   const hasNoData =
     !error && (loading || !data || (data && Object.keys(data).length === 0));
@@ -39,8 +51,8 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
       height="full"
       marginTop={hasNoData && 12}
       marginBottom={hasNoData && 12}
-      alignItems={hasNoData && ALIGN_ITEMS.CENTER}
-      justifyContent={hasNoData && JUSTIFY_CONTENT.CENTER}
+      alignItems={hasNoData && AlignItems.center}
+      justifyContent={hasNoData && JustifyContent.center}
       textAlign={hasNoData && TEXT_ALIGN.CENTER}
       className="snap-insight"
     >
@@ -51,86 +63,45 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
           className="snap-insight__container"
         >
           {data && Object.keys(data).length > 0 ? (
-            <>
-              <Box
-                flexDirection={FLEX_DIRECTION.COLUMN}
-                paddingTop={0}
-                paddingRight={6}
-                paddingBottom={3}
-                paddingLeft={6}
-                className="snap-insight__container__data"
-              >
-                {Object.keys(data).map((key, i) => (
-                  <div key={i}>
-                    <Typography
-                      fontWeight="bold"
-                      marginTop={3}
-                      variant={TYPOGRAPHY.H6}
-                    >
-                      {key}
-                    </Typography>
-
-                    {typeof data[key] === 'string' ? (
-                      <Typography variant={TYPOGRAPHY.H6}>
-                        {data[key]}
-                      </Typography>
-                    ) : (
-                      <Box
-                        className="snap-insight__container__data__json"
-                        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-                        padding={3}
-                      >
-                        <Typography variant={TYPOGRAPHY.H7}>
-                          <pre>{JSON.stringify(data[key], null, 2)}</pre>
-                        </Typography>
-                      </Box>
-                    )}
-                  </div>
-                ))}
-              </Box>
-              <SnapContentFooter
-                snapName={selectedSnap.manifest.proposedName}
-                snapId={selectedSnap.id}
-              />
-            </>
+            <SnapUIRenderer
+              snapId={selectedSnap.id}
+              data={data}
+              delineatorType={DelineatorType.Insights}
+            />
           ) : (
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySm}
+              as="h6"
+            >
               {t('snapsNoInsight')}
-            </Typography>
+            </Text>
           )}
         </Box>
       )}
 
       {!loading && error && (
-        <Box
-          paddingTop={0}
-          paddingRight={6}
-          paddingBottom={3}
-          paddingLeft={6}
-          className="snap-insight__container__error"
-        >
-          <ActionableMessage
-            message={t('snapsInsightError', [
-              selectedSnap.manifest.proposedName,
-              error.message,
-            ])}
-            type="danger"
-            useIcon
-            iconFillColor="var(--color-error-default)"
-          />
+        <Box padding={4} className="snap-insight__container__error">
+          <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
+            <Text variant={TextVariant.bodySm} marginBottom={4}>
+              {t('snapsUIError', [<b key="0">{snapName}</b>])}
+            </Text>
+            <Copyable text={error.message} />
+          </SnapDelineator>
         </Box>
       )}
 
       {loading && (
         <>
           <Preloader size={40} />
-          <Typography
+          <Text
             marginTop={3}
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H6}
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            as="h6"
           >
             {t('snapsInsightLoading')}
-          </Typography>
+          </Text>
         </>
       )}
     </Box>
@@ -146,6 +117,10 @@ SnapInsight.propTypes = {
    * CAIP2 Chain ID
    */
   chainId: PropTypes.string,
+  /*
+   *  The origin of the transaction
+   */
+  origin: PropTypes.string,
   /*
    * The insight snap selected
    */

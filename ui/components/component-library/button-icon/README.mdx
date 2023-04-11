@@ -6,52 +6,54 @@ import { ButtonIcon } from './button-icon';
 The `ButtonIcon` is used for icons associated with a user action.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--default-story" />
+  <Story id="components-componentlibrary-buttonicon--default-story" />
 </Canvas>
 
 ## Props
 
-The `ButtonIcon` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `ButtonIcon` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={ButtonIcon} />
 
-### Icon<span style={{ color: 'red' }}>\*</span>
+### Icon Name<span style={{ color: 'red' }}>\*</span>
 
-Use the required `icon` prop with `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+Use the required `iconName` prop with `IconName` enum from `./ui/components/component-library` to select icon.
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--icon" />
+  <Story id="components-componentlibrary-buttonicon--icon-name-story" />
 </Canvas>
 
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<ButtonIcon icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />;
+<ButtonIcon iconName={IconName.Close} ariaLabel="Close" />;
 ```
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js`
-to change the size of `ButtonIcon`. Defaults to `SIZES.SM`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js`
+to change the size of `ButtonIcon`. Defaults to `Size.SM`
 
-Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of `SIZES`.
+Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of `Size`.
 
 Possible sizes include:
 
-- `SIZES.SM` 24px
-- `SIZES.LG` 32px
+- `Size.SM` 24px
+- `Size.LG` 32px
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--size" />
+  <Story id="components-componentlibrary-buttonicon--size-story" />
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={SIZES.SM} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon size={SIZES.LG} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon size={Size.SM} iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon size={Size.LG} iconName={IconName.Close} ariaLabel="Close"/>
 ```
 
 ### Aria Label
@@ -59,15 +61,16 @@ import { ButtonIcon } from '../ui/component-library';
 Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibility
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--aria-label" />
+  <Story id="components-componentlibrary-buttonicon--aria-label" />
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, IconName } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 
-<ButtonIcon as="button" icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### As
@@ -80,15 +83,16 @@ Button `as` options:
 - `a`
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--as" />
+  <Story id="components-componentlibrary-buttonicon--as" />
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, IconName } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 
-<ButtonIcon as="button" icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### Href
@@ -96,35 +100,37 @@ import { ButtonIcon } from '../ui/component-library';
 When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--href" />
+  <Story id="components-componentlibrary-buttonicon--href" />
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, IconName } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 <ButtonIcon
   href="https://metamask.io/"
   target="_blank"
-  icon={ICON_NAMES.EXPORT}
-  color={COLORS.PRIMARY_DEFAULT}
+  iconName={IconName.Export}
+  color={Color.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```
 
 ### Color
 
-Use the `color` prop and the `COLORS` object to change the color of the `ButtonIcon`. Defaults to `COLORS.ICON_DEFAULT`.
+Use the `color` prop and the `Color` object to change the color of the `ButtonIcon`. Defaults to `Color.iconDefault`.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--color" />
+  <Story id="components-componentlibrary-buttonicon--color-story" />
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, IconName } from '../ui/component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 <ButtonIcon
-  icon={ICON_NAMES.EXPORT}
-  color={COLORS.PRIMARY_DEFAULT}
+  iconName={IconName.Export}
+  color={Color.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```
@@ -134,11 +140,11 @@ import { ButtonIcon } from '../ui/component-library';
 Use the boolean `disabled` prop to disable button
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--disabled" />
+  <Story id="components-componentlibrary-buttonicon--disabled" />
 </Canvas>
 
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon icon={ICON_NAMES.CLOSE_OUTLINE} disabled ariaLabel="Close" />;
+<ButtonIcon iconName={IconName.Close} disabled ariaLabel="Close" />;
 ```

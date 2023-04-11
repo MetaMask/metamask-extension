@@ -1,4 +1,5 @@
 import contractMap from '@metamask/contract-metadata';
+import BigNumber from 'bignumber.js';
 
 /**
  * A normalized list of addresses exported as part of the contractMap in
@@ -39,3 +40,11 @@ export const STATIC_MAINNET_TOKEN_LIST = Object.keys(contractMap).reduce(
 
 export const TOKEN_API_METASWAP_CODEFI_URL =
   'https://token-api.metaswap.codefi.network/tokens/';
+export const MAX_TOKEN_ALLOWANCE_AMOUNT = new BigNumber(2)
+  .pow(256)
+  .minus(1)
+  .toString(10);
+// number with optional decimal point using a comma or dot
+export const NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX =
+  /^[0-9]{1,}([,.][0-9]{1,})?$/u;
+export const DECIMAL_REGEX = /\.(\d*)/u;

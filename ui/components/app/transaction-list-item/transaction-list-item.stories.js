@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import TransactionListItem from '.';
@@ -35,21 +35,21 @@ const getMockTransactionGroup = (args) => {
 /**
  * Transaction List Item Storybook Page
  *
- * Each page displays a different Transaction Type (TRANSACTION_TYPES)
- * except TRANSACTION_TYPES.CANCEL and TRANSACTION_TYPES.RETRY as these two types
+ * Each page displays a different Transaction Type (TransactionType)
+ * except TransactionType.cancel and TransactionType.retry as these two types
  * are never initialTransactions
  */
 export default {
   title: 'Components/App/TransactionListItem',
-  id: __filename,
+
   argTypes: {
     isEarliestNonce: { control: 'boolean' },
     'transactionGroup.hasCancelled': { control: 'boolean' },
     'transactionGroup.hasRetried': { control: 'boolean' },
     'transactionGroup.primaryTransaction.status': {
-      options: Object.values(TRANSACTION_STATUSES)
+      options: Object.values(TransactionStatus)
         .filter((status) => {
-          return status !== TRANSACTION_STATUSES.SIGNED;
+          return status !== TransactionStatus.signed;
         })
         .sort(),
       control: { type: 'select' },
@@ -61,7 +61,7 @@ export default {
     isEarliestNonce: true,
     'transactionGroup.hasCancelled': false,
     'transactionGroup.hasRetried': false,
-    'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.PENDING,
+    'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
     'transactionGroup.primaryTransaction.submittedTime': 19999999999999,
   },
 };
@@ -96,115 +96,111 @@ export const TokenMethodTransferFrom = Template.bind({});
 ContractInteraction.storyName = 'contractInteraction';
 ContractInteraction.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.CONTRACT_INTERACTION],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.contractInteraction],
   },
 };
 
 DeployContract.storyName = 'contractDeployment';
 DeployContract.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.DEPLOY_CONTRACT],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.deployContract],
   },
 };
 
 EthDecrypt.storyName = 'eth_decrypt';
 EthDecrypt.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.ETH_DECRYPT],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.ethDecrypt],
   },
 };
 
 EthGetEncryptionPublicKey.storyName = 'eth_getEncryptionPublicKey';
 EthGetEncryptionPublicKey.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[
-      TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY
-    ],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.ethGetEncryptionPublicKey],
   },
 };
 
 Incoming.storyName = 'incoming';
 Incoming.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.INCOMING],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming],
   },
 };
 
 PersonalSign.storyName = 'personal_sign';
 PersonalSign.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.PERSONAL_SIGN],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.personalSign],
   },
 };
 
 Sign.storyName = 'eth_sign';
 Sign.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SIGN],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.sign],
   },
 };
 
 SignTypeData.storyName = 'eth_signTypedData';
 SignTypeData.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SIGN_TYPED_DATA],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.signTypedData],
   },
 };
 
 SimpleSend.storyName = 'simpleSend';
 SimpleSend.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SIMPLE_SEND],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend],
   },
 };
 
 Smart.storyName = 'smart';
 Smart.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SMART],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.smart],
   },
 };
 
 Swap.storyName = 'swap';
 Swap.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SWAP],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.swap],
   },
 };
 
 SwapApproval.storyName = 'swapApproval';
 SwapApproval.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SWAP_APPROVAL],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.swapApproval],
   },
 };
 
 TokenMethodApprove.storyName = 'approve';
 TokenMethodApprove.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_APPROVE],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.tokenMethodApprove],
   },
 };
 
 TokenMethodSafeTransferFrom.storyName = 'safetransferfrom';
 TokenMethodSafeTransferFrom.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[
-      TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
-    ],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.tokenMethodSafeTransferFrom],
   },
 };
 
 TokenMethodTransfer.storyName = 'transfer';
 TokenMethodTransfer.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.tokenMethodTransfer],
   },
 };
 
 TokenMethodTransferFrom.storyName = 'transferfrom';
 TokenMethodTransferFrom.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.tokenMethodTransferFrom],
   },
 };

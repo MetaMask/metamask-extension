@@ -1,9 +1,9 @@
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
-  TRANSACTION_ENVELOPE_TYPES,
+  AssetType,
+  TokenStandard,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import { getInitialSendStateWithExistingTxState } from '../../../test/jest/mocks';
@@ -30,7 +30,7 @@ describe('Send Slice Helpers', () => {
             value: '0x1',
           },
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             balance: '0xaf',
             details: tokenDetails,
           },
@@ -54,7 +54,7 @@ describe('Send Slice Helpers', () => {
       });
     });
 
-    it('should generate a txParams for a collectible transfer', () => {
+    it('should generate a txParams for an NFT transfer', () => {
       const txParams = generateTransactionParams(
         getInitialSendStateWithExistingTxState({
           fromAccount: {
@@ -64,12 +64,12 @@ describe('Send Slice Helpers', () => {
             value: '0x1',
           },
           asset: {
-            type: ASSET_TYPES.NFT,
+            type: AssetType.NFT,
             balance: '0xaf',
             details: {
               address: '0xToken',
-              standard: TOKEN_STANDARDS.ERC721,
-              tokenId: ethers.BigNumber.from(15000).toString(),
+              standard: TokenStandard.ERC721,
+              tokenId: BigNumber.from(15000).toString(),
             },
           },
           recipient: {
@@ -82,7 +82,7 @@ describe('Send Slice Helpers', () => {
         data: generateERC721TransferData({
           toAddress: BURN_ADDRESS,
           fromAddress: '0x00',
-          tokenId: ethers.BigNumber.from(15000).toString(),
+          tokenId: BigNumber.from(15000).toString(),
         }),
         to: '0xToken',
         type: '0x0',
@@ -102,7 +102,7 @@ describe('Send Slice Helpers', () => {
             value: '0x1',
           },
           asset: {
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
             balance: '0xaf',
             details: null,
           },
@@ -132,7 +132,7 @@ describe('Send Slice Helpers', () => {
             value: '0x1',
           },
           asset: {
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
             balance: '0xaf',
             details: null,
           },
@@ -144,7 +144,7 @@ describe('Send Slice Helpers', () => {
             maxPriorityFeePerGas: '0x1',
             gasLimit: GAS_LIMITS.SIMPLE,
           },
-          transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          transactionType: TransactionEnvelopeType.feeMarket,
         }),
         eip1559support: true,
       });

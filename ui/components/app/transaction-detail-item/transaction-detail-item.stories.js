@@ -1,14 +1,14 @@
 import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
 import TransactionDetailItem from '.';
 
 export default {
   title: 'Components/App/TransactionDetailItem',
-  id: __filename,
+
   component: TransactionDetailItem,
   parameters: {
     docs: {
@@ -21,7 +21,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(COLORS),
+      options: Object.values(TextColor),
     },
     detailText: { control: 'text' },
     detailTotal: { control: 'text' },

@@ -6,7 +6,7 @@ import MetaFoxLogo from '.';
 
 export default {
   title: 'Components/UI/MetaFoxLogo',
-  id: __filename,
+
   argTypes: {
     onClick: {
       action: 'onClick',

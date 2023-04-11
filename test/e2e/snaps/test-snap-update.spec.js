@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -16,10 +15,9 @@ describe('Test Snap update', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -30,81 +28,103 @@ describe('Test Snap update', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open a new tab and navigate to test snaps page and connect
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
 
         // find and scroll to the correct card and click first
-        const snapButton = await driver.findElement('#sendUpdateHello');
+        const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
-        await driver.fill('#snapId7', 'npm:@metamask/test-snap-confirm');
-        await driver.clickElement('#connectUpdateOld');
+        await driver.delay(1000);
+        await driver.clickElement('#connectUpdate');
+        await driver.delay(1000);
 
-        // approve install of snap
-        let windowHandles = await driver.getAllWindowHandles();
-        const extensionPage = windowHandles[0];
+        // switch to metamask extension and click connect
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'Approve & install' });
+
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
+        // wait for permissions popover, click checkboxes and confirm
+        await driver.delay(500);
+        await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
+        await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-1');
+        await driver.clickElement(
+          '#public-key-access-bip32-m-44h-0h-secp256k1-0',
+        );
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
+
         // navigate to test snap page
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectUpdate',
+          text: 'Reconnect to Update Snap',
+        });
 
         // find and scroll to the correct card and click first
-        const snapButton2 = await driver.findElement('#snapId7');
+        const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
-
-        // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         await driver.delay(1000);
 
-        // approve update of snap
+        // switch to metamask extension and update
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
+
+        await driver.waitForSelector({ text: 'Approve & update' });
+
         await driver.clickElement({
           text: 'Approve & update',
           tag: 'button',
         });
 
-        // switch to the original MM tab
-        await driver.switchToWindow(extensionPage);
-        await driver.delay(500);
+        await driver.waitForSelector({ text: 'Ok' });
 
-        // click on the account menu icon
-        await driver.clickElement('.account-menu__icon');
-        await driver.delay(500);
-
-        // try to click on the notification item
         await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
+          text: 'Ok',
+          tag: 'button',
         });
-        await driver.delay(500);
 
-        // try to click on the snaps item
-        await driver.clickElement({
-          text: 'Snaps',
-          tag: 'div',
-        });
-        await driver.delay(500);
+        // navigate to test snap page
+        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // look for the correct version text
-        const versionResult = await driver.findElement(
-          '.snap-settings-card__version',
-        );
-        assert.equal(await versionResult.getText(), 'v2.0.0');
+        await driver.waitForSelector({
+          css: '#updateSnapVersion',
+          text: '"5.1.2"',
+        });
       },
     );
   });

@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
+import { IconName, Icon, IconSize } from '../icon';
 import { Text } from '../text';
 
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  JUSTIFY_CONTENT,
-  TEXT_COLORS,
-  TEXT,
-  SIZES,
-  FLEX_DIRECTION,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+  BorderRadius,
+  BackgroundColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -23,65 +24,99 @@ export const ButtonBase = ({
   children,
   className,
   href,
+  ellipsis = false,
+  externalLink,
   size = BUTTON_BASE_SIZES.MD,
-  icon,
-  iconPositionRight,
+  startIconName,
+  startIconProps,
+  endIconName,
+  endIconProps,
   loading,
   disabled,
-  iconProps,
+  iconLoadingProps,
+  textProps,
+  color = TextColor.textDefault,
   ...props
 }) => {
   const Tag = href ? 'a' : as;
+  if (Tag === 'a' && externalLink) {
+    props.target = '_blank';
+    props.rel = 'noopener noreferrer';
+  }
   return (
-    <Box
+    <Text
       as={Tag}
-      paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
-      paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      color={loading ? TextColor.transparent : color}
+      href={href}
+      paddingLeft={4}
+      paddingRight={4}
+      ellipsis={ellipsis}
       className={classnames(
-        'mm-button',
-        `mm-button--size-${size}`,
+        'mm-button-base',
         {
-          'mm-button--loading': loading,
-          'mm-button--disabled': disabled,
-          'mm-button--block': block,
+          [`mm-button-base--size-${size}`]:
+            Object.values(BUTTON_BASE_SIZES).includes(size),
+          'mm-button-base--loading': loading,
+          'mm-button-base--disabled': disabled,
+          'mm-button-base--block': block,
+          'mm-button-base--ellipsis': ellipsis,
         },
         className,
       )}
       disabled={disabled}
       display={DISPLAY.INLINE_FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
       {...props}
     >
-      <Text
-        as="span"
-        className="mm-button__content"
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        flexDirection={
-          iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
-        }
-        gap={2}
-        variant={size === BUTTON_BASE_SIZES.AUTO ? TEXT.INHERIT : TEXT.BODY_MD}
-        color={TEXT_COLORS.INHERIT}
-      >
-        {icon && (
-          <Icon
-            name={icon}
-            size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
-            {...iconProps}
-          />
-        )}
-        {children}
-      </Text>
-      {loading && (
+      {startIconName && (
         <Icon
-          className="mm-button__icon-loading"
-          name={ICON_NAMES.LOADING_FILLED}
-          size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
+          name={startIconName}
+          size={IconSize.Sm}
+          marginInlineEnd={1}
+          {...startIconProps}
+          color={loading ? IconColor.transparent : startIconProps?.color}
         />
       )}
-    </Box>
+      {/*
+       * If children is a string and doesn't need truncation or loading
+       * prevent html bloat by rendering just the string
+       * otherwise render with wrapper to allow truncation or loading
+       */}
+      {typeof children === 'string' && !ellipsis && !loading ? (
+        children
+      ) : (
+        <Text
+          as="span"
+          ellipsis={ellipsis}
+          variant={TextVariant.inherit}
+          color={loading ? TextColor.transparent : color}
+          {...textProps}
+        >
+          {children}
+        </Text>
+      )}
+      {endIconName && (
+        <Icon
+          name={endIconName}
+          size={IconSize.Sm}
+          marginInlineStart={1}
+          {...endIconProps}
+          color={loading ? IconColor.transparent : endIconProps?.color}
+        />
+      )}
+      {loading && (
+        <Icon
+          className="mm-button-base__icon-loading"
+          name={IconName.Loading}
+          color={color}
+          size={IconSize.Md}
+          {...iconLoadingProps}
+        />
+      )}
+    </Text>
   );
 };
 
@@ -94,6 +129,10 @@ ButtonBase.propTypes = {
    * Boolean prop to quickly activate box prop display block
    */
   block: PropTypes.bool,
+  /**
+   * Additional props to pass to the Text component that wraps the button children
+   */
+  buttonTextProps: PropTypes.shape(Text.PropTypes),
   /**
    * The children to be rendered inside the ButtonBase
    */
@@ -111,32 +150,51 @@ ButtonBase.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * Add icon to left side of button text passing icon name
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * Used for long strings that can be cut off...
    */
-  icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  ellipsis: PropTypes.bool,
   /**
-   * Boolean that when true will position the icon on right of children
-   * Icon default position left
+   * Boolean indicating if the link targets external content, it will cause the link to open in a new tab
    */
-  iconPositionRight: PropTypes.bool,
+  externalLink: PropTypes.bool,
+  /**
+   * Add icon to start (left side) of button text passing icon name
+   * The name of the icon to display. Should be one of IconName
+   */
+  startIconName: PropTypes.oneOf(Object.values(IconName)),
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: PropTypes.object,
+  startIconProps: PropTypes.object,
+  /**
+   * Add icon to end (right side) of button text passing icon name
+   * The name of the icon to display. Should be one of IconName
+   */
+  endIconName: PropTypes.oneOf(Object.values(IconName)),
+  /**
+   * iconProps accepts all the props from Icon
+   */
+  endIconProps: PropTypes.object,
+  /**
+   * iconLoadingProps accepts all the props from Icon
+   */
+  iconLoadingProps: PropTypes.object,
   /**
    * Boolean to show loading spinner in button
    */
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
+   * Possible values could be 'Size.SM'(32px), 'Size.MD'(40px), 'Size.LG'(48px),
    */
-  size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
+  size: PropTypes.oneOfType([
+    PropTypes.shape(BUTTON_BASE_SIZES),
+    PropTypes.string,
+  ]),
   /**
-   * Addition style properties to apply to the button.
+   * textProps accepts all the props from Icon
    */
-  style: PropTypes.object,
+  textProps: PropTypes.shape(Text.PropTypes),
   /**
    * ButtonBase accepts all the props from Box
    */

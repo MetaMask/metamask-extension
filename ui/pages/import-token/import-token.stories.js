@@ -12,7 +12,7 @@ const store = configureStore(testData);
 const { metamask } = store.getState();
 
 const {
-  frequentRpcListDetail,
+  networkConfigurations,
   identities,
   pendingTokens,
   selectedAddress,
@@ -22,7 +22,7 @@ const {
 
 export default {
   title: 'Pages/ImportToken',
-  id: __filename,
+
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: ImportToken,
   parameters: {
@@ -105,8 +105,8 @@ export default {
     identities,
     showSearchTab: true,
     mostRecentOverviewPage: DEFAULT_ROUTE,
-    chainId: frequentRpcListDetail[0].chainId,
-    rpcPrefs: frequentRpcListDetail[0].rpcPrefs,
+    chainId: networkConfigurations['test-networkConfigurationId-1'].chainId,
+    rpcPrefs: networkConfigurations['test-networkConfigurationId-1'].rpcPrefs,
     tokenList,
     useTokenDetection: false,
     selectedAddress,

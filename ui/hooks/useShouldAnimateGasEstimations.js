@@ -44,13 +44,18 @@ export function useShouldAnimateGasEstimations() {
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 
   useEffect(() => {
-    if (
-      isGasLoadingAnimationActive === true &&
-      showLoadingAnimation === false
-    ) {
-      setTimeout(() => {
+    let timer;
+
+    if (isGasLoadingAnimationActive && !showLoadingAnimation) {
+      timer = setTimeout(() => {
         dispatch(toggleGasLoadingAnimation(false));
       }, 2000);
     }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 }

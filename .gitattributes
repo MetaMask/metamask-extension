@@ -16,3 +16,7 @@ test/e2e/send-eth-with-private-key-test/web3js.js linguist-vendored linguist-gen
 # translations will be a little harder to review but those do not get submitted
 # as often as other PRs.
 app/_locales/** linguist-generated
+
+# yarn berry suggested .gitattributes
+/.yarn/releases/** binary
+/.yarn/plugins/** binary

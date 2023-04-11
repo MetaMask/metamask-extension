@@ -1,0 +1,549 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Transaction Base should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container"
+    data-testid="page-container"
+  >
+    <div
+      class="confirm-page-container-navigation"
+      style="display: none;"
+    >
+      <div
+        class="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
+        >
+          <i
+            class="fa fa-angle-double-left fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
+        >
+          <i
+            class="fa fa-angle-left fa-2x"
+          />
+        </button>
+      </div>
+      <div
+        class="confirm-page-container-navigation__textcontainer"
+      >
+        <div
+          class="confirm-page-container-navigation__navtext"
+        >
+          0
+           
+          of
+           
+          1
+        </div>
+        <div
+          class="confirm-page-container-navigation__longtext"
+        >
+          requests waiting to be acknowledged
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-navigation__container"
+        style="visibility: initial;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
+        >
+          <i
+            class="fa fa-angle-right fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
+        >
+          <i
+            class="fa fa-angle-double-right fa-2x"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="sender-to-recipient sender-to-recipient--default"
+      data-testid="sender-to-recipient"
+    >
+      <div
+        class="sender-to-recipient__party sender-to-recipient__party--sender"
+      >
+        <div
+          class="sender-to-recipient__sender-icon"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 24px; width: 24px; border-radius: 12px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 151, 242);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2362E1"
+                    height="24"
+                    transform="translate(2.6919976385943882 -4.000732967425142) rotate(458.4 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F94301"
+                    height="24"
+                    transform="translate(-11.522594467237658 5.994263726614974) rotate(268.8 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FA7900"
+                    height="24"
+                    transform="translate(-6.8071905594760675 22.110011910512533) rotate(117.3 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="sender-to-recipient__tooltip-wrapper"
+        >
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class="sender-to-recipient__tooltip-container"
+            data-original-title="null"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <div
+              class="sender-to-recipient__name"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="sender-to-recipient__arrow-container"
+      >
+        <div
+          class="sender-to-recipient__arrow-circle"
+        >
+          <i
+            class="fa fa-arrow-right sender-to-recipient__arrow-circle__icon"
+          />
+        </div>
+      </div>
+      <div
+        class="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+      >
+        <div
+          class="sender-to-recipient__sender-icon"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 24px; width: 24px; border-radius: 12px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(249, 108, 1);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2343E1"
+                    height="24"
+                    transform="translate(1.995636908144359 -2.9078959833795546) rotate(391.8 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F2CA02"
+                    height="24"
+                    transform="translate(-10.28190700465709 0.16715759851871784) rotate(278.6 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C8142C"
+                    height="24"
+                    transform="translate(16.427173764273576 -13.297284285395893) rotate(345.3 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="sender-to-recipient__tooltip-wrapper"
+        >
+          <div
+            class="sender-to-recipient__tooltip-container"
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <div
+              class="sender-to-recipient__name"
+              data-testid="sender-to-recipient__name"
+            >
+              0x85c...D65e
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirm-page-container-content"
+    >
+      
+      <div
+        class="confirm-page-container-summary"
+      >
+        <div
+          class="confirm-page-container-summary__action-row"
+        >
+          <div
+            class="confirm-page-container-summary__action"
+          >
+            <span
+              class="confirm-page-container-summary__action__name"
+            >
+              Sending ETH
+            </span>
+          </div>
+          <div
+            class="confirm-page-container-summary__nonce"
+          >
+            #undefined
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-summary__title"
+        >
+          <h3
+            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          >
+            <div
+              class="currency-display-component"
+              title="0.0001"
+            >
+              <span
+                class="currency-display-component__prefix"
+              >
+                <i
+                  class="fab fa-ethereum"
+                  style="font-size: 24px;"
+                />
+              </span>
+              <span
+                class="currency-display-component__text"
+              >
+                0.0001
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+      <div
+        class="box tabs box--flex-direction-row"
+      >
+        <ul
+          class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
+        >
+          <li
+            class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"
+          >
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
+              Details
+            </button>
+          </li>
+          <li
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
+          >
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
+              Data
+            </button>
+          </li>
+          <li
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
+          >
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
+              Hex
+            </button>
+          </li>
+        </ul>
+        <div
+          class="box tabs__content box--flex-direction-row"
+        >
+          <div
+            class="confirm-page-container-content__details"
+          >
+            <div
+              class="transaction-alerts"
+            />
+            <div
+              class="transaction-detail"
+            >
+              <div
+                class="transaction-detail-edit"
+              >
+                <button>
+                  Edit
+                </button>
+              </div>
+              <div
+                class="transaction-detail-rows"
+              >
+                <div
+                  class="transaction-detail-item"
+                >
+                  <div
+                    class="transaction-detail-item__row"
+                  >
+                    <h6
+                      class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                    >
+                      Estimated gas fee
+                      <div
+                        class="info-tooltip"
+                      >
+                        <div>
+                          <div
+                            aria-describedby="tippy-tooltip-2"
+                            class="info-tooltip__tooltip-container"
+                            data-original-title="null"
+                            data-tooltipped=""
+                            style="display: inline;"
+                            tabindex="0"
+                          >
+                            <svg
+                              viewBox="0 0 10 10"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                                fill="var(--color-icon-alternative)"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </h6>
+                    <div
+                      class="transaction-detail-item__detail-values"
+                    >
+                      <h6
+                        class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      >
+                        <div
+                          class="confirm-page-container-content__currency-container"
+                        >
+                          <div
+                            class="currency-display-component"
+                            title="0.000021"
+                          >
+                            <span
+                              class="currency-display-component__prefix"
+                            />
+                            <span
+                              class="currency-display-component__text"
+                            >
+                              0.000021
+                            </span>
+                          </div>
+                        </div>
+                      </h6>
+                    </div>
+                  </div>
+                  <div
+                    class="transaction-detail-item__row"
+                  >
+                    <div>
+                      
+                    </div>
+                    <h6
+                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                    >
+                      <strong>
+                        Max fee:
+                      </strong>
+                      <div
+                        class="confirm-page-container-content__currency-container"
+                      >
+                        <div
+                          class="currency-display-component"
+                          title="0.000021"
+                        >
+                          <span
+                            class="currency-display-component__prefix"
+                          />
+                          <span
+                            class="currency-display-component__text"
+                          >
+                            0.000021
+                          </span>
+                        </div>
+                      </div>
+                    </h6>
+                  </div>
+                </div>
+                <div
+                  class="transaction-detail-item"
+                >
+                  <div
+                    class="transaction-detail-item__row"
+                  >
+                    <h6
+                      class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                    >
+                      Total
+                    </h6>
+                    <div
+                      class="transaction-detail-item__detail-values"
+                    >
+                      <h6
+                        class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      >
+                        <div
+                          class="confirm-page-container-content__total-value"
+                        >
+                          <div
+                            class="currency-display-component"
+                            title="0.000121"
+                          >
+                            <span
+                              class="currency-display-component__prefix"
+                            />
+                            <span
+                              class="currency-display-component__text"
+                            >
+                              0.000121
+                            </span>
+                          </div>
+                        </div>
+                      </h6>
+                    </div>
+                  </div>
+                  <div
+                    class="transaction-detail-item__row"
+                  >
+                    <h6
+                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                    >
+                      Amount + gas fee
+                    </h6>
+                    <h6
+                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                    >
+                      <div
+                        class="confirm-page-container-content__total-amount"
+                      >
+                        <strong>
+                          Max amount:
+                        </strong>
+                         
+                        <div
+                          class="currency-display-component"
+                          title="0.000121"
+                        >
+                          <span
+                            class="currency-display-component__prefix"
+                          />
+                          <span
+                            class="currency-display-component__text"
+                          >
+                            0.000121
+                          </span>
+                        </div>
+                      </div>
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-content__error-container"
+      >
+        <div
+          class="error-message"
+        >
+          <span
+            class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            style="mask-image: url('./images/icons/warning.svg');"
+          />
+          <div
+            class="error-message__text"
+          >
+            Insufficient funds.
+          </div>
+        </div>
+      </div>
+      <div
+        class="page-container__footer"
+      >
+        <footer>
+          <button
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+            data-testid="page-container-footer-cancel"
+            role="button"
+            tabindex="0"
+          >
+            Reject
+          </button>
+          <button
+            class="button btn--rounded btn-primary page-container__footer-button"
+            data-testid="page-container-footer-next"
+            disabled=""
+            role="button"
+            tabindex="0"
+          >
+            Confirm
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Chip from '../chip';
 import IconWithFallback from '../icon-with-fallback';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BorderColor } from '../../../helpers/constants/design-system';
 
 export default function SiteOrigin({
   siteOrigin,
@@ -19,7 +19,7 @@ export default function SiteOrigin({
     <div className={classnames('site-origin', className)} title={title}>
       {chip ? (
         <Chip
-          borderColor={COLORS.BORDER_MUTED}
+          borderColor={BorderColor.borderMuted}
           label={siteOrigin}
           maxContent={false}
           leftIcon={

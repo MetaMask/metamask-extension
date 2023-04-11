@@ -13,7 +13,7 @@ const { BuildType } = require('./build-type');
  * @returns {string} The MetaMask extension version.
  */
 function getVersion(buildType, buildVersion) {
-  return buildType === BuildType.main
+  return buildType === BuildType.main || buildType === BuildType.beta
     ? manifestVersion
     : `${manifestVersion}-${buildType}.${buildVersion}`;
 }

@@ -12,11 +12,11 @@
     background-color: transparent;
 
     &:hover {
-      background-color: var(--color-background-alternative);
+      background-color: var(--color-background-default-hover);
     }
 
     &:active {
-      background-color: var(--color-background-alternative);
+      background-color: var(--color-background-default-hover);
     }
   }
 

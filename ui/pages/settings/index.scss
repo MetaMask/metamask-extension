@@ -12,6 +12,10 @@
   display: flex;
   flex-flow: column nowrap;
 
+  &__content-padded {
+    padding: 16px;
+  }
+
   &__error-text {
     @include H7;
 
@@ -84,7 +88,7 @@
 
         > div {
           &:hover {
-            background: var(--color-background-alternative);
+            background: var(--color-background-default-hover);
           }
         }
 
@@ -167,6 +171,11 @@
 
   &__subheader--break {
     margin-inline-start: 4px;
+    white-space: nowrap;
+    width: 100%;
+    max-width: calc(100% - 125px - 85px);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__sub-header {
@@ -194,18 +203,24 @@
     }
   }
 
+  &__security-tab-sub-header {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--color-icon-alternative);
+
+    &__bold {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--color-text-default);
+    }
+  }
+
   &__back-button {
-    display: none;
+    margin-right: 8px;
 
-    @include screen-sm-max {
-      display: block;
-      margin-right: 8px;
-      cursor: pointer;
-
-      [dir='rtl'] & {
-        margin: 0 0 0 8px;
-        transform: rotate(180deg);
-      }
+    [dir='rtl'] & {
+      margin: 0 0 0 8px;
+      transform: rotate(180deg);
     }
   }
 
@@ -230,6 +245,12 @@
       .tab-bar__tab {
         @include screen-sm-min {
           max-height: 50px;
+        }
+
+        &__caret {
+          @include screen-sm-min {
+            display: none;
+          }
         }
       }
     }
@@ -258,15 +279,6 @@
     display: flex;
     flex-direction: column;
     padding: 10px 0 20px;
-
-    &--parent {
-      padding: 10px 0 10px;
-    }
-
-    &--dependent {
-      margin-left: 48px;
-      padding: 0 0 20px;
-    }
   }
 
   &__content-item {
@@ -275,6 +287,8 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 500;
 
     @include screen-sm-max {
       height: initial;
@@ -327,18 +341,29 @@
       margin-top: 8px;
       margin-bottom: 12px;
       color: var(--color-text-default);
+      font-size: 14px;
+      font-weight: 400;
     }
+  }
+
+  &__content-row-experimental {
+    padding: 10px 0 0 12px;
   }
 
   &__content-label {
     text-transform: capitalize;
   }
 
+  &__content-unordered-list {
+    padding-left: 2.5rem;
+    margin-top: 1rem;
+    list-style: disc;
+  }
+
   &__content-description {
     @include H6;
 
-    color: var(--color-text-default);
-    padding-top: 5px;
+    color: var(--color-text-alternative);
 
     a {
       color: var(--color-primary-default);
@@ -354,6 +379,12 @@
       max-width: 100%;
       width: 100%;
     }
+  }
+
+  &__content-item-col-open-sea {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4px;
   }
 
   &__button {

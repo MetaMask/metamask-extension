@@ -43,12 +43,7 @@ describe('Sentry errors', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
         // Trigger error
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-        await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        );
-        await driver.fill('input[placeholder="0"]', `-01`);
+        driver.executeScript('window.stateHooks.throwTestError()');
         // Wait for Sentry request
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
@@ -60,11 +55,8 @@ describe('Sentry errors', function () {
         const [{ type, value }] = mockJsonBody.exception.values;
         const { participateInMetaMetrics } = extra.appState.store.metamask;
         // Verify request
-        assert.equal(type, 'BigNumber Error');
-        assert.equal(
-          value,
-          'new BigNumber() not a base 16 number: 0x-de0b6b3a7640000',
-        );
+        assert.equal(type, 'TestError');
+        assert.equal(value, 'Test Error');
         assert.equal(level, 'error');
         assert.equal(participateInMetaMetrics, true);
       },

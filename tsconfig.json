@@ -18,10 +18,16 @@
     "**/*.test.js",
     "**/*.test.ts",
     "**/*.test.tsx",
+    "**/jest-coverage/**/*",
+    "**/__mocks__/**/*",
+    "**/storybook-build/**/*",
+    "**/*.stories.*",
     ".storybook/**/*",
     "builds/**/*",
     "dist/**/*",
-    "node_modules/**"
+    "node_modules/**",
+    "development/ts-migration-dashboard/build/**/*",
+    "development/ts-migration-dashboard/intermediate/**/*"
   ],
   "extends": "@tsconfig/node16/tsconfig.json",
   "paths": {

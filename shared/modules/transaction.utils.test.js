@@ -1,6 +1,6 @@
 import EthQuery from 'ethjs-query';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { TRANSACTION_TYPES } from '../constants/transaction';
+import { TransactionType } from '../constants/transaction';
 import {
   determineTransactionType,
   isEIP1559Transaction,
@@ -16,7 +16,7 @@ describe('Transaction.utils', function () {
       );
       expect(tokenData).toStrictEqual(expect.anything());
       const { name, args } = tokenData;
-      expect(name).toStrictEqual(TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
+      expect(name).toStrictEqual(TransactionType.tokenMethodTransfer);
       const to = args._to;
       const value = args._value.toString();
       expect(to).toStrictEqual('0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706');
@@ -130,7 +130,7 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        type: TransactionType.simpleSend,
         getCodeResponse: null,
       });
     });
@@ -154,7 +154,7 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+        type: TransactionType.tokenMethodTransfer,
         getCodeResponse: '0xab',
       });
     });
@@ -178,7 +178,7 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        type: TransactionType.simpleSend,
         getCodeResponse: '0x',
       });
     });
@@ -202,7 +202,7 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+        type: TransactionType.tokenMethodApprove,
         getCodeResponse: '0xab',
       });
     });
@@ -216,7 +216,7 @@ describe('Transaction.utils', function () {
         query,
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.DEPLOY_CONTRACT,
+        type: TransactionType.deployContract,
         getCodeResponse: undefined,
       });
     });
@@ -230,7 +230,7 @@ describe('Transaction.utils', function () {
         query,
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        type: TransactionType.simpleSend,
         getCodeResponse: '0x',
       });
     });
@@ -254,7 +254,7 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        type: TransactionType.simpleSend,
         getCodeResponse: null,
       });
     });
@@ -278,7 +278,7 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
+        type: TransactionType.contractInteraction,
         getCodeResponse: '0x0a',
       });
     });
@@ -302,7 +302,32 @@ describe('Transaction.utils', function () {
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
-        type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
+        type: TransactionType.contractInteraction,
+        getCodeResponse: '0x0a',
+      });
+    });
+
+    it('should return contractInteraction for send with approve', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0xa',
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
+      const result = await determineTransactionType(
+        {
+          to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+          value: '0x5af3107a4000',
+          data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
+        },
+        new EthQuery(_provider),
+      );
+      expect(result).toMatchObject({
+        type: TransactionType.contractInteraction,
         getCodeResponse: '0x0a',
       });
     });

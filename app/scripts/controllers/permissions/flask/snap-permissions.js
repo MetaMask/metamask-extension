@@ -1,4 +1,4 @@
-import { endowmentPermissionBuilders } from '@metamask/snap-controllers';
+import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   restrictedMethodPermissionBuilders,
   selectHooks,
@@ -15,7 +15,7 @@ import {
 export const buildSnapEndowmentSpecifications = () =>
   Object.values(endowmentPermissionBuilders).reduce(
     (allSpecifications, { targetKey, specificationBuilder }) => {
-      if (!ExcludedSnapEndowments.has(targetKey)) {
+      if (!Object.keys(ExcludedSnapEndowments).includes(targetKey)) {
         allSpecifications[targetKey] = specificationBuilder();
       }
       return allSpecifications;
@@ -27,10 +27,10 @@ export const buildSnapEndowmentSpecifications = () =>
  * @param {Record<string, Function>} hooks - The hooks for the Snap
  * restricted method implementations.
  */
-export function buildSnapRestrictedMethodSpecifications(hooks) {
-  return Object.values(restrictedMethodPermissionBuilders).reduce(
+export const buildSnapRestrictedMethodSpecifications = (hooks) =>
+  Object.values(restrictedMethodPermissionBuilders).reduce(
     (specifications, { targetKey, specificationBuilder, methodHooks }) => {
-      if (!ExcludedSnapPermissions.has(targetKey)) {
+      if (!Object.keys(ExcludedSnapPermissions).includes(targetKey)) {
         specifications[targetKey] = specificationBuilder({
           methodHooks: selectHooks(hooks, methodHooks),
         });
@@ -39,4 +39,3 @@ export function buildSnapRestrictedMethodSpecifications(hooks) {
     },
     {},
   );
-}

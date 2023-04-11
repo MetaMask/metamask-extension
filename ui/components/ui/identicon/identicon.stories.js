@@ -4,7 +4,7 @@ import Identicon from './identicon.component';
 
 export default {
   title: 'Components/UI/Identicon',
-  id: __filename,
+
   component: Identicon,
   parameters: {
     docs: {

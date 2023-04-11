@@ -2,11 +2,12 @@ import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  COLORS,
   RESIZE,
-  SIZES,
-  BORDER_STYLE,
+  BorderStyle,
   BLOCK_SIZES,
+  BorderRadius,
+  BorderColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
@@ -14,7 +15,7 @@ import Textarea from '.';
 
 export default {
   title: 'Components/UI/Textarea',
-  id: __filename,
+
   component: Textarea,
   parameters: {
     docs: {
@@ -73,9 +74,9 @@ DefaultStory.args = {
   resize: RESIZE.BOTH,
   scrollable: false,
   boxProps: {
-    borderColor: COLORS.BORDER_MUTED,
-    borderRadius: SIZES.SM,
-    borderStyle: BORDER_STYLE.SOLID,
+    borderColor: BorderColor.borderMuted,
+    borderRadius: Size.SM,
+    borderStyle: BorderStyle.solid,
     padding: [2, 4],
   },
   height: 'auto',
@@ -110,9 +111,9 @@ Scrollable.args = {
   scrollable: true,
   height: 170,
   boxProps: {
-    borderColor: COLORS.TRANSPARENT,
-    borderRadius: SIZES.NONE,
-    borderStyle: BORDER_STYLE.NONE,
+    borderColor: BorderColor.transparent,
+    borderRadius: BorderRadius.none,
+    borderStyle: BorderStyle.none,
     padding: [2, 4],
     width: BLOCK_SIZES.FULL,
   },

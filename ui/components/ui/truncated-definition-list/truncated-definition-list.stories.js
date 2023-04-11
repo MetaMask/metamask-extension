@@ -3,9 +3,20 @@ import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {
   title: 'Components/UI/TruncatedDefinitionList',
-  id: __filename,
+
   argTypes: {
-    title: { control: 'text', defaultValue: 'Basic definitions' },
+    title: {
+      control: 'text',
+    },
+    dictionary: {
+      control: 'object',
+    },
+    prefaceKeys: {
+      control: 'object',
+    },
+  },
+  args: {
+    title: 'Basic definitions',
   },
 };
 
@@ -32,32 +43,17 @@ const tooltips = {
 
 export const DefaultStory = (args) => <TruncatedDefinitionList {...args} />;
 
-DefaultStory.argTypes = {
-  dictionary: {
-    control: 'object',
-    defaultValue: basic,
-  },
-  prefaceKeys: {
-    control: 'object',
-    defaultValue: ['term', 'definition'],
-  },
-};
-
 DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  dictionary: basic,
+  prefaceKeys: ['term', 'definition'],
+};
 
 export const WithTooltips = (args) => <TruncatedDefinitionList {...args} />;
 
-WithTooltips.argTypes = {
-  dictionary: {
-    control: 'object',
-    defaultValue: advanced,
-  },
-  tooltips: {
-    control: 'object',
-    defaultValue: tooltips,
-  },
-  prefaceKeys: {
-    control: 'array',
-    defaultValue: ['Chain ID'],
-  },
+WithTooltips.args = {
+  dictionary: advanced,
+  tooltips,
+  prefaceKeys: ['Chain ID'],
 };

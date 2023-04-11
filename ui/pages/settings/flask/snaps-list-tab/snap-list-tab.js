@@ -3,19 +3,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Typography from '../../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
-  COLORS,
+  JustifyContent,
+  AlignItems,
+  Color,
+  TEXT_ALIGN,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
+  Size,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import { disableSnap, enableSnap } from '../../../../store/actions';
 import { getSnaps } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../../components/component-library/icon/deprecated';
+import {
+  BannerTip,
+  BannerTipLogoType,
+  ButtonLink,
+  Text,
+} from '../../../../components/component-library';
 
 const SnapListTab = () => {
   const t = useI18nContext();
@@ -42,18 +53,6 @@ const SnapListTab = () => {
     <div className="snap-list-tab" ref={settingsRef}>
       {Object.entries(snaps).length ? (
         <div className="snap-list-tab__body">
-          <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
-            <Typography variant={TYPOGRAPHY.H5} marginBottom={2}>
-              {t('expandExperience')}
-            </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H6}
-              color={COLORS.TEXT_ALTERNATIVE}
-              marginBottom={2}
-            >
-              {t('manageSnaps')}
-            </Typography>
-          </Box>
           <div className="snap-list-tab__wrapper">
             {Object.entries(snaps).map(([key, snap]) => {
               return (
@@ -82,12 +81,54 @@ const SnapListTab = () => {
           className="snap-list-tab__container--no-snaps"
           width="full"
           height="full"
-          justifyContent={JUSTIFY_CONTENT.CENTER}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
+          flexDirection={FLEX_DIRECTION.COLUMN}
         >
-          <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_ALTERNATIVE}>
-            <span>{t('noSnaps')}</span>
-          </Typography>
+          <Box
+            className="snap-list-tab__container--no-snaps_inner"
+            width="full"
+            height="full"
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
+            <Icon
+              name={ICON_NAMES.SNAPS}
+              color={Color.iconMuted}
+              className="snap-list-tab__no-snaps_icon"
+              size={ICON_SIZES.AUTO}
+            />
+            <Text
+              color={Color.textMuted}
+              align={TEXT_ALIGN.CENTER}
+              marginTop={4}
+            >
+              {t('noSnaps')}
+            </Text>
+          </Box>
+          <Box
+            className="snap-list-tab__container--no-snaps_banner-tip"
+            width="full"
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.flexEnd}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+          >
+            <BannerTip
+              logoType={BannerTipLogoType.Greeting}
+              title={t('exploreMetaMaskSnaps')}
+              description={t('extendWalletWithSnaps')}
+            >
+              <ButtonLink
+                size={Size.auto}
+                href="https://metamask.io/snaps/"
+                target="_blank"
+              >
+                {`${t('learnMoreUpperCase')}`}
+              </ButtonLink>
+            </BannerTip>
+          </Box>
         </Box>
       )}
     </div>

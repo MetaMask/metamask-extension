@@ -7,8 +7,11 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
-import IconCaretLeft from '../../../../components/ui/icon/icon-caret-left';
 import Confusable from '../../../../components/ui/confusable';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../../components/component-library/icon/deprecated';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -16,9 +19,9 @@ export default class AddRecipient extends Component {
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
     updateRecipient: PropTypes.func,
-    ensResolution: PropTypes.string,
-    ensError: PropTypes.string,
-    ensWarning: PropTypes.string,
+    domainResolution: PropTypes.string,
+    domainError: PropTypes.string,
+    domainWarning: PropTypes.string,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
@@ -102,7 +105,7 @@ export default class AddRecipient extends Component {
 
   render() {
     const {
-      ensResolution,
+      domainResolution,
       recipient,
       userInput,
       addressBookEntryName,
@@ -117,9 +120,9 @@ export default class AddRecipient extends Component {
         recipient.nickname,
         'validated user input',
       );
-    } else if (ensResolution && !recipient.error) {
+    } else if (domainResolution && !recipient.error) {
       content = this.renderExplicitAddress(
-        ensResolution,
+        domainResolution,
         addressBookEntryName || userInput,
         'ENS resolution',
       );
@@ -181,7 +184,7 @@ export default class AddRecipient extends Component {
           className="send__select-recipient-wrapper__list__link"
           onClick={useContactListForRecipientSearch}
         >
-          <IconCaretLeft className="send__select-recipient-wrapper__list__back-caret" />
+          <Icon name={ICON_NAMES.ARROW_LEFT} />
           {t('backToAll')}
         </Button>
         <RecipientGroup
@@ -233,19 +236,19 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const { ensError, recipient, ensWarning } = this.props;
+    const { domainError, recipient, domainWarning } = this.props;
     const { t } = this.context;
 
-    if (ensError || (recipient.error && recipient.error !== 'required')) {
+    if (domainError || (recipient.error && recipient.error !== 'required')) {
       return (
         <Dialog type="error" className="send__error-dialog">
-          {t(ensError ?? recipient.error)}
+          {t(domainError ?? recipient.error)}
         </Dialog>
       );
-    } else if (ensWarning || recipient.warning) {
+    } else if (domainWarning || recipient.warning) {
       return (
         <Dialog type="warning" className="send__error-dialog">
-          {t(ensWarning ?? recipient.warning)}
+          {t(domainWarning ?? recipient.warning)}
         </Dialog>
       );
     }

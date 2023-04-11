@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -11,11 +11,9 @@ import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
-
-const { isValidMnemonic } = ethers.utils;
 
 const defaultNumberOfWords = 12;
 
@@ -133,7 +131,7 @@ export default function SrpInput({ onChange, srpText }) {
       <label className="import-srp__srp-label">
         <Typography
           align={TEXT_ALIGN.LEFT}
-          variant={TYPOGRAPHY.H4}
+          variant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {srpText}

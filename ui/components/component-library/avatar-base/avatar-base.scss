@@ -1,0 +1,29 @@
+.mm-avatar-base {
+  --avatar-size: var(--size, 16px);
+
+  &--size-xs {
+    --size: 16px;
+  }
+
+  &--size-sm {
+    --size: 24px;
+  }
+
+  &--size-md {
+    --size: 32px;
+  }
+
+  &--size-lg {
+    --size: 40px;
+  }
+
+  &--size-xl {
+    --size: 48px;
+  }
+
+  height: var(--avatar-size);
+  width: var(--avatar-size);
+  max-width: var(--avatar-size);
+  flex: 0 0 var(--avatar-size);
+  overflow: hidden;
+}

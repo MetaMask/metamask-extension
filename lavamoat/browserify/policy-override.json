@@ -26,6 +26,12 @@
         "clearTimeout": true
       }
     },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
     "react-dnd-html5-backend": {
       "globals": {
         "clearTimeout": true,
@@ -38,7 +44,17 @@
         "crypto.getRandomValues": true
       }
     },
-    "eth-keyring-controller>browser-passworder": {
+    "eth-keyring-controller>@metamask/browser-passworder": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk": {
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>uuid": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>uuid": {
       "globals": {
         "crypto": true
       }
@@ -87,7 +103,22 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snap-controllers>nanoid": {
+    "@metamask/approval-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/notification-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

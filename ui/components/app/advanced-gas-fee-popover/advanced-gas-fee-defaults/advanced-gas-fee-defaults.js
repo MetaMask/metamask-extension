@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
 import {
-  COLORS,
   DISPLAY,
   FLEX_DIRECTION,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
@@ -67,7 +67,7 @@ const AdvancedGasFeeDefaults = () => {
     }
   };
 
-  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+  if (editGasMode === EditGasModes.swaps) {
     return null;
   }
 
@@ -88,8 +88,8 @@ const AdvancedGasFeeDefaults = () => {
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
         <Typography
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H7}
+          color={TextColor.textAlternative}
           margin={0}
         >
           {isDefaultSettingsSelected

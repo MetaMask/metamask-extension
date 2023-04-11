@@ -6,7 +6,7 @@ import ButtonGroup from '.';
 
 export default {
   title: 'Components/UI/ButtonGroup',
-  id: __filename,
+
   component: ButtonGroup,
   parameters: { docs: { page: README } },
   argTypes: {

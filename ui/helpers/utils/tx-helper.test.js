@@ -11,7 +11,16 @@ describe('txHelper', () => {
       c: { metamaskNetworkId, time: 2 },
     };
 
-    const sorted = txHelper(txs, null, null, metamaskNetworkId, chainId);
+    const sorted = txHelper(
+      txs,
+      null,
+      null,
+      null,
+      null,
+      null,
+      metamaskNetworkId,
+      chainId,
+    );
     expect(sorted[0].time).toStrictEqual(1);
     expect(sorted[2].time).toStrictEqual(3);
   });

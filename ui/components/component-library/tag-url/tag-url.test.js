@@ -52,9 +52,9 @@ describe('TagUrl', () => {
       />,
     );
 
-    expect(container.getElementsByClassName('tag-url__lock-icon')).toHaveLength(
-      1,
-    );
+    expect(
+      container.getElementsByClassName('mm-tag-url__lock-icon'),
+    ).toHaveLength(1);
   });
 
   it('should render avatar with custom props', () => {
@@ -104,5 +104,16 @@ describe('TagUrl', () => {
     expect(container.props.actionButtonProps.className).toStrictEqual(
       'tag-url button',
     );
+  });
+  // className
+  it('should render with custom className', () => {
+    const { getByTestId } = render(
+      <TagUrl
+        label="app.uniswap.org"
+        data-testid="tag-url"
+        className="test-class"
+      />,
+    );
+    expect(getByTestId('tag-url')).toHaveClass('test-class');
   });
 });

@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import IconCopy from '../icon/icon-copy';
-import IconBlockExplorer from '../icon/icon-block-explorer';
 import Box from '../box/box';
 import Tooltip from '../tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -10,14 +8,16 @@ import Identicon from '../identicon';
 import Typography from '../typography/typography';
 import {
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
-  COLORS,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  TextColor,
+  Color,
 } from '../../../helpers/constants/design-system';
-import Button from '../button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { ButtonIcon } from '../../component-library';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 
 export default function ContractTokenValues({
   address,
@@ -30,62 +30,54 @@ export default function ContractTokenValues({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
       className="contract-token-values"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={2}
     >
-      <Box marginRight={2}>
-        <Identicon address={address} diameter={24} />
-      </Box>
+      <Identicon address={address} diameter={24} />
       <Typography
-        variant={TYPOGRAPHY.H2}
+        variant={TypographyVariant.H2}
         fontWeight={FONT_WEIGHT.BOLD}
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         marginTop={0}
         marginBottom={0}
       >
         {tokenName}
       </Typography>
-      <Box className="contract-token-values__copy-address">
-        <Tooltip
-          position="top"
-          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-        >
-          <Button
-            type="link"
-            className="contract-token-values__copy-address__button"
-            onClick={() => {
-              handleCopy(address);
-            }}
-          >
-            <IconCopy size={24} color="var(--color-icon-muted)" />
-          </Button>
-        </Tooltip>
-      </Box>
-      <Box className="contract-token-values__block-explorer">
-        <Tooltip position="top" title={t('openInBlockExplorer')}>
-          <Button
-            type="link"
-            className="contract-token-values__block-explorer__button"
-            onClick={() => {
-              const blockExplorerTokenLink = getAccountLink(
-                address,
-                chainId,
-                {
-                  blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                },
-                null,
-              );
-              global.platform.openTab({
-                url: blockExplorerTokenLink,
-              });
-            }}
-          >
-            <IconBlockExplorer size={24} color="var(--color-icon-muted)" />
-          </Button>
-        </Tooltip>
-      </Box>
+      <Tooltip
+        position="top"
+        title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+      >
+        <ButtonIcon
+          iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+          color={Color.iconMuted}
+          onClick={() => handleCopy(address)}
+          ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
+        />
+      </Tooltip>
+      <Tooltip position="top" title={t('openInBlockExplorer')}>
+        <ButtonIcon
+          display={DISPLAY.FLEX}
+          iconName={ICON_NAMES.EXPORT}
+          color={Color.iconMuted}
+          onClick={() => {
+            const blockExplorerTokenLink = getAccountLink(
+              address,
+              chainId,
+              {
+                blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+              },
+              null,
+            );
+            global.platform.openTab({
+              url: blockExplorerTokenLink,
+            });
+          }}
+          ariaLabel={t('openInBlockExplorer')}
+        />
+      </Tooltip>
     </Box>
   );
 }

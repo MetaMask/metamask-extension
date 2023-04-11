@@ -6,7 +6,7 @@ to a 'failed' stated
 */
 
 import { cloneDeep } from 'lodash';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 
 const version = 15;
 
@@ -36,7 +36,7 @@ function transformState(state) {
       if (!txMeta.err) {
         return txMeta;
       } else if (txMeta.err.message === 'Gave up submitting tx.') {
-        txMeta.status = TRANSACTION_STATUSES.FAILED;
+        txMeta.status = TransactionStatus.failed;
       }
       return txMeta;
     });

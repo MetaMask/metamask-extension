@@ -3,7 +3,7 @@ import AppHeader from '.';
 
 export default {
   title: 'Components/App/AppHeader',
-  id: __filename,
+
   argTypes: {
     hideNetworkIndicator: {
       control: 'boolean',

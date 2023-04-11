@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import data from '../first-time-state';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import migration25 from './025';
 
 const firstTimeState = {
@@ -26,11 +26,11 @@ while (transactions.length <= 10) {
       random: 'stuff',
       chainId: 2,
     },
-    status: TRANSACTION_STATUSES.UNAPPROVED,
+    status: TransactionStatus.unapproved,
   });
   transactions.push({
     txParams: { from: '0x8aCce2391c0d510a6c5E5d8f819a678f79b7e675' },
-    status: TRANSACTION_STATUSES.CONFIRMED,
+    status: TransactionStatus.confirmed,
   });
 }
 
@@ -43,10 +43,10 @@ describe('storage is migrated successfully and the txParams.from are lowercase',
     const migratedTransactions =
       migratedData.data.TransactionController.transactions;
     migratedTransactions.forEach((tx) => {
-      if (tx.status === TRANSACTION_STATUSES.UNAPPROVED) {
+      if (tx.status === TransactionStatus.unapproved) {
         expect(!tx.txParams.random).toStrictEqual(true);
       }
-      if (tx.status === TRANSACTION_STATUSES.UNAPPROVED) {
+      if (tx.status === TransactionStatus.unapproved) {
         expect(!tx.txParams.chainId).toStrictEqual(true);
       }
     });

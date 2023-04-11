@@ -1,4 +1,5 @@
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { KeyringType } from '../../shared/constants/keyring';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -128,7 +129,6 @@ export const createSwapsMockStore = () => {
         address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         occurances: 4,
       },
-      currentSmartTransactionsErrorMessageDismissed: false,
       swapsSTXLoading: false,
     },
     metamask: {
@@ -217,6 +217,7 @@ export const createSwapsMockStore = () => {
           postTxBalance: '19a61aaaf06e4bd1',
         },
       ],
+      useCurrencyRateCheck: true,
       conversionRate: 1,
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
@@ -251,10 +252,10 @@ export const createSwapsMockStore = () => {
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      keyringTypes: ['Simple Key Pair', 'HD Key Tree'],
+      keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [
         {
-          type: 'HD Key Tree',
+          type: KeyringType.hdKeyTree,
           accounts: [
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -262,11 +263,11 @@ export const createSwapsMockStore = () => {
           ],
         },
         {
-          type: 'Simple Key Pair',
+          type: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      frequentRpcListDetail: [],
+      networkConfigurations: {},
       tokens: [
         {
           erc20: true,

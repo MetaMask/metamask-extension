@@ -1,17 +1,9 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
-import { addHexPrefix } from 'ethereumjs-util';
 import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -23,25 +15,20 @@ import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
 import {
-  setSelectedSettingsRpcUrl,
-  updateAndSetCustomRpc,
-  editRpc,
+  setSelectedNetworkConfigurationId,
+  upsertNetworkConfiguration,
+  editAndSetNetworkConfiguration,
   showModal,
   setNewNetworkAdded,
 } from '../../../../store/actions';
-import {
-  DEFAULT_ROUTE,
-  NETWORKS_ROUTE,
-} from '../../../../helpers/constants/routes';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
   infuraProjectId,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
-import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -82,13 +69,14 @@ const isValidWhenAppended = (url) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
   selectedNetwork,
+  cancelCallback,
+  submitCallback,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName = label || (labelKey && t(labelKey));
@@ -180,7 +168,7 @@ const NetworksForm = ({
       setTicker('');
       setBlockExplorerUrl('');
       setErrors({});
-      dispatch(setSelectedSettingsRpcUrl(''));
+      dispatch(setSelectedNetworkConfigurationId(''));
     };
   }, [
     setNetworkName,
@@ -504,58 +492,58 @@ const NetworksForm = ({
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
-
+      let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
-          editRpc(
-            selectedNetwork.rpcUrl,
-            rpcUrl,
-            prefixedChainId,
-            ticker,
-            networkName,
+          editAndSetNetworkConfiguration(
             {
-              ...rpcPrefs,
-              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+              rpcUrl,
+              ticker,
+              networkConfigurationId: selectedNetwork.networkConfigurationId,
+              chainId: prefixedChainId,
+              nickname: networkName,
+              rpcPrefs: {
+                ...rpcPrefs,
+                blockExplorerUrl:
+                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+              },
+            },
+            {
+              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
       } else {
-        await dispatch(
-          updateAndSetCustomRpc(rpcUrl, prefixedChainId, ticker, networkName, {
-            ...rpcPrefs,
-            blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-          }),
+        networkConfigurationId = await dispatch(
+          upsertNetworkConfiguration(
+            {
+              rpcUrl,
+              ticker,
+              chainId: prefixedChainId,
+              nickname: networkName,
+              rpcPrefs: {
+                ...rpcPrefs,
+                blockExplorerUrl:
+                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+              },
+            },
+            {
+              setActive: true,
+              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+            },
+          ),
         );
       }
-
       if (addNewNetwork) {
-        let rpcUrlOrigin;
-        try {
-          rpcUrlOrigin = new URL(rpcUrl).origin;
-        } catch {
-          // error
-        }
-        trackEvent({
-          event: 'Custom Network Added',
-          category: EVENT.CATEGORIES.NETWORK,
-          referrer: {
-            url: rpcUrlOrigin,
-          },
-          properties: {
-            chain_id: addHexPrefix(Number(chainId).toString(16)),
-            network_name: networkName,
-            network: rpcUrlOrigin,
-            symbol: ticker,
-            block_explorer_url: blockExplorerUrl,
-            source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
-          },
-          sensitiveProperties: {
-            rpc_url: rpcUrlOrigin,
-          },
-        });
-        dispatch(setNewNetworkAdded(networkName));
-        history.push(DEFAULT_ROUTE);
+        dispatch(
+          setNewNetworkAdded({
+            nickname: networkName,
+            networkConfigurationId,
+          }),
+        );
+
+        submitCallback?.();
       }
     } catch (error) {
       setIsSubmitting(false);
@@ -565,8 +553,8 @@ const NetworksForm = ({
 
   const onCancel = () => {
     if (addNewNetwork) {
-      dispatch(setSelectedSettingsRpcUrl(''));
-      history.push(NETWORKS_ROUTE);
+      dispatch(setSelectedNetworkConfigurationId(''));
+      cancelCallback?.();
     } else {
       resetForm();
     }
@@ -576,10 +564,10 @@ const NetworksForm = ({
     dispatch(
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
-        target: selectedNetwork.rpcUrl,
+        target: selectedNetwork.networkConfigurationId,
         onConfirm: () => {
           resetForm();
-          dispatch(setSelectedSettingsRpcUrl(''));
+          dispatch(setSelectedNetworkConfigurationId(''));
         },
       }),
     );
@@ -587,7 +575,7 @@ const NetworksForm = ({
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
-    selectedNetwork?.rpcUrl && warnings.chainId && chainIdMatchesFeaturedRPC;
+    selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||
@@ -602,6 +590,7 @@ const NetworksForm = ({
       className={classnames({
         'networks-tab__network-form': !addNewNetwork,
         'networks-tab__add-network-form': addNewNetwork,
+        'networks-tab__restrict-height': restrictHeight,
       })}
     >
       {addNewNetwork ? (
@@ -720,6 +709,9 @@ NetworksForm.propTypes = {
   isCurrentRpcTarget: PropTypes.bool,
   networksToRender: PropTypes.array.isRequired,
   selectedNetwork: PropTypes.object,
+  cancelCallback: PropTypes.func,
+  submitCallback: PropTypes.func,
+  restrictHeight: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {

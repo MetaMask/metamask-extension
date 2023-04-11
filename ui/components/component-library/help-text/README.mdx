@@ -1,84 +1,93 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import { Text } from '..';
+
 import { HelpText } from './help-text';
 
 # HelpText
 
-The `HelpText` is intended to be used as the help or error text under a form element
+The `HelpText` is used as feedback text under a form field including error, success, warning or info messages
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--default-story" />
+  <Story id="components-componentlibrary-helptext--default-story" />
 </Canvas>
 
 ## Props
 
-The `HelpText` accepts all props below as well as all [Text](/docs/ui-components-component-library-text-text-stories-js--default-story#props) and [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props.
+The `HelpText` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={HelpText} />
 
+`HelpText` accepts all [Text](/docs/components-componentlibrary-text--default-story#props) component props
+
+<ArgsTable of={Text} />
+
 ### Children
 
-The `children` of the `HelpText` can be plain text or react nodes.
-
-<Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--children" />
-</Canvas>
+`HelpText` renders as a `<p>` tag if the child is a `string` or a `<div>` if the child is an `object`.
 
 ```jsx
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../ui/component-library/icon';
-import { HelpText } from '../../ui/component-library/help-text';
+import { Size, IconColor } from '../../../helpers/constants/design-system';
+import { HelpText, Icon, IconName, IconSize } from '../../component-library';
 
-<HelpText>Plain text</HelpText>
+<HelpText>Plain text</HelpText> // renders as <p>Plain text</p>
 <HelpText>
-  Text and icon
+  <span>Text and icon</span>
   <Icon
     marginLeft={1}
-    color={COLORS.INHERIT}
-    name={ICON_NAMES.WARNING_FILLED}
-    size={SIZES.AUTO}
+    color={IconColor.iconAlternative}
+    name={IconName.Warning}
+    size={IconSize.Inherit}
   />
-</HelpText>
+</HelpText> // renders as <div><span>Text and icon</span> <div style={{background: icon/warning.svg}} /></div>
 ```
 
-### Error
+### Severity
 
-Use the `error` prop to show the `HelpText` in error state.
+Use the `severity` prop and `SEVERITIES` object to change the severity of the `HelpText`
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--error-story" />
+  <Story id="components-componentlibrary-helptext--severity-story" />
 </Canvas>
 
 ```jsx
-import { HelpText } from '../../ui/component-library/help-text';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { HelpText } from '../../component-library';
 
-<HelpText error>This HelpText in error state</HelpText>;
+<HelpText>HelpText without severity prop</HelpText>
+<HelpText severity={SEVERITIES.DANGER}>
+  HelpText with severity: SEVERITY.DANGER
+</HelpText>
+<HelpText severity={SEVERITIES.SUCCESS}>
+  HelpText with severity: SEVERITY.SUCCESS
+</HelpText>
+<HelpText severity={SEVERITIES.WARNING}>
+  HelpText with severity: SEVERITY.WARNING
+</HelpText>
+<HelpText severity={SEVERITIES.INFO}>
+  HelpText with severity: SEVERITY.INFO
+</HelpText>
 ```
 
 ### Color
 
-It may be useful to change the color of the `HelpText`. Use the `color` prop and the `COLORS` object to change the color of the `HelpText`. Defaults to `COLORS.TEXT_DEFAULT`.
+It may be useful to change the color of the `HelpText`. Use the `color` prop and the `Color` object to change the color of the `HelpText`. Defaults to `Color.textDefault`.
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--color" />
+  <Story id="components-componentlibrary-helptext--color-story" />
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
-import { HelpText } from '../../ui/component-library/help-text';
+import { Color } from '../../../helpers/constants/design-system';
+import { HelpText } from '../../component-library';
 
-<Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-  <HelpText color={COLORS.TEXT_DEFAULT}>
-    The HelpText default color is COLORS.TEXT_DEFAULT
-  </HelpText>
-  <HelpText color={COLORS.INFO_DEFAULT}>
-    This HelpText color is COLORS.INFO_DEFAULT
-  </HelpText>
-  <HelpText color={COLORS.WARNING_DEFAULT}>
-    This HelpText color is COLORS.WARNING_DEFAULT
-  </HelpText>
-  <HelpText color={COLORS.SUCCESS_DEFAULT}>
-    This HelpText color is COLORS.SUCCESS_DEFAULT
-  </HelpText>
-</Box>;
+<HelpText color={TextColor.textDefault}>
+  This HelpText default color is TextColor.textDefault
+</HelpText>
+<HelpText color={TextColor.textAlternative}>
+  This HelpText color is TextColor.textAlternative
+</HelpText>
+<HelpText color={TextColor.textMuted}>
+  This HelpText color is TextColor.textMuted
+</HelpText>
 ```

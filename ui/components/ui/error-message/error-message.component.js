@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+import { IconColor, Size } from '../../../helpers/constants/design-system';
 
 /**
  * @deprecated - Please use ActionableMessage type danger
@@ -15,7 +17,13 @@ const ErrorMessage = (props, context) => {
 
   return (
     <div className="error-message">
-      <i className="fa fa-exclamation-circle error-message__icon" />
+      <Icon
+        className="error-message__icon"
+        name={ICON_NAMES.WARNING}
+        size={Size.SM}
+        color={IconColor.errorDefault}
+        marginRight={2}
+      />
       <div className="error-message__text">{error}</div>
     </div>
   );

@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { flatten } from 'lodash';
 import CheckBox from '../../ui/check-box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
@@ -16,6 +17,16 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
   if (!permissions.length) {
     return null;
   }
+
+  const permissionLabels = flatten(
+    permissions.map(({ key, value }) =>
+      getPermissionDescription({
+        t,
+        permissionName: key,
+        permissionValue: value,
+      }),
+    ),
+  );
 
   return (
     <div className="connected-accounts-permissions">
@@ -43,20 +54,18 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
       >
         <p>{t('authorizedPermissions')}:</p>
         <ul className="connected-accounts-permissions__list">
-          {permissions.map(({ key: permissionName }) => (
+          {permissionLabels.map(({ label }, idx) => (
             <li
-              key={permissionName}
+              key={`connected-permission-${idx}`}
               className="connected-accounts-permissions__list-item"
             >
               <CheckBox
                 checked
                 disabled
-                id={permissionName}
+                id={`connected-permission-${idx}`}
                 className="connected-accounts-permissions__checkbox"
               />
-              <label htmlFor={permissionName}>
-                {getPermissionDescription(t, permissionName).label}
-              </label>
+              <label htmlFor={`connected-permission-${idx}`}>{label}</label>
             </li>
           ))}
         </ul>

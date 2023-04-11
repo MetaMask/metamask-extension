@@ -3,7 +3,7 @@ import EditableLabel from '.';
 
 export default {
   title: 'Components/UI/EditableLabel',
-  id: __filename,
+
   argTypes: {
     onSubmit: {
       action: 'onSubmit',
@@ -14,13 +14,20 @@ export default {
     className: {
       control: 'text',
     },
-    accountsNames: {
+    accounts: {
       control: 'array',
     },
   },
   args: {
     defaultValue: 'Account 3',
-    accountsNames: ['Account 1', 'Account 2'],
+    accounts: [
+      {
+        name: 'Account 1',
+      },
+      {
+        name: 'Account 2',
+      },
+    ],
   },
 };
 

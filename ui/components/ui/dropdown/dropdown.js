@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import IconCaretDown from '../icon/icon-caret-down';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 const Dropdown = ({
   className,
@@ -41,7 +45,11 @@ const Dropdown = ({
           );
         })}
       </select>
-      <IconCaretDown size={16} className="dropdown__icon-caret-down" />
+      <Icon
+        name={ICON_NAMES.ARROW_DOWN}
+        size={ICON_SIZES.SM}
+        className="dropdown__icon-caret-down"
+      />
     </div>
   );
 };

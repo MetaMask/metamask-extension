@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Rozšírené"
   },
-  "advancedOptions": {
-    "message": "Rozšírené nastavenia"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -74,12 +71,6 @@
   },
   "approved": {
     "message": "Schváleno"
-  },
-  "attemptToCancel": {
-    "message": "Pokus o zrušenie?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Odoslanie tohto pokusu nezaručuje, že vaša pôvodná transakcia bude zrušená. Ak je pokus o zrušenie úspešný, naúčtujeme vám vyššie uvedený transakčný poplatok."
   },
   "attemptingConnect": {
     "message": "Pokouším se připojit k blockchainu."
@@ -127,20 +118,11 @@
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },
-  "buyWithWyre": {
-    "message": "Kúpte $1 s Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu $1 priamo na váš účet MetaMask."
-  },
   "bytes": {
     "message": "Bajty"
   },
   "cancel": {
     "message": "Zrušit"
-  },
-  "cancellationGasFee": {
-    "message": "Storno poplatok za GAS"
   },
   "cancelled": {
     "message": "Zrušený"
@@ -151,9 +133,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť MetaMask."
   },
-  "clickToRevealSeed": {
-    "message": "Kliknutím sem odkryjete tajné slová"
-  },
   "close": {
     "message": "Zavrieť"
   },
@@ -163,14 +142,8 @@
   "confirmPassword": {
     "message": "Potvrdit heslo"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Potvrďte svoju tajnú backup frázu"
-  },
   "confirmed": {
     "message": "Potvrzeno"
-  },
-  "congratulations": {
-    "message": "Blahoželáme"
   },
   "connect": {
     "message": "Pripojenie"
@@ -184,11 +157,11 @@
   "connectingToGoerli": {
     "message": "Pripája sa k testovacej sieti Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Pripája sa k testovacej sieti Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
-  },
-  "continueToWyre": {
-    "message": "Pokračovať na Wyre"
   },
   "contractDeployment": {
     "message": "Nasazení kontraktu"
@@ -213,9 +186,6 @@
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAWallet": {
-    "message": "Vytvoriť Peňaženku"
   },
   "createAccount": {
     "message": "Vytvořit účet"
@@ -262,9 +232,6 @@
   "downloadGoogleChrome": {
     "message": "Stiahnuť Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Stiahnite si túto tajnú backup frázu a uložte ju bezpečne na externý šifrovaný pevný disk alebo pamäťové médium."
-  },
   "downloadStateLogs": {
     "message": "Stáhnout stavové protokoly"
   },
@@ -276,33 +243,6 @@
   },
   "editContact": {
     "message": "Upraviť kontakt"
-  },
-  "endOfFlowMessage1": {
-    "message": "Úspešne ste prešli testom – uchovávajte svoju seed frázu v bezpečí.  Je to vaša zodpovednosť!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Všetko vykonané"
-  },
-  "endOfFlowMessage2": {
-    "message": "Tipy na bezpečné uloženie"
-  },
-  "endOfFlowMessage3": {
-    "message": "Uložte zálohu na viacerých miestach."
-  },
-  "endOfFlowMessage4": {
-    "message": "Nikdy nezdieľajte frázu s niekým iným."
-  },
-  "endOfFlowMessage5": {
-    "message": "Dávajte pozor na phishing! MetaMask nikdy nebude spontánne požadovať vašu seed frázu."
-  },
-  "endOfFlowMessage6": {
-    "message": "Ak potrebujete backup frázu znova zálohovať, nájdete ju v časti Nastavenia -> Zabezpečenie."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask nemôže obnoviť vašu seed frázu. Zistiť viac."
-  },
-  "endOfFlowMessage9": {
-    "message": "Dozvedieť sa viac."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Názov ENS sa nenašiel v aktuálnej sieti. Skúste sa prepnúť na hlavnú sieť Ethereum."
@@ -375,21 +315,8 @@
   "general": {
     "message": "Všeobecne"
   },
-  "getEther": {
-    "message": "Získejte Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Získejte Ether z faucetu za $1.",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Začať"
-  },
   "goerli": {
     "message": "Testovacia sieť Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Sme radi, že vás vidíme."
   },
   "hardware": {
     "message": "hardvér"
@@ -421,12 +348,6 @@
   },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importovať účet so seed frázou"
-  },
-  "importWallet": {
-    "message": "Importovať Peňaženku"
   },
   "imported": {
     "message": "Importováno",
@@ -478,11 +399,11 @@
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
   },
-  "letsGoSetUp": {
-    "message": "Áno, poďme to nastaviť!"
-  },
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
+  },
+  "lineatestnet": {
+    "message": "Testovacia sieť Linea Goerli"
   },
   "links": {
     "message": "Odkazy"
@@ -499,14 +420,8 @@
   "lock": {
     "message": "Odhlásit"
   },
-  "memorizePhrase": {
-    "message": "Zapamätajte si túto frázu."
-  },
   "message": {
     "message": "Zpráva"
-  },
-  "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
   },
   "metamaskVersion": {
     "message": "Verzia MetaMask"
@@ -536,9 +451,6 @@
   "newAccount": {
     "message": "Nový účet"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Bola zistená nová adresa! Kliknite sem a pridajte ju do svojho adresára."
-  },
   "newAccountNumberName": {
     "message": "Účet $1",
     "description": "Default name of next account to be created on create account screen"
@@ -552,17 +464,11 @@
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
   },
-  "newToMetaMask": {
-    "message": "Ste noví na MetaMask?"
-  },
   "next": {
     "message": "Další"
   },
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nie, už mám seed frázu"
   },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
@@ -668,9 +574,6 @@
   "rejected": {
     "message": "Odmítnuto"
   },
-  "remindMeLater": {
-    "message": "Pripomenúť neskôr"
-  },
   "remove": {
     "message": "Odstrániť"
   },
@@ -689,35 +592,21 @@
   "reset": {
     "message": "Resetovať"
   },
-  "resetAccount": {
-    "message": "Resetovat účet"
-  },
-  "resetAccountDescription": {
-    "message": "Pri obnovení účtu sa vymaže história transakcií."
-  },
   "restore": {
     "message": "Obnoviť"
   },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ak niekedy zmeníte prehliadač alebo presuniete počítače, budete potrebovať túto seed frázu na prístup k svojim účtom. Uložte ich niekde v bezpečí a v tajnosti."
-  },
   "revealSeedWordsWarning": {
-    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Túto frázu s nikým NEZDIEĽAJTE!"
+    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nová RPC URL"
   },
   "save": {
     "message": "Uložit"
-  },
-  "saveAsCsvFile": {
-    "message": "Uložiť ako súbor CSV"
   },
   "scanInstructions": {
     "message": "Umiestnite QR kód pred kameru"
@@ -734,12 +623,6 @@
   "searchTokens": {
     "message": "Hledat tokeny"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Vaša tajná backup fráza uľahčuje zálohovanie a obnovenie vášho účtu."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "UPOZORNENIE: Nikdy nezverejňujte svoju backup frázu. Každý, kto má túto frázu, môže navždy vziať váš Ether."
-  },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
@@ -748,9 +631,6 @@
   },
   "selectAnAccount": {
     "message": "Vybrať účet"
-  },
-  "selectEachPhrase": {
-    "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."
   },
   "selectHdPath": {
     "message": "Vyberte cestu HD"
@@ -769,12 +649,6 @@
   },
   "settings": {
     "message": "Nastavení"
-  },
-  "showAdvancedGasInline": {
-    "message": "Pokročilé ovládacie prvky GAS"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vyberte túto možnosť vtedy, keď chcete priamo na obrazovke odosielania a potvrdenia zobraziť ceny za GAS a ovládacie prvky limitov."
   },
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
@@ -796,9 +670,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signNotice": {
-    "message": "Podepsání zprávy může mít \nnebezpečný vedlejší učinek. Podepisujte zprávy pouze ze \nstránek, kterým plně důvěřujete celým svým účtem.\n Tato nebezpečná metoda bude odebrána v budoucí verzi. "
   },
   "signatureRequest": {
     "message": "Požadavek podpisu"
@@ -826,9 +697,6 @@
   },
   "stateLogsDescription": {
     "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
-  },
-  "storePhrase": {
-    "message": "Túto frázu uložte do správcu hesiel ako 1Password."
   },
   "submitted": {
     "message": "Odesláno"
@@ -865,12 +733,6 @@
   },
   "terms": {
     "message": "Podmínky použití"
-  },
-  "testFaucet": {
-    "message": "Testovací faucet"
-  },
-  "thisWillCreate": {
-    "message": "Týmto sa vytvorí nová peňaženka a seed fráza"
   },
   "tips": {
     "message": "Príspevky"
@@ -987,26 +849,14 @@
   "userName": {
     "message": "Meno používateľa"
   },
-  "viewAccount": {
-    "message": "Zobrazit účet"
-  },
   "viewContact": {
     "message": "Zobraziť kontakt"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
   },
-  "welcome": {
-    "message": "Vitajte v MetaMask"
-  },
   "welcomeBack": {
     "message": "Vitajte späť!"
-  },
-  "writePhrase": {
-    "message": "Túto frázu si zapíšte na papier a uložte na bezpečnom mieste. Kvôli vyššej bezpečnosti si ho môžete napísať na niekoľko papierov a uložiť na 2 – 3 rôzne miesta."
-  },
-  "yesLetsTry": {
-    "message": "Áno, skúsme to"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."

@@ -1,1 +1,1 @@
-export { default, NETWORK_EVENTS } from './network';
+export { default, NetworkControllerEventTypes } from './network-controller';

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Configuració avançada"
   },
-  "advancedOptions": {
-    "message": "Opcions Avançades"
-  },
   "amount": {
     "message": "Quantitat"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "Actius"
-  },
-  "attemptToCancel": {
-    "message": "Estàs provant de cancel·lar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar aquesta temptativa no garanteix que la teva transacció original sigui cancel·lada. Si la temptativa de cancel·lació té èxit, se't carregarà la tarifa de transacció de més amunt."
   },
   "attemptingConnect": {
     "message": "Intentant conectar a blockchain."
@@ -133,17 +124,8 @@
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
   },
-  "buyWithWyre": {
-    "message": "Compra $1 amb Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar $1 directe al teu compte MetaMask."
-  },
   "cancel": {
     "message": "Cancel·la"
-  },
-  "cancellationGasFee": {
-    "message": "Preu de cancel·lació del gas"
   },
   "cancelled": {
     "message": "Cancel·lat"
@@ -154,9 +136,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
   },
-  "clickToRevealSeed": {
-    "message": "Fes clic aquí per a revelar les paraules secretes"
-  },
   "close": {
     "message": "Tanca"
   },
@@ -166,14 +145,8 @@
   "confirmPassword": {
     "message": "Confirma la contrasenya"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Confirma la teva frase de recuperació secreta"
-  },
   "confirmed": {
     "message": "Confirmat"
-  },
-  "congratulations": {
-    "message": "Felicitats"
   },
   "connect": {
     "message": "Connecta"
@@ -187,11 +160,11 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connectant a Xarxa de Prova Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Continua a Wyre"
   },
   "contractDeployment": {
     "message": "Desplegament de Contracte"
@@ -216,9 +189,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAWallet": {
-    "message": "Crea un Moneder"
   },
   "createAccount": {
     "message": "Crea "
@@ -265,9 +235,6 @@
   "downloadGoogleChrome": {
     "message": "Descarrega Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Descarrega aquesta Frase Secreta de Recuperació i guarda-la emmagatzemada de forma segura a un dispositiu d'emmagatzematge o disc dur extern encriptat."
-  },
   "downloadStateLogs": {
     "message": "Descarregar Registres d'Estat"
   },
@@ -279,33 +246,6 @@
   },
   "editContact": {
     "message": "Editar Contacte"
-  },
-  "endOfFlowMessage1": {
-    "message": "Has passat el test - mantingues la teva seedphrase segura, és la teva responsabilitat!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Tot fet"
-  },
-  "endOfFlowMessage2": {
-    "message": "Consells per a un emmagatzematge segur"
-  },
-  "endOfFlowMessage3": {
-    "message": "Guardar una còpia de seguretat en múltiples llocs."
-  },
-  "endOfFlowMessage4": {
-    "message": "No comparteixis mai la frase amb ningú."
-  },
-  "endOfFlowMessage5": {
-    "message": "Estigues atent amb el phishing! MetaMask no et preguntarà mai espontàniament la teva frase de recuperació."
-  },
-  "endOfFlowMessage6": {
-    "message": "Si necessites fer una còpia de seguretat de la teva frase de recuperació una altra vegada, la pots trobar a Configuració-> Seguretat."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask no pot recuperar la teva seedphrase. Descobreix per què."
-  },
-  "endOfFlowMessage9": {
-    "message": "Més informació."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
@@ -371,21 +311,8 @@
   "gasUsed": {
     "message": "Gas utilitzat"
   },
-  "getEther": {
-    "message": "Aconsegueix Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Aconsegueix Ether d'una aixeta per $1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Comença"
-  },
   "goerli": {
     "message": "Xarxa de test Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Ens alegrem de veure't."
   },
   "hardwareWalletConnected": {
     "message": "Moneder hardware connectat"
@@ -421,12 +348,6 @@
   },
   "importAccountMsg": {
     "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importa un Compte amb Phrase de Recuperació"
-  },
-  "importWallet": {
-    "message": "Importar Moneder"
   },
   "imported": {
     "message": "Importats",
@@ -478,11 +399,11 @@
   "ledgerAccountRestriction": {
     "message": "Has de fer servir el teu últim compte abans de poder afegir-ne un altre."
   },
-  "letsGoSetUp": {
-    "message": "Sí, posem-nos en marxa!"
-  },
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
+  },
+  "lineatestnet": {
+    "message": "Xarxa de test Linea Goerli"
   },
   "links": {
     "message": "Enllaços"
@@ -508,14 +429,8 @@
   "memo": {
     "message": "notes"
   },
-  "memorizePhrase": {
-    "message": "Memoritza aquesta frase"
-  },
   "message": {
     "message": "Missatge"
-  },
-  "metamaskDescription": {
-    "message": "Conectant-te a Ethereum i la web descentralitzada."
   },
   "metamaskVersion": {
     "message": "Versió MetaMask"
@@ -545,9 +460,6 @@
   "newAccount": {
     "message": "Nou compte"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nova adreça detectada! Clica aquí per afegir la teva llibreta d'adreces."
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
@@ -561,17 +473,11 @@
   "newPassword": {
     "message": "Nova contrasenya (mínim 8 caràcters)"
   },
-  "newToMetaMask": {
-    "message": "Nou a MetaMask?"
-  },
   "next": {
     "message": "Següent"
   },
   "noAddressForName": {
     "message": "No existeix cap adreça amb aquest nom."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "No, ja tinc una frase de recuperació."
   },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
@@ -674,9 +580,6 @@
   "rejected": {
     "message": "Rebutjat"
   },
-  "remindMeLater": {
-    "message": "Recorda-m'ho més tard"
-  },
   "remove": {
     "message": "Suprimeix"
   },
@@ -695,35 +598,21 @@
   "reset": {
     "message": "Restableix"
   },
-  "resetAccount": {
-    "message": "Reiniciar Compte"
-  },
-  "resetAccountDescription": {
-    "message": "Reiniciar el teu compte esborrarà el teu historial de transaccions."
-  },
   "restore": {
     "message": "Restaura"
   },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si mai canvies el navegador o l'ordinador, necessitaràs aquesta frase de recuperació per accedir als teus comptes. Guarda-la a un lloc segur i secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NO comparteixis aquesta frase amb ningú!"
+    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nova URL de RPC"
   },
   "save": {
     "message": "Desa"
-  },
-  "saveAsCsvFile": {
-    "message": "Guarda com a Arxiu CSV"
   },
   "scanInstructions": {
     "message": "Col·loca el codi QR davant la teva càmera"
@@ -740,12 +629,6 @@
   "searchTokens": {
     "message": "Tokens per cercar"
   },
-  "secretBackupPhraseDescription": {
-    "message": "La teva frase de recuperació secreta facilita la còpia de seguretat i la recuperació del teu compte."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ATENCIÓ: No divulguis mai la teva frase de recuperació. Qualsevol amb aquesta frase pot utilitzar el teu Ether per sempre."
-  },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
@@ -754,9 +637,6 @@
   },
   "selectAnAccount": {
     "message": "Selecciona un Compte"
-  },
-  "selectEachPhrase": {
-    "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
   },
   "selectHdPath": {
     "message": "Selecciona Ruta HD"
@@ -775,12 +655,6 @@
   },
   "settings": {
     "message": "Configuració"
-  },
-  "showAdvancedGasInline": {
-    "message": "Controls de gas avançats"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selecciona això per a mostrar el preu del gas i els controls de límit directament a les pantalles d'enviament i confirmació."
   },
   "showFiatConversionInTestnets": {
     "message": "Mostra Conversió a Testnets"
@@ -802,9 +676,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signNotice": {
-    "message": "Signar aquest missatge pot tenir efectes secundaris perillosos. Signa només els missatges de llocs en els quals confiïs plenament amb la totalitat del teu compte. Aquest mètode perillós serà retirat en versions posteriors."
   },
   "signatureRequest": {
     "message": "Sol·licitud de Signatura"
@@ -832,9 +703,6 @@
   },
   "stateLogsDescription": {
     "message": "Els registres d'estat contenen les teves adreces de compte públiques i les transaccions enviades."
-  },
-  "storePhrase": {
-    "message": "Guarda aquesta frase a un gestor de contrasenyes com Contrasenya 1"
   },
   "submitted": {
     "message": "Enviat"
@@ -874,9 +742,6 @@
   },
   "terms": {
     "message": "Condicions d'ús"
-  },
-  "thisWillCreate": {
-    "message": "Això crearà un nou moneder i frase de recuperació"
   },
   "tips": {
     "message": "Propines"
@@ -990,26 +855,14 @@
   "userName": {
     "message": "Nom d'usuari"
   },
-  "viewAccount": {
-    "message": "Mostra el compte"
-  },
   "viewContact": {
     "message": "Veure Contacte"
   },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"
   },
-  "welcome": {
-    "message": "Benvingut a MetaMask"
-  },
   "welcomeBack": {
     "message": "Benvingut de nou!"
-  },
-  "writePhrase": {
-    "message": "Escriu aquesta frase en un tros de paper i guarda'l en un lloc segur. Si vols més seguretat encara, escriu-la en diversos trossos de paper i guarda'ls cadascun a 2 - 3 llocs diferents."
-  },
-  "yesLetsTry": {
-    "message": "Sí, provem"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."

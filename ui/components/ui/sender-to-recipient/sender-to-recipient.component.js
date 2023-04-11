@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import Tooltip from '../tooltip';
-import IconCaretRight from '../icon/icon-caret-right';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -104,6 +104,7 @@ export function RecipientWithAddress({
   recipientEns,
   recipientName,
   recipientMetadataName,
+  recipientIsOwnedAccount,
 }) {
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
@@ -127,7 +128,7 @@ export function RecipientWithAddress({
       <div
         className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
         onClick={() => {
-          if (recipientName) {
+          if (recipientIsOwnedAccount) {
             setAddressCopied(true);
             copyToClipboard(checksummedRecipientAddress);
           } else {
@@ -163,6 +164,7 @@ export function RecipientWithAddress({
                 recipientNickname ||
                 recipientMetadataName ||
                 recipientEns ||
+                shortenAddress(checksummedRecipientAddress) ||
                 t('newContract')}
           </div>
         </Tooltip>
@@ -185,6 +187,7 @@ RecipientWithAddress.propTypes = {
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
+  recipientIsOwnedAccount: PropTypes.bool,
 };
 
 function Arrow({ variant }) {
@@ -196,7 +199,7 @@ function Arrow({ variant }) {
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">
-      <IconCaretRight />
+      <Icon name={ICON_NAMES.ARROW_RIGHT} />
     </div>
   );
 }
@@ -218,6 +221,7 @@ export default function SenderToRecipient({
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
+  recipientIsOwnedAccount,
 }) {
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
@@ -246,6 +250,7 @@ export default function SenderToRecipient({
           recipientEns={recipientEns}
           recipientName={recipientName}
           recipientMetadataName={recipientMetadataName}
+          recipientIsOwnedAccount={recipientIsOwnedAccount}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -275,4 +280,5 @@ SenderToRecipient.propTypes = {
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
+  recipientIsOwnedAccount: PropTypes.bool,
 };

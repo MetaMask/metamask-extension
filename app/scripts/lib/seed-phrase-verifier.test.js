@@ -3,15 +3,16 @@
  * https://github.com/facebook/jest/issues/7780
  */
 import { cloneDeep } from 'lodash';
-import KeyringController from 'eth-keyring-controller';
+import { KeyringController } from '@metamask/eth-keyring-controller';
 import firstTimeState from '../first-time-state';
 import mockEncryptor from '../../../test/lib/mock-encryptor';
+import { KeyringType } from '../../../shared/constants/keyring';
 import seedPhraseVerifier from './seed-phrase-verifier';
 
 describe('SeedPhraseVerifier', () => {
   describe('verifyAccounts', () => {
     const password = 'passw0rd1';
-    const hdKeyTree = 'HD Key Tree';
+    const { hdKeyTree } = KeyringType;
 
     let keyringController;
     let primaryKeyring;

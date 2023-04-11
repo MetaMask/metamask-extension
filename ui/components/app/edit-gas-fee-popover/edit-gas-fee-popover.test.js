@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH } from '../../../helpers/constants/common';
 import configureStore from '../../../store/store';
@@ -121,7 +121,7 @@ describe('EditGasFeePopover', () => {
 
   it('should not show low, aggressive and dapp-suggested options for swap', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
+      contextProps: { editGasMode: EditGasModes.swaps },
     });
     expect(screen.queryByText('🐢')).not.toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
@@ -139,7 +139,7 @@ describe('EditGasFeePopover', () => {
 
   it('should not show time estimates for swaps', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
+      contextProps: { editGasMode: EditGasModes.swaps },
     });
     expect(screen.queryByText('Time')).not.toBeInTheDocument();
     expect(screen.queryByText('Max fee')).toBeInTheDocument();
@@ -147,43 +147,43 @@ describe('EditGasFeePopover', () => {
 
   it('should show correct header for edit gas mode', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
+      contextProps: { editGasMode: EditGasModes.swaps },
     });
     expect(screen.queryByText('Edit gas fee')).toBeInTheDocument();
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.CANCEL },
+      contextProps: { editGasMode: EditGasModes.cancel },
     });
     expect(screen.queryByText('Edit cancellation gas fee')).toBeInTheDocument();
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.SPEED_UP },
+      contextProps: { editGasMode: EditGasModes.speedUp },
     });
     expect(screen.queryByText('Edit speed up gas fee')).toBeInTheDocument();
   });
 
   it('should not show low option for cancel mode', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.CANCEL },
+      contextProps: { editGasMode: EditGasModes.cancel },
     });
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
   it('should not show low option for speedup mode', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.SPEED_UP },
+      contextProps: { editGasMode: EditGasModes.speedUp },
     });
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for cancel gas mode', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.CANCEL },
+      contextProps: { editGasMode: EditGasModes.cancel },
     });
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for speedup gas mode', () => {
     render({
-      contextProps: { editGasMode: EDIT_GAS_MODES.SPEED_UP },
+      contextProps: { editGasMode: EditGasModes.speedUp },
     });
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });

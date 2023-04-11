@@ -1,8 +1,8 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../../shared/constants/transaction';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../test/jest';
@@ -31,8 +31,7 @@ const render = ({ componentProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
-      eip1559V2Enabled: true,
+      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
     },
   });
 
@@ -63,7 +62,7 @@ describe('TransactionDetail', () => {
       contextProps: {
         transaction: {
           userFeeLevel: 'low',
-          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+          txParams: { type: TransactionEnvelopeType.legacy },
         },
       },
     });

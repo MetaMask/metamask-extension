@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import migration22 from './022';
 
 const properTime = new Date().getTime();
@@ -7,9 +7,9 @@ const storage = {
   data: {
     TransactionController: {
       transactions: [
-        { status: TRANSACTION_STATUSES.SUBMITTED },
-        { status: TRANSACTION_STATUSES.SUBMITTED, submittedTime: properTime },
-        { status: TRANSACTION_STATUSES.CONFIRMED },
+        { status: TransactionStatus.submitted },
+        { status: TransactionStatus.submitted, submittedTime: properTime },
+        { status: TransactionStatus.confirmed },
       ],
     },
   },

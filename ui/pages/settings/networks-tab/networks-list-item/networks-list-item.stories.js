@@ -16,7 +16,7 @@ const MainnetProps = {
 
 export default {
   title: 'Pages/Settings/NetworksTab/NetworksListItem',
-  id: __filename,
+
   argTypes: {
     network: {
       control: 'object',

@@ -1,9 +1,11 @@
 import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEnvironmentType, checkForError } from '../lib/util';
+import { startCase, toLower } from 'lodash';
+import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
+import { getURLHostName } from '../../../ui/helpers/utils/util';
 
 export default class ExtensionPlatform {
   //
@@ -13,70 +15,32 @@ export default class ExtensionPlatform {
     browser.runtime.reload();
   }
 
-  openTab(options) {
-    return new Promise((resolve, reject) => {
-      browser.tabs.create(options).then((newTab) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(newTab);
-      });
-    });
+  async openTab(options) {
+    const newTab = await browser.tabs.create(options);
+    return newTab;
   }
 
-  openWindow(options) {
-    return new Promise((resolve, reject) => {
-      browser.windows.create(options).then((newWindow) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(newWindow);
-      });
-    });
+  async openWindow(options) {
+    const newWindow = await browser.windows.create(options);
+    return newWindow;
   }
 
-  focusWindow(windowId) {
-    return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, { focused: true }).then(() => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve();
-      });
-    });
+  async focusWindow(windowId) {
+    await browser.windows.update(windowId, { focused: true });
   }
 
-  updateWindowPosition(windowId, left, top) {
-    return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, { left, top }).then(() => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve();
-      });
-    });
+  async updateWindowPosition(windowId, left, top) {
+    await browser.windows.update(windowId, { left, top });
   }
 
-  getLastFocusedWindow() {
-    return new Promise((resolve, reject) => {
-      browser.windows.getLastFocused().then((windowObject) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(windowObject);
-      });
-    });
+  async getLastFocusedWindow() {
+    const windowObject = await browser.windows.getLastFocused();
+    return windowObject;
   }
 
-  closeCurrentWindow() {
-    return browser.windows.getCurrent().then((windowDetails) => {
-      return browser.windows.remove(windowDetails.id);
-    });
+  async closeCurrentWindow() {
+    const windowDetails = await browser.windows.getCurrent();
+    browser.windows.remove(windowDetails.id);
   }
 
   getVersion() {
@@ -113,11 +77,7 @@ export default class ExtensionPlatform {
     return version;
   }
 
-  openExtensionInBrowser(
-    route = null,
-    queryString = null,
-    keepWindowOpen = false,
-  ) {
+  getExtensionURL(route = null, queryString = null) {
     let extensionURL = browser.runtime.getURL('home.html');
 
     if (route) {
@@ -128,7 +88,22 @@ export default class ExtensionPlatform {
       extensionURL += `?${queryString}`;
     }
 
+    return extensionURL;
+  }
+
+  openExtensionInBrowser(
+    route = null,
+    queryString = null,
+    keepWindowOpen = false,
+  ) {
+    const extensionURL = this.getExtensionURL(
+      route,
+      queryString,
+      keepWindowOpen,
+    );
+
     this.openTab({ url: extensionURL });
+
     if (
       getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
       !keepWindowOpen
@@ -149,19 +124,19 @@ export default class ExtensionPlatform {
     }
   }
 
-  showTransactionNotification(txMeta, rpcPrefs) {
+  async showTransactionNotification(txMeta, rpcPrefs) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
-    if (status === TRANSACTION_STATUSES.CONFIRMED) {
+    if (status === TransactionStatus.confirmed) {
       // There was an on-chain failure
       receiptStatus === '0x0'
-        ? this._showFailedTransaction(
+        ? await this._showFailedTransaction(
             txMeta,
             'Transaction encountered an error.',
           )
-        : this._showConfirmedTransaction(txMeta, rpcPrefs);
-    } else if (status === TRANSACTION_STATUSES.FAILED) {
-      this._showFailedTransaction(txMeta);
+        : await this._showConfirmedTransaction(txMeta, rpcPrefs);
+    } else if (status === TransactionStatus.failed) {
+      await this._showFailedTransaction(txMeta);
     }
   }
 
@@ -169,96 +144,71 @@ export default class ExtensionPlatform {
     browser.windows.onRemoved.addListener(listener);
   }
 
-  getAllWindows() {
-    return new Promise((resolve, reject) => {
-      browser.windows.getAll().then((windows) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(windows);
-      });
-    });
+  async getAllWindows() {
+    const windows = await browser.windows.getAll();
+    return windows;
   }
 
-  getActiveTabs() {
-    return new Promise((resolve, reject) => {
-      browser.tabs.query({ active: true }).then((tabs) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(tabs);
-      });
-    });
+  async getActiveTabs() {
+    const tabs = await browser.tabs.query({ active: true });
+    return tabs;
   }
 
-  currentTab() {
-    return new Promise((resolve, reject) => {
-      browser.tabs.getCurrent().then((tab) => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
+  async currentTab() {
+    const tab = await browser.tabs.getCurrent();
+    return tab;
   }
 
-  switchToTab(tabId) {
-    return new Promise((resolve, reject) => {
-      browser.tabs.update(tabId, { highlighted: true }).then((tab) => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
+  async switchToTab(tabId) {
+    const tab = await browser.tabs.update(tabId, { highlighted: true });
+    return tab;
   }
 
-  closeTab(tabId) {
-    return new Promise((resolve, reject) => {
-      browser.tabs.remove(tabId).then(() => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  async switchToAnotherURL(tabId, url) {
+    await browser.tabs.update(tabId, { url });
   }
 
-  _showConfirmedTransaction(txMeta, rpcPrefs) {
+  async closeTab(tabId) {
+    await browser.tabs.remove(tabId);
+  }
+
+  async _showConfirmedTransaction(txMeta, rpcPrefs) {
     this._subscribeToNotificationClicked();
 
     const url = getBlockExplorerLink(txMeta, rpcPrefs);
     const nonce = parseInt(txMeta.txParams.nonce, 16);
+    const view = startCase(
+      toLower(getURLHostName(url).replace(/([.]\w+)$/u, '')),
+    );
 
     const title = 'Confirmed transaction';
     const message = `Transaction ${nonce} confirmed! ${
-      url.length ? 'View on Etherscan' : ''
+      url.length ? `View on ${view}` : ''
     }`;
-    this._showNotification(title, message, url);
+    await this._showNotification(title, message, url);
   }
 
-  _showFailedTransaction(txMeta, errorMessage) {
+  async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = 'Failed transaction';
-    const message = `Transaction ${nonce} failed! ${
+    let message = `Transaction ${nonce} failed! ${
       errorMessage || txMeta.err.message
     }`;
-    this._showNotification(title, message);
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (isNaN(nonce)) {
+      message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
+    }
+    ///: END:ONLY_INCLUDE_IN
+    await this._showNotification(title, message);
   }
 
-  _showNotification(title, message, url) {
-    browser.notifications.create(url, {
+  async _showNotification(title, message, url) {
+    const iconUrl = await browser.runtime.getURL('../../images/icon-64.png');
+
+    await browser.notifications.create(url, {
       type: 'basic',
       title,
-      iconUrl: browser.runtime.getURL('../../images/icon-64.png'),
+      iconUrl,
       message,
     });
   }

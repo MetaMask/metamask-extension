@@ -1,7 +1,30 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
+# Owners bear a responsibility to the organization and the users of this
+# application. Repository administrators have the ability to merge pull 
+# requests that have not yet received the requisite reviews as outlined 
+# in this file. Do not force merge any PR without confidence that it 
+# follows all policies or without full understanding of the impact of 
+# those changes on build, release and publishing outcomes.
 
 *                                    @MetaMask/extension-devs
-.circleci/                           @MetaMask/extension-devs @kumavis
 development/                         @MetaMask/extension-devs @kumavis
 lavamoat/                            @MetaMask/supply-chain
+
+# The .circleci/ folder instructs Circle CI on the process by which it
+# should test, build and publish releases of our application. Due to the
+# impact that changes to the files contained within this folder may have
+# on our releases, only those with the knowledge and responsibility to 
+# publish libraries under the MetaMask name may approve those changes.
+# Note to reviewers: We employ the use of CircleCI "Orbs", which are
+# remotely hosted sections of CircleCI configuration and scripts, to
+# empower our CI steps. ANY addition of orbs to our CircleCI config
+# should be brought to the attention of engineering leadership for
+# discussion
+.circleci/                           @MetaMask/library-admins @kumavis @brad-decker
+# The CODEOWNERS file constitutes an agreement amongst organization
+# admins and maintainers to restrict approval capabilities to a subset
+# of contributors. Modifications to this file result in a modification of
+# that agreement and can only be approved by those with the knowledge
+# and responsibility to publish libraries under the MetaMask name.
+.github/CODEOWNERS                   @MetaMask/library-admins @kumavis

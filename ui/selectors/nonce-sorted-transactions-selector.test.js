@@ -1,8 +1,8 @@
 import { head, last } from 'lodash';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../shared/constants/transaction';
 import { nonceSortedTransactionsSelector } from './transactions';
 
@@ -18,7 +18,7 @@ const SENDERS = {
 
 const INCOMING_TX = {
   id: '0-incoming',
-  type: TRANSACTION_TYPES.INCOMING,
+  type: TransactionType.incoming,
   txParams: {
     value: '0x0',
     from: RECIPIENTS.ONE,
@@ -27,9 +27,9 @@ const INCOMING_TX = {
 };
 
 const SIGNING_REQUEST = {
-  type: TRANSACTION_TYPES.SIGNING_REQUEST,
+  type: TransactionType.sign,
   id: '0-signing',
-  status: TRANSACTION_STATUSES.UNAPPROVED,
+  status: TransactionStatus.unapproved,
 };
 
 const SIMPLE_SEND_TX = {
@@ -38,7 +38,7 @@ const SIMPLE_SEND_TX = {
     from: SENDERS.ONE,
     to: RECIPIENTS.ONE,
   },
-  type: TRANSACTION_TYPES.SIMPLE_SEND,
+  type: TransactionType.simpleSend,
 };
 
 const TOKEN_SEND_TX = {
@@ -49,13 +49,13 @@ const TOKEN_SEND_TX = {
     value: '0x0',
     data: '0xdata',
   },
-  type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+  type: TransactionType.tokenMethodTransfer,
 };
 
 const RETRY_TX = {
   ...SIMPLE_SEND_TX,
   id: '0-retry',
-  type: TRANSACTION_TYPES.RETRY,
+  type: TransactionType.retry,
 };
 
 const CANCEL_TX = {
@@ -65,7 +65,7 @@ const CANCEL_TX = {
     from: SENDERS.ONE,
     to: SENDERS.ONE,
   },
-  type: TRANSACTION_TYPES.CANCEL,
+  type: TransactionType.cancel,
 };
 
 const getStateTree = ({
@@ -92,7 +92,7 @@ const duplicateTx = (base, overrides) => {
   const {
     nonce = '0x0',
     time = 0,
-    status = TRANSACTION_STATUSES.CONFIRMED,
+    status = TransactionStatus.confirmed,
     txReceipt,
   } = overrides ?? {};
   return {
@@ -110,7 +110,7 @@ const duplicateTx = (base, overrides) => {
 describe('nonceSortedTransactionsSelector', () => {
   it('should properly group a simple send that is superseded by a retry', () => {
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.DROPPED }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.dropped }),
       duplicateTx(RETRY_TX, { time: 1 }),
     ];
 
@@ -132,7 +132,7 @@ describe('nonceSortedTransactionsSelector', () => {
 
   it('should properly group a failed off-chain simple send that is superseded by a retry', () => {
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.FAILED }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.failed }),
       duplicateTx(RETRY_TX, { time: 1 }),
     ];
 
@@ -154,7 +154,7 @@ describe('nonceSortedTransactionsSelector', () => {
 
   it('should properly group a simple send that is superseded by a cancel', () => {
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.DROPPED }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.dropped }),
       duplicateTx(CANCEL_TX, { time: 1 }),
     ];
 
@@ -176,8 +176,8 @@ describe('nonceSortedTransactionsSelector', () => {
 
   it('should properly group a simple send and retry that is superseded by a cancel', () => {
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.DROPPED }),
-      duplicateTx(RETRY_TX, { time: 1, status: TRANSACTION_STATUSES.DROPPED }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.dropped }),
+      duplicateTx(RETRY_TX, { time: 1, status: TransactionStatus.dropped }),
       duplicateTx(CANCEL_TX, { time: 2 }),
     ];
 
@@ -202,7 +202,7 @@ describe('nonceSortedTransactionsSelector', () => {
     // changing expectations from today. It will also allow us to invert this
     // test case when we move and change grouping logic.
     const txList = [
-      duplicateTx(TOKEN_SEND_TX, { status: TRANSACTION_STATUSES.DROPPED }),
+      duplicateTx(TOKEN_SEND_TX, { status: TransactionStatus.dropped }),
       duplicateTx(SIMPLE_SEND_TX, { time: 1 }),
     ];
 
@@ -269,8 +269,8 @@ describe('nonceSortedTransactionsSelector', () => {
 
   it('should not set a failed off-chain transaction as primary, allowing additional retries', () => {
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.SUBMITTED }),
-      duplicateTx(RETRY_TX, { status: TRANSACTION_STATUSES.FAILED, time: 1 }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.submitted }),
+      duplicateTx(RETRY_TX, { status: TransactionStatus.failed, time: 1 }),
     ];
 
     const state = getStateTree({ txList });
@@ -298,9 +298,9 @@ describe('nonceSortedTransactionsSelector', () => {
     //    This is desired because we have no way currently to tell the intent
     //    of the transactions.
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.FAILED }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.failed }),
       duplicateTx(SIMPLE_SEND_TX, {
-        status: TRANSACTION_STATUSES.SUBMITTED,
+        status: TransactionStatus.submitted,
         time: 1,
       }),
     ];
@@ -323,9 +323,9 @@ describe('nonceSortedTransactionsSelector', () => {
 
   it('should set a failed on-chain transaction as primary', () => {
     const txList = [
-      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.SUBMITTED }),
+      duplicateTx(SIMPLE_SEND_TX, { status: TransactionStatus.submitted }),
       duplicateTx(RETRY_TX, {
-        status: TRANSACTION_STATUSES.FAILED,
+        status: TransactionStatus.failed,
         txReceipt: { status: '0x0' },
         time: 1,
       }),

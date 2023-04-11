@@ -4,7 +4,7 @@ import CustomContentSearch from './custom-content-search';
 
 export default {
   title: 'Pages/Settings/NetworksTab/CustomContentSearch',
-  id: __filename,
+
   argTypes: {
     error: {
       control: 'text',

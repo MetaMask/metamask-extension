@@ -8,10 +8,10 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import Tooltip from '../../../components/ui/tooltip';
 import Box from '../../../components/ui/box';
 import {
-  JUSTIFY_CONTENT,
+  JustifyContent,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -36,7 +36,7 @@ export default function ViewQuotePriceDifference(props) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceTitle = t('swapPriceUnavailableTitle');
     priceDifferenceMessage = t('swapPriceUnavailableDescription');
-    priceDifferenceClass = GAS_RECOMMENDATIONS.HIGH;
+    priceDifferenceClass = GasRecommendations.high;
     priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
@@ -67,7 +67,7 @@ export default function ViewQuotePriceDifference(props) {
             <div className="view-quote__price-difference-warning-contents-text">
               <Box
                 display={DISPLAY.FLEX}
-                justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+                justifyContent={JustifyContent.spaceBetween}
                 paddingBottom={2}
               >
                 <div className="view-quote__price-difference-warning-contents-title">

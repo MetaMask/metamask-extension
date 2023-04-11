@@ -1,3 +1,4 @@
+import { SubjectType } from '@metamask/subject-metadata-controller';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -7,6 +8,8 @@ import {
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnapInstallOrUpdateRequests,
+  getRequestState,
+  getRequestType,
   ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
 } from '../../selectors';
@@ -17,7 +20,6 @@ import {
   approvePermissionsRequest,
   rejectPermissionsRequest,
   showModal,
-  getCurrentWindowTab,
   getRequestAccountTabIds,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   resolvePendingApproval,
@@ -30,9 +32,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
+  CONNECT_SNAP_RESULT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
-import { SUBJECT_TYPES } from '../../../shared/constants/app';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -68,11 +70,15 @@ const mapStateToProps = (state, ownProps) => {
     origin,
     iconUrl: null,
     extensionId: null,
-    subjectType: SUBJECT_TYPES.UNKNOWN,
+    subjectType: SubjectType.Unknown,
   };
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
+  const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
+
+  const requestType = getRequestType(state, permissionsRequestId);
+
+  const requestState = getRequestState(state, permissionsRequestId);
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
@@ -92,6 +98,7 @@ const mapStateToProps = (state, ownProps) => {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
+  const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
   ///: END:ONLY_INCLUDE_IN
 
   let totalPages = 1 + isRequestingAccounts;
@@ -106,7 +113,11 @@ const mapStateToProps = (state, ownProps) => {
   } else if (pathname === confirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  } else if (pathname === snapInstallPath || pathname === snapUpdatePath) {
+  } else if (
+    pathname === snapInstallPath ||
+    pathname === snapUpdatePath ||
+    pathname === snapResultPath
+  ) {
     page = isRequestingAccounts ? '3' : '2';
     ///: END:ONLY_INCLUDE_IN
   } else {
@@ -116,9 +127,12 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isRequestingAccounts,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    isSnap,
+    requestType,
     snapInstallPath,
     snapUpdatePath,
+    snapResultPath,
+    requestState,
+    isSnap,
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,
@@ -159,7 +173,6 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
     getRequestAccountTabIds: () => dispatch(getRequestAccountTabIds()),
-    getCurrentWindowTab: () => dispatch(getCurrentWindowTab()),
   };
 };
 

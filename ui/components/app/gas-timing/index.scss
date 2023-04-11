@@ -3,10 +3,6 @@
 
   &--positive {
     color: var(--color-success-default);
-  }
-
-  &--positive-V2 {
-    color: var(--color-success-default);
     font-weight: bold;
   }
 
@@ -15,11 +11,6 @@
   }
 
   &--negative {
-    color: var(--color-error-default);
-    font-weight: bold;
-  }
-
-  &--negative-V2 {
     color: var(--color-warning-default);
     font-weight: bold;
   }

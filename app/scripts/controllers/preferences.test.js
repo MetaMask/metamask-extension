@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import {
-  ControllerMessenger,
-  TokenListController,
-} from '@metamask/controllers';
+import { ControllerMessenger } from '@metamask/base-controller';
+import { TokenListController } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
@@ -14,7 +12,6 @@ describe('preferences controller', function () {
   let currentChainId;
   let provider;
   let tokenListController;
-  const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
@@ -22,8 +19,17 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
-    network = new NetworkController();
-    network.setInfuraProjectId('foo');
+    const networkControllerMessenger = new ControllerMessenger();
+    network = new NetworkController({
+      infuraProjectId: 'foo',
+      messenger: networkControllerMessenger,
+      state: {
+        provider: {
+          type: 'mainnet',
+          chainId: currentChainId,
+        },
+      },
+    });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -38,19 +44,16 @@ describe('preferences controller', function () {
     });
 
     sandbox
-      .stub(network, 'getLatestBlock')
+      .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
-    sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
-    sandbox
-      .stub(network, 'getProviderConfig')
-      .callsFake(() => ({ type: 'mainnet' }));
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
-      migrateAddressBookState,
       network,
       provider,
       tokenListController,
+      onInfuraIsBlocked: sinon.spy(),
+      onInfuraIsUnblocked: sinon.spy(),
     });
   });
 
@@ -183,97 +186,6 @@ describe('preferences controller', function () {
     });
   });
 
-  describe('#updateRpc', function () {
-    it('should update the rpcDetails properly', async function () {
-      preferencesController.store.updateState({
-        frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '0x1' }, {}],
-      });
-      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/1',
-        chainId: '0x1',
-      });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/2',
-        chainId: '0x1',
-      });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/3',
-        chainId: '0x1',
-      });
-      const list = preferencesController.getFrequentRpcListDetail();
-      assert.deepEqual(list[1], { rpcUrl: 'test', chainId: '0x1' });
-    });
-
-    it('should migrate address book entries if chainId changes', async function () {
-      preferencesController.store.updateState({
-        frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '1' }, {}],
-      });
-      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' });
-      assert(migrateAddressBookState.calledWith('1', '0x1'));
-    });
-  });
-
-  describe('adding and removing from frequentRpcListDetail', function () {
-    it('should add custom RPC url to state', function () {
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-    });
-
-    it('should throw if chainId is invalid', function () {
-      assert.throws(() => {
-        preferencesController.addToFrequentRpcList('rpc_url', '1');
-      }, 'should throw on invalid chainId');
-    });
-
-    it('should remove custom RPC url from state', function () {
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [
-          {
-            rpcUrl: 'rpc_url',
-            chainId: '0x1',
-            ticker: 'ETH',
-            nickname: '',
-            rpcPrefs: {},
-          },
-        ],
-      );
-      preferencesController.removeFromFrequentRpcList('other_rpc_url');
-      preferencesController.removeFromFrequentRpcList('http://localhost:8545');
-      preferencesController.removeFromFrequentRpcList('rpc_url');
-      assert.deepEqual(
-        preferencesController.store.getState().frequentRpcListDetail,
-        [],
-      );
-    });
-  });
-
   describe('setUsePhishDetect', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -289,6 +201,28 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setUseMultiAccountBalanceChecker', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useMultiAccountBalanceChecker, true);
+    });
+
+    it('should set the setUseMultiAccountBalanceChecker property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        true,
+      );
+
+      preferencesController.setUseMultiAccountBalanceChecker(false);
+
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        false,
+      );
+    });
+  });
+
   describe('setUseTokenDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
@@ -369,16 +303,35 @@ describe('preferences controller', function () {
   });
 
   describe('setTheme', function () {
-    it('should default to value "light"', function () {
+    it('should default to value "OS"', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.theme, 'light');
+      assert.equal(state.theme, 'os');
     });
 
     it('should set the setTheme property in state', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.theme, 'light');
+      assert.equal(state.theme, 'os');
       preferencesController.setTheme('dark');
       assert.equal(preferencesController.store.getState().theme, 'dark');
+    });
+  });
+
+  describe('setUseCurrencyRateCheck', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useCurrencyRateCheck, true);
+    });
+
+    it('should set the useCurrencyRateCheck property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        true,
+      );
+      preferencesController.setUseCurrencyRateCheck(false);
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        false,
+      );
     });
   });
 });

@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-const { PAGES } = require('../webdriver/driver');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -17,10 +16,9 @@ describe('Test Snap Error', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -31,35 +29,61 @@ describe('Test Snap Error', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('#snapId2', 'npm:@metamask/test-snap-error');
-
-        const snapButton = await driver.findElement('#connectError');
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
+        const snapButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
+        await driver.delay(1000);
+        await driver.clickElement('#connectErrorSnap');
+        await driver.delay(1000);
 
-        await driver.clickElement('#connectError');
-
-        // approve install of snap
-        let windowHandles = await driver.getAllWindowHandles();
+        // switch to metamask extension and click connect
+        const windowHandles = await driver.waitUntilXWindowHandles(
+          3,
+          1000,
+          10000,
+        );
+        const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
         await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'Approve & install' });
+
+        await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
+
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectErrorSnap',
+          text: 'Reconnect to Error Snap',
+        });
+
+        // find and click on send error
         await driver.clickElement('#sendError');
 
-        await driver.navigate(PAGES.HOME);
+        // switch back to the extension page
+        await driver.switchToWindow(extensionPage);
+        await driver.delay(500);
 
+        // look for the actual error and check if it is correct
         const error = await driver.findElement(
           '.home-notification__content-container',
         );
@@ -70,6 +94,12 @@ describe('Test Snap Error', function () {
           ),
           true,
         );
+
+        // try to click on the dismiss button and pass test if it works
+        await driver.clickElement({
+          text: 'Dismiss',
+          tag: 'button',
+        });
       },
     );
   });

@@ -3,7 +3,7 @@ import UrlIcon from './url-icon';
 
 export default {
   title: 'Components/UI/UrlIcon',
-  id: __filename,
+
   argType: {
     name: { control: 'text' },
     url: { control: 'text' },

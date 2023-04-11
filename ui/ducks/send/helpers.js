@@ -1,18 +1,14 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
+import BigNumber from 'bignumber.js';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
-  ASSET_TYPES,
-  TRANSACTION_ENVELOPE_TYPES,
+  AssetType,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../../shared/modules/conversion.utils';
-import { ETH, GWEI } from '../../helpers/constants/common';
 import {
   addGasBuffer,
   generateERC20TransferData,
@@ -21,6 +17,7 @@ import {
 } from '../../pages/send/send.utils';
 import { getGasPriceInHexWei } from '../../selectors';
 import { estimateGas } from '../../store/actions';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
@@ -109,15 +106,10 @@ export async function estimateGasLimitForSend({
   if (!isSimpleSendOnNonStandardNetwork) {
     // If we do not yet have a gasLimit, we must call into our background
     // process to get an estimate for gasLimit based on known parameters.
-
-    paramsForGasEstimate.gas = addHexPrefix(
-      multiplyCurrencies(blockGasLimit, 0.95, {
-        multiplicandBase: 16,
-        multiplierBase: 10,
-        roundDown: '0',
-        toNumericBase: 'hex',
-      }),
-    );
+    paramsForGasEstimate.gas = new Numeric(blockGasLimit, 16)
+      .times(new Numeric(0.95, 10))
+      .round(0, BigNumber.ROUND_DOWN)
+      .toPrefixedHexString();
   }
 
   // The buffer multipler reduces transaction failures by ensuring that the
@@ -191,7 +183,7 @@ export function generateTransactionParams(sendState) {
     gas: draftTransaction.gas.gasLimit,
   };
   switch (draftTransaction.asset.type) {
-    case ASSET_TYPES.TOKEN:
+    case AssetType.token:
       // When sending a token the to address is the contract address of
       // the token being sent. The value is set to '0x0' and the data
       // is generated from the recipient address, token being sent and
@@ -204,7 +196,7 @@ export function generateTransactionParams(sendState) {
         sendToken: draftTransaction.asset.details,
       });
       break;
-    case ASSET_TYPES.NFT:
+    case AssetType.NFT:
       // When sending a token the to address is the contract address of
       // the token being sent. The value is set to '0x0' and the data
       // is generated from the recipient address, token being sent and
@@ -219,7 +211,7 @@ export function generateTransactionParams(sendState) {
         tokenId: draftTransaction.asset.details.tokenId,
       });
       break;
-    case ASSET_TYPES.NATIVE:
+    case AssetType.native:
     default:
       // When sending native currency the to and value fields use the
       // recipient and amount values and the data key is either null or
@@ -233,7 +225,7 @@ export function generateTransactionParams(sendState) {
   // based on the type of transaction the network supports. We will also set
   // the type param here.
   if (sendState.eip1559support) {
-    txParams.type = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+    txParams.type = TransactionEnvelopeType.feeMarket;
 
     txParams.maxFeePerGas = draftTransaction.gas.maxFeePerGas;
     txParams.maxPriorityFeePerGas = draftTransaction.gas.maxPriorityFeePerGas;
@@ -250,7 +242,7 @@ export function generateTransactionParams(sendState) {
     }
   } else {
     txParams.gasPrice = draftTransaction.gas.gasPrice;
-    txParams.type = TRANSACTION_ENVELOPE_TYPES.LEGACY;
+    txParams.type = TransactionEnvelopeType.legacy;
   }
 
   return txParams;
@@ -268,14 +260,9 @@ export function generateTransactionParams(sendState) {
  * @returns {string}
  */
 export function getRoundedGasPrice(gasPriceEstimate) {
-  const gasPriceInDecGwei = conversionUtil(gasPriceEstimate, {
-    numberOfDecimals: 9,
-    toDenomination: GWEI,
-    fromNumericBase: 'dec',
-    toNumericBase: 'dec',
-    fromCurrency: ETH,
-    fromDenomination: GWEI,
-  });
+  const gasPriceInDecGwei = new Numeric(gasPriceEstimate, 10)
+    .round(9)
+    .toString();
   const gasPriceAsNumber = Number(gasPriceInDecGwei);
   return getGasPriceInHexWei(gasPriceAsNumber);
 }

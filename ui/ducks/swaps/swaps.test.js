@@ -10,7 +10,7 @@ import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
 
-jest.mock('../../store/actions.js', () => ({
+jest.mock('../../store/actions.ts', () => ({
   setSwapsLiveness: jest.fn(),
   setSwapsFeatureFlags: jest.fn(),
   fetchSmartTransactionsLiveness: jest.fn(),
@@ -355,15 +355,6 @@ describe('Ducks - Swaps', () => {
       expect(swaps.getCurrentSmartTransactionsError(state)).toBe(
         state.swaps.currentSmartTransactionsError,
       );
-    });
-  });
-
-  describe('getCurrentSmartTransactionsErrorMessageDismissed', () => {
-    it('returns currentSmartTransactionsErrorMessageDismissed', () => {
-      const state = createSwapsMockStore();
-      expect(
-        swaps.getCurrentSmartTransactionsErrorMessageDismissed(state),
-      ).toBe(state.swaps.currentSmartTransactionsErrorMessageDismissed);
     });
   });
 
@@ -771,21 +762,6 @@ describe('Ducks - Swaps', () => {
         const actions = store.getActions();
         expect(actions).toHaveLength(1);
         expect(actions[0].type).toBe('swaps/clearSwapsState');
-      });
-    });
-
-    describe('dismissCurrentSmartTransactionsErrorMessage', () => {
-      it('calls the "swaps/dismissCurrentSmartTransactionsErrorMessage" action', () => {
-        const state = store.getState().swaps;
-        store.dispatch(swaps.dismissCurrentSmartTransactionsErrorMessage());
-        const actions = store.getActions();
-        expect(actions[0].type).toBe(
-          'swaps/dismissCurrentSmartTransactionsErrorMessage',
-        );
-        const newState = swapsReducer(state, actions[0]);
-        expect(newState.currentSmartTransactionsErrorMessageDismissed).toBe(
-          true,
-        );
       });
     });
 

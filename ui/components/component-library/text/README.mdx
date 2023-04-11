@@ -9,84 +9,103 @@ import { Text } from './text';
 Good typography improves readability, legibility and hierarchy of information.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--default-story" />
+  <Story id="components-componentlibrary-text--default-story" />
 </Canvas>
 
 ## Props
+
+The `Text` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={Text} />
 
 ### Variant
 
-Use the `variant` prop and the `TEXT` object from `./ui/helpers/constants/design-system.js` to change the font size of the component.
+Use the `variant` prop and the `TextVariant` enum from `./ui/helpers/constants/design-system.js` to change the font size of the component.
+
+`TextVariant` options:
+
+- TextVariant.displayMd (default renders as `h1` tag)
+- TextVariant.headingLg (default renders as `h2` tag)
+- TextVariant.headingMd (default renders as `h3` tag)
+- TextVariant.headingSm (default renders as `h4` tag)
+- TextVariant.bodyLgMedium (default renders as `p` tag)
+- TextVariant.bodyMd (default renders as `p` tag)
+- TextVariant.bodyMdBold (default renders as `p` tag)
+- TextVariant.bodySm (default renders as `p` tag)
+- TextVariant.bodySmBold (default renders as `p` tag)
+- TextVariant.bodyXs (default renders as `p` tag)
+- TextVariant.inherit (default renders as `span` tag)
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--variant" />
+  <Story id="components-componentlibrary-text--variant" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
-import { TEXT } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
-<Text variant={TEXT.DISPLAY_MD}>display-md</Text>
-<Text variant={TEXT.HEADING_LG}>heading-lg</Text>
-<Text variant={TEXT.HEADING_MD}>heading-md</Text>
-<Text variant={TEXT.HEADING_SM}>heading-sm</Text>
-<Text variant={TEXT.BODY_MD}>body-md</Text>
-<Text variant={TEXT.BODY_SM}>body-sm</Text>
-<Text variant={TEXT.BODY_XS}>body-xs</Text>
-<Text variant={TEXT.INHERIT}>inherit</Text>
+<Text variant={TextVariant.displayMd}>display-md</Text>
+<Text variant={TextVariant.headingLg}>heading-lg</Text>
+<Text variant={TextVariant.headingMd}>heading-md</Text>
+<Text variant={TextVariant.headingSm}>heading-sm</Text>
+<Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
+<Text variant={TextVariant.bodyMd}>body-md</Text>
+<Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
+<Text variant={TextVariant.bodySm}>body-sm</Text>
+<Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
+<Text variant={TextVariant.bodyXs}>body-xs</Text>
+<Text variant={TextVariant.inherit}>inherit</Text>
 ```
 
 ### Color
 
-Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
+Use the `color` prop and the `TextColor` enum from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--color" />
+  <Story id="components-componentlibrary-text--color-story" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
+import { TextColor, BackgroundColor } from '../../../helpers/constants/design-system';
 
-<Text color={COLORS.TEXT_DEFAULT}>
+<Text color={TextColor.textDefault}>
   text-default
 </Text>
-<Text color={COLORS.TEXT_ALTERNATIVE}>
+<Text color={TextColor.textAlternative}>
   text-alternative
 </Text>
-<Text color={COLORS.TEXT_MUTED}>
+<Text color={TextColor.textMuted}>
   text-muted
 </Text>
-<Text color={COLORS.OVERLAY_INVERSE} backgroundColor:{COLORS.OVERLAY_DEFAULT}>
-  overlay-inverse
-</Text>
-<Text color={COLORS.PRIMARY_DEFAULT}>
+<Text color={TextColor.primaryDefault}>
   primary-default
 </Text>
-<Text color={COLORS.PRIMARY_INVERSE} backgroundColor:{COLORS.PRIMARY_DEFAULT}>
+<Text color={TextColor.primaryInverse} backgroundColor={BackgroundColor.primaryDefault}>
   primary-inverse
 </Text>
-<Text color={COLORS.ERROR_DEFAULT}>
+<Text color={TextColor.errorDefault}>
   error-default
 </Text>
-<Text color={COLORS.ERROR_INVERSE} backgroundColor:{COLORS.ERROR_DEFAULT}>
+<Text color={TextColor.errorInverse} backgroundColor={BackgroundColor.errorDefault}>
   error-inverse
 </Text>
-<Text color={COLORS.SUCCESS_DEFAULT}>
+<Text color={TextColor.successDefault}>
   success-default
 </Text>
-<Text color={COLORS.SUCCESS_INVERSE} backgroundColor:{COLORS.SUCCESS_DEFAULT}>
+<Text color={TextColor.successInverse} backgroundColor={BackgroundColor.successDefault}>
   success-inverse
 </Text>
-<Text color={COLORS.WARNING_INVERSE} backgroundColor:{COLORS.WARNING_DEFAULT}>
+<Text color={TextColor.warningDefault}>
+  warning-default
+</Text>
+<Text color={TextColor.warningInverse} backgroundColor={BackgroundColor.warningDefault}>
   warning-inverse
 </Text>
-<Text color={COLORS.INFO_DEFAULT}>
+<Text color={TextColor.infoDefault}>
   info-default
 </Text>
-<Text color={COLORS.INFO_INVERSE} backgroundColor:{COLORS.INFO_DEFAULT}>
+<Text color={TextColor.infoInverse} backgroundColor={BackgroundColor.infoDefault}>
   info-inverse
 </Text>
 ```
@@ -100,11 +119,11 @@ Use the `fontWeight` prop and the `FONT_WEIGHT` object from `./ui/helpers/consta
 - `FONT_WEIGHT.BOLD` = `bold` || `700`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--font-weight" />
+  <Story id="components-componentlibrary-text--font-weight" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 import { FONT_WEIGHT } from '../../../helpers/constants/design-system';
 
 <Text fontWeight={FONT_WEIGHT.NORMAL}>
@@ -126,11 +145,11 @@ Use the `fontStyle` prop and the `FONT_STYLE` object from `./ui/helpers/constant
 - `FONT_STYLE.ITALIC`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--font-style" />
+  <Story id="components-componentlibrary-text--font-style" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 import { FONT_STYLE } from '../../../helpers/constants/design-system';
 
 <Text fontStyle={FONT_STYLE.NORMAL}>
@@ -146,11 +165,11 @@ import { FONT_STYLE } from '../../../helpers/constants/design-system';
 Use the `textTransform` prop and the `TEXT_TRANSFORM` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--text-transform" />
+  <Story id="components-componentlibrary-text--text-transform" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 import { TEXT_TRANSFORM } from '../../../helpers/constants/design-system';
 
 <Text textAlign={TEXT_TRANSFORM.UPPERCASE}>
@@ -169,11 +188,11 @@ import { TEXT_TRANSFORM } from '../../../helpers/constants/design-system';
 Use the `textAlign` prop and the `TEXT_ALIGN` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--text-align" />
+  <Story id="components-componentlibrary-text--text-align" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 
 <Text textAlign={TEXT_ALIGN.LEFT}>
@@ -198,11 +217,11 @@ import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 Use the `overflowWrap` prop and the `OVERFLOW_WRAP` object from `./ui/helpers/constants/design-system.js` to change the overflow wrap of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--overflow-wrap" />
+  <Story id="components-componentlibrary-text--overflow-wrap" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
 
 <div
@@ -226,11 +245,11 @@ import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
 Use the boolean `ellipsis` prop to change the if the `Text` component to have an ellipsis.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--ellipsis" />
+  <Story id="components-componentlibrary-text--ellipsis" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 
 <div
   style={{
@@ -248,12 +267,14 @@ import { Text } from '../../ui/component-library/text';
 
 Use the `as` prop to change the root html element of the `Text` component
 
+You can also utilize the `ValidTag` enum from `./text.types` to ensure that you are using a valid html element
+
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--as" />
+  <Story id="components-componentlibrary-text--as" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../component-library';
 
 <Text as="dd">dd</Text>
 <Text as="div">div</Text>
@@ -292,9 +313,31 @@ Renders the html:
 <input placeholder="input" />
 ```
 
+### Text Direction
+
+Use the `textDirection` prop and the `TextDirection` enum from `./text.types` to change the text direction of `Text`
+
+<Canvas>
+  <Story id="components-componentlibrary-text--text-direction-story" />
+</Canvas>
+
+```jsx
+import { Text, TextDirection } from '../../component-library';
+
+<Text textDirection={TextDirection.LeftToRight}>
+  This is left to right (ltr) for English and most languages
+</Text>
+<Text textDirection={TextDirection.RightToLeft}>
+  This is right to left (rtl) for use with other laguanges such as Arabic. This Enlgish example is incorrect usage.
+</Text>
+<Text textDirection={TextDirection.Auto}>
+  Let the user agent decide with the auto option
+</Text>
+```
+
 ### Box Props
 
-Use any valid box props [Box](/?path=/story/ui-components-ui-box-box-stories-js--default-story) component props to the Text component.
+Use any valid box props [Box](/?path=/story/components-ui-box--default-story) component props to the Text component.
 
 ### Class Name
 
@@ -303,3 +346,236 @@ Adds an additional class to the `Text` component
 ### Children
 
 The text content of the `Text` component
+
+---
+
+# Converting from `Typography` to `Text`
+
+The `Typography` component has been deprecated in favor of the `Text` component. Below are code examples converting from `Typography` to `Text`.
+
+### Variant
+
+Table below is the 1:1 mapping of `TypographyVariant` to `TextVariant` and the html element that needs to be rendered.
+
+The new `Text` component does not have matching default elements for `TypographyVariant.H5`, `TypographyVariant.H6`, `TypographyVariant.H7` or `TypographyVariant.H8` or `TypographyVariant.H9` variant.
+
+If you need to use these variants, please use the `as` prop to render the correct html element.
+
+| TypographyVariant                                          | Typography Tag | TextVariant           | Text Default Tag |
+| ---------------------------------------------------------- | -------------- | --------------------- | ---------------- |
+| [TypographyVariant.H1](#typographyvarianth1)               | h1             | TextVariant.displayMd | h1               |
+| [TypographyVariant.H2](#typographyvarianth2)               | h2             | TextVariant.headingLg | h2               |
+| [TypographyVariant.H3](#typographyvarianth3)               | h3             | TextVariant.headingMd | h3               |
+| [TypographyVariant.H4](#typographyvarianth4)               | h4             | TextVariant.headingSm | h4               |
+| [TypographyVariant.H5](#typographyvarianth5)               | h5             | TextVariant.bodyMd    | p                |
+| [TypographyVariant.H6](#typographyvarianth6)               | h6             | TextVariant.bodySm    | p                |
+| [TypographyVariant.Paragraph](#typographyvariantparagraph) | p              | TextVariant.bodyMd    | p                |
+| [TypographyVariant.H7](#typographyvarianth7)               | h6             | TextVariant.bodySm    | p                |
+| [TypographyVariant.H8](#typographyvarianth8)               | h6             | TextVariant.bodyXs    | p                |
+| [TypographyVariant.H9](#typographyvarianth9)               | h6             | TextVariant.bodyXs    | p                |
+
+#### TypographyVariant.H1
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typography variant={TypographyVariant.H1}>Demo</Typography>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.displayMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H2
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H2}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingLg}>Demo</Text>;
+```
+
+#### TypographyVariant.H3
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H3}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H4
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H4}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingSm}>Demo</Text>;
+```
+
+#### TypographyVariant.H5
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H5}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H6
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H6}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.Paragraph
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.Paragraph}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H7
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H7}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H8
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H8}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H9
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H9}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
+```
+
+### Align
+
+The prop name `align` has been deprecated in favor of `textAlign`
+
+Values and using the `TEXT_ALIGN` object from `./ui/helpers/constants/design-system.js` remain the same
+
+```jsx
+// Before
+<Typograpghy align={TEXT_ALIGN.CENTER}>Demo</Typograpghy>;
+
+// After
+<Text textAlign={TEXT_ALIGN.CENTER}>Demo</Text>;
+```
+
+### Box Props
+
+Box props are now integrated with the `Text` component. Valid box props: [Box](/?path=/story/components-ui-box--default-story)
+
+You no longer need to pass these props as an object through `boxProps`
+
+```jsx
+// Before
+<Typography
+  boxProps={{
+    backgroundColor: Color.infoMuted,
+    borderColor: Color.infoDefault,
+    padding: 4,
+    borderRadius: 4,
+  }}
+  color={Color.textDefault}
+>
+  Demo
+</Typography>;
+
+// After
+<Text
+  backgroundColor={Color.infoMuted}
+  borderColor={Color.infoDefault}
+  padding={4}
+  borderRadius={4}
+  color={Color.textDefault}
+>
+  Demo
+</Text>;
+```

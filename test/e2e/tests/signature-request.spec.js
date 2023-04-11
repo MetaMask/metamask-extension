@@ -17,7 +17,6 @@ describe('Sign Typed Data V4 Signature Request', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -27,7 +26,9 @@ describe('Sign Typed Data V4 Signature Request', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -45,28 +46,24 @@ describe('Sign Typed Data V4 Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          '.signature-request-content__title',
+          '.signature-request__content__title',
         );
-        const name = await driver.findElement(
-          '.signature-request-content__info--bolded',
+        const origin = await driver.findElement('.signature-request__origin');
+        const verifyContractDetailsButton = await driver.findElement(
+          '.signature-request-content__verify-contract-details',
         );
-        const content = await driver.findElements(
-          '.signature-request-content__info',
-        );
-        const origin = content[0];
-        const address = content[1];
         const message = await driver.findElement(
           '.signature-request-data__node__value',
         );
+
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
-        assert.equal(
-          await address.getText(),
-          `${publicAddress.slice(0, 8)}...${publicAddress.slice(
-            publicAddress.length - 8,
-          )}`,
-        );
+
+        verifyContractDetailsButton.click();
+        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
+
         assert.equal(await message.getText(), 'Hello, Bob!');
         // Approve signing typed data
         await driver.clickElement(
@@ -101,7 +98,6 @@ describe('Sign Typed Data V3 Signature Request', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -111,7 +107,9 @@ describe('Sign Typed Data V3 Signature Request', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -129,28 +127,25 @@ describe('Sign Typed Data V3 Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          '.signature-request-content__title',
+          '.signature-request__content__title',
         );
-        const name = await driver.findElement(
-          '.signature-request-content__info--bolded',
+        const origin = await driver.findElement('.signature-request__origin');
+        const verifyContractDetailsButton = await driver.findElement(
+          '.signature-request-content__verify-contract-details',
         );
-        const content = await driver.findElements(
-          '.signature-request-content__info',
-        );
-        const origin = content[0];
-        const address = content[1];
+
         const messages = await driver.findElements(
           '.signature-request-data__node__value',
         );
+
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
-        assert.equal(
-          await address.getText(),
-          `${publicAddress.slice(0, 8)}...${publicAddress.slice(
-            publicAddress.length - 8,
-          )}`,
-        );
+
+        verifyContractDetailsButton.click();
+        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
+
         assert.equal(await messages[4].getText(), 'Hello, Bob!');
 
         // Approve signing typed data
@@ -185,7 +180,6 @@ describe('Sign Typed Data Signature Request', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -195,7 +189,9 @@ describe('Sign Typed Data Signature Request', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -213,7 +209,7 @@ describe('Sign Typed Data Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          '.request-signature__header__text',
+          '.request-signature__content__title',
         );
         const origin = await driver.findElement('.request-signature__origin');
         const message = await driver.findElements(

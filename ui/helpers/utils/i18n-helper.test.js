@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { getMessage } from './i18n-helper';
 
 describe('i18n helper', () => {
@@ -76,17 +76,17 @@ describe('i18n helper', () => {
     </div>
   );
   const TEST_SUBSTITUTION_7_1 = (
-    <div style={{ color: 'red' }} key="test-react-substitutions-1">
+    <div style={{ color: 'red' }} key="test-react-substitutions-7-1">
       {t(TEST_KEY_7_HELPER_1)}
     </div>
   );
   const TEST_SUBSTITUTION_7_2 = (
-    <div style={{ color: 'blue' }} key="test-react-substitutions-1">
+    <div style={{ color: 'blue' }} key="test-react-substitutions-7-2">
       {t(TEST_KEY_7_HELPER_2)}
     </div>
   );
   const TEST_SUBSTITUTION_8_1 = (
-    <div style={{ color: 'orange' }} key="test-react-substitutions-1">
+    <div style={{ color: 'orange' }} key="test-react-substitutions-8-1">
       {t(TEST_KEY_8_HELPER_1)}
     </div>
   );
@@ -129,7 +129,7 @@ describe('i18n helper', () => {
       );
     });
 
-    it('should correctly render falsey substitutions', () => {
+    it('should correctly render falsy substitutions', () => {
       const result = t(TEST_KEY_4, [0, -0, '', false, NaN]);
       expect(result).toStrictEqual('0 - 0 -  - false - NaN');
     });
@@ -141,9 +141,10 @@ describe('i18n helper', () => {
 
     it('should return the correct message when a single react substitution is made', () => {
       const result = t(TEST_KEY_6, [TEST_SUBSTITUTION_6]);
-      expect(shallow(result).html()).toStrictEqual(
-        '<span> Testing a react substitution <div style="color:red">TEST_SUBSTITUTION_1</div>. </span>',
-      );
+
+      const { container } = renderWithProvider(result);
+
+      expect(container).toMatchSnapshot();
     });
 
     it('should return the correct message when two react substitutions are made', () => {
@@ -151,9 +152,10 @@ describe('i18n helper', () => {
         TEST_SUBSTITUTION_7_1,
         TEST_SUBSTITUTION_7_2,
       ]);
-      expect(shallow(result).html()).toStrictEqual(
-        '<span> Testing a react substitution <div style="color:red">TEST_SUBSTITUTION_1</div> and another <div style="color:blue">TEST_SUBSTITUTION_2</div>. </span>',
-      );
+
+      const { container } = renderWithProvider(result);
+
+      expect(container).toMatchSnapshot();
     });
 
     it('should return the correct message when substituting a mix of react elements and strings', () => {
@@ -163,9 +165,10 @@ describe('i18n helper', () => {
         TEST_SUBSTITUTION_2,
         TEST_SUBSTITUTION_8_2,
       ]);
-      expect(shallow(result).html()).toStrictEqual(
-        '<span> Testing a mix TEST_SUBSTITUTION_1 of react substitutions <div style="color:orange">TEST_SUBSTITUTION_3</div> and string substitutions TEST_SUBSTITUTION_2 + <div style="color:pink">TEST_SUBSTITUTION_4</div>. </span>',
-      );
+
+      const { container } = renderWithProvider(result);
+
+      expect(container).toMatchSnapshot();
     });
   });
 });

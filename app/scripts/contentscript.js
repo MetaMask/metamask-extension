@@ -4,12 +4,10 @@ import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
+import log from 'loglevel';
 
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
-import {
-  checkForLastError,
-  checkForLastErrorAndWarn,
-} from '../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -88,6 +86,9 @@ function injectScript(content) {
  * SERVICE WORKER LOGIC
  */
 
+const EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR =
+  'Extension context invalidated.';
+
 const WORKER_KEEP_ALIVE_INTERVAL = 1000;
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
@@ -107,6 +108,24 @@ let keepAliveInterval;
 let keepAliveTimer;
 
 /**
+ * Sending a message to the extension to receive will keep the service worker alive.
+ *
+ * If the extension is unloaded or reloaded during a session and the user attempts to send a
+ * message to the extension, an "Extension context invalidated." error will be thrown from
+ * chromium browsers. When this happens, prompt the user to reload the extension. Note: Handling
+ * this error is not supported in Firefox here.
+ */
+const sendMessageWorkerKeepAlive = () => {
+  browser.runtime
+    .sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE })
+    .catch((e) => {
+      e.message === EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR
+        ? log.error(`Please refresh the page. MetaMask: ${e}`)
+        : log.error(`MetaMask: ${e}`);
+    });
+};
+
+/**
  * Running this method will ensure the service worker is kept alive for 45 minutes.
  * The first message is sent immediately and subsequent messages are sent at an
  * interval of WORKER_KEEP_ALIVE_INTERVAL.
@@ -120,11 +139,11 @@ const runWorkerKeepAliveInterval = () => {
 
   clearInterval(keepAliveInterval);
 
-  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+  sendMessageWorkerKeepAlive();
 
   keepAliveInterval = setInterval(() => {
     if (browser.runtime.id) {
-      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+      sendMessageWorkerKeepAlive();
     }
   }, WORKER_KEEP_ALIVE_INTERVAL);
 };
@@ -141,11 +160,7 @@ function setupPhishingPageStreams() {
   });
 
   if (isManifestV3) {
-    phishingPageStream.on('data', ({ data: { method } }) => {
-      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-        runWorkerKeepAliveInterval();
-      }
-    });
+    runWorkerKeepAliveInterval();
   }
 
   // create and connect channel muxers
@@ -220,13 +235,25 @@ const destroyPhishingExtStreams = () => {
  * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyPhishingStreams = () => {
-  checkForLastErrorAndWarn();
+  const err = checkForLastError();
 
   phishingExtPort.onDisconnect.removeListener(
     onDisconnectDestroyPhishingStreams,
   );
 
   destroyPhishingExtStreams();
+
+  /**
+   * If an error is found, reset the streams. When running two or more dapps, resetting the service
+   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
+   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
+   * may cause issues. We suspect that this is a chromium bug as this event should only be called
+   * once the port and connections are ready. Delay time is arbitrary.
+   */
+  if (err) {
+    console.warn(`${err} Resetting the phishing streams.`);
+    setTimeout(setupPhishingExtStreams, 1000);
+  }
 };
 
 /**
@@ -292,9 +319,14 @@ const setupPageStreams = () => {
   pageChannel = pageMux.createStream(PROVIDER);
 };
 
+// The field below is used to ensure that replay is done only once for each restart.
+let METAMASK_EXTENSION_CONNECT_SENT = false;
+
 const setupExtensionStreams = () => {
+  METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
+  extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -518,6 +550,38 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 }
 
 /**
+ * The function notifies inpage when the extension stream connection is ready. When the
+ * 'metamask_chainChanged' method is received from the extension, it implies that the
+ * background state is completely initialized and it is ready to process method calls.
+ * This is used as a notification to replay any pending messages in MV3.
+ *
+ * @param {object} msg - instance of message received
+ */
+function extensionStreamMessageListener(msg) {
+  if (
+    METAMASK_EXTENSION_CONNECT_SENT &&
+    isManifestV3 &&
+    msg.data.method === 'metamask_chainChanged'
+  ) {
+    METAMASK_EXTENSION_CONNECT_SENT = false;
+    window.postMessage(
+      {
+        target: INPAGE, // the post-message-stream "target"
+        data: {
+          // this object gets passed to obj-multiplex
+          name: PROVIDER, // the obj-multiplex channel name
+          data: {
+            jsonrpc: '2.0',
+            method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
+          },
+        },
+      },
+      window.location.origin,
+    );
+  }
+}
+
+/**
  * This function must ONLY be called in pump destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
  * Relies on obj-multiplex and post-message-stream implementation details.
@@ -541,16 +605,13 @@ function notifyInpageOfStreamFailure() {
 
 /**
  * Redirects the current page to a phishing information page
- *
- * @param data
  */
-function redirectToPhishingWarning(data = {}) {
+function redirectToPhishingWarning() {
   console.debug('MetaMask: Routing to Phishing Warning page.');
   const { hostname, href } = window.location;
-  const { newIssueUrl } = data;
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
-  const querystring = new URLSearchParams({ hostname, href, newIssueUrl });
+  const querystring = new URLSearchParams({ hostname, href });
   window.location.href = `${baseUrl}#${querystring}`;
 }
 

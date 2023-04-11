@@ -27,6 +27,11 @@ export default class EnsController {
     }
 
     this.store = new ObservableStore(initState);
+
+    this.resetState = () => {
+      this.store.updateState(initState);
+    };
+
     onNetworkDidChange(() => {
       this.store.putState(initState);
       const chainId = getCurrentChainId();

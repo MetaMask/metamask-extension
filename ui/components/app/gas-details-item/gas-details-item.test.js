@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -32,7 +32,7 @@ const render = ({ contextProps } = {}) => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
     },
   });
 

@@ -6,7 +6,8 @@ import {
 } from '../selectors';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 
-import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { EtherDenomination } from '../../shared/constants/common';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
@@ -54,7 +55,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
   ) {
     // Display ETH
-    currency = nativeCurrency || ETH;
+    currency = nativeCurrency || EtherDenomination.ETH;
     numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 8;
   } else if (
     (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||

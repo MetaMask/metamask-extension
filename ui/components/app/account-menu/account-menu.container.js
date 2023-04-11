@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import {
   toggleAccountMenu,
-  showAccountDetail,
+  setSelectedAccount,
   lockMetamask,
   hideWarning,
 } from '../../../store/actions';
@@ -51,8 +51,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
-    showAccountDetail: (address) => {
-      dispatch(showAccountDetail(address));
+    setSelectedAccount: (address) => {
+      dispatch(setSelectedAccount(address));
       dispatch(toggleAccountMenu());
     },
     lockMetamask: () => {

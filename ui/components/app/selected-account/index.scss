@@ -44,13 +44,12 @@
 
     &:hover,
     &:active {
-      background-color: var(--color-background-alternative);
+      background-color: var(--color-background-default-hover);
     }
   }
 
   &__copy {
-    height: 13px;
-    display: inline-block;
+    display: flex;
     margin-inline-start: 3px;
   }
 }

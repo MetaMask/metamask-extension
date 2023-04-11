@@ -6,7 +6,7 @@ whos nonce is too high
 */
 
 import { cloneDeep } from 'lodash';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 
 const version = 19;
 
@@ -35,12 +35,12 @@ function transformState(state) {
 
     newState.TransactionController.transactions = transactions.map(
       (txMeta, _, txList) => {
-        if (txMeta.status !== TRANSACTION_STATUSES.SUBMITTED) {
+        if (txMeta.status !== TransactionStatus.submitted) {
           return txMeta;
         }
 
         const confirmedTxs = txList
-          .filter((tx) => tx.status === TRANSACTION_STATUSES.CONFIRMED)
+          .filter((tx) => tx.status === TransactionStatus.confirmed)
           .filter((tx) => tx.txParams.from === txMeta.txParams.from)
           .filter(
             (tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from,
@@ -48,7 +48,7 @@ function transformState(state) {
         const highestConfirmedNonce = getHighestNonce(confirmedTxs);
 
         const pendingTxs = txList
-          .filter((tx) => tx.status === TRANSACTION_STATUSES.SUBMITTED)
+          .filter((tx) => tx.status === TransactionStatus.submitted)
           .filter((tx) => tx.txParams.from === txMeta.txParams.from)
           .filter(
             (tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from,
@@ -64,7 +64,7 @@ function transformState(state) {
         );
 
         if (parseInt(txMeta.txParams.nonce, 16) > maxNonce + 1) {
-          txMeta.status = TRANSACTION_STATUSES.FAILED;
+          txMeta.status = TransactionStatus.failed;
           txMeta.err = {
             message: 'nonce too high',
             note: 'migration 019 custom error',

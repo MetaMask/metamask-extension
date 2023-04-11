@@ -12,10 +12,15 @@ import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
+  AssetType,
+  TokenStandard,
 } from '../../../../shared/constants/transaction';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -58,15 +63,15 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const importSelectedTokens = async (selectedTokens) => {
     selectedTokens.forEach((importedToken) => {
       trackEvent({
-        event: EVENT_NAMES.TOKEN_ADDED,
-        category: EVENT.CATEGORIES.WALLET,
+        event: MetaMetricsEventName.TokenAdded,
+        category: MetaMetricsEventCategory.Wallet,
         sensitiveProperties: {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: EVENT.SOURCE.TOKEN.DETECTED,
-          token_standard: TOKEN_STANDARDS.ERC20,
-          asset_type: ASSET_TYPES.TOKEN,
+          source: MetaMetricsTokenEventSource.Detected,
+          token_standard: TokenStandard.ERC20,
+          asset_type: AssetType.token,
         },
       });
     });
@@ -86,13 +91,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       ({ symbol, address }) => `${symbol} - ${address}`,
     );
     trackEvent({
-      event: EVENT_NAMES.TOKEN_HIDDEN,
-      category: EVENT.CATEGORIES.WALLET,
+      event: MetaMetricsEventName.TokenHidden,
+      category: MetaMetricsEventCategory.Wallet,
       sensitiveProperties: {
         tokens: tokensDetailsList,
-        location: EVENT.LOCATION.TOKEN_DETECTION,
-        token_standard: TOKEN_STANDARDS.ERC20,
-        asset_type: ASSET_TYPES.TOKEN,
+        location: MetaMetricsEventLocation.TokenDetection,
+        token_standard: TokenStandard.ERC20,
+        asset_type: AssetType.token,
       },
     });
     const deSelectedTokensAddresses = deSelectedTokens.map(

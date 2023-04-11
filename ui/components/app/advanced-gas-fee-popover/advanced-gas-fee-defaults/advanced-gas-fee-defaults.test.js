@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
 import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
+  EditGasModes,
+  GasEstimateTypes,
 } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
@@ -42,7 +42,7 @@ const render = (defaultGasParams, contextParams) => {
       },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
   return renderWithProvider(
@@ -132,7 +132,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
 
   it('should not render option to set default gas options in a swaps transaction', () => {
-    render({}, { editGasMode: EDIT_GAS_MODES.SWAPS });
+    render({}, { editGasMode: EditGasModes.swaps });
     expect(
       document.querySelector('input[type=checkbox]'),
     ).not.toBeInTheDocument();

@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 describe('View Price Quote Difference', () => {
@@ -45,7 +45,7 @@ describe('View Price Quote Difference', () => {
       priceSlippage: {
         ratio: 1.007876641534847,
         calculationError: '',
-        bucket: GAS_RECOMMENDATIONS.LOW,
+        bucket: GasRecommendations.low,
         sourceAmountInETH: 1,
         destinationAmountInETH: 0.9921849150875727,
       },
@@ -93,7 +93,7 @@ describe('View Price Quote Difference', () => {
 
   it('displays an error when in medium bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.MEDIUM;
+    props.usedQuote.priceSlippage.bucket = GasRecommendations.medium;
 
     const { container } = renderWithProvider(
       <ViewQuotePriceDifference {...props} />,
@@ -105,7 +105,7 @@ describe('View Price Quote Difference', () => {
 
   it('displays an error when in high bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.HIGH;
+    props.usedQuote.priceSlippage.bucket = GasRecommendations.high;
 
     const { container } = renderWithProvider(
       <ViewQuotePriceDifference {...props} />,

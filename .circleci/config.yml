@@ -14,16 +14,26 @@ executors:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
 
+orbs:
+  gh: circleci/github-cli@2.0
+  codecov: codecov/codecov@3.2.2
+
+rc_branch_only: &rc_branch_only
+  filters:
+    branches:
+      only:
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
+
 workflows:
   test_and_release:
     jobs:
       - create_release_pull_request:
+          <<: *rc_branch_only
           requires:
             - prep-deps
-          filters:
-            branches:
-              only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      - trigger-beta-build:
+          requires:
+            - prep-deps
       - prep-deps
       - test-deps-audit:
           requires:
@@ -44,7 +54,10 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
-      - prep-build-beta:
+      - prep-build-desktop:
+          filters:
+            branches:
+              ignore: master
           requires:
             - prep-deps
       - prep-build-flask:
@@ -59,12 +72,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
       - prep-build-storybook:
           requires:
-            - test-storybook
+            - prep-deps
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
@@ -93,18 +103,39 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
-      - test-unit:
+      - test-unit-mocha:
           requires:
             - prep-deps
+      - test-unit-jest-main:
+          requires:
+            - prep-deps
+      - test-unit-jest-development:
+          requires:
+            - prep-deps
+      - upload-and-validate-coverage:
+          requires:
+            - test-unit-jest-main
+            - test-unit-jest-development
+            - test-unit-mocha
       - test-unit-global:
           requires:
             - prep-deps
+      - test-storybook:
+          requires:
+            - prep-deps
+            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
       - validate-source-maps-beta:
           requires:
-            - prep-build-beta
+            - trigger-beta-build
+      - validate-source-maps-desktop:
+          filters:
+            branches:
+              ignore: master
+          requires:
+            - prep-build-desktop
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
@@ -113,9 +144,17 @@ workflows:
             - prep-deps
             - prep-build
       - test-mozilla-lint-beta:
+          <<: *rc_branch_only
           requires:
             - prep-deps
-            - prep-build-beta
+            - trigger-beta-build
+      - test-mozilla-lint-desktop:
+          filters:
+            branches:
+              ignore: master
+          requires:
+            - prep-deps
+            - prep-build-desktop
       - test-mozilla-lint-flask:
           requires:
             - prep-deps
@@ -127,18 +166,24 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit
+            - test-unit-jest-main
+            - test-unit-jest-development
             - test-unit-global
+            - test-unit-mocha
+            - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
+            - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
             - test-mozilla-lint-beta
+            - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
+            - test-storybook
       - benchmark:
           requires:
             - prep-build-test
@@ -152,7 +197,8 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            - prep-build-beta
+            - trigger-beta-build
+            - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
@@ -168,6 +214,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-desktop
             - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
@@ -184,6 +231,35 @@ workflows:
             - prep-build-ts-migration-dashboard
 
 jobs:
+  trigger-beta-build:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: Build beta prod
+                command: |
+                  .circleci/scripts/trigger-beta-build.sh
+            - run:
+                name: Move beta build to 'dist-beta' to avoid conflict with production build
+                command: mv ./dist ./dist-beta
+            - run:
+                name: Move beta zips to 'builds-beta' to avoid conflict with production build
+                command: mv ./builds ./builds-beta
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - dist-beta
+                  - builds-beta
+
   create_release_pull_request:
     executor: node-browsers
     steps:
@@ -208,7 +284,37 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          keys:
+            # First try to get the specific cache for the checksum of the yarn.lock file.
+            # This cache key lookup will fail if the lock file is modified and a cache
+            # has not yet been persisted for the new checksum.
+            - dependency-cache-v1-{{ checksum "yarn.lock" }}
+            # To prevent having to do a full install of every node_module when
+            # dependencies change, restore from the last known cache of any
+            # branch/checksum, the install step will remove cached items that are no longer
+            # required and add the new dependencies, and the cache will be persisted.
+            - dependency-cache-v1-
+      - gh/install
+      - run:
+          name: Set IS_DRAFT environment variable
+          command: |
+            PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
+            if [ -n "$PR_NUMBER" ]
+            then
+              echo "IS_DRAFT=$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")" >> "$BASH_ENV"
+              source "$BASH_ENV"
+            else
+              echo "Not a PR; skipping"
+            fi
+      - run:
+          name: Setup registry config for using package previews on draft PRs
+          command: |
+            if [[ $IS_DRAFT == 'true' ]]
+            then
+              printf '%s\n\n%s' '@metamask:registry=https://npm.pkg.github.com' "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGE_READ_TOKEN}" > .npmrc
+            else
+              echo "Not draft; skipping GitHub registry setup"
+            fi
       - run:
           name: Install deps
           command: |
@@ -216,12 +322,7 @@ jobs:
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules/
-            - build-artifacts/yarn-install-har/
-      - run:
-          name: Postinstall
-          command: |
-            yarn setup:postinstall
+            - .yarn/cache
       - persist_to_workspace:
           root: .
           paths:
@@ -277,7 +378,7 @@ jobs:
             - dist
             - builds
 
-  prep-build-beta:
+  prep-build-desktop:
     executor: node-browsers-medium-plus
     steps:
       - checkout
@@ -285,21 +386,21 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type beta dist
+          command: yarn build --build-type desktop dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - run:
-          name: Move beta build to 'dist-beta' to avoid conflict with production build
-          command: mv ./dist ./dist-beta
+          name: Move desktop build to 'dist-desktop' to avoid conflict with production build
+          command: mv ./dist ./dist-desktop
       - run:
-          name: Move beta zips to 'builds-beta' to avoid conflict with production build
-          command: mv ./builds ./builds-beta
+          name: Move desktop zips to 'builds-desktop' to avoid conflict with production build
+          command: mv ./builds ./builds-desktop
       - persist_to_workspace:
           root: .
           paths:
-            - dist-beta
-            - builds-beta
+            - dist-desktop
+            - builds-desktop
 
   prep-build-flask:
     executor: node-browsers-medium-plus
@@ -307,9 +408,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type flask dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type flask dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type flask prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -414,17 +531,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - development/ts-migration-dashboard/build
-
-  test-storybook:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test Storybook
-          command: yarn storybook:test
+            - development/ts-migration-dashboard/build/final
 
   test-yarn-dedupe:
     executor: node-browsers
@@ -434,7 +541,7 @@ jobs:
           at: .
       - run:
           name: Detect yarn lock deduplications
-          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
+          command: yarn dedupe --check
 
   test-lint:
     executor: node-browsers
@@ -448,6 +555,19 @@ jobs:
       - run:
           name: Verify locales
           command: yarn verify-locales --quiet
+
+  test-storybook:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install Playwright browsers
+          command: yarn exec playwright install
+      - run:
+          name: Test Storybook
+          command: yarn test-storybook:ci
 
   test-lint-shellcheck:
     executor: shellcheck
@@ -492,7 +612,7 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: yarn lint:changelog:rc
+                command: .circleci/scripts/validate-changelog-in-rc.sh
 
   test-deps-audit:
     executor: node-browsers
@@ -538,9 +658,18 @@ jobs:
               yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-chrome-mv3:
     executor: node-browsers
@@ -563,7 +692,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -572,7 +701,7 @@ jobs:
 
   test-e2e-firefox-snaps:
     executor: node-browsers
-    parallelism: 2
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -594,13 +723,22 @@ jobs:
               yarn test:e2e:firefox:snaps --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-chrome-snaps:
     executor: node-browsers
-    parallelism: 2
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -622,9 +760,18 @@ jobs:
               yarn test:e2e:chrome:snaps --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
@@ -650,9 +797,18 @@ jobs:
               yarn test:e2e:firefox --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   benchmark:
     executor: node-browsers-medium-plus
@@ -777,9 +933,6 @@ jobs:
           path: coverage
           destination: coverage
       - store_artifacts:
-          path: jest-coverage
-          destination: jest-coverage
-      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -795,12 +948,12 @@ jobs:
           path: storybook-build
           destination: storybook
       - store_artifacts:
-          path: development/ts-migration-dashboard/build
+          path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
       - run:
           name: Set branch parent commit env var
           command: |
-            echo "export PARENT_COMMIT=$(git rev-parse "$(git rev-list --topo-order --reverse HEAD ^origin/develop | head -1)"^)" >> $BASH_ENV
+            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: build:announce
@@ -843,7 +996,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - checkout
       - attach_workspace:
           at: .
@@ -855,8 +1008,8 @@ jobs:
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
-  test-unit:
-    executor: node-browsers
+  test-unit-mocha:
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -864,24 +1017,60 @@ jobs:
       - run:
           name: test:coverage:mocha
           command: yarn test:coverage:mocha
-      - run:
-          name: test:coverage:jest
-          command: yarn test:coverage:jest
-      - run:
-          name: Validate coverage thresholds
-          command: |
-            if ! git diff --exit-code jest.config.js development/jest.config.js; then
-              echo "Detected changes in coverage thresholds"
-              exit 1
-            fi
       - persist_to_workspace:
           root: .
           paths:
             - .nyc_output
             - coverage
-            - jest-coverage
+
+  test-unit-jest-development:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: jest development unit tests
+          command: yarn test:coverage:jest:dev
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
       - store_test_results:
           path: test/test-results/junit.xml
+
+  test-unit-jest-main:
+    executor: node-browsers-medium-plus
+    parallelism: 12
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:coverage:jest
+          command: yarn test:coverage:jest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      - store_test_results:
+          path: test/test-results/junit.xml
+
+  upload-and-validate-coverage:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - codecov/upload
+      - run:
+          name: test:coverage:validate
+          command: yarn test:coverage:validate
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+
   test-unit-global:
     executor: node-browsers
     steps:
@@ -909,11 +1098,22 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
+          name: Validate source maps
+          command: |
+            .circleci/scripts/validate-source-maps-beta.sh
+
+  validate-source-maps-desktop:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
       - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
+          name: Move desktop build to dist
+          command: mv ./dist-desktop ./dist
+      - run:
+          name: Move desktop zips to builds
+          command: mv ./builds-desktop ./builds
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
@@ -951,11 +1151,22 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
+          name: Lint beta for firefox
+          command: |
+            .circleci/scripts/mozilla-lint-beta.sh
+
+  test-mozilla-lint-desktop:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
       - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
+          name: Move desktop build to dist
+          command: mv ./dist-desktop ./dist
+      - run:
+          name: Move desktop zips to builds
+          command: mv ./builds-desktop ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint

@@ -15,7 +15,9 @@ module.exports = {
     'development/ts-migration-dashboard/build/**',
     'dist/**/*',
     'node_modules/**/*',
+    'storybook-build/**/*',
     'jest-coverage/**/*',
+    'coverage/**/*',
   ],
   overrides: [
     /**
@@ -42,6 +44,8 @@ module.exports = {
         'test/e2e/**/*.js',
         'test/helpers/*.js',
         'test/lib/wait-until-called.js',
+        'test/run-unit-tests.js',
+        'test/merge-coverage.js',
       ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -77,6 +81,7 @@ module.exports = {
       files: [
         'app/**/*.js',
         'shared/**/*.js',
+        'shared/**/*.ts',
         'ui/**/*.js',
         '**/*.test.js',
         'test/lib/**/*.js',
@@ -231,6 +236,7 @@ module.exports = {
         'test/e2e/**/*.spec.js',
       ],
       excludedFiles: [
+        'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -253,11 +259,12 @@ module.exports = {
      * Jest tests
      *
      * These are files that make use of globals and syntax introduced by the
-     * Jest library.
+     * Jest library. The files in this section should match the Mocha excludedFiles section.
      */
     {
       files: [
         '**/__snapshots__/*.snap',
+        'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/network/provider-api-tests/*.js',
         'app/scripts/controllers/permissions/**/*.test.js',
@@ -266,6 +273,7 @@ module.exports = {
         'app/scripts/platforms/*.test.js',
         'development/**/*.test.js',
         'shared/**/*.test.js',
+        'shared/**/*.test.ts',
         'test/helpers/*.js',
         'test/jest/*.js',
         'ui/**/*.test.js',
@@ -337,6 +345,8 @@ module.exports = {
         'development/**/*.js',
         'test/e2e/benchmark.js',
         'test/helpers/setup-helper.js',
+        'test/run-unit-tests.js',
+        'test/merge-coverage.js',
       ],
       rules: {
         'node/no-process-exit': 'off',

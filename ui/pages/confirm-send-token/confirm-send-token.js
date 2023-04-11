@@ -16,9 +16,8 @@ import {
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
 import {
-  ASSET_TYPES,
-  ERC20,
-  ERC721,
+  AssetType,
+  TokenStandard,
 } from '../../../shared/constants/transaction';
 
 export default function ConfirmSendToken({
@@ -40,7 +39,7 @@ export default function ConfirmSendToken({
 
   const handleEditTransaction = async ({ txData }) => {
     const { id } = txData;
-    await dispatch(editExistingTransaction(ASSET_TYPES.TOKEN, id.toString()));
+    await dispatch(editExistingTransaction(AssetType.token, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
   };
@@ -57,10 +56,10 @@ export default function ConfirmSendToken({
 
   let title, subtitle;
 
-  if (assetStandard === ERC721) {
+  if (assetStandard === TokenStandard.ERC721) {
     title = assetName;
     subtitle = `#${tokenId}`;
-  } else if (assetStandard === ERC20) {
+  } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
 

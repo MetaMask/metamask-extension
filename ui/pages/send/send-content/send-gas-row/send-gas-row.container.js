@@ -14,7 +14,7 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck';
-import { hexToDecimal } from '../../../../../shared/lib/metamask-controller-utils';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import SendGasRow from './send-gas-row.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendGasRow);

@@ -8,9 +8,9 @@ import {
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  ADVANCED_ROUTE,
+  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
@@ -19,9 +19,12 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import {
+  TypographyVariant,
+  FONT_WEIGHT,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import { TOKEN_STANDARDS } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
@@ -125,12 +128,12 @@ class ImportToken extends Component {
     customDecimals: 0,
     searchResults: [],
     selectedTokens: {},
-    standard: TOKEN_STANDARDS.NONE,
+    standard: TokenStandard.NONE,
     tokenSelectorError: null,
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
-    collectibleAddressError: null,
+    nftAddressError: null,
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
@@ -195,7 +198,7 @@ class ImportToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     return (
@@ -203,7 +206,7 @@ class ImportToken extends Component {
       customAddressError ||
       customSymbolError ||
       customDecimalsError ||
-      collectibleAddressError
+      nftAddressError
     );
   }
 
@@ -262,7 +265,7 @@ class ImportToken extends Component {
     this.setState({
       customAddress,
       customAddressError: null,
-      collectibleAddressError: null,
+      nftAddressError: null,
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
@@ -306,21 +309,20 @@ class ImportToken extends Component {
         });
 
         break;
-      case process.env.COLLECTIBLES_V1 &&
-        (standard === 'ERC1155' || standard === 'ERC721'):
+      case standard === 'ERC1155' || standard === 'ERC721':
         this.setState({
-          collectibleAddressError: this.context.t('collectibleAddressError', [
+          nftAddressError: this.context.t('nftAddressError', [
             <a
-              className="import-token__collectible-address-error-link"
+              className="import-token__nft-address-error-link"
               onClick={() =>
                 this.props.history.push({
-                  pathname: ADD_COLLECTIBLE_ROUTE,
+                  pathname: ADD_NFT_ROUTE,
                   state: {
                     addressEnteredOnImportTokensPage: this.state.customAddress,
                   },
                 })
               }
-              key="collectibleAddressError"
+              key="nftAddressError"
             >
               {this.context.t('importNFTPage')}
             </a>,
@@ -403,7 +405,7 @@ class ImportToken extends Component {
       symbolAutoFilled,
       decimalAutoFilled,
       mainnetTokenWarning,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     const {
@@ -445,7 +447,7 @@ class ImportToken extends Component {
                 key="import-token-token-detection-announcement"
                 className="import-token__link"
                 onClick={() =>
-                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                  history.push(`${SECURITY_ROUTE}#token-description`)
                 }
               >
                 {t('inYourSettings')}
@@ -490,9 +492,7 @@ class ImportToken extends Component {
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
-          error={
-            customAddressError || mainnetTokenWarning || collectibleAddressError
-          }
+          error={customAddressError || mainnetTokenWarning || nftAddressError}
           fullWidth
           autoFocus
           margin="normal"
@@ -540,13 +540,13 @@ class ImportToken extends Component {
             message={
               <>
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('tokenDecimalFetchFailed')}
                 </Typography>
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('verifyThisTokenDecimalOn', [
@@ -588,7 +588,7 @@ class ImportToken extends Component {
                 key="token-detection-announcement"
                 className="import-token__link"
                 onClick={() =>
-                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                  history.push(`${SECURITY_ROUTE}#token-description`)
                 }
               >
                 {t('enableFromSettings')}
@@ -625,13 +625,13 @@ class ImportToken extends Component {
 
     if (showSearchTab) {
       tabs.push(
-        <Tab name={t('search')} key="search-tab">
+        <Tab name={t('search')} key="search-tab" tabKey="search">
           {this.renderSearchToken()}
         </Tab>,
       );
     }
     tabs.push(
-      <Tab name={t('customToken')} key="custom-tab">
+      <Tab name={t('customToken')} key="custom-tab" tabKey="customToken">
         {this.renderCustomTokenForm()}
       </Tab>,
     );

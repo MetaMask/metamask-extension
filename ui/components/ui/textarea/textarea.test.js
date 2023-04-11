@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import {
-  COLORS,
+  BorderColor,
+  BorderStyle,
   RESIZE,
-  SIZES,
-  BORDER_STYLE,
+  Size,
 } from '../../../helpers/constants/design-system';
 import TextArea from '.';
 
@@ -20,9 +20,9 @@ describe('TextArea', () => {
       resize: RESIZE.BOTH,
       scrollable: false,
       boxProps: {
-        borderColor: COLORS.BORDER_MUTED,
-        borderRadius: SIZES.SM,
-        borderStyle: BORDER_STYLE.SOLID,
+        borderColor: BorderColor.borderMuted,
+        borderRadius: Size.SM,
+        borderStyle: BorderStyle.solid,
         padding: [2, 4],
       },
       height: '100px',

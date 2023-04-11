@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import {
-  getEthConversionFromWeiHex,
-  getValueFromWeiHex,
-} from '../../../helpers/utils/conversions.util';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
@@ -37,7 +34,7 @@ export default class TransactionActivityLog extends PureComponent {
     const etherscanUrl = getBlockExplorerLink(activity, rpcPrefs);
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'Clicked Block Explorer Link',
       properties: {
         link_type: 'Transaction Block Explorer',
@@ -90,21 +87,13 @@ export default class TransactionActivityLog extends PureComponent {
   renderActivity(activity, index) {
     const { conversionRate, nativeCurrency } = this.props;
     const { eventKey, value, timestamp } = activity;
-    const ethValue =
-      index === 0
-        ? `${getValueFromWeiHex({
-            value,
-            fromCurrency: 'ETH',
-            toCurrency: 'ETH',
-            conversionRate,
-            numberOfDecimals: 6,
-          })} ${nativeCurrency}`
-        : getEthConversionFromWeiHex({
-            value,
-            fromCurrency: 'ETH',
-            conversionRate,
-            numberOfDecimals: 3,
-          });
+    const ethValue = `${getValueFromWeiHex({
+      value,
+      fromCurrency: 'ETH',
+      toCurrency: 'ETH',
+      conversionRate,
+      numberOfDecimals: 6,
+    })} ${nativeCurrency}`;
     const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y");
     const activityText = this.context.t(eventKey, [
       ethValue,

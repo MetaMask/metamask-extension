@@ -4,7 +4,9 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-import FirstTimeFlow from '../first-time-flow';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import browserAPI from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -18,7 +20,7 @@ import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
-import AddCollectiblePage from '../add-collectible';
+import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
@@ -36,6 +38,9 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import Notifications from '../notifications';
+import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
+import DesktopErrorPage from '../desktop-error';
+import DesktopPairingPage from '../desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -45,7 +50,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
-  INITIALIZE_UNLOCK_ROUTE,
   LOCK_ROUTE,
   MOBILE_SYNC_ROUTE,
   NEW_ACCOUNT_ROUTE,
@@ -58,14 +62,20 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  INITIALIZE_ROUTE,
   ONBOARDING_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
+  DESKTOP_PAIRING_ROUTE,
+  DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
+///: END:ONLY_INCLUDE_IN
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -77,9 +87,10 @@ import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
+import { ThemeType } from '../../../shared/constants/preferences';
+import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -112,9 +123,11 @@ export default class Routes extends Component {
     isTestNet: PropTypes.bool,
     currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
-    portfolioTooltipIsBeingShown: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
+    completedOnboarding: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
+    toggleAccountMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -124,17 +137,33 @@ export default class Routes extends Component {
 
   handleOsTheme() {
     const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
-      ? THEME_TYPE.DARK
-      : THEME_TYPE.LIGHT;
+      ? ThemeType.dark
+      : ThemeType.light;
 
     document.documentElement.setAttribute('data-theme', osTheme);
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  componentDidMount() {
+    const { history } = this.props;
+    browserAPI.runtime.onMessage.addListener(
+      registerOnDesktopDisconnect(history),
+    );
+  }
+
+  componentWillUnmount() {
+    const { history } = this.props;
+    browserAPI.runtime.onMessage.removeListener(
+      registerOnDesktopDisconnect(history),
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   componentDidUpdate(prevProps) {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === THEME_TYPE.OS) {
+      if (theme === ThemeType.os) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
@@ -159,7 +188,7 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    if (theme === THEME_TYPE.OS) {
+    if (theme === ThemeType.os) {
       this.handleOsTheme();
     } else {
       document.documentElement.setAttribute('data-theme', theme);
@@ -173,11 +202,17 @@ export default class Routes extends Component {
 
     const routes = (
       <Switch>
-        {process.env.ONBOARDING_V2 && (
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-        )}
+        <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
-        <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Route
+            path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
+            component={DesktopErrorPage}
+            exact
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
@@ -220,13 +255,7 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        {process.env.COLLECTIBLES_V1 ? (
-          <Authenticated
-            path={ADD_COLLECTIBLE_ROUTE}
-            component={AddCollectiblePage}
-            exact
-          />
-        ) : null}
+        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -248,6 +277,15 @@ export default class Routes extends Component {
         />
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Authenticated
+            path={DESKTOP_PAIRING_ROUTE}
+            component={DesktopPairingPage}
+            exact
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
@@ -267,7 +305,7 @@ export default class Routes extends Component {
     const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, {
-        path: INITIALIZE_UNLOCK_ROUTE,
+        path: ONBOARDING_UNLOCK_ROUTE,
         exact: true,
       }),
     );
@@ -304,9 +342,22 @@ export default class Routes extends Component {
   hideAppHeader() {
     const { location } = this.props;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    const isDesktopConnectionLostScreen = Boolean(
+      matchPath(location.pathname, {
+        path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,
+        exact: true,
+      }),
+    );
+
+    if (isDesktopConnectionLostScreen) {
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     const isInitializing = Boolean(
       matchPath(location.pathname, {
-        path: process.env.ONBOARDING_V2 ? ONBOARDING_ROUTE : INITIALIZE_ROUTE,
+        path: ONBOARDING_ROUTE,
         exact: false,
       }),
     );
@@ -377,8 +428,10 @@ export default class Routes extends Component {
       isTestNet,
       currentChainId,
       shouldShowSeedPhraseReminder,
-      portfolioTooltipIsBeingShown,
       isCurrentProviderCustom,
+      completedOnboarding,
+      isAccountMenuOpen,
+      toggleAccountMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -391,6 +444,7 @@ export default class Routes extends Component {
       !isTestNet &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
+      completedOnboarding &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
@@ -398,8 +452,7 @@ export default class Routes extends Component {
     const shouldShowNetworkDeprecationWarning =
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
       isUnlocked &&
-      !shouldShowSeedPhraseReminder &&
-      !portfolioTooltipIsBeingShown;
+      !shouldShowSeedPhraseReminder;
 
     return (
       <div
@@ -433,11 +486,12 @@ export default class Routes extends Component {
             }
           />
         )}
-        {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
-          <OnboardingAppHeader />
-        )}
-        <NetworkDropdown />
-        <AccountMenu />
+        {this.showOnboardingHeader() && <OnboardingAppHeader />}
+        {completedOnboarding ? <NetworkDropdown /> : null}
+        {process.env.MULTICHAIN ? null : <AccountMenu />}
+        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+          <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
@@ -476,6 +530,8 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('connectingToLineaTestnet');
       default:
         return t('connectingTo', [providerId]);
     }

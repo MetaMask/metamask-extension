@@ -3,7 +3,6 @@ import PrivacySettings from './privacy-settings';
 
 export default {
   title: 'Pages/OnboardingFlow/PrivacySettings',
-  id: __filename,
 };
 
 export const DefaultStory = () => {

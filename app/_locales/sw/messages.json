@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Mipangilio ya kina"
   },
-  "advancedOptions": {
-    "message": "Machaguo ya Juu"
-  },
   "amount": {
     "message": "Kiasi"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "Rasilimali"
-  },
-  "attemptToCancel": {
-    "message": "Unajaribu Kubatilisha?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kuwasilisha jaribio hili hakukuhakikishii muamala wako wa awali utabatilishwa. Ikiwa jaribio la kuffuta litafanikiwa, utatozwa ada ya muamala hapo juu."
   },
   "attemptingConnect": {
     "message": "Inajaribu kuunganisha kwenye blockchain."
@@ -130,17 +121,8 @@
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
-  "buyWithWyre": {
-    "message": "Nunua $1 kwa kutumia Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre inakuwezesha kutumia kadi ya benki kuweka $1 moja kwa moja kwenye akaunti yako ya MetaMask."
-  },
   "cancel": {
     "message": "Ghairi"
-  },
-  "cancellationGasFee": {
-    "message": "Ada ya Kubatilisha Gesi"
   },
   "cancelled": {
     "message": "Imebatilishwa"
@@ -151,9 +133,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Unapaswa kutumia MetaMask kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
   },
-  "clickToRevealSeed": {
-    "message": "Bofya hapa ili uonyeshe maneno ya siri"
-  },
   "close": {
     "message": "Funga"
   },
@@ -163,14 +142,8 @@
   "confirmPassword": {
     "message": "Thibitisha Nenosiri"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Thibitisha Kirai chako cha Siri cha Kuhifadhi Data"
-  },
   "confirmed": {
     "message": "Imethibitishwa"
-  },
-  "congratulations": {
-    "message": "Hongera"
   },
   "connect": {
     "message": "Unganisha"
@@ -184,11 +157,11 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Endelea kwenye Wyre"
   },
   "contractDeployment": {
     "message": "Kutoa Mkataba"
@@ -213,9 +186,6 @@
   },
   "create": {
     "message": "Unda"
-  },
-  "createAWallet": {
-    "message": "Fungua Waleti"
   },
   "createAccount": {
     "message": "Fungua Akaunti"
@@ -262,9 +232,6 @@
   "downloadGoogleChrome": {
     "message": "Pakua Google chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Pakuwa Kirai hiki cha Hifadhi Mbadala ya Siri na na kitunze kwa usalama kwenye kihifadhi cha nje chenye neneosiri au kifaa cha kuhifadhia."
-  },
   "downloadStateLogs": {
     "message": "Pakua Kumbukumbu za Hali"
   },
@@ -276,33 +243,6 @@
   },
   "editContact": {
     "message": "Hariri Mawasiliano"
-  },
-  "endOfFlowMessage1": {
-    "message": "Umefaulu jaribio - weka kirai chako cha kuanzia mahali salama, ni wajibu wako!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Yote Imekamilika"
-  },
-  "endOfFlowMessage2": {
-    "message": "Dondoo kuhusu kukihifadhi salama"
-  },
-  "endOfFlowMessage3": {
-    "message": "Hifadhi hifadhimbadala kwenye maeneo kadhaa."
-  },
-  "endOfFlowMessage4": {
-    "message": "Kamwe usimpatia mtu yeye kirai hicho."
-  },
-  "endOfFlowMessage5": {
-    "message": "Kuwa makini na walaghai! MetaMask kamwe haitakuomba kirai chako kianzio."
-  },
-  "endOfFlowMessage6": {
-    "message": "Ikiwa unataka kuhifadhi tena kwa njia mbadla kirai chako kianzio, unaweza kukipata kwenye Mipangilio -> Usalama."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask haiwezi kurejesha kirai chako kianzio. Pata maelezo ziadi."
-  },
-  "endOfFlowMessage9": {
-    "message": "Jifunze zaidi."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Jina la ENS halipatikani kwenye mtandao wa sasa. Jaribu kuhamia kwenye Mtandao Mkuu wa Ethereum."
@@ -371,21 +311,8 @@
   "general": {
     "message": "Jumla"
   },
-  "getEther": {
-    "message": "Pata Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Pata Ether kutoka kwenye mfereji $1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Anza"
-  },
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Tuna furaha kukuona"
   },
   "hardware": {
     "message": "programu maunzi"
@@ -421,12 +348,6 @@
   },
   "importAccountMsg": {
     "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Hamisha Akaunti kwa kutumia Kirai Kianzio"
-  },
-  "importWallet": {
-    "message": "Hamisha Waleti"
   },
   "imported": {
     "message": "Zilizoingizwa",
@@ -478,11 +399,11 @@
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
   },
-  "letsGoSetUp": {
-    "message": "Ndiyo, hebu tuweke mipangilio!"
-  },
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
+  },
+  "lineatestnet": {
+    "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
     "message": "Viungo"
@@ -502,14 +423,8 @@
   "mainnet": {
     "message": "Mtandao Mkuu wa Ethereum"
   },
-  "memorizePhrase": {
-    "message": "Kariri kirai hiki"
-  },
   "message": {
     "message": "Ujumbe"
-  },
-  "metamaskDescription": {
-    "message": "Kukuunganisha kwenye Ethereum na Wavutiu Uliotawanywa."
   },
   "metamaskVersion": {
     "message": "Toleo la MetaMask"
@@ -539,9 +454,6 @@
   "newAccount": {
     "message": "Akaunti Mpya"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Anwani mpya zimegunduliwa! Bofya hapa ili uongeze kitabu chako cha anwani."
-  },
   "newAccountNumberName": {
     "message": "Akaunti $1",
     "description": "Default name of next account to be created on create account screen"
@@ -555,17 +467,11 @@
   "newPassword": {
     "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
   },
-  "newToMetaMask": {
-    "message": "MetaMask mpya?"
-  },
   "next": {
     "message": "Inayofuata"
   },
   "noAddressForName": {
     "message": "Hakuna anwani iliyoundwa kwa jina hili."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Hapana, tayari nini kirai cha kuanzia"
   },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
@@ -674,9 +580,6 @@
   "rejected": {
     "message": "Imekataliwa"
   },
-  "remindMeLater": {
-    "message": "Nikumbushe baadaye"
-  },
   "remove": {
     "message": "Ondoa"
   },
@@ -695,35 +598,21 @@
   "reset": {
     "message": "Weka upya"
   },
-  "resetAccount": {
-    "message": "Futa Akaunti"
-  },
-  "resetAccountDescription": {
-    "message": "Kufuta Akaunti yako kutafuta histori ya akaunti yako."
-  },
   "restore": {
     "message": "Rejesha"
   },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ikiwa utabadilisha kisakuzi au kuhamisha kompyuta, utahitaji kirai hiki kianzio ili kufikia akaunti zako. Vihifadhi mahali fulani ambapo ni salamana pa siri."
-  },
   "revealSeedWordsWarning": {
-    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "USISHIRIKI kirai hiki na mtu yeyote!"
+    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"
   },
   "save": {
     "message": "Hifadhi"
-  },
-  "saveAsCsvFile": {
-    "message": "Hifadhi kama Faili la CSV"
   },
   "scanInstructions": {
     "message": "Weka msimbo wa QR mbele ya kamera yako"
@@ -740,12 +629,6 @@
   "searchTokens": {
     "message": "Tafuta Vianzio"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Kirai chako cha siri cha hifadhi mbadala kinafanya iwe rahisi kuhifadhi kwa njia mbadala na kurejesha akaunti yako."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ONYO: Kamwe usiweke wazi kirai chako cha hifadhi mbadala. Mtu yeyote mwenye kirai hiki anaweza kuchukua Ether yako daima."
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -754,9 +637,6 @@
   },
   "selectAnAccount": {
     "message": "Chagua Akaunti"
-  },
-  "selectEachPhrase": {
-    "message": "Tafadhali chagua kila kirai ili kuhakikisha kuwa hii ni sahihi."
   },
   "selectHdPath": {
     "message": "Chagua Njia ya HD"
@@ -775,12 +655,6 @@
   },
   "settings": {
     "message": "Mipangilio"
-  },
-  "showAdvancedGasInline": {
-    "message": "Udhibiti wa juu wa gesi"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chagua hii ili uonyeshe bei ya gesi na punguza vidhibiti moja kwa moja kwenye skrini za tuma na thibitisha."
   },
   "showFiatConversionInTestnets": {
     "message": "Onyesha Ubadilishaji kwenye Testnets"
@@ -802,9 +676,6 @@
   },
   "sign": {
     "message": "Ingia kwenye akaunti"
-  },
-  "signNotice": {
-    "message": "Kusaini ujumbe huu kunaweza kuwa \nmadhara hatari. Saini ujumbe kutoka kwenye\ntovuti unazoziamini kabisa na akaunti yako yote tu.\nNjia hii ya hatari itaondolewa kwenye toleo la baadaye."
   },
   "signatureRequest": {
     "message": "Ombi la Saini"
@@ -832,9 +703,6 @@
   },
   "stateLogsDescription": {
     "message": "Kumbukumbu za hali zinajumusiha anwani zako za akaunti za umma na miamala iliyotumwa."
-  },
-  "storePhrase": {
-    "message": "Hifadhi kirai hiki kwenye kidhibiti nenosiri kama vile 1Password."
   },
   "submitted": {
     "message": "Imewasilishwa"
@@ -874,12 +742,6 @@
   },
   "terms": {
     "message": "Masharti ya Matumizi"
-  },
-  "testFaucet": {
-    "message": "Mfereji wa Jaribio"
-  },
-  "thisWillCreate": {
-    "message": "Hatua hiiitaunda waleti mpya na kirai kianzio"
   },
   "tips": {
     "message": "Michango"
@@ -999,26 +861,14 @@
   "userName": {
     "message": "Jina la mtumiaji"
   },
-  "viewAccount": {
-    "message": "Angalia Akaunti"
-  },
   "viewContact": {
     "message": "Tazama Mawasiliano"
   },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
   },
-  "welcome": {
-    "message": "Karibu kwenye MetaMask"
-  },
   "welcomeBack": {
     "message": "Karibu Tena!"
-  },
-  "writePhrase": {
-    "message": "Andika kirai hiki kwenye karatasi na kihifadhi kwenye sehemu salama. Ikiwa unahitaji usalama zaidi, andika kwenye vipande kadhaa vya karatasi na tunza kila kimoja kwenye maeneo tofauti 2-3. "
-  },
-  "yesLetsTry": {
-    "message": "Ndiyo, ngoja tujaribu"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."

@@ -1,12 +1,13 @@
-import EventEmitter from 'safe-event-emitter';
+import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { NetworkStatus } from '../../../../shared/constants/network';
 import {
   generateHistoryEntry,
   replayHistory,
@@ -54,10 +55,17 @@ export const ERROR_SUBMITTING =
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
- * @param {Function} opts.getNetwork - return network number
+ * @param {Function} opts.getNetworkId - Get the current network Id.
+ * @param {Function} opts.getNetworkStatus - Get the current network status.
  */
 export default class TransactionStateManager extends EventEmitter {
-  constructor({ initState, txHistoryLimit, getNetwork, getCurrentChainId }) {
+  constructor({
+    initState,
+    txHistoryLimit,
+    getNetworkId,
+    getNetworkStatus,
+    getCurrentChainId,
+  }) {
     super();
 
     this.store = new ObservableStore({
@@ -65,7 +73,8 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
-    this.getNetwork = getNetwork;
+    this.getNetworkId = getNetworkId;
+    this.getNetworkStatus = getNetworkStatus;
     this.getCurrentChainId = getCurrentChainId;
   }
 
@@ -81,9 +90,10 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta} the default txMeta object
    */
   generateTxMeta(opts = {}) {
-    const netId = this.getNetwork();
+    const networkId = this.getNetworkId();
+    const networkStatus = this.getNetworkStatus();
     const chainId = this.getCurrentChainId();
-    if (netId === 'loading') {
+    if (networkStatus !== NetworkStatus.Available) {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
 
@@ -122,8 +132,8 @@ export default class TransactionStateManager extends EventEmitter {
     return {
       id: createId(),
       time: new Date().getTime(),
-      status: TRANSACTION_STATUSES.UNAPPROVED,
-      metamaskNetworkId: netId,
+      status: TransactionStatus.unapproved,
+      metamaskNetworkId: networkId,
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
       chainId,
@@ -144,12 +154,12 @@ export default class TransactionStateManager extends EventEmitter {
    */
   getUnapprovedTxList() {
     const chainId = this.getCurrentChainId();
-    const network = this.getNetwork();
+    const networkId = this.getNetworkId();
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
-        transaction.status === TRANSACTION_STATUSES.UNAPPROVED &&
-        transactionMatchesNetwork(transaction, chainId, network),
+        transaction.status === TransactionStatus.unapproved &&
+        transactionMatchesNetwork(transaction, chainId, networkId),
     );
   }
 
@@ -162,7 +172,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getApprovedTransactions(address) {
-    const searchCriteria = { status: TRANSACTION_STATUSES.APPROVED };
+    const searchCriteria = { status: TransactionStatus.approved };
     if (address) {
       searchCriteria.from = address;
     }
@@ -178,7 +188,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getPendingTransactions(address) {
-    const searchCriteria = { status: TRANSACTION_STATUSES.SUBMITTED };
+    const searchCriteria = { status: TransactionStatus.submitted };
     if (address) {
       searchCriteria.from = address;
     }
@@ -194,7 +204,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getConfirmedTransactions(address) {
-    const searchCriteria = { status: TRANSACTION_STATUSES.CONFIRMED };
+    const searchCriteria = { status: TransactionStatus.confirmed };
     if (address) {
       searchCriteria.from = address;
     }
@@ -408,7 +418,7 @@ export default class TransactionStateManager extends EventEmitter {
     limit,
   } = {}) {
     const chainId = this.getCurrentChainId();
-    const network = this.getNetwork();
+    const networkId = this.getNetworkId();
     // searchCriteria is an object that might have values that aren't predicate
     // methods. When providing any other value type (string, number, etc), we
     // consider this shorthand for "check the value at key for strict equality
@@ -437,7 +447,7 @@ export default class TransactionStateManager extends EventEmitter {
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesNetwork(transaction, chainId, network) === false
+          transactionMatchesNetwork(transaction, chainId, networkId) === false
         ) {
           return false;
         }
@@ -504,7 +514,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusRejected(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.REJECTED);
+    this._setTransactionStatus(txId, TransactionStatus.rejected);
     this._deleteTransaction(txId);
   }
 
@@ -514,7 +524,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusUnapproved(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.UNAPPROVED);
+    this._setTransactionStatus(txId, TransactionStatus.unapproved);
   }
 
   /**
@@ -523,7 +533,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusApproved(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.APPROVED);
+    this._setTransactionStatus(txId, TransactionStatus.approved);
   }
 
   /**
@@ -532,7 +542,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusSigned(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.SIGNED);
+    this._setTransactionStatus(txId, TransactionStatus.signed);
   }
 
   /**
@@ -545,7 +555,7 @@ export default class TransactionStateManager extends EventEmitter {
     const txMeta = this.getTransaction(txId);
     txMeta.submittedTime = new Date().getTime();
     this.updateTransaction(txMeta, 'txStateManager - add submitted time stamp');
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.SUBMITTED);
+    this._setTransactionStatus(txId, TransactionStatus.submitted);
   }
 
   /**
@@ -554,7 +564,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusConfirmed(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.CONFIRMED);
+    this._setTransactionStatus(txId, TransactionStatus.confirmed);
   }
 
   /**
@@ -563,7 +573,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusDropped(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.DROPPED);
+    this._setTransactionStatus(txId, TransactionStatus.dropped);
   }
 
   /**
@@ -587,12 +597,11 @@ export default class TransactionStateManager extends EventEmitter {
       'transactions:tx-state-manager#fail - add error',
     );
 
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.FAILED);
+    this._setTransactionStatus(txId, TransactionStatus.failed);
   }
 
   /**
-   * Removes all transactions for the given address on the current network,
-   * preferring chainId for comparison over networkId.
+   * Removes all transactions for the given address on the current network.
    *
    * @param {string} address - hex string of the from address on the txParams
    *  to remove
@@ -600,8 +609,8 @@ export default class TransactionStateManager extends EventEmitter {
   wipeTransactions(address) {
     // network only tx
     const { transactions } = this.store.getState();
-    const network = this.getNetwork();
     const chainId = this.getCurrentChainId();
+    const networkId = this.getNetworkId();
 
     // Update state
     this.store.updateState({
@@ -609,7 +618,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesNetwork(transaction, chainId, network),
+          transactionMatchesNetwork(transaction, chainId, networkId),
       ),
     });
   }
@@ -621,7 +630,7 @@ export default class TransactionStateManager extends EventEmitter {
     this.store.updateState({
       transactions: omitBy(
         this.store.getState().transactions,
-        (transaction) => transaction.status === TRANSACTION_STATUSES.UNAPPROVED,
+        (transaction) => transaction.status === TransactionStatus.unapproved,
       ),
     });
   }
@@ -678,9 +687,9 @@ export default class TransactionStateManager extends EventEmitter {
       this.emit(`tx:status-update`, txId, status);
       if (
         [
-          TRANSACTION_STATUSES.SUBMITTED,
-          TRANSACTION_STATUSES.REJECTED,
-          TRANSACTION_STATUSES.FAILED,
+          TransactionStatus.submitted,
+          TransactionStatus.rejected,
+          TransactionStatus.failed,
         ].includes(status)
       ) {
         this.emit(`${txMeta.id}:finished`, txMeta);

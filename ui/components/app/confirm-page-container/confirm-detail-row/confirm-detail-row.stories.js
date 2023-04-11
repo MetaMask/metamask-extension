@@ -3,7 +3,7 @@ import ConfirmDetailRow from '.';
 
 export default {
   title: 'Components/App/ConfirmPageContainer/ConfirmDetailRow',
-  id: __filename,
+
   argTypes: {
     headerText: {
       control: 'text',

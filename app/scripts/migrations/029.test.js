@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import migration29 from './029';
 
 const properTime = new Date().getTime();
@@ -7,23 +7,23 @@ const storage = {
   data: {
     TransactionController: {
       transactions: [
-        { status: TRANSACTION_STATUSES.APPROVED, id: 1, submittedTime: 0 },
+        { status: TransactionStatus.approved, id: 1, submittedTime: 0 },
         {
-          status: TRANSACTION_STATUSES.APPROVED,
+          status: TransactionStatus.approved,
           id: 2,
           submittedTime: properTime,
         },
         {
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          status: TransactionStatus.confirmed,
           id: 3,
           submittedTime: properTime,
         },
         {
-          status: TRANSACTION_STATUSES.SUBMITTED,
+          status: TransactionStatus.submitted,
           id: 4,
           submittedTime: properTime,
         },
-        { status: TRANSACTION_STATUSES.SUBMITTED, id: 5, submittedTime: 0 },
+        { status: TransactionStatus.submitted, id: 5, submittedTime: 0 },
       ],
     },
   },
@@ -36,13 +36,13 @@ describe('storage is migrated successfully where transactions that are submitted
     const [txMeta1] = txs;
 
     expect(migratedData.meta.version).toStrictEqual(29);
-    expect(txMeta1.status).toStrictEqual(TRANSACTION_STATUSES.FAILED);
+    expect(txMeta1.status).toStrictEqual(TransactionStatus.failed);
 
     txs.forEach((tx) => {
       if (tx.id === 1) {
         return;
       }
-      expect(tx.status).not.toStrictEqual(TRANSACTION_STATUSES.FAILED);
+      expect(tx.status).not.toStrictEqual(TransactionStatus.failed);
     });
   });
 });

@@ -1,0 +1,40 @@
+diff --git a/build/cjs-browser/luxon.js b/build/cjs-browser/luxon.js
+index 776c38ae1679eaed97ef5fa9a666e37e48747df6..336fb0ddfffd12604b5ab1609ba0685755739c9c 100644
+--- a/build/cjs-browser/luxon.js
++++ b/build/cjs-browser/luxon.js
+@@ -4226,7 +4226,7 @@ var Interval = /*#__PURE__*/function () {
+    * @example Interval.fromISO('2022-11-07T17:00Z/2022-11-07T19:00Z').toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }); //=> Mon, Nov 07, 6:00 – 8:00 p
+    * @return {string}
+    */;
+-  _proto.toLocaleString = function toLocaleString(formatOpts, opts) {
++   Reflect.defineProperty(_proto, 'toLocaleString', { value: function toLocaleString(formatOpts, opts) {
+     if (formatOpts === void 0) {
+       formatOpts = DATE_SHORT;
+     }
+@@ -4234,7 +4234,7 @@ var Interval = /*#__PURE__*/function () {
+       opts = {};
+     }
+     return this.isValid ? Formatter.create(this.s.loc.clone(opts), formatOpts).formatInterval(this) : INVALID$1;
+-  }
++  }})
+ 
+   /**
+    * Returns an ISO 8601-compliant string representation of this Interval.
+@@ -6598,7 +6598,7 @@ var DateTime = /*#__PURE__*/function () {
+    * @example DateTime.now().toLocaleString({ hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); //=> '11:32'
+    * @return {string}
+    */;
+-  _proto.toLocaleString = function toLocaleString(formatOpts, opts) {
++   Reflect.defineProperty(_proto, 'toLocaleString', { value: function toLocaleString(formatOpts, opts) {
+     if (formatOpts === void 0) {
+       formatOpts = DATE_SHORT;
+     }
+@@ -6606,7 +6606,7 @@ var DateTime = /*#__PURE__*/function () {
+       opts = {};
+     }
+     return this.isValid ? Formatter.create(this.loc.clone(opts), formatOpts).formatDateTime(this) : INVALID;
+-  }
++  }})
+ 
+   /**
+    * Returns an array of format "parts", meaning individual tokens along with metadata. This is allows callers to post-process individual sections of the formatted output.

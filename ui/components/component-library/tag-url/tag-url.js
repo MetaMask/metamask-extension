@@ -4,16 +4,16 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import {
-  ALIGN_ITEMS,
-  BORDER_RADIUS,
-  COLORS,
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
   DISPLAY,
-  SIZES,
-  TEXT,
+  IconColor,
+  Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AvatarFavicon } from '../avatar-favicon';
-import { ButtonLink } from '../button-link';
-import { Icon, ICON_NAMES } from '../icon';
+import { AvatarFavicon, ButtonLink, IconName, Icon, IconSize } from '..';
 
 export const TagUrl = ({
   label,
@@ -30,36 +30,36 @@ export const TagUrl = ({
   return (
     <Box
       className={classnames('mm-tag-url', className)}
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderColor={COLORS.BORDER_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderColor={BorderColor.borderDefault}
       borderWidth={1}
-      alignItems={ALIGN_ITEMS.CENTER}
+      alignItems={AlignItems.center}
       paddingLeft={2}
       paddingRight={4}
       gap={2}
-      borderRadius={BORDER_RADIUS.PILL}
-      display={DISPLAY.INLINE_FLEX}
+      borderRadius={BorderRadius.pill}
+      display={DISPLAY.FLEX}
       {...props}
     >
-      <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
+      <AvatarFavicon src={src} name={label} {...avatarFaviconProps} />
       {showLockIcon && (
         <Icon
-          className="tag-url__lock-icon"
-          name={ICON_NAMES.LOCK_FILLED}
-          color={COLORS.ICON_ALTERNATIVE}
-          size={SIZES.SM}
+          className="mm-tag-url__lock-icon"
+          name={IconName.Lock}
+          color={IconColor.iconAlternative}
+          size={IconSize.Sm}
           aria-label="https://"
+          role="img"
           {...lockIconProps}
         />
       )}
-      <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
+      <Text variant={TextVariant.bodyMd} ellipsis {...labelProps}>
         {label}
       </Text>
-
       {actionButtonLabel && (
         <ButtonLink
           as="a"
-          size={SIZES.SM}
+          size={Size.SM}
           paddingLeft={0}
           paddingRight={0}
           marginLeft={2}
@@ -89,7 +89,7 @@ TagUrl.propTypes = {
   /**
    * It accepts all the props from Icon
    */
-  lockIconProps: PropTypes.shape(Icon.PropTypes),
+  lockIconProps: PropTypes.object,
   /**
    * The text content of the TagUrl component
    */
@@ -110,6 +110,10 @@ TagUrl.propTypes = {
    * Additional classNames to be added to the TagUrl component
    */
   className: PropTypes.string,
+  /**
+   * TagUrl accepts all the props from Box
+   */
+  ...Box.propTypes,
 };
 
 export default TagUrl;

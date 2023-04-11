@@ -4,9 +4,9 @@ import Button from '../button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   DISPLAY,
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
-  COLORS,
+  JustifyContent,
+  TypographyVariant,
+  Color,
 } from '../../../helpers/constants/design-system';
 import Box from '../box/box';
 import Typography from '../typography/typography';
@@ -44,12 +44,12 @@ export default function DeprecatedTestNetworks() {
             display={DISPLAY.FLEX}
             className="deprecated-test-networks__content"
           >
-            <Box marginRight={2} color={COLORS.WARNING_DEFAULT}>
+            <Box marginRight={2} color={Color.warningDefault}>
               <i className="fa fa-info-circle deprecated-test-networks__content__icon" />
             </Box>
-            <Box justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}>
+            <Box justifyContent={JustifyContent.spaceBetween}>
               <Typography
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 marginTop={0}
                 marginBottom={0}
               >
@@ -70,7 +70,7 @@ export default function DeprecatedTestNetworks() {
                 className="deprecated-test-networks__content__close"
                 marginLeft={2}
                 marginTop={0}
-                color={COLORS.ICON_ALTERNATIVE}
+                color={Color.iconAlternative}
                 onClick={() => setIsShowingWarning(false)}
               />
             </Box>

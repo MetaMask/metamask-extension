@@ -8,9 +8,9 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
 import {
@@ -168,14 +168,16 @@ export default function AwaitingSwap({
         onClick={() => {
           trackEvent(
             {
-              category: EVENT.CATEGORIES.SWAPS,
-              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Swaps,
+              event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_LINK,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
         }}
@@ -201,7 +203,7 @@ export default function AwaitingSwap({
       setTrackedQuotesExpiredEvent(true);
       trackEvent({
         event: 'Quotes Timed Out',
-        category: EVENT.CATEGORIES.SWAPS,
+        category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
       });
     }
@@ -307,7 +309,7 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            await dispatch(setDefaultHomeActiveTabName('activity'));
             history.push(DEFAULT_ROUTE);
           }
         }}

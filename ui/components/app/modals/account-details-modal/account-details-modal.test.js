@@ -12,7 +12,7 @@ import AccountDetailsModal from '.';
 
 const mockShowModal = jest.fn();
 
-jest.mock('../../../../store/actions.js', () => {
+jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
   };
@@ -78,14 +78,14 @@ describe('Account Details Modal', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        frequentRpcListDetail: [
-          {
+        networkConfigurations: {
+          networkConfigurationId: {
             chainId: '0x99',
             rpcPrefs: {
               blockExplorerUrl,
             },
           },
-        ],
+        },
         provider: {
           chainId: '0x99',
         },

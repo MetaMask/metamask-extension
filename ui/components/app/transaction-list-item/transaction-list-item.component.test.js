@@ -15,11 +15,12 @@ import {
 } from '../../../../test/jest';
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getTokens } from '../../../ducks/metamask/metamask';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+  gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
     low: {
       minWaitTimeEstimate: 180000,
@@ -88,6 +89,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     );
   } else if (selector === getShouldShowFiat) {
     return opts.shouldShowFiat ?? false;
+  } else if (selector === getTokens) {
+    return opts.tokens ?? [];
   }
   return undefined;
 };

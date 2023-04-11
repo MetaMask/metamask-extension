@@ -1,15 +1,37 @@
 import React from 'react';
-import { shallowWithContext } from '../../../../test/lib/render-helpers';
+import { fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import SignatureRequest from './signature-request.component';
-import Message from './signature-request-message';
+
+const baseProps = {
+  hardwareWalletRequiresConnection: false,
+  clearConfirmTransaction: () => undefined,
+  cancel: () => undefined,
+  cancelAll: () => undefined,
+  mostRecentOverviewPage: '/',
+  showRejectTransactionsConfirmationModal: () => undefined,
+  sign: () => undefined,
+  history: { push: '/' },
+  provider: { type: 'rpc' },
+  nativeCurrency: 'ABC',
+  currentCurrency: 'def',
+  fromAccount: {
+    address: '0x123456789abcdef',
+    balance: '0x346ba7725f412cbfdb',
+    name: 'Antonio',
+  },
+};
 
 describe('Signature Request Component', () => {
+  const store = configureMockStore()(mockState);
+
   describe('render', () => {
-    let fromAddress;
     let messageData;
 
     beforeEach(() => {
-      fromAddress = '0x123456789abcdef';
       messageData = {
         domain: {
           chainId: 97,
@@ -58,39 +80,64 @@ describe('Signature Request Component', () => {
       };
     });
 
-    it('should render a div message parsed', () => {
+    it('should match snapshot when we want to switch to fiat', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
       };
-      const wrapper = shallowWithContext(
+      const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
+          conversionRate={1567}
         />,
+        store,
       );
 
-      expect(wrapper.is('div')).toStrictEqual(true);
-      expect(wrapper).toHaveLength(1);
-      expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
-      const messageWrapper = wrapper.find(Message);
-      expect(messageWrapper).toHaveLength(1);
-      const { data } = messageWrapper.props();
-      expect(data.contents).toStrictEqual('Hello, Bob!');
-      expect(data.from.name).toStrictEqual('Cow');
-      expect(data.from.wallets).toBeDefined();
-      expect(data.from.wallets).toHaveLength(2);
-      expect(data.to).toBeDefined();
-      const dataTo = data.to;
-      expect(dataTo[0].name).toStrictEqual('Bob');
-      expect(dataTo[0].wallets).toHaveLength(3);
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should match snapshot when we are using eth', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+        />,
+        store,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should render navigation', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { queryByTestId } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+        />,
+        store,
+      );
+
+      expect(queryByTestId('navigation-container')).toBeInTheDocument();
     });
 
     it('should render a div message parsed without typeless data', () => {
@@ -103,36 +150,179 @@ describe('Signature Request Component', () => {
         version: 'V4',
         origin: 'test',
       };
-      const wrapper = shallowWithContext(
+      const { queryByText } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
+          conversionRate={null}
         />,
+        store,
       );
 
-      expect(wrapper.is('div')).toStrictEqual(true);
-      expect(wrapper).toHaveLength(1);
-      expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
-      const messageWrapper = wrapper.find(Message);
-      expect(messageWrapper).toHaveLength(1);
-      const { data } = messageWrapper.props();
-      expect(data.contents).toStrictEqual('Hello, Bob!');
-      expect(data.from.name).toStrictEqual('Cow');
-      expect(data.from.wallets).toBeDefined();
-      expect(data.from.wallets).toHaveLength(2);
-      expect(data.to).toBeDefined();
-      const dataTo = data.to;
-      expect(dataTo[0].name).toStrictEqual('Bob');
-      expect(dataTo[0].wallets).toHaveLength(3);
+      expect(queryByText('do_not_display')).not.toBeInTheDocument();
+      expect(queryByText('one')).not.toBeInTheDocument();
+      expect(queryByText('do_not_display_2')).not.toBeInTheDocument();
+      expect(queryByText('two')).not.toBeInTheDocument();
+    });
 
-      expect(data.do_not_display).toBeUndefined();
-      expect(data.do_not_display2).toBeUndefined();
+    it('should not render a reject multiple requests link if there is not multiple requests', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.signature-request__reject-all-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render a reject multiple requests link if there is multiple requests (greater than 1)', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.signature-request__reject-all-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('should call reject all button when button is clicked', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      const rejectRequestsLink = container.querySelector(
+        '.signature-request__reject-all-button',
+      );
+      fireEvent.click(rejectRequestsLink);
+      expect(rejectRequestsLink).toBeDefined();
+    });
+
+    it('should render text of reject all button', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { getByText } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(getByText('Reject 2 requests')).toBeInTheDocument();
+    });
+
+    it('should render SecurityProviderBannerMessage component properly', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { queryByText } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          conversionRate={null}
+          txData={{
+            msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: '?',
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
+          }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(queryByText('Request not verified')).toBeInTheDocument();
+      expect(
+        queryByText(
+          'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        queryByText('This is based on information from'),
+      ).toBeInTheDocument();
+    });
+
+    it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { queryByText } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          conversionRate={null}
+          txData={{
+            msgParams,
+            securityProviderResponse: {
+              flagAsDangerous:
+                SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+            },
+          }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(queryByText('Request not verified')).toBeNull();
+      expect(
+        queryByText(
+          'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+        ),
+      ).toBeNull();
+      expect(queryByText('This is based on information from')).toBeNull();
     });
   });
 });

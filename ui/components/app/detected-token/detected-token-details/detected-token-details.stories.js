@@ -4,7 +4,7 @@ import DetectedTokenDetails from './detected-token-details';
 
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenDetails',
-  id: __filename,
+
   argTypes: {
     token: { control: 'object' },
     handleTokenSelection: { control: 'func' },

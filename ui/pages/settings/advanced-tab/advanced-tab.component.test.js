@@ -8,13 +8,11 @@ import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn();
 const mockSetShowTestNetworks = jest.fn();
-const mockSetUseTokenDetection = jest.fn();
 
-jest.mock('../../../store/actions.js', () => {
+jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,
-    setUseTokenDetection: () => mockSetUseTokenDetection,
   };
 });
 
@@ -50,20 +48,27 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[4];
+    const testNetworkToggle = queryAllByRole('checkbox')[2];
 
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
   });
 
-  it('should toggle token detection', () => {
-    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+  it('should not render ledger live control with desktop pairing enabled', () => {
+    const mockStoreWithDesktopEnabled = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        desktopEnabled: true,
+      },
+    });
 
-    const tokenDetectionToggle = queryAllByRole('checkbox')[1];
+    const { queryByTestId } = renderWithProvider(
+      <AdvancedTab />,
+      mockStoreWithDesktopEnabled,
+    );
 
-    fireEvent.click(tokenDetectionToggle);
-
-    expect(mockSetUseTokenDetection).toHaveBeenCalled();
+    expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
   });
 });

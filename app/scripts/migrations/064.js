@@ -1,9 +1,9 @@
 import { cloneDeep, isPlainObject } from 'lodash';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { TransactionType } from '../../../shared/constants/transaction';
 
 const version = 64;
 
-const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TRANSACTION_TYPES.SIMPLE_SEND
+const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TransactionType.simpleSend
 
 /**
  * Removes metaMetricsSendCount from MetaMetrics controller
@@ -25,12 +25,12 @@ function transformState(state) {
   if (isPlainObject(transactions)) {
     for (const tx of Object.values(transactions)) {
       if (tx.type === SENT_ETHER) {
-        tx.type = TRANSACTION_TYPES.SIMPLE_SEND;
+        tx.type = TransactionType.simpleSend;
       }
       if (tx.history) {
         tx.history.map((txEvent) => {
           if (txEvent.type && txEvent.type === SENT_ETHER) {
-            txEvent.type = TRANSACTION_TYPES.SIMPLE_SEND;
+            txEvent.type = TransactionType.simpleSend;
           }
           return txEvent;
         });

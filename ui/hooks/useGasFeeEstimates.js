@@ -1,7 +1,6 @@
 import isEqual from 'lodash/isEqual';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
@@ -11,16 +10,13 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 
 /**
  * @typedef {object} GasEstimates
- * @property {GasEstimateTypes} gasEstimateType - The type of estimate provided
  * @property {import(
- *   '@metamask/controllers'
+ *   '@metamask/gas-fee-controller'
  * ).GasFeeState['gasFeeEstimates']} gasFeeEstimates - The estimate object
- * @property {import(
- *   '@metamask/controllers'
- * ).GasFeeState['estimatedGasFeeTimeBounds']} [estimatedGasFeeTimeBounds] -
- *  estimated time boundaries for fee-market type estimates
+ * @property {object} gasEstimateType - The type of estimate provided
  * @property {boolean} isGasEstimateLoading - indicates whether the gas
  *  estimates are currently loading.
+ * @property {boolean} isNetworkBusy - indicates whether the network is busy.
  */
 
 /**
@@ -29,15 +25,11 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  * GasFeeController that it is done requiring new gas estimates. Also checks
  * the returned gas estimate for validity on the current network.
  *
- * @returns {GasFeeEstimates} GasFeeEstimates object
+ * @returns {GasEstimates} GasEstimates object
  */
 export function useGasFeeEstimates() {
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates, isEqual);
-  const estimatedGasFeeTimeBounds = useSelector(
-    getEstimatedGasFeeTimeBounds,
-    shallowEqual,
-  );
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
   const isNetworkBusy = useSelector(getIsNetworkBusy);
   useSafeGasEstimatePolling();
@@ -45,7 +37,6 @@ export function useGasFeeEstimates() {
   return {
     gasFeeEstimates,
     gasEstimateType,
-    estimatedGasFeeTimeBounds,
     isGasEstimatesLoading,
     isNetworkBusy,
   };

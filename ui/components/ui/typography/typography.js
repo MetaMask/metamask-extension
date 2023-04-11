@@ -2,32 +2,39 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
-  COLORS,
+  Color,
   FONT_WEIGHT,
   FONT_STYLE,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
 import Box, { MultipleSizesAndAuto } from '../box';
 
-const { H6, H7, H8, H9 } = TYPOGRAPHY;
+const { H6, H7, H8, H9 } = TypographyVariant;
 
 export const ValidColors = [
-  COLORS.TEXT_DEFAULT,
-  COLORS.TEXT_ALTERNATIVE,
-  COLORS.TEXT_MUTED,
-  COLORS.OVERLAY_INVERSE,
-  COLORS.PRIMARY_DEFAULT,
-  COLORS.PRIMARY_INVERSE,
-  COLORS.ERROR_DEFAULT,
-  COLORS.ERROR_INVERSE,
-  COLORS.SUCCESS_DEFAULT,
-  COLORS.SUCCESS_INVERSE,
-  COLORS.WARNING_DEFAULT,
-  COLORS.WARNING_INVERSE,
-  COLORS.INFO_DEFAULT,
-  COLORS.INFO_INVERSE,
+  Color.textDefault,
+  Color.textAlternative,
+  Color.textMuted,
+  Color.overlayInverse,
+  Color.primaryDefault,
+  Color.primaryInverse,
+  Color.errorDefault,
+  Color.errorInverse,
+  Color.successDefault,
+  Color.successInverse,
+  Color.sepoliaInverse,
+  Color.warningDefault,
+  Color.warningInverse,
+  Color.infoDefault,
+  Color.infoInverse,
+  Color.goerli,
+  Color.sepolia,
+  Color.goerliInverse,
+  Color.sepoliaInverse,
+  Color.lineaTestnet,
+  Color.lineaTestnetInverse,
 ];
 
 export const ValidTags = [
@@ -49,9 +56,17 @@ export const ValidTags = [
   'label',
 ];
 
+/**
+ * @deprecated `<Typography />` has been deprecated in favour of the `<Text />` component in ./ui/components/component-library/text/text.js
+ *
+ * See storybook documentation for Text here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-text--default-story#text
+ *
+ * Help to replace `Typography` with `Text` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/17670
+ */
+
 export default function Typography({
-  variant = TYPOGRAPHY.Paragraph,
-  color = COLORS.TEXT_DEFAULT,
+  variant = TypographyVariant.paragraph,
+  color = Color.textDefault,
   fontWeight = 'normal',
   fontStyle = 'normal',
   align,
@@ -87,7 +102,7 @@ export default function Typography({
     },
   );
 
-  if (Tag === TYPOGRAPHY.Paragraph) {
+  if (Tag === TypographyVariant.paragraph) {
     Tag = 'p';
   } else if ([H7, H8, H9].includes(Tag)) {
     Tag = H6;
@@ -120,7 +135,7 @@ Typography.propTypes = {
   /**
    * The variation of font sizes of the Typography component
    */
-  variant: PropTypes.oneOf(Object.values(TYPOGRAPHY)),
+  variant: PropTypes.oneOf(Object.values(TypographyVariant)),
   /**
    * The color of the Typography component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js

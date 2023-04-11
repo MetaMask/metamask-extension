@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
-import { SEVERITIES, COLORS } from '../../../helpers/constants/design-system';
+import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
+import { ButtonIcon } from '../../component-library';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export default function Callout({
   severity,
@@ -37,11 +42,14 @@ export default function Callout({
   return (
     <div className={calloutClassName}>
       <InfoIconInverted severity={severity} />
-      <Typography color={COLORS.TEXT_DEFAULT} className="callout__content">
+      <Typography color={Color.textDefault} className="callout__content">
         {children}
       </Typography>
       {dismiss && (
-        <i
+        <ButtonIcon
+          iconName={ICON_NAMES.CLOSE}
+          size={ICON_SIZES.SM}
+          className="callout__close-button"
           onClick={() => {
             setRemoved(true);
           }}
@@ -50,9 +58,6 @@ export default function Callout({
               setRemoved(true);
             }
           }}
-          role="button"
-          tabIndex={0}
-          className="fas fa-times callout__close-button"
         />
       )}
     </div>

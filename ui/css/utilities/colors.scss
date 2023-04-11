@@ -2,13 +2,10 @@
   // Accents
   // Everything below this line is part of the new color system
   --mainnet: #29b6af;
-  --goerli: #3099f2;
-  --sepolia: #cfb5f0;
-  --localhost: #bbc0c5;
-  --flask-purple: #8b45b6;
   --inherit: inherit;
   --transparent: transparent;
-
+  --color-network-linea-testnet-default: #000;
+  --color-network-linea-testnet-inverse: #fcfcfc;
   // DO NOT CHANGE
   // Required for the QR reader to work properly
   --qr-code-white-background: #fff;

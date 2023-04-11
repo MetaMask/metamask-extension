@@ -9,22 +9,22 @@ import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 // Helpers
 import {
-  COLORS,
   DISPLAY,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
   BLOCK_SIZES,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
+  TextColor,
 } from '../../../helpers/constants/design-system';
-import { INITIALIZE_BACKUP_SEED_PHRASE_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
   const history = useHistory();
 
   const handleBackUp = () => {
-    history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE);
+    history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 
   return (
@@ -36,9 +36,9 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
         className="recovery-phrase-reminder"
       >
         <Typography
-          color={COLORS.TEXT_DEFAULT}
+          color={TextColor.textDefault}
           align={TEXT_ALIGN.CENTER}
-          variant={TYPOGRAPHY.Paragraph}
+          variant={TypographyVariant.paragraph}
           boxProps={{ marginTop: 0, marginBottom: 4 }}
         >
           {t('recoveryPhraseReminderSubText')}
@@ -48,7 +48,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
             <li>
               <Typography
                 as="span"
-                color={COLORS.TEXT_DEFAULT}
+                color={TextColor.textDefault}
                 fontWeight={FONT_WEIGHT.BOLD}
               >
                 {t('recoveryPhraseReminderItemOne')}
@@ -78,7 +78,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
             </li>
           </ul>
         </Box>
-        <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
+        <Box justifyContent={JustifyContent.center}>
           <Box width={BLOCK_SIZES.TWO_FIFTHS}>
             <Button type="primary" onClick={onConfirm}>
               {t('recoveryPhraseReminderConfirm')}

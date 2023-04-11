@@ -1,58 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getPermissionDescription } from '../../../helpers/utils/permission';
+import { getWeightedPermissions } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import PermissionCell from '../permission-cell';
+import Box from '../../ui/box';
 
-/**
- * Get one or more permission descriptions for a permission name.
- *
- * @param t - The translation function.
- * @param permissionName - The name of the permission to request.
- * @param permissionValue - The value of the permission to request.
- * @returns {JSX.Element[]} An array of permission description nodes.
- */
-function getDescriptionNodes(t, permissionName, permissionValue) {
-  const { label, leftIcon, rightIcon } = getPermissionDescription(
-    t,
-    permissionName,
-    permissionValue,
-  );
-
-  if (Array.isArray(label)) {
-    return label.map((labelValue, index) => (
-      <div className="permission" key={`${permissionName}-${index}`}>
-        <i className={leftIcon} />
-        {labelValue}
-        {rightIcon && <i className={rightIcon} />}
-      </div>
-    ));
-  }
-
-  return [
-    <div className="permission" key={permissionName}>
-      <i className={leftIcon} />
-      {label}
-      {rightIcon && <i className={rightIcon} />}
-    </div>,
-  ];
-}
-
-export default function PermissionsConnectPermissionList({ permissions }) {
+export default function PermissionsConnectPermissionList({
+  permissions,
+  targetSubjectMetadata,
+}) {
   const t = useI18nContext();
 
   return (
-    <div className="permissions-connect-permission-list">
-      {Object.entries(permissions).reduce(
-        (target, [permissionName, permissionValue]) =>
-          target.concat(
-            getDescriptionNodes(t, permissionName, permissionValue),
-          ),
-        [],
+    <Box paddingTop={2} paddingBottom={2}>
+      {getWeightedPermissions(t, permissions, targetSubjectMetadata).map(
+        (permission, index) => {
+          return (
+            <PermissionCell
+              title={permission.label}
+              description={permission.description}
+              weight={permission.weight}
+              avatarIcon={permission.leftIcon}
+              dateApproved={permission?.permissionValue?.date}
+              key={`${permission.permissionName}-${index}`}
+            />
+          );
+        },
       )}
-    </div>
+    </Box>
   );
 }
 
 PermissionsConnectPermissionList.propTypes = {
   permissions: PropTypes.object.isRequired,
+  targetSubjectMetadata: PropTypes.object.isRequired,
 };

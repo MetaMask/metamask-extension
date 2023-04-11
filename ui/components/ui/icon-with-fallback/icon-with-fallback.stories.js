@@ -5,7 +5,7 @@ import IconWithFallback from '.';
 
 export default {
   title: 'Components/UI/IconWithFallback',
-  id: __filename,
+
   component: IconWithFallback,
   parameters: {
     docs: {

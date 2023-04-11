@@ -14,9 +14,14 @@ import {
   deleteExpiredNotifications,
   markNotificationsAsRead,
 } from '../../store/actions';
-import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  ICON_SIZES,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../components/component-library';
+import { Color } from '../../helpers/constants/design-system';
 
 export function NotificationItem({ notification, snaps, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
@@ -85,10 +90,10 @@ export default function Notifications() {
     <div className="main-container notifications">
       <div className="notifications__header">
         <div className="notifications__header__title-container">
-          <IconCaretLeft
-            className="notifications__header__title-container__back-button"
-            color="var(--color-text-default)"
-            size={23}
+          <ButtonIcon
+            iconName={ICON_NAMES.ARROW_LEFT}
+            size={ICON_SIZES.LG}
+            color={Color.textDefault}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
           <div className="notifications__header__title-container__title">
@@ -130,13 +135,13 @@ export default function Notifications() {
 }
 
 NotificationItem.propTypes = {
-  notification: {
+  notification: PropTypes.exact({
     id: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
     createdDate: PropTypes.number.isRequired,
-    readDate: PropTypes.number.isRequired,
-  },
+    readDate: PropTypes.number,
+  }),
   snaps: PropTypes.array.isRequired,
   onItemClick: PropTypes.func.isRequired,
 };

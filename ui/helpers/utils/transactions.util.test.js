@@ -1,9 +1,9 @@
 import { HttpProvider } from 'ethjs';
 import nock from 'nock';
 import {
-  TRANSACTION_GROUP_STATUSES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_ENVELOPE_TYPES,
+  TransactionGroupStatus,
+  TransactionStatus,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
@@ -13,27 +13,27 @@ describe('Transactions utils', () => {
       const tests = [
         {
           transaction: {
-            status: TRANSACTION_STATUSES.CONFIRMED,
+            status: TransactionStatus.confirmed,
             txReceipt: {
               status: '0x0',
             },
           },
-          expected: TRANSACTION_STATUSES.FAILED,
+          expected: TransactionStatus.failed,
         },
         {
           transaction: {
-            status: TRANSACTION_STATUSES.CONFIRMED,
+            status: TransactionStatus.confirmed,
             txReceipt: {
               status: '0x1',
             },
           },
-          expected: TRANSACTION_STATUSES.CONFIRMED,
+          expected: TransactionStatus.confirmed,
         },
         {
           transaction: {
-            status: TRANSACTION_GROUP_STATUSES.PENDING,
+            status: TransactionGroupStatus.pending,
           },
-          expected: TRANSACTION_GROUP_STATUSES.PENDING,
+          expected: TransactionGroupStatus.pending,
         },
       ];
 
@@ -46,13 +46,13 @@ describe('Transactions utils', () => {
   describe('isLegacyTransaction', () => {
     it('should return true if transaction is type-0', () => {
       expect(
-        utils.isLegacyTransaction({ type: TRANSACTION_ENVELOPE_TYPES.LEGACY }),
+        utils.isLegacyTransaction({ type: TransactionEnvelopeType.legacy }),
       ).toStrictEqual(true);
     });
     it('should return false if transaction is not type-0', () => {
       expect(
         utils.isLegacyTransaction({
-          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          type: TransactionEnvelopeType.feeMarket,
         }),
       ).toStrictEqual(false);
     });

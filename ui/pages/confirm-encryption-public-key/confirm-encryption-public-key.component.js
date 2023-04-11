@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import log from 'loglevel';
 
 import AccountListItem from '../../components/app/account-list-item';
-import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
+import { PageContainerFooter } from '../../components/ui/page-container';
 
-import { EVENT } from '../../../shared/constants/metametrics';
-import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import SiteOrigin from '../../components/ui/site-origin';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -24,13 +28,14 @@ export default class ConfirmEncryptionPublicKey extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     subjectMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
+    currentCurrency: PropTypes.string.isRequired,
+    conversionRate: PropTypes.number,
   };
 
   renderHeader = () => {
@@ -70,17 +75,28 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const {
       conversionRate,
       nativeCurrency,
+      currentCurrency,
       fromAccount: { balance },
     } = this.props;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = conversionUtil(balance, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromDenomination: 'WEI',
-      numberOfDecimals: 6,
-      conversionRate,
-    });
+    const nativeCurrencyBalance = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
 
     return (
       <div className="request-encryption-public-key__balance">
@@ -88,7 +104,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-encryption-public-key__balance-value">
-          {`${nativeCurrencyBalance} ${nativeCurrency}`}
+          {`${nativeCurrencyBalance} ${
+            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+          }`}
         </div>
       </div>
     );
@@ -161,52 +179,45 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { t, trackEvent } = this.context;
 
     return (
-      <div className="request-encryption-public-key__footer">
-        <Button
-          type="secondary"
-          large
-          className="request-encryption-public-key__footer__cancel-button"
-          onClick={async (event) => {
-            await cancelEncryptionPublicKey(txData, event);
-            trackEvent({
-              category: EVENT.CATEGORIES.MESSAGES,
-              event: 'Cancel',
-              properties: {
-                action: 'Encryption public key Request',
-                legacy_event: true,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {this.context.t('cancel')}
-        </Button>
-        <Button
-          type="primary"
-          large
-          className="request-encryption-public-key__footer__sign-button"
-          onClick={async (event) => {
-            await encryptionPublicKey(txData, event);
-            this.context.trackEvent({
-              category: EVENT.CATEGORIES.MESSAGES,
-              event: 'Confirm',
-              properties: {
-                action: 'Encryption public key Request',
-                legacy_event: true,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {t('provide')}
-        </Button>
-      </div>
+      <PageContainerFooter
+        cancelText={t('cancel')}
+        submitText={t('provide')}
+        onCancel={async (event) => {
+          await cancelEncryptionPublicKey(txData, event);
+          trackEvent({
+            category: MetaMetricsEventCategory.Messages,
+            event: 'Cancel',
+            properties: {
+              action: 'Encryption public key Request',
+              legacy_event: true,
+            },
+          });
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+        onSubmit={async (event) => {
+          await encryptionPublicKey(txData, event);
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.Messages,
+            event: 'Confirm',
+            properties: {
+              action: 'Encryption public key Request',
+              legacy_event: true,
+            },
+          });
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+      />
     );
   };
 
   render = () => {
+    if (!this.props.txData) {
+      log.warn('ConfirmEncryptionPublicKey Page: Missing txData prop.');
+      return null;
+    }
+
     return (
       <div className="request-encryption-public-key__container">
         {this.renderHeader()}

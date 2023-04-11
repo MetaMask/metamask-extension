@@ -1,19 +1,29 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { Button } from './button';
+import { ButtonBase } from '../button-base';
+import { ButtonLink } from '../button-link';
 
 # Button
 
-The `Button` is used for user actions it unifies `ButtonPrimary`, `ButtonSecondary` and `ButtonLink`
+The `Button` is used for user actions. It unifies `ButtonPrimary`, `ButtonSecondary` and `ButtonLink`.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--default-story" />
+  <Story id="components-componentlibrary-button--default-story" />
 </Canvas>
 
 ## Props
 
-The `Button` accepts all props below as well as all [ButtonPrimary](/ui-components-component-library-button-primary-button-primary-stories-js--default-story), [ButtonSecondary](/ui-components-component-library-button-secondary-button-secondary-stories-js--default-story), [ButtonLink](/ui-components-component-library-button-link-button-link-stories-js--default-story), and [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `Button` accepts all props below as well as all [ButtonPrimary](/docs/components-componentlibrary-buttonprimary--default-story), [ButtonSecondary](/docs/components-componentlibrary-buttonsecondary--default-story), [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story), and [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={Button} />
+
+The `Button` accepts all [ButtonBase](/docs/components-componentlibrary-buttonbase--default-story#props) component props
+
+<ArgsTable of={ButtonBase} />
+
+The `Button` accepts all [ButtonPrimary](/docs/components-componentlibrary-buttonprimary--default-story), [ButtonSecondary](/docs/components-componentlibrary-buttonsecondary--default-story), [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story), and [Box](/docs/components-ui-box--default-story#props) component props
+
+<ArgsTable of={ButtonLink} />
 
 ### Type
 
@@ -26,7 +36,7 @@ Possible types include:
 - `BUTTON_TYPES.LINK`
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--type" />
+  <Story id="components-componentlibrary-button--type" />
 </Canvas>
 
 ```jsx
@@ -39,29 +49,30 @@ import { Button, BUTTON_TYPES } from '../ui/component-library/button';
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `SIZES.MD`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `Size.MD`
 
-Optional: `BUTTON_SIZES` from `./button` object can be used instead of `SIZES`.
+Optional: `BUTTON_SIZES` from `./button` object can be used instead of `Size`.
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
-- `SIZES.SM` 32px
-- `SIZES.MD` 40px
-- `SIZES.LG` 48px
+- `Size.inherit` inherits the font-size of the parent element. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Size.auto` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Size.SM` 32px
+- `Size.MD` 40px
+- `Size.LG` 48px
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--size" />
+  <Story id="components-componentlibrary-button--size-story" />
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
-import { Button } from '../ui/component-library/button/button/button';
+import { Size } from '../../../helpers/constants/design-system';
+import { Button } from '../ui/component-library';
 
-<Button size={SIZES.AUTO} />
-<Button size={SIZES.SM} />
-<Button size={SIZES.MD} />
-<Button size={SIZES.LG} />
+<Button size={Size.inherit} />
+<Button size={Size.SM} />
+<Button size={Size.MD} />
+<Button size={Size.LG} />
 ```
 
 ### Danger
@@ -69,11 +80,11 @@ import { Button } from '../ui/component-library/button/button/button';
 Use the `danger` boolean prop to change the `Button` to danger color.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--danger" />
+  <Story id="components-componentlibrary-button--danger" />
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library/button/button/button';
+import { Button } from '../ui/component-library';
 
 <Button>Normal</Button>
 <Button danger>Danger</Button>
@@ -81,16 +92,16 @@ import { Button } from '../ui/component-library/button/button/button';
 
 ### Href
 
-When an `href` is passed the tag element will switch to an `anchor`(`a`) tag.
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--href" />
+  <Story id="components-componentlibrary-button--href" />
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library/button/button/button';
+import { Button } from '../ui/component-library';
 
-<Button href="/">Href Example</Button>;
+<Button href="/">Anchor Element</Button>;
 ```
 
 ### Block
@@ -98,7 +109,7 @@ import { Button } from '../ui/component-library/button/button/button';
 Use boolean `block` prop to quickly enable a full width block button
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--block" />
+  <Story id="components-componentlibrary-button--block" />
 </Canvas>
 
 ```jsx
@@ -121,7 +132,7 @@ Button `as` options:
 - `a`
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--as" />
+  <Story id="components-componentlibrary-button--as" />
 </Canvas>
 
 ```jsx
@@ -139,7 +150,7 @@ import { Button } from '../ui/component-library';
 Use the boolean `disabled` prop to disable button
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--disabled" />
+  <Story id="components-componentlibrary-button--disabled" />
 </Canvas>
 
 ```jsx
@@ -153,7 +164,7 @@ import { Button } from '../ui/component-library';
 Use the boolean `loading` prop to set loading spinner
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--loading" />
+  <Story id="components-componentlibrary-button--loading" />
 </Canvas>
 
 ```jsx
@@ -162,17 +173,30 @@ import { Button } from '../ui/component-library';
 <Button loading>Loading Button</Button>;
 ```
 
-### Icon
+### Icon Name
 
-Use the `icon` prop and the `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+Use the `startIconName` and/or `endIconName` prop and the `IconName` enum from `./ui/components/component-library/icon` to select icon.
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--icon" />
+  <Story id="components-componentlibrary-button--start-icon-name" />
 </Canvas>
 
 ```jsx
 import { Button } from '../ui/component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<Button icon={ICON_NAMES.ADD_SQUARE_FILLED}>Button</Button>;
+<Button startIconName={IconName.AddSquare}>Button</Button>;
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-button--end-icon-name" />
+</Canvas>
+
+```jsx
+import { Button } from '../ui/component-library';
+import { IconName } from '../icon';
+
+<Button endIconName={IconName.Arrow2Right}>Button</Button>;
 ```

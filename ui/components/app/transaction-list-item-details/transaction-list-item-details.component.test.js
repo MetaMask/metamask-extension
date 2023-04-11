@@ -1,234 +1,125 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import Button from '../../ui/button';
-import SenderToRecipient from '../../ui/sender-to-recipient';
-import TransactionBreakdown from '../transaction-breakdown';
-import TransactionActivityLog from '../transaction-activity-log';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import TransactionStatus from '../transaction-status/transaction-status.component';
-import TransactionListItemDetails from './transaction-list-item-details.component';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import TransactionListItemDetails from '.';
+
+jest.mock('../../../store/actions.ts', () => ({
+  tryReverseResolveAddress: () => jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
+  addPollingTokenToAppState: jest.fn(),
+}));
 
 describe('TransactionListItemDetails Component', () => {
-  it('should render properly', () => {
-    const transaction = {
-      history: [],
-      id: 1,
-      status: TRANSACTION_STATUSES.CONFIRMED,
-      txParams: {
-        from: '0x1',
-        gas: GAS_LIMITS.SIMPLE,
-        gasPrice: '0x3b9aca00',
-        nonce: '0xa4',
-        to: '0x2',
-        value: '0x2386f26fc10000',
-      },
-    };
-
-    const transactionGroup = {
-      transactions: [transaction],
-      primaryTransaction: transaction,
-      initialTransaction: transaction,
-    };
-
-    const rpcPrefs = {
-      blockExplorerUrl: 'https://customblockexplorer.com/',
-    };
-
-    const blockExplorerLinkText = {
-      firstPart: 'addBlockExplorer',
-      secondPart: '',
-    };
-
-    const wrapper = shallow(
-      <TransactionListItemDetails
-        onClose={() => undefined}
-        title="Test Transaction Details"
-        recipientAddress="0x1"
-        senderAddress="0x2"
-        tryReverseResolveAddress={() => undefined}
-        transactionGroup={transactionGroup}
-        senderNickname="sender-nickname"
-        recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
-        rpcPrefs={rpcPrefs}
-        blockExplorerLinkText={blockExplorerLinkText}
-      />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    );
-    const child = wrapper.childAt(0);
-    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
-    expect(child.find(Button)).toHaveLength(2);
-    expect(child.find(SenderToRecipient)).toHaveLength(1);
-    expect(child.find(TransactionBreakdown)).toHaveLength(1);
-    expect(child.find(TransactionActivityLog)).toHaveLength(1);
-  });
-
-  it('should render a retry button', () => {
-    const transaction = {
-      history: [],
-      id: 1,
-      status: TRANSACTION_STATUSES.CONFIRMED,
-      txParams: {
-        from: '0x1',
-        gas: GAS_LIMITS.SIMPLE,
-        gasPrice: '0x3b9aca00',
-        nonce: '0xa4',
-        to: '0x2',
-        value: '0x2386f26fc10000',
-      },
-    };
-
-    const transactionGroup = {
-      transactions: [transaction],
-      primaryTransaction: transaction,
-      initialTransaction: transaction,
+  const transaction = {
+    history: [],
+    id: 1,
+    status: TransactionStatus.confirmed,
+    txParams: {
+      from: '0x1',
+      gas: GAS_LIMITS.SIMPLE,
+      gasPrice: '0x3b9aca00',
       nonce: '0xa4',
-      hasRetried: false,
-      hasCancelled: false,
-    };
+      to: '0x2',
+      value: '0x2386f26fc10000',
+    },
+  };
 
-    const rpcPrefs = {
-      blockExplorerUrl: 'https://customblockexplorer.com/',
-    };
+  const transactionGroup = {
+    transactions: [transaction],
+    primaryTransaction: transaction,
+    initialTransaction: transaction,
+    nonce: '0xa4',
+    hasRetried: false,
+    hasCancelled: false,
+  };
 
-    const blockExplorerLinkText = {
-      firstPart: 'addBlockExplorer',
-      secondPart: '',
-    };
+  const rpcPrefs = {
+    blockExplorerUrl: 'https://customblockexplorer.com/',
+  };
 
-    const wrapper = shallow(
-      <TransactionListItemDetails
-        onClose={() => undefined}
-        title="Test Transaction Details"
-        recipientAddress="0x1"
-        senderAddress="0x2"
-        tryReverseResolveAddress={() => undefined}
-        transactionGroup={transactionGroup}
-        showSpeedUp
-        senderNickname="sender-nickname"
-        recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
-        rpcPrefs={rpcPrefs}
-        blockExplorerLinkText={blockExplorerLinkText}
-      />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
+  const blockExplorerLinkText = {
+    firstPart: 'addBlockExplorer',
+    secondPart: '',
+  };
+
+  const props = {
+    onClose: jest.fn(),
+    title: 'Test Transaction Details',
+    recipientAddress: '0xAddress',
+    senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    tryReverseResolveAddress: jest.fn(),
+    transactionGroup,
+    transactionStatus: () => <div></div>,
+    blockExplorerLinkText,
+    rpcPrefs,
+  };
+
+  it('should render title with title prop', () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+
+    const { queryByText } = renderWithProvider(
+      <TransactionListItemDetails {...props} />,
+      mockStore,
     );
 
-    const child = wrapper.childAt(0);
-
-    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
-    expect(child.find(Button)).toHaveLength(3);
+    expect(queryByText(props.title)).toBeInTheDocument();
   });
 
-  it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', () => {
-    const transaction = {
-      history: [],
-      id: 1,
-      status: 'confirmed',
-      txParams: {
-        from: '0x1',
-        gas: GAS_LIMITS.SIMPLE,
-        gasPrice: '0x3b9aca00',
-        nonce: '0xa4',
-        to: '0x2',
-        value: '0x2386f26fc10000',
-      },
-    };
+  describe('Retry button', () => {
+    it('should render retry button with showRetry prop', () => {
+      const retryProps = {
+        ...props,
+        showRetry: true,
+      };
 
-    const transactionGroup = {
-      transactions: [transaction],
-      primaryTransaction: transaction,
-      initialTransaction: transaction,
-    };
+      const mockStore = configureMockStore([thunk])(mockState);
 
-    const rpcPrefs = {
-      blockExplorerUrl: 'https://customblockexplorer.com/',
-    };
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItemDetails {...retryProps} />,
+        mockStore,
+      );
 
-    const blockExplorerLinkText = {
-      firstPart: 'addBlockExplorer',
-      secondPart: '',
-    };
-
-    const wrapper = shallow(
-      <TransactionListItemDetails
-        onClose={() => undefined}
-        title="Test Transaction Details"
-        recipientAddress="0x1"
-        senderAddress="0x2"
-        tryReverseResolveAddress={() => undefined}
-        transactionGroup={transactionGroup}
-        senderNickname="sender-nickname"
-        recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
-        rpcPrefs={rpcPrefs}
-        blockExplorerLinkText={blockExplorerLinkText}
-      />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    );
-
-    const child = wrapper.childAt(0);
-
-    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
-    const buttons = child.find(Button);
-    expect(buttons.at(0).prop('disabled')).toStrictEqual(true);
-    expect(buttons.at(1).prop('disabled')).toStrictEqual(true);
+      expect(queryByTestId('rety-button')).toBeInTheDocument();
+    });
   });
 
-  it('should render functional Copy Tx ID and View In Etherscan buttons when tx hash exists', () => {
-    const transaction = {
-      history: [],
-      id: 1,
-      status: 'confirmed',
-      hash: '0xaa',
-      txParams: {
-        from: '0x1',
-        gas: GAS_LIMITS.SIMPLE,
-        gasPrice: '0x3b9aca00',
-        nonce: '0xa4',
-        to: '0x2',
-        value: '0x2386f26fc10000',
-      },
-    };
+  describe('Cancel button', () => {
+    it('should render cancel button with showCancel prop', () => {
+      const retryProps = {
+        ...props,
+        showCancel: true,
+      };
 
-    const transactionGroup = {
-      transactions: [transaction],
-      primaryTransaction: transaction,
-      initialTransaction: transaction,
-    };
+      const mockStore = configureMockStore([thunk])(mockState);
 
-    const rpcPrefs = {
-      blockExplorerUrl: 'https://customblockexplorer.com/',
-    };
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItemDetails {...retryProps} />,
+        mockStore,
+      );
 
-    const blockExplorerLinkText = {
-      firstPart: 'addBlockExplorer',
-      secondPart: '',
-    };
+      expect(queryByTestId('cancel-button')).toBeInTheDocument();
+    });
+  });
 
-    const wrapper = shallow(
-      <TransactionListItemDetails
-        onClose={() => undefined}
-        title="Test Transaction Details"
-        recipientAddress="0x1"
-        senderAddress="0x2"
-        tryReverseResolveAddress={() => undefined}
-        transactionGroup={transactionGroup}
-        senderNickname="sender-nickname"
-        recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
-        rpcPrefs={rpcPrefs}
-        blockExplorerLinkText={blockExplorerLinkText}
-      />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    );
+  describe('Speedup button', () => {
+    it('should render speedup button with showSpeedUp prop', () => {
+      const retryProps = {
+        ...props,
+        showSpeedUp: true,
+      };
 
-    const child = wrapper.childAt(0);
+      const mockStore = configureMockStore([thunk])(mockState);
 
-    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
-    const buttons = child.find(Button);
-    expect(buttons.at(0).prop('disabled')).toStrictEqual(false);
-    expect(buttons.at(1).prop('disabled')).toStrictEqual(false);
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItemDetails {...retryProps} />,
+        mockStore,
+      );
+
+      expect(queryByTestId('speedup-button')).toBeInTheDocument();
+    });
   });
 });

@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { checkForError } from './util';
+import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 
 /**
  * A wrapper around the extension's storage local API
@@ -81,7 +81,7 @@ export default class ExtensionStore {
     const { local } = browser.storage;
     return new Promise((resolve, reject) => {
       local.get(null).then((/** @type {any} */ result) => {
-        const err = checkForError();
+        const err = checkForLastError();
         if (err) {
           reject(err);
         } else {
@@ -102,7 +102,7 @@ export default class ExtensionStore {
     const { local } = browser.storage;
     return new Promise((resolve, reject) => {
       local.set(obj).then(() => {
-        const err = checkForError();
+        const err = checkForLastError();
         if (err) {
           reject(err);
         } else {

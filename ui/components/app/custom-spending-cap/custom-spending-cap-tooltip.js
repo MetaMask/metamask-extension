@@ -4,10 +4,15 @@ import Box from '../../ui/box';
 import Typography from '../../ui/typography';
 import Tooltip from '../../ui/tooltip';
 import {
-  COLORS,
+  TextColor,
   DISPLAY,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
@@ -19,9 +24,9 @@ export const CustomSpendingCapTooltip = ({
       position="top"
       html={
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           margin={3}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           className="form-field__heading-title__tooltip"
         >
           {tooltipContentText}
@@ -29,9 +34,14 @@ export const CustomSpendingCapTooltip = ({
       }
     >
       {tooltipIcon ? (
-        <i className="fa fa-exclamation-triangle form-field__heading-title__tooltip__warning-icon" />
+        <Icon
+          name={ICON_NAMES.DANGER}
+          className="form-field__heading-title__tooltip__warning-icon"
+          size={ICON_SIZES.AUTO}
+          style={{ 'vertical-align': 'bottom' }}
+        />
       ) : (
-        tooltipIcon !== '' && <i className="fa fa-question-circle" />
+        tooltipIcon !== '' && <Icon name={ICON_NAMES.QUESTION} />
       )}
     </Tooltip>
   </Box>

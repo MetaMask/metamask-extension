@@ -1,8 +1,7 @@
-import { useSelector } from 'react-redux';
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
-  GAS_RECOMMENDATIONS,
+  GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
 import {
@@ -10,8 +9,6 @@ import {
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
   configureEIP1559,
   configureLegacy,
-  convertFromHexToFiat,
-  generateUseSelectorRouter,
 } from './test-utils';
 import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 
@@ -32,7 +29,7 @@ const renderUseMaxPriorityFeePerGasInputHook = (props) => {
   return renderHook(() =>
     useMaxPriorityFeePerGasInput({
       gasLimit: '21000',
-      estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
+      estimateToUse: GasRecommendations.medium,
       transaction: {
         userFeeLevel: CUSTOM_GAS_ESTIMATE,
         txParams: { maxPriorityFeePerGas: '0x5028' },
@@ -52,9 +49,6 @@ describe('useMaxPriorityFeePerGasInput', () => {
   it('returns maxPriorityFeePerGas values from transaction if transaction.userFeeLevel is custom', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook();
     expect(result.current.maxPriorityFeePerGas).toBe(0.00002052);
-    expect(result.current.maxPriorityFeePerGasFiat).toBe(
-      convertFromHexToFiat('0x5028'),
-    );
   });
 
   it('returns maxFeePerGas values from transaction if transaction.userFeeLevel is custom and maxPriorityFeePerGas is not provided', () => {
@@ -69,9 +63,9 @@ describe('useMaxPriorityFeePerGasInput', () => {
 
   it('does not returns maxPriorityFeePerGas values from transaction if transaction.userFeeLevel is not custom', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
-      estimateToUse: GAS_RECOMMENDATIONS.HIGH,
+      estimateToUse: GasRecommendations.high,
       transaction: {
-        userFeeLevel: GAS_RECOMMENDATIONS.HIGH,
+        userFeeLevel: GasRecommendations.high,
         txParams: { maxPriorityFeePerGas: '0x5028' },
       },
     });
@@ -93,17 +87,6 @@ describe('useMaxPriorityFeePerGasInput', () => {
     );
   });
 
-  it('does not  return fiat values if showFiat is false', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        checkNetworkAndAccountSupports1559Response: true,
-        shouldShowFiat: false,
-      }),
-    );
-    const { result } = renderUseMaxPriorityFeePerGasInputHook();
-    expect(result.current.maxPriorityFeePerGasFiat).toBe('');
-  });
-
   it('returns 0 if EIP1559 is not supported and gas estimates are legacy', () => {
     configureLegacy();
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
@@ -118,5 +101,16 @@ describe('useMaxPriorityFeePerGasInput', () => {
       result.current.setMaxPriorityFeePerGas(100);
     });
     expect(result.current.maxPriorityFeePerGas).toBe(100);
+  });
+
+  it('returns maxPriorityFeePerGas from transaction if it is 0', () => {
+    const { result } = renderUseMaxPriorityFeePerGasInputHook({
+      transaction: {
+        txParams: {
+          maxPriorityFeePerGas: '0x0',
+        },
+      },
+    });
+    expect(result.current.maxPriorityFeePerGas).toBe(0);
   });
 });

@@ -7,7 +7,7 @@ import { SEND_ROUTE } from '../../helpers/constants/routes';
 import { editExistingTransaction } from '../../ducks/send';
 
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 
 export default function ConfirmContractInteraction() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export default function ConfirmContractInteraction() {
 
   const handleEditTransaction = async ({ txData }) => {
     const { id } = txData;
-    await dispatch(editExistingTransaction(ASSET_TYPES.NATIVE, id.toString()));
+    await dispatch(editExistingTransaction(AssetType.native, id.toString()));
     dispatch(clearConfirmTransaction());
   };
 

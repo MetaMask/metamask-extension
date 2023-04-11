@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index df74d6126073947a34234f271a033c4d13ed02e5..833a4846989673c597500be60301a52132ebaa09 100644
+--- a/index.js
++++ b/index.js
+@@ -91,7 +91,7 @@ Generator.prototype.addSourceContent = function (sourceFile, sourcesContent) {
+  */
+ Generator.prototype.base64Encode = function () {
+   var map = this.toString();
+-  return new Buffer(map).toString('base64');
++  return Buffer.from(map).toString('base64');
+ };
+ 
+ /**

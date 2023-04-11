@@ -1,20 +1,14 @@
 .mm-button-link {
-  color: var(--color-primary-default);
-  background-color: transparent;
-
   &:hover {
-    color: var(--color-primary-default);
     opacity: 0.5;
   }
 
   &:active {
-    color: var(--color-primary-default);
     opacity: 0.5;
   }
 
-  &.mm-button--disabled {
+  &--disabled {
     &:hover {
-      color: var(--color-primary-default);
       opacity: 0.3;
     }
 
@@ -24,8 +18,6 @@
   }
 
   &--type-danger {
-    color: var(--color-error-default);
-
     &:hover {
       color: var(--color-error-default);
       opacity: 0.5;
@@ -35,9 +27,24 @@
       color: var(--color-error-default);
       opacity: 0.5;
     }
+  }
 
-    &.mm-button--disabled:hover {
-      color: var(--color-error-default);
-    }
+  &--type-danger#{&}--disabled:hover {
+    opacity: 0.3;
+  }
+
+  &--size-auto {
+    height: auto;
+  }
+
+  &--size-inherit {
+    height: auto;
+    background-color: transparent;
+    vertical-align: top;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 }

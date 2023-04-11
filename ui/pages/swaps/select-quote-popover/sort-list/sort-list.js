@@ -1,4 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
@@ -6,6 +7,7 @@ import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.componen
 import { I18nContext } from '../../../../contexts/i18n';
 import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
+import { getUseCurrencyRateCheck } from '../../../../selectors';
 
 const ToggleArrows = () => (
   <svg
@@ -36,6 +38,7 @@ export default function SortList({
 }) {
   const t = useContext(I18nContext);
   const [noRowHover, setRowNowHover] = useState(false);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const onColumnHeaderClick = (nextSortColumn) => {
     if (nextSortColumn === sortColumn) {
@@ -100,7 +103,7 @@ export default function SortList({
           data-testid="select-quote-popover__network-fees-header"
           onClick={() => onColumnHeaderClick('rawNetworkFees')}
         >
-          {!hideEstimatedGasFee && (
+          {!hideEstimatedGasFee && useCurrencyRateCheck && (
             <>
               <span>{t('swapEstimatedNetworkFees')}</span>
               <InfoTooltip
@@ -161,7 +164,7 @@ export default function SortList({
               )}
             </div>
             <div className="select-quote-popover__network-fees">
-              {!hideEstimatedGasFee && networkFees}
+              {!hideEstimatedGasFee && useCurrencyRateCheck && networkFees}
             </div>
             <div className="select-quote-popover__quote-source">
               <div

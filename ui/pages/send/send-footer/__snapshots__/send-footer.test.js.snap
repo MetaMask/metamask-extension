@@ -7,7 +7,7 @@ exports[`SendFooter Component Component Update should match snapshot when compon
   >
     <footer>
       <button
-        class="button btn--rounded btn-secondary page-container__footer-button"
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
         data-testid="page-container-footer-cancel"
         role="button"
         tabindex="0"
@@ -34,7 +34,7 @@ exports[`SendFooter Component should match snapshot 1`] = `
   >
     <footer>
       <button
-        class="button btn--rounded btn-secondary page-container__footer-button"
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
         data-testid="page-container-footer-cancel"
         role="button"
         tabindex="0"

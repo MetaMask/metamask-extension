@@ -1,103 +1,46 @@
-import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import BigNumber from 'bignumber.js';
-import {
-  GAS_RECOMMENDATIONS,
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../../../shared/constants/gas';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EditGasModes } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
-import Typography from '../../ui/typography/typography';
-import {
-  getIsMainnet,
-  checkNetworkAndAccountSupports1559,
-  getAdvancedInlineGasShown,
-} from '../../../selectors';
 
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TEXT_ALIGN,
   FONT_WEIGHT,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
 import ErrorMessage from '../../ui/error-message';
-import TransactionTotalBanner from '../transaction-total-banner/transaction-total-banner.component';
-import RadioGroup from '../../ui/radio-group/radio-group.component';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
-import GasTiming from '../gas-timing';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function EditGasDisplay({
-  mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
-  showEducationButton = false,
-  onEducationClick,
-  transaction,
-  defaultEstimateToUse,
-  maxPriorityFeePerGas,
-  setMaxPriorityFeePerGas,
-  maxPriorityFeePerGasFiat,
-  maxFeePerGas,
-  setMaxFeePerGas,
-  maxFeePerGasFiat,
-  estimatedMaximumNative,
+  mode = EditGasModes.modifyInPlace,
   estimatedMinimumNative,
-  isGasEstimatesLoading,
-  gasEstimateType,
+  transaction,
   gasPrice,
   setGasPrice,
   gasLimit,
   setGasLimit,
   properGasLimit,
-  estimateToUse,
-  setEstimateToUse,
-  estimatedMinimumFiat,
-  estimatedMaximumFiat,
   dappSuggestedGasFeeAcknowledged,
   setDappSuggestedGasFeeAcknowledged,
-  gasErrors,
-  gasWarnings,
   onManualChange,
   minimumGasLimit,
   balanceError,
-  estimatesUnavailableWarning,
-  hasGasErrors,
+  gasErrors,
   txParamsHaveBeenCustomized,
-  isNetworkBusy,
 }) {
   const t = useContext(I18nContext);
   const scrollRef = useRef(null);
-
-  const isMainnet = useSelector(getIsMainnet);
-  const supportsEIP1559 =
-    useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction?.txParams);
-  const showAdvancedInlineGasIfPossible = useSelector(
-    getAdvancedInlineGasShown,
-  );
-
-  const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || estimateToUse === CUSTOM_GAS_ESTIMATE || !supportsEIP1559,
-  );
-  const [hideRadioButtons, setHideRadioButtons] = useState(
-    showAdvancedInlineGasIfPossible,
-  );
-
-  useLayoutEffect(() => {
-    if (showAdvancedForm && scrollRef.current) {
-      scrollRef.current.scrollIntoView?.();
-    }
-  }, [showAdvancedForm]);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame =
     areDappSuggestedAndTxParamGasFeesTheSame(transaction);
@@ -117,22 +60,13 @@ export default function EditGasDisplay({
     warningMessage = t('gasLimitRecommended', [properGasLimit]);
   }
 
-  const showTopError =
-    (balanceError || estimatesUnavailableWarning) &&
-    (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
-  const radioButtonsEnabled =
-    supportsEIP1559 &&
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
-    !requireDappAcknowledgement;
+  const showTopError = balanceError && txParamsHaveBeenCustomized;
 
   let errorKey;
   if (balanceError) {
     errorKey = 'insufficientFunds';
-  } else if (estimatesUnavailableWarning) {
-    errorKey = 'gasEstimatesUnavailableWarning';
   }
 
-  const trackEvent = useContext(MetaMetricsContext);
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
@@ -151,7 +85,7 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {requireDappAcknowledgement && !isGasEstimatesLoading && (
+        {requireDappAcknowledgement && (
           <div className="edit-gas-display__dapp-acknowledgement-warning">
             <ActionableMessage
               className="actionable-message--warning"
@@ -161,21 +95,12 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {isNetworkBusy ? (
-          <div className="edit-gas-display__warning">
-            <ActionableMessage
-              className="actionable-message--warning"
-              message={t('networkIsBusy')}
-              iconFillColor="var(--color-warning-default)"
-              useIcon
-            />
-          </div>
-        ) : null}
-        {mode === EDIT_GAS_MODES.SPEED_UP && (
+        {mode === EditGasModes.speedUp && (
           <div className="edit-gas-display__top-tooltip">
-            <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H8}
+            <Text
+              color={TextColor.textDefault}
+              variant={TextVariant.bodySm}
+              as="h6"
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('speedUpTooltipText')}{' '}
@@ -183,42 +108,17 @@ export default function EditGasDisplay({
                 position="top"
                 contentText={t('speedUpExplanation')}
               />
-            </Typography>
+            </Text>
           </div>
         )}
-        <TransactionTotalBanner
-          total={
-            (supportsEIP1559 || isMainnet) && estimatedMinimumFiat
-              ? `~ ${estimatedMinimumFiat}`
-              : estimatedMinimumNative
-          }
-          detail={
-            supportsEIP1559 &&
-            estimatedMaximumFiat !== undefined && (
-              <>
-                <Typography as="span" key="label" fontWeight={FONT_WEIGHT.BOLD}>
-                  {t('editGasSubTextFeeLabel')}
-                </Typography>
-                <Typography as="span" key="secondary">
-                  {estimatedMaximumFiat}
-                </Typography>
-                <Typography as="span" key="primary">
-                  {`(${estimatedMaximumNative})`}
-                </Typography>
-              </>
-            )
-          }
-          timing={
-            hasGasErrors === false &&
-            supportsEIP1559 && (
-              <GasTiming
-                maxFeePerGas={maxFeePerGas.toString()}
-                maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
-                gasWarnings={gasWarnings}
-              />
-            )
-          }
-        />
+        <Text
+          color={TextColor.textDefault}
+          variant={TextVariant.displayMd}
+          as="h1"
+          textAlign={TEXT_ALIGN.CENTER}
+        >
+          {estimatedMinimumNative}
+        </Text>
         {requireDappAcknowledgement && (
           <Button
             className="edit-gas-display__dapp-acknowledgement-button"
@@ -227,143 +127,37 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {!requireDappAcknowledgement &&
-          radioButtonsEnabled &&
-          showAdvancedInlineGasIfPossible && (
-            <button
-              className="edit-gas-display__advanced-button"
-              onClick={() => setHideRadioButtons(!hideRadioButtons)}
-            >
-              {t('showRecommendations')}{' '}
-              {hideRadioButtons ? (
-                <i className="fa fa-caret-down"></i>
-              ) : (
-                <i className="fa fa-caret-up"></i>
-              )}
-            </button>
-          )}
-        {radioButtonsEnabled && !hideRadioButtons && (
-          <RadioGroup
-            dataTestId="gas-recommendation"
-            name="gas-recommendation"
-            options={[
-              {
-                value: GAS_RECOMMENDATIONS.LOW,
-                label: t('editGasLow'),
-                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
-              },
-              {
-                value: GAS_RECOMMENDATIONS.MEDIUM,
-                label: t('editGasMedium'),
-                recommended:
-                  defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
-              },
-              {
-                value: GAS_RECOMMENDATIONS.HIGH,
-                label: t('editGasHigh'),
-                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
-              },
-            ]}
-            selectedValue={estimateToUse}
-            onChange={setEstimateToUse}
+        {!requireDappAcknowledgement && (
+          <AdvancedGasControls
+            gasLimit={gasLimit}
+            setGasLimit={setGasLimit}
+            gasPrice={gasPrice}
+            setGasPrice={setGasPrice}
+            onManualChange={onManualChange}
+            minimumGasLimit={minimumGasLimit}
+            gasErrors={gasErrors}
           />
         )}
-        {!requireDappAcknowledgement &&
-          radioButtonsEnabled &&
-          !showAdvancedInlineGasIfPossible && (
-            <button
-              className="edit-gas-display__advanced-button"
-              onClick={() => {
-                setShowAdvancedForm(!showAdvancedForm);
-                trackEvent({
-                  event: 'Clicked "Advanced options"',
-                  category: EVENT.CATEGORIES.TRANSACTIONS,
-                  properties: {
-                    action: 'Edit Screen',
-                    legacy_event: true,
-                  },
-                });
-              }}
-            >
-              {t('advancedOptions')}{' '}
-              {showAdvancedForm ? (
-                <i className="fa fa-caret-up"></i>
-              ) : (
-                <i className="fa fa-caret-down"></i>
-              )}
-            </button>
-          )}
-        {!requireDappAcknowledgement &&
-          (showAdvancedForm ||
-            hasGasErrors ||
-            estimatesUnavailableWarning ||
-            showAdvancedInlineGasIfPossible) && (
-            <AdvancedGasControls
-              gasEstimateType={gasEstimateType}
-              isGasEstimatesLoading={isGasEstimatesLoading}
-              gasLimit={gasLimit}
-              setGasLimit={setGasLimit}
-              maxPriorityFee={maxPriorityFeePerGas}
-              setMaxPriorityFee={setMaxPriorityFeePerGas}
-              maxFee={maxFeePerGas}
-              setMaxFee={setMaxFeePerGas}
-              gasPrice={gasPrice}
-              setGasPrice={setGasPrice}
-              maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
-              maxFeeFiat={maxFeePerGasFiat}
-              gasErrors={gasErrors}
-              onManualChange={onManualChange}
-              minimumGasLimit={minimumGasLimit}
-              supportsEIP1559={supportsEIP1559}
-            />
-          )}
       </div>
-      {supportsEIP1559 && !requireDappAcknowledgement && showEducationButton && (
-        <div className="edit-gas-display__education">
-          <button onClick={onEducationClick}>
-            {t('editGasEducationButtonText')}
-          </button>
-        </div>
-      )}
       <div ref={scrollRef} className="edit-gas-display__scroll-bottom" />
     </div>
   );
 }
 
 EditGasDisplay.propTypes = {
-  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
-  showEducationButton: PropTypes.bool,
-  onEducationClick: PropTypes.func,
-  defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
-  maxPriorityFeePerGas: PropTypes.string,
-  setMaxPriorityFeePerGas: PropTypes.func,
-  maxPriorityFeePerGasFiat: PropTypes.string,
-  maxFeePerGas: PropTypes.string,
-  setMaxFeePerGas: PropTypes.func,
-  maxFeePerGasFiat: PropTypes.string,
-  estimatedMaximumNative: PropTypes.string,
+  mode: PropTypes.oneOf(Object.values(EditGasModes)),
   estimatedMinimumNative: PropTypes.string,
-  isGasEstimatesLoading: PropTypes.bool,
-  gasEstimateType: PropTypes.string,
   gasPrice: PropTypes.string,
   setGasPrice: PropTypes.func,
   gasLimit: PropTypes.number,
   setGasLimit: PropTypes.func,
   properGasLimit: PropTypes.number,
-  estimateToUse: PropTypes.string,
-  setEstimateToUse: PropTypes.func,
-  estimatedMinimumFiat: PropTypes.string,
-  estimatedMaximumFiat: PropTypes.string,
   dappSuggestedGasFeeAcknowledged: PropTypes.bool,
   setDappSuggestedGasFeeAcknowledged: PropTypes.func,
   transaction: PropTypes.object,
-  gasErrors: PropTypes.object,
-  gasWarnings: PropTypes.object,
   onManualChange: PropTypes.func,
   minimumGasLimit: PropTypes.string,
   balanceError: PropTypes.bool,
-  estimatesUnavailableWarning: PropTypes.bool,
-  hasGasErrors: PropTypes.bool,
+  gasErrors: PropTypes.object,
   txParamsHaveBeenCustomized: PropTypes.bool,
-  isNetworkBusy: PropTypes.bool,
 };

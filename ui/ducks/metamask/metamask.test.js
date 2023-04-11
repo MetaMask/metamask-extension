@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -40,10 +40,13 @@ describe('MetaMask Reducers', () => {
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
-        network: '5',
+        useCurrencyRateCheck: true,
+        networkId: '5',
+        networkStatus: 'available',
         provider: {
           type: 'testnet',
           chainId: '0x5',
+          ticker: 'TestETH',
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -84,7 +87,7 @@ describe('MetaMask Reducers', () => {
           4768706228115573: {
             id: 4768706228115573,
             time: 1487363153561,
-            status: TRANSACTION_STATUSES.UNAPPROVED,
+            status: TransactionStatus.unapproved,
             gasMultiplier: 1,
             metamaskNetworkId: '5',
             txParams: {
@@ -124,42 +127,6 @@ describe('MetaMask Reducers', () => {
     });
 
     expect(lockMetaMask.isUnlocked).toStrictEqual(false);
-  });
-
-  it('sets rpc target', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_RPC_TARGET,
-        value: 'https://custom.rpc',
-      },
-    );
-
-    expect(state.provider.rpcUrl).toStrictEqual('https://custom.rpc');
-  });
-
-  it('sets provider type', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_PROVIDER_TYPE,
-        value: 'provider type',
-      },
-    );
-
-    expect(state.provider.type).toStrictEqual('provider type');
-  });
-
-  it('shows account detail', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-      },
-    );
-
-    expect(state.isUnlocked).toStrictEqual(true);
-    expect(state.isInitialized).toStrictEqual(true);
   });
 
   it('sets account label', () => {
@@ -209,32 +176,6 @@ describe('MetaMask Reducers', () => {
     expect(state.currentNetworkTxList[0].txParams).toStrictEqual('bar');
   });
 
-  it('sets blockies', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_USE_BLOCKIE,
-        value: true,
-      },
-    );
-
-    expect(state.useBlockie).toStrictEqual(true);
-  });
-
-  it('updates an arbitrary feature flag', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_FEATURE_FLAGS,
-        value: {
-          foo: true,
-        },
-      },
-    );
-
-    expect(state.featureFlags.foo).toStrictEqual(true);
-  });
-
   it('close welcome screen', () => {
     const state = reduceMetamask(
       {},
@@ -244,18 +185,6 @@ describe('MetaMask Reducers', () => {
     );
 
     expect(state.welcomeScreenSeen).toStrictEqual(true);
-  });
-
-  it('sets current locale', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_CURRENT_LOCALE,
-        value: { locale: 'ge' },
-      },
-    );
-
-    expect(state.currentLocale).toStrictEqual('ge');
   });
 
   it('sets pending tokens', () => {
@@ -294,6 +223,17 @@ describe('MetaMask Reducers', () => {
     expect(state.pendingTokens).toStrictEqual({});
   });
 
+  it('disables desktop', () => {
+    const enabledMetaMaskState = {
+      desktopEnabled: true,
+    };
+    const enabledDesktopMetaMask = reduceMetamask(enabledMetaMaskState, {
+      type: actionConstants.FORCE_DISABLE_DESKTOP,
+    });
+
+    expect(enabledDesktopMetaMask.desktopEnabled).toStrictEqual(false);
+  });
+
   describe('metamask state selectors', () => {
     describe('getBlockGasLimit', () => {
       it('should return the current block gas limit', () => {
@@ -308,8 +248,20 @@ describe('MetaMask Reducers', () => {
     });
 
     describe('getNativeCurrency()', () => {
-      it('should return the ticker symbol of the selected network', () => {
+      it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
         expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+      });
+
+      it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
+        expect(
+          getNativeCurrency({
+            ...mockState,
+            metamask: {
+              ...mockState.metamask,
+              useCurrencyRateCheck: false,
+            },
+          }),
+        ).toStrictEqual('TestETH');
       });
     });
 
@@ -364,7 +316,7 @@ describe('MetaMask Reducers', () => {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           gasMultiplier: 1,
           metamaskNetworkId: '5',
           txParams: {

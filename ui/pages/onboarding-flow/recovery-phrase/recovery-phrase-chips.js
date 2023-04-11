@@ -7,11 +7,12 @@ import Typography from '../../../components/ui/typography';
 import { ChipWithInput } from '../../../components/ui/chip/chip-with-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  TYPOGRAPHY,
-  COLORS,
-  BORDER_STYLE,
-  SIZES,
+  TypographyVariant,
+  BorderStyle,
+  Size,
   DISPLAY,
+  BorderColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
@@ -27,11 +28,11 @@ export default function RecoveryPhraseChips({
   const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
-      borderColor={COLORS.BORDER_MUTED}
-      borderStyle={BORDER_STYLE.SOLID}
+      borderColor={BorderColor.borderMuted}
+      borderStyle={BorderStyle.solid}
       padding={4}
       borderWidth={1}
-      borderRadius={SIZES.MD}
+      borderRadius={Size.MD}
       display={DISPLAY.GRID}
       marginBottom={4}
       className="recovery-phrase__secret"
@@ -55,7 +56,7 @@ export default function RecoveryPhraseChips({
                 </div>
                 <ChipWithInput
                   dataTestId={`recovery-phrase-input-${index}`}
-                  borderColor={COLORS.PRIMARY_DEFAULT}
+                  borderColor={BorderColor.primaryDefault}
                   className="recovery-phrase__chip--with-input"
                   inputValue={inputValue[index]}
                   setInputValue={(value) => {
@@ -73,7 +74,7 @@ export default function RecoveryPhraseChips({
               <Chip
                 dataTestId={`recovery-phrase-chip-${index}`}
                 className="recovery-phrase__chip"
-                borderColor={COLORS.BORDER_DEFAULT}
+                borderColor={BorderColor.borderDefault}
               >
                 {word}
               </Chip>
@@ -88,8 +89,8 @@ export default function RecoveryPhraseChips({
             <>
               <i className="far fa-eye" color="white" />
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.OVERLAY_INVERSE}
+                variant={TypographyVariant.H6}
+                color={Color.overlayInverse}
                 className="recovery-phrase__secret-blocker--text"
               >
                 {t('makeSureNoOneWatching')}
@@ -107,7 +108,7 @@ RecoveryPhraseChips.propTypes = {
   phraseRevealed: PropTypes.bool,
   confirmPhase: PropTypes.bool,
   setInputValue: PropTypes.func,
-  inputValue: PropTypes.string,
+  inputValue: PropTypes.object,
   indicesToCheck: PropTypes.array,
   hiddenPhrase: PropTypes.bool,
 };

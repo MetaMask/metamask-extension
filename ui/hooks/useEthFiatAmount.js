@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency, getShouldShowFiat } from '../selectors';
-import { decEthToConvertedCurrency } from '../helpers/utils/conversions.util';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getConversionRate } from '../ducks/metamask/metamask';
+import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
 
 /**
  * Get an Eth amount converted to fiat and formatted for display

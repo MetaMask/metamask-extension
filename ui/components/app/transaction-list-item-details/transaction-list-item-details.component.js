@@ -12,8 +12,8 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
-import { EVENT } from '../../../../shared/constants/metametrics';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -76,7 +76,7 @@ export default class TransactionListItemDetails extends PureComponent {
       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Clicked Block Explorer Link',
         properties: {
           link_type: 'Transaction Block Explorer',
@@ -109,7 +109,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { hash } = transaction;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.NAVIGATION,
+      category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
       properties: {
         action: 'Activity Log',
@@ -169,6 +169,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   type="primary"
                   onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button-rounded-button"
+                  data-testid="speedup-button"
                 >
                   {t('speedUp')}
                 </Button>
@@ -186,6 +187,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     type="raised"
                     onClick={this.handleRetry}
                     className="transaction-list-item-details__header-button"
+                    data-testid="rety-button"
                   >
                     <i className="fa fa-sync"></i>
                   </Button>
@@ -248,7 +250,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
+                    category: MetaMetricsEventCategory.Navigation,
                     event: 'Copied "To" Address',
                     properties: {
                       action: 'Activity Log',
@@ -258,7 +260,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 }}
                 onSenderClick={() => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
+                    category: MetaMetricsEventCategory.Navigation,
                     event: 'Copied "From" Address',
                     properties: {
                       action: 'Activity Log',
@@ -272,15 +274,15 @@ export default class TransactionListItemDetails extends PureComponent {
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 isTokenApprove={
-                  type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE ||
-                  type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
+                  type === TransactionType.tokenMethodApprove ||
+                  type === TransactionType.tokenMethodSetApprovalForAll
                 }
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
               {transactionGroup.initialTransaction.type !==
-                TRANSACTION_TYPES.INCOMING && (
+                TransactionType.incoming && (
                 <Disclosure title={t('activityLog')} size="small">
                   <TransactionActivityLog
                     transactionGroup={transactionGroup}

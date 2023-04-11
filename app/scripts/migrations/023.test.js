@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import migration23 from './023';
 
 const storage = {
@@ -14,13 +14,13 @@ const transactions = [];
 const transactions40 = [];
 const transactions20 = [];
 
-const txStates = Object.values(TRANSACTION_STATUSES);
+const txStates = Object.values(TransactionStatus);
 
 const deletableTxStates = [
-  TRANSACTION_STATUSES.CONFIRMED,
-  TRANSACTION_STATUSES.REJECTED,
-  TRANSACTION_STATUSES.FAILED,
-  TRANSACTION_STATUSES.DROPPED,
+  TransactionStatus.confirmed,
+  TransactionStatus.rejected,
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
 ];
 
 let nonDeletableCount = 0;

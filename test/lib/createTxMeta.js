@@ -1,9 +1,9 @@
 import { snapshotFromTxMeta } from '../../app/scripts/controllers/transactions/lib/tx-state-history-helpers';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { TransactionStatus } from '../../shared/constants/transaction';
 
 export default function createTxMeta(partialMeta) {
   const txMeta = {
-    status: TRANSACTION_STATUSES.UNAPPROVED,
+    status: TransactionStatus.unapproved,
     txParams: {},
     ...partialMeta,
   };

@@ -6,7 +6,7 @@ import Typography from '../../../ui/typography';
 import Box from '../../../ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   TEXT_ALIGN,
@@ -40,7 +40,7 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
         paddingTop={4}
         paddingBottom={4}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <div

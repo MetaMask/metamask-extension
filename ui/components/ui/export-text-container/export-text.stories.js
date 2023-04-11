@@ -4,7 +4,7 @@ import ExportTextContainer from '.';
 
 export default {
   title: 'Components/UI/ExportTextContainer',
-  id: __filename,
+
   component: ExportTextContainer,
   parameters: {
     docs: {

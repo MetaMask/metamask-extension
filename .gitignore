@@ -12,7 +12,6 @@ package
 
 # IDEs
 .idea
-.vscode
 .sublime-project
 
 *.bak
@@ -34,7 +33,6 @@ dist
 builds/
 builds.zip
 development/ts-migration-dashboard/build
-development/ts-migration-dashboard/intermediate
 
 test-artifacts
 test-builds
@@ -56,3 +54,14 @@ tsout/
 
 # Test results
 test-results/
+
+# This file is used to authenticate with the GitHub Package registry, to
+# enable the use of @metamask preview builds.
+.npmrc
+#yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

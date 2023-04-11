@@ -174,11 +174,20 @@ async function verifyEnglishLocale() {
   // and gradually phase out the key based search
   const globsToStrictSearch = [
     'ui/components/app/metamask-translation/*.js',
+    'ui/components/app/metamask-translation/*.ts',
     'ui/pages/confirmation/templates/*.js',
+    'ui/pages/confirmation/templates/*.ts',
   ];
   const testGlob = '**/*.test.js';
   const javascriptFiles = await glob(
-    ['ui/**/*.js', 'shared/**/*.js', 'app/scripts/constants/**/*.js'],
+    [
+      'ui/**/*.js',
+      'ui/**/*.ts',
+      'shared/**/*.js',
+      'shared/**/*.ts',
+      'app/scripts/constants/**/*.js',
+      'app/scripts/constants/**/*.ts',
+    ],
     {
       ignore: [...globsToStrictSearch, testGlob],
     },
@@ -226,6 +235,7 @@ async function verifyEnglishLocale() {
     'appName',
     'appNameBeta',
     'appNameFlask',
+    'appNameMmi',
     'appDescription',
   ];
 

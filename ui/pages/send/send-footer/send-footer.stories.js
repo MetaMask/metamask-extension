@@ -4,7 +4,7 @@ import SendFooter from './send-footer.component';
 
 export default {
   title: 'Pages/Send/SendFooter',
-  id: __filename,
+
   argTypes: {
     clearSend: { action: 'clearSend' },
     sign: { action: 'sign' },
@@ -13,7 +13,6 @@ export default {
     mostRecentOverviewPage: { control: 'text' },
     sendErrors: { control: 'object' },
     history: { action: 'history' },
-    addToAddressBookIfNew: { action: 'addToAddressBookIfNew' },
     resetSendState: { action: 'resetSendState' },
   },
 };

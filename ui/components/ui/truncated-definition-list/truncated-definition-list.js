@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { BorderColor, Size } from '../../../helpers/constants/design-system';
 import Box from '../box';
 import Button from '../button';
 import DefinitionList from '../definition-list/definition-list';
@@ -23,8 +23,8 @@ export default function TruncatedDefinitionList({
         margin={6}
         padding={4}
         paddingBottom={3}
-        borderRadius={SIZES.LG}
-        borderColor={COLORS.BORDER_MUTED}
+        borderRadius={Size.LG}
+        borderColor={BorderColor.borderMuted}
       >
         <DefinitionList
           dictionary={pick(dictionary, prefaceKeys)}
@@ -58,7 +58,7 @@ export default function TruncatedDefinitionList({
         >
           <Box padding={6} paddingTop={0}>
             <DefinitionList
-              gap={SIZES.MD}
+              gap={Size.MD}
               tooltips={tooltips}
               dictionary={dictionary}
             />

@@ -1,10 +1,10 @@
 import React from 'react';
-import { ERC20 } from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 export default {
   title: 'Pages/ConfirmApprove/ConfirmApproveContent',
-  id: __filename,
+
   component: ConfirmApproveContent,
   argTypes: {
     decimals: {
@@ -97,7 +97,7 @@ export default {
     isMultiLayerFeeNetwork: {
       control: 'boolean',
     },
-    supportsEIP1559V2: {
+    supportsEIP1559: {
       control: 'boolean',
     },
     assetName: {
@@ -117,7 +117,7 @@ export default {
     tokenAmount: '10',
     origin: 'https://metamask.github.io/test-dapp/',
     tokenSymbol: 'TST',
-    assetStandard: ERC20,
+    assetStandard: TokenStandard.ERC20,
     tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
     tokenBalance: '15',
     data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
@@ -129,6 +129,7 @@ export default {
     useNonceField: true,
     nextNonce: 1,
     customNonceValue: '2',
+    txData: { simulationFails: null },
     chainId: '1337',
     rpcPrefs: {},
     isContract: true,

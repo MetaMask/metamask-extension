@@ -8,6 +8,7 @@ const { BuildType } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
+const { getPathInsideNodeModules } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
@@ -15,11 +16,20 @@ module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
+  shouldIncludeSnow = true,
   buildType,
 }) {
-  const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
-    shouldIncludeLockdown,
-  );
+  const copyTargetsProds = {};
+  const copyTargetsDevs = {};
+
+  browserPlatforms.forEach((browser) => {
+    const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
+      shouldIncludeLockdown,
+      shouldIncludeSnow,
+    );
+    copyTargetsProds[browser] = copyTargetsProd;
+    copyTargetsDevs[browser] = copyTargetsDev;
+  });
 
   const additionalBuildTargets = {
     [BuildType.beta]: [
@@ -34,63 +44,75 @@ module.exports = function createStaticAssetTasks({
         dest: `images`,
       },
     ],
+    [BuildType.desktop]: [
+      {
+        src: './app/build-types/desktop/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.mmi]: [
+      {
+        src: './app/build-types/mmi/images/',
+        dest: `images`,
+      },
+    ],
   };
 
   if (Object.keys(additionalBuildTargets).includes(buildType)) {
-    copyTargetsProd.push(...additionalBuildTargets[buildType]);
-    copyTargetsDev.push(...additionalBuildTargets[buildType]);
+    Object.entries(copyTargetsProds).forEach(([_, copyTargetsProd]) =>
+      copyTargetsProd.push(...additionalBuildTargets[buildType]),
+    );
+    Object.entries(copyTargetsDevs).forEach(([_, copyTargetsDev]) =>
+      copyTargetsDev.push(...additionalBuildTargets[buildType]),
+    );
   }
 
-  const prod = createTask(
-    TASKS.STATIC_PROD,
-    composeSeries(
-      ...copyTargetsProd.map((target) => {
-        return async function copyStaticAssets() {
-          await performCopy(target);
-        };
-      }),
-    ),
-  );
-  const dev = createTask(
-    TASKS.STATIC_DEV,
-    composeSeries(
-      ...copyTargetsDev.map((target) => {
-        return async function copyStaticAssets() {
-          await setupLiveCopy(target);
-        };
-      }),
-    ),
-  );
+  const prodTasks = [];
+  Object.entries(copyTargetsProds).forEach(([browser, copyTargetsProd]) => {
+    copyTargetsProd.forEach((target) => {
+      prodTasks.push(async function copyStaticAssets() {
+        await performCopy(target, browser);
+      });
+    });
+  });
+
+  const devTasks = [];
+  Object.entries(copyTargetsDevs).forEach(([browser, copyTargetsDev]) => {
+    copyTargetsDev.forEach((target) => {
+      devTasks.push(async function copyStaticAssets() {
+        await setupLiveCopy(target, browser);
+      });
+    });
+  });
+
+  const prod = createTask(TASKS.STATIC_PROD, composeSeries(...prodTasks));
+  const dev = createTask(TASKS.STATIC_DEV, composeSeries(...devTasks));
 
   return { dev, prod };
 
-  async function setupLiveCopy(target) {
-    const pattern = target.pattern || '/**/*';
+  async function setupLiveCopy(target, browser) {
+    const pattern = target.pattern === undefined ? '/**/*' : target.pattern;
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path);
-      performCopy(target);
+      performCopy(target, browser);
     });
-    await performCopy(target);
+    await performCopy(target, browser);
   }
 
-  async function performCopy(target) {
-    await Promise.all(
-      browserPlatforms.map(async (platform) => {
-        if (target.pattern) {
-          await copyGlob(
-            target.src,
-            `${target.src}${target.pattern}`,
-            `./dist/${platform}/${target.dest}`,
-          );
-        } else {
-          await copyGlob(
-            target.src,
-            `${target.src}`,
-            `./dist/${platform}/${target.dest}`,
-          );
-        }
-      }),
-    );
+  async function performCopy(target, browser) {
+    if (target.pattern === undefined) {
+      await copyGlob(
+        target.src,
+        `${target.src}`,
+        `./dist/${browser}/${target.dest}`,
+      );
+    } else {
+      await copyGlob(
+        target.src,
+        `${target.src}${target.pattern}`,
+        `./dist/${browser}/${target.dest}`,
+      );
+    }
   }
 
   async function copyGlob(baseDir, srcGlob, dest) {
@@ -104,7 +126,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -115,7 +137,7 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `images`,
     },
     {
-      src: `./node_modules/@metamask/contract-metadata/images/`,
+      src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },
     {
@@ -127,11 +149,14 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `vendor`,
     },
     {
-      src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
+      src: getPathInsideNodeModules(
+        '@fortawesome/fontawesome-free',
+        'webfonts/',
+      ),
       dest: `fonts/fontawesome`,
     },
     {
-      src: `./node_modules/react-responsive-carousel/lib/styles`,
+      src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),
       dest: 'react-gallery/',
     },
     {
@@ -144,12 +169,22 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `loading.html`,
     },
     {
-      src: `./node_modules/globalthis/dist/browser.js`,
+      src: getPathInsideNodeModules('globalthis', 'dist/browser.js'),
       dest: `globalthis.js`,
     },
     {
+      src: shouldIncludeSnow
+        ? `./node_modules/@lavamoat/snow/snow.prod.js`
+        : EMPTY_JS_FILE,
+      dest: `snow.js`,
+    },
+    {
+      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
+      dest: `use-snow.js`,
+    },
+    {
       src: shouldIncludeLockdown
-        ? `./node_modules/ses/dist/lockdown.umd.min.js`
+        ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
         : EMPTY_JS_FILE,
       dest: `lockdown-install.js`,
     },
@@ -170,14 +205,14 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `lockdown-more.js`,
     },
     {
-      // eslint-disable-next-line node/no-extraneous-require
-      src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+      src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
+      pattern: '',
     },
     {
-      // eslint-disable-next-line node/no-extraneous-require
-      src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+      src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `runtime-lavamoat.js`,
+      pattern: '',
     },
   ];
 
@@ -190,7 +225,10 @@ function getCopyTargets(shouldIncludeLockdown) {
 
   for (const tag of languageTags) {
     allCopyTargets.push({
-      src: `./node_modules/@formatjs/intl-relativetimeformat/dist/locale-data/${tag}.json`,
+      src: getPathInsideNodeModules(
+        '@formatjs/intl-relativetimeformat',
+        `dist/locale-data/${tag}.json`,
+      ),
       dest: `intl/${tag}/relative-time-format-data.json`,
     });
   }

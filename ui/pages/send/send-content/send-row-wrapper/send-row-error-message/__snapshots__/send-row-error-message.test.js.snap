@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendRowErrorMessage Component render should match snapshot with no error 1`] = `<div />`;
+
+exports[`SendRowErrorMessage Component render should render an error message if the passed errors contain an error of errorType 1`] = `
+<div>
+  <div
+    class="send-v2__error send-v2__error-amount"
+  >
+    Insufficient funds.
+  </div>
+</div>
+`;

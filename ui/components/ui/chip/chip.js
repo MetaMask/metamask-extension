@@ -4,13 +4,18 @@ import classnames from 'classnames';
 import { omit } from 'lodash';
 import Typography from '../typography';
 import UrlIcon from '../url-icon';
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderColor,
+  TextColor,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
 
 export default function Chip({
   dataTestId,
   className,
   children,
-  borderColor = COLORS.BORDER_DEFAULT,
+  borderColor = BorderColor.borderDefault,
   backgroundColor,
   label,
   labelProps = {},
@@ -54,9 +59,9 @@ export default function Chip({
       {children ?? (
         <Typography
           className="chip__label"
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           as="span"
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           {...labelProps}
         >
           {label}
@@ -75,11 +80,11 @@ Chip.propTypes = {
   /**
    * The border color of the Chip
    */
-  borderColor: PropTypes.oneOf(Object.values(COLORS)),
+  borderColor: PropTypes.oneOf(Object.values(BorderColor)),
   /**
    * The background color of the Chip component
    */
-  backgroundColor: PropTypes.oneOf(Object.values(COLORS)),
+  backgroundColor: PropTypes.oneOf(Object.values(BackgroundColor)),
   /**
    * The label of the Chip component has a default typography variant of h6 and is a span html element
    */
@@ -88,7 +93,7 @@ Chip.propTypes = {
    * The label props of the component. Most Typography props can be used
    */
   labelProps: PropTypes.shape({
-    ...omit(Typography.propTypes, ['children', 'className']),
+    ...omit(TypographyVariant.propTypes, ['children', 'className']),
   }),
   /**
    * Children will replace the label of the Chip component.

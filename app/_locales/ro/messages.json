@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avansate"
   },
-  "advancedOptions": {
-    "message": "Opțiuni avansate"
-  },
   "amount": {
     "message": "Sumă"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "Activ"
-  },
-  "attemptToCancel": {
-    "message": "Încercați să anulați?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Trimiterea acestei încercări nu garantează că tranzacția dvs. originală va fi anulată. Dacă încercarea de anulare va reuși, vi se va percepe taxa tranzacției de mai sus."
   },
   "attemptingConnect": {
     "message": "Se încearcă conectarea la blockchain."
@@ -133,20 +124,11 @@
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
-  "buyWithWyre": {
-    "message": "Cumpărați $1 cu Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune $1 direct în contul dvs. MetaMask."
-  },
   "bytes": {
     "message": "Octeți"
   },
   "cancel": {
     "message": "Anulare"
-  },
-  "cancellationGasFee": {
-    "message": "Taxă de anulare în gaz"
   },
   "cancelled": {
     "message": "Anulat"
@@ -157,9 +139,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Trebuie să folosiți MetaMask în Google Chrome pentru a vă conecta la portofelul hardware."
   },
-  "clickToRevealSeed": {
-    "message": "Faceți clic aici pentru a arăta cuvintele secrete"
-  },
   "close": {
     "message": "Închide"
   },
@@ -169,14 +148,8 @@
   "confirmPassword": {
     "message": "Confirmare parolă"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Confirmați expresia dvs. secretă de rezervă"
-  },
   "confirmed": {
     "message": "Confirmat"
-  },
-  "congratulations": {
-    "message": "Felicitări"
   },
   "connect": {
     "message": "Conectează-te"
@@ -190,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Se conectează la rețeaua de test Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
-  },
-  "continueToWyre": {
-    "message": "Continuați la Wyre"
   },
   "contractDeployment": {
     "message": "Implementarea contractului"
@@ -219,9 +192,6 @@
   },
   "create": {
     "message": "Creați"
-  },
-  "createAWallet": {
-    "message": "Creați un portofel"
   },
   "createAccount": {
     "message": "Creați cont"
@@ -268,9 +238,6 @@
   "downloadGoogleChrome": {
     "message": "Descărcare Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Descărcați această expresie secretă de rezervă și păstrați-o în siguranță pe o unitate de disc sau un mediu de stocare criptat."
-  },
   "downloadStateLogs": {
     "message": "Descărcați jurnalele de stare"
   },
@@ -282,33 +249,6 @@
   },
   "editContact": {
     "message": "Editați contact"
-  },
-  "endOfFlowMessage1": {
-    "message": "Ați trecut testul – păstrați expresia sursă în siguranță, este răspunderea dvs.!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Gata"
-  },
-  "endOfFlowMessage2": {
-    "message": "Sfaturi despre stocarea în siguranță"
-  },
-  "endOfFlowMessage3": {
-    "message": "Salvează o copie de siguranță în mai multe locuri."
-  },
-  "endOfFlowMessage4": {
-    "message": "Nu comunicați niciodată fraza cuiva."
-  },
-  "endOfFlowMessage5": {
-    "message": "Aveți grijă la phishing! MetaMask nu vă va cere niciodată în mod spontan expresia sursă."
-  },
-  "endOfFlowMessage6": {
-    "message": "Dacă trebuie să vă salvați din nou fraza seed, puteți să o găsiți în Setări -> Securitate."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask nu vă poate recupera expresia sursă. Aflați mai multe."
-  },
-  "endOfFlowMessage9": {
-    "message": "Aflați mai multe."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Numele ENS nu s-a găsit pe rețeaua curentă. Încercați să comutați la Rețeaua Ethereum principală."
@@ -374,21 +314,8 @@
   "gasUsed": {
     "message": "Suma gaz folosită"
   },
-  "getEther": {
-    "message": "Obțineți Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obțineți Ether de la un robinet pentru $1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Începe"
-  },
   "goerli": {
     "message": "Rețea de test Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Ne pare bine să vă vedem."
   },
   "hardwareWalletConnected": {
     "message": "Portofelul hardware a fost conectat"
@@ -424,12 +351,6 @@
   },
   "importAccountMsg": {
     "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră MetaMask creat inițial. Aflați mai multe despre conturile importate"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importați un cont cu fraza seed"
-  },
-  "importWallet": {
-    "message": "Importați portofel"
   },
   "imported": {
     "message": "Importate",
@@ -481,11 +402,11 @@
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
   },
-  "letsGoSetUp": {
-    "message": "Da, hai să configurăm!"
-  },
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
+  },
+  "lineatestnet": {
+    "message": "Rețea de test Linea Goerli"
   },
   "links": {
     "message": "Link-uri"
@@ -511,14 +432,8 @@
   "memo": {
     "message": "notă"
   },
-  "memorizePhrase": {
-    "message": "Memorați această expresie."
-  },
   "message": {
     "message": "Mesaj"
-  },
-  "metamaskDescription": {
-    "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
   },
   "metamaskVersion": {
     "message": "Versiune MetaMask"
@@ -548,9 +463,6 @@
   "newAccount": {
     "message": "Cont nou"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "A fost detectată o adresă nouă! Faceți clic aici pentru a o adăuga în agenda dvs."
-  },
   "newAccountNumberName": {
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
@@ -564,17 +476,11 @@
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
   },
-  "newToMetaMask": {
-    "message": "Nefamiliarizat cu MetaMask?"
-  },
   "next": {
     "message": "Înainte"
   },
   "noAddressForName": {
     "message": "Nu a fost configurată nicio adresă pentru acest nume."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nu, am deja o expresie sursă"
   },
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
@@ -683,9 +589,6 @@
   "rejected": {
     "message": "Respins"
   },
-  "remindMeLater": {
-    "message": "Reamintește-mi mai târziu"
-  },
   "remove": {
     "message": "Elimină"
   },
@@ -704,35 +607,21 @@
   "reset": {
     "message": "Resetează"
   },
-  "resetAccount": {
-    "message": "Resetare cont"
-  },
-  "resetAccountDescription": {
-    "message": "Resetarea contului va duce la ștergerea istoricului tranzacțiilor dvs."
-  },
   "restore": {
     "message": "Restabilește"
   },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Dacă schimbați vreodată browserele sau vă mutați la alt computer, veți avea nevoie de această expresie sursă pentru a vă accesa conturile. Salvați-o într-un loc sigur și secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NU împărtășiți această expresie nimănui!"
+    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC nou"
   },
   "save": {
     "message": "Salvează"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvați ca fișier CSV "
   },
   "scanInstructions": {
     "message": "Așezați codul QR în fața camerei"
@@ -749,12 +638,6 @@
   "searchTokens": {
     "message": "Căutați token-uri"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Expresia dvs. secretă de rezervă înlesnește crearea unei copii de rezervă a contului dvs. și restabilirea acestuia."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ATENȚIE: Nu dezvăluiți niciodată expresia dvs. de rezervă. Oricine are această expresie vă poate lua Ether-ul pentru totdeauna."
-  },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
@@ -763,9 +646,6 @@
   },
   "selectAnAccount": {
     "message": "Selectați un cont"
-  },
-  "selectEachPhrase": {
-    "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
   },
   "selectHdPath": {
     "message": "Selectare cale HD"
@@ -784,12 +664,6 @@
   },
   "settings": {
     "message": "Setări"
-  },
-  "showAdvancedGasInline": {
-    "message": "Controale avansate pentru gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selectați aceasta pentru a arăta prețul gasului și comenzile de limitare direct pe ecranele de trimitere și confirmare."
   },
   "showFiatConversionInTestnets": {
     "message": "Afișează conversiile pe rețelele de test (testnets)"
@@ -811,9 +685,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signNotice": {
-    "message": "Semnarea acestui mesaj poate avea efecte secundare periculoase. Semnați mesajele numai de pe site-urile în care aveți încredere deplină să vă acceseze întregul cont. Această metodă periculoasă va fi eliminată într-o versiune viitoare."
   },
   "signatureRequest": {
     "message": "Cerere semnătură"
@@ -841,9 +712,6 @@
   },
   "stateLogsDescription": {
     "message": "Jurnalele de stare conțin adresele contului dvs. public și tranzacțiile trimise."
-  },
-  "storePhrase": {
-    "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."
   },
   "submitted": {
     "message": "Trimis"
@@ -883,12 +751,6 @@
   },
   "terms": {
     "message": "Termeni și condiții"
-  },
-  "testFaucet": {
-    "message": "Robinet de testare"
-  },
-  "thisWillCreate": {
-    "message": "Această acțiune va crea un nou portofel și o nouă fraza inițială."
   },
   "tips": {
     "message": "Cadouri bănești"
@@ -1002,26 +864,14 @@
   "userName": {
     "message": "Nume utilizator"
   },
-  "viewAccount": {
-    "message": "Afișați contul"
-  },
   "viewContact": {
     "message": "Vizualizare contact"
   },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"
   },
-  "welcome": {
-    "message": "Bun venit la MetaMask"
-  },
   "welcomeBack": {
     "message": "Bine ai revenit!"
-  },
-  "writePhrase": {
-    "message": "Scrieți această expresie pe o bucată de hârtie și păstrați-o într-un loc sigur. Dacă vreți și mai multă securitate, notați-o pe mai multe bucăți de hârtie și păstrați-le în 2 - 3 locuri diferite."
-  },
-  "yesLetsTry": {
-    "message": "Da, să încercăm"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."

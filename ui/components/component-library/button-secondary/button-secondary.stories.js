@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  SIZES,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '..';
 import { ButtonSecondary } from './button-secondary';
 import { BUTTON_SECONDARY_SIZES } from './button-secondary.constants';
 import README from './README.mdx';
@@ -30,7 +30,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/ButtonSecondary',
-  id: __filename,
+
   component: ButtonSecondary,
   parameters: {
     docs: {
@@ -60,20 +60,24 @@ export default {
       control: 'boolean',
       table: { category: 'button base props' },
     },
-    icon: {
+    startIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
       table: { category: 'button base props' },
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(IconName),
       table: { category: 'button base props' },
     },
-    iconProps: {
+    startIconProps: {
       control: 'object',
       table: { category: 'button base props' },
     },
-
+    endIconProps: {
+      control: 'object',
+      table: { category: 'button base props' },
+    },
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },
@@ -112,19 +116,20 @@ export const DefaultStory = (args) => <ButtonSecondary {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonSecondary {...args} size={SIZES.SM}>
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <ButtonSecondary {...args} size={Size.SM}>
       Small Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={SIZES.MD}>
+    <ButtonSecondary {...args} size={Size.MD}>
       Medium (Default) Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={SIZES.LG}>
+    <ButtonSecondary {...args} size={Size.LG}>
       Large Button
     </ButtonSecondary>
   </Box>
 );
+SizeStory.storyName = 'Size';
 
 export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>

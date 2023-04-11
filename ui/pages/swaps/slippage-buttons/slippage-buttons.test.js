@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { renderWithProvider, fireEvent } from '../../../../test/jest';
-import { SLIPPAGE } from '../../../../shared/constants/swaps';
-import SlippageButtons from '.';
+import { Slippage } from '../../../../shared/constants/swaps';
+import SlippageButtons from './slippage-buttons';
 
 const createProps = (customProps = {}) => {
   return {
     onSelect: jest.fn(),
     maxAllowedSlippage: 15,
-    currentSlippage: SLIPPAGE.HIGH,
+    currentSlippage: Slippage.high,
     smartTransactionsEnabled: false,
     ...customProps,
   };
@@ -72,7 +72,7 @@ describe('SlippageButtons', () => {
   it('renders the default slippage with Advanced options hidden', () => {
     const { getByText, queryByText } = renderWithProvider(
       <SlippageButtons
-        {...createProps({ currentSlippage: SLIPPAGE.DEFAULT })}
+        {...createProps({ currentSlippage: Slippage.default })}
       />,
     );
     expect(getByText('Advanced options')).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe('SlippageButtons', () => {
   it('opens the Advanced options section and sets a default slippage', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <SlippageButtons
-        {...createProps({ currentSlippage: SLIPPAGE.DEFAULT })}
+        {...createProps({ currentSlippage: Slippage.default })}
       />,
     );
     fireEvent.click(getByText('Advanced options'));
@@ -97,7 +97,7 @@ describe('SlippageButtons', () => {
   it('opens the Advanced options section and sets a high slippage', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <SlippageButtons
-        {...createProps({ currentSlippage: SLIPPAGE.DEFAULT })}
+        {...createProps({ currentSlippage: Slippage.default })}
       />,
     );
     fireEvent.click(getByText('Advanced options'));

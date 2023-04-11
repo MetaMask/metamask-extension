@@ -6,6 +6,7 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
+  NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -17,15 +18,15 @@ const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
   hookNames: {
     getCurrentChainId: true,
-    findCustomRpcBy: true,
+    findNetworkConfigurationBy: true,
     setProviderType: true,
-    updateRpcTarget: true,
+    setActiveNetwork: true,
     requestUserApproval: true,
   },
 };
 export default switchEthereumChain;
 
-function findExistingNetwork(chainId, findCustomRpcBy) {
+function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (chainId in CHAIN_ID_TO_TYPE_MAP) {
     return {
       chainId,
@@ -36,7 +37,7 @@ function findExistingNetwork(chainId, findCustomRpcBy) {
     };
   }
 
-  return findCustomRpcBy({ chainId });
+  return findNetworkConfigurationBy({ chainId });
 }
 
 async function switchEthereumChainHandler(
@@ -46,9 +47,9 @@ async function switchEthereumChainHandler(
   end,
   {
     getCurrentChainId,
-    findCustomRpcBy,
+    findNetworkConfigurationBy,
     setProviderType,
-    updateRpcTarget,
+    setActiveNetwork,
     requestUserApproval,
   },
 ) {
@@ -94,7 +95,7 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const requestData = findExistingNetwork(_chainId, findCustomRpcBy);
+  const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
     const currentChainId = getCurrentChainId();
     if (currentChainId === _chainId) {
@@ -107,10 +108,14 @@ async function switchEthereumChainHandler(
         type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
         requestData,
       });
-      if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+      if (
+        chainId in CHAIN_ID_TO_TYPE_MAP &&
+        approvedRequestData.type !== NETWORK_TYPES.LOCALHOST &&
+        approvedRequestData.type !== NETWORK_TYPES.LINEA_TESTNET
+      ) {
         setProviderType(approvedRequestData.type);
       } else {
-        await updateRpcTarget(approvedRequestData);
+        await setActiveNetwork(approvedRequestData.id);
       }
       res.result = null;
     } catch (error) {

@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import { SEND_STAGES } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/jest';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -59,7 +59,7 @@ describe('SendHeader Component', () => {
             stage: SEND_STAGES.DRAFT,
             asset: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT.asset,
-              type: ASSET_TYPES.NATIVE,
+              type: AssetType.native,
             },
           },
           gas: { basicEstimateStatus: 'LOADING' },
@@ -76,7 +76,7 @@ describe('SendHeader Component', () => {
           send: {
             ...getInitialSendStateWithExistingTxState({
               asset: {
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
               },
             }),
             stage: SEND_STAGES.DRAFT,

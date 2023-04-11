@@ -3,22 +3,22 @@
 exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
 <div>
   <button
-    class="box mm-picker-network box--padding-right-4 box--padding-left-2 box--display-inline-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
+    class="box mm-picker-network box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-alternative box--rounded-pill"
     data-testid="picker-network"
   >
     <div
-      class="box base-avatar base-avatar--size-xs avatar-network mm-picker-network__avatar-network box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       I
     </div>
     <p
-      class="box text text--body-sm text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-sm mm-text--ellipsis box--flex-direction-row box--color-text-default"
     >
       Imported
     </p>
-    <div
-      class="box mm-picker-network__arrow-down-icon icon icon--size-xs box--flex-direction-row box--color-icon-default"
-      style="mask-image: url('./images/icons/icon-undefined.svg;"
+    <span
+      class="box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-icon-default"
+      style="mask-image: url('./images/icons/arrow-down.svg');"
     />
   </button>
 </div>

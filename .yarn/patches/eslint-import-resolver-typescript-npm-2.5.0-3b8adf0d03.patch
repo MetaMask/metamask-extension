@@ -1,0 +1,29 @@
+diff --git a/lib/cjs.js b/lib/cjs.js
+index 15e6c37f3ae9f94c710ad04a7d88ec35cbfe4f70..6b80ab657f7e319058c99dfe827c66dfb9f76778 100644
+--- a/lib/cjs.js
++++ b/lib/cjs.js
+@@ -49,13 +49,19 @@ function __spreadArray(to, from) {
+ 
+ var IMPORTER_NAME = 'eslint-import-resolver-typescript';
+ var log = debug__default['default'](IMPORTER_NAME);
+-var defaultExtensions = __spreadArray(__spreadArray([
++/**
++ * In the original version of this package, `Object.keys(require.extensions)`
++ * gets added to `defaultExtensions`. `require.extensions` resolves to undefined
++ * when this file is run through LavaMoat, and ESLint emits a warning that
++ * `require.extensions` is deprecated anyway. So we hardcode this list here.
++ */
++var defaultExtensions = [
+     '.ts',
+     '.tsx',
+-    '.d.ts'
+-], Object.keys(require.extensions)), [
+-    '.jsx',
+-]);
++    '.d.ts',
++    '.js',
++    '.jsx'
++];
+ var interfaceVersion = 2;
+ /**
+  * @param {string} source the module to resolve; i.e './some-module'

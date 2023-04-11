@@ -1,178 +1,128 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import Dialog from '../../../../components/ui/dialog';
-import AddRecipient from './add-recipient.component';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
+import mockSendState from '../../../../../test/data/mock-send-state.json';
+import AddRecipient from '.';
 
-const propsMethodSpies = {
-  updateRecipient: sinon.spy(),
-  useMyAccountsForRecipientSearch: sinon.spy(),
-  useContactListForRecipientSearch: sinon.spy(),
-};
-
-describe('AddRecipient Component', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = shallow(
-      <AddRecipient
-        userInput=""
-        recipient={{
-          address: '',
-          nickname: '',
-          error: '',
-          warning: '',
-        }}
-        updateSendTo={propsMethodSpies.updateSendTo}
-        updateSendToError={propsMethodSpies.updateSendToError}
-        updateSendToWarning={propsMethodSpies.updateSendToWarning}
-        addressBook={[
-          {
-            address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
-            name: 'Fav 5',
-          },
-        ]}
-        nonContacts={[
-          {
-            address: '0x70F061544cC398520615B5d3e7A3BedD70cd4510',
-            name: 'Fav 7',
-          },
-        ]}
-        contacts={[
-          {
-            address: '0x60F061544cC398520615B5d3e7A3BedD70cd4510',
-            name: 'Fav 6',
-          },
-        ]}
-      />,
-      { context: { t: (str) => `${str}_t` } },
-    );
-  });
-
-  afterEach(() => {
-    propsMethodSpies.updateRecipient.resetHistory();
-    propsMethodSpies.useMyAccountsForRecipientSearch.resetHistory();
-    propsMethodSpies.useContactListForRecipientSearch.resetHistory();
-  });
-
+describe('Add Recipient Component', () => {
   describe('render', () => {
-    it('should render a component', () => {
-      expect(wrapper.find('.send__select-recipient-wrapper')).toHaveLength(1);
+    const mockStore = configureMockStore()(mockState);
+    it('should match snapshot', () => {
+      const { container } = renderWithProvider(<AddRecipient />, mockStore);
+
+      expect(container).toMatchSnapshot();
     });
+  });
 
-    it('should render no content if there are no recents, transfers, and contacts', () => {
-      wrapper.setProps({
-        ownedAccounts: [],
-        addressBook: [],
-      });
+  describe('Send State', () => {
+    const mockStore = configureMockStore()(mockSendState);
 
-      expect(
-        wrapper.find('.send__select-recipient-wrapper__list__link'),
-      ).toHaveLength(0);
-      expect(
-        wrapper.find('.send__select-recipient-wrapper__group'),
-      ).toHaveLength(0);
+    it('should match snapshot', () => {
+      const { container } = renderWithProvider(<AddRecipient />, mockStore);
+
+      expect(container).toMatchSnapshot();
     });
+  });
 
-    it('should render transfer', () => {
-      wrapper.setProps({
-        isUsingMyAccountsForRecipientSearch: true,
-        ownedAccounts: [
-          { address: '0x123', name: '123' },
-          { address: '0x124', name: '124' },
+  describe('Domain Resolution', () => {
+    const mockDomainResolutionState = {
+      ...mockState,
+      DNS: {
+        resolution: 'DNS Resolution',
+      },
+    };
+    const mockStore = configureMockStore()(mockDomainResolutionState);
+
+    it('should match snapshot', () => {
+      const { container } = renderWithProvider(<AddRecipient />, mockStore);
+
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  describe('Own Account Recipient Search', () => {
+    const ownAccountSeachState = {
+      ...mockState,
+      send: {
+        ...mockState.send,
+        recipientInput: 'Test',
+        recipientMode: 'MY_ACCOUNTS',
+      },
+    };
+    const mockStore = configureMockStore()(ownAccountSeachState);
+
+    it('should match snapshot', () => {
+      const { container } = renderWithProvider(<AddRecipient />, mockStore);
+
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  describe('Recent recipient order', () => {
+    const recentRecipientState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        addressBook: {
+          '0x5': {
+            '0x0000000000000000000000000000000000000001': {
+              address: '0x0000000000000000000000000000000000000001',
+              chainId: '0x5',
+              isEns: false,
+              memo: '',
+              name: '',
+            },
+            '0x0000000000000000000000000000000000000002': {
+              address: '0x0000000000000000000000000000000000000002',
+              chainId: '0x5',
+              isEns: false,
+              memo: '',
+              name: '',
+            },
+            '0x0000000000000000000000000000000000000003': {
+              address: '0x0000000000000000000000000000000000000003',
+              chainId: '0x5',
+              isEns: false,
+              memo: '',
+              name: '',
+            },
+          },
+        },
+        currentNetworkTxList: [
+          {
+            time: 1674425700001,
+            txParams: {
+              to: '0x0000000000000000000000000000000000000001',
+            },
+          },
+          {
+            time: 1674425700002,
+            txParams: {
+              to: '0x0000000000000000000000000000000000000002',
+            },
+          },
+          {
+            time: 1674425700003,
+            txParams: {
+              to: '0x0000000000000000000000000000000000000003',
+            },
+          },
         ],
-        addressBook: [{ address: '0x456', name: 'test-name' }],
-      });
-      wrapper.setState({ isShowingTransfer: true });
+      },
+    };
+    const mockStore = configureMockStore()(recentRecipientState);
 
-      const xferLink = wrapper.find(
-        '.send__select-recipient-wrapper__list__link',
+    it('should render latest used recipient first', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <AddRecipient />,
+        mockStore,
       );
-      expect(xferLink).toHaveLength(1);
 
-      const groups = wrapper.find('RecipientGroup');
-      expect(
-        groups.shallow().find('.send__select-recipient-wrapper__group'),
-      ).toHaveLength(1);
-    });
+      const recipientList = getAllByTestId('recipient');
 
-    it('should render ContactList', () => {
-      wrapper.setProps({
-        ownedAccounts: [
-          { address: '0x123', name: '123' },
-          { address: '0x124', name: '124' },
-        ],
-        addressBook: [{ address: '0x125' }],
-      });
-
-      const contactList = wrapper.find('ContactList');
-
-      expect(contactList).toHaveLength(1);
-    });
-
-    it('should render contacts', () => {
-      wrapper.setProps({
-        addressBook: [
-          { address: '0x125', name: 'alice' },
-          { address: '0x126', name: 'alex' },
-          { address: '0x127', name: 'catherine' },
-        ],
-      });
-      wrapper.setState({ isShowingTransfer: false });
-
-      const xferLink = wrapper.find(
-        '.send__select-recipient-wrapper__list__link',
-      );
-      expect(xferLink).toHaveLength(0);
-
-      const groups = wrapper.find('ContactList');
-      expect(groups).toHaveLength(1);
-
-      expect(
-        groups.find('.send__select-recipient-wrapper__group-item'),
-      ).toHaveLength(0);
-    });
-
-    it('should render error when query has no results', () => {
-      wrapper.setProps({
-        addressBook: [],
-        ensError: 'bad',
-        contacts: [],
-        nonContacts: [],
-      });
-
-      const dialog = wrapper.find(Dialog);
-
-      expect(dialog.props().type).toStrictEqual('error');
-      expect(dialog.props().children).toStrictEqual('bad_t');
-      expect(dialog).toHaveLength(1);
-    });
-
-    it('should render error when query has ens does not resolve', () => {
-      wrapper.setProps({
-        addressBook: [],
-        ensError: 'very bad',
-        contacts: [],
-        nonContacts: [],
-      });
-
-      const dialog = wrapper.find(Dialog);
-
-      expect(dialog.props().type).toStrictEqual('error');
-      expect(dialog.props().children).toStrictEqual('very bad_t');
-      expect(dialog).toHaveLength(1);
-    });
-
-    it('should render error when ens resolved but ens error exists', () => {
-      wrapper.setProps({
-        addressBook: [],
-        ensError: 'bad',
-        ensResolution: '0x128',
-      });
-
-      const dialog = wrapper.find(Dialog);
-
-      expect(dialog).toHaveLength(1);
+      expect(recipientList[0]).toHaveTextContent('0x0000...0003');
+      expect(recipientList[1]).toHaveTextContent('0x0000...0002');
     });
   });
 });

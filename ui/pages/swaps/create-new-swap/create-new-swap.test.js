@@ -40,13 +40,15 @@ jest.mock('../../../ducks/swaps/swaps', () => {
 });
 
 describe('CreateNewSwap', () => {
+  const props = createProps({ sensitiveTrackingProperties: {} });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());
-    const props = createProps();
+
     const { getByText } = renderWithProvider(
       <CreateNewSwap {...props} />,
       store,
@@ -68,7 +70,7 @@ describe('CreateNewSwap', () => {
     });
     navigateBackToBuildQuote.mockImplementation(navigateBackToBuildQuoteMock);
     const store = configureMockStore(middleware)(createSwapsMockStore());
-    const props = createProps();
+
     const { getByText } = renderWithProvider(
       <CreateNewSwap {...props} />,
       store,

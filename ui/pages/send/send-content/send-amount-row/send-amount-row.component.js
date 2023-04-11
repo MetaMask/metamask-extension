@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import SendRowWrapper from '../send-row-wrapper';
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
-import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
+import { AssetType } from '../../../../../shared/constants/transaction';
 import AmountMaxButton from './amount-max-button';
 
 export default class SendAmountRow extends Component {
@@ -28,7 +28,7 @@ export default class SendAmountRow extends Component {
   renderInput() {
     const { amount, inError, asset } = this.props;
 
-    return asset.type === ASSET_TYPES.TOKEN ? (
+    return asset.type === AssetType.token ? (
       <UserPreferencedTokenInput
         error={inError}
         onChange={this.debouncedHandleChange}
@@ -47,7 +47,7 @@ export default class SendAmountRow extends Component {
   render() {
     const { inError, asset } = this.props;
 
-    if (asset.type === ASSET_TYPES.NFT) {
+    if (asset.type === AssetType.NFT) {
       return null;
     }
 

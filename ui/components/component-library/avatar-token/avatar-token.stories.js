@@ -1,22 +1,31 @@
 import React from 'react';
 import {
-  COLORS,
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  TEXT_COLORS,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
+  AlignItems,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
+import {
+  AvatarNetwork,
+  BUTTON_LINK_SIZES,
+  BadgeWrapper,
+  ButtonLink,
+  Text,
+} from '..';
+
 import README from './README.mdx';
+
 import { AvatarToken } from './avatar-token';
+import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
-  id: __filename,
+
   component: AvatarToken,
   parameters: {
     docs: {
@@ -26,24 +35,24 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_TOKEN_SIZES),
     },
     color: {
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
     },
-    tokenName: {
+    name: {
       control: 'text',
     },
-    tokenImageUrl: {
+    src: {
       control: 'text',
     },
     showHalo: {
@@ -51,9 +60,9 @@ export default {
     },
   },
   args: {
-    tokenName: 'ast',
-    tokenImageUrl: './AST.png',
-    size: SIZES.MD,
+    name: 'eth',
+    src: './images/eth_logo.svg',
+    size: Size.MD,
     showHalo: false,
   },
 };
@@ -65,22 +74,250 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarToken {...args} size={SIZES.XS} />
-    <AvatarToken {...args} size={SIZES.SM} />
-    <AvatarToken {...args} size={SIZES.MD} />
-    <AvatarToken {...args} size={SIZES.LG} />
-    <AvatarToken {...args} size={SIZES.XL} />
-  </Box>
+export const SizeStory = (args) => (
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.baseline}
+      gap={2}
+      marginBottom={4}
+    >
+      <AvatarToken {...args} size={Size.XS} />
+      <AvatarToken {...args} size={Size.SM} />
+      <AvatarToken {...args} size={Size.MD} />
+      <AvatarToken {...args} size={Size.LG} />
+      <AvatarToken {...args} size={Size.XL} />
+    </Box>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexEnd}
+      gap={2}
+      marginBottom={4}
+    >
+      <AvatarToken {...args} src="" size={Size.XS} />
+      <AvatarToken {...args} src="" size={Size.SM} />
+      <AvatarToken {...args} src="" size={Size.MD} />
+      <AvatarToken {...args} src="" size={Size.LG} />
+      <AvatarToken {...args} src="" size={Size.XL} />
+    </Box>
+    <Text marginBottom={4}>
+      Sizes with{' '}
+      <ButtonLink
+        size={BUTTON_LINK_SIZES.INHERIT}
+        href="/docs/components-componentlibrary-buttonlink--default-story"
+      >
+        AvatarNetwork
+      </ButtonLink>{' '}
+      and{' '}
+      <ButtonLink
+        size={BUTTON_LINK_SIZES.INHERIT}
+        href="/docs/components-componentlibrary-badgewrapper--default-story"
+      >
+        BadgeWrapper
+      </ButtonLink>{' '}
+      components
+    </Text>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexEnd}
+      gap={2}
+      marginBottom={4}
+    >
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.XS} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.SM} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.MD} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.LG} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.SM}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.XL} />
+      </BadgeWrapper>
+    </Box>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={2}>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          src=""
+          name="ETH"
+          size={Size.XS}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.SM}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.MD}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.LG}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.SM}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.XL}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+    </Box>
+  </>
 );
+SizeStory.storyName = 'Size';
 
-export const TokenName = Template.bind({});
-TokenName.args = {
-  tokenImageUrl: '',
+export const Name = Template.bind({});
+Name.args = {
+  src: '',
 };
 
-export const TokenImageUrl = Template.bind({});
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <AvatarToken {...args} src="./images/eth_logo.svg" />
+    <AvatarToken {...args} src="./images/arbitrum.svg" />
+    <AvatarToken {...args} src="./images/bnb.png" />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://i.seadn.io/gae/lSm8ChaI-3RqC9MTpi0j3KBXdfdPd57PN5UeQLY49JA3twy9wSt2dpaa22sSc6oyiXi2OEUR6GeFX8jwkZHEMADu6_Bd4EwTJ-rg?w=500&auto=format"
+    />
+  </Box>
+);
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {
@@ -91,20 +328,20 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken
       {...args}
-      backgroundColor={COLORS.GOERLI}
-      borderColor={COLORS.GOERLI}
-      tokenName="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
+      name="G"
+      color={TextColor.primaryInverse}
     />
     <AvatarToken
       {...args}
-      backgroundColor={COLORS.SEPOLIA}
-      borderColor={COLORS.SEPOLIA}
-      tokenName="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+      backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
+      name="S"
+      color={TextColor.primaryInverse}
     />
   </Box>
 );
 ColorBackgroundColorAndBorderColor.args = {
-  tokenImageUrl: '',
+  src: '',
 };

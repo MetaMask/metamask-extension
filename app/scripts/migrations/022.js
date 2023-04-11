@@ -5,7 +5,7 @@ This migration adds submittedTime to the txMeta if it is not their
 */
 
 import { cloneDeep } from 'lodash';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 
 const version = 22;
 
@@ -34,7 +34,7 @@ function transformState(state) {
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
       if (
-        txMeta.status !== TRANSACTION_STATUSES.SUBMITTED ||
+        txMeta.status !== TransactionStatus.submitted ||
         txMeta.submittedTime
       ) {
         return txMeta;

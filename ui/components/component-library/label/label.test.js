@@ -1,21 +1,27 @@
 /* eslint-disable jest/require-top-level-describe */
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
+import { Icon, IconName } from '..';
+import { TextField } from '../text-field';
 
 import { Label } from './label';
 
 describe('label', () => {
   it('should render text inside the label', () => {
-    const { getByText } = render(<Label>label</Label>);
+    const { getByText, container } = render(<Label>label</Label>);
+    expect(getByText('label')).toHaveClass('mm-label');
     expect(getByText('label')).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
+  it('should render with additional className', () => {
+    const { getByText } = render(<Label className="test-class">label</Label>);
+    expect(getByText('label')).toHaveClass('mm-label test-class');
   });
   it('should render text and react nodes as children', () => {
     const { getByText, getByTestId } = render(
       <Label>
         label
-        <Icon name={ICON_NAMES.INFO_FILLED} data-testid="icon" />
+        <Icon name={IconName.Info} data-testid="icon" />
       </Label>,
     );
     expect(getByText('label')).toBeDefined();
@@ -25,7 +31,7 @@ describe('label', () => {
     const { getByText, getByRole } = render(
       <>
         <Label htmlFor="input">label</Label>
-        <TextFieldBase id="input" />
+        <TextField id="input" />
       </>,
     );
     const input = getByRole('textbox');
@@ -40,7 +46,7 @@ describe('label', () => {
       <>
         <Label>
           Label text
-          <TextFieldBase />
+          <TextField />
         </Label>
       </>,
     );
@@ -50,18 +56,5 @@ describe('label', () => {
     expect(input).not.toHaveFocus();
     fireEvent.click(label);
     expect(input).toHaveFocus();
-  });
-  it('should render with required asterisk', () => {
-    const { getByText } = render(<Label required>label</Label>);
-    expect(getByText('label')).toBeDefined();
-    expect(getByText('*')).toBeDefined();
-  });
-  it('should render with disabled state and have disabled class', () => {
-    const { getByText } = render(<Label disabled>label</Label>);
-    expect(getByText('label')).toHaveClass('mm-label--disabled');
-  });
-  it('should render with additional className', () => {
-    const { getByText } = render(<Label className="test-class">label</Label>);
-    expect(getByText('label')).toHaveClass('test-class');
   });
 });

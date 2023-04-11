@@ -47,9 +47,6 @@
   "advanced": {
     "message": "מתקדם"
   },
-  "advancedOptions": {
-    "message": "אפשרויות מתקדמות"
-  },
   "amount": {
     "message": "כמות"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "נכס"
-  },
-  "attemptToCancel": {
-    "message": "לנסות לבטל?"
-  },
-  "attemptToCancelDescription": {
-    "message": "הגשת ניסיון זה אינה מבטיחה כי העסקה המקורית שלך תבוטל. אם ניסיון הביטול יצליח, תחויב/י בעמלת העסקה המופיעה מעלה."
   },
   "attemptingConnect": {
     "message": "מנסה להתחבר לבלוקצ'יין."
@@ -133,20 +124,11 @@
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
-  "buyWithWyre": {
-    "message": "רכישת את'ר עם Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד $1 ישירות בחשבון ה-MetaMask שלך."
-  },
   "bytes": {
     "message": "בייטים"
   },
   "cancel": {
     "message": "ביטול"
-  },
-  "cancellationGasFee": {
-    "message": "עמלת דלק עבור ביטול"
   },
   "cancelled": {
     "message": "מבוטל"
@@ -157,9 +139,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "עליך להשתמש ב-MetaMask בגוגל כרום כדי להתחבר לארנק החומרה שלך."
   },
-  "clickToRevealSeed": {
-    "message": "לחצ/י כאן לחשיפת מילים סודיות"
-  },
   "close": {
     "message": "סגירה"
   },
@@ -169,14 +148,8 @@
   "confirmPassword": {
     "message": "נא לאשר סיסמה"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "אשר/י את צירוף הגיבוי הסודי שלך"
-  },
   "confirmed": {
     "message": "אושר"
-  },
-  "congratulations": {
-    "message": "מזל טוב"
   },
   "connect": {
     "message": "התחברות"
@@ -190,11 +163,11 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "מתחבר ל-Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "continueToWyre": {
-    "message": "המשך ל-Wyre"
   },
   "contractDeployment": {
     "message": "שליחת חוזה (Contract Deployment)"
@@ -219,9 +192,6 @@
   },
   "create": {
     "message": "צור"
-  },
-  "createAWallet": {
-    "message": "צור ארנק"
   },
   "createAccount": {
     "message": "פתיחת חשבון"
@@ -268,9 +238,6 @@
   "downloadGoogleChrome": {
     "message": "הורד/י את גוגל כרום"
   },
-  "downloadSecretBackup": {
-    "message": "הורד/י את צירוף הגיבוי הסודי הזה ואחסנ/י אותו בצורה מאובטחת בכונן קשיח או מדיום אחסון חיצוני מוצפן."
-  },
   "downloadStateLogs": {
     "message": "הורדת יומני מצב"
   },
@@ -282,33 +249,6 @@
   },
   "editContact": {
     "message": "ערוך איש קשר"
-  },
-  "endOfFlowMessage1": {
-    "message": "עברת את הבחינה - יש לשמור את ה-seedphrase שלך במקום בטוח, זה באחריותך!"
-  },
-  "endOfFlowMessage10": {
-    "message": "הכל בוצע"
-  },
-  "endOfFlowMessage2": {
-    "message": "טיפים לאחסון בטיחותי"
-  },
-  "endOfFlowMessage3": {
-    "message": "שמור גיבוי במספר מקומות."
-  },
-  "endOfFlowMessage4": {
-    "message": "לעולם אל תשתפ/י את הצירוף עם אף אחד."
-  },
-  "endOfFlowMessage5": {
-    "message": "היזהר/י מהתחזות! MetaMask לעולם לא יבקש באופן ספונטני את צירוף הגרעין שלך."
-  },
-  "endOfFlowMessage6": {
-    "message": "אם עליך לגבות את צירוף הגרעין שלך שוב, תוכל/י למצוא זאת בהגדרות -> אבטחה."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask לא הצליח לשחזר את ה-seedphrase שלך. למד/י עוד."
-  },
-  "endOfFlowMessage9": {
-    "message": "למד עוד."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "שם ENS לא נמצא ברשת הנוכחית. נסה/י לעבור לרשת אתריום הראשית."
@@ -381,21 +321,8 @@
   "general": {
     "message": "כללי"
   },
-  "getEther": {
-    "message": "השג/י את'ר"
-  },
-  "getEtherFromFaucet": {
-    "message": "השג/י את'ר מברז (faucet) עבור ה-$1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "תחילת העבודה"
-  },
   "goerli": {
     "message": "רשת בדיקה Goerli "
-  },
-  "happyToSeeYou": {
-    "message": "אנו שמחים לראותך."
   },
   "hardware": {
     "message": "חומרה"
@@ -434,12 +361,6 @@
   },
   "importAccountMsg": {
     "message": "חשבונות מיובאים לא ישויכו לצירוף הגרעין (seed) שנוצר במקור עבור חשבון ה-MetaMask שלך. למד/י עוד על חשבונות מיובאים"
-  },
-  "importAccountSeedPhrase": {
-    "message": "יבא חשבון באמצעות Seed Phrase"
-  },
-  "importWallet": {
-    "message": "ייבא ארנק"
   },
   "imported": {
     "message": "מיובאות",
@@ -491,11 +412,11 @@
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
   },
-  "letsGoSetUp": {
-    "message": "כן, בוא נתקין!"
-  },
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
+  },
+  "lineatestnet": {
+    "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
     "message": "קישורים"
@@ -521,14 +442,8 @@
   "memo": {
     "message": "תזכיר"
   },
-  "memorizePhrase": {
-    "message": "יש לשנן צירוף זה."
-  },
   "message": {
     "message": "הודעה"
-  },
-  "metamaskDescription": {
-    "message": "מחבר אותך לאתריום ולרשת המבוזרת."
   },
   "metamaskVersion": {
     "message": "גרסת MetaMask"
@@ -558,9 +473,6 @@
   "newAccount": {
     "message": "חשבון חדש"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "זוהתה כתובת חדש! נא להקיש כאן כדי להוסיף לפנקס הכתובות שלך."
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
@@ -574,17 +486,11 @@
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
   },
-  "newToMetaMask": {
-    "message": "חדש/ה ב- MetaMask?"
-  },
   "next": {
     "message": "הבא"
   },
   "noAddressForName": {
     "message": "לא הוגדרה כתובת עבור שם זה."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "לא, כבר יש לי צירוף גרעין"
   },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
@@ -693,9 +599,6 @@
   "rejected": {
     "message": "נדחה"
   },
-  "remindMeLater": {
-    "message": "הזכר לי מאוחר יותר"
-  },
   "remove": {
     "message": "הסר"
   },
@@ -714,35 +617,21 @@
   "reset": {
     "message": "אפס"
   },
-  "resetAccount": {
-    "message": "אפס חשבון"
-  },
-  "resetAccountDescription": {
-    "message": "איפוס חשבונך ינקה את היסטוריית העסקאות שלך."
-  },
   "restore": {
     "message": "שחזר"
   },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
-  },
   "revealSeedWordsWarning": {
-    "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "אין לשתף צירוף מילים זה עם אף אחד!"
+    "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
   },
   "save": {
     "message": "שמור"
-  },
-  "saveAsCsvFile": {
-    "message": "שמירה כקובץ CSV"
   },
   "scanInstructions": {
     "message": "הצב/י את קוד ה-QR שלך מול המצלמה"
@@ -759,12 +648,6 @@
   "searchTokens": {
     "message": "חיפוש טוקנים"
   },
-  "secretBackupPhraseDescription": {
-    "message": "עם צירוף מילים סודי לגיבוי קל יותר לגבות ולשחזר את החשבון שלך."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "אזהרה: לעולם אין לחשוף את צירוף הגיבוי שלך. כל מי שברשותו צירוף זה יכול לקחת את האת'ר שלך לצמיתות."
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -773,9 +656,6 @@
   },
   "selectAnAccount": {
     "message": "בחר חשבון"
-  },
-  "selectEachPhrase": {
-    "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
   },
   "selectHdPath": {
     "message": "בחר/י נתיב HD"
@@ -794,12 +674,6 @@
   },
   "settings": {
     "message": "הגדרות"
-  },
-  "showAdvancedGasInline": {
-    "message": "אמצעי שליטה מתקדמים בדלק"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג אמצעי שליטה במחיר הדלק וההגבלה (limit) ישירות במסכי השליחה והאישור."
   },
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"
@@ -821,9 +695,6 @@
   },
   "sign": {
     "message": "חתימה"
-  },
-  "signNotice": {
-    "message": "לחתימה על הודעה זו יכולות להיות תוצאות לוואי מסוכנות. מומלץ לחתום רק הודעות מאתרים שיש לך אמון מלא בהם והפקדת את כל החשבון שלך בידיהם. השיטה המסוכנת תוסר בגרסה עתידית."
   },
   "signatureRequest": {
     "message": "בקשת חתימה"
@@ -851,9 +722,6 @@
   },
   "stateLogsDescription": {
     "message": "יומני המצב מכילים את כתובות החשבון הציבוריות שלך ועסקאות שנשלחו."
-  },
-  "storePhrase": {
-    "message": "אחסנ/י צירוף זה במנהל ססמאות כמו 1Password."
   },
   "submitted": {
     "message": "הוגש"
@@ -893,12 +761,6 @@
   },
   "terms": {
     "message": "תנאי שימוש"
-  },
-  "testFaucet": {
-    "message": "בדיקת ברז (Faucet)"
-  },
-  "thisWillCreate": {
-    "message": "זה ייצור ארנק חדש וצירוף גרעין (seed phrase)"
   },
   "tips": {
     "message": "טיפים"
@@ -1018,26 +880,14 @@
   "userName": {
     "message": "שם משתמש"
   },
-  "viewAccount": {
-    "message": "הצג חשבון"
-  },
   "viewContact": {
     "message": "הצג איש קשר"
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
   },
-  "welcome": {
-    "message": "ברוכים הבאים ל- MetaMask"
-  },
   "welcomeBack": {
     "message": "ברוך שובך!"
-  },
-  "writePhrase": {
-    "message": "יש לכתוב צירוף זה על פיסת נייר ולשמור במקום מאובטח. אם הנך מעוניינ/ת ביותר אבטחה, רשמ/י אותו על גבי מספר פיסות נייר ואחסני כל אחת מהן ב- 2-3 מקומות שונים."
-  },
-  "yesLetsTry": {
-    "message": "כן, בוא ננסה"
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."

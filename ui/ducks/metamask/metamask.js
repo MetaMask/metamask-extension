@@ -1,57 +1,76 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
-import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import { AlertTypes } from '../../../shared/constants/alerts';
 import {
-  GAS_ESTIMATE_TYPES,
-  NETWORK_CONGESTION_THRESHOLDS,
+  GasEstimateTypes,
+  NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
-import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import {
+  decGWEIToHexWEI,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 
-export default function reduceMetamask(state = {}, action) {
-  const metamaskState = {
-    isInitialized: false,
-    isUnlocked: false,
-    isAccountMenuOpen: false,
-    identities: {},
-    unapprovedTxs: {},
-    frequentRpcList: [],
-    addressBook: [],
-    contractExchangeRates: {},
-    pendingTokens: {},
-    customNonceValue: '',
-    useBlockie: false,
-    featureFlags: {},
-    welcomeScreenSeen: false,
-    currentLocale: '',
-    currentBlockGasLimit: '',
-    preferences: {
-      autoLockTimeLimit: undefined,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
-    firstTimeFlowType: null,
-    completedOnboarding: false,
-    knownMethodData: {},
-    participateInMetaMetrics: null,
-    nextNonce: null,
-    conversionRate: null,
-    nativeCurrency: 'ETH',
-    ...state,
-  };
+const initialState = {
+  isInitialized: false,
+  isUnlocked: false,
+  isAccountMenuOpen: false,
+  identities: {},
+  unapprovedTxs: {},
+  networkConfigurations: {},
+  addressBook: [],
+  contractExchangeRates: {},
+  pendingTokens: {},
+  customNonceValue: '',
+  useBlockie: false,
+  featureFlags: {},
+  welcomeScreenSeen: false,
+  currentLocale: '',
+  currentBlockGasLimit: '',
+  preferences: {
+    autoLockTimeLimit: undefined,
+    showFiatInTestnets: false,
+    showTestNetworks: false,
+    useNativeCurrencyAsPrimaryCurrency: true,
+  },
+  firstTimeFlowType: null,
+  completedOnboarding: false,
+  knownMethodData: {},
+  participateInMetaMetrics: null,
+  nextNonce: null,
+  conversionRate: null,
+  nativeCurrency: 'ETH',
+};
 
+/**
+ * Temporary types for this slice so that inferrence of MetaMask state tree can
+ * occur
+ *
+ * @param {typeof initialState} state - State
+ * @param {any} action
+ * @returns {typeof initialState}
+ */
+export default function reduceMetamask(state = initialState, action) {
+  // I don't think we should be spreading initialState into this. Once the
+  // state tree has begun by way of the first reduce call the initialState is
+  // set. The only time it should be used again is if we reset the state with a
+  // deliberate action. However, our tests are *relying upon the initialState
+  // tree above to be spread into the reducer as a way of hydrating the state
+  // for this slice*. I attempted to remove this and it caused nearly 40 test
+  // failures. We are going to refactor this slice anyways, possibly removing
+  // it so we will fix this issue when that time comes.
+  const metamaskState = { ...initialState, ...state };
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
@@ -60,31 +79,6 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         isUnlocked: false,
-      };
-
-    case actionConstants.SET_RPC_TARGET:
-      return {
-        ...metamaskState,
-        provider: {
-          type: NETWORK_TYPES.RPC,
-          rpcUrl: action.value,
-        },
-      };
-
-    case actionConstants.SET_PROVIDER_TYPE:
-      return {
-        ...metamaskState,
-        provider: {
-          type: action.value,
-        },
-      };
-
-    case actionConstants.SHOW_ACCOUNT_DETAIL:
-      return {
-        ...metamaskState,
-        isUnlocked: true,
-        isInitialized: true,
-        selectedAddress: action.value,
       };
 
     case actionConstants.SET_ACCOUNT_LABEL: {
@@ -132,28 +126,10 @@ export default function reduceMetamask(state = {}, action) {
         participateInMetaMetrics: action.value,
       };
 
-    case actionConstants.SET_USE_BLOCKIE:
-      return {
-        ...metamaskState,
-        useBlockie: action.value,
-      };
-
-    case actionConstants.UPDATE_FEATURE_FLAGS:
-      return {
-        ...metamaskState,
-        featureFlags: action.value,
-      };
-
     case actionConstants.CLOSE_WELCOME_SCREEN:
       return {
         ...metamaskState,
         welcomeScreenSeen: true,
-      };
-
-    case actionConstants.SET_CURRENT_LOCALE:
-      return {
-        ...metamaskState,
-        currentLocale: action.value.locale,
       };
 
     case actionConstants.SET_PENDING_TOKENS:
@@ -166,16 +142,6 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         pendingTokens: {},
-      };
-    }
-
-    case actionConstants.UPDATE_PREFERENCES: {
-      return {
-        ...metamaskState,
-        preferences: {
-          ...metamaskState.preferences,
-          ...action.payload,
-        },
       };
     }
 
@@ -196,9 +162,18 @@ export default function reduceMetamask(state = {}, action) {
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
-        nextNonce: action.value,
+        nextNonce: action.payload,
       };
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    case actionConstants.FORCE_DISABLE_DESKTOP: {
+      return {
+        ...metamaskState,
+        desktopEnabled: false,
+      };
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     default:
       return metamaskState;
@@ -246,15 +221,13 @@ export function updateGasFees({
 
 // Selectors
 
-export const getCurrentLocale = (state) => state.metamask.currentLocale;
-
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount];
+  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage];
+  getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
@@ -263,19 +236,11 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDetectionNoticeDismissed(state) {
-  return state.metamask.collectiblesDetectionNoticeDismissed;
+export function getNftsDropdownState(state) {
+  return state.metamask.nftsDropdownState;
 }
 
-export function getCollectiblesDropdownState(state) {
-  return state.metamask.collectiblesDropdownState;
-}
-
-export function getEnableEIP1559V2NoticeDismissed(state) {
-  return state.metamask.enableEIP1559V2NoticeDismissed;
-}
-
-export const getCollectibles = (state) => {
+export const getNfts = (state) => {
   const {
     metamask: {
       allNfts,
@@ -284,10 +249,12 @@ export const getCollectibles = (state) => {
     },
   } = state;
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
-export const getCollectibleContracts = (state) => {
+export const getNftContracts = (state) => {
   const {
     metamask: {
       allNftContracts,
@@ -296,7 +263,9 @@ export const getCollectibleContracts = (state) => {
     },
   } = state;
 
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -308,7 +277,10 @@ export function getConversionRate(state) {
 }
 
 export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+  return useCurrencyRateCheck
+    ? state.metamask.nativeCurrency
+    : state.metamask.provider.ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -364,22 +336,20 @@ export function getIsGasEstimatesLoading(state) {
   // 'NONE' or if the current gasEstimateType cannot be supported by the current
   // network
   const isEIP1559TolerableEstimateType =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
+    gasEstimateType === GasEstimateTypes.feeMarket ||
+    gasEstimateType === GasEstimateTypes.ethGasPrice;
   const isGasEstimatesLoading =
-    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
+    gasEstimateType === GasEstimateTypes.none ||
     (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
     (!networkAndAccountSupports1559 &&
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+      gasEstimateType === GasEstimateTypes.feeMarket);
 
   return isGasEstimatesLoading;
 }
 
 export function getIsNetworkBusy(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
-  return (
-    gasFeeEstimates?.networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY
-  );
+  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
 export function getCompletedOnboarding(state) {
@@ -437,7 +407,7 @@ export function getLedgerTransportType(state) {
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === KEYRING_TYPES.LEDGER;
+  return keyring?.type === KeyringType.ledger;
 }
 
 /**
@@ -449,6 +419,6 @@ export function isAddressLedger(state, address) {
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === KEYRING_TYPES.LEDGER;
+    return kr.type === KeyringType.ledger;
   });
 }

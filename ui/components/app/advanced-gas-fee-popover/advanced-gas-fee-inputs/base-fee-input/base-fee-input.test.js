@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
 import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
+  EditGasModes,
+  GasEstimateTypes,
 } from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
@@ -37,7 +37,7 @@ const render = (txProps, contextProps) => {
       advancedGasFee: { maxBaseFee: 100 },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 
@@ -71,11 +71,11 @@ describe('BaseFeeInput', () => {
       {
         userFeeLevel: 'high',
       },
-      { editGasMode: EDIT_GAS_MODES.SWAPS },
+      { editGasMode: EditGasModes.swaps },
     );
     expect(document.getElementsByTagName('input')[0]).toHaveValue(
       parseInt(
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates.high
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.high
           .suggestedMaxFeePerGas,
         10,
       ),

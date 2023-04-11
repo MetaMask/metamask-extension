@@ -19,7 +19,8 @@ const mapStateToProps = (state) => {
   const providerChainId = provider?.chainId;
   const isDeprecatedNetwork =
     DEPRECATED_TEST_NET_CHAINIDS.includes(providerChainId);
-  const isInfuraRpcUrl = provider?.rpcUrl?.match('infura');
+  const isInfuraRpcUrl =
+    provider?.rpcUrl && new URL(provider.rpcUrl).host.endsWith('.infura.io');
   const showDeprecatedRpcUrlWarning = isDeprecatedNetwork && isInfuraRpcUrl;
 
   return {

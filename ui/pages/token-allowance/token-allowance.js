@@ -2,20 +2,22 @@ import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
 import Typography from '../../components/ui/typography/typography';
 import {
-  ALIGN_ITEMS,
-  BORDER_STYLE,
-  COLORS,
+  AlignItems,
+  BorderStyle,
+  Color,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../helpers/constants/design-system';
 import { I18nContext } from '../../contexts/i18n';
 import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
@@ -30,10 +32,16 @@ import {
   getKnownMethodData,
   getRpcPrefsForCurrentProvider,
   getCustomTokenAmount,
+  getUnapprovedTxCount,
+  getUnapprovedTransactions,
+  getUseCurrencyRateCheck,
+  isHardwareWallet,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   cancelTx,
+  cancelTxs,
+  showModal,
   updateAndApproveTx,
   updateCustomNonce,
 } from '../../store/actions';
@@ -44,6 +52,23 @@ import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-s
 import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
+import { setCustomTokenAmount } from '../../ducks/app/app';
+import { valuesFor } from '../../helpers/utils/util';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
+} from '../../../shared/constants/tokens';
+import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
+import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
+import SimulationErrorMessage from '../../components/ui/simulation-error-message';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
+import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
+
+const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
 export default function TokenAllowance({
   origin,
@@ -57,7 +82,7 @@ export default function TokenAllowance({
   hexTransactionTotal,
   txData,
   isMultiLayerFeeNetwork,
-  supportsEIP1559V2,
+  supportsEIP1559,
   userAddress,
   tokenAddress,
   data,
@@ -74,19 +99,52 @@ export default function TokenAllowance({
   const history = useHistory();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
+  const { hostname } = new URL(origin);
+  const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
+
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
-  const [isFirstPage, setIsFirstPage] = useState(true);
+  const [isFirstPage, setIsFirstPage] = useState(
+    dappProposedTokenAmount !== '0' && !thisOriginIsAllowedToSkipFirstPage,
+  );
   const [errorText, setErrorText] = useState('');
+  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
+    useState(false);
 
+  const renderSimulationFailureWarning = useSimulationFailureWarning(
+    userAcknowledgedGasMissing,
+  );
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const customTokenAmount = useSelector(getCustomTokenAmount);
+  const unapprovedTxCount = useSelector(getUnapprovedTxCount);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const isHardwareWalletConnected = useSelector(isHardwareWallet);
+  let customTokenAmount = useSelector(getCustomTokenAmount);
+  if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
+    customTokenAmount = dappProposedTokenAmount;
+  }
 
-  const customPermissionAmount = customTokenAmount.toString();
+  const replaceCommaToDot = (inputValue) => {
+    return inputValue.replace(/,/gu, '.');
+  };
 
-  const customTxParamsData = customTokenAmount
+  let customPermissionAmount = NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(
+    customTokenAmount,
+  )
+    ? replaceCommaToDot(customTokenAmount).toString()
+    : '0';
+
+  const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
+  if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
+    const customSpendLimitNumber = new BigNumber(customTokenAmount);
+    if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+      customPermissionAmount = 0;
+    }
+  }
+
+  const customTxParamsData = customPermissionAmount
     ? getCustomTxParamsData(data, {
         customPermissionAmount,
         decimals,
@@ -129,6 +187,7 @@ export default function TokenAllowance({
 
   const handleReject = () => {
     dispatch(updateCustomNonce(''));
+    dispatch(setCustomTokenAmount(''));
 
     dispatch(cancelTx(fullTxData)).then(() => {
       dispatch(clearConfirmTransaction());
@@ -181,22 +240,52 @@ export default function TokenAllowance({
     setIsFirstPage(true);
   };
 
+  const handleCancelAll = () => {
+    dispatch(
+      showModal({
+        name: 'REJECT_TRANSACTIONS',
+        unapprovedTxCount,
+        onSubmit: async () => {
+          await dispatch(cancelTxs(valuesFor(unapprovedTxs)));
+          dispatch(clearConfirmTransaction());
+          history.push(mostRecentOverviewPage);
+        },
+      }),
+    );
+  };
+
+  const isEmpty = customTokenAmount === '';
+
+  const renderContractTokenValues = (
+    <Box marginTop={4} key={tokenAddress}>
+      <ContractTokenValues
+        tokenName={tokenSymbol}
+        address={tokenAddress}
+        chainId={fullTxData.chainId}
+        rpcPrefs={rpcPrefs}
+      />
+    </Box>
+  );
+
   return (
     <Box className="token-allowance-container page-container">
+      <Box>
+        <ConfirmPageContainerNavigation />
+      </Box>
       <Box
         paddingLeft={4}
         paddingRight={4}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+        justifyContent={JustifyContent.spaceBetween}
       >
         <Box>
           {!isFirstPage && (
             <Button type="inline" onClick={() => handleBackClick()}>
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_MUTED}
+                variant={TypographyVariant.H6}
+                color={TextColor.textMuted}
                 fontWeight={FONT_WEIGHT.BOLD}
               >
                 {'<'} {t('back')}
@@ -206,8 +295,8 @@ export default function TokenAllowance({
         </Box>
         <Box textAlign={TEXT_ALIGN.END}>
           <Typography
-            variant={TYPOGRAPHY.H7}
-            color={COLORS.TEXT_MUTED}
+            variant={TypographyVariant.H7}
+            color={TextColor.textMuted}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
@@ -225,11 +314,11 @@ export default function TokenAllowance({
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
       >
         <Box
           display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
           marginTop={6}
           marginRight={12}
           marginBottom={8}
@@ -238,8 +327,8 @@ export default function TokenAllowance({
           paddingRight={4}
           paddingBottom={2}
           paddingLeft={2}
-          borderColor={COLORS.BORDER_MUTED}
-          borderStyle={BORDER_STYLE.SOLID}
+          borderColor={Color.borderMuted}
+          borderStyle={BorderStyle.solid}
           borderWidth={1}
           className="token-allowance-container__icon-display-content"
         >
@@ -250,48 +339,52 @@ export default function TokenAllowance({
             url={siteImage}
           />
           <Typography
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.NORMAL}
-            color={COLORS.TEXT_ALTERNATIVE}
+            color={TextColor.textAlternative}
             boxProps={{ marginLeft: 1, marginTop: 2 }}
           >
             {origin}
           </Typography>
         </Box>
       </Box>
-      <Box marginBottom={5} marginLeft={4} marginRight={4}>
+      <Box marginLeft={4} marginRight={4}>
         <Typography
-          variant={TYPOGRAPHY.H3}
+          variant={TypographyVariant.H3}
           fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
-          {isFirstPage && t('setSpendingCap')}
-          {!isFirstPage &&
-            (customTokenAmount === 0
-              ? t('revokeSpendingCap')
-              : t('reviewSpendingCap'))}
+          {isFirstPage ? (
+            t('setSpendingCap', [renderContractTokenValues])
+          ) : (
+            <Box>
+              {customTokenAmount === '0' || isEmpty ? (
+                t('revokeSpendingCap', [renderContractTokenValues])
+              ) : (
+                <Box>
+                  {t('reviewSpendingCap')}
+                  {renderContractTokenValues}
+                </Box>
+              )}
+            </Box>
+          )}
         </Typography>
-      </Box>
-      <Box>
-        <ContractTokenValues
-          tokenName={tokenSymbol}
-          address={tokenAddress}
-          chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
-        />
       </Box>
       <Box
         marginTop={1}
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
       >
         <Button
           type="link"
           onClick={() => setShowContractDetails(true)}
           className="token-allowance-container__verify-link"
         >
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
+          <Typography
+            variant={TypographyVariant.H6}
+            color={Color.primaryDefault}
+          >
             {t('verifyContractDetails')}
           </Typography>
         </Button>
@@ -300,16 +393,21 @@ export default function TokenAllowance({
         {isFirstPage ? (
           <CustomSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
-            dappProposedValue={parseFloat(dappProposedTokenAmount)}
+            currentTokenBalance={currentTokenBalance}
+            dappProposedValue={dappProposedTokenAmount}
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
+            decimals={decimals}
           />
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
-            tokenValue={parseFloat(customTokenAmount)}
+            currentTokenBalance={currentTokenBalance}
+            tokenValue={
+              isNaN(parseFloat(customTokenAmount))
+                ? dappProposedTokenAmount
+                : replaceCommaToDot(customTokenAmount)
+            }
             onEdit={() => handleBackClick()}
           />
         )}
@@ -321,29 +419,47 @@ export default function TokenAllowance({
       )}
       {!isFirstPage && (
         <Box className="token-allowance-container__card-wrapper">
+          {renderSimulationFailureWarning && (
+            <Box
+              paddingTop={0}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingLeft={4}
+            >
+              <SimulationErrorMessage
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                setUserAcknowledgedGasMissing={() =>
+                  setUserAcknowledgedGasMissing(true)
+                }
+              />
+            </Box>
+          )}
           <ApproveContentCard
-            symbol={<i className="fa fa-tag" />}
+            symbol={<Icon name={ICON_NAMES.TAG} />}
             title={t('transactionFee')}
             showEdit
             showAdvanceGasFeeOptions
             onEditClick={showCustomizeGasModal}
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
             fullTxData={fullTxData}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            renderSimulationFailureWarning={renderSimulationFailureWarning}
             hexTransactionTotal={hexTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             currentCurrency={currentCurrency}
+            useCurrencyRateCheck={useCurrencyRateCheck}
           />
         </Box>
       )}
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
       >
         <Button
           type="link"
@@ -351,8 +467,8 @@ export default function TokenAllowance({
           className="token-allowance-container__view-details"
         >
           <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.PRIMARY_DEFAULT}
+            variant={TypographyVariant.H6}
+            color={TextColor.primaryDefault}
             marginRight={1}
           >
             {t('viewDetails')}
@@ -368,7 +484,7 @@ export default function TokenAllowance({
         <Box
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
           className="token-allowance-container__full-tx-content"
         >
           <Box className="token-allowance-container__data">
@@ -377,21 +493,42 @@ export default function TokenAllowance({
               title={t('data')}
               renderDataContent
               noBorder
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
+              fullTxData={fullTxData}
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              renderSimulationFailureWarning={renderSimulationFailureWarning}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
+              useCurrencyRateCheck={useCurrencyRateCheck}
             />
           </Box>
         </Box>
       ) : null}
+      {!isFirstPage && isHardwareWalletConnected && (
+        <Box paddingLeft={2} paddingRight={2}>
+          <LedgerInstructionField showDataInstruction />
+        </Box>
+      )}
       <PageContainerFooter
         cancelText={t('reject')}
         submitText={isFirstPage ? t('next') : t('approveButtonText')}
         onCancel={() => handleReject()}
         onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
         disabled={disableNextButton || disableApproveButton}
-      />
+      >
+        {unapprovedTxCount > 1 && (
+          <Button
+            type="link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleCancelAll();
+            }}
+          >
+            {t('rejectTxsN', [unapprovedTxCount])}
+          </Button>
+        )}
+      </PageContainerFooter>
       {showContractDetails && (
         <ContractDetailsModal
           tokenName={tokenSymbol}
@@ -400,8 +537,6 @@ export default function TokenAllowance({
           toAddress={toAddress}
           chainId={fullTxData.chainId}
           rpcPrefs={rpcPrefs}
-          origin={origin}
-          siteImage={siteImage}
         />
       )}
     </Box>
@@ -456,7 +591,7 @@ TokenAllowance.propTypes = {
   /**
    * Is the enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * User's address
    */

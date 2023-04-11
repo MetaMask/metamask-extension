@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  COLORS,
   RESIZE,
-  SIZES,
-  BORDER_STYLE,
+  BorderStyle,
   BLOCK_SIZES,
+  Size,
+  BorderColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../box';
@@ -34,10 +35,10 @@ const TextArea = ({
   );
   return (
     <Box
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderColor={COLORS.BORDER_DEFAULT}
-      borderRadius={SIZES.SM}
-      borderStyle={BORDER_STYLE.SOLID}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderColor={BorderColor.borderDefault}
+      borderRadius={Size.SM}
+      borderStyle={BorderStyle.solid}
       padding={4}
       width={BLOCK_SIZES.FULL}
       {...boxProps}

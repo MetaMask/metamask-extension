@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Розширені"
   },
-  "advancedOptions": {
-    "message": "Додаткові параметри"
-  },
   "amount": {
     "message": "Кількість"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "Актив"
-  },
-  "attemptToCancel": {
-    "message": "Спробувати скасувати?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Виконання цієї спроби не гарантує скасування початкової транзакції. Якщо спроба скасування вдасться, з вас буде стягнуто зазначену вище комісію."
   },
   "attemptingConnect": {
     "message": "Спроба підключення до розподіленої бази даних."
@@ -133,20 +124,11 @@
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
-  "buyWithWyre": {
-    "message": "Купити $1 через Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre дає змогу використовувати кредитну картку для внесення валюти $1 безпосередньо у свій гаманець MetaMask."
-  },
   "bytes": {
     "message": "Байти"
   },
   "cancel": {
     "message": "Скасувати"
-  },
-  "cancellationGasFee": {
-    "message": "Вартість пального за скасування"
   },
   "cancelled": {
     "message": "Скасовано"
@@ -157,9 +139,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Щоб підключитися до апаратного гаманця, розширення MetaMask потрібно використовувати в Google Chrome."
   },
-  "clickToRevealSeed": {
-    "message": "Клацніть тут, щоб відкрити секретні слова"
-  },
   "close": {
     "message": "Близько"
   },
@@ -169,14 +148,8 @@
   "confirmPassword": {
     "message": "Підтвердити пароль"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Підтвердьте вашу секретну резервну фразу"
-  },
   "confirmed": {
     "message": "Підтверджено"
-  },
-  "congratulations": {
-    "message": "Вітаємо!"
   },
   "connect": {
     "message": "Під’єднатися"
@@ -190,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Підключення до тестової мережі Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Підключення до тестової мережі Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Продовжити у Wyre"
   },
   "contractDeployment": {
     "message": "Розгортання контракту"
@@ -219,9 +192,6 @@
   },
   "create": {
     "message": "Створити"
-  },
-  "createAWallet": {
-    "message": "Створити гаманець"
   },
   "createAccount": {
     "message": "Створити обліковий запис"
@@ -268,9 +238,6 @@
   "downloadGoogleChrome": {
     "message": "Завантажити Гугл Хром"
   },
-  "downloadSecretBackup": {
-    "message": "Завантажте цю Секретну резервну фразу та зберігайте її у безпеці на зовнішньому зашифрованому жорсткому диску або носії інформації."
-  },
   "downloadStateLogs": {
     "message": "Завантажити журнали стану"
   },
@@ -282,33 +249,6 @@
   },
   "editContact": {
     "message": "Редагувати контракт"
-  },
-  "endOfFlowMessage1": {
-    "message": "Ви пройшли тест, зберігайте вашу початкову фразу в безпеці - це ваша відповідальність!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Усе готово"
-  },
-  "endOfFlowMessage2": {
-    "message": "Поради для безпечного зберігання"
-  },
-  "endOfFlowMessage3": {
-    "message": "Збережіть резервну копію в декількох місцях."
-  },
-  "endOfFlowMessage4": {
-    "message": "Ніколи не передавайте цю фразу нікому."
-  },
-  "endOfFlowMessage5": {
-    "message": "Остерігайтесь фішингу! MetaMask ніколи не запитуватиме вашої початкової фрази."
-  },
-  "endOfFlowMessage6": {
-    "message": "Якщо вам потрібно знову зробити резервну копію вашої початкової фрази, ви можете знайти її у Налаштування -> Безпека."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask не вдалося відновити вашу мнемонічну фразу. Докладніше."
-  },
-  "endOfFlowMessage9": {
-    "message": "Дізнатись більше."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Ethereum Mainnet."
@@ -381,21 +321,8 @@
   "general": {
     "message": "Загальні"
   },
-  "getEther": {
-    "message": "Отримати Ефір"
-  },
-  "getEtherFromFaucet": {
-    "message": "Отримайте Ether з крану за $1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Почати"
-  },
   "goerli": {
     "message": "Тестова мережа Goerli "
-  },
-  "happyToSeeYou": {
-    "message": "Раді вас бачити."
   },
   "hardware": {
     "message": "апаратний"
@@ -434,12 +361,6 @@
   },
   "importAccountMsg": {
     "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Імпортувати обліковий запис з початковою фразою"
-  },
-  "importWallet": {
-    "message": "Імпортувати гаманець"
   },
   "imported": {
     "message": "Імпортовано",
@@ -491,11 +412,11 @@
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
   },
-  "letsGoSetUp": {
-    "message": "Так, давайте налаштуємо!"
-  },
   "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
+  },
+  "lineatestnet": {
+    "message": "Тестова мережа Linea Goerli"
   },
   "links": {
     "message": "Посилання"
@@ -524,14 +445,8 @@
   "memo": {
     "message": "нотатка"
   },
-  "memorizePhrase": {
-    "message": "Запам'ятайте цю фразу."
-  },
   "message": {
     "message": "Повідомлення"
-  },
-  "metamaskDescription": {
-    "message": "Під'єднуємо вас до Ethereum та децентралізованої мережі."
   },
   "metamaskVersion": {
     "message": "Версія MetaMask"
@@ -561,9 +476,6 @@
   "newAccount": {
     "message": "Новий обліковий запис"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Виявлено нову адресу! Клацніть тут, щоб додати її до вашої адресної книги."
-  },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
@@ -577,17 +489,11 @@
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"
   },
-  "newToMetaMask": {
-    "message": "Вперше в MetaMask?"
-  },
   "next": {
     "message": "Далі"
   },
   "noAddressForName": {
     "message": "На це ім'я не встановлено адреси."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Ні, я вже маю початкову фразу"
   },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
@@ -696,9 +602,6 @@
   "rejected": {
     "message": "Відмовлено"
   },
-  "remindMeLater": {
-    "message": "Нагадайте мені пізніше"
-  },
   "remove": {
     "message": "Видалити"
   },
@@ -717,35 +620,21 @@
   "reset": {
     "message": "Скинути"
   },
-  "resetAccount": {
-    "message": "Перезапустити обліковий запис"
-  },
-  "resetAccountDescription": {
-    "message": "Перезапуск вашого облікового запису очистить історію ваших транзакцій."
-  },
   "restore": {
     "message": "Відновити"
   },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
-  "revealSeedWordsDescription": {
-    "message": "При зміні браузера або комп'ютера, вам знадобиться seed-фраза для отримання доступу до ваших облікових записів. Збережіть її у надійному місці."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "НЕ передавайте цю фразу нікому!"
+    "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Новий RPC URL"
   },
   "save": {
     "message": "Зберегти"
-  },
-  "saveAsCsvFile": {
-    "message": "Зберегти як файл CSV"
   },
   "scanInstructions": {
     "message": "Розташуйте QR-код перед вашою камерою"
@@ -762,12 +651,6 @@
   "searchTokens": {
     "message": "Шукати токени"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Ваша секретна резервна фраза дозволяє легко створити резервну копію та відновити обліковий запис."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ЗАСТЕРЕЖЕННЯ: Ніколи не розголошуйте вашу резервну фразу. Будь-хто з цією фразою зможе забрати ваш Ether назавжди."
-  },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
@@ -776,9 +659,6 @@
   },
   "selectAnAccount": {
     "message": "Виберіть обліковий запис"
-  },
-  "selectEachPhrase": {
-    "message": "Виберіть кожну фразу, щоб переконатися, що вона правильна."
   },
   "selectHdPath": {
     "message": "Виберіть шлях до HD-гаманця"
@@ -797,12 +677,6 @@
   },
   "settings": {
     "message": "Налаштування"
-  },
-  "showAdvancedGasInline": {
-    "message": "Розширене керування газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Виберіть цей параметр, щоб відображати регулятори ціни й ліміту газу на екранах надсилання й підтвердження."
   },
   "showFiatConversionInTestnets": {
     "message": "Показати бесіду у Testnet"
@@ -824,9 +698,6 @@
   },
   "sign": {
     "message": "Підписати"
-  },
-  "signNotice": {
-    "message": "Підписування цього повідомлення може мати небезпечний побічний ефект. Підписуйте тільки повідомлення від сайтів, яким ви повністю довіряєте весь ваш обліковий запис. Цей небезпечний метод буде усунуто у майбутній версії."
   },
   "signatureRequest": {
     "message": "Запит підпису"
@@ -854,9 +725,6 @@
   },
   "stateLogsDescription": {
     "message": "Логи стану містять ваші публічні адреси облікового запису та надіслані транзакції."
-  },
-  "storePhrase": {
-    "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."
   },
   "submitted": {
     "message": "Надіслано"
@@ -896,12 +764,6 @@
   },
   "terms": {
     "message": "Умови використання"
-  },
-  "testFaucet": {
-    "message": "Тестовий кран"
-  },
-  "thisWillCreate": {
-    "message": "У результаті цієї дії буде створено новий гаманець і мнемонічна фраза"
   },
   "tips": {
     "message": "Чайові"
@@ -1021,26 +883,14 @@
   "userName": {
     "message": "Ім’я користувача"
   },
-  "viewAccount": {
-    "message": "Переглянути обліковий запис"
-  },
   "viewContact": {
     "message": "Переглянути контакт"
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"
   },
-  "welcome": {
-    "message": "Ласкаво просимо до MetaMask"
-  },
   "welcomeBack": {
     "message": "З поверненням!"
-  },
-  "writePhrase": {
-    "message": "Запишіть цю фразу на аркуші паперу й покладіть у надійне місце. Для більшої надійності запишіть її на кількох аркушах паперу й зберігайте кожен в 2–3 різних місцях."
-  },
-  "yesLetsTry": {
-    "message": "Так, давайте спробуємо"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."

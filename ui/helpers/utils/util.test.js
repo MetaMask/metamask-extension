@@ -1,4 +1,6 @@
+import Bowser from 'bowser';
 import { BN } from 'ethereumjs-util';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
@@ -194,6 +196,77 @@ describe('util', () => {
     });
   });
 
+  describe('#getIsBrowserDeprecated', () => {
+    it('should call Bowser.getParser when no parameter is passed', () => {
+      const spy = jest.spyOn(Bowser, 'getParser');
+      util.getIsBrowserDeprecated();
+      expect(spy).toHaveBeenCalled();
+    });
+    it('should return false when given a modern chrome browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2623.112 Safari/537.36',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated chrome browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.2623.112 Safari/537.36',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 OPR/68.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 Edg/81.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 Edge/71.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given an unknown browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/609.4 (KHTML, like Gecko) NF/6.0.2.21.3 NintendoBrowser/5.1.0.22474',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+  });
+
   describe('normalizing values', function () {
     describe('#getRandomFileName', () => {
       it('should only return a string containing alphanumeric characters', () => {
@@ -365,6 +438,10 @@ describe('util', () => {
             ],
           },
         ],
+        nestArray: [
+          [12, 34, 56],
+          [56, 78, 89],
+        ],
       };
       primaryType = 'Mail';
       types = {
@@ -378,6 +455,8 @@ describe('util', () => {
           { name: 'from', type: 'Person' },
           { name: 'to', type: 'Person[]' },
           { name: 'contents', type: 'string' },
+          { name: 'nestArray', type: 'uint256[2][2]' },
+          { name: 'nestedPeople', type: 'Person[][]' },
         ],
         Person: [
           { name: 'name', type: 'string' },
@@ -400,12 +479,298 @@ describe('util', () => {
 
     it('should return parsed message if types is defined', () => {
       const result = util.sanitizeMessage(message, primaryType, types);
-      expect(result.contents).toStrictEqual('Hello, Bob!');
-      expect(result.from.name).toStrictEqual('Cow');
-      expect(result.from.wallets).toHaveLength(2);
-      expect(result.to).toHaveLength(1);
-      expect(result.to[0].name).toStrictEqual('Bob');
-      expect(result.to[0].wallets).toHaveLength(3);
+      expect(result).toStrictEqual({
+        type: 'Mail',
+        value: {
+          contents: {
+            type: 'string',
+            value: 'Hello, Bob!',
+          },
+          from: {
+            type: 'Person',
+            value: {
+              name: {
+                type: 'string',
+                value: 'Cow',
+              },
+              wallets: {
+                type: 'address[]',
+                value: [
+                  {
+                    type: 'address',
+                    value: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+                  },
+                  {
+                    type: 'address',
+                    value: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+                  },
+                ],
+              },
+            },
+          },
+          nestArray: {
+            type: 'uint256[2][2]',
+            value: [
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 12,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 34,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                ],
+              },
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 78,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 89,
+                  },
+                ],
+              },
+            ],
+          },
+          to: {
+            type: 'Person[]',
+            value: [
+              {
+                type: 'Person',
+                value: {
+                  name: {
+                    type: 'string',
+                    value: 'Bob',
+                  },
+                  wallets: {
+                    type: 'address[]',
+                    value: [
+                      {
+                        type: 'address',
+                        value: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                      },
+                      {
+                        type: 'address',
+                        value: '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                      },
+                      {
+                        type: 'address',
+                        value: '0xB0B0b0b0b0b0B000000000000000000000000000',
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+    });
+
+    it('should return parsed nested array if defined', () => {
+      const result = util.sanitizeMessage(
+        {
+          nestArray: [
+            [12, 34, 56],
+            [56, 78, 89],
+          ],
+        },
+        primaryType,
+        types,
+      );
+      expect(result).toStrictEqual({
+        type: 'Mail',
+        value: {
+          nestArray: {
+            type: 'uint256[2][2]',
+            value: [
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 12,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 34,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                ],
+              },
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 78,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 89,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      });
+    });
+
+    it('should return parsed nested array with struct if defined', () => {
+      const msg = {
+        nestedPeople: [
+          [
+            {
+              name: 'Bob',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+          [
+            {
+              name: 'Ben',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+            {
+              name: 'Brandon',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+        ],
+      };
+      const result = util.sanitizeMessage(msg, primaryType, types);
+      expect(result).toStrictEqual({
+        type: 'Mail',
+        value: {
+          nestedPeople: {
+            type: 'Person[][]',
+            value: [
+              {
+                type: 'Person[]',
+                value: [
+                  {
+                    type: 'Person',
+                    value: {
+                      name: {
+                        type: 'string',
+                        value: 'Bob',
+                      },
+                      wallets: {
+                        type: 'address[]',
+                        value: [
+                          {
+                            type: 'address',
+                            value: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                          },
+                          {
+                            type: 'address',
+                            value: '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                          },
+                          {
+                            type: 'address',
+                            value: '0xB0B0b0b0b0b0B000000000000000000000000000',
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                type: 'Person[]',
+                value: [
+                  {
+                    type: 'Person',
+                    value: {
+                      name: {
+                        type: 'string',
+                        value: 'Ben',
+                      },
+                      wallets: {
+                        type: 'address[]',
+                        value: [
+                          {
+                            type: 'address',
+                            value: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                          },
+                          {
+                            type: 'address',
+                            value: '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                          },
+                          {
+                            type: 'address',
+                            value: '0xB0B0b0b0b0b0B000000000000000000000000000',
+                          },
+                        ],
+                      },
+                    },
+                  },
+                  {
+                    type: 'Person',
+                    value: {
+                      name: {
+                        type: 'string',
+                        value: 'Brandon',
+                      },
+                      wallets: {
+                        type: 'address[]',
+                        value: [
+                          {
+                            type: 'address',
+                            value: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                          },
+                          {
+                            type: 'address',
+                            value: '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                          },
+                          {
+                            type: 'address',
+                            value: '0xB0B0b0b0b0b0B000000000000000000000000000',
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      });
     });
 
     it('should return ignore message data with unknown types', () => {
@@ -416,14 +781,141 @@ describe('util', () => {
 
       // result will NOT contain the do_not_displays because type definition
       const result = util.sanitizeMessage(message, primaryType, types);
-      expect(result.contents).toStrictEqual('Hello, Bob!');
-      expect(result.from.name).toStrictEqual('Cow');
-      expect(result.from.wallets).toHaveLength(2);
-      expect(result.to).toHaveLength(1);
-      expect(result.to[0].name).toStrictEqual('Bob');
-      expect(result.to[0].wallets).toHaveLength(3);
-      expect(result.do_not_display).toBeUndefined();
-      expect(result.do_not_display_2).toBeUndefined();
+      expect(result).toStrictEqual({
+        type: 'Mail',
+        value: {
+          contents: {
+            type: 'string',
+            value: 'Hello, Bob!',
+          },
+          from: {
+            type: 'Person',
+            value: {
+              name: {
+                type: 'string',
+                value: 'Cow',
+              },
+              wallets: {
+                type: 'address[]',
+                value: [
+                  {
+                    type: 'address',
+                    value: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+                  },
+                  {
+                    type: 'address',
+                    value: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+                  },
+                ],
+              },
+            },
+          },
+          nestArray: {
+            type: 'uint256[2][2]',
+            value: [
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 12,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 34,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                ],
+              },
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 78,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 89,
+                  },
+                ],
+              },
+            ],
+          },
+          to: {
+            type: 'Person[]',
+            value: [
+              {
+                type: 'Person',
+                value: {
+                  name: {
+                    type: 'string',
+                    value: 'Bob',
+                  },
+                  wallets: {
+                    type: 'address[]',
+                    value: [
+                      {
+                        type: 'address',
+                        value: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                      },
+                      {
+                        type: 'address',
+                        value: '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                      },
+                      {
+                        type: 'address',
+                        value: '0xB0B0b0b0b0b0B000000000000000000000000000',
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+    });
+  });
+
+  describe('sanitizeString', () => {
+    it('should return the passed value, unchanged, if it is falsy', () => {
+      expect(util.sanitizeString('')).toStrictEqual('');
+    });
+
+    it('should return the passed value, unchanged, if it is not a string', () => {
+      expect(util.sanitizeString(true)).toStrictEqual(true);
+    });
+
+    it('should return a truthy string that oes not match the sanitizeString regex, unchanged', () => {
+      expect(
+        util.sanitizeString('The Quick Brown Fox Jumps Over The Lazy Dog'),
+      ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
+    });
+
+    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
+      expect(
+        util.sanitizeString(
+          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+        ),
+      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+    });
+  });
+
+  describe('isDefaultMetaMaskChain()', () => {
+    it('should return true if the provided chainId is a default MetaMask chain', () => {
+      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
+    });
+
+    it('should return false if the provided chainId is a not default MetaMask chain', () => {
+      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
     });
   });
 });

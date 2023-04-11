@@ -4,7 +4,7 @@ import Confusable from './confusable.component';
 
 export default {
   title: 'Components/UI/Confusable',
-  id: __filename,
+
   component: Confusable,
   parameters: {
     docs: {

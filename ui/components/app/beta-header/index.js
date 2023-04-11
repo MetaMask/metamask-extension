@@ -4,14 +4,21 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box/box';
 import Typography from '../../ui/typography/typography';
 import {
-  TYPOGRAPHY,
-  COLORS,
+  TypographyVariant,
+  Color,
   BLOCK_SIZES,
   DISPLAY,
+  AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
+import { ButtonIcon } from '../../component-library';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -20,16 +27,17 @@ const BetaHeader = () => {
     <Box
       display={DISPLAY.FLEX}
       width={BLOCK_SIZES.FULL}
-      backgroundColor={COLORS.WARNING_DEFAULT}
+      backgroundColor={Color.warningDefault}
       padding={2}
       className="beta-header"
+      alignItems={AlignItems.center}
     >
       <Typography
-        variant={TYPOGRAPHY.H7}
+        variant={TypographyVariant.H7}
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
-        color={COLORS.WARNING_INVERSE}
+        color={Color.warningInverse}
       >
         {t('betaHeaderText', [
           <a
@@ -42,16 +50,17 @@ const BetaHeader = () => {
           </a>,
         ])}
       </Typography>
-      <button
+      <ButtonIcon
+        iconName={ICON_NAMES.CLOSE}
+        size={ICON_SIZES.SM}
+        color={IconColor.warningInverse}
         className="beta-header__button"
         data-testid="beta-header-close"
         onClick={() => {
           hideBetaHeader();
         }}
         aria-label={t('close')}
-      >
-        <i className="fa fa-times" />
-      </button>
+      />
     </Box>
   );
 };

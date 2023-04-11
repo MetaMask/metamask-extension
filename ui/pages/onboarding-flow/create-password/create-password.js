@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
@@ -8,10 +8,10 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  TypographyVariant,
+  JustifyContent,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -26,11 +26,19 @@ import {
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getFirstTimeFlowType } from '../../../selectors';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../components/component-library/icon/deprecated';
 
 export default function CreatePassword({
   createNewAccount,
@@ -49,83 +57,100 @@ export default function CreatePassword({
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
+  const currentKeyring = useSelector(getCurrentKeyring);
+
+  useEffect(() => {
+    if (currentKeyring) {
+      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      }
+    }
+  }, [currentKeyring, history, firstTimeFlowType]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
       return false;
     }
 
-    if (password.length < 8) {
+    if (password.length < PASSWORD_MIN_LENGTH) {
       return false;
     }
 
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
-  const getPasswordStrengthLabel = (score, translation) => {
+  const getPasswordStrengthLabel = (isTooShort, score) => {
+    if (isTooShort) {
+      return {
+        className: 'create-password__weak',
+        text: t('passwordNotLongEnough'),
+        description: '',
+      };
+    }
     if (score >= 4) {
       return {
         className: 'create-password__strong',
-        text: translation('strong'),
+        text: t('strong'),
         description: '',
       };
-    } else if (score === 3) {
+    }
+    if (score === 3) {
       return {
         className: 'create-password__average',
-        text: translation('average'),
+        text: t('average'),
         description: t('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
-      text: translation('weak'),
+      text: t('weak'),
       description: t('passwordStrengthDescription'),
     };
   };
 
   const handlePasswordChange = (passwordInput) => {
-    let confirmError = '';
-    const passwordEvaluation = zxcvbn(passwordInput);
-    const passwordStrengthLabel = getPasswordStrengthLabel(
-      passwordEvaluation.score,
-      t,
-    );
-    const passwordStrengthDescription = passwordStrengthLabel.description;
-    const passwordStrengthInput = t('passwordStrength', [
-      <span
-        key={passwordEvaluation.score}
-        className={passwordStrengthLabel.className}
-      >
+    const isTooShort =
+      passwordInput.length && passwordInput.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordInput);
+    const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
+    const passwordStrengthComponent = t('passwordStrength', [
+      <span key={score} className={passwordStrengthLabel.className}>
         {passwordStrengthLabel.text}
       </span>,
     ]);
-
-    if (confirmPassword && passwordInput !== confirmPassword) {
-      confirmError = t('passwordsDontMatch');
-    }
+    const confirmError =
+      !confirmPassword || passwordInput === confirmPassword
+        ? ''
+        : t('passwordsDontMatch');
 
     setPassword(passwordInput);
-    setPasswordStrength(passwordStrengthInput);
-    setPasswordStrengthText(passwordStrengthDescription);
+    setPasswordStrength(passwordStrengthComponent);
+    setPasswordStrengthText(passwordStrengthLabel.description);
     setConfirmPasswordError(confirmError);
   };
 
   const handleConfirmPasswordChange = (confirmPasswordInput) => {
-    let error = '';
-    if (password !== confirmPasswordInput) {
-      error = t('passwordsDontMatch');
-    }
+    const error =
+      password === confirmPasswordInput ? '' : t('passwordsDontMatch');
 
     setConfirmPassword(confirmPasswordInput);
     setConfirmPasswordError(error);
   };
 
   const handleCreate = async (event) => {
-    event.preventDefault();
+    event?.preventDefault();
 
     if (!isValid) {
       return;
     }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
+    });
+
     // If secretRecoveryPhrase is defined we are in import wallet flow
     if (
       secretRecoveryPhrase &&
@@ -139,10 +164,6 @@ export default function CreatePassword({
         if (createNewAccount) {
           await createNewAccount(password);
         }
-        trackEvent({
-          event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
-          category: EVENT.CATEGORIES.ONBOARDING,
-        });
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       } catch (error) {
         setPasswordError(error.message);
@@ -164,13 +185,13 @@ export default function CreatePassword({
           marginBottom={4}
         />
       )}
-      <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+      <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
-      <Typography variant={TYPOGRAPHY.H4} align={TEXT_ALIGN.CENTER}>
+      <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
         {t('passwordSetupDetails')}
       </Typography>
-      <Box justifyContent={JUSTIFY_CONTENT.CENTER} marginTop={3}>
+      <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
             dataTestId="create-password-new"
@@ -182,16 +203,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <button
-                className="create-password__form--password-button"
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-              >
-                {showPassword ? t('hide') : t('show')}
-              </button>
+              <Typography variant={TypographyVariant.H7}>
+                <a
+                  href=""
+                  className="create-password__form--password-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? t('hide') : t('show')}
+                </a>
+              </Typography>
             }
           />
           <FormField
@@ -204,14 +227,14 @@ export default function CreatePassword({
             titleDetail={
               isValid && (
                 <div className="create-password__form--checkmark">
-                  <i className="fas fa-check" />
+                  <Icon name={ICON_NAMES.CHECK} />
                 </div>
               )
             }
           />
           <Box
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             marginBottom={4}
           >
             <label className="create-password__form__terms-label">
@@ -220,7 +243,10 @@ export default function CreatePassword({
                 onClick={() => setTermsChecked(!termsChecked)}
                 checked={termsChecked}
               />
-              <Typography variant={TYPOGRAPHY.H5} boxProps={{ marginLeft: 3 }}>
+              <Typography
+                variant={TypographyVariant.H5}
+                boxProps={{ marginLeft: 3 }}
+              >
                 {t('passwordTermsWarning', [
                   <a
                     onClick={(e) => e.stopPropagation()}

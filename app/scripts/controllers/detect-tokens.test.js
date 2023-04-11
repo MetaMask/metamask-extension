@@ -3,21 +3,22 @@ import sinon from 'sinon';
 import nock from 'nock';
 import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
+import { ControllerMessenger } from '@metamask/base-controller';
 import {
-  ControllerMessenger,
   TokenListController,
   TokensController,
   AssetsContractController,
-} from '@metamask/controllers';
+} from '@metamask/assets-controllers';
+import { convertHexToDecimal } from '@metamask/controller-utils';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
-import NetworkController from './network';
+import NetworkController, { NetworkControllerEventTypes } from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
-  const sandbox = sinon.createSandbox();
-  let assetsContractController,
+  let sandbox,
+    assetsContractController,
     keyringMemStore,
     network,
     preferences,
@@ -31,59 +32,94 @@ describe('DetectTokensController', function () {
     getAccounts: noop,
   };
 
+  const infuraProjectId = 'infura-project-id';
+
   beforeEach(async function () {
-    keyringMemStore = new ObservableStore({ isUnlocked: false });
-    network = new NetworkController();
-    network.setInfuraProjectId('foo');
-    network.initializeProvider(networkControllerProviderConfig);
-    provider = network.getProviderAndBlockTracker().provider;
+    sandbox = sinon.createSandbox();
+    // Disable all requests, even those to localhost
+    nock.disableNetConnect();
+    nock('https://mainnet.infura.io')
+      .post(`/v3/${infuraProjectId}`)
+      .reply(200, (_uri, requestBody) => {
+        if (requestBody.method === 'eth_getBlockByNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: {
+              number: '0x42',
+            },
+          };
+        }
 
-    const tokenListMessenger = new ControllerMessenger().getRestricted({
-      name: 'TokenListController',
-    });
-    tokenListController = new TokenListController({
-      chainId: '1',
-      preventPollingOnNetworkRestart: false,
-      onNetworkStateChange: sinon.spy(),
-      onPreferencesStateChange: sinon.spy(),
-      messenger: tokenListMessenger,
-    });
-    await tokenListController.start();
+        if (requestBody.method === 'eth_blockNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '0x42',
+          };
+        }
 
-    preferences = new PreferencesController({
-      network,
-      provider,
-      tokenListController,
-    });
-    preferences.setAddresses([
-      '0x7e57e2',
-      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
-    ]);
-    preferences.setUseTokenDetection(true);
+        throw new Error(`(Infura) Mock not defined for ${requestBody.method}`);
+      })
+      .persist();
+    nock('https://sepolia.infura.io')
+      .post(`/v3/${infuraProjectId}`)
+      .reply(200, (_uri, requestBody) => {
+        if (requestBody.method === 'eth_getBlockByNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: {
+              number: '0x42',
+            },
+          };
+        }
 
-    tokensController = new TokensController({
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: network.store.subscribe.bind(network.store),
-    });
+        if (requestBody.method === 'eth_blockNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '0x42',
+          };
+        }
 
-    assetsContractController = new AssetsContractController({
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: network.store.subscribe.bind(network.store),
-    });
+        throw new Error(`(Infura) Mock not defined for ${requestBody.method}`);
+      })
+      .persist();
+    nock('http://localhost:8545')
+      .post('/')
+      .reply(200, (_uri, requestBody) => {
+        if (requestBody.method === 'eth_getBlockByNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: {
+              number: '0x42',
+            },
+          };
+        }
 
-    sandbox
-      .stub(network, 'getLatestBlock')
-      .callsFake(() => Promise.resolve({}));
-    sandbox
-      .stub(tokensController, '_instantiateNewEthersProvider')
-      .returns(null);
-    sandbox
-      .stub(tokensController, '_detectIsERC721')
-      .returns(Promise.resolve(false));
+        if (requestBody.method === 'eth_blockNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '0x42',
+          };
+        }
+
+        if (requestBody.method === 'net_version') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '1337',
+          };
+        }
+
+        throw new Error(
+          `(localhost) Mock not defined for ${requestBody.method}`,
+        );
+      })
+      .persist();
     nock('https://token-api.metaswap.codefi.network')
       .get(`/tokens/1`)
       .reply(200, [
@@ -154,9 +190,82 @@ describe('DetectTokensController', function () {
       .get(`/tokens/3`)
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
+
+    keyringMemStore = new ObservableStore({ isUnlocked: false });
+    const networkControllerMessenger = new ControllerMessenger();
+    network = new NetworkController({
+      messenger: networkControllerMessenger,
+      infuraProjectId,
+    });
+    await network.initializeProvider(networkControllerProviderConfig);
+    provider = network.getProviderAndBlockTracker().provider;
+
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      preventPollingOnNetworkRestart: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
+    await tokenListController.start();
+
+    preferences = new PreferencesController({
+      network,
+      provider,
+      tokenListController,
+      onInfuraIsBlocked: sinon.stub(),
+      onInfuraIsUnblocked: sinon.stub(),
+    });
+    preferences.setAddresses([
+      '0x7e57e2',
+      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+    ]);
+    preferences.setUseTokenDetection(true);
+
+    tokensController = new TokensController({
+      config: { provider },
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        network.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+    });
+
+    assetsContractController = new AssetsContractController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        networkControllerMessenger.subscribe(
+          NetworkControllerEventTypes.NetworkDidChange,
+          () => {
+            const networkState = network.store.getState();
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+                chainId: convertHexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          },
+        ),
+    });
   });
 
-  after(function () {
+  afterEach(function () {
+    nock.enableNetConnect('localhost');
     sandbox.restore();
   });
 

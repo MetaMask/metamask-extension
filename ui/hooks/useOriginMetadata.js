@@ -1,6 +1,6 @@
+import { SubjectType } from '@metamask/subject-metadata-controller';
 import { useSelector } from 'react-redux';
 import { getTargetSubjectMetadata } from '../selectors';
-import { SUBJECT_TYPES } from '../../shared/constants/app';
 
 /**
  * @typedef {object} OriginMetadata
@@ -34,7 +34,7 @@ export function useOriginMetadata(origin) {
       host: url.host,
       hostname: url.hostname,
       origin,
-      subjectType: SUBJECT_TYPES.UNKNOWN,
+      subjectType: SubjectType.Unknown,
     };
   } catch (_) {
     // do nothing

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { ALERT_TYPES } from '../../../../shared/constants/alerts';
+import { AlertTypes } from '../../../../shared/constants/alerts';
 import Tooltip from '../../../components/ui/tooltip';
 import ToggleButton from '../../../components/ui/toggle-button';
 import { setAlertEnabledness } from '../../../store/actions';
@@ -54,11 +54,11 @@ const AlertsTab = () => {
   const t = useI18nContext();
 
   const alertConfig = {
-    [ALERT_TYPES.unconnectedAccount]: {
+    [AlertTypes.unconnectedAccount]: {
       title: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccountDescription'),
     },
-    [ALERT_TYPES.web3ShimUsage]: {
+    [AlertTypes.web3ShimUsage]: {
       title: t('alertSettingsWeb3ShimUsage'),
       description: t('alertSettingsWeb3ShimUsageDescription'),
     },

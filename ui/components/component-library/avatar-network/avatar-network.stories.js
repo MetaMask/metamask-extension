@@ -1,22 +1,23 @@
 import React from 'react';
 import {
-  COLORS,
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  TEXT_COLORS,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
+  Color,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
 import README from './README.mdx';
+
 import { AvatarNetwork } from './avatar-network';
+import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',
-  id: __filename,
   component: AvatarNetwork,
   parameters: {
     docs: {
@@ -26,24 +27,24 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_NETWORK_SIZES),
     },
     color: {
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
     },
-    networkName: {
+    name: {
       control: 'text',
     },
-    networkImageUrl: {
+    src: {
       control: 'text',
     },
     showHalo: {
@@ -51,9 +52,9 @@ export default {
     },
   },
   args: {
-    networkName: 'Arbitrum One',
-    networkImageUrl: './images/arbitrum.svg',
-    size: SIZES.MD,
+    name: 'Arbitrum One',
+    src: './images/arbitrum.svg',
+    size: Size.MD,
     showHalo: false,
   },
 };
@@ -65,22 +66,49 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarNetwork {...args} size={SIZES.XS} />
-    <AvatarNetwork {...args} size={SIZES.SM} />
-    <AvatarNetwork {...args} size={SIZES.MD} />
-    <AvatarNetwork {...args} size={SIZES.LG} />
-    <AvatarNetwork {...args} size={SIZES.XL} />
-  </Box>
+export const SizeStory = (args) => (
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexEnd}
+      gap={1}
+      marginBottom={4}
+    >
+      <AvatarNetwork {...args} size={Size.XS} />
+      <AvatarNetwork {...args} size={Size.SM} />
+      <AvatarNetwork {...args} size={Size.MD} />
+      <AvatarNetwork {...args} size={Size.LG} />
+      <AvatarNetwork {...args} size={Size.XL} />
+    </Box>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={1}>
+      <AvatarNetwork {...args} src="" size={Size.XS} />
+      <AvatarNetwork {...args} src="" size={Size.SM} />
+      <AvatarNetwork {...args} src="" size={Size.MD} />
+      <AvatarNetwork {...args} src="" size={Size.LG} />
+      <AvatarNetwork {...args} src="" size={Size.XL} />
+    </Box>
+  </>
 );
+SizeStory.storyName = 'Size';
 
-export const NetworkName = Template.bind({});
-NetworkName.args = {
-  networkImageUrl: '',
+export const Name = Template.bind({});
+Name.args = {
+  src: '',
 };
 
-export const NetworkImageUrl = Template.bind({});
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <AvatarNetwork {...args} src="./images/matic-token.png" />
+    <AvatarNetwork {...args} src="./images/arbitrum.svg" />
+    <AvatarNetwork {...args} src="./images/optimism.svg" />
+    <AvatarNetwork {...args} src="./images/avax-token.png" />
+    <AvatarNetwork {...args} src="./images/palm.svg" />
+    <AvatarNetwork {...args} src="./images/bsc-filled.svg" />
+    <AvatarNetwork {...args} src="./images/fantom-opera.svg" />
+    <AvatarNetwork {...args} src="./images/harmony-one.svg" />
+    <AvatarNetwork {...args} src="./images/aurora.png" />
+  </Box>
+);
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {
@@ -91,20 +119,20 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarNetwork
       {...args}
-      backgroundColor={COLORS.GOERLI}
-      borderColor={COLORS.GOERLI}
-      networkName="G"
-      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
+      name="G"
+      color={Color.goerliInverse}
     />
     <AvatarNetwork
       {...args}
-      backgroundColor={COLORS.SEPOLIA}
-      borderColor={COLORS.SEPOLIA}
-      networkName="G"
-      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+      backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
+      name="S"
+      color={Color.goerliInverse}
     />
   </Box>
 );
 ColorBackgroundColorAndBorderColor.args = {
-  networkImageUrl: '',
+  src: '',
 };

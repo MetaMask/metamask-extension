@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { DialogType } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -24,6 +27,7 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
  */
 export const BuildType = {
   beta: 'beta',
+  desktop: 'desktop',
   flask: 'flask',
   main: 'main',
 } as const;
@@ -53,35 +57,44 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_CONFIRM: RestrictedMethods.snap_confirm,
+  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
+  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
+  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
+  MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
+  MMI_REFRESH_TOKEN: 'metamaskinstitutional_refresh_token',
+  MMI_SUPPORTED: 'metamaskinstitutional_supported',
+  MMI_PORTFOLIO: 'metamaskinstitutional_portfolio',
+  MMI_OPEN_SWAPS: 'metamaskinstitutional_open_swaps',
+  MMI_CHECK_IF_TOKEN_IS_PRESENT: 'metamaskinstitutional_checkIfTokenIsPresent',
+  MMI_SET_ACCOUNT_AND_NETWORK: 'metamaskinstitutional_setAccountAndNetwork',
+  MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
   ///: END:ONLY_INCLUDE_IN
 } as const;
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export const SNAP_DIALOG_TYPES = {
+  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
+  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
+  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+};
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Custom messages to send and be received by the extension
  */
 export const EXTENSION_MESSAGES = {
+  CONNECTION_READY: 'CONNECTION_READY',
   READY: 'METAMASK_EXTENSION_READY',
-} as const;
-
-/**
- * The different kinds of subjects that MetaMask may interact with, including
- * third parties and itself (e.g. when the background communicated with the UI).
- */
-export const SUBJECT_TYPES = {
-  EXTENSION: 'extension',
-  INTERNAL: 'internal',
-  UNKNOWN: 'unknown',
-  WEBSITE: 'website',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP: 'snap',
-  ///: END:ONLY_INCLUDE_IN
 } as const;
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
+  [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
 } as const;
 
 export const ORIGIN_METAMASK = 'metamask';
@@ -90,10 +103,15 @@ export const METAMASK_BETA_CHROME_ID = 'pbbkamfgmaedccnfkmjcofcecjhfgldn';
 export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
 export const METAMASK_FLASK_CHROME_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
 
+export const METAMASK_MMI_BETA_CHROME_ID = 'kmbhbcbadohhhgdgihejcicbgcehoaeg';
+export const METAMASK_MMI_PROD_CHROME_ID = 'ikkihjamdhfiojpdbnfllpjigpneipbc';
+
 export const CHROME_BUILD_IDS = [
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
+  METAMASK_MMI_BETA_CHROME_ID,
+  METAMASK_MMI_PROD_CHROME_ID,
 ] as const;
 
 const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';

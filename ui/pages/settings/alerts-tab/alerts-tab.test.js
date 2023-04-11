@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import { ALERT_TYPES } from '../../../../shared/constants/alerts';
+import { renderWithProvider } from '../../../../test/jest';
+import { AlertTypes } from '../../../../shared/constants/alerts';
 import AlertsTab from '.';
 
 const mockSetAlertEnabledness = jest.fn();
@@ -28,14 +28,14 @@ describe('Alerts Tab', () => {
     fireEvent.click(screen.getAllByRole('checkbox')[0]);
     expect(mockSetAlertEnabledness.mock.calls).toHaveLength(1);
     expect(mockSetAlertEnabledness.mock.calls[0][0]).toBe(
-      ALERT_TYPES.unconnectedAccount,
+      AlertTypes.unconnectedAccount,
     );
     expect(mockSetAlertEnabledness.mock.calls[0][1]).toBe(true);
 
     fireEvent.click(screen.getAllByRole('checkbox')[1]);
     expect(mockSetAlertEnabledness.mock.calls).toHaveLength(2);
     expect(mockSetAlertEnabledness.mock.calls[1][0]).toBe(
-      ALERT_TYPES.web3ShimUsage,
+      AlertTypes.web3ShimUsage,
     );
     expect(mockSetAlertEnabledness.mock.calls[1][1]).toBe(true);
   });

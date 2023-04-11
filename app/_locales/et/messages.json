@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Täpsemad"
   },
-  "advancedOptions": {
-    "message": "Täpsemad suvandid"
-  },
   "amount": {
     "message": "Summa"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "Vara"
-  },
-  "attemptToCancel": {
-    "message": "Tühistamiskatse?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Selle katse esitamine ei taga teie originaaltehingu tühistamist. Kui tühistamiskatse on edukas, võetakse teilt ülaltoodud tehingutasu."
   },
   "attemptingConnect": {
     "message": "Plokiahelaga ühenduse loomise katse."
@@ -133,20 +124,11 @@
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },
-  "buyWithWyre": {
-    "message": "Ostke $1 -d Wyre'iga"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre võimaldab kasutada krediitkaarti, et teha $1 sissemakse otse MetaMaski kontole."
-  },
   "bytes": {
     "message": "Baidid"
   },
   "cancel": {
     "message": "Tühista"
-  },
-  "cancellationGasFee": {
-    "message": "Tühistamise gaasitasu"
   },
   "cancelled": {
     "message": "Tühistatud"
@@ -157,9 +139,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Riistvararahakoti ühendamiseks peate kasutama MetaMaski Google Chrome'is."
   },
-  "clickToRevealSeed": {
-    "message": "Klõpsake salasõnade kuvamiseks"
-  },
   "close": {
     "message": "Sule"
   },
@@ -169,14 +148,8 @@
   "confirmPassword": {
     "message": "Kinnitage parool"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Kinnitage oma salajane varundamisfraas"
-  },
   "confirmed": {
     "message": "Kinnitatud"
-  },
-  "congratulations": {
-    "message": "Palju õnne!"
   },
   "connect": {
     "message": "Ühendamine"
@@ -190,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
+  "connectingToLineaTestnet": {
+    "message": "Ühendamine Linea Goerli testvõrguga"
+  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
-  },
-  "continueToWyre": {
-    "message": "Ava Wyre"
   },
   "contractDeployment": {
     "message": "Lepingu juurutamine"
@@ -219,9 +192,6 @@
   },
   "create": {
     "message": "Loo"
-  },
-  "createAWallet": {
-    "message": "Loo rahakott"
   },
   "createAccount": {
     "message": "Loo konto"
@@ -268,9 +238,6 @@
   "downloadGoogleChrome": {
     "message": "Laadige alla Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Laadige see salajane varundusfraas alla ja hoidke seda turvaliselt välisel krüpteeritud kõvakettal või andmekandjal."
-  },
   "downloadStateLogs": {
     "message": "Olekulogide allalaadimine"
   },
@@ -282,33 +249,6 @@
   },
   "editContact": {
     "message": "Muuda kontakti"
-  },
-  "endOfFlowMessage1": {
-    "message": "Läbisite kontrolli – hoidke seemnefraasi turvaliselt, see on teie vastutusel!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Valmis"
-  },
-  "endOfFlowMessage2": {
-    "message": "Nõuandeid selle turvaliseks hoiustamiseks"
-  },
-  "endOfFlowMessage3": {
-    "message": "Salvestage varukoopia erinevatesse kohtadesse."
-  },
-  "endOfFlowMessage4": {
-    "message": "Ärge jagage fraasi mitte kellegagi."
-  },
-  "endOfFlowMessage5": {
-    "message": "Olge ettevaatlik andmepüügi osas! MetaMask ei küsi kunagi spontaanselt teie seemnefraasi."
-  },
-  "endOfFlowMessage6": {
-    "message": "Kui peate oma seemnefraasi uuesti varundama, leiate selle valikust Settings (Seaded) -> Security (Turvalisus)."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask ei saa teie seemnefraasi taastada. Lisateave."
-  },
-  "endOfFlowMessage9": {
-    "message": "Lisateave."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS-i nime ei leitud praegusest võrgust. Proovige lülituda peamisele Ethereumi võrgule."
@@ -377,21 +317,8 @@
   "general": {
     "message": "Üldine teave"
   },
-  "getEther": {
-    "message": "Hankige eetrit"
-  },
-  "getEtherFromFaucet": {
-    "message": "Hankige kraanist eetrit $1eest",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Alustamine"
-  },
   "goerli": {
     "message": "Goerli testvõrk"
-  },
-  "happyToSeeYou": {
-    "message": "Meil on hea meel teid näha."
   },
   "hardware": {
     "message": "riistvara"
@@ -430,12 +357,6 @@
   },
   "importAccountMsg": {
     "message": "Imporditud kontosid ei seostata teie ainulaadse MetaMaski konto seemnefraasiga. Lugege imporditud kontode kohta lähemalt"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Impordi seemnefraasiga konto"
-  },
-  "importWallet": {
-    "message": "Importige rahakott"
   },
   "imported": {
     "message": "Imporditud",
@@ -487,11 +408,11 @@
   "ledgerAccountRestriction": {
     "message": "Enne uue konto loomist peate kasutama eelmist kontot."
   },
-  "letsGoSetUp": {
-    "message": "Jah, hakkame pihta!"
-  },
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testvõrk"
   },
   "links": {
     "message": "Lingid"
@@ -514,14 +435,8 @@
   "memo": {
     "message": "teatis"
   },
-  "memorizePhrase": {
-    "message": "Jätke fraas meelde."
-  },
   "message": {
     "message": "Sõnum"
-  },
-  "metamaskDescription": {
-    "message": "Teid ühendatakse Ethereumi ja detsentraliseeritud võrguga."
   },
   "metamaskVersion": {
     "message": "MetaMaski versioon"
@@ -551,9 +466,6 @@
   "newAccount": {
     "message": "Uus konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Leiti uus aadress! Klõpsake siia, et see oma aadressiraamatusse lisada."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -567,17 +479,11 @@
   "newPassword": {
     "message": "Uus parool (vähemalt 8 tähemärki)"
   },
-  "newToMetaMask": {
-    "message": "Pole MetaMaski varem kasutanud?"
-  },
   "next": {
     "message": "Edasi"
   },
   "noAddressForName": {
     "message": "Sellele nimele pole registreeritud ühtegi aadressi."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Ei, mul on juba seemnefraas"
   },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
@@ -686,9 +592,6 @@
   "rejected": {
     "message": "Tagasi lükatud"
   },
-  "remindMeLater": {
-    "message": "Tuleta hiljem meelde"
-  },
   "remove": {
     "message": "Eemalda"
   },
@@ -707,35 +610,21 @@
   "reset": {
     "message": "Lähtesta"
   },
-  "resetAccount": {
-    "message": "Lähtesta konto"
-  },
-  "resetAccountDescription": {
-    "message": "Konto lähtestamine tühjendab tehingute ajaloo."
-  },
   "restore": {
     "message": "Taasta"
   },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kui vahetate veebilehitsejat või arvutit, vajate oma kontodele ligipääsemiseks seemnefraasi. Hoidke seda turvalises ja salajases kohas."
-  },
   "revealSeedWordsWarning": {
-    "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
+    "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Uus RPC URL"
   },
   "save": {
     "message": "Salvesta"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvesta CSV-failina"
   },
   "scanInstructions": {
     "message": "Asetage QR-kood kaamera ette"
@@ -752,12 +641,6 @@
   "searchTokens": {
     "message": "Lubade otsimine"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Teie salajane varundusfraas hõlbustab konto varundamist ja taastamist."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "HOIATUS! Ärge avaldage kunagi oma varundusfraasi. Selle fraasiga on võimalik teie eeter igaveseks ära võtta."
-  },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
@@ -766,9 +649,6 @@
   },
   "selectAnAccount": {
     "message": "Valige konto"
-  },
-  "selectEachPhrase": {
-    "message": "Valige iga fraas, veendumaks, et see on õige."
   },
   "selectHdPath": {
     "message": "Valige HD-teekond"
@@ -787,12 +667,6 @@
   },
   "settings": {
     "message": "Seaded"
-  },
-  "showAdvancedGasInline": {
-    "message": "Täiustatud gaasijuhikud"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valige see, et kuvada gaasi hinda ja piirangut otse saatmise ning kinnitamise kuval."
   },
   "showFiatConversionInTestnets": {
     "message": "Kuva teisendus Testnetsis"
@@ -814,9 +688,6 @@
   },
   "sign": {
     "message": "Allkirjasta"
-  },
-  "signNotice": {
-    "message": "Selle sõnumi allkirjastamisel \nvõib olla ohtlikke kõrvaltoimeid. Allkirjastage sõnumeid vaid \nsaitidelt, mida te kogu kontoga usaldate.\n See ohtlik meetod eemaldatakse uues versioonis."
   },
   "signatureRequest": {
     "message": "Allkirja taotlus"
@@ -844,9 +715,6 @@
   },
   "stateLogsDescription": {
     "message": "Olekulogid sisaldavad teie avalikke konto aadresse ja saadetud tehinguid."
-  },
-  "storePhrase": {
-    "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."
   },
   "submitted": {
     "message": "Edastatud"
@@ -886,12 +754,6 @@
   },
   "terms": {
     "message": "Teenusetingimused"
-  },
-  "testFaucet": {
-    "message": "Testkraan"
-  },
-  "thisWillCreate": {
-    "message": "See loob uue rahakoti ja seemnefraasi"
   },
   "tips": {
     "message": "Preemiad"
@@ -1011,26 +873,14 @@
   "userName": {
     "message": "Kasutajanimi"
   },
-  "viewAccount": {
-    "message": "Kuva konto"
-  },
   "viewContact": {
     "message": "Kuva kontakt"
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"
   },
-  "welcome": {
-    "message": "Tere tulemast MetaMaski"
-  },
   "welcomeBack": {
     "message": "Tere tulemast tagasi!"
-  },
-  "writePhrase": {
-    "message": "Kirjutage see fraas paberile ja hoidke seda turvalises kohas. Veel suurema turvalisuse tagamiseks kirjutage see mitmele paberile ja hoidke neid 2–3 erinevas kohas."
-  },
-  "yesLetsTry": {
-    "message": "Jah, proovime"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Selle funktsiooni kasutamiseks peate lubaga kaamera ligipääsu."

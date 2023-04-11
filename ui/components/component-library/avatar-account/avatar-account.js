@@ -3,52 +3,66 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
-import { BaseAvatar } from '../base-avatar';
 
-import { SIZES } from '../../../helpers/constants/design-system';
-import { DIAMETERS, TYPES } from './avatar-account.constants';
+import Box from '../../ui/box/box';
 
-export const AvatarAccount = ({ size, address, className, type, ...props }) => {
-  return (
-    <BaseAvatar
-      size={size}
-      className={classnames('avatar-account', className)}
-      {...props}
-    >
-      {type === 'Jazzicon' ? (
-        <Jazzicon
-          className={classnames('avatar-account__jazzicon')}
-          address={address}
-          diameter={DIAMETERS[size]}
-        />
-      ) : (
-        <BlockieIdenticon
-          address={address}
-          diameter={DIAMETERS[size]}
-          borderRadius="50%"
-        />
-      )}
-    </BaseAvatar>
-  );
-};
+import { AvatarBase } from '../avatar-base';
+import {
+  AvatarAccountDiameter,
+  AvatarAccountVariant,
+  AvatarAccountSize,
+} from './avatar-account.types';
+
+export const AvatarAccount = ({
+  size = AvatarAccountSize.Md,
+  address,
+  className,
+  variant = AvatarAccountVariant.Jazzicon,
+  ...props
+}) => (
+  <AvatarBase
+    size={size}
+    className={classnames('mm-avatar-account', className)}
+    {...props}
+  >
+    {variant === AvatarAccountVariant.Jazzicon ? (
+      <Jazzicon
+        className={classnames('mm-avatar-account__jazzicon')}
+        address={address}
+        diameter={AvatarAccountDiameter[size]}
+      />
+    ) : (
+      <BlockieIdenticon
+        address={address}
+        diameter={AvatarAccountDiameter[size]}
+        borderRadius="50%"
+      />
+    )}
+  </AvatarBase>
+);
 
 AvatarAccount.propTypes = {
   /**
    * The size of the AvatarAccount.
-   * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
-   * Defaults to SIZES.MD
+   * Possible values could be 'AvatarAccountSize.Xs', 'AvatarAccountSize.Sm', 'AvatarAccountSize.Md', 'AvatarAccountSize.Lg', 'AvatarAccountSize.Xl'
+   * Defaults to AvatarAccountSize.Md
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AvatarAccountSize)),
   /**
-   * The type of the avatar to be rendered, it can render either a Jazzicon or a Blockie
+   * The variant of the avatar to be rendered, it can render either a AvatarAccountVariant.Jazzicon or a AvatarAccountVariant.Blockie
    */
-  type: PropTypes.oneOf(Object.values(TYPES)),
+  variant: PropTypes.oneOf(Object.values(AvatarAccountVariant)),
   /**
    * Address used for generating random image
    */
-  address: PropTypes.string,
+  address: PropTypes.string.isRequired,
   /**
    * Add custom css class
    */
   className: PropTypes.string,
+  /**
+   * AvatarAccount also accepts all Box props including but not limited to
+   * className, as(change root element of HTML element) and margin props
+   */
+  ...Box.propTypes,
 };

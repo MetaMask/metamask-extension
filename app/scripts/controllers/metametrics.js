@@ -15,7 +15,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  TRAITS,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -35,15 +35,18 @@ const defaultCaptureException = (err) => {
 // The function is used to build a unique messageId for segment messages
 // It uses actionId and uniqueIdentifier from event if present
 const buildUniqueMessageId = (args) => {
-  let messageId = '';
+  const messageIdParts = [];
   if (args.uniqueIdentifier) {
-    messageId += `${args.uniqueIdentifier}-`;
+    messageIdParts.push(args.uniqueIdentifier);
   }
   if (args.actionId) {
-    messageId += args.actionId;
+    messageIdParts.push(args.actionId);
   }
-  if (messageId.length) {
-    return messageId;
+  if (messageIdParts.length && args.isDuplicateAnonymizedEvent) {
+    messageIdParts.push('0x000');
+  }
+  if (messageIdParts.length) {
+    return messageIdParts.join('-');
   }
   return generateRandomId();
 };
@@ -91,8 +94,6 @@ export default class MetaMetricsController {
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {Function} options.getNetworkIdentifier - Gets the current network
-   *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
    * @param {string} options.extension - webextension-polyfill
@@ -104,7 +105,6 @@ export default class MetaMetricsController {
     preferencesStore,
     onNetworkDidChange,
     getCurrentChainId,
-    getNetworkIdentifier,
     version,
     environment,
     initState,
@@ -120,7 +120,6 @@ export default class MetaMetricsController {
     };
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.network = getNetworkIdentifier();
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
@@ -150,7 +149,6 @@ export default class MetaMetricsController {
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
-      this.network = getNetworkIdentifier();
     });
     this.segment = segment;
 
@@ -166,11 +164,9 @@ export default class MetaMetricsController {
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
-      Object.values(segmentApiCalls).forEach(
-        ({ eventType, payload, callback }) => {
-          this._submitSegmentAPICall(eventType, payload, callback);
-        },
-      );
+      Object.values(segmentApiCalls).forEach(({ eventType, payload }) => {
+        this._submitSegmentAPICall(eventType, payload);
+      });
     }
 
     // Close out event fragments that were created but not progressed. An
@@ -360,7 +356,14 @@ export default class MetaMetricsController {
       currency: fragment.currency,
       environmentType: fragment.environmentType,
       actionId: fragment.actionId,
-      uniqueIdentifier: fragment.uniqueIdentifier,
+      // We append success or failure to the unique-identifier so that the
+      // messageId can still be idempotent, but so that it differs from the
+      // initial event fired. The initial event was preventing new events from
+      // making it to mixpanel because they were using the same unique ID as
+      // the events processed in other parts of the fragment lifecycle.
+      uniqueIdentifier: fragment.uniqueIdentifier
+        ? `${fragment.uniqueIdentifier}-${abandoned ? 'failure' : 'success'}`
+        : undefined,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
@@ -472,7 +475,6 @@ export default class MetaMetricsController {
         properties: {
           params,
           locale: this.locale,
-          network: this.network,
           chain_id: this.chainId,
           environment_type: environmentType,
         },
@@ -538,6 +540,7 @@ export default class MetaMetricsController {
           this._buildEventPayload({
             ...payload,
             properties: combinedProperties,
+            isDuplicateAnonymizedEvent: true,
           }),
           { ...options, excludeMetaMetricsId: true },
         ),
@@ -670,7 +673,6 @@ export default class MetaMetricsController {
         value,
         currency,
         category,
-        network: properties?.network ?? this.network,
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
@@ -690,37 +692,44 @@ export default class MetaMetricsController {
     const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
-      [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
+      [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
-      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
-      [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
-        (rpc) => rpc.chainId,
-      ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]:
-        metamaskState.frequentRpcListDetail.reduce(
-          (networkList, currentNetwork) => {
-            if (!currentNetwork.ticker) {
-              networkList.push(currentNetwork.chainId);
-            }
-            return networkList;
-          },
-          [],
-        ),
-      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
-      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
-        .length,
-      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+      [MetaMetricsUserTrait.InstallDateExt]:
+        traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      [MetaMetricsUserTrait.LedgerConnectionType]:
+        metamaskState.ledgerTransportType,
+      [MetaMetricsUserTrait.NetworksAdded]: Object.values(
+        metamaskState.networkConfigurations,
+      ).map((networkConfiguration) => networkConfiguration.chainId),
+      [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
+        metamaskState.networkConfigurations,
+      )
+        .filter(({ ticker }) => !ticker)
+        .map(({ chainId }) => chainId),
+      [MetaMetricsUserTrait.NftAutodetectionEnabled]:
+        metamaskState.useNftDetection,
+      [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
+        metamaskState.identities,
+      ).length,
+      [MetaMetricsUserTrait.NumberOfNftCollections]:
+        this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
+      [MetaMetricsUserTrait.NumberOfNfts]: this._getAllNFTsFlattened(
         metamaskState.allNfts,
-      ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(metamaskState.allNfts)
-        .length,
-      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
-      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
-      [TRAITS.THEME]: metamaskState.theme || 'default',
-      [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
+      ).length,
+      [MetaMetricsUserTrait.NumberOfTokens]:
+        this._getNumberOfTokens(metamaskState),
+      [MetaMetricsUserTrait.OpenseaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
+      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
+      [MetaMetricsUserTrait.TokenDetectionEnabled]:
+        metamaskState.useTokenDetection,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      [MetaMetricsUserTrait.DesktopEnabled]:
+        metamaskState.desktopEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
+      [MetaMetricsUserTrait.SecurityProviders]:
+        metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
     };
 
     if (!previousUserTraits) {
@@ -763,7 +772,7 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Returns an array of all of the collectibles/NFTs the user
+   * Returns an array of all of the NFTs the user
    * possesses across all networks and accounts.
    *
    * @param {object} allNfts
@@ -776,7 +785,7 @@ export default class MetaMetricsController {
   });
 
   /**
-   * Returns the number of unique collectible/NFT addresses the user
+   * Returns the number of unique NFT addresses the user
    * possesses across all networks and accounts.
    *
    * @param {object} allNfts
@@ -961,6 +970,11 @@ export default class MetaMetricsController {
   // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    if (!participateInMetaMetrics || !metaMetricsId) {
+      return;
+    }
+
     const messageId = payload.messageId || generateRandomId();
     let timestamp = new Date();
     if (payload.timestamp) {
@@ -979,7 +993,6 @@ export default class MetaMetricsController {
             ...modifiedPayload,
             timestamp: modifiedPayload.timestamp.toString(),
           },
-          callback,
         },
       },
     });

@@ -3,19 +3,24 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
-  addCustomNetwork,
+  setNewNetworkAdded,
+  upsertNetworkConfiguration,
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import snapConfirm from './flask/snap-confirm/snap-confirm';
+import snapAlert from './flask/snap-alert/snap-alert';
+import snapConfirmation from './flask/snap-confirmation/snap-confirmation';
+import snapPrompt from './flask/snap-prompt/snap-prompt';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVAL_TEMPLATES = {
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  [MESSAGE_TYPE.SNAP_CONFIRM]: snapConfirm,
+  [MESSAGE_TYPE.SNAP_DIALOG_ALERT]: snapAlert,
+  [MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION]: snapConfirmation,
+  [MESSAGE_TYPE.SNAP_DIALOG_PROMPT]: snapPrompt,
   ///: END:ONLY_INCLUDE_IN
 };
 
@@ -23,12 +28,13 @@ export const TEMPLATED_CONFIRMATION_MESSAGE_TYPES =
   Object.keys(APPROVAL_TEMPLATES);
 
 const ALLOWED_TEMPLATE_KEYS = [
-  'content',
-  'approvalText',
   'cancelText',
-  'onApprove',
+  'content',
   'onCancel',
+  'onSubmit',
   'networkDisplay',
+  'submitText',
+  'loadingText',
 ];
 
 /**
@@ -106,19 +112,29 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
-    addCustomNetwork: (...args) => dispatch(addCustomNetwork(...args)),
+    upsertNetworkConfiguration: (...args) =>
+      dispatch(upsertNetworkConfiguration(...args)),
+    setNewNetworkAdded: (...args) => dispatch(setNewNetworkAdded(...args)),
   };
 }
 
 /**
  * Returns the templated values to be consumed in the confirmation page
  *
- * @param {object} pendingApproval - The pending confirmation object
- * @param {Function} t - Translation function
- * @param {Function} dispatch - Redux dispatch function
- * @param history
+ * @param {object} pendingApproval - The pending confirmation object.
+ * @param {Function} t - Translation function.
+ * @param {Function} dispatch - Redux dispatch function.
+ * @param {object} history - The application's history object.
+ * @param {Function} setInputState - A function that can be used to record the
+ * state of input fields in the templated component.
  */
-export function getTemplateValues(pendingApproval, t, dispatch, history) {
+export function getTemplateValues(
+  pendingApproval,
+  t,
+  dispatch,
+  history,
+  setInputState,
+) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -127,7 +143,7 @@ export function getTemplateValues(pendingApproval, t, dispatch, history) {
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions, history);
+  const values = fn(pendingApproval, t, safeActions, history, setInputState);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {

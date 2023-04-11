@@ -1,9 +1,9 @@
 import { ethErrors } from 'eth-rpc-errors';
 import {
-  COLORS,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   SEVERITIES,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 
 const PENDING_TX_DROP_NOTICE = {
@@ -32,7 +32,7 @@ function getValues(pendingApproval, t, actions) {
         key: 'title',
         children: t('switchEthereumChainConfirmationTitle'),
         props: {
-          variant: TYPOGRAPHY.H3,
+          variant: TypographyVariant.H3,
           align: 'center',
           fontWeight: 'normal',
           boxProps: {
@@ -46,8 +46,8 @@ function getValues(pendingApproval, t, actions) {
         key: 'description',
         children: t('switchEthereumChainConfirmationDescription'),
         props: {
-          variant: TYPOGRAPHY.H7,
-          color: COLORS.TEXT_ALTERNATIVE,
+          variant: TypographyVariant.H7,
+          color: TextColor.textAlternative,
           align: 'center',
           boxProps: {
             padding: [0, 4, 0, 4],
@@ -58,7 +58,7 @@ function getValues(pendingApproval, t, actions) {
         element: 'Box',
         key: 'status-box',
         props: {
-          justifyContent: JUSTIFY_CONTENT.CENTER,
+          justifyContent: JustifyContent.center,
         },
         children: {
           element: 'ConfirmationNetworkSwitch',
@@ -66,15 +66,15 @@ function getValues(pendingApproval, t, actions) {
           props: {
             newNetwork: {
               chainId: pendingApproval.requestData.chainId,
-              name: pendingApproval.requestData.nickname,
+              nickname: pendingApproval.requestData.nickname,
             },
           },
         },
       },
     ],
-    approvalText: t('switchNetwork'),
     cancelText: t('cancel'),
-    onApprove: () =>
+    submitText: t('switchNetwork'),
+    onSubmit: () =>
       actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,

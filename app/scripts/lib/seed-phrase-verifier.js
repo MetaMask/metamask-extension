@@ -1,5 +1,7 @@
-import KeyringController from 'eth-keyring-controller';
+import { KeyringController } from '@metamask/eth-keyring-controller';
 import log from 'loglevel';
+
+import { KeyringType } from '../../../shared/constants/keyring';
 
 const seedPhraseVerifier = {
   /**
@@ -20,13 +22,16 @@ const seedPhraseVerifier = {
     }
 
     const keyringController = new KeyringController({});
-    const Keyring = keyringController.getKeyringClassForType('HD Key Tree');
+    const keyringBuilder = keyringController.getKeyringBuilderForType(
+      KeyringType.hdKeyTree,
+    );
+    const keyring = keyringBuilder();
     const opts = {
       mnemonic: seedPhrase,
       numberOfAccounts: createdAccounts.length,
     };
 
-    const keyring = new Keyring(opts);
+    await keyring.deserialize(opts);
     const restoredAccounts = await keyring.getAccounts();
     log.debug(`Created accounts: ${JSON.stringify(createdAccounts)}`);
     log.debug(`Restored accounts: ${JSON.stringify(restoredAccounts)}`);

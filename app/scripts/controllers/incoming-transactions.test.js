@@ -6,14 +6,14 @@ import { cloneDeep } from 'lodash';
 
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import {
-  CHAIN_ID_TO_TYPE_MAP,
+  ETHERSCAN_SUPPORTED_NETWORKS,
   CHAIN_IDS,
   NETWORK_TYPES,
   NETWORK_IDS,
 } from '../../../shared/constants/network';
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import { MILLISECOND } from '../../../shared/constants/time';
 
@@ -34,11 +34,12 @@ const PREPOPULATED_BLOCKS_BY_NETWORK = {
   [CHAIN_IDS.MAINNET]: 3,
   [CHAIN_IDS.SEPOLIA]: 6,
 };
-const EMPTY_BLOCKS_BY_NETWORK = {
-  [CHAIN_IDS.GOERLI]: null,
-  [CHAIN_IDS.MAINNET]: null,
-  [CHAIN_IDS.SEPOLIA]: null,
-};
+const EMPTY_BLOCKS_BY_NETWORK = Object.keys(
+  ETHERSCAN_SUPPORTED_NETWORKS,
+).reduce((network, chainId) => {
+  network[chainId] = null;
+  return network;
+}, {});
 
 function getEmptyInitState() {
   return {
@@ -71,6 +72,17 @@ function getMockPreferencesController({
         featureFlags: {
           showIncomingTransactions,
         },
+      }),
+      subscribe: sinon.spy(),
+    },
+  };
+}
+
+function getMockOnboardingController() {
+  return {
+    store: {
+      getState: sinon.stub().returns({
+        completedOnboarding: true,
       }),
       subscribe: sinon.spy(),
     },
@@ -139,20 +151,13 @@ const getFakeEtherscanTransaction = ({
 };
 
 function nockEtherscanApiForAllChains(mockResponse) {
-  for (const chainId of [
-    CHAIN_IDS.GOERLI,
-    CHAIN_IDS.MAINNET,
-    CHAIN_IDS.SEPOLIA,
-    'undefined',
-  ]) {
-    nock(
-      `https://api${
-        chainId === CHAIN_IDS.MAINNET ? '' : `-${CHAIN_ID_TO_TYPE_MAP[chainId]}`
-      }.etherscan.io`,
-    )
-      .get(/api.+/u)
-      .reply(200, JSON.stringify(mockResponse));
-  }
+  Object.values(ETHERSCAN_SUPPORTED_NETWORKS).forEach(
+    ({ domain, subdomain }) => {
+      nock(`https://${domain}.${subdomain}`)
+        .get(/api.+/u)
+        .reply(200, JSON.stringify(mockResponse));
+    },
+  );
 }
 
 describe('IncomingTransactionsController', function () {
@@ -169,6 +174,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...mockedNetworkMethods,
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: {},
         },
       );
@@ -199,6 +205,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -217,6 +224,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: {},
         },
       );
@@ -239,6 +247,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -298,9 +307,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -315,9 +324,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfakeeip1559',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -344,6 +353,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -394,6 +404,7 @@ describe('IncomingTransactionsController', function () {
           preferencesController: getMockPreferencesController({
             showIncomingTransactions: false,
           }),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -441,6 +452,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -486,6 +498,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -533,6 +546,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -596,9 +610,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -624,6 +638,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: { ...getMockBlockTracker() },
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -685,6 +700,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...mockedNetworkMethods,
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -737,9 +753,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -768,6 +784,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...mockedNetworkMethods,
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -822,6 +839,7 @@ describe('IncomingTransactionsController', function () {
             blockTracker: getMockBlockTracker(),
             ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
+            onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
             getCurrentChainId: () => CHAIN_IDS.GOERLI,
           });
@@ -858,6 +876,7 @@ describe('IncomingTransactionsController', function () {
             blockTracker: getMockBlockTracker(),
             ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
+            onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
             getCurrentChainId: () => CHAIN_IDS.GOERLI,
           });
@@ -911,6 +930,7 @@ describe('IncomingTransactionsController', function () {
             blockTracker: getMockBlockTracker(),
             ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
+            onboardingController: getMockOnboardingController(),
             initState: getNonEmptyInitState(),
             getCurrentChainId: () => CHAIN_IDS.GOERLI,
           });
@@ -951,6 +971,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
           getCurrentChainId: () => CHAIN_IDS.GOERLI,
         },
@@ -1026,6 +1047,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1049,6 +1071,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.MAINNET),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1072,6 +1095,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1095,6 +1119,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1128,6 +1153,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1156,6 +1182,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1179,6 +1206,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1204,7 +1232,7 @@ describe('IncomingTransactionsController', function () {
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
         chainId: CHAIN_IDS.GOERLI,
-        status: TRANSACTION_STATUSES.FAILED,
+        status: TransactionStatus.failed,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1215,7 +1243,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        type: TRANSACTION_TYPES.INCOMING,
+        type: TransactionType.incoming,
       });
     });
 
@@ -1225,6 +1253,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1250,7 +1279,7 @@ describe('IncomingTransactionsController', function () {
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
         chainId: CHAIN_IDS.GOERLI,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1261,7 +1290,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        type: TRANSACTION_TYPES.INCOMING,
+        type: TransactionType.incoming,
       });
     });
 
@@ -1271,6 +1300,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1297,7 +1327,7 @@ describe('IncomingTransactionsController', function () {
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
         chainId: CHAIN_IDS.GOERLI,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1309,7 +1339,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        type: TRANSACTION_TYPES.INCOMING,
+        type: TransactionType.incoming,
       });
     });
   });

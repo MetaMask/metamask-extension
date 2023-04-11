@@ -1,5 +1,5 @@
 import {
-  GAS_ESTIMATE_TYPES,
+  GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
 
@@ -10,7 +10,7 @@ export function getGasFeeEstimate(
   estimateToUse,
   fallback = '0',
 ) {
-  if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+  if (gasEstimateType === GasEstimateTypes.feeMarket) {
     return gasFeeEstimates?.[estimateToUse]?.[field] ?? String(fallback);
   }
   return String(fallback);

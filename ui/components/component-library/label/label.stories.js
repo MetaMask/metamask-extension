@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  COLORS,
-  SIZES,
-  ALIGN_ITEMS,
+  AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
+
+import { TextField, Icon, IconName, IconSize } from '..';
 
 import { Label } from './label';
 
@@ -17,7 +16,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/Label',
-  id: __filename,
+
   component: Label,
   parameters: {
     docs: {
@@ -27,12 +26,6 @@ export default {
   argTypes: {
     htmlFor: {
       control: 'text',
-    },
-    required: {
-      control: 'boolean',
-    },
-    disabled: {
-      control: 'boolean',
     },
     children: {
       control: 'text',
@@ -58,23 +51,22 @@ export const Children = (args) => (
     gap={2}
   >
     <Label {...args}>Plain text</Label>
-    <Label {...args} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
+    <Label {...args} display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
       Text and icon
       <Icon
-        color={COLORS.ICON_ALTERNATIVE}
-        name={ICON_NAMES.INFO_FILLED}
-        size={SIZES.AUTO}
+        color={IconColor.iconAlternative}
+        name={IconName.Info}
+        size={IconSize.Inherit}
       />
     </Label>
     <Label
       {...args}
       display={DISPLAY.INLINE_FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      alignItems={ALIGN_ITEMS.FLEX_START}
+      alignItems={AlignItems.flexStart}
     >
       Label that wraps an input
-      {/* TODO: replace with TextField component */}
-      <TextFieldBase placeholder="Click label to focus" />
+      <TextField placeholder="Click label to focus" />
     </Label>
   </Box>
 );
@@ -87,7 +79,7 @@ export const HtmlFor = (args) => {
   return (
     <Box display={DISPLAY.INLINE_FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
       <Label {...args} />
-      <TextFieldBase
+      <TextField
         id="add-network"
         value={value}
         onChange={handleOnChange}
@@ -99,14 +91,4 @@ export const HtmlFor = (args) => {
 HtmlFor.args = {
   children: 'Network name',
   htmlFor: 'add-network',
-};
-
-export const Required = Template.bind({});
-Required.args = {
-  required: true,
-};
-
-export const Disabled = Template.bind({});
-Disabled.args = {
-  disabled: true,
 };

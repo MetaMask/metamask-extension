@@ -1,10 +1,9 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import SlippageButtons from '.';
+import SlippageButtons from './slippage-buttons';
 
 export default {
   title: 'Pages/Swaps/SlippageButtons',
-  id: __filename,
 };
 
 export const DefaultStory = () => (

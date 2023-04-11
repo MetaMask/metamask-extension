@@ -1,24 +1,47 @@
-import * as ethers from 'ethers';
-import { getContractFactory } from '@eth-optimism/contracts/dist/contract-defs';
-import { predeploys } from '@eth-optimism/contracts/dist/predeploys';
+import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
-// The code in this file is largely drawn from https://community.optimism.io/docs/developers/l2/new-fees.html#for-frontend-and-wallet-developers
+// Snippet of the ABI that we need
+// Should we need more of it at some point, the full ABI can be found here:
+// https://github.com/ethereum-optimism/optimism/blob/develop/gas-oracle/abis/OVM_GasPriceOracle.json
+const OPTIMISM_GAS_PRICE_ORACLE_ABI = [
+  {
+    inputs: [{ internalType: 'bytes', name: '_data', type: 'bytes' }],
+    name: 'getL1Fee',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
 
-function buildOVMGasPriceOracleContract(eth) {
-  const OVMGasPriceOracle = getContractFactory('OVM_GasPriceOracle').attach(
-    predeploys.OVM_GasPriceOracle,
-  );
-  const abi = JSON.parse(
-    OVMGasPriceOracle.interface.format(ethers.utils.FormatTypes.json),
-  );
-  return eth.contract(abi).at(OVMGasPriceOracle.address);
-}
+// BlockExplorer link: https://optimistic.etherscan.io/address/0x420000000000000000000000000000000000000f#code
+const OPTIMISM_GAS_PRICE_ORACLE_ADDRESS =
+  '0x420000000000000000000000000000000000000F';
 
-export default async function fetchEstimatedL1Fee(eth, txMeta) {
-  const contract = buildOVMGasPriceOracleContract(eth);
+export default async function fetchEstimatedL1Fee(
+  chainId,
+  txMeta,
+  ethersProvider,
+) {
+  const networkId = Number(chainId);
+  const provider = global.ethereumProvider
+    ? new Web3Provider(global.ethereumProvider, networkId)
+    : ethersProvider;
+
+  if (process.env.IN_TEST) {
+    provider.detectNetwork = async () => ({
+      name: 'optimism',
+      chainId: networkId,
+    });
+  }
+  const contract = new Contract(
+    OPTIMISM_GAS_PRICE_ORACLE_ADDRESS,
+    OPTIMISM_GAS_PRICE_ORACLE_ABI,
+    provider,
+  );
   const serializedTransaction =
     buildUnserializedTransaction(txMeta).serialize();
   const result = await contract.getL1Fee(serializedTransaction);
-  return result?.[0]?.toString(16);
+  return result?.toHexString();
 }

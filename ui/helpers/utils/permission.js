@@ -1,151 +1,508 @@
 import deepFreeze from 'deep-freeze-strict';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import React from 'react';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
+import { SnapCaveatType } from '@metamask/snaps-utils';
+import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
+import classnames from 'classnames';
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
-  PermissionNamespaces,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
+import Tooltip from '../../components/ui/tooltip';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../components/component-library';
+import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { coinTypeToProtocolName } from './util';
+import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
+import {
+  coinTypeToProtocolName,
+  getSnapDerivationPathName,
+  getSnapName,
+} from './util';
 ///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
-const PERMISSION_DESCRIPTIONS = deepFreeze({
-  [RestrictedMethods.eth_accounts]: {
-    label: (t) => t('permission_ethereumAccounts'),
-    leftIcon: 'fas fa-eye',
-    rightIcon: null,
-  },
+export const PERMISSION_DESCRIPTIONS = deepFreeze({
+  [RestrictedMethods.eth_accounts]: ({ t }) => ({
+    label: t('permission_ethereumAccounts'),
+    leftIcon: ICON_NAMES.EYE,
+    weight: 2,
+  }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  [RestrictedMethods.snap_confirm]: {
-    label: (t) => t('permission_customConfirmation'),
-    leftIcon: 'fas fa-user-check',
-    rightIcon: null,
-  },
-  [RestrictedMethods.snap_notify]: {
-    leftIcon: 'fas fa-bell',
-    label: (t) => t('permission_notifications'),
-    rightIcon: null,
-  },
-  [RestrictedMethods.snap_getBip32PublicKey]: {
-    label: (t, _, permissionValue) => {
-      return permissionValue.caveats[0].value.map(({ path, curve }) =>
-        t('permission_viewBip32PublicKeys', [
+  [RestrictedMethods.snap_confirm]: ({ t }) => ({
+    label: t('permission_customConfirmation'),
+    description: t('permission_customConfirmationDescription'),
+    leftIcon: ICON_NAMES.SECURITY_TICK,
+    weight: 3,
+  }),
+  [RestrictedMethods.snap_dialog]: ({ t }) => ({
+    label: t('permission_dialog'),
+    description: t('permission_dialogDescription'),
+    leftIcon: ICON_NAMES.MESSAGES,
+    weight: 3,
+  }),
+  [RestrictedMethods.snap_notify]: ({ t }) => ({
+    label: t('permission_notifications'),
+    description: t('permission_notificationsDescription'),
+    leftIcon: ICON_NAMES.NOTIFICATION,
+    weight: 3,
+  }),
+  [RestrictedMethods.snap_getBip32PublicKey]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) =>
+    permissionValue.caveats[0].value.map(({ path, curve }, i) => {
+      const baseDescription = {
+        leftIcon: ICON_NAMES.SECURITY_SEARCH,
+        weight: 1,
+        id: `public-key-access-bip32-${path
+          .join('-')
+          ?.replace(/'/gu, 'h')}-${curve}-${i}`,
+        message: t('snapInstallWarningPublicKeyAccess', [
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata?.origin)}
+          </Text>,
+          <b key="2">
+            {getSnapDerivationPathName(path, curve) ??
+              `${path.join('/')} (${curve})`}
+          </b>,
+        ]),
+      };
+
+      const friendlyName = getSnapDerivationPathName(path, curve);
+      if (friendlyName) {
+        return {
+          ...baseDescription,
+          label: t('permission_viewNamedBip32PublicKeys', [
+            <span className="permission-label-item" key={path.join('/')}>
+              {friendlyName}
+            </span>,
+            path.join('/'),
+          ]),
+          description: t('permission_viewBip32PublicKeysDescription', [
+            <span
+              className="tooltip-label-item"
+              key={`description-${path.join('/')}`}
+            >
+              {friendlyName}
+            </span>,
+            path.join('/'),
+          ]),
+        };
+      }
+
+      return {
+        ...baseDescription,
+        label: t('permission_viewBip32PublicKeys', [
           <span className="permission-label-item" key={path.join('/')}>
             {path.join('/')}
           </span>,
           curve,
         ]),
-      );
-    },
-    leftIcon: 'fas fa-eye',
-    rightIcon: null,
-  },
-  [RestrictedMethods.snap_getBip32Entropy]: {
-    label: (t, _, permissionValue) => {
-      return permissionValue.caveats[0].value.map(({ path, curve }) =>
-        t('permission_manageBip32Keys', [
+        description: t('permission_viewBip32PublicKeysDescription', [
+          <span
+            className="tooltip-label-item"
+            key={`description-${path.join('/')}`}
+          >
+            {path.join('/')}
+          </span>,
+          path.join('/'),
+        ]),
+      };
+    }),
+  [RestrictedMethods.snap_getBip32Entropy]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) =>
+    permissionValue.caveats[0].value.map(({ path, curve }, i) => {
+      const baseDescription = {
+        leftIcon: ICON_NAMES.KEY,
+        weight: 1,
+        id: `key-access-bip32-${path
+          .join('-')
+          ?.replace(/'/gu, 'h')}-${curve}-${i}`,
+        message: t('snapInstallWarningKeyAccess', [
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata?.origin)}
+          </Text>,
+          <b key="2">
+            {getSnapDerivationPathName(path, curve) ??
+              `${path.join('/')} (${curve})`}
+          </b>,
+        ]),
+      };
+
+      const friendlyName = getSnapDerivationPathName(path, curve);
+      if (friendlyName) {
+        return {
+          ...baseDescription,
+          label: t('permission_manageNamedBip32Keys', [
+            <span className="permission-label-item" key={path.join('/')}>
+              {friendlyName}
+            </span>,
+            path.join('/'),
+          ]),
+          description: t('permission_manageBip32KeysDescription', [
+            <span
+              className="tooltip-label-item"
+              key={`description-${path.join('/')}`}
+            >
+              {friendlyName}
+            </span>,
+            curve,
+          ]),
+        };
+      }
+
+      return {
+        ...baseDescription,
+        label: t('permission_manageBip32Keys', [
           <span className="permission-label-item" key={path.join('/')}>
             {path.join('/')}
           </span>,
           curve,
         ]),
-      );
-    },
-    leftIcon: 'fas fa-door-open',
-    rightIcon: null,
-  },
-  [RestrictedMethods.snap_getBip44Entropy]: {
-    label: (t, _, permissionValue) => {
-      return permissionValue.caveats[0].value.map(({ coinType }) =>
-        t('permission_manageBip44Keys', [
-          <span className="permission-label-item" key={`coin-type-${coinType}`}>
-            {coinTypeToProtocolName(coinType) ||
-              `${coinType} (Unrecognized protocol)`}
+        description: t('permission_manageBip32KeysDescription', [
+          <span
+            className="tooltip-label-item"
+            key={`description-${path.join('/')}`}
+          >
+            {path.join('/')}
           </span>,
+          curve,
         ]),
-      );
-    },
-    leftIcon: 'fas fa-door-open',
-    rightIcon: null,
+      };
+    }),
+  [RestrictedMethods.snap_getBip44Entropy]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) =>
+    permissionValue.caveats[0].value.map(({ coinType }, i) => ({
+      label: t('permission_manageBip44Keys', [
+        <span className="permission-label-item" key={`coin-type-${coinType}`}>
+          {coinTypeToProtocolName(coinType) ||
+            t('unrecognizedProtocol', [coinType])}
+        </span>,
+      ]),
+      description: t('permission_manageBip44KeysDescription', [
+        <span
+          className="tooltip-label-item"
+          key={`description-coin-type-${coinType}`}
+        >
+          {coinTypeToProtocolName(coinType) ||
+            t('unrecognizedProtocol', [coinType])}
+        </span>,
+      ]),
+      leftIcon: ICON_NAMES.KEY,
+      weight: 1,
+      id: `key-access-bip44-${coinType}-${i}`,
+      message: t('snapInstallWarningKeyAccess', [
+        <Text
+          key="1"
+          color={Color.primaryDefault}
+          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TextVariant.bodySm}
+          as="span"
+        >
+          {getSnapName(targetSubjectMetadata?.origin)}
+        </Text>,
+        <b key="2">
+          {coinTypeToProtocolName(coinType) ||
+            t('unrecognizedProtocol', [coinType])}
+        </b>,
+      ]),
+    })),
+  [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
+    label: t('permission_getEntropy'),
+    description: t('permission_getEntropyDescription'),
+    leftIcon: ICON_NAMES.SECURITY_KEY,
+    weight: 3,
+  }),
+  [RestrictedMethods.snap_manageState]: ({ t }) => ({
+    label: t('permission_manageState'),
+    description: t('permission_manageStateDescription'),
+    leftIcon: ICON_NAMES.ADD_SQUARE,
+    weight: 3,
+  }),
+  [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
+    const snaps = permissionValue.caveats[0].value;
+    const baseDescription = {
+      leftIcon: ICON_NAMES.FLASH,
+    };
+
+    return Object.keys(snaps).map((snapId) => {
+      const friendlyName = getSnapName(snapId);
+      if (friendlyName) {
+        return {
+          ...baseDescription,
+          label: t('permission_accessNamedSnap', [
+            <span className="permission-label-item" key={snapId}>
+              {friendlyName}
+            </span>,
+          ]),
+          description: t('permission_accessSnapDescription', [friendlyName]),
+        };
+      }
+
+      return {
+        ...baseDescription,
+        label: t('permission_accessSnap', [snapId]),
+        description: t('permission_accessSnapDescription', [snapId]),
+      };
+    });
   },
-  [RestrictedMethods.snap_manageState]: {
-    label: (t) => t('permission_manageState'),
-    leftIcon: 'fas fa-download',
+  [EndowmentPermissions['endowment:network-access']]: ({ t }) => ({
+    label: t('permission_accessNetwork'),
+    description: t('permission_accessNetworkDescription'),
+    leftIcon: ICON_NAMES.GLOBAL,
+    weight: 2,
+  }),
+  [EndowmentPermissions['endowment:webassembly']]: ({ t }) => ({
+    label: t('permission_webAssembly'),
+    description: t('permission_webAssemblyDescription'),
+    leftIcon: 'fas fa-microchip',
     rightIcon: null,
+    weight: 2,
+  }),
+  [EndowmentPermissions['endowment:long-running']]: ({ t }) => ({
+    label: t('permission_longRunning'),
+    description: t('permission_longRunningDescription'),
+    leftIcon: ICON_NAMES.LINK,
+    weight: 3,
+  }),
+  [EndowmentPermissions['endowment:transaction-insight']]: ({
+    t,
+    permissionValue,
+  }) => {
+    const baseDescription = {
+      leftIcon: ICON_NAMES.SPEEDOMETER,
+      weight: 3,
+    };
+
+    const result = [
+      {
+        ...baseDescription,
+        label: t('permission_transactionInsight'),
+        description: t('permission_transactionInsightDescription'),
+      },
+    ];
+
+    if (
+      isNonEmptyArray(permissionValue.caveats) &&
+      permissionValue.caveats[0].type === SnapCaveatType.TransactionOrigin &&
+      permissionValue.caveats[0].value
+    ) {
+      result.push({
+        ...baseDescription,
+        label: t('permission_transactionInsightOrigin'),
+        description: t('permission_transactionInsightOriginDescription'),
+        leftIcon: ICON_NAMES.EXPLORE,
+      });
+    }
+
+    return result;
   },
-  [RestrictedMethods['wallet_snap_*']]: {
-    label: (t, permissionName) => {
-      const snapId = permissionName.split('_').slice(-1);
-      return t('permission_accessSnap', [snapId]);
-    },
-    leftIcon: 'fas fa-bolt',
-    rightIcon: null,
-  },
-  [EndowmentPermissions['endowment:network-access']]: {
-    label: (t) => t('permission_accessNetwork'),
-    leftIcon: 'fas fa-wifi',
-    rightIcon: null,
-  },
-  [EndowmentPermissions['endowment:long-running']]: {
-    label: (t) => t('permission_longRunning'),
-    leftIcon: 'fas fa-infinity',
-    rightIcon: null,
-  },
-  [EndowmentPermissions['endowment:transaction-insight']]: {
-    label: (t) => t('permission_transactionInsight'),
-    leftIcon: 'fas fa-info',
-    rightIcon: null,
-  },
-  [EndowmentPermissions['endowment:cronjob']]: {
-    label: (t) => t('permission_cronjob'),
-    leftIcon: 'fas fa-clock',
-    rightIcon: null,
+  [EndowmentPermissions['endowment:cronjob']]: ({ t }) => ({
+    label: t('permission_cronjob'),
+    description: t('permission_cronjobDescription'),
+    leftIcon: ICON_NAMES.CLOCK,
+    weight: 2,
+  }),
+  [EndowmentPermissions['endowment:ethereum-provider']]: ({
+    t,
+    targetSubjectMetadata,
+  }) => ({
+    label: t('permission_ethereumProvider'),
+    description: t('permission_ethereumProviderDescription'),
+    leftIcon: ICON_NAMES.ETHEREUM,
+    weight: 1,
+    id: 'ethereum-provider-access',
+    message: t('ethereumProviderAccess', [targetSubjectMetadata?.origin]),
+  }),
+  [EndowmentPermissions['endowment:rpc']]: ({ t, permissionValue }) => {
+    const baseDescription = {
+      leftIcon: ICON_NAMES.HIERARCHY,
+      weight: 2,
+    };
+
+    const { snaps, dapps } = getRpcCaveatOrigins(permissionValue);
+
+    const results = [];
+    if (snaps) {
+      results.push({
+        ...baseDescription,
+        label: t('permission_rpc', [t('otherSnaps')]),
+        description: t('permission_rpcDescription', [t('otherSnaps')]),
+      });
+    }
+
+    if (dapps) {
+      results.push({
+        ...baseDescription,
+        label: t('permission_rpc', [t('websites')]),
+        description: t('permission_rpcDescription', [t('websites')]),
+      });
+    }
+
+    return results;
   },
   ///: END:ONLY_INCLUDE_IN
-  [UNKNOWN_PERMISSION]: {
-    label: (t, permissionName) =>
-      t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: 'fas fa-times-circle',
-    rightIcon: null,
-  },
+  [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
+    label: t('permission_unknown', [permissionName ?? 'undefined']),
+    leftIcon: ICON_NAMES.QUESTION,
+    weight: 4,
+  }),
 });
 
 /**
  * @typedef {object} PermissionLabelObject
  * @property {string} label - The text label.
+ * @property {string} [description] - An optional description, shown when the
+ * `rightIcon` is hovered.
  * @property {string} leftIcon - The left icon.
  * @property {string} rightIcon - The right icon.
+ * @property {number} weight - The weight of the permission.
+ * @property {string} permissionName - The name of the permission.
+ * @property {string} permissionValue - The raw value of the permission.
  */
 
 /**
- * @param {Function} t - The translation function
- * @param {string} permissionName - The name of the permission to request
- * @param {object} permissionValue - The value of the permission to request
- * @returns {(permissionName:string) => PermissionLabelObject}
+ * @typedef {object} PermissionDescriptionParamsObject
+ * @property {Function} t - The translation function.
+ * @property {string} permissionName - The name of the permission.
+ * @property {object} permissionValue - The permission object.
+ * @property {object} targetSubjectMetadata - Subject metadata.
  */
-export const getPermissionDescription = (
+
+/**
+ * @param {PermissionDescriptionParamsObject} params - The permission description params object.
+ * @param {Function} params.t - The translation function.
+ * @param {string} params.permissionName - The name of the permission to request
+ * @param {object} params.permissionValue - The value of the permission to request
+ * @returns {PermissionLabelObject[]}
+ */
+export const getPermissionDescription = ({
   t,
   permissionName,
   permissionValue,
-) => {
+  targetSubjectMetadata,
+}) => {
   let value = PERMISSION_DESCRIPTIONS[UNKNOWN_PERMISSION];
 
   if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  for (const namespace of Object.keys(PermissionNamespaces)) {
-    if (permissionName.startsWith(namespace)) {
-      value = PERMISSION_DESCRIPTIONS[PermissionNamespaces[namespace]];
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
-  return { ...value, label: value.label(t, permissionName, permissionValue) };
+  const result = value({
+    t,
+    permissionName,
+    permissionValue,
+    targetSubjectMetadata,
+  });
+  if (!Array.isArray(result)) {
+    return [{ ...result, permissionName, permissionValue }];
+  }
+
+  return result.map((item) => ({
+    ...item,
+    permissionName,
+    permissionValue,
+  }));
 };
+
+/**
+ * Get the weighted permissions from a permissions object. The weight is used to
+ * sort the permissions in the UI.
+ *
+ * @param {Function} t - The translation function
+ * @param {object} permissions - The permissions object.
+ * @param {object} targetSubjectMetadata - The subject metadata.
+ * @returns {PermissionLabelObject[]}
+ */
+export function getWeightedPermissions(t, permissions, targetSubjectMetadata) {
+  return Object.entries(permissions)
+    .reduce(
+      (target, [permissionName, permissionValue]) =>
+        target.concat(
+          getPermissionDescription({
+            t,
+            permissionName,
+            permissionValue,
+            targetSubjectMetadata,
+          }),
+        ),
+      [],
+    )
+    .sort((left, right) => left.weight - right.weight);
+}
+
+/**
+ * Get the right icon for a permission. If a description is provided, the icon
+ * will be wrapped in a tooltip. Otherwise, the icon will be rendered as-is. If
+ * there's no right icon, this function will return null.
+ *
+ * If the weight is 1, the icon will be rendered with a warning color.
+ *
+ * @param {PermissionLabelObject} permission - The permission object.
+ * @param {JSX.Element | string} permission.rightIcon - The right icon.
+ * @param {string} permission.description - The description.
+ * @param {number} permission.weight - The weight.
+ * @returns {JSX.Element | null} The right icon, or null if there's no
+ * right icon.
+ */
+export function getRightIcon({ rightIcon, description, weight }) {
+  if (rightIcon && description) {
+    return (
+      <Tooltip
+        wrapperClassName={classnames(
+          'permission__tooltip-icon',
+          weight === 1 && 'permission__tooltip-icon__warning',
+        )}
+        html={<div>{description}</div>}
+        position="bottom"
+      >
+        {typeof rightIcon === 'string' ? (
+          <i className={rightIcon} />
+        ) : (
+          rightIcon
+        )}
+      </Tooltip>
+    );
+  }
+
+  if (rightIcon) {
+    if (typeof rightIcon === 'string') {
+      return (
+        <i className={classnames(rightIcon, 'permission__tooltip-icon')} />
+      );
+    }
+
+    return rightIcon;
+  }
+
+  return null;
+}

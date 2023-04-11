@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
+  BackgroundColor,
   BLOCK_SIZES,
-  BORDER_STYLE,
-  COLORS,
+  BorderColor,
+  BorderStyle,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 
@@ -16,7 +17,6 @@ const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export default {
   title: 'Components/UI/Card',
-  id: __filename,
   component: Card,
   parameters: {
     docs: {
@@ -32,7 +32,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(BORDER_STYLE),
+      options: Object.values(BorderStyle),
     },
     borderWidth: {
       control: {
@@ -44,13 +44,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(COLORS),
+      options: Object.values(BorderColor),
     },
     backgroundColor: {
       control: {
         type: 'select',
       },
-      options: Object.values(COLORS),
+      options: Object.values(BackgroundColor),
     },
     width: {
       control: {
@@ -140,13 +140,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(JUSTIFY_CONTENT),
+      options: Object.values(JustifyContent),
     },
     alignItems: {
       control: {
         type: 'select',
       },
-      options: Object.values(ALIGN_ITEMS),
+      options: Object.values(AlignItems),
     },
   },
   args: {
@@ -157,13 +157,3 @@ export default {
 export const DefaultStory = (args) => <Card {...args}>{args.children}</Card>;
 
 DefaultStory.storyName = 'Default';
-
-DefaultStory.args = {
-  padding: 4,
-  border: true,
-  borderWidth: 1,
-  borderColor: COLORS.BORDER_DEFAULT,
-  borderStyle: BORDER_STYLE.SOLID,
-  backgroundColor: COLORS.BACKGROUND_DEFAULT,
-  display: DISPLAY.BLOCK,
-};

@@ -12,10 +12,6 @@
     "message": "لقد قرأت دولار واحد وأوافق عليه",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 يمكن الوصول إلى هذا المبلغ الأقصى وإنفاقه حتى",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
   },
@@ -55,9 +51,6 @@
   "advanced": {
     "message": "إعدادات متقدمة"
   },
-  "advancedOptions": {
-    "message": "خيارات متقدمة"
-  },
   "amount": {
     "message": "المبلغ"
   },
@@ -85,12 +78,6 @@
   },
   "asset": {
     "message": "الأصل"
-  },
-  "attemptToCancel": {
-    "message": "هل تحاول الإلغاء؟"
-  },
-  "attemptToCancelDescription": {
-    "message": "تقديم هذه المحاولة لا يضمن أنه سيتم إلغاء معاملتك الأصلية. إذا نجحت محاولة الإلغاء ، فسيتم فرض رسوم المعاملة المذكورة أعلاه."
   },
   "attemptingConnect": {
     "message": "محاولة الاتصال بسلسلة الكتل."
@@ -141,20 +128,11 @@
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
   },
-  "buyWithWyre": {
-    "message": "قم بشراء عملة إيثير بواسطة Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع 1$ مباشرة في حساب MetaMask الخاص بك."
-  },
   "bytes": {
     "message": "بايتات"
   },
   "cancel": {
     "message": "إلغاء"
-  },
-  "cancellationGasFee": {
-    "message": "رسوم الإلغاء بعملة جاس"
   },
   "cancelled": {
     "message": "تم الإلغاء"
@@ -165,9 +143,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "تحتاج إلى استخدام MetaMask على Google Chrome للاتصال بمحفظة الأجهزة الخاصة بك."
   },
-  "clickToRevealSeed": {
-    "message": "انقر هنا للكشف عن الكلمات السرية"
-  },
   "close": {
     "message": "إغلاق"
   },
@@ -177,14 +152,8 @@
   "confirmPassword": {
     "message": "تأكيد كلمة المرور"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "تأكيد عبارة الدعم السرية الخاصة بك"
-  },
   "confirmed": {
     "message": "تم التأكيد"
-  },
-  "congratulations": {
-    "message": "تهانينا"
   },
   "connect": {
     "message": "اتصال"
@@ -198,11 +167,11 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "الاتصال بشبكة اختبار Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
-  },
-  "continueToWyre": {
-    "message": "الاستمرار إلى Wyre"
   },
   "contractDeployment": {
     "message": "نشر العقد"
@@ -227,9 +196,6 @@
   },
   "create": {
     "message": "إنشاء"
-  },
-  "createAWallet": {
-    "message": "إنشاء محفظة"
   },
   "createAccount": {
     "message": "إنشاء حساب"
@@ -276,9 +242,6 @@
   "downloadGoogleChrome": {
     "message": "تنزيل جوجل كروم"
   },
-  "downloadSecretBackup": {
-    "message": "قم بتنزيل هذه الجملة الاحتياطية السرية واحتفظ بها بتخزينها بأمان في محرك أقراص ثابت أو وسيط تخزين خارجيين مشفّرين."
-  },
   "downloadStateLogs": {
     "message": "تنزيل سجلات الحالة"
   },
@@ -290,33 +253,6 @@
   },
   "editContact": {
     "message": "تعديل جهة الاتصال"
-  },
-  "endOfFlowMessage1": {
-    "message": "لقد نجحت في الاختبار - احتفظ بعبارة الأمان الخاصة بك في مكان آمن، إنها مسؤوليتك!"
-  },
-  "endOfFlowMessage10": {
-    "message": "كل شيء تم بنجاح"
-  },
-  "endOfFlowMessage2": {
-    "message": "نصائح بشأن تخزينها بأمان"
-  },
-  "endOfFlowMessage3": {
-    "message": "احفظ نسخة احتياطية في أماكن متعددة."
-  },
-  "endOfFlowMessage4": {
-    "message": "لا تشارك هذه الجملة مطلقًا مع أي شخص."
-  },
-  "endOfFlowMessage5": {
-    "message": "كن حذراً من الخداع الإلكتروني! لن يسأل MetaMask من تلقاء نفسه عن عبارة الأمان الخاصة بك أبداً."
-  },
-  "endOfFlowMessage6": {
-    "message": "إذا كنت بحاجة إلى عمل نسخة احتياطية من عبارة الأمان الخاصة بك مرة أخرى، يمكنك العثور عليها في الإعدادات -> الأمان."
-  },
-  "endOfFlowMessage8": {
-    "message": "لا يمكن لـ MetaMask استعادة جملتك البذرية. تعلم المزيد."
-  },
-  "endOfFlowMessage9": {
-    "message": "اعرف المزيد."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "لم يتم العثور على اسم ENS على الشبكة الحالية. حاول التبديل إلى شبكة الإيثيريوم الرئيسية."
@@ -385,21 +321,8 @@
   "general": {
     "message": "عام"
   },
-  "getEther": {
-    "message": "احصل على إيثر"
-  },
-  "getEtherFromFaucet": {
-    "message": "احصل على الأثير من صنبور مقابل $1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "البدء"
-  },
   "goerli": {
     "message": "شبكة اختبار Goerli "
-  },
-  "happyToSeeYou": {
-    "message": "نحن سعداء برؤيتك."
   },
   "hardware": {
     "message": "أجهزة"
@@ -438,12 +361,6 @@
   },
   "importAccountMsg": {
     "message": "لن يتم ربط الحسابات التي تم استيرادها بعبارة أمان حساب MetaMask الذي تم إنشاؤها في الأصل. تعرف على المزيد حول الحسابات المستوردة"
-  },
-  "importAccountSeedPhrase": {
-    "message": "استيراد حساب باستخدام عبارة الأمان"
-  },
-  "importWallet": {
-    "message": "استيراد المحفظة"
   },
   "imported": {
     "message": "المستوردة",
@@ -495,11 +412,11 @@
   "ledgerAccountRestriction": {
     "message": "أنت بحاجة إلى استخدام حسابك الأخير قبل أن تتمكن من إضافة حساب جديد."
   },
-  "letsGoSetUp": {
-    "message": "نعم، دعنا نبدأ التثبيت!"
-  },
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
+  },
+  "lineatestnet": {
+    "message": "شبكة اختبار Linea Goerli"
   },
   "links": {
     "message": "الروابط"
@@ -525,14 +442,8 @@
   "memo": {
     "message": "مذكرة"
   },
-  "memorizePhrase": {
-    "message": "احفظ هذه العبارة."
-  },
   "message": {
     "message": "رسالة"
-  },
-  "metamaskDescription": {
-    "message": "إيصالك بالإيثيريوم وبالشبكة اللامركزية."
   },
   "metamaskVersion": {
     "message": "إصدار MetaMask "
@@ -562,9 +473,6 @@
   "newAccount": {
     "message": "حساب جديد"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "تم اكتشاف عنوان جديد! انقر هنا لإضافته إلى دفتر عناوينك."
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
@@ -578,17 +486,11 @@
   "newPassword": {
     "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
   },
-  "newToMetaMask": {
-    "message": "هل انت جديد في MetaMask؟"
-  },
   "next": {
     "message": "التالي"
   },
   "noAddressForName": {
     "message": "لم يتم تعيين عنوان لهذا الاسم."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "لا، لدي جملة بذرية مسبقًا"
   },
   "noConversionRateAvailable": {
     "message": "لا يوجد معدل تحويل متاح"
@@ -697,9 +599,6 @@
   "rejected": {
     "message": "مرفوض"
   },
-  "remindMeLater": {
-    "message": "ذكرني لاحقاً"
-  },
   "remove": {
     "message": "إزالة"
   },
@@ -718,35 +617,21 @@
   "reset": {
     "message": "إعادة"
   },
-  "resetAccount": {
-    "message": "إعادة تعيين الحساب"
-  },
-  "resetAccountDescription": {
-    "message": "ستؤدي إعادة تعيين حسابك إلى مسح سجل معاملتك."
-  },
   "restore": {
     "message": "استعادة"
   },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
-  "revealSeedWordsDescription": {
-    "message": "إذا كنت تنوي تغيير المتصفحات أو نقل أجهزة الكمبيوتر في أي وقت، فسوف تحتاج إلى عبارة الأمان هذه للوصول إلى حساباتك. احفظها في مكان آمن وسري."
-  },
   "revealSeedWordsWarning": {
-    "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "لا تشارك هذه الجملة مع أي شخص آخر!"
+    "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
   },
   "save": {
     "message": "حفظ"
-  },
-  "saveAsCsvFile": {
-    "message": "حفظ كملف CSV"
   },
   "scanInstructions": {
     "message": "ضع رمز الاستجابة السريعة أمام الكاميرا"
@@ -763,12 +648,6 @@
   "searchTokens": {
     "message": "البحث عن العملات الرمزية"
   },
-  "secretBackupPhraseDescription": {
-    "message": "تجعل عبارة النسخ الاحتياطي السرية الخاصة بك من السهل إجراء نسخ احتياطي واستعادة حسابك."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "تحذير: لا تكشف مطلقاً عن عبارة الدعم الخاصة بك. يمكن لأي شخص بهذه العبارة أن يستحوذ على الأثير الخاص بك إلى الأبد."
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -777,9 +656,6 @@
   },
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
-  },
-  "selectEachPhrase": {
-    "message": "يُرجى تحديد كل عبارة للتأكد من صحتها."
   },
   "selectHdPath": {
     "message": "حدد مسار HD "
@@ -798,12 +674,6 @@
   },
   "settings": {
     "message": "الإعدادات"
-  },
-  "showAdvancedGasInline": {
-    "message": "أدوات التحكم المتقدمة للغاز"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "حدد هذا لإظهار سعر عملة جاس والحد من الضوابط مباشرة على شاشات الإرسال والتأكيد."
   },
   "showFiatConversionInTestnets": {
     "message": "عرض التحويل على Testnets"
@@ -825,9 +695,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signNotice": {
-    "message": "توقيع هذه الرسالة يمكن أن يكون له\nآثار جانبية خطيرة. قم فقط بتوقيع الرسائل من\nالمواقع التي تثق بها تماماً في التعامل مع حسابك بالكامل.\n  ستتم إزالة هذه الطريقة الخطيرة في إصدار مستقبلي."
   },
   "signatureRequest": {
     "message": "طلب التوقيع"
@@ -855,9 +722,6 @@
   },
   "stateLogsDescription": {
     "message": "تحتوي سجلات الحالة على عناوين حسابك العامة والمعاملات المرسلة."
-  },
-  "storePhrase": {
-    "message": "احتفظ بهذه الجملة في مدير كلمات مرور مثل 1Password."
   },
   "submitted": {
     "message": "المقدمة"
@@ -897,12 +761,6 @@
   },
   "terms": {
     "message": "شروط الاستخدام"
-  },
-  "testFaucet": {
-    "message": "اختبار Faucet"
-  },
-  "thisWillCreate": {
-    "message": "هذا سينشئ محفظة جديدة وعبارة أمان"
   },
   "tips": {
     "message": "المكافآت"
@@ -1022,26 +880,14 @@
   "userName": {
     "message": "اسم المستخدم"
   },
-  "viewAccount": {
-    "message": "عرض حساب"
-  },
   "viewContact": {
     "message": "عرض جهة الاتصال"
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
   },
-  "welcome": {
-    "message": "مرحباً بك في MetaMask"
-  },
   "welcomeBack": {
     "message": "نرحب بعودتك!"
-  },
-  "writePhrase": {
-    "message": "اكتب هذه العبارة على قطعة من الورق واحفظها في مكان آمن. إذا كنت ترغب في مزيد من الأمان، فاكتبها على عدة أجزاء من الورق واحفظها في مكانين أو 3 أماكن مختلفة."
-  },
-  "yesLetsTry": {
-    "message": "نعم، دعنا نجرب"
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."

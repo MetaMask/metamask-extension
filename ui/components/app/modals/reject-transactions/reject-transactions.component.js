@@ -11,6 +11,7 @@ export default class RejectTransactionsModal extends PureComponent {
     onSubmit: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     unapprovedTxCount: PropTypes.number.isRequired,
+    isRequestType: PropTypes.bool,
   };
 
   onSubmit = async () => {
@@ -22,11 +23,15 @@ export default class RejectTransactionsModal extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { hideModal, unapprovedTxCount } = this.props;
+    const { hideModal, unapprovedTxCount, isRequestType } = this.props;
 
     return (
       <Modal
-        headerText={t('rejectTxsN', [unapprovedTxCount])}
+        headerText={
+          isRequestType
+            ? t('rejectRequestsN', [unapprovedTxCount])
+            : t('rejectTxsN', [unapprovedTxCount])
+        }
         onClose={hideModal}
         onSubmit={this.onSubmit}
         onCancel={hideModal}
@@ -35,7 +40,9 @@ export default class RejectTransactionsModal extends PureComponent {
       >
         <div>
           <div className="reject-transactions__description">
-            {t('rejectTxsDescription', [unapprovedTxCount])}
+            {isRequestType
+              ? t('rejectRequestsDescription', [unapprovedTxCount])
+              : t('rejectTxsDescription', [unapprovedTxCount])}
           </div>
         </div>
       </Modal>

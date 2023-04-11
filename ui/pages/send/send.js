@@ -19,13 +19,13 @@ import { isCustomPriceExcessive } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { EVENT } from '../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { AssetType } from '../../../shared/constants/transaction';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
 import SendFooter from './send-footer';
-import EnsInput from './send-content/add-recipient/ens-input';
+import DomainInput from './send-content/add-recipient/domain-input';
 
 const sendSliceIsCustomPriceExcessive = (state) =>
   isCustomPriceExcessive(state, true);
@@ -64,7 +64,7 @@ export default function SendTransactionScreen() {
       startedNewDraftTransaction.current === false
     ) {
       startedNewDraftTransaction.current = true;
-      dispatch(startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }));
+      dispatch(startNewDraftTransaction({ type: AssetType.native }));
     }
   }, [draftTransactionExists, dispatch]);
 
@@ -112,7 +112,7 @@ export default function SendTransactionScreen() {
   return (
     <div className="page-container">
       <SendHeader history={history} />
-      <EnsInput
+      <DomainInput
         userInput={userInput}
         className="send__to-row"
         onChange={(address) => dispatch(updateRecipientUserInput(address))}
@@ -137,7 +137,7 @@ export default function SendTransactionScreen() {
         scanQrCode={() => {
           trackEvent({
             event: 'Used QR scanner',
-            category: EVENT.CATEGORIES.TRANSACTIONS,
+            category: MetaMetricsEventCategory.Transactions,
             properties: {
               action: 'Edit Screen',
               legacy_event: true,

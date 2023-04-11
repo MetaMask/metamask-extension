@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
-import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 
 import {
   ALERTS_ROUTE,
@@ -28,6 +27,12 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
+import { ButtonIcon } from '../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
+import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -107,6 +112,7 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
+    const { t } = this.context;
 
     return (
       <div
@@ -117,11 +123,13 @@ class SettingsPage extends PureComponent {
         <div className="settings-page__header">
           <div className="settings-page__header__title-container">
             {currentPath !== SETTINGS_ROUTE && (
-              <IconCaretLeft
+              <ButtonIcon
+                ariaLabel={t('back')}
+                iconName={ICON_NAMES.ARROW_LEFT}
                 className="settings-page__back-button"
-                color="var(--color-icon-default)"
-                size={32}
+                color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
+                display={[DISPLAY.FLEX, DISPLAY.NONE]}
               />
             )}
 
@@ -252,63 +260,61 @@ class SettingsPage extends PureComponent {
   renderTabs() {
     const { history, currentPath } = this.props;
     const { t } = this.context;
+    const tabs = [
+      {
+        content: t('general'),
+        icon: <Icon name={ICON_NAMES.SETTING} />,
+        key: GENERAL_ROUTE,
+      },
+      {
+        content: t('advanced'),
+        icon: <i className="fas fa-sliders-h" />,
+        key: ADVANCED_ROUTE,
+      },
+      {
+        content: t('contacts'),
+        icon: <Icon name={ICON_NAMES.BOOK} />,
+        key: CONTACT_LIST_ROUTE,
+      },
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      {
+        content: t('snaps'),
+        icon: (
+          <i className="fa fa-flask" title={t('snapsSettingsDescription')} />
+        ),
+        key: SNAPS_LIST_ROUTE,
+      },
+      ///: END:ONLY_INCLUDE_IN
+      {
+        content: t('securityAndPrivacy'),
+        icon: <i className="fa fa-lock" />,
+        key: SECURITY_ROUTE,
+      },
+      {
+        content: t('alerts'),
+        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
+        key: ALERTS_ROUTE,
+      },
+      {
+        content: t('networks'),
+        icon: <i className="fa fa-plug" />,
+        key: NETWORKS_ROUTE,
+      },
+      {
+        content: t('experimental'),
+        icon: <i className="fa fa-flask" />,
+        key: EXPERIMENTAL_ROUTE,
+      },
+      {
+        content: t('about'),
+        icon: <i className="fa fa-info-circle" />,
+        key: ABOUT_US_ROUTE,
+      },
+    ];
 
     return (
       <TabBar
-        tabs={[
-          {
-            content: t('general'),
-            icon: <i className="fa fa-cog" />,
-            key: GENERAL_ROUTE,
-          },
-          {
-            content: t('advanced'),
-            icon: <i className="fas fa-sliders-h" />,
-            key: ADVANCED_ROUTE,
-          },
-          {
-            content: t('contacts'),
-            icon: <i className="fa fa-address-book" />,
-            key: CONTACT_LIST_ROUTE,
-          },
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          {
-            content: t('snaps'),
-            icon: (
-              <i
-                className="fa fa-flask"
-                title={t('snapsSettingsDescription')}
-              />
-            ),
-            key: SNAPS_LIST_ROUTE,
-          },
-          ///: END:ONLY_INCLUDE_IN
-          {
-            content: t('securityAndPrivacy'),
-            icon: <i className="fa fa-lock" />,
-            key: SECURITY_ROUTE,
-          },
-          {
-            content: t('alerts'),
-            icon: <i className="fa fa-bell" />,
-            key: ALERTS_ROUTE,
-          },
-          {
-            content: t('networks'),
-            icon: <i className="fa fa-plug" />,
-            key: NETWORKS_ROUTE,
-          },
-          {
-            content: t('experimental'),
-            icon: <i className="fa fa-flask" />,
-            key: EXPERIMENTAL_ROUTE,
-          },
-          {
-            content: t('about'),
-            icon: <i className="fa fa-info-circle" />,
-            key: ABOUT_US_ROUTE,
-          },
-        ]}
+        tabs={tabs}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;

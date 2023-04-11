@@ -5,12 +5,12 @@ import {
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
-  SMART_TRANSACTION_STATUSES,
+  TransactionStatus,
+  TransactionType,
+  SmartTransactionStatus,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
@@ -18,8 +18,8 @@ import {
 } from './selectors';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
-  TRANSACTION_TYPES.CANCEL,
-  TRANSACTION_TYPES.RETRY,
+  TransactionType.cancel,
+  TransactionType.retry,
 ];
 
 export const incomingTxListSelector = (state) => {
@@ -29,14 +29,14 @@ export const incomingTxListSelector = (state) => {
   }
 
   const {
-    network,
+    networkId,
     provider: { chainId },
   } = state.metamask;
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
       tx.txParams.to === selectedAddress &&
-      transactionMatchesNetwork(tx, chainId, network),
+      transactionMatchesNetwork(tx, chainId, networkId),
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -58,9 +58,9 @@ export const smartTransactionsListSelector = (state) =>
     ?.filter((stx) => !stx.confirmed)
     .map((stx) => ({
       ...stx,
-      transactionType: TRANSACTION_TYPES.SMART,
+      transactionType: TransactionType.smart,
       status: stx.status?.startsWith('cancelled')
-        ? SMART_TRANSACTION_STATUSES.CANCELLED
+        ? SmartTransactionStatus.cancelled
         : stx.status,
     }));
 
@@ -252,7 +252,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         txReceipt,
       } = transaction;
 
-      if (typeof nonce === 'undefined' || type === TRANSACTION_TYPES.INCOMING) {
+      if (typeof nonce === 'undefined' || type === TransactionType.incoming) {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,
@@ -262,7 +262,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonce,
         };
 
-        if (type === TRANSACTION_TYPES.INCOMING) {
+        if (type === TransactionType.incoming) {
           incomingTransactionGroups.push(transactionGroup);
         } else {
           insertTransactionGroupByTime(
@@ -303,8 +303,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           // known outside of the user's local MetaMask and the nonce
           // associated will be applied to the next.
           isEphemeral:
-            status === TRANSACTION_STATUSES.FAILED &&
-            txReceipt?.status !== '0x0',
+            status === TransactionStatus.failed && txReceipt?.status !== '0x0',
           // We never want to use a speed up (retry) or cancel as the initial
           // transaction in a group, regardless of time order. This is because
           // useTransactionDisplayData cannot parse a retry or cancel because
@@ -323,7 +322,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           // A confirmed transaction is the most valid transaction status to
           // display because no other transaction of the same nonce can have a
           // more valid status.
-          isConfirmed: status === TRANSACTION_STATUSES.CONFIRMED,
+          isConfirmed: status === TransactionStatus.confirmed,
           // Initial transactions usually are the earliest transaction by time,
           // but not always. THis value shows whether this transaction occurred
           // before the current initial.
@@ -333,17 +332,17 @@ export const nonceSortedTransactionsSelector = createSelector(
           // effects. This value is used to determine if the entire transaction
           // group should be marked as having had a retry.
           isValidRetry:
-            type === TRANSACTION_TYPES.RETRY &&
+            type === TransactionType.retry &&
             (status in PRIORITY_STATUS_HASH ||
-              status === TRANSACTION_STATUSES.DROPPED),
+              status === TransactionStatus.dropped),
           // We only allow users to cancel the transaction in certain scenarios
           // to help shield from expensive operations and other unwanted side
           // effects. This value is used to determine if the entire transaction
           // group should be marked as having had a cancel.
           isValidCancel:
-            type === TRANSACTION_TYPES.CANCEL &&
+            type === TransactionType.cancel &&
             (status in PRIORITY_STATUS_HASH ||
-              status === TRANSACTION_STATUSES.DROPPED),
+              status === TransactionStatus.dropped),
         };
 
         // We should never assign a retry or cancel transaction as the initial,
@@ -378,8 +377,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           // block. When this happens, and we have another transaction to
           // consider in a nonce group, we should use the new transaction.
           isEphemeral:
-            nonceProps.primaryTransaction.status ===
-              TRANSACTION_STATUSES.FAILED &&
+            nonceProps.primaryTransaction.status === TransactionStatus.failed &&
             nonceProps.primaryTransaction?.txReceipt?.status !== '0x0',
         };
 
@@ -399,8 +397,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           // block. When this happens, and we have another transaction to
           // consider in a nonce group, we should use the new transaction.
           isEphemeral:
-            nonceProps.initialTransaction.status ===
-              TRANSACTION_STATUSES.FAILED &&
+            nonceProps.initialTransaction.status === TransactionStatus.failed &&
             nonceProps.initialTransaction.txReceipt?.status !== '0x0',
         };
 
@@ -440,13 +437,13 @@ export const nonceSortedTransactionsSelector = createSelector(
           initialTransaction: transaction,
           primaryTransaction: transaction,
           hasRetried:
-            transaction.type === TRANSACTION_TYPES.RETRY &&
+            transaction.type === TransactionType.retry &&
             (transaction.status in PRIORITY_STATUS_HASH ||
-              transaction.status === TRANSACTION_STATUSES.DROPPED),
+              transaction.status === TransactionStatus.dropped),
           hasCancelled:
-            transaction.type === TRANSACTION_TYPES.CANCEL &&
+            transaction.type === TransactionType.cancel &&
             (transaction.status in PRIORITY_STATUS_HASH ||
-              transaction.status === TRANSACTION_STATUSES.DROPPED),
+              transaction.status === TransactionStatus.dropped),
         };
 
         insertOrderedNonce(orderedNonces, nonce);
@@ -524,6 +521,6 @@ export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) =>
     transactions.filter(
-      (transaction) => transaction.status === TRANSACTION_STATUSES.SUBMITTED,
+      (transaction) => transaction.status === TransactionStatus.submitted,
     ),
 );

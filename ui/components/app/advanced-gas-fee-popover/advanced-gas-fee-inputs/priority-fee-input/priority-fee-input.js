@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
+  EditGasModes,
+  PriorityLevels,
 } from '../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
-import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -19,9 +18,10 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
-  if (value <= 0) {
+  if (value < 0) {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
   }
   if (
@@ -59,9 +59,9 @@ const PriorityFeeInput = () => {
 
   const [priorityFee, setPriorityFee] = useState(() => {
     if (
-      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      estimateUsed !== PriorityLevels.custom &&
       advancedGasFeeValues?.priorityFee &&
-      editGasMode !== EDIT_GAS_MODES.SWAPS
+      editGasMode !== EditGasModes.swaps
     ) {
       return advancedGasFeeValues.priorityFee;
     }

@@ -10,6 +10,8 @@
     align-items: center;
     position: relative;
     height: 100%;
+    margin-left: auto;
+    margin-right: auto;
 
     @include screen-sm-max {
       width: 100%;
@@ -18,7 +20,7 @@
     }
 
     @include screen-sm-min {
-      height: 620px;
+      height: 650px;
     }
 
     &__reject {
@@ -45,134 +47,40 @@
     }
   }
 
-  &__header {
-    height: 64px;
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    flex: 0 0 auto;
-  }
-
-  &__header-background {
-    position: absolute;
-    background-color: var(--color-background-alternative);
-    z-index: 2;
-    width: 100%;
-    height: 100%;
-  }
-
-  &__header__text {
+  &__content__title {
     @include H3;
 
+    display: flex;
+    justify-content: center;
     color: var(--color-default-text);
     z-index: 3;
   }
 
-  &__header__tip-container {
+  &__account,
+  &__navigation {
     width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  &__header__tip {
-    height: 25px;
-    width: 25px;
-    background: var(--color-background-alternative);
-    transform: rotate(45deg);
-    position: absolute;
-    bottom: -8px;
-    z-index: 1;
-  }
-
-  &__account-info {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 18px;
-    margin-bottom: 20px;
-  }
-
-  &__account {
-    color: var(--color-text-alternative);
-    margin-left: 17px;
-  }
-
-  &__account-text {
-    @include H6;
-  }
-
-  &__account-item {
-    @include H7;
-
-    height: 22px;
-    background-color: var(--color-background-default);
-    width: 124px;
-
-    .account-list-item {
-      margin-top: 6px;
-    }
-
-    .account-list-item__account-name {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      width: 80px;
-    }
-
-    .account-list-item__top-row {
-      margin: 0;
-    }
-  }
-
-  &__balance {
-    color: var(--color-text-alternative);
-    margin-right: 17px;
-    width: 124px;
-  }
-
-  &__balance-text {
-    @include H6;
-
-    text-align: right;
-  }
-
-  &__balance-value {
-    text-align: right;
-    margin-top: 2.5px;
-  }
-
-  &__request-icon {
-    margin-top: 25px;
   }
 
   &__body {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-flow: column;
-    flex: 1 1 auto;
-  }
+    flex: 1 1 0;
+    min-height: 0;
+    max-width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-  &__origin-row {
-    @include Paragraph;
-
-    display: flex;
-    margin: 0 15px;
-  }
-
-  &__origin-label {
-    flex-grow: 1;
-    margin-right: 5px;
-  }
-
-  &__origin-icon {
-    flex: 0 0 24px;
+    > * {
+      flex: 0 0 auto;
+      min-height: 0;
+    }
   }
 
   &__origin {
-    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
   }
 
   &__notice,
@@ -180,7 +88,7 @@
     @include H6;
 
     text-align: center;
-    margin-top: 41px;
+    margin-top: 21px;
     margin-bottom: 11px;
     width: 100%;
   }
@@ -190,14 +98,7 @@
     padding: 0 10px;
   }
 
-  &__warning {
-    color: var(--color-error-default);
-  }
-
   &__rows {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
     border-top: 1px solid var(--color-border-default);
     display: flex;
     flex-flow: column;
@@ -206,7 +107,6 @@
   &__row {
     display: flex;
     flex-flow: column;
-    flex: 1 0 auto;
   }
 
   &__row-title {
@@ -235,26 +135,5 @@
     text-decoration: underline;
     color: var(--color-primary-default);
     margin-inline-start: 3px;
-  }
-
-  &__footer {
-    @include H3;
-
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex: 0 0 auto;
-    border-top: 1px solid var(--color-border-default);
-    padding: 1.6rem;
-
-    button {
-      width: 165px;
-    }
-
-    &__cancel-button {
-      margin-right: 1.2rem;
-    }
   }
 }

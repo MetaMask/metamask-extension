@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  ALIGN_ITEMS,
-  BORDER_RADIUS,
-  COLORS,
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  IconColor,
+  JustifyContent,
+  Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon } from '../icon';
+import { Icon, IconName } from '../icon';
 
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
@@ -19,10 +21,10 @@ export const ButtonIcon = ({
   ariaLabel,
   as = 'button',
   className,
-  color = COLORS.ICON_DEFAULT,
+  color = IconColor.iconDefault,
   href,
-  size = BUTTON_ICON_SIZES.LG,
-  icon,
+  size = Size.LG,
+  iconName,
   disabled,
   iconProps,
   ...props
@@ -43,14 +45,14 @@ export const ButtonIcon = ({
       color={color}
       disabled={disabled}
       display={DISPLAY.INLINE_FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
-      borderRadius={BORDER_RADIUS.LG}
-      backgroundColor={COLORS.TRANSPARENT}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.LG}
+      backgroundColor={BackgroundColor.transparent}
       href={href}
       {...props}
     >
-      <Icon name={icon} size={size} {...iconProps} />
+      <Icon name={iconName} size={size} {...iconProps} />
     </Box>
   );
 };
@@ -69,10 +71,10 @@ ButtonIcon.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * The color of the ButtonIcon component should use the COLOR object from
+   * The color of the ButtonIcon component should use the IconColor object from
    * ./ui/helpers/constants/design-system.js
    */
-  color: PropTypes.oneOf(Object.values(COLORS)),
+  color: PropTypes.oneOf(Object.values(IconColor)),
   /**
    * Boolean to disable button
    */
@@ -82,16 +84,16 @@ ButtonIcon.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  icon: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  iconName: PropTypes.oneOf(Object.values(IconName)).isRequired,
   /**
    * iconProps accepts all the props from Icon
    */
   iconProps: PropTypes.object,
   /**
    * The size of the ButtonIcon.
-   * Possible values could be 'SIZES.SM', 'SIZES.LG',
+   * Possible values could be 'Size.SM' 24px, 'Size.LG' 32px,
    */
   size: PropTypes.oneOf(Object.values(BUTTON_ICON_SIZES)),
   /**

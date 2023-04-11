@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
@@ -276,7 +276,7 @@ describe('Confirm Transaction Duck', () => {
         loadingDefaults: false,
         metamaskNetworkId: '5',
         origin: 'faucet.metamask.io',
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         time: 1530838113716,
         txParams: {
           from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -290,6 +290,9 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
+          provider: {
+            ticker: 'ETH',
+          },
         },
         confirmTransaction: {
           ethTransactionAmount: '1',
@@ -340,7 +343,8 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          network: '5',
+          networkId: '5',
+          networkStatus: 'available',
           provider: {
             chainId: '0x5',
           },
@@ -351,7 +355,7 @@ describe('Confirm Transaction Duck', () => {
               loadingDefaults: false,
               metamaskNetworkId: '5',
               origin: 'faucet.metamask.io',
-              status: TRANSACTION_STATUSES.UNAPPROVED,
+              status: TransactionStatus.unapproved,
               time: 1530838113716,
               txParams: {
                 from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -365,7 +369,6 @@ describe('Confirm Transaction Duck', () => {
         },
         confirmTransaction: {},
       };
-
       const middlewares = [thunk];
       const mockStore = configureMockStore(middlewares);
       const store = mockStore(mockState);

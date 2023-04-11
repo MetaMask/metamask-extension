@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import { MenuItem } from '../../ui/menu';
 import ConnectedAccountsListItem from './connected-accounts-list-item';
 import ConnectedAccountsListOptions from './connected-accounts-list-options';
@@ -104,7 +105,7 @@ export default class ConnectedAccountsList extends PureComponent {
         onShowOptions={this.showAccountOptions.bind(null, address)}
         show={accountWithOptionsShown === address}
       >
-        <MenuItem iconClassName="fa fa-ban" onClick={this.disconnectAccount}>
+        <MenuItem iconName={ICON_NAMES.LOGOUT} onClick={this.disconnectAccount}>
           {t('disconnectThisAccount')}
         </MenuItem>
       </ConnectedAccountsListOptions>

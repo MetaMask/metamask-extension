@@ -9,7 +9,7 @@ import {
   fireEvent,
 } from '../../../../test/jest';
 import {
-  SLIPPAGE,
+  Slippage,
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
@@ -28,7 +28,7 @@ const createProps = (customProps = {}) => {
     tokensReceived: 'tokens received:',
     submittingSwap: true,
     inputValue: 5,
-    maxSlippage: SLIPPAGE.DEFAULT,
+    maxSlippage: Slippage.default,
     txId: 6571648590592143,
     ...customProps,
   };
@@ -39,6 +39,8 @@ setBackgroundConnection({
 });
 
 describe('AwaitingSwap', () => {
+  process.env.METAMASK_BUILD_TYPE = 'main';
+
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());
     const { getByText, getByTestId } = renderWithProvider(

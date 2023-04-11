@@ -1,7 +1,7 @@
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { TransactionType } from '../../../shared/constants/transaction';
 import migration53 from './053';
 
-const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TRANSACTION_TYPES.SIMPLE_SEND
+const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TransactionType.simpleSend
 
 describe('migration #53', () => {
   it('should update the version metadata', async () => {
@@ -25,7 +25,7 @@ describe('migration #53', () => {
         TransactionController: {
           transactions: [
             {
-              type: TRANSACTION_TYPES.CANCEL,
+              type: TransactionType.cancel,
               transactionCategory: SENT_ETHER,
               txParams: { foo: 'bar' },
             },
@@ -36,11 +36,11 @@ describe('migration #53', () => {
             },
             {
               type: 'standard',
-              transactionCategory: TRANSACTION_TYPES.CONTRACT_INTERACTION,
+              transactionCategory: TransactionType.contractInteraction,
               txParams: { foo: 'bar' },
             },
             {
-              type: TRANSACTION_TYPES.RETRY,
+              type: TransactionType.retry,
               transactionCategory: SENT_ETHER,
               txParams: { foo: 'bar' },
             },
@@ -64,16 +64,16 @@ describe('migration #53', () => {
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: [
-          { type: TRANSACTION_TYPES.CANCEL, txParams: { foo: 'bar' } },
+          { type: TransactionType.cancel, txParams: { foo: 'bar' } },
           {
             type: SENT_ETHER,
             txParams: { foo: 'bar' },
           },
           {
-            type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
+            type: TransactionType.contractInteraction,
             txParams: { foo: 'bar' },
           },
-          { type: TRANSACTION_TYPES.RETRY, txParams: { foo: 'bar' } },
+          { type: TransactionType.retry, txParams: { foo: 'bar' } },
         ],
       },
       IncomingTransactionsController: {

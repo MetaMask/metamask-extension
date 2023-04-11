@@ -9,6 +9,11 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../../components/component-library/icon/deprecated';
+import { IconColor } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapsRouteObjects } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IN
@@ -32,7 +37,7 @@ export default function SettingsSearch({
   ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
-    threshold: 0.2,
+    threshold: 0.3,
     location: 0,
     distance: 100,
     maxPatternLength: 32,
@@ -42,10 +47,9 @@ export default function SettingsSearch({
   });
 
   const handleSearch = (_searchQuery) => {
-    const sanitizedSearchQuery = _searchQuery.replace(
-      /[^A-z0-9\s&]|[\\]/gu,
-      '',
-    );
+    const sanitizedSearchQuery = _searchQuery
+      .replace(/[^A-Za-z0-9\s&_]/gu, '')
+      .trimStart();
     setSearchQuery(sanitizedSearchQuery);
     if (sanitizedSearchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');
@@ -84,10 +88,7 @@ export default function SettingsSearch({
             onClick={() => handleSearch('')}
             style={{ cursor: 'pointer' }}
           >
-            <i
-              className="fa fa-times"
-              style={{ color: 'var(--color-icon-default)' }}
-            />
+            <Icon name={ICON_NAMES.CLOSE} color={IconColor.iconDefault} />
           </InputAdornment>
         )}
       </>

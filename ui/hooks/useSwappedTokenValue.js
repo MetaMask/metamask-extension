@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-controller-utils';
-import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
+import { TransactionType } from '../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
@@ -45,7 +45,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
       ));
 
   const swapTokenValue =
-    type === TRANSACTION_TYPES.SWAP && isViewingReceivedTokenFromSwap
+    type === TransactionType.swap && isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
           initialTransaction,
@@ -55,7 +55,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           null,
           chainId,
         )
-      : type === TRANSACTION_TYPES.SWAP && primaryTransaction.swapTokenValue;
+      : type === TransactionType.swap && primaryTransaction.swapTokenValue;
 
   const isNegative =
     typeof swapTokenValue === 'string'

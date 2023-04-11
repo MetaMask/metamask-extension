@@ -13,7 +13,6 @@ import SendFooter from '.';
 
 const mockResetSendState = jest.fn();
 const mockSendTransaction = jest.fn();
-const mockAddtoAddressBook = jest.fn();
 const mockCancelTx = jest.fn();
 
 jest.mock('../../../ducks/send/index.js', () => ({
@@ -22,13 +21,13 @@ jest.mock('../../../ducks/send/index.js', () => ({
   resetSendState: () => mockResetSendState,
 }));
 
-jest.mock('../../../store/actions.js', () => ({
-  addToAddressBook: () => mockAddtoAddressBook,
+jest.mock('../../../store/actions.ts', () => ({
   cancelTx: () => mockCancelTx,
 }));
 
 describe('SendFooter Component', () => {
   const props = {
+    disabled: false,
     history: {
       push: jest.fn(),
     },
@@ -107,7 +106,6 @@ describe('SendFooter Component', () => {
       fireEvent.click(nextText);
 
       await waitFor(() => {
-        expect(mockAddtoAddressBook).toHaveBeenCalled();
         expect(mockSendTransaction).toHaveBeenCalled();
         expect(props.history.push).toHaveBeenCalledWith(
           CONFIRM_TRANSACTION_ROUTE,
@@ -119,10 +117,15 @@ describe('SendFooter Component', () => {
   describe('Component Update', () => {
     it('should match snapshot when component updated with errors', () => {
       const { container, rerender } = renderWithProvider(
-        <SendFooter.WrappedComponent />,
+        <SendFooter.WrappedComponent
+          disabled={false}
+          mostRecentOverviewPage="text"
+        />,
       );
 
       const sendErrorProps = {
+        disabled: false,
+        mostRecentOverviewPage: 'text',
         sendErrors: {
           gasFee: 'gas fee error',
           amount: 'amount error',

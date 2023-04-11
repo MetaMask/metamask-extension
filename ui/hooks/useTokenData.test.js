@@ -1,14 +1,14 @@
 /* eslint-disable jest/no-conditional-expect */
 import { BigNumber } from '@ethersproject/bignumber';
 import { renderHook } from '@testing-library/react-hooks';
-import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
+import { TransactionType } from '../../shared/constants/transaction';
 import { useTokenData } from './useTokenData';
 
 const tests = [
   {
     data: '0xa9059cbb000000000000000000000000ffe5bc4e8f1f969934d773fa67da095d2e491a970000000000000000000000000000000000000000000000000000000000003a98',
     tokenData: {
-      name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+      name: TransactionType.tokenMethodTransfer,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
         BigNumber.from(15000),
@@ -18,7 +18,7 @@ const tests = [
   {
     data: '0xa9059cbb000000000000000000000000ffe5bc4e8f1f969934d773fa67da095d2e491a9700000000000000000000000000000000000000000000000000000000000061a8',
     tokenData: {
-      name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+      name: TransactionType.tokenMethodTransfer,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
         BigNumber.from(25000),
@@ -28,7 +28,7 @@ const tests = [
   {
     data: '0xa9059cbb000000000000000000000000ffe5bc4e8f1f969934d773fa67da095d2e491a970000000000000000000000000000000000000000000000000000000000002710',
     tokenData: {
-      name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+      name: TransactionType.tokenMethodTransfer,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
         BigNumber.from(10000),

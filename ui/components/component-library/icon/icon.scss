@@ -1,4 +1,4 @@
-.icon {
+.mm-icon {
   --icon-size: var(--size, 16px);
 
   font-size: var(--icon-size);
@@ -6,7 +6,6 @@
   height: 1em;
   max-width: 1em;
   flex: 0 0 1em;
-  display: inline-block;
   background-color: currentColor; // inherits parent text color
   mask-size: cover;
   -webkit-mask-size: cover;
@@ -16,9 +15,6 @@
   -webkit-mask-position: center;
 
   // Size
-  &--size-xxs {
-    --size: 10px;
-  }
 
   &--size-xs {
     --size: 12px;
@@ -40,7 +36,7 @@
     --size: 32px;
   }
 
-  &--size-auto {
+  &--size-inherit {
     --size: 1em; // Inherits parent font-size
 
     position: relative; // Fixes vertical alignment

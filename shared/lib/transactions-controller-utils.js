@@ -1,13 +1,10 @@
 import BigNumber from 'bignumber.js';
-import { TRANSACTION_ENVELOPE_TYPES } from '../constants/transaction';
-import {
-  conversionUtil,
-  multiplyCurrencies,
-  subtractCurrencies,
-} from '../modules/conversion.utils';
+import { EtherDenomination } from '../constants/common';
+import { TransactionEnvelopeType } from '../constants/transaction';
+import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
 
-const TOKEN_TRANSFER_LOG_TOPIC_HASH =
+export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
@@ -15,11 +12,7 @@ export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
 export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  });
+  return new Numeric(gasLimit, 16).times(new Numeric(gasPrice, 16)).toString();
 }
 
 /**
@@ -53,7 +46,7 @@ export function getSwapsTokensReceivedFromTxMeta(
 ) {
   const txReceipt = txMeta?.txReceipt;
   const networkAndAccountSupports1559 =
-    txMeta?.txReceipt?.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+    txMeta?.txReceipt?.type === TransactionEnvelopeType.feeMarket;
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||
@@ -70,13 +63,16 @@ export function getSwapsTokensReceivedFromTxMeta(
       return txMeta.swapMetaData.token_to_amount;
     }
 
-    let approvalTxGasCost = '0x0';
+    let approvalTxGasCost = new Numeric('0x0', 16);
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
-      approvalTxGasCost = calcGasTotal(
-        approvalTxMeta.txReceipt.gasUsed,
-        networkAndAccountSupports1559
-          ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
-          : approvalTxMeta.txParams.gasPrice,
+      approvalTxGasCost = new Numeric(
+        calcGasTotal(
+          approvalTxMeta.txReceipt.gasUsed,
+          networkAndAccountSupports1559
+            ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
+            : approvalTxMeta.txParams.gasPrice,
+        ),
+        16,
       );
     }
 
@@ -86,33 +82,22 @@ export function getSwapsTokensReceivedFromTxMeta(
         ? txReceipt.effectiveGasPrice
         : txMeta.txParams.gasPrice,
     );
-    const totalGasCost = new BigNumber(gasCost, 16)
-      .plus(approvalTxGasCost, 16)
-      .toString(16);
+    const totalGasCost = new Numeric(gasCost, 16).add(approvalTxGasCost);
 
-    const preTxBalanceLessGasCost = subtractCurrencies(
-      txMeta.preTxBalance,
+    const preTxBalanceLessGasCost = new Numeric(txMeta.preTxBalance, 16).minus(
       totalGasCost,
-      {
-        aBase: 16,
-        bBase: 16,
-        toNumericBase: 'hex',
-      },
     );
 
-    const ethReceived = subtractCurrencies(
+    const ethReceived = new Numeric(
       txMeta.postTxBalance,
-      preTxBalanceLessGasCost,
-      {
-        aBase: 16,
-        bBase: 16,
-        fromDenomination: 'WEI',
-        toDenomination: 'ETH',
-        toNumericBase: 'dec',
-        numberOfDecimals: 6,
-      },
-    );
-    return ethReceived;
+      16,
+      EtherDenomination.WEI,
+    )
+      .minus(preTxBalanceLessGasCost)
+      .toDenomination(EtherDenomination.ETH)
+      .toBase(10)
+      .round(6);
+    return ethReceived.toString();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
@@ -145,28 +130,3 @@ export const TRANSACTION_ENVELOPE_TYPE_NAMES = {
   FEE_MARKET: 'fee-market',
   LEGACY: 'legacy',
 };
-
-export function hexWEIToDecGWEI(decGWEI) {
-  return conversionUtil(decGWEI, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    toDenomination: 'GWEI',
-  });
-}
-
-export function decimalToHex(decimal) {
-  return conversionUtil(decimal, {
-    fromNumericBase: 'dec',
-    toNumericBase: 'hex',
-  });
-}
-
-export function hexWEIToDecETH(hexWEI) {
-  return conversionUtil(hexWEI, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    toDenomination: 'ETH',
-  });
-}

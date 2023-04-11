@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 
 export default function failTxsThat(version, reason, condition) {
   return function (originalVersionedData) {
@@ -27,7 +27,7 @@ function transformState(state, condition, reason) {
         return txMeta;
       }
 
-      txMeta.status = TRANSACTION_STATUSES.FAILED;
+      txMeta.status = TransactionStatus.failed;
       txMeta.err = {
         message: reason,
         note: `Tx automatically failed by migration because ${reason}`,

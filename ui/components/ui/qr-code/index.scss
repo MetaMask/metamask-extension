@@ -28,17 +28,11 @@
   &__address-container {
     display: flex;
     justify-content: center;
+    cursor: pointer;
+    align-items: center;
 
     &__tooltip-wrapper {
       width: 100%;
-    }
-
-    &:hover {
-      cursor: pointer;
-
-      .qr-code__copy-icon__svg {
-        fill: var(--color-primary-default);
-      }
     }
   }
 
@@ -50,16 +44,5 @@
     padding: 8px 12px;
     word-break: break-all;
     text-align: center;
-  }
-
-  &__copy-icon {
-    height: 13px;
-    padding: 17px 0;
-    position: absolute;
-    right: 24px;
-
-    &__svg {
-      fill: var(--color-icon-default);
-    }
   }
 }

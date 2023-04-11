@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
-  GAS_RECOMMENDATIONS,
+  GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
 import {
@@ -46,9 +46,9 @@ describe('useGasPriceInput', () => {
     configure();
     const { result } = renderHook(() =>
       useGasPriceInput({
-        estimateToUse: GAS_RECOMMENDATIONS.HIGH,
+        estimateToUse: GasRecommendations.high,
         transaction: {
-          userFeeLevel: GAS_RECOMMENDATIONS.HIGH,
+          userFeeLevel: GasRecommendations.high,
           txParams: { gasPrice: '0x5028' },
         },
         ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
@@ -60,7 +60,7 @@ describe('useGasPriceInput', () => {
   it('if no gasPrice is provided returns default estimate for legacy transaction', () => {
     const { result } = renderHook(() =>
       useGasPriceInput({
-        estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
+        estimateToUse: GasRecommendations.medium,
         ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
       }),
     );
@@ -70,7 +70,7 @@ describe('useGasPriceInput', () => {
   it('for legacy transaction if estimateToUse is high and no gasPrice is provided returns high estimate value', () => {
     const { result } = renderHook(() =>
       useGasPriceInput({
-        estimateToUse: GAS_RECOMMENDATIONS.HIGH,
+        estimateToUse: GasRecommendations.high,
         ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
       }),
     );
@@ -80,7 +80,7 @@ describe('useGasPriceInput', () => {
   it('returns 0 if gasPrice is not present in transaction and estimates are also not legacy', () => {
     const { result } = renderHook(() =>
       useGasPriceInput({
-        estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
+        estimateToUse: GasRecommendations.medium,
         ...FEE_MARKET_ESTIMATE_RETURN_VALUE,
       }),
     );
@@ -89,7 +89,7 @@ describe('useGasPriceInput', () => {
 
   it('returns gasPrice set by user if gasPriceHasBeenManuallySet is true', () => {
     const { result } = renderHook(() =>
-      useGasPriceInput({ estimateToUse: GAS_RECOMMENDATIONS.MEDIUM }),
+      useGasPriceInput({ estimateToUse: GasRecommendations.medium }),
     );
     act(() => {
       result.current.setGasPriceHasBeenManuallySet(true);

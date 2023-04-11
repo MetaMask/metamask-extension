@@ -234,6 +234,11 @@
     }
   }
 
+  &__restrict-height {
+    max-height: 578px;
+    overflow-y: auto;
+  }
+
   &__add-network-form-footer {
     display: flex;
     flex-flow: row;

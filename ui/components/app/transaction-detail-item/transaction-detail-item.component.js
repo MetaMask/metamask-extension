@@ -4,19 +4,19 @@ import classnames from 'classnames';
 
 import Typography from '../../ui/typography/typography';
 import {
-  COLORS,
+  Color,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
   FLEX_WRAP,
-  ALIGN_ITEMS,
+  AlignItems,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
   detailTitle = '',
   detailText = '',
-  detailTitleColor = COLORS.TEXT_DEFAULT,
+  detailTitleColor = Color.textDefault,
   detailTotal = '',
   subTitle = '',
   subText = '',
@@ -29,11 +29,11 @@ export default function TransactionDetailItem({
         <Typography
           color={detailTitleColor}
           fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           boxProps={{
             display: DISPLAY.FLEX,
             flexWrap: FLEX_WRAP.NO_WRAP,
-            alignItems: ALIGN_ITEMS.CENTER,
+            alignItems: AlignItems.center,
           }}
         >
           {detailTitle}
@@ -45,14 +45,17 @@ export default function TransactionDetailItem({
           })}
         >
           {detailText && (
-            <Typography variant={TYPOGRAPHY.H6} color={COLORS.TEXT_ALTERNATIVE}>
+            <Typography
+              variant={TypographyVariant.H6}
+              color={Color.textAlternative}
+            >
               {detailText}
             </Typography>
           )}
           <Typography
-            color={COLORS.TEXT_DEFAULT}
+            color={Color.textDefault}
             fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
             marginTop={1}
             marginBottom={1}
             marginLeft={1}
@@ -66,14 +69,17 @@ export default function TransactionDetailItem({
         {React.isValidElement(subTitle) ? (
           <div>{subTitle}</div>
         ) : (
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
+          <Typography
+            variant={TypographyVariant.H7}
+            color={Color.textAlternative}
+          >
             {subTitle}
           </Typography>
         )}
 
         <Typography
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H7}
+          color={Color.textAlternative}
           align="end"
           className="transaction-detail-item__row-subText"
         >

@@ -4,8 +4,8 @@ import { renderHook } from '@testing-library/react-hooks';
 
 import {
   CUSTOM_GAS_ESTIMATE,
-  EDIT_GAS_MODES,
-  GAS_RECOMMENDATIONS,
+  EditGasModes,
+  GasRecommendations,
 } from '../../../shared/constants/gas';
 import mockState from '../../../test/data/mock-state.json';
 import * as Actions from '../../store/actions';
@@ -31,8 +31,8 @@ const renderUseTransactionFunctions = (props) => {
   return renderHook(
     () =>
       useTransactionFunctions({
-        defaultEstimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
-        editGasMode: EDIT_GAS_MODES.MODIFY_IN_PLACE,
+        defaultEstimateToUse: GasRecommendations.medium,
+        editGasMode: EditGasModes.modifyInPlace,
         estimatedBaseFee: '0x59682f10',
         gasFeeEstimates: FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates,
         gasLimit: '21000',
@@ -90,15 +90,38 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
   });
 
+  it('invokes action updateTransaction with 10% increased max priority fee and medium fee + 10% when updateTransactionToTenPercentIncreasedGasFee callback is invoked while original priority fee is 0', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: { maxFeePerGas: '0x5028', maxPriorityFeePerGas: '0x0' },
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'tenPercentIncreased',
+      estimateUsed: 'custom',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: '0x582c',
+      maxPriorityFeePerGas: '0x1caf4ad00',
+      userEditedGasLimit: undefined,
+      userFeeLevel: 'custom',
+    });
+  });
+
   it('should invoke action updateTransaction with estimate gas values fee when updateTransactionUsingEstimate callback is invoked', async () => {
     const mockUpdateGasFees = jest
       .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
 
     const { result } = renderUseTransactionFunctions();
-    await result.current.updateTransactionUsingEstimate(
-      GAS_RECOMMENDATIONS.LOW,
-    );
+    await result.current.updateTransactionUsingEstimate(GasRecommendations.low);
     expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
     expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
       estimateSuggested: 'medium',

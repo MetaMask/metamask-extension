@@ -4,7 +4,7 @@ import SendContent from './send-content.component';
 
 export default {
   title: 'Pages/Send/SendContent',
-  id: __filename,
+
   argsTypes: {
     showHexData: {
       control: 'boolean',
@@ -80,5 +80,5 @@ DefaultStory.args = {
   networkOrAccountNotSupports1559: false,
   getIsBalanceInsufficient: false,
   to: 'string to',
-  assetError: 'newAccountDetectedDialogMessage',
+  assetError: null,
 };

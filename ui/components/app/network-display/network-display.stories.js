@@ -4,17 +4,17 @@ import {
   BUILT_IN_NETWORKS,
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
 import NetworkDisplay from '.';
 
 export default {
   title: 'Components/App/NetworkDisplay',
-  id: __filename,
+
   argTypes: {
     indicatorSize: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(Size),
     },
     labelProps: {
       control: 'object',

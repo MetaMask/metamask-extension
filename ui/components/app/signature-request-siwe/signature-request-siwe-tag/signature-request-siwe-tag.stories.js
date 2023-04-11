@@ -3,7 +3,7 @@ import SignatureRequestSIWETag from '.';
 
 export default {
   title: 'Components/App/SignatureRequestSIWE/SignatureRequestSIWETag',
-  id: __filename,
+
   argTypes: {
     text: { control: 'text' },
   },

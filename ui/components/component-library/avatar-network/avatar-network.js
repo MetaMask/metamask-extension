@@ -1,49 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { BaseAvatar } from '../base-avatar';
+import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-
 import {
-  COLORS,
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
+import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export const AvatarNetwork = ({
-  size = SIZES.MD,
-  networkName,
-  networkImageUrl,
+  size = Size.MD,
+  name,
+  src,
   showHalo,
-  color = COLORS.TEXT_DEFAULT,
-  backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
-  borderColor = COLORS.TRANSPARENT,
+  color = TextColor.textDefault,
+  backgroundColor = BackgroundColor.backgroundAlternative,
+  borderColor = BorderColor.transparent,
   className,
   ...props
 }) => {
   const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
-    setShowFallback(!networkImageUrl);
-  }, [networkImageUrl]);
+    setShowFallback(!src);
+  }, [src]);
 
-  const fallbackString = networkName && networkName[0] ? networkName[0] : '?';
+  const fallbackString = name && name[0] ? name[0] : '?';
 
   const handleOnError = () => {
     setShowFallback(true);
   };
 
   return (
-    <BaseAvatar
+    <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
       className={classnames(
-        'avatar-network',
-        showHalo && 'avatar-network--with-halo',
+        'mm-avatar-network',
+        showHalo && 'mm-avatar-network--with-halo',
         className,
       )}
       {...{ backgroundColor, borderColor, color, ...props }}
@@ -54,9 +56,9 @@ export const AvatarNetwork = ({
         <>
           {showHalo && (
             <img
-              src={networkImageUrl}
+              src={src}
               className={
-                showHalo ? 'avatar-network__network-image--blurred' : ''
+                showHalo ? 'mm-avatar-network__network-image--blurred' : ''
               }
               aria-hidden="true"
             />
@@ -64,53 +66,53 @@ export const AvatarNetwork = ({
           <img
             className={
               showHalo
-                ? 'avatar-network__network-image--size-reduced'
-                : 'avatar-network__network-image'
+                ? 'mm-avatar-network__network-image--size-reduced'
+                : 'mm-avatar-network__network-image'
             }
             onError={handleOnError}
-            src={networkImageUrl}
-            alt={networkName || 'network avatar'}
+            src={src}
+            alt={`${name} logo` || 'network logo'}
           />
         </>
       )}
-    </BaseAvatar>
+    </AvatarBase>
   );
 };
 
 AvatarNetwork.propTypes = {
   /**
-   * The networkName accepts the string to render the first alphabet of the Avatar Name
+   * The name accepts the string to render the first alphabet of the Avatar Name
    */
-  networkName: PropTypes.string,
+  name: PropTypes.string,
   /**
-   * The networkImageUrl accepts the string of the image to be rendered
+   * The src accepts the string of the image to be rendered
    */
-  networkImageUrl: PropTypes.string,
+  src: PropTypes.string,
   /**
    * The showHalo accepts a boolean prop to render the image with halo effect
    */
   showHalo: PropTypes.bool,
   /**
    * The size of the AvatarNetwork
-   * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
-   * Defaults to SIZES.MD
+   * Possible values could be Size.XS(16px), Size.SM(24px), Size.MD(32px), Size.LG(40px), Size.XL(48px)
+   * Defaults to Size.MD
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AVATAR_NETWORK_SIZES)),
   /**
    * The background color of the AvatarNetwork
-   * Defaults to COLORS.BACKGROUND_ALTERNATIVE
+   * Defaults to BackgroundColor.backgroundAlternative
    */
-  backgroundColor: Box.propTypes.backgroundColor,
+  backgroundColor: PropTypes.oneOf(Object.values(BackgroundColor)),
   /**
    * The background color of the AvatarNetwork
-   * Defaults to COLORS.BORDER_DEFAULT
+   * Defaults to BorderColor.borderDefault
    */
-  borderColor: Box.propTypes.borderColor,
+  borderColor: PropTypes.oneOf(Object.values(BorderColor)),
   /**
    * The color of the text inside the AvatarNetwork
-   * Defaults to COLORS.TEXT_DEFAULT
+   * Defaults to TextColor.textDefault
    */
-  color: Box.propTypes.color,
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * Additional classNames to be added to the AvatarNetwork
    */

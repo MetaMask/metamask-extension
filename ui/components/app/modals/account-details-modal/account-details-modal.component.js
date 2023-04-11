@@ -9,8 +9,10 @@ import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -41,7 +43,6 @@ export default class AccountDetailsModal extends Component {
       setAccountLabel,
       keyrings,
       rpcPrefs,
-      accounts,
       history,
       hideModal,
       blockExplorerLinkText,
@@ -51,12 +52,6 @@ export default class AccountDetailsModal extends Component {
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address);
     });
-
-    const getAccountsNames = (allAccounts, currentName) => {
-      return Object.values(allAccounts)
-        .map((item) => item.name)
-        .filter((itemName) => itemName !== currentName);
-    };
 
     let exportPrivateKeyFeatureEnabled = true;
     // This feature is disabled for hardware wallets
@@ -72,10 +67,10 @@ export default class AccountDetailsModal extends Component {
     const openBlockExplorer = () => {
       const accountLink = getAccountLink(address, chainId, rpcPrefs);
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.NAVIGATION,
-        event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.ExternalLinkClicked,
         properties: {
-          link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+          link_type: MetaMetricsEventLinkType.AccountTracker,
           location: 'Account Details Modal',
           url_domain: getURLHostName(accountLink),
         },
@@ -91,7 +86,7 @@ export default class AccountDetailsModal extends Component {
           className="account-details-modal__name"
           defaultValue={name}
           onSubmit={(label) => setAccountLabel(address, label)}
-          accountsNames={getAccountsNames(accounts, name)}
+          accounts={this.props.accounts}
         />
 
         <QrView
@@ -111,24 +106,21 @@ export default class AccountDetailsModal extends Component {
               : openBlockExplorer
           }
         >
-          {this.context.t(
-            blockExplorerLinkText.firstPart,
-            blockExplorerLinkText.secondPart === ''
-              ? null
-              : [blockExplorerLinkText.secondPart],
-          )}
+          {this.context.t(blockExplorerLinkText.firstPart, [
+            blockExplorerLinkText.secondPart,
+          ])}
         </Button>
 
-        {exportPrivateKeyFeatureEnabled ? (
+        {exportPrivateKeyFeatureEnabled && (
           <Button
             type="secondary"
             className="account-details-modal__button"
             onClick={() => {
               this.context.trackEvent({
-                category: EVENT.CATEGORIES.ACCOUNTS,
-                event: EVENT_NAMES.KEY_EXPORT_SELECTED,
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.KeyExportSelected,
                 properties: {
-                  key_type: EVENT.KEY_TYPES.PKEY,
+                  key_type: MetaMetricsEventKeyType.Pkey,
                   location: 'Account Details Modal',
                 },
               });
@@ -137,7 +129,7 @@ export default class AccountDetailsModal extends Component {
           >
             {this.context.t('exportPrivateKey')}
           </Button>
-        ) : null}
+        )}
       </AccountModalContainer>
     );
   }

@@ -1,18 +1,18 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
+import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -34,17 +34,13 @@ export default class UnlockPage extends Component {
      */
     onRestore: PropTypes.func,
     /**
-     * onSumbit handler when form is submitted
+     * onSubmit handler when form is submitted
      */
     onSubmit: PropTypes.func,
     /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
-    /**
-     * Event handler to show metametrics modal
-     */
-    showOptInModal: PropTypes.func,
   };
 
   state = {
@@ -71,7 +67,7 @@ export default class UnlockPage extends Component {
     event.stopPropagation();
 
     const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState, showOptInModal } = this.props;
+    const { onSubmit, forceUpdateMetamaskState } = this.props;
 
     if (password === '' || this.submitting) {
       return;
@@ -82,11 +78,10 @@ export default class UnlockPage extends Component {
 
     try {
       await onSubmit(password);
-      const newState = await forceUpdateMetamaskState();
       this.context.trackEvent(
         {
-          category: EVENT.CATEGORIES.NAVIGATION,
-          event: EVENT_NAMES.APP_UNLOCKED,
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.AppUnlocked,
           properties: {
             failed_attempts: this.failed_attempts,
           },
@@ -95,21 +90,14 @@ export default class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-
-      if (
-        newState.participateInMetaMetrics === null ||
-        newState.participateInMetaMetrics === undefined
-      ) {
-        showOptInModal();
-      }
     } catch ({ message }) {
       this.failed_attempts += 1;
 
       if (message === 'Incorrect password') {
         await forceUpdateMetamaskState();
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.NAVIGATION,
-          event: EVENT_NAMES.APP_UNLOCKED_FAILED,
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.AppUnlockedFailed,
           properties: {
             reason: 'incorrect_password',
             failed_attempts: this.failed_attempts,
@@ -124,7 +112,6 @@ export default class UnlockPage extends Component {
 
   handleInputChange({ target }) {
     this.setState({ password: target.value, error: null });
-
     // tell mascot to look at page action
     if (target.getBoundingClientRect) {
       const element = target;
@@ -221,15 +208,15 @@ export default class UnlockPage extends Component {
                 onClick={() => {
                   this.context.trackEvent(
                     {
-                      category: EVENT.CATEGORIES.NAVIGATION,
-                      event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.SupportLinkClicked,
                       properties: {
                         url: SUPPORT_LINK,
                       },
                     },
                     {
                       contextPropsIntoEventProperties: [
-                        CONTEXT_PROPS.PAGE_TITLE,
+                        MetaMetricsContextProp.PageTitle,
                       ],
                     },
                   );

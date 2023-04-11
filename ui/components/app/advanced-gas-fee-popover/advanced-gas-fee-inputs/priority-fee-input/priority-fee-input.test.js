@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
 import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
+  EditGasModes,
+  GasEstimateTypes,
 } from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
@@ -37,7 +37,7 @@ const render = (txProps, contextProps) => {
       advancedGasFee: { priorityFee: 100 },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 
@@ -71,11 +71,11 @@ describe('PriorityfeeInput', () => {
       {
         userFeeLevel: 'high',
       },
-      { editGasMode: EDIT_GAS_MODES.SWAPS },
+      { editGasMode: EditGasModes.swaps },
     );
     expect(document.getElementsByTagName('input')[0]).toHaveValue(
       parseInt(
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates.high
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.high
           .suggestedMaxPriorityFeePerGas,
         10,
       ),
@@ -111,7 +111,7 @@ describe('PriorityfeeInput', () => {
     expect(screen.queryByText('2 - 125 GWEI')).toBeInTheDocument();
   });
 
-  it('should show error if value entered is 0', () => {
+  it('should not show error if value entered is 0', () => {
     render({
       txParams: {
         maxPriorityFeePerGas: '0x174876E800',
@@ -125,6 +125,17 @@ describe('PriorityfeeInput', () => {
     });
     expect(
       screen.queryByText('Priority fee must be greater than 0.'),
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
+  });
+
+  it('should not show the error if priority fee is 0', () => {
+    render({
+      txParams: {
+        maxPriorityFeePerGas: '0x0',
+      },
+    });
+    expect(
+      screen.queryByText('Priority fee must be greater than 0.'),
+    ).not.toBeInTheDocument();
   });
 });

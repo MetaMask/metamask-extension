@@ -1,75 +1,82 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { BaseAvatar } from '../base-avatar';
+import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, Icon } from '../icon';
+import { IconName, Icon } from '../icon';
 import {
-  COLORS,
-  BORDER_COLORS,
-  SIZES,
+  BorderColor,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  IconColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { AVATAR_FAVICON_SIZES } from './avatar-favicon.constants';
 
 export const AvatarFavicon = ({
-  size = SIZES.MD,
-  imageSource,
-  imgAlt = 'avatar-favicon',
+  size = Size.MD,
+  src,
+  name = 'avatar-favicon',
   className,
   fallbackIconProps,
-  borderColor = BORDER_COLORS.TRANSPARENT,
+  borderColor = BorderColor.transparent,
   ...props
 }) => {
+  const t = useI18nContext();
+
   return (
-    <BaseAvatar
+    <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      className={classnames('avatar-favicon', className)}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      className={classnames('mm-avatar-favicon', className)}
       {...{ borderColor, ...props }}
     >
-      {imageSource ? (
-        <img className="avatar-favicon__image" src={imageSource} alt={imgAlt} />
+      {src ? (
+        <img
+          className="mm-avatar-favicon__image"
+          src={src}
+          alt={t('logo', [name])}
+        />
       ) : (
         <Icon
-          name={ICON_NAMES.GLOBAL_FILLED}
-          color={COLORS.ICON_DEFAULT}
+          name={IconName.Global}
+          color={IconColor.iconDefault}
           size={size}
-          aria-label={imgAlt}
           {...fallbackIconProps}
         />
       )}
-    </BaseAvatar>
+    </AvatarBase>
   );
 };
 
 AvatarFavicon.propTypes = {
   /**
-   * The imageSource accepts the string of the image to be rendered
+   * The src accepts the string of the image to be rendered
    */
-  imageSource: PropTypes.string,
+  src: PropTypes.string,
   /**
    * The alt text for the favicon avatar to be rendered
    */
-  imgAlt: PropTypes.string,
+  name: PropTypes.string.isRequired,
   /**
    * Props for the fallback icon. All Icon props can be used
    */
-  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
+  fallbackIconProps: PropTypes.object,
   /**
    * The size of the AvatarFavicon
-   * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
-   * Defaults to SIZES.MD
+   * Possible values could be 'Size.XS' 16px, 'Size.SM' 24px, 'Size.MD' 32px, 'Size.LG' 40px, 'Size.XL' 48px
+   * Defaults to Size.MD
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AVATAR_FAVICON_SIZES)),
   /**
    * The border color of the AvatarFavicon
-   * Defaults to COLORS.TRANSPARENT
+   * Defaults to Color.transparent
    */
-  borderColor: Box.propTypes.borderColor,
+  borderColor: PropTypes.oneOf(Object.values(BorderColor)),
   /**
    * Additional classNames to be added to the AvatarFavicon
    */

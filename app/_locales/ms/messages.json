@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Lanjutan"
   },
-  "advancedOptions": {
-    "message": "Pilihan Lanjutan"
-  },
   "amount": {
     "message": "Jumlah"
   },
@@ -77,12 +74,6 @@
   },
   "asset": {
     "message": "Aset"
-  },
-  "attemptToCancel": {
-    "message": "Cuba untuk Batalkan?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Menghantar percubaan ini tidak akan menjamin transaksi asal anda dibatalkan. Jika percubaan pembatalan berjaya, anda akan dikenakan yuran transaksi di atas."
   },
   "attemptingConnect": {
     "message": "Sedang cuba menyambungkan kepada rantaian blok."
@@ -133,20 +124,11 @@
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
-  "buyWithWyre": {
-    "message": "Beli $1 dengan Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit $1 secara terus ke dalam akaun MetaMask anda."
-  },
   "bytes": {
     "message": "Bait"
   },
   "cancel": {
     "message": "Batal"
-  },
-  "cancellationGasFee": {
-    "message": "Fi Gas Pembatalan"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -157,9 +139,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk menyambung kepada Dompet Perkakasan anda."
   },
-  "clickToRevealSeed": {
-    "message": "Klik di sini untuk mendedahkan perkataan rahsia"
-  },
   "close": {
     "message": "Tutup"
   },
@@ -169,14 +148,8 @@
   "confirmPassword": {
     "message": "Sahkan Kata Laluan"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Sahkan Frasa Sandaran Rahsia anda"
-  },
   "confirmed": {
     "message": "Disahkan"
-  },
-  "congratulations": {
-    "message": "Tahniah"
   },
   "connect": {
     "message": "Sambung"
@@ -190,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
-  },
-  "continueToWyre": {
-    "message": "Teruskan ke Wyre"
   },
   "contractDeployment": {
     "message": "Penyusunan Kontrak"
@@ -219,9 +192,6 @@
   },
   "create": {
     "message": "Cipta"
-  },
-  "createAWallet": {
-    "message": "Cipta Dompet"
   },
   "createAccount": {
     "message": "Cipta Akaun"
@@ -268,9 +238,6 @@
   "downloadGoogleChrome": {
     "message": "Muat Turun Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Muat turun Frasa Sandaran Rahsia ini dan simpannya secara selamat di dalam medium storan atau cakera keras tersulit luaran."
-  },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
   },
@@ -279,33 +246,6 @@
   },
   "editContact": {
     "message": "Edit Kenalan"
-  },
-  "endOfFlowMessage1": {
-    "message": "Anda telah lulus ujian - simpan frasa benih anda di tempat yang selamat, itu tanggungjawab anda!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Semua Selesai"
-  },
-  "endOfFlowMessage2": {
-    "message": "Petua menyimpannya dengan selamat"
-  },
-  "endOfFlowMessage3": {
-    "message": "Simpan sandaran di beberapa tempat."
-  },
-  "endOfFlowMessage4": {
-    "message": "Jangan sesekali kongsi frasa ini dengan sesiapa."
-  },
-  "endOfFlowMessage5": {
-    "message": "Berhati-hati dengan pemancingan data! MetaMask tidak akan sesekali meminta frasa benih anda secara tiba-tiba."
-  },
-  "endOfFlowMessage6": {
-    "message": "Jika anda perlu membuat sandaran ungkapan benih anda sekali lagi, anda boleh lakukannya melalui Tetapan -> Keselamatan."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask tidak dapat memulihkan ungkapan benih anda. Ketahui lebih lanjut."
-  },
-  "endOfFlowMessage9": {
-    "message": "Ketahui lebih lanjut."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Nama ENS tidak ditemui di rangkaian semasa. Cuba beralih kepada Rangkaian Ethereum Utama."
@@ -374,21 +314,8 @@
   "general": {
     "message": "Am"
   },
-  "getEther": {
-    "message": "Dapatkan Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Dapatkan Ether daripada pili untuk $1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "Bermula"
-  },
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Kami gembira bertemu anda."
   },
   "hardware": {
     "message": "perkakasan"
@@ -423,12 +350,6 @@
   },
   "importAccountMsg": {
     "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Import Akaun dengan Frasa Benih"
-  },
-  "importWallet": {
-    "message": "Import Dompet"
   },
   "imported": {
     "message": "Diimport",
@@ -480,11 +401,11 @@
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
   },
-  "letsGoSetUp": {
-    "message": "Ya, mari sediakannya!"
-  },
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
+  },
+  "lineatestnet": {
+    "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
     "message": "Pautan"
@@ -507,14 +428,8 @@
   "max": {
     "message": "Maks"
   },
-  "memorizePhrase": {
-    "message": "Hafal ungkapan ini."
-  },
   "message": {
     "message": "Mesej"
-  },
-  "metamaskDescription": {
-    "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -544,9 +459,6 @@
   "newAccount": {
     "message": "Akaun Baru"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Alamat baru dikesan! Klik di sini untuk menambah buku alamat anda."
-  },
   "newAccountNumberName": {
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
@@ -560,17 +472,11 @@
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"
   },
-  "newToMetaMask": {
-    "message": "Baru mengenali MetaMask?"
-  },
   "next": {
     "message": "Seterusnya"
   },
   "noAddressForName": {
     "message": "Tiada alamat yang ditetapkan untuk nama ini."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Tidak, saya sudah pun memiliki frasa benih"
   },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
@@ -676,9 +582,6 @@
   "rejected": {
     "message": "Ditolak"
   },
-  "remindMeLater": {
-    "message": "Ingatkan saya nanti"
-  },
   "remove": {
     "message": "Alih keluar"
   },
@@ -697,35 +600,21 @@
   "reset": {
     "message": "Tetapkan semula"
   },
-  "resetAccount": {
-    "message": "Tetapkan Semula Akaun"
-  },
-  "resetAccountDescription": {
-    "message": "Menetapkan semula akaun anda akan mengosongkan sejarah transaksi anda."
-  },
   "restore": {
     "message": "Pulihkan"
   },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jika anda pernah menukar pelayar atau berpindah komputer, anda memerlukan ungkapan benih ini untuk mengakses akaun anda. Simpan ungkapan di tempat yang selamat dan rahsia."
-  },
   "revealSeedWordsWarning": {
-    "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "JANGAN berkongsi ungkapan ini dengan orang lain!"
+    "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC baru"
   },
   "save": {
     "message": "Simpan"
-  },
-  "saveAsCsvFile": {
-    "message": "Simpan sebagai Fail CSV"
   },
   "scanInstructions": {
     "message": "Bawa kod QR ke hadapan kamera anda"
@@ -742,12 +631,6 @@
   "searchTokens": {
     "message": "Cari Token"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Ungkapan rahsia sandaran anda memudahkan membuat sandaran dan memulihkan akaun anda."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "AMARAN: Jangan sesekali dedahkan frasa sandaran anda. Sesiapa yang memperoleh frasa ini boleh mengambil Ether anda selama-lamanya."
-  },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
@@ -756,9 +639,6 @@
   },
   "selectAnAccount": {
     "message": "Pilih Akaun"
-  },
-  "selectEachPhrase": {
-    "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."
   },
   "selectHdPath": {
     "message": "Pilih Laluan HD"
@@ -777,12 +657,6 @@
   },
   "settings": {
     "message": "Tetapan"
-  },
-  "showAdvancedGasInline": {
-    "message": "Kawalan gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menunjukkan harga gas dan kawalan had terus di skrin hantar dan sahkan."
   },
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
@@ -804,9 +678,6 @@
   },
   "sign": {
     "message": "Tandatangan"
-  },
-  "signNotice": {
-    "message": "Menandatangani mesej ini boleh menyebabkan kesan sampingan yang berbahaya. Hanya tandatangan mesej daripada tapak yang anda percayai sepenuhnya dengan seluruh akaun anda. Kaedah berbahaya ini akan dibuang dalam versi akan datang."
   },
   "signatureRequest": {
     "message": "Permintaan Tandatangan"
@@ -834,9 +705,6 @@
   },
   "stateLogsDescription": {
     "message": "Log keadaan mengandungi alamat akaun awam anda dan transaksi dihantar."
-  },
-  "storePhrase": {
-    "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."
   },
   "submitted": {
     "message": "Dihantar"
@@ -876,12 +744,6 @@
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"
-  },
-  "testFaucet": {
-    "message": "Uji Pili"
-  },
-  "thisWillCreate": {
-    "message": "Ini akan mencipta dompet dan frasa benih baru"
   },
   "tips": {
     "message": "Tip"
@@ -998,26 +860,14 @@
   "userName": {
     "message": "Nama pengguna"
   },
-  "viewAccount": {
-    "message": "Paparkan Akaun"
-  },
   "viewContact": {
     "message": "Lihat Kenalan"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
   },
-  "welcome": {
-    "message": "Selamat datang ke MetaMask"
-  },
   "welcomeBack": {
     "message": "Selamat Kembali!"
-  },
-  "writePhrase": {
-    "message": "Tulis frasa ini di atas kertas dan simpan di tempat yang selamat. JIka anda mahu lebih selamat, tuliskannya di beberapa helai kertas dan simpan setiap satunya di 2 -3 lokasi berbeza."
-  },
-  "yesLetsTry": {
-    "message": "Ya, mari cuba"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."

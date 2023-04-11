@@ -3,7 +3,7 @@ import QrCodeView from '.';
 
 export default {
   title: 'Components/UI/QrCodeView',
-  id: __filename,
+
   argTypes: {
     Qr: {
       control: 'object',

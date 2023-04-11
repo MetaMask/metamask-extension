@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
-import { Icon, ICON_NAMES } from '../icon';
+import { IconName, Icon, IconSize } from '../icon';
 import { Text } from '../text';
 import Box from '../../ui/box';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
-  SIZES,
-  BORDER_RADIUS,
-  TEXT,
+  Size,
+  BorderRadius,
+  TextVariant,
+  IconColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 export const PickerNetwork = ({
@@ -26,30 +27,30 @@ export const PickerNetwork = ({
     <Box
       className={classnames('mm-picker-network', className)}
       as="button"
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderColor={COLORS.BORDER_DEFAULT}
-      borderWidth={1}
-      alignItems={ALIGN_ITEMS.CENTER}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      alignItems={AlignItems.center}
       paddingLeft={2}
       paddingRight={4}
       gap={2}
-      borderRadius={BORDER_RADIUS.PILL}
-      display={DISPLAY.INLINE_FLEX}
+      borderRadius={BorderRadius.pill}
+      display={DISPLAY.FLEX}
       {...props}
     >
       <AvatarNetwork
         className="mm-picker-network__avatar-network"
-        networkImageUrl={src}
-        networkName={label}
-        size={SIZES.XS}
+        src={src}
+        name={label}
+        size={Size.XS}
         {...avatarNetworkProps}
       />
-      <Text variant={TEXT.BODY_SM}>{label}</Text>
+      <Text ellipsis variant={TextVariant.bodySm}>
+        {label}
+      </Text>
       <Icon
         className="mm-picker-network__arrow-down-icon"
-        name={ICON_NAMES.ARROW_DOWN}
-        color={COLORS.ICON_DEFAULT}
-        size={SIZES.XS}
+        name={IconName.ArrowDown}
+        color={IconColor.iconDefault}
+        size={IconSize.Xs}
         {...iconProps}
       />
     </Box>
@@ -72,7 +73,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from Icon
    */
-  iconProps: PropTypes.shape(Icon.PropTypes),
+  iconProps: PropTypes.object,
   /**
    * The text content of the PickerNetwork component
    */

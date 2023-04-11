@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index c331176c5488e12b3e812658cc3f51347d4ff973..127765d9c85217398ef9a0f24ac9d43c7cdb54b9 100644
+--- a/index.js
++++ b/index.js
+@@ -50,7 +50,7 @@ var bindingVisitor = {
+         }
+       }
+ 
+-      state.undeclared[node.name] = true
++      Reflect.defineProperty(state.undeclared, node.name, { value: true, writable: true, enumerable: true, configurable: true })
+     }
+ 
+     if (state.wildcard &&
