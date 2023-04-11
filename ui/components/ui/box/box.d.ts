@@ -326,7 +326,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Use the as prop to change the underlying HTML element of the Box component.
    */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof HTMLElementTagNameMap;
   /**
    * The text-color of the Box component.
    * Use TextColor enum from '../../../helpers/constants/design-system';
