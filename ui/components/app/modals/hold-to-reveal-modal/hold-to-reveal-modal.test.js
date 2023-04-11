@@ -143,7 +143,7 @@ describe('Hold to Reveal Modal', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.key,
+        category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,

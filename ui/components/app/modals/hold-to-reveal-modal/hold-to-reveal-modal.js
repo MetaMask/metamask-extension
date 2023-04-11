@@ -7,8 +7,8 @@ import {
   Button,
   BUTTON_TYPES,
   ButtonIcon,
+  IconName,
 } from '../../../component-library';
-import { ICON_NAMES } from '../../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,
@@ -58,11 +58,11 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         <Text variant={TextVariant.headingSm}>{t('holdToRevealTitle')}</Text>
         <ButtonIcon
           className="hold-to-reveal-modal__close"
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.CLOSE}
           size={Size.SM}
           onClick={() => {
             trackEvent({
-              category: MetaMetricsEventCategory.key,
+              category: MetaMetricsEventCategory.Keys,
               event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
