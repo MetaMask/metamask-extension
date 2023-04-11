@@ -315,7 +315,6 @@ export default function ConfirmApprove({
 }
 
 ConfirmApprove.propTypes = {
-  txParams: PropTypes.object,
   assetStandard: PropTypes.string,
   assetName: PropTypes.string,
   tokenAddress: PropTypes.string,
