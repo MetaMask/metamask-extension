@@ -3984,13 +3984,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/gas-fee-controller@npm:1.0.0"
+"@metamask/gas-fee-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/gas-fee-controller@npm:3.0.0"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
-    "@metamask/network-controller": ~1.0.0
+    "@metamask/base-controller": ^1.1.2
+    "@metamask/controller-utils": ^2.0.0
+    "@metamask/network-controller": ^3.0.0
     "@types/uuid": ^8.3.0
     babel-runtime: ^6.26.0
     eth-query: ^2.1.2
@@ -3998,7 +3998,9 @@ __metadata:
     ethjs-unit: ^0.1.6
     immer: ^9.0.6
     uuid: ^8.3.2
-  checksum: fef5255532a6cd5325ddfbbfec11140e6629c011a8cc6b126672ef7a6e93a327d059935cdc6fc7089562f3277fb70541b5ea54cd31c0e5b350ceebbe73d5d59f
+  peerDependencies:
+    "@metamask/network-controller": ^3.0.0
+  checksum: 8cdd43a265094dd5e41f0094c278cde351d290446711e6b39de26f842faa993c050e5506cafe8d1c2fb0c4ee3f0f97c5af5fa6528de10e76d071b56fb9673da8
   languageName: node
   linkType: hard
 
@@ -4074,6 +4076,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/network-controller@npm:3.0.0"
+  dependencies:
+    "@metamask/base-controller": ^1.1.2
+    "@metamask/controller-utils": ^2.0.0
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-json-rpc-infura: ^5.1.0
+    eth-query: ^2.1.2
+    immer: ^9.0.6
+    web3-provider-engine: ^16.0.3
+  checksum: 3ae56a252c11dbd6dc843f9db8b30768d2475afd499c99bdccdc850517031b447bab9ca4f6647da7e64c7a0efd61d029f59a89e4ec702e34a99733dd8e7f93ff
+  languageName: node
+  linkType: hard
+
 "@metamask/network-controller@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/network-controller@npm:4.0.0"
@@ -4087,22 +4105,6 @@ __metadata:
     immer: ^9.0.6
     web3-provider-engine: ^16.0.3
   checksum: 19dfa74cefc435f5205020c68b948956c52689cdfaa153dc37d116e866f61903396b4b19055975d6fc9ab4185b34e87a641eba8aebb864e9161ed5e561b35263
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/network-controller@npm:1.0.0"
-  dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-json-rpc-infura: ^5.1.0
-    eth-query: ^2.1.2
-    immer: ^9.0.6
-    web3-provider-engine: ^16.0.3
-  checksum: a138943fecc27630e6fe392b9d237405e61b55e17b9dcfc7c434ccc59582fc775aec54e765c2e98f2b1579f760c7d163156450184172128079ce3c4d8e4bc725
   languageName: node
   linkType: hard
 
@@ -4150,13 +4152,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/obs-store@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/obs-store@npm:8.0.0"
+"@metamask/obs-store@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/obs-store@npm:8.1.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     through2: ^2.0.3
-  checksum: 232362e65a3563f0bd3299cec48f5adb37e68d4f066b7de90f2b044480d3b16c2d918c12d672c825e1d9b55344ae818fb8494d91129e4613555097653b9bb887
+  checksum: 92356067fa3517526d656f2f0bdfbc4d39f65e27fb30d84240cfc9c1aa9cd5d743498952df18ed8efbb8887b6cc1bc1fab37bde3fb0fc059539e0dfcc67ff86f
   languageName: node
   linkType: hard
 
@@ -24223,14 +24225,14 @@ __metadata:
     "@metamask/eth-token-tracker": ^4.0.0
     "@metamask/etherscan-link": ^2.2.0
     "@metamask/forwarder": ^1.1.0
-    "@metamask/gas-fee-controller": ^1.0.0
+    "@metamask/gas-fee-controller": ^3.0.0
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
     "@metamask/message-manager": ^2.1.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
-    "@metamask/obs-store": ^8.0.0
+    "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^3.1.0
     "@metamask/phishing-controller": ^2.0.0
     "@metamask/phishing-warning": ^2.1.0
