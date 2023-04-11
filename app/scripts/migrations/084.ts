@@ -33,7 +33,7 @@ function transformState(state: Record<string, unknown>) {
     networkConfigurations,
   }: { networkConfigurations: Record<string, object> } = NetworkController;
 
-  const newNetworkConfigurations: Record<string, object> = {};
+  const newNetworkConfigurations: Record<string, Record<string, unknown>> = {};
 
   for (const networkConfigurationId in networkConfigurations) {
     if (
