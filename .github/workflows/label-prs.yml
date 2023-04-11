@@ -16,7 +16,4 @@ jobs:
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         with:
-          script: |
-            const { runLabelPRsAutomation } = require(require('path').resolve('./.github/scripts/label-prs.js'));
-
-            runLabelPRsAutomation(context, github);
+          script: npm run stuff -- process.env.HEAD_REF

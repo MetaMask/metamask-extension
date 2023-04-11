@@ -94,7 +94,8 @@
     "githooks:install": "husky install",
     "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
-    "validate-branch-name": "validate-branch-name"
+    "validate-branch-name": "validate-branch-name",
+    "label-prs": "ts-node .github/scripts/label-prs.ts"
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
@@ -212,6 +213,7 @@
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
+    "@actions/github": "^5.1.1",
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
