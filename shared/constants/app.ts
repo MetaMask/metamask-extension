@@ -53,6 +53,7 @@ export const MESSAGE_TYPE = {
   PERSONAL_SIGN: 'personal_sign',
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
+  TRANSACTION: 'transaction',
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
