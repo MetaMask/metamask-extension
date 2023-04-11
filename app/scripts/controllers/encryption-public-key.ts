@@ -25,6 +25,7 @@ import {
 } from '@metamask/approval-controller';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { KeyringType } from '../../../shared/constants/keyring';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 const controllerName = 'EncryptionPublicKeyController';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
@@ -387,7 +388,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     type: string,
   ) {
     const id = msgParams.metamaskId as string;
-    const origin = msgParams.origin || controllerName;
+    const origin = msgParams.origin || ORIGIN_METAMASK;
 
     this.messagingSystem
       .call(

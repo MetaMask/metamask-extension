@@ -4,7 +4,7 @@ import {
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import EncryptionPublicKeyController, {
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
@@ -170,7 +170,7 @@ describe('EncryptionPublicKeyController', () => {
       expect(metricsEventMock).toHaveBeenCalledTimes(2);
       expect(metricsEventMock).toHaveBeenLastCalledWith({
         event: 'Test Reason',
-        category: EVENT.CATEGORIES.MESSAGES,
+        category: MetaMetricsEventCategory.Messages,
         properties: {
           action: 'Encryption public key Request',
         },
