@@ -13,15 +13,15 @@ async function main(): Promise<void> {
 
   const logs = JSON.stringify({ github, context });
   console.log(logs);
-  // github.event.pull_request.head.ref || "";
-  const HEAD_REF = 'test';
+  const headRef = context.payload.pull_request?.head.ref || '';
+  console.log({ headRef, args: process.argv })
 
   let issueNumber = await getIssueNumberFromPullRequestBody();
 
   if (issueNumber === "") {
-    bailIfIsBranchNameInvalid(HEAD_REF);
-    bailIfIsNotFeatureBranch(HEAD_REF);
-    issueNumber = getIssueNumberFromBranchName(HEAD_REF);
+    bailIfIsBranchNameInvalid(headRef);
+    bailIfIsNotFeatureBranch(headRef);
+    issueNumber = getIssueNumberFromBranchName(headRef);
   }
 
   await updateLabels(github, issueNumber);
