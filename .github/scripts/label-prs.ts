@@ -11,13 +11,9 @@ main().catch((error: Error): void => {
 async function main(): Promise<void> {
   const github = new GitHub();
 
-  const logs = JSON.stringify({ github, context });
-  console.log(logs);
   const headRef = context.payload.pull_request?.head.ref || '';
-  console.log({ headRef, args: process.argv })
 
   let issueNumber = await getIssueNumberFromPullRequestBody();
-
   if (issueNumber === "") {
     bailIfIsBranchNameInvalid(headRef);
     bailIfIsNotFeatureBranch(headRef);

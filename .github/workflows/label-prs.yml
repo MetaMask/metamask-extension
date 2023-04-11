@@ -27,7 +27,4 @@ jobs:
       run: yarn
 
     - name: Run PR labelling script
-      env:
-        HEAD_REF: ${{ github.event.pull_request.head.ref }}
-      run: |
-        npm run label-prs -- process.env.HEAD_REF
+      run: npm run label-prs
