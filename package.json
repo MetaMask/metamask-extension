@@ -419,6 +419,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.25",
     "@types/remote-redux-devtools": "^0.5.5",
+    "@types/sinon": "^10.0.13",
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/yargs": "^17.0.8",
