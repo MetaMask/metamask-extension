@@ -733,9 +733,7 @@ export function setupController(
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
-      unapprovedDecryptMsgCount +
-      pendingApprovalCount +
-      waitingForUnlockCount
+      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
     );
   }
 
