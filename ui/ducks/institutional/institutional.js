@@ -12,7 +12,6 @@ const SET_HISTORICAL_REPORTS = createComplianceActionType(
 
 const name = 'institutionalFeatures';
 
-// Initial state
 const initialState = {
   historicalReports: {},
   complianceProjectId: '',
@@ -37,18 +36,19 @@ const { actions, reducer } = slice;
 export default reducer;
 
 export const getComplianceProjectId = (state) =>
-  state[name].complianceProjectId;
-export const getComplianceClientId = (state) => state[name].complianceClientId;
+  state.metamask[name].complianceProjectId;
+export const getComplianceClientId = (state) =>
+  state.metamask[name].complianceClientId;
 export const getComplianceTenantSubdomain = (state) =>
-  state[name].complianceTenantSubdomain;
+  state.metamask[name].complianceTenantSubdomain;
 export const getComplianceHistoricalReports = (state) =>
   state[name].historicalReports;
 export const getComplianceReportsInProgress = (state) =>
-  state[name].reportsInProgress;
+  state.metamask[name].reportsInProgress;
 export const getInstitutionalConnectRequests = (state) =>
-  state[name].connectRequests;
+  state.metamask[name].connectRequests;
 export const complianceActivated = (state) =>
-  Boolean(state[name].complianceProjectId);
+  Boolean(state.metamask[name].complianceProjectId);
 
 export const getComplianceHistoricalReportsByAddress = (address) =>
   createSelector(getComplianceHistoricalReports, (reports) =>
@@ -63,6 +63,8 @@ export const getComplianceReportsInProgressByAddress = (address) =>
 export const fetchHistoricalReports = (address, testProjectId = undefined) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const mmiActions = mmiActionsFactory();
+
     let projectId;
 
     // testProjectId is provided to make a test request, which checks if projectId is correct
@@ -72,8 +74,6 @@ export const fetchHistoricalReports = (address, testProjectId = undefined) => {
         return;
       }
     }
-
-    const mmiActions = mmiActionsFactory();
 
     try {
       const result = await dispatch(
