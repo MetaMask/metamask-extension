@@ -590,10 +590,8 @@ export default class SignController extends BaseControllerV2<
         ...messageParams,
         origin: messageParams.origin as string,
       },
-      securityProviderResponse:
-        coreMessage.securityProviderResponse || new Map(),
     };
-    return stateMessage as StateMessage;
+    return stateMessage;
   }
 
   private _normalizeMsgData(data: string) {

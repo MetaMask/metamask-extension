@@ -5,12 +5,28 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
+export type TransactionRequestData = {
+  txParams: Record<string, unknown>;
+  messageParams?: never;
+  msgParams?: never;
+};
+
+export type MessageRequestData =
+  | {
+      msgParams: MessageParams;
+      txParams?: never;
+      messageParams?: never;
+    }
+  | {
+      messageParams: MessageParams;
+      msgParams?: never;
+      txParams?: never;
+    }
+  | TransactionRequestData;
+
 export type RequestData = {
   origin: string;
-  msgParams?: MessageParams;
-  messageParams?: MessageParams;
-  txParams?: Record<string, unknown>;
-};
+} & MessageRequestData;
 
 export async function securityProviderCheck(
   requestData: RequestData,
