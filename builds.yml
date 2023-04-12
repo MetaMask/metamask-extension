@@ -162,7 +162,7 @@ env:
 
   # Used for debugging changes to the phishing warning page.
   # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
-  - PHISHING_WARNING_PAGE_URL
+  - PHISHING_WARNING_PAGE_URL: null
   # Modified in <root>/development/build/scripts.js:@getInfuraProjectId
   - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
@@ -183,6 +183,8 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - NODE_ENV
   # Defined by node itself
+  # For the purposes of the build system we define it as empty below
+  # if it's not inside process.env
   # Also see DEBUG and METAMASK_DEBUG
   - NODE_DEBUG: ''
 

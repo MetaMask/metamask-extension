@@ -24,7 +24,7 @@ class Variables {
    * @throws {TypeError} If there is no definition of a variable.
    */
   get(key) {
-    const value = this.getMaybe(key);
+    const value = this.#getMaybe(key);
     assert(
       value !== DeclaredOnly,
       new TypeError(
@@ -34,7 +34,14 @@ class Variables {
     return value;
   }
 
-  getMaybe(key) {
+  /**
+   * Returns a declared, but maybe not defined variable.
+   *
+   * @param {string} key - The name of the variable
+   * @throws {TypeError} If there was no declaration of the variable.
+   * @returns The value, or undefined if the variables wasn't defined.
+   */
+  #getMaybe(key) {
     assert(
       this.isDeclared(key),
       new TypeError(

@@ -415,9 +415,5 @@ function getIgnoredFiles(currentBuildType) {
 Please fix builds.yml`);
   }
 
-  console.log(`--- IGNORED PATHS:
-\t-> ${ignoredPaths.join('\n\t-> ')}
----`);
-
   return ignoredPaths;
 }

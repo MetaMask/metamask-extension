@@ -107,17 +107,10 @@ const standardScuttlingConfig = {
  * @param {string} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.
- * @param options.activeBuild
  * @param options.variables
  * @returns {string} The Infura project ID.
  */
-function getInfuraProjectId({
-  buildType,
-  activeBuild,
-  variables,
-  environment,
-  testing,
-}) {
+function getInfuraProjectId({ buildType, variables, environment, testing }) {
   if (testing) {
     return '00000000000000000000000000000000';
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
@@ -125,16 +118,16 @@ function getInfuraProjectId({
     return variables.get('INFURA_PROJECT_ID');
   }
   /** @type {string|undefined} */
-  const infuraKeyReference = activeBuild.var?.infuraProjectKey;
+  const infuraKeyReference = process.env.INFURA_ENV_KEY_REF;
   assert(
-    typeof infuraKeyReference === 'string',
-    `Build type "${buildType}" has undefined infuraEnvKey variable in builds.yml`,
+    typeof infuraKeyReference === 'string' && infuraKeyReference.length > 0,
+    `Build type "${buildType}" has improperly set INFURA_ENV_KEY_REF in builds.yml. Current value: "${infuraKeyReference}"`,
   );
   /** @type {string|undefined} */
   const infuraProjectId = variables.get(infuraKeyReference);
   assert(
-    typeof infuraProjectId === 'string',
-    `Infura Project ID environmental variable "${infuraKeyReference}" doesn't exist. Misconfigured builds.yml`,
+    typeof infuraProjectId === 'string' && infuraProjectId.length > 0,
+    `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
   );
   return infuraProjectId;
 }
@@ -145,29 +138,26 @@ function getInfuraProjectId({
  * @param {object} options - The Segment write key options.
  * @param {string} options.buildType - The current build type.
  * @param {keyof ENVIRONMENT} options.environment - The current build environment.
- * @param options.variables
- * @param options.activeBuild
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
  * @returns {string} The Segment write key.
  */
-function getSegmentWriteKey({
-  buildType,
-  variables,
-  activeBuild,
-  environment,
-}) {
+function getSegmentWriteKey({ buildType, variables, environment }) {
   if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
     return variables.get('SEGMENT_WRITE_KEY');
   }
 
-  const segmentKeyReference = activeBuild.var?.segmentWriteKey;
+  const segmentKeyReference = process.env.SEGMENT_WRITE_KEY_REF;
   assert(
-    typeof segmentKeyReference === 'string',
-    `Build type "${buildType}" has undefined segmentWriteKey variable in builds.yml`,
+    typeof segmentKeyReference === 'string' && segmentKeyReference.length > 0,
+    `Build type "${buildType}" has improperly set SEGMENT_WRITE_KEY_REF in builds.yml. Current value: "${segmentKeyReference}"`,
   );
 
   const segmentWriteKey = variables.get(segmentKeyReference);
-  assert(typeof segmentWriteKey === 'string');
+  assert(
+    typeof segmentWriteKey === 'string' && segmentWriteKey.length > 0,
+    `Segment Write Key environmental variable "${segmentKeyReference}" is set improperly.`,
+  );
   return segmentWriteKey;
 }
 
@@ -176,11 +166,11 @@ function getSegmentWriteKey({
  *
  * @param {object} options - The phishing warning page options.
  * @param {boolean} options.testing - Whether this is a test build or not.
- * @param options.variables
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
  * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
  */
 function getPhishingWarningPageUrl({ variables, testing }) {
-  let phishingWarningPageUrl = variables.getMaybe('PHISHING_WARNING_PAGE_URL');
+  let phishingWarningPageUrl = variables.get('PHISHING_WARNING_PAGE_URL');
 
   assert(
     phishingWarningPageUrl === DeclaredOnly ||
