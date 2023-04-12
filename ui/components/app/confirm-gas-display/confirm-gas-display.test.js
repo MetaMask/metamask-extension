@@ -51,7 +51,7 @@ describe('ConfirmGasDisplay', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
-  it('should render gas display labels for EIP1559 transcations', async () => {
+  it('should render gas display labels for EIP1559 transcations', () => {
     render({
       transactionProp: {
         txParams: {
