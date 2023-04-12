@@ -107,17 +107,12 @@ type WithControllerCallback<NetworkCommunications, ReturnValue> = (args: {
 }) => Promise<ReturnValue> | ReturnValue;
 
 /**
- * The options that `withController` takes.
- */
-type WithControllerOptions = Partial<NetworkControllerOptions>;
-
-/**
  * A variant of the options that the NetworkController constructor takes, where
  * the provider state has been preconfigured with an Infura network. This is
  * extracted so that we can give `withController` a better signature.
  */
 type NetworkControllerOptionsWithInfuraProviderConfig = Partial<
-  Omit<WithControllerOptions, 'state'>
+  Omit<Partial<NetworkControllerOptions>, 'state'>
 > & {
   state: Partial<Omit<NetworkControllerState, 'provider'>> & {
     provider: Omit<ProviderConfiguration, 'type'> & {
