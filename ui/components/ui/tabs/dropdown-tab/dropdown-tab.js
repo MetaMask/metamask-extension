@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Dropdown from '../../dropdown';
 import Box from '../../box';
+import {
+  AlignItems,
+  BLOCK_SIZES,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+  BorderStyle,
+  DISPLAY,
+  FLEX_DIRECTION,
+  FLEX_WRAP,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { ICON_NAMES, ICON_SIZES, Icon, Text } from '../../../component-library';
 
 export const DropdownTab = (props) => {
   const {
@@ -17,6 +29,46 @@ export const DropdownTab = (props) => {
     selectedOption,
   } = props;
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const dropdownRef = useRef(null);
+
+  const selectOption = useCallback(
+    (event, option) => {
+      event.stopPropagation();
+      onChange(option.value);
+      setIsOpen(false);
+    },
+    [onChange],
+  );
+
+  const openDropdown = (event) => {
+    event.preventDefault();
+    setIsOpen(true);
+    onClick(tabIndex);
+  };
+
+  const selectedOptionName = options.find(
+    (option) => option.value === selectedOption,
+  )?.name;
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        isOpen
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef, isOpen]);
+
   return (
     <Box
       as="li"
@@ -25,16 +77,64 @@ export const DropdownTab = (props) => {
         [activeClassName]: activeClassName && isActive,
       })}
       data-testid={dataTestId}
-      onClick={(event) => {
-        event.preventDefault();
-        onClick(tabIndex);
-      }}
+      onClick={openDropdown}
+      dataTestId={dataTestId}
+      flexDirection={FLEX_DIRECTION.ROW}
+      flexWrap={FLEX_WRAP.NO_WRAP}
+      height={BLOCK_SIZES.FULL}
+      style={{ cursor: 'pointer', overflow: 'hidden' }}
     >
-      <Dropdown
-        options={options}
-        selectedOption={selectedOption}
-        onChange={onChange}
-      />
+      <Box alignItems={AlignItems.center} padding={2}>
+        <Text
+          variant={TextVariant.inherit}
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {selectedOptionName}
+        </Text>
+        <Icon
+          marginLeft={2}
+          name={ICON_NAMES.ARROW_DOWN}
+          size={ICON_SIZES.SM}
+        />
+      </Box>
+      {isOpen && (
+        <Box
+          backgroundColor={BackgroundColor.backgroundDefault}
+          borderStyle={BorderStyle.solid}
+          borderColor={BorderColor.borderDefault}
+          borderRadius={BorderRadius.SM}
+          paddingLeft={2}
+          paddingRight={2}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          flexWrap={FLEX_WRAP.NO_WRAP}
+          style={{ position: 'absolute', maxWidth: '170px' }}
+          ref={dropdownRef}
+        >
+          {options.map((option, i) => (
+            <Text
+              key={i}
+              marginTop={1}
+              marginBottom={1}
+              variant={TextVariant.bodySm}
+              onClick={(event) => selectOption(event, option)}
+              style={{
+                cursor: 'pointer',
+                textTransform: 'none',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {option.name}
+            </Text>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 };
