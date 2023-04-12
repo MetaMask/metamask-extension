@@ -144,6 +144,7 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
 
 /**
  * Check if string passed is valid hexadecimal
+ *
  * @param str
  * @returns boolean
  */
