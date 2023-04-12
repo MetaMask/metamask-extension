@@ -43,6 +43,7 @@ export default function CustomSpendingCap({
   siteOrigin,
   passTheErrorText,
   decimals,
+  setInputChangeInProgress,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -103,11 +104,13 @@ export default function CustomSpendingCap({
   );
 
   const handleChange = async (valueInput) => {
+    setInputChangeInProgress(true);
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
     const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
     if (match?.[1]?.length > decimals) {
+      setInputChangeInProgress(false);
       return;
     }
 
@@ -132,6 +135,8 @@ export default function CustomSpendingCap({
       }
     }
 
+    dispatch(setCustomTokenAmount(String(valueInput)));
+
     const newData = getCustomTxParamsData(txParams.data, {
       customPermissionAmount: valueInput,
       decimals,
@@ -147,8 +152,7 @@ export default function CustomSpendingCap({
       estimatedGasLimit = addHexPrefix(estimatedGasLimit);
       await updateTransaction({ gasLimit: estimatedGasLimit });
     }
-
-    dispatch(setCustomTokenAmount(String(valueInput)));
+    setInputChangeInProgress(false);
   };
 
   useEffect(() => {
@@ -318,4 +322,8 @@ CustomSpendingCap.propTypes = {
    * Number of decimals
    */
   decimals: PropTypes.string,
+  /**
+   * Updating input state to changing
+   */
+  setInputChangeInProgress: PropTypes.func,
 };
