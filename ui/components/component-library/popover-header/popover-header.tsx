@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, BUTTON_ICON_SIZES, IconName } from '..';
+import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
 import {
   TextVariant,
   TEXT_ALIGN,
@@ -30,7 +30,7 @@ export const PopoverHeader = forwardRef<PopoverHeaderProps>(
             <ButtonIcon
               iconName={IconName.ArrowLeft}
               ariaLabel={t('back')}
-              size={BUTTON_ICON_SIZES.SM}
+              size={ButtonIconSize.Sm}
               onClick={onBack}
               {...backButtonProps}
             />
@@ -42,7 +42,7 @@ export const PopoverHeader = forwardRef<PopoverHeaderProps>(
             <ButtonIcon
               iconName={IconName.Close}
               ariaLabel={t('close')}
-              size={BUTTON_ICON_SIZES.SM}
+              size={ButtonIconSize.Sm}
               onClick={onClose}
               {...closeButtonProps}
             />

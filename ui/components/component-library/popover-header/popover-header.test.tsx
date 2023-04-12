@@ -1,42 +1,38 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { Popover } from './popover-header';
+import { PopoverHeader } from './popover-header';
 
 describe('Popover', () => {
   it('should render popover element correctly', () => {
-    const { getByTestId, getByText, container } = render(
-      <Popover data-testid="popover" isOpen={true}>
-        Popover
-      </Popover>,
+    const { getByTestId, container } = render(
+      <PopoverHeader data-testid="popover-header">
+        Popover Header
+      </PopoverHeader>,
     );
-    expect(getByText('Popover')).toBeDefined();
-    expect(container.querySelector('popover')).toBeDefined();
-    expect(getByTestId('popover')).toHaveClass('mm-popover');
+    expect(getByTestId('popover-header')).toHaveClass('mm-popover-header');
     expect(container).toMatchSnapshot();
   });
 
-  it('should render popover title', () => {
+  it('should render popover header title', () => {
     const { getByText } = render(
-      <Popover data-testid="popover" title="Popover test" isOpen={true}>
-        Popover
-      </Popover>,
+      <PopoverHeader data-testid="popover-header">
+        Popover Header Test
+      </PopoverHeader>,
     );
-    expect(getByText('Popover test')).toBeDefined();
-    expect(getByText('Popover test')).toHaveClass('mm-popover__header-title');
+    expect(getByText('Popover Header Test')).toBeDefined();
   });
 
-  it('should render popover back button', () => {
+  it('should render popover header back button', () => {
     const onBackTest = jest.fn();
     const { getByTestId } = render(
-      <Popover
+      <PopoverHeader
         data-testid="popover"
-        isOpen={true}
         onBack={onBackTest}
         backButtonProps={{ 'data-testid': 'back' }}
       >
         Popover
-      </Popover>,
+      </PopoverHeader>,
     );
 
     const backButton = getByTestId('back');
@@ -45,17 +41,16 @@ describe('Popover', () => {
     expect(onBackTest).toHaveBeenCalled();
   });
 
-  it('should render popover close button', () => {
+  it('should render popover header close button', () => {
     const onCloseTest = jest.fn();
     const { getByTestId } = render(
-      <Popover
+      <PopoverHeader
         data-testid="popover"
-        isOpen={true}
         onClose={onCloseTest}
         closeButtonProps={{ 'data-testid': 'close' }}
       >
         Popover
-      </Popover>,
+      </PopoverHeader>,
     );
 
     const closeButton = getByTestId('close');
