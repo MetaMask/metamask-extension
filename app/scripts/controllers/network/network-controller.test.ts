@@ -8166,9 +8166,9 @@ async function waitForLookupNetworkToComplete({
  * @returns True or false, depending on the result.
  */
 function isStateChangeInteresting(
-  currentState: Record<string | symbol | number, unknown>,
-  prevState: Record<string | symbol | number, unknown>,
-  propertyPath: (string | symbol | number)[],
+  currentState: Record<PropertyKey, unknown>,
+  prevState: Record<PropertyKey, unknown>,
+  propertyPath: PropertyKey[],
 ): boolean {
   return !isDeepStrictEqual(
     get(currentState, propertyPath),
@@ -8188,7 +8188,7 @@ function isStateChangeInteresting(
  * @returns The own property names of an object, typed according to the type of
  * the object itself.
  */
-function knownOwnKeysOf<K extends string | number | symbol>(
+function knownOwnKeysOf<K extends PropertyKey>(
   object: Partial<Record<K, unknown>>,
 ) {
   return Object.getOwnPropertyNames(object) as K[];
