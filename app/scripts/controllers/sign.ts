@@ -33,7 +33,6 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/controller-utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import PreferencesController from './preferences';
 
@@ -64,9 +63,11 @@ export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
 };
 
-export type StateMessage = Required<AbstractMessage> & {
+export type StateMessage = Required<
+  Omit<AbstractMessage, 'securityProviderResponse'>
+> & {
   msgParams: Required<AbstractMessageParams>;
-} & Json;
+};
 
 export type SignControllerState = {
   unapprovedMsgs: Record<string, StateMessage>;
@@ -543,7 +544,7 @@ export default class SignController extends BaseControllerV2<
       AbstractMessageParamsMetamask
     >,
     updateState: (
-      state: Record<string, unknown>,
+      state: SignControllerState,
       newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,

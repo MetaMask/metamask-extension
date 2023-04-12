@@ -11,9 +11,15 @@ describe('securityProviderCheck', () => {
     // Spy on the global fetch function
     fetchSpy = jest.spyOn(global, 'fetch');
     fetchSpy.mockImplementation(async () => {
-      return new Response(JSON.stringify('some_result'), { status: 200 });
+      return new Response(JSON.stringify('result_mocked'), { status: 200 });
     });
   });
+
+  const paramsMock = {
+    origin: 'https://example.com',
+    data: 'some_data',
+    from: '0x',
+  };
 
   // Utility function to handle different data properties based on methodName
   const getExpectedData = (methodName: string, requestData: RequestData) => {
@@ -25,7 +31,7 @@ describe('securityProviderCheck', () => {
           msg_to_sign: requestData.msgParams?.data,
         };
       case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-        return requestData.msgParams?.data;
+        return requestData.messageParams?.data;
       default:
         return {
           from_address: requestData.txParams?.from,
@@ -46,27 +52,35 @@ describe('securityProviderCheck', () => {
   ])(
     'should call fetch with the correct parameters for %s',
     async (methodName: string) => {
-      const requestData: RequestData =
-        methodName === 'some_other_method'
-          ? {
-              origin: 'https://example.com',
-              txParams: {
-                from: '0x',
-                to: '0x',
-                gas: 'some_gas',
-                gasPrice: 'some_gasPrice',
-                value: 'some_value',
-                data: 'some_data',
-              },
-            }
-          : {
-              origin: 'https://example.com',
-              msgParams: {
-                origin: 'https://example.com',
-                data: 'some_data',
-                from: '0x',
-              },
-            };
+      let requestData: RequestData;
+
+      switch (methodName) {
+        case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+          requestData = {
+            origin: 'https://example.com',
+            messageParams: paramsMock,
+          };
+          break;
+        case MESSAGE_TYPE.ETH_SIGN:
+        case MESSAGE_TYPE.PERSONAL_SIGN:
+          requestData = {
+            origin: 'https://example.com',
+            msgParams: paramsMock,
+          };
+          break;
+        default:
+          requestData = {
+            origin: 'https://example.com',
+            txParams: {
+              from: '0x',
+              to: '0x',
+              gas: 'some_gas',
+              gasPrice: 'some_gasPrice',
+              value: 'some_value',
+              data: 'some_data',
+            },
+          };
+      }
 
       const result = await securityProviderCheck(
         requestData,
@@ -88,7 +102,8 @@ describe('securityProviderCheck', () => {
             host_name:
               methodName === 'some_other_method'
                 ? requestData.origin
-                : requestData.msgParams?.origin,
+                : requestData.msgParams?.origin ||
+                  requestData.messageParams?.origin,
             rpc_method_name: methodName,
             chain_id: '1',
             data: getExpectedData(methodName, requestData),
@@ -96,7 +111,7 @@ describe('securityProviderCheck', () => {
           }),
         }),
       );
-      expect(result).toEqual('some_result');
+      expect(result).toEqual('result_mocked');
     },
   );
 });
