@@ -28,7 +28,6 @@ export default function TermsOfUsePopup({ onAccept }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
-  const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 
   const popoverRef = useRef();
   const bottomRef = React.createRef();
@@ -38,7 +37,6 @@ export default function TermsOfUsePopup({ onAccept }) {
     bottomRef.current.scrollIntoView({
       behavior: 'smooth',
     });
-    setShouldShowScrollButton(false);
   };
 
   useEffect(() => {
@@ -57,7 +55,7 @@ export default function TermsOfUsePopup({ onAccept }) {
       className="terms-of-use__popover"
       popoverRef={popoverRef}
       title={t('termsOfUseTitle')}
-      showScrollDown={shouldShowScrollButton}
+      showScrollDown
       onScrollDownButtonClick={handleScrollDownClick}
       footerProps={{
         justifyContent: AlignItems.center,
