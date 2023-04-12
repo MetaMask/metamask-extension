@@ -5,6 +5,7 @@ import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import { ButtonLink, TextFieldSearch, Text } from '../../component-library';
+// TODO: Replace ICON_NAMES with IconName when ButtonBase/Buttons have been updated
 import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import { AccountListItem } from '..';
 import {
