@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
@@ -18,9 +18,15 @@ import {
 } from '../../component-library';
 import Box from '../../ui/box';
 import CheckBox from '../../ui/check-box/check-box.component';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function TermsOfUsePopup({ onAccept }) {
   const t = useContext(I18nContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
   const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 
@@ -34,6 +40,17 @@ export default function TermsOfUsePopup({ onAccept }) {
     });
     setShouldShowScrollButton(false);
   };
+
+  useEffect(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.TermsOfUseShown,
+      properties: {
+        location: 'Terms Of Use Popover',
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Popover

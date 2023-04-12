@@ -249,6 +249,13 @@ export default class Home extends PureComponent {
   onAcceptTermsOfUse = () => {
     const { setTermsOfUseLastAgreed } = this.props;
     setTermsOfUseLastAgreed(new Date().getTime());
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.TermsOfUseAccepted,
+      properties: {
+        location: 'Terms Of Use Popover',
+      },
+    });
   };
 
   onOutdatedBrowserWarningClose = () => {
