@@ -18,13 +18,14 @@ import {
   TEXT_ALIGN,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
+
 import {
+  ButtonIcon,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { Text } from '../../component-library';
+  IconName,
+  IconSize,
+  Text,
+} from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -86,7 +87,7 @@ const Popover = ({
       >
         {onBack ? (
           <ButtonIcon
-            iconName={ICON_NAMES.ARROW_LEFT}
+            iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
             onClick={onBack}
             color={Color.iconDefault}
@@ -104,7 +105,7 @@ const Popover = ({
         </Text>
         {onClose ? (
           <ButtonIcon
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel={t('close')}
             data-testid="popover-close"
             onClick={onClose}
@@ -140,9 +141,9 @@ const Popover = ({
             data-testid="whats-new-popup-scroll-button"
           >
             <Icon
-              name={ICON_NAMES.ARROW_DOWN}
+              name={IconName.ArrowDown}
               color={IconColor.primaryDefault}
-              size={ICON_SIZES.MD}
+              size={IconSize.Md}
               aria-label={t('scrollDown')}
             />
           </Box>
