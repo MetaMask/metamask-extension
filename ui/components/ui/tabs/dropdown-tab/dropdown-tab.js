@@ -14,7 +14,7 @@ import {
   FLEX_WRAP,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { ICON_NAMES, ICON_SIZES, Icon, Text } from '../../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../../component-library';
 
 export const DropdownTab = (props) => {
   const {
@@ -95,11 +95,7 @@ export const DropdownTab = (props) => {
         >
           {selectedOptionName}
         </Text>
-        <Icon
-          marginLeft={2}
-          name={ICON_NAMES.ARROW_DOWN}
-          size={ICON_SIZES.SM}
-        />
+        <Icon marginLeft={2} name={IconName.ArrowDown} size={IconSize.Sm} />
       </Box>
       {isOpen && (
         <Box
