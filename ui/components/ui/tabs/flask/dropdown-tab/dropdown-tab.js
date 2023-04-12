@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../box';
+import Box from '../../../box';
 import {
   AlignItems,
   BLOCK_SIZES,
@@ -13,8 +13,8 @@ import {
   FLEX_DIRECTION,
   FLEX_WRAP,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../../component-library';
+} from '../../../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize, Text } from '../../../../component-library';
 
 export const DropdownTab = (props) => {
   const {
