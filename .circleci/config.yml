@@ -288,7 +288,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+          command: echo "$CIRCLE_REPOSITORY_URL" && git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
