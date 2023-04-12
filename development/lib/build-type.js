@@ -15,9 +15,11 @@ const {
   unknown,
   validate,
   nullable,
+  never,
 } = require('superstruct');
 const yaml = require('js-yaml');
 const { uniqWith } = require('lodash');
+const { option } = require('yargs');
 
 const BUILDS_YML_PATH = path.resolve('./builds.yml');
 
@@ -62,18 +64,30 @@ const EnvArrayStruct = unique(
 
 const BuildTypeStruct = object({
   features: optional(unique(array(string()))),
-  isPrerelease: optional(boolean()),
   env: optional(EnvArrayStruct),
-  // TODO(ritave): Check if the paths exist
-  assets: optional(array(object({ src: string(), dest: string() }))),
+  isPrerelease: optional(boolean()),
+  manifestOverrides: optional(string()),
 });
+
+const CopyAssetStruct = object({ src: string(), dest: string() });
+const ExclusiveIncludeAssetStruct = coerce(
+  object({ exclusiveInclude: string() }),
+  string(),
+  (exclusiveInclude) => ({ exclusiveInclude }),
+);
+const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
 const FeatureStruct = object({
   env: optional(EnvArrayStruct),
+  // TODO(ritave): Check if the paths exist
+  assets: optional(array(AssetStruct)),
 });
 
 const FeaturesStruct = refine(
-  record(string(), nullable(FeatureStruct)),
+  record(
+    string(),
+    coerce(FeatureStruct, nullable(never()), () => ({})),
+  ),
   'feature definitions',
   function* (value) {
     let isValid = true;

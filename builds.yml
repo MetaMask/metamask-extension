@@ -1,13 +1,13 @@
 # TODO(ritave): Add support for environments (<root>/development/build/constants.js:@ENVIRONMENT)
 # TODO(ritave): Add support for build targets (<root>/development/build/constants.js:@BUILD_TARGETS)
-# TODO(ritave): Add support for ignored files (<root>/development/build/index.js:@getIgnoredFiles)
 # TODO(ritave): Remove build code modifying hardcoded variables
-# TODO(ritave): Tree shaking was removing folders with the name of a build type -> flask remove /flask/ folders.
-#               It should also remove feature folders
 # TODO(ritave): Warn if not all of declared variables have been defined / used
+# TODO(ritave): assets:
+#                  - src: ./app/build-types/<type>/manifest
+#                    dest: ?
 
 # The priority order of variable definitions (most important to least important):
-# hardcoded build code; environment variables; .metamaskprodrc; .metamaskrc; builds.yml:.buildTypes.<type>.env; builds.yml:.features.<feature>.env; builds.yml:.env
+# <hardcoded build code>; <environmental variables>; .metamaskprodrc; .metamaskrc; builds.yml:.buildTypes.<type>.env; builds.yml:.features.<feature>.env; builds.yml:.env
 
 # The build type to use when no build type provided in the cli
 default: &default main
@@ -17,20 +17,14 @@ default: &default main
 # Also known as productFlavors in Android lingo
 buildTypes:
   main:
+    features:
+      - build-main
     # Additional env variables that are specific to this build
-    # and required
-    # (Potentially set to undefined)
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
-      #- ALLOW_LOCAL_SNAPS: false
-      # Snaps in main extension require MetaMask signed allow list
-      #- REQUIRE_SNAPS_ALLOWLIST: true
-    features:
-      - build-main
-      - snaps
 
   beta:
     features:
@@ -43,41 +37,26 @@ buildTypes:
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
-    # Additional assets that will be copied
-    assets:
-      - src: ./app/build-types/beta/images/
-        dest: images
+    # Folder which contains overrides to browser manifests
+    manifestOverrides: ./app/build-types/mmi/manifest/
 
   flask:
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
-      - build-flask
       - snaps
       - desktop
-    isPrerelease: true
+      - build-flask
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
-      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new'
-    assets:
-      - src: ./app/build-types/flask/images/
-        dest: images
-
-  # TODO(ritave): Remove this build type as it was merged into Flask
-  desktop:
-    features:
-      - build-desktop
-      - desktop
+      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
-    assets:
-      - src: ./app/build-types/desktop/images/
-        dest: images
 
   mmi:
     features:
@@ -89,49 +68,56 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
-
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
-    assets:
-      - src: ./app/build-types/mmi/images/
-        dest: images
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
 # as well declaring, defining and overriding env variables
 features:
   snaps:
+    # Each feature might have variables that only exist when built with that feature active
     env:
       # Whether to allow snaps from localhost - local://localhost:8080/snap.manifest.json
-      # Enabled in Flask, disabled in Main
+      # Enabled in Flask, will be disabled in Main
       - ALLOW_LOCAL_SNAPS
-      # Snaps in main extension require MetaMask signed allow list
+      # Whether to verify that a snap can be installed using an allow list
       - REQUIRE_SNAPS_ALLOWLIST
-    # TODO(ritave): Assets globs? Include dirs only with "snaps" in them?
-    # assets:
-    #   - exclusive: '**/snaps/**'
-    # TODO(ritave): Maybe also inclusive
+    assets:
+      - ./{app,shared,ui}/**/snaps/**
   desktop:
-    # Each feature might have variables that only exist when built with that feature active
     env:
       - COMPATIBILITY_VERSION_EXTENSION: 1
       - DISABLE_WEB_SOCKET_ENCRYPTION: false
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
 
-  #
+  ###
   # Build Type code extensions. Things like different support links, warning pages, banners
-  #
-  # TODO(ritave): instead of 1:1 feature - build type, split into smaller features
+  ###
+
   build-main:
   build-beta:
+    assets:
+      # Assets that will be copied
+      - src: ./app/build-types/beta/images/
+        dest: images
+      # Assets that are exclusively included in this feature and ignored in others
+      # Supports globs
+      - ./{app,shared,ui}/**/beta/**
   build-mmi:
+    assets:
+      - src: ./app/build-types/mmi/images/
+        dest: images
+      - ./{app,shared,ui}/**/mmi/**
   build-flask:
-  build-desktop:
+    assets:
+      - src: ./app/build-types/flask/images/
+        dest: images
+      - ./{app,shared,ui}/**/flask/**
 
 # Env variables that are required for all types of builds
-# (Potentially set to undefined)
 #
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
 # Variables that were declared have to be defined somewhere in the load chain before usage
@@ -198,9 +184,7 @@ env:
   - NODE_ENV
   # Defined by node itself
   # Also see DEBUG and METAMASK_DEBUG
-  # TODO(ritave): There's a bug in build system and NODE_DEBUG is actually circularly checked from here
-  #               rather than actual process.env
-  - NODE_DEBUG: null
+  - NODE_DEBUG: ''
 
   ###
   # Meta variables

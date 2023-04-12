@@ -5,11 +5,15 @@
 // run any task with "yarn build ${taskName}"
 //
 const path = require('path');
+const assert = require('assert');
 const livereload = require('gulp-livereload');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
+const difference = require('lodash/difference');
+const { intersection } = require('lodash');
+const { act } = require('react-dom/test-utils');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');
@@ -381,28 +385,39 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
  */
 function getIgnoredFiles(currentBuildType) {
   const buildConfig = loadBuildTypesConfig();
-  const defaultBuild = buildConfig.default;
+  const cwd = process.cwd();
 
-  const excludedFiles = Object.keys(buildConfig.buildTypes)
-    // This filter removes "main" and the current build type. The files of any
-    // build types that remain in the array will be excluded. "main" is the
-    // default build type, and has no files that are excluded from other builds.
-    .filter(
-      (buildType) =>
-        buildType !== defaultBuild && buildType !== currentBuildType,
-    )
-    // Compute globs targeting files for exclusion for each excluded build
-    // type.
-    .reduce((excludedGlobs, excludedBuildType) => {
-      return excludedGlobs.concat([
-        `../../app/**/${excludedBuildType}/**`,
-        `../../shared/**/${excludedBuildType}/**`,
-        `../../ui/**/${excludedBuildType}/**`,
-      ]);
-    }, [])
-    // This creates absolute paths of the form:
-    // PATH_TO_REPOSITORY_ROOT/app/**/${excludedBuildType}/**
-    .map((pathGlob) => path.resolve(__dirname, pathGlob));
+  const exclusiveAssetsForFeatures = (features) =>
+    globby(
+      features
+        .flatMap(
+          (feature) =>
+            buildConfig.features[feature].assets
+              ?.filter((asset) => 'exclusiveInclude' in asset)
+              .map((asset) => asset.exclusiveInclude) ?? [],
+        )
+        .map((pathGlob) => path.resolve(cwd, pathGlob)),
+    );
 
-  return globby(excludedFiles);
+  const allFeatures = Object.keys(buildConfig.features);
+  const activeFeatures =
+    buildConfig.buildTypes[currentBuildType].features ?? [];
+  const inactiveFeatures = difference(allFeatures, activeFeatures);
+
+  const ignoredPaths = exclusiveAssetsForFeatures(inactiveFeatures);
+  // We do a sanity check to verify that any inactive feature haven't excluded files
+  // that active features are trying to include
+  const activePaths = exclusiveAssetsForFeatures(activeFeatures);
+  const conflicts = intersection(activePaths, ignoredPaths);
+  if (conflicts.length !== 0) {
+    throw new Error(`Below paths are required exclusively by both active and inactive features resulting in a conflict:
+\t-> ${conflicts.join('\n\t-> ')}
+Please fix builds.yml`);
+  }
+
+  console.log(`--- IGNORED PATHS:
+\t-> ${ignoredPaths.join('\n\t-> ')}
+---`);
+
+  return ignoredPaths;
 }

@@ -167,23 +167,22 @@ async function writeJson(obj, file) {
  *
  * @param {string} buildType - The build type.
  * @param {string} platform - The platform (i.e. the browser).
- * @returns {object} The build modificantions for the given build type and platform.
+ * @returns {object} The build modifications for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
-  if (!(buildType in loadBuildTypesConfig().buildTypes)) {
+  const buildConfig = loadBuildTypesConfig();
+  if (!(buildType in buildConfig.buildTypes)) {
     throw new Error(`Invalid build type: ${buildType}`);
-  } else if (buildType === loadBuildTypesConfig().default) {
+  }
+
+  const overridesPath = buildConfig.buildTypes[buildType].manifestOverrides;
+  if (overridesPath === undefined) {
     return {};
   }
 
   const builtTypeManifestDirectoryPath = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'app',
-    'build-types',
-    buildType,
-    'manifest',
+    process.cwd(),
+    overridesPath,
   );
 
   const baseBuildTypeModificationsPath = path.join(
@@ -208,6 +207,9 @@ async function getBuildModifications(buildType, platform) {
       throw error;
     }
   }
+
+  console.log('--- BUILD MODIFICATIONS');
+  console.log(buildModifications);
 
   return buildModifications;
 }

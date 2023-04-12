@@ -1,9 +1,6 @@
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-desktop)
-import desktopJson from '../../../app/build-types/desktop/images/desktop-mascot.json';
-///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import mmiJson from '../../../app/build-types/mmi/images/mmi-mascot.json';
 ///: END:ONLY_INCLUDE_IN
@@ -21,11 +18,6 @@ const assetList = {
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   flask: {
     foxMeshJson: flaskJson,
-  },
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-desktop)
-  desktop: {
-    foxMeshJson: desktopJson,
   },
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
