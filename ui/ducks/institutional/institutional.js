@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
+import { createSlice } from '@reduxjs/toolkit';
+import { captureException } from '@sentry/browser';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 
-// MMI
-// Actions
 const createComplianceActionType = (action) =>
   `metamask/institutional-features/compliance/${action}`;
 
@@ -10,43 +10,45 @@ const SET_HISTORICAL_REPORTS = createComplianceActionType(
   'SET_HISTORICAL_REPORTS',
 );
 
+const name = 'institutionalFeatures';
+
 // Initial state
-const initState = {
+const initialState = {
   historicalReports: {},
   complianceProjectId: '',
   complianceClientId: '',
   reportsInProgress: {},
 };
 
-export default function reducer(state = initState, action = {}) {
-  switch (action.type) {
-    case SET_HISTORICAL_REPORTS:
-      return {
-        ...state,
-        historicalReports: {
-          [action.payload.address]: [...action.payload.reports],
-        },
-      };
-    default:
-      return state;
-  }
-}
+const slice = createSlice({
+  name: 'reports',
+  initialState,
+  reducers: {
+    setHistoricalReports(state, action) {
+      state.historicalReports[action.payload.address] = [
+        ...action.payload.reports,
+      ];
+    },
+  },
+});
 
-// Selectors
+const { actions, reducer } = slice;
+
+export default reducer;
+
 export const getComplianceProjectId = (state) =>
-  state.metamask.institutionalFeatures?.complianceProjectId;
-export const getComplianceClientId = (state) =>
-  state.metamask.institutionalFeatures?.complianceClientId;
+  state[name].complianceProjectId;
+export const getComplianceClientId = (state) => state[name].complianceClientId;
 export const getComplianceTenantSubdomain = (state) =>
-  state.metamask.institutionalFeatures?.complianceTenantSubdomain;
+  state[name].complianceTenantSubdomain;
 export const getComplianceHistoricalReports = (state) =>
-  state.institutionalFeatures?.historicalReports;
+  state[name].historicalReports;
 export const getComplianceReportsInProgress = (state) =>
-  state.metamask.institutionalFeatures?.reportsInProgress;
+  state[name].reportsInProgress;
 export const getInstitutionalConnectRequests = (state) =>
-  state.metamask.institutionalFeatures?.connectRequests;
+  state[name].connectRequests;
 export const complianceActivated = (state) =>
-  Boolean(state.metamask.institutionalFeatures?.complianceProjectId);
+  Boolean(state[name].complianceProjectId);
 
 export const getComplianceHistoricalReportsByAddress = (address) =>
   createSelector(getComplianceHistoricalReports, (reports) =>
@@ -58,7 +60,7 @@ export const getComplianceReportsInProgressByAddress = (address) =>
     reports ? reports[address.toLowerCase()] : undefined,
   );
 
-export function fetchHistoricalReports(address, testProjectId = undefined) {
+export const fetchHistoricalReports = (address, testProjectId = undefined) => {
   return async (dispatch, getState) => {
     const state = getState();
     let projectId;
@@ -73,32 +75,40 @@ export function fetchHistoricalReports(address, testProjectId = undefined) {
 
     const mmiActions = mmiActionsFactory();
 
-    const result = await dispatch(
-      mmiActions.getComplianceHistoricalReportsByAddress(address, projectId),
-    );
+    try {
+      const result = await dispatch(
+        mmiActions.getComplianceHistoricalReportsByAddress(address, projectId),
+      );
 
-    dispatch(
-      mmiActions.syncReportsInProgress({
-        address,
-        historicalReports: result.items ? result.items : [],
-      }),
-    );
-
-    dispatch({
-      type: SET_HISTORICAL_REPORTS,
-      payload: {
-        address,
-        reports: result.items
-          ? result.items.filter((report) => report.status !== 'inProgress')
-          : [],
-      },
-    });
+      dispatch(
+        mmiActions.syncReportsInProgress({
+          address,
+          historicalReports: result.items ? result.items : [],
+        }),
+      );
+      dispatch({
+        type: SET_HISTORICAL_REPORTS,
+        payload: {
+          address,
+          reports: result.items
+            ? result.items.filter((report) => report.status !== 'inProgress')
+            : [],
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      captureException(error);
+    }
   };
-}
+};
 
 export function generateComplianceReport(address) {
-  const mmiActions = mmiActionsFactory();
   return async (dispatch, _getState) => {
+    const mmiActions = mmiActionsFactory();
     dispatch(mmiActions.generateComplianceReport(address));
   };
 }
+
+const { setHistoricalReports } = actions;
+
+export { setHistoricalReports };
