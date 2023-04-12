@@ -40,7 +40,9 @@ describe('CustomSpendingCap', () => {
 
   it('should change in token allowance amount should call functions to update gas limit', async () => {
     const user = userEvent.setup();
-    const spyEstimateGas = jest.spyOn(Actions, 'estimateGas');
+    const spyEstimateGas = jest
+      .spyOn(Actions, 'estimateGas')
+      .mockReturnValue(Promise.resolve(6000));
     const updateTransactionMock = jest.fn();
     jest
       .spyOn(GasFeeContext, 'useGasFeeContext')
