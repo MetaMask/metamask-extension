@@ -275,8 +275,8 @@ const CustodyPage = () => {
               setSelectedCustodianImage(custodian.iconUrl);
               setSelectedCustodianDisplayName(custodian.displayName);
               setApiUrl(custodian.apiUrl);
-              setCurrentJwt(jwtList.result[0] || '');
-              setJwtList(jwtList.result);
+              setCurrentJwt(jwtList[0] || '');
+              setJwtList(jwtList);
               trackEvent({
                 category: 'MMI',
                 event: 'Custodian Selected',

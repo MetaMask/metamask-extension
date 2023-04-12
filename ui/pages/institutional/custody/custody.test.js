@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor, act, screen } from '@testing-library/react';
+import { fireEvent, waitFor, screen } from '@testing-library/react';
 import thunk from 'redux-thunk'
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
