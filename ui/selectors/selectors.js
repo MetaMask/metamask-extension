@@ -484,21 +484,14 @@ export function getCurrentCurrency(state) {
 
 export function getTotalUnapprovedCount(state) {
   const {
-    unapprovedMsgCount = 0,
-    unapprovedPersonalMsgCount = 0,
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
     pendingApprovalCount = 0,
   } = state.metamask;
 
   return (
-    unapprovedMsgCount +
-    unapprovedPersonalMsgCount +
     unapprovedDecryptMsgCount +
     unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedTypedMessagesCount +
-    getUnapprovedTxCount(state) +
     pendingApprovalCount +
     getSuggestedAssetCount(state)
   );
