@@ -142,6 +142,18 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
+/**
+ * Check if string passed is valid hexadecimal
+ * @param str
+ * @returns boolean
+ */
+function isHexadecimal(str: string): boolean {
+  if (!str) {
+    return false;
+  }
+  return /^[0-9A-Fa-f]+$/u.test(str);
+}
+
 export {
   getPlatform,
   getEnvironmentType,
@@ -150,6 +162,7 @@ export {
   addHexPrefix,
   getChainType,
   checkAlarmExists,
+  isHexadecimal
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
