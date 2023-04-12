@@ -11,12 +11,12 @@ import { AccountListItemMenu } from '..';
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
-  ButtonIcon,
   Text,
   AvatarFavicon,
   Tag,
   ButtonLink,
 } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import {
   ICON_NAMES,
   ICON_SIZES,
