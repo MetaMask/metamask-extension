@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Color } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { ButtonIcon } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import { ICON_NAMES } from '../../component-library/icon/deprecated';
 
 export default class EditableLabel extends Component {
