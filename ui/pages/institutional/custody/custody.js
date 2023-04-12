@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -47,6 +47,7 @@ const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const dispatch = useDispatch();
 
   const mmiActions = mmiActionsFactory();
   const currentChainId = useSelector(getCurrentChainId);
@@ -85,14 +86,14 @@ const CustodyPage = () => {
   );
 
   const fetchConnectRequest = async () => {
-    const connectRequest = await mmiActions.getCustodianConnectRequest();
+    const connectRequest = await dispatch(mmiActions.getCustodianConnectRequest())
     setChainId(parseInt(currentChainId, 16));
 
     // check if it's empty object
     if (Object.keys(connectRequest).length) {
       setConnectRequest(connectRequest);
       setCurrentJwt(
-        connectRequest.token || (await mmiActions.getCustodianToken()),
+        connectRequest.token || (await dispatch(mmiActions.getCustodianToken())),
       );
       setSelectedCustodianType(connectRequest.custodianType);
       setSelectedCustodianName(connectRequest.custodianName);
@@ -154,12 +155,12 @@ const CustodyPage = () => {
   };
 
   const getCustodianAccounts = async () => {
-    return await mmiActions.getCustodianAccounts(
+    return await dispatch(mmiActions.getCustodianAccounts(
       token,
       apiUrl,
       custody || selectedCustodianType,
       getNonImportedAccounts,
-    );
+    ));
   };
 
   const getCustodianAccountsByAddress = async (
@@ -169,12 +170,12 @@ const CustodyPage = () => {
     custody,
   ) => {
     try {
-      const accounts = await mmiActions.getCustodianAccountsByAddress(
+      const accounts = await dispatch(mmiActions.getCustodianAccountsByAddress(
         token,
         apiUrl,
         address,
         custody,
-      );
+      ));
       setAccounts(accounts);
     } catch (e) {
       handleConnectError(e);
@@ -266,16 +267,16 @@ const CustodyPage = () => {
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
             onClick={async (_) => {
-              const jwtList = await mmiActions.getCustodianJWTList(
+              const jwtList = await dispatch(mmiActions.getCustodianJWTList(
                 custodian.name,
-              );
+              ));
               setSelectedCustodianName(custodian.name);
               setSelectedCustodianType(custodian.type);
               setSelectedCustodianImage(custodian.iconUrl);
               setSelectedCustodianDisplayName(custodian.displayName);
               setApiUrl(custodian.apiUrl);
-              setCurrentJwt(jwtList[0] || '');
-              setJwtList(jwtList);
+              setCurrentJwt(jwtList.result[0] || '');
+              setJwtList(jwtList.result);
               trackEvent({
                 category: 'MMI',
                 event: 'Custodian Selected',
@@ -413,11 +414,12 @@ const CustodyPage = () => {
         selectedAccounts={selectedAccounts}
         onAddAccounts={async () => {
           try {
-            await mmiActions.connectCustodyAddresses(
+            await dispatch(
+            mmiActions.connectCustodyAddresses(
               selectedCustodianType,
               selectedCustodianName,
               selectedAccounts,
-            );
+            ));
             const selectedCustodian = custodians.find(
               (custodian) => custodian.name === selectedCustodianName,
             );

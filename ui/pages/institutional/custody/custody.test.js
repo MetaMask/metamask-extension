@@ -2,6 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor, act, screen } from '@testing-library/react';
+import thunk from 'redux-thunk'
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
 
@@ -20,9 +21,10 @@ const mockedGetCustodianAccounts = jest.fn().mockReturnValue([
 
 const mockedGetCustodianToken = jest.fn().mockReturnValue('testJWT');
 
-const mockedGetCustodianJWTList = jest.fn().mockReturnValue(['jwt1']);
+const mockedGetCustodianJWTList = jest.fn().mockReturnValue({ type: 'TYPE', result: ['jwt1'] });
 
 const mockedGetCustodianConnectRequest = jest.fn().mockReturnValue({
+  type: 'TYPE',
   custodian: 'saturn',
   token: 'token',
   apiUrl: 'url',
@@ -77,38 +79,7 @@ describe('CustodyPage', function () {
     },
   };
 
-  const store = configureMockStore()(mockStore);
-
-  // const props = {
-  //   connectCustodyAddresses: sinon.spy(),
-  //   getCustodianAccounts: sinon.stub().callsFake(() => [
-  //     {
-  //       address: '0xAddress',
-  //       name: 'name',
-  //       custodianDetails: {},
-  //       labels: [],
-  //       chainId: 1,
-  //       accountBalance: 1,
-  //     },
-  //   ]),
-  //   getCustodianAccountsByAddress: sinon.spy(),
-  //   getCustodianToken: sinon.stub().callsFake(() => 'testJWT'),
-  //   getCustodianJWTList: async () => ['jwt1'],
-  //   provider: { chainId: 0x1 },
-  //   history: {
-  //     push: sinon.spy(),
-  //   },
-  //   mostRecentOverviewPage: 'test',
-  //   custodians: [
-  //     {
-  //       production: true,
-  //       name: 'name',
-  //       type: 'type',
-  //       iconUrl: 'iconUrl',
-  //       displayName: 'displayName',
-  //     },
-  //   ],
-  // };
+  const store = configureMockStore([thunk])(mockStore);
 
   let clock;
   const subscribeSpy = sinon.spy();
