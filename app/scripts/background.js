@@ -727,14 +727,12 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
-      unapprovedTxCount +
       unapprovedDecryptMsgCount +
       pendingApprovalCount +
       waitingForUnlockCount
