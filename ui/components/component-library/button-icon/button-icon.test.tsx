@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { IconName } from '..';
-import { BUTTON_ICON_SIZES } from './button-icon.constants';
+import { ButtonIconSize } from './button-icon.types';
 import { ButtonIcon } from './button-icon';
 
 describe('ButtonIcon', () => {
@@ -53,22 +53,22 @@ describe('ButtonIcon', () => {
         <ButtonIcon
           iconName={IconName.AddSquare}
           ariaLabel="add"
-          size={BUTTON_ICON_SIZES.SM}
-          data-testid={BUTTON_ICON_SIZES.SM}
+          size={ButtonIconSize.Sm}
+          data-testid={ButtonIconSize.Sm}
         />
         <ButtonIcon
           iconName={IconName.AddSquare}
           ariaLabel="add"
-          size={BUTTON_ICON_SIZES.LG}
-          data-testid={BUTTON_ICON_SIZES.LG}
+          size={ButtonIconSize.Lg}
+          data-testid={ButtonIconSize.Lg}
         />
       </>,
     );
-    expect(getByTestId(BUTTON_ICON_SIZES.SM)).toHaveClass(
-      `mm-button-icon--size-${BUTTON_ICON_SIZES.SM}`,
+    expect(getByTestId(ButtonIconSize.Sm)).toHaveClass(
+      `mm-button-icon--size-${ButtonIconSize.Sm}`,
     );
-    expect(getByTestId(BUTTON_ICON_SIZES.LG)).toHaveClass(
-      `mm-button-icon--size-${BUTTON_ICON_SIZES.LG}`,
+    expect(getByTestId(ButtonIconSize.Lg)).toHaveClass(
+      `mm-button-icon--size-${ButtonIconSize.Lg}`,
     );
   });
 
