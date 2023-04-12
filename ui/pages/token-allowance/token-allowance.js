@@ -103,6 +103,7 @@ export default function TokenAllowance({
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
   const [showContractDetails, setShowContractDetails] = useState(false);
+  const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
   const [isFirstPage, setIsFirstPage] = useState(
     dappProposedTokenAmount !== '0' && !thisOriginIsAllowedToSkipFirstPage,
@@ -399,6 +400,7 @@ export default function TokenAllowance({
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
             decimals={decimals}
+            setInputChangeInProgress={setInputChangeInProgress}
           />
         ) : (
           <ReviewSpendingCap
@@ -516,7 +518,9 @@ export default function TokenAllowance({
         submitText={isFirstPage ? t('next') : t('approveButtonText')}
         onCancel={() => handleReject()}
         onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
-        disabled={disableNextButton || disableApproveButton}
+        disabled={
+          inputChangeInProgress || disableNextButton || disableApproveButton
+        }
       >
         {unapprovedTxCount > 1 && (
           <Button
