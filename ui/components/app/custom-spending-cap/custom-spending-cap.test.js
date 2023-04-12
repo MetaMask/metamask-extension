@@ -25,6 +25,7 @@ const props = {
   siteOrigin: 'https://metamask.github.io',
   decimals: '4',
   passTheErrorText: () => undefined,
+  setInputChangeInProgress: () => undefined,
 };
 
 describe('CustomSpendingCap', () => {

@@ -163,7 +163,7 @@ export {
   addHexPrefix,
   getChainType,
   checkAlarmExists,
-  isHexadecimal
+  isHexadecimal,
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652

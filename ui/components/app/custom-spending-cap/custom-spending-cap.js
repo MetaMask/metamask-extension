@@ -325,5 +325,5 @@ CustomSpendingCap.propTypes = {
   /**
    * Updating input state to changing
    */
-  setInputChangeInProgress: PropTypes.func,
+  setInputChangeInProgress: PropTypes.func.isRequired,
 };
