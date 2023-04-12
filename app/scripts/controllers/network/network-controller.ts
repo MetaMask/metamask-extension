@@ -110,7 +110,7 @@ export enum NetworkControllerEventType {
  */
 export type NetworkControllerNetworkWillChangeEvent = {
   type: NetworkControllerEventType.NetworkWillChange;
-  payload: never[];
+  payload: [];
 };
 
 /**
@@ -119,7 +119,7 @@ export type NetworkControllerNetworkWillChangeEvent = {
  */
 export type NetworkControllerNetworkDidChangeEvent = {
   type: NetworkControllerEventType.NetworkDidChange;
-  payload: never[];
+  payload: [];
 };
 
 /**
@@ -129,7 +129,7 @@ export type NetworkControllerNetworkDidChangeEvent = {
  */
 export type NetworkControllerInfuraIsBlockedEvent = {
   type: NetworkControllerEventType.InfuraIsBlocked;
-  payload: never[];
+  payload: [];
 };
 
 /**
@@ -139,7 +139,7 @@ export type NetworkControllerInfuraIsBlockedEvent = {
  */
 export type NetworkControllerInfuraIsUnblockedEvent = {
   type: NetworkControllerEventType.InfuraIsUnblocked;
-  payload: never[];
+  payload: [];
 };
 
 /**
