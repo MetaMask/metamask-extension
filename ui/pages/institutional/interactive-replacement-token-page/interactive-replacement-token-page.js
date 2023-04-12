@@ -88,28 +88,14 @@ export default function InteractiveReplacementTokenPage({ history }) {
       }
 
       try {
-        // const custodianAccounts = await dispatch(
-        //   getCustodianAccounts(
-        //     connectRequest.token,
-        //     connectRequest.apiUrl,
-        //     connectRequest.service,
-        //     false,
-        //   ),
-        // );
-
-        const custodianAccounts = [
-          {
-            address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-            balance: '0x',
-            name: 'Jupiter',
-            labels: [
-              {
-                key: 'service',
-                value: 'test',
-              },
-            ],
-          },
-        ];
+        const custodianAccounts = await dispatch(
+          getCustodianAccounts(
+            connectRequest.token,
+            connectRequest.apiUrl,
+            connectRequest.service,
+            false,
+          ),
+        );
 
         const filteredAccounts = custodianAccounts.filter(
           (account) => metaMaskAccounts[account.address.toLowerCase()],
@@ -128,6 +114,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
           setIsLoading(false);
         }
       } catch (e) {
+        console.log(e);
         setError(true);
         setIsLoading(false);
       }
@@ -205,7 +192,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
   };
 
   return (
-    <Box className="page-container">
+    <Box className="page-container" data-testid="interactive-replacement-token">
       <Box className={`page-container__header ${error && 'error'}`}>
         <Box className="page-container__title">
           {t('custodianReplaceRefreshTokenTitle')}{' '}
@@ -227,11 +214,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
           className="interactive-replacement-token-page"
         >
           {error ? (
-            <Box>
+            <Text data-testid="connect-error-message">
               {t('custodianReplaceRefreshTokenChangedFailed', [
                 custodian.displayName || 'Custodian',
               ])}
-            </Box>
+            </Text>
           ) : null}
           <Box
             display={DISPLAY.FLEX}
