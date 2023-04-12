@@ -29,7 +29,10 @@ import {
   GasRecommendations,
 } from '../../../../shared/constants/gas';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionController from '.';
@@ -52,7 +55,8 @@ describe('Transaction Controller', function () {
     fromAccount,
     fragmentExists,
     networkStatusStore,
-    getCurrentChainId;
+    getCurrentChainId,
+    messengerMock;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -76,6 +80,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop;
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
+    messengerMock = { call: sinon.stub().returns(Promise.resolve()) };
 
     txController = new TransactionController({
       provider,
@@ -108,6 +113,7 @@ describe('Transaction Controller', function () {
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
       securityProviderRequest: () => undefined,
+      messenger: messengerMock,
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -488,6 +494,67 @@ describe('Transaction Controller', function () {
           }),
         { message: 'MetaMask is having trouble connecting to the network' },
       );
+    });
+
+    it('should create an approval request', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+      );
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(txMeta.id),
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: txMeta.id },
+          type: MESSAGE_TYPE.TRANSACTION,
+        },
+        true, // Show popup
+      ]);
+    });
+
+    it('should still create an approval request when called twice with same actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+        undefined,
+        undefined,
+        '12345',
+      );
+
+      const secondTxMeta = await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+
+      assert.equal(messengerMock.call.callCount, 2);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(secondTxMeta.id),
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: secondTxMeta.id },
+          type: MESSAGE_TYPE.TRANSACTION,
+        },
+        true, // Show popup
+      ]);
     });
   });
 
@@ -997,9 +1064,11 @@ describe('Transaction Controller', function () {
   });
 
   describe('#approveTransaction', function () {
-    it('does not overwrite set values', async function () {
-      const originalValue = '0x01';
-      const txMeta = {
+    let originalValue, txMeta, signStub, pubStub;
+
+    beforeEach(function () {
+      originalValue = '0x01';
+      txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
         metamaskNetworkId: currentNetworkId,
@@ -1019,17 +1088,22 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_gasPrice = wrongValue;
       providerResultStub.eth_estimateGas = '0x5209';
 
-      const signStub = sinon
+      signStub = sinon
         .stub(txController, 'signTransaction')
         .callsFake(() => Promise.resolve());
 
-      const pubStub = sinon
-        .stub(txController, 'publishTransaction')
-        .callsFake(() => {
-          txController.setTxHash('1', originalValue);
-          txController.txStateManager.setTxStatusSubmitted('1');
-        });
+      pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
+        txController.setTxHash('1', originalValue);
+        txController.txStateManager.setTxStatusSubmitted('1');
+      });
+    });
 
+    afterEach(function () {
+      signStub.restore();
+      pubStub.restore();
+    });
+
+    it('does not overwrite set values', async function () {
       await txController.approveTransaction(txMeta.id);
       const result = txController.txStateManager.getTransaction(txMeta.id);
       const params = result.txParams;
@@ -1042,8 +1116,21 @@ describe('Transaction Controller', function () {
         TransactionStatus.submitted,
         'should have reached the submitted status.',
       );
-      signStub.restore();
-      pubStub.restore();
+    });
+
+    it('should accept the approval request', async function () {
+      await txController.approveTransaction(txMeta.id);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:acceptRequest',
+        txMeta.id,
+      ]);
+    });
+
+    it('should not throw if accepting approval request throws', async function () {
+      messengerMock.call.throws();
+      await txController.approveTransaction(txMeta.id);
     });
   });
 
@@ -1108,7 +1195,7 @@ describe('Transaction Controller', function () {
   });
 
   describe('#cancelTransaction', function () {
-    it('should emit a status change to rejected', function (done) {
+    beforeEach(function () {
       txController.txStateManager._addTransactionsToState([
         {
           id: 0,
@@ -1181,7 +1268,9 @@ describe('Transaction Controller', function () {
           history: [{}],
         },
       ]);
+    });
 
+    it('should emit a status change to rejected', function (done) {
       txController.once('tx:status-update', (txId, status) => {
         try {
           assert.equal(
@@ -1196,6 +1285,22 @@ describe('Transaction Controller', function () {
         }
       });
 
+      txController.cancelTransaction(0);
+    });
+
+    it('should reject the approval request', function () {
+      txController.cancelTransaction(0);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:rejectRequest',
+        '0',
+        new Error('Rejected'),
+      ]);
+    });
+
+    it('should not throw if rejecting approval request throws', async function () {
+      messengerMock.call.throws();
       txController.cancelTransaction(0);
     });
   });

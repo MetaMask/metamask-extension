@@ -13,7 +13,7 @@ import { convertHexToDecimal } from '@metamask/controller-utils';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
-import NetworkController, { NetworkControllerEventTypes } from './network';
+import { NetworkController, NetworkControllerEventType } from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
@@ -248,7 +248,7 @@ describe('DetectTokensController', function () {
       ),
       onNetworkStateChange: (cb) =>
         networkControllerMessenger.subscribe(
-          NetworkControllerEventTypes.NetworkDidChange,
+          NetworkControllerEventType.NetworkDidChange,
           () => {
             const networkState = network.store.getState();
             const modifiedNetworkState = {
