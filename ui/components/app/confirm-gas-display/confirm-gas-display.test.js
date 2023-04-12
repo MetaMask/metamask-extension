@@ -67,7 +67,7 @@ describe('ConfirmGasDisplay', () => {
     expect(screen.queryByText('Max fee:')).toBeInTheDocument();
     expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
   });
-  it('should render gas display labels for legacy transcations', async () => {
+  it('should render gas display labels for legacy transcations', () => {
     render({
       contextProps: {
         metamask: {
