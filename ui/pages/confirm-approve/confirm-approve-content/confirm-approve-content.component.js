@@ -33,7 +33,7 @@ import {
 } from '../../../components/component-library/icon/deprecated';
 import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
 import { Text } from '../../../components/component-library';
-import ConfirmGasDisplay from '../../../components/app/confirm-gas-display';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
