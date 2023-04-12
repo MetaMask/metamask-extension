@@ -8051,24 +8051,30 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
 }): Promise<E['payload'][]> {
   const promiseForEventPayloads = new Promise<E['payload'][]>(
     (resolve, reject) => {
-      // Everything depends on `eventListener` circularly, so we need to declare
-      // it up front. We also can't use `const` as we assign the variable below.
-      // Also, we have to use `any` because `subscribe` and `unsubscribe` don't
-      // directly read the payload type off of the given event, it infers it,
-      // but in a way that makes it very difficult to mimic here.
-      //
-      // We're also using `any` here because there seems to be some mismatch
-      // between the signature of `subscribe` and the way that we're using it.
-      // Try changing this to either `(...args: E['payload']) => void` or
-      // `ExtractEventHandler<E, E['type']>` to see the issue.
-      /* eslint-disable-next-line prefer-const */
-      let eventListener: any;
       let timer: NodeJS.Timeout | undefined;
       const allEventPayloads: E['payload'][] = [];
       const interestingEventPayloads: E['payload'][] = [];
       let alreadyEnded = false;
 
-      const end = () => {
+      // We're using `any` here because there seems to be some mismatch between
+      // the signature of `subscribe` and the way that we're using it. Try
+      // changing `any` to either `((...args: E['payload']) => void)` or
+      // `ExtractEventHandler<E, E['type']>` to see the issue.
+      const eventListener: any = (...payload: E['payload']) => {
+        allEventPayloads.push(payload);
+
+        if (isEventPayloadInteresting(payload)) {
+          interestingEventPayloads.push(payload);
+          if (interestingEventPayloads.length === expectedNumberOfEvents) {
+            stopTimer();
+            end();
+          } else {
+            resetTimer();
+          }
+        }
+      };
+
+      function end() {
         if (!alreadyEnded) {
           alreadyEnded = true;
           messenger.unsubscribe(eventType, eventListener);
@@ -8089,34 +8095,20 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
             }
           });
         }
-      };
+      }
 
-      const stopTimer = () => {
+      function stopTimer() {
         if (timer) {
           clearTimeout(timer);
         }
-      };
+      }
 
-      const resetTimer = () => {
+      function resetTimer() {
         stopTimer();
         timer = originalSetTimeout(() => {
           end();
         }, timeBeforeAssumingNoMoreEvents);
-      };
-
-      eventListener = (...payload: E['payload']) => {
-        allEventPayloads.push(payload);
-
-        if (isEventPayloadInteresting(payload)) {
-          interestingEventPayloads.push(payload);
-          if (interestingEventPayloads.length === expectedNumberOfEvents) {
-            stopTimer();
-            end();
-          } else {
-            resetTimer();
-          }
-        }
-      };
+      }
 
       messenger.subscribe(eventType, eventListener);
       resetTimer();
