@@ -4,7 +4,7 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
-import NetworkController from './network';
+import { NetworkController } from './network';
 
 describe('preferences controller', function () {
   let preferencesController;
