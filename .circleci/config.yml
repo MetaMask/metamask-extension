@@ -236,7 +236,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -267,7 +267,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -288,7 +288,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
@@ -340,7 +340,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -357,7 +357,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -393,7 +393,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -419,7 +419,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -461,7 +461,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -484,7 +484,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -507,7 +507,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -530,7 +530,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -546,7 +546,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -562,7 +562,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -574,7 +574,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -589,7 +589,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -613,7 +613,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -625,7 +625,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - when:
@@ -653,7 +653,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -665,7 +665,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -678,7 +678,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -717,7 +717,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -747,7 +747,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -786,7 +786,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -825,7 +825,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -863,7 +863,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -891,7 +891,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -919,7 +919,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -1018,7 +1018,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1040,7 +1040,7 @@ jobs:
             - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1057,7 +1057,7 @@ jobs:
             - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1073,7 +1073,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1090,7 +1090,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1109,7 +1109,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1127,7 +1127,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - codecov/upload
@@ -1144,7 +1144,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1156,7 +1156,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1168,7 +1168,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1181,7 +1181,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1199,7 +1199,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1217,7 +1217,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1229,7 +1229,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1242,7 +1242,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
@@ -1260,7 +1260,7 @@ jobs:
     steps:
       - run:
           name: Shallow git clone
-          command: git clone --depth 1 "${CIRCLE_REPOSITORY_URL}" --branch "$CIRCLE_BRANCH" .
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - attach_workspace:
           at: .
       - run:
