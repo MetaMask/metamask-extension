@@ -22,7 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix, isHexadecimal } from '../../../../app/scripts/lib/util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
@@ -143,8 +143,10 @@ export default function CustomSpendingCap({
       value: txValue,
       data: newData,
     });
-    estimatedGasLimit = addHexPrefix(estimatedGasLimit);
-    await updateTransaction({ gasLimit: estimatedGasLimit });
+    if (estimatedGasLimit && isHexadecimal(estimatedGasLimit)) {
+      estimatedGasLimit = addHexPrefix(estimatedGasLimit);
+      await updateTransaction({ gasLimit: estimatedGasLimit });
+    }
 
     dispatch(setCustomTokenAmount(String(valueInput)));
   };
