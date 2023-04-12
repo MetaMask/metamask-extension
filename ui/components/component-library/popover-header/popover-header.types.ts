@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonIcon } from '../button-icon';
+import type { ButtonIconProps } from '../button-icon/button-icon.types';
 import type { HeaderBaseProps } from '../header-base';
 
 export interface PopoverHeaderProps extends HeaderBaseProps {
@@ -15,11 +15,11 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
    * The onClick handler for the back `ButtonIcon`
    * When passed this will allow for the back `ButtonIcon` to show
    */
-  onBack?: func;
+  onBack?: () => void;
   /**
    * The props to pass to the back `ButtonIcon`
    */
-  backButtonProps?: ButtonIcon.propTypes;
+  backButtonProps?: ButtonIconProps;
   /**
    * The start (left) content area of PopoverHeader
    * Default to have the back `ButtonIcon` when `onBack` is passed, but passing a  `startAccessory` will override this
@@ -29,14 +29,14 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
    * The onClick handler for the close `ButtonIcon`
    * When passed this will allow for the close `ButtonIcon` to show
    */
-  onClose?: func;
+  onClose?: () => void;
   /**
    * The props to pass to the close `ButtonIcon`
    */
-  closeButtonProps?: ButtonIcon.propTypes;
+  closeButtonProps?: ButtonIconProps;
   /**
    * The end (right) content area of PopoverHeader
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this
    */
-  startAccessory?: React.ReactNode;
+  endAccessory?: React.ReactNode;
 }
