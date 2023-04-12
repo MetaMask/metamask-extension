@@ -56,6 +56,7 @@ import {
   HeaderBase,
   Text,
   ButtonIcon,
+  ButtonIconSize,
   IconName,
 } from '../../component-library';
 import {
@@ -66,7 +67,7 @@ import {
 <HeaderBase
   startAccessory={
     <ButtonIcon
-      size={BUTTON_ICON_SIZES.SM}
+      size={ButtonIconSize.Sm}
       iconName={IconName.ArrowLeft}
       ariaLabel="back"
     />
@@ -91,7 +92,7 @@ Use the `endAccessoryWrapperProps` prop to customize the wrapper element around 
 ```jsx
 import {
   ButtonIcon,
-  BUTTON_ICON_SIZES,
+  ButtonIconSize,
   HeaderBase,
   IconName,
   Text,
@@ -104,7 +105,7 @@ import {
 <HeaderBase
   endAccessory={
     <ButtonIcon
-      size={BUTTON_ICON_SIZES.SM}
+      size={ButtonIconSize.Sm}
       iconName={IconName.Close}
       ariaLabel="close"
     />

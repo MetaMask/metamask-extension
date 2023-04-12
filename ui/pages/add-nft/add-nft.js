@@ -40,7 +40,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../components/component-library';
+import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
 
 export default function AddNft() {
   const t = useI18nContext();
