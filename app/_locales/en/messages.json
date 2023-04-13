@@ -4519,10 +4519,14 @@
     "message": "Transfer from"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
-    "message": "We had trouble connecting to your Ledger, try reviewing $1. If you're using the latest version of Firefox you might be experiencing a specific issue related Firefox dropping U2F support, for instructions on how to fix this issue go $2.",
-    "description": "$1 is a link to the wallet connection guide; $2 is a link to the ledger website for the workaround."
+    "message": "We had trouble connecting to your Ledger, try reviewing $1.",
+    "description": "$1 is a link to the wallet connection guide;"
   },
-  "troubleConnectingToLedgerU2FOnFirefox2": {
+  "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution": {
+    "message": "If you're using the latest version of Firefox you might be experiencing a specific issue related Firefox dropping U2F support, for instructions on how to fix this issue go $1.",
+    "description": "It is a link to the ledger website for the workaround."
+  },
+  "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2": {
     "message": "here",
     "description": "Second part of the error message; It is a link to the ledger website for the workaround."
   },
