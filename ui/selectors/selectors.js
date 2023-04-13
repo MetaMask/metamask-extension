@@ -2,6 +2,12 @@
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '@metamask/controller-utils';
+import {
   createSelector,
   createSelectorCreator,
   defaultMemoize,
@@ -551,6 +557,46 @@ export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
+  );
+}
+
+function getSuggestedTokenCount(state) {
+  return getSuggestedTokens(state)?.length || 0;
+}
+
+export function getSuggestedTokens(state) {
+  return (
+    Object.values(state.metamask.pendingApprovals)?.filter(
+      ({ type, requestData: { asset } }) => {
+        return type === ApprovalType.WatchAsset && asset.tokenId === undefined;
+      },
+    ) || []
+  );
+}
+
+function getSuggestedNftsCount(state) {
+  return getSuggestedNfts(state)?.length || 0;
+}
+
+export function getSuggestedNfts(state) {
+  return (
+    Object.values(state.metamask.pendingApprovals)?.filter(
+      ({
+        requestData: {
+          asset: { standard },
+          errors,
+        },
+        type,
+      }) => {
+        if (!errors || !standard) return false;
+        return (
+          (type === ApprovalType.WatchAsset &&
+            [ERC721, ERC1155].includes(standard)) ||
+          (type === ApprovalType.WatchAsset &&
+            Object.values(errors).some((error) => !!error))
+        );
+      },
+    ) || []
   );
 }
 

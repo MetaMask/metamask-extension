@@ -45,6 +45,7 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
@@ -105,8 +106,10 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    hasWatchAssetPendingApprovals: PropTypes.bool,
     hasTransactionPendingApprovals: PropTypes.bool.isRequired,
+    hasWatchTokenPendingApprovals: PropTypes.bool,
+    hasWatchNftPendingApprovals: PropTypes.bool,
+    unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
@@ -194,7 +197,8 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       isNotification,
       showAwaitingSwapScreen,
-      hasWatchAssetPendingApprovals,
+      hasWatchTokenPendingApprovals,
+      hasWatchNftPendingApprovals,
       swapsFetchParams,
       hasTransactionPendingApprovals,
     } = this.props;
@@ -205,7 +209,9 @@ export default class Home extends PureComponent {
     } else if (
       firstPermissionsRequestId ||
       hasTransactionPendingApprovals ||
-      hasWatchAssetPendingApprovals ||
+      unconfirmedTransactionsCount > 0 ||
+      hasWatchTokenPendingApprovals ||
+      hasWatchNftPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
@@ -267,8 +273,10 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId,
       history,
       isNotification,
-      hasWatchAssetPendingApprovals,
       hasTransactionPendingApprovals,
+      hasWatchTokenPendingApprovals,
+      hasWatchNftPendingApprovals,
+      unconfirmedTransactionsCount,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
@@ -289,8 +297,10 @@ export default class Home extends PureComponent {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (hasWatchAssetPendingApprovals) {
+    } else if (hasWatchTokenPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
+    } else if (hasWatchNftPendingApprovals) {
+      history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }

@@ -1,0 +1,89 @@
+.confirm-add-suggested-nft {
+  padding: 16px;
+
+  &__nft-header {
+    @include H7;
+
+    display: flex;
+  }
+
+  &__nft {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__details {
+    flex: 0 0 30%;
+    min-width: 0;
+  }
+
+  &__nft-list {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+  }
+
+  &__nft-list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-top: 8px;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  &__nft-data {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+  }
+
+  &__nft-details {
+    display: flex;
+    justify-content: space-evenly;
+    width: 70%;
+  }
+
+  &__nft-description,
+  &__nft-standard {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__nft-image {
+    margin-right: 12px;
+    width: 75px;
+    border-radius: 8px;
+    flex: 0 0 auto;
+  }
+
+  &__nft-image-default {
+    margin-right: 12px;
+    flex: 0 0 auto;
+    width: 75px;
+    height: 75px;
+    border-radius: 8px;
+    padding: 0 !important;
+  }
+
+  &__nft-sub-details {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
+    width: 60%;
+  }
+
+  &__nft-name {
+    @include H7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__nft-tokenid {
+    @include H7;
+    color: #606060;
+  }
+}
