@@ -1,12 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getSelectedIdentity } from '../../../selectors';
+import { AddressCopyButton } from '../../multichain';
 
 const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
+  const selectedIdentity = useSelector(getSelectedIdentity);
+  const checksummedAddress = toChecksumHexAddress(selectedIdentity?.address);
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
-        {loading ? null : icon}
+        {process.env.MULTICHAIN ? (
+          <AddressCopyButton address={checksummedAddress} shorten />
+        ) : (
+          <>{loading ? null : icon}</>
+        )}
         {balance}
       </div>
       <div className="wallet-overview__buttons">{buttons}</div>
