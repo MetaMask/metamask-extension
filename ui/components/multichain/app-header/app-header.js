@@ -21,12 +21,8 @@ import {
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  Button,
-  ButtonIcon,
-  PickerNetwork,
-} from '../../component-library';
+import { AvatarNetwork, Button, PickerNetwork } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   getCurrentNetwork,
