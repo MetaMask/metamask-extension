@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -25,6 +25,7 @@ import {
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
@@ -143,15 +144,16 @@ export default function CustomSpendingCap({
       decimals,
     });
     const { from, to, value: txValue } = txParams;
-    let estimatedGasLimit = await estimateGas({
+    const estimatedGasLimit = await estimateGas({
       from,
       to,
       value: txValue,
       data: newData,
     });
-    estimatedGasLimit = addHexPrefix(estimatedGasLimit);
-    if (estimatedGasLimit && isHexString(estimatedGasLimit)) {
-      await updateTransaction({ gasLimit: estimatedGasLimit });
+    if (estimatedGasLimit) {
+      await updateTransaction({
+        gasLimit: hexToDecimal(addHexPrefix(estimatedGasLimit)),
+      });
     }
     setInputChangeInProgress(false);
   };

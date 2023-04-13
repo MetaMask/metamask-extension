@@ -43,7 +43,7 @@ describe('CustomSpendingCap', () => {
     const user = userEvent.setup();
     const spyEstimateGas = jest
       .spyOn(Actions, 'estimateGas')
-      .mockReturnValue(Promise.resolve(6000));
+      .mockReturnValue(Promise.resolve('1770'));
     const updateTransactionMock = jest.fn();
     jest
       .spyOn(GasFeeContext, 'useGasFeeContext')
