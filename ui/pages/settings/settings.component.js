@@ -27,7 +27,7 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
-import { ButtonIcon } from '../../components/component-library';
+import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
 import {
   Icon,
   ICON_NAMES,
