@@ -149,8 +149,8 @@ export default function CustomSpendingCap({
       value: txValue,
       data: newData,
     });
+    estimatedGasLimit = addHexPrefix(estimatedGasLimit);
     if (estimatedGasLimit && isHexString(estimatedGasLimit)) {
-      estimatedGasLimit = addHexPrefix(estimatedGasLimit);
       await updateTransaction({ gasLimit: estimatedGasLimit });
     }
     setInputChangeInProgress(false);
