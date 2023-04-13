@@ -142,7 +142,7 @@ export default function CustomSpendingCap({
 
   useEffect(() => {
     if (inputRef.current) {
-      document.getElementsByTagName('input')[0].focus({
+      inputRef.current.focus({
         preventScroll: true,
       });
     }
