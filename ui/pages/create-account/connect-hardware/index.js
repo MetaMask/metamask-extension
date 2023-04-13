@@ -20,6 +20,7 @@ import {
   HardwareDeviceNames,
   LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
+import { BUTTON_TYPES, Button } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
@@ -297,29 +298,31 @@ class ConnectHardwareForm extends Component {
           {this.state.device === 'ledger' && this.state.isFirefox
             ? this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
                 // eslint-disable-next-line react/jsx-key
-                <a
+                <Button
+                  type={BUTTON_TYPES.LINK}
                   href={ZENDESK_URLS.HARDWARE_CONNECTION}
-                  key="hardware-connection-guide"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hw-connect__link"
+                  key="u2f-error-1"
                 >
                   {this.context.t('walletConnectionGuide')}
-                </a>,
+                </Button>,
+                <Button
+                  type={BUTTON_TYPES.LINK}
+                  href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
+                  key="u2f-error-2"
+                >
+                  {this.context.t('troubleConnectingToLedgerU2FOnFirefox2')}
+                </Button>,
               ])
             : this.context.t('troubleConnectingToWallet', [
                 this.state.device,
                 // eslint-disable-next-line react/jsx-key
-                <a
+                <Button
+                  type={BUTTON_TYPES.LINK}
                   href={ZENDESK_URLS.HARDWARE_CONNECTION}
-                  key="hardware-connection-guide"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hw-connect__link"
-                  style={{ marginLeft: '5px', marginRight: '5px' }}
+                  key="u2f-error-1"
                 >
                   {this.context.t('walletConnectionGuide')}
-                </a>,
+                </Button>,
               ])}
         </p>
       );
