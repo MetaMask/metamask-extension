@@ -23,7 +23,8 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
+import { Text } from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
