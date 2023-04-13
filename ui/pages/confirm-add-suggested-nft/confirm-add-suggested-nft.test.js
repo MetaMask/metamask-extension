@@ -9,7 +9,7 @@ import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
 import ConfirmAddSuggestedToken from '.';
 
-const MOCK_SUGGESTED_TOKENS = [
+const MOCK_SUGGESTED_ASSETS = [
   {
     id: 1,
     asset: {
@@ -46,7 +46,7 @@ jest.mock('../../store/actions', () => ({
 const renderComponent = (tokens = []) => {
   const store = configureStore({
     metamask: {
-      suggestedTokens: [...MOCK_SUGGESTED_TOKENS],
+      suggestedTokens: [...MOCK_SUGGESTED_ASSETS],
       tokens,
       providerConfig: { chainId: '0x1' },
     },
@@ -76,11 +76,11 @@ describe('ConfirmAddSuggestedToken Component', () => {
   it('should render the list of suggested tokens', () => {
     renderComponent();
 
-    for (const { asset } of MOCK_SUGGESTED_TOKENS) {
+    for (const { asset } of MOCK_SUGGESTED_ASSETS) {
       expect(screen.getByText(asset.symbol)).toBeInTheDocument();
     }
     expect(screen.getAllByRole('img')).toHaveLength(
-      MOCK_SUGGESTED_TOKENS.length,
+      MOCK_SUGGESTED_ASSETS.length,
     );
   });
 
@@ -93,10 +93,10 @@ describe('ConfirmAddSuggestedToken Component', () => {
     });
 
     expect(resolvePendingApproval).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_TOKENS.length,
+      MOCK_SUGGESTED_ASSETS.length,
     );
 
-    MOCK_SUGGESTED_TOKENS.forEach(({ id }) => {
+    MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
       expect(resolvePendingApproval).toHaveBeenCalledWith(id, null);
     });
   });
@@ -110,10 +110,10 @@ describe('ConfirmAddSuggestedToken Component', () => {
     });
 
     expect(rejectPendingApproval).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_TOKENS.length,
+      MOCK_SUGGESTED_ASSETS.length,
     );
 
-    MOCK_SUGGESTED_TOKENS.forEach(({ id }) => {
+    MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
       expect(rejectPendingApproval).toHaveBeenCalledWith(
         id,
         expect.objectContaining({
@@ -130,7 +130,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
       const mockTokens = [
         {
           ...MOCK_TOKEN,
-          address: MOCK_SUGGESTED_TOKENS[0].asset.address,
+          address: MOCK_SUGGESTED_ASSETS[0].asset.address,
         },
       ];
       renderComponent(mockTokens);
@@ -153,7 +153,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
       const mockTokens = [
         {
           ...MOCK_TOKEN,
-          symbol: MOCK_SUGGESTED_TOKENS[0].asset.symbol,
+          symbol: MOCK_SUGGESTED_ASSETS[0].asset.symbol,
         },
       ];
       renderComponent(mockTokens);

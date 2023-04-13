@@ -5,21 +5,32 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Text } from '../../component-library';
 
-export default function NftDefaultImage({ name, tokenId, handleImageClick }) {
+export default function NftDefaultImage({
+  name,
+  tokenId,
+  handleImageClick,
+  className,
+}) {
   const t = useI18nContext();
   const Tag = handleImageClick ? 'button' : 'div';
   return (
     <Tag
       tabIndex={0}
       data-testid="nft-default-image"
-      className={classnames('nft-default', {
+      className={classnames(className, 'nft-default', {
         'nft-default--clickable': handleImageClick,
       })}
       onClick={handleImageClick}
     >
-      <Text variant={TextVariant.bodySm} as="h6" className="nft-default__text">
-        {name ?? t('unknownCollection')} <br /> #{tokenId}
-      </Text>
+      {tokenId && (
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
+          className="nft-default__text"
+        >
+          {name ?? t('unknownCollection')} <br /> #{tokenId}
+        </Text>
+      )}
     </Tag>
   );
 }
@@ -37,4 +48,8 @@ NftDefaultImage.propTypes = {
    * The click handler for the NFT default image
    */
   handleImageClick: PropTypes.func,
+  /**
+   * An additional className to apply to the NFT default image
+   */
+  className: PropTypes.string,
 };

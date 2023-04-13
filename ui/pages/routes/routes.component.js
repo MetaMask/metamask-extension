@@ -22,6 +22,7 @@ import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
+import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import CreateAccountPage from '../create-account';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
@@ -59,6 +60,7 @@ import {
   IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -282,6 +284,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+          component={ConfirmAddSuggestedNftPage}
           exact
         />
         <Authenticated

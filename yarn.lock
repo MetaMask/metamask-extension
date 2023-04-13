@@ -3823,13 +3823,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/abi-utils@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "@metamask/abi-utils@npm:1.1.1"
+"@metamask/abi-utils@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/abi-utils@npm:1.2.0"
   dependencies:
     "@metamask/utils": ^3.4.1
     superstruct: ^1.0.3
-  checksum: 475e6ef5f91daaeed86d757f092623dfb31f492969115a2886e499f7ac91f8cccb33abda3368112f4e4c1de3b124dd8a0f48990293ca25ac1de3978796bd622d
+  checksum: 55fde5bcbc7b2b72fb469867e3f2c41fddb1b2e992c6ea846de5701ad8fa5fcc66701facf1df793f8f58b8befcaa3c21a5e5519e839cc6fd5a3932806db7a5d5
   languageName: node
   linkType: hard
 
@@ -3866,71 +3866,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/assets-controllers@npm:7.0.0"
+"@metamask/assets-controllers@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/assets-controllers@npm:9.0.0"
   dependencies:
+    "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
-    "@metamask/abi-utils": ^1.1.0
-    "@metamask/approval-controller": ^2.1.1
-    "@metamask/base-controller": ^2.0.0
+    "@metamask/abi-utils": ^1.2.0
+    "@metamask/approval-controller": ^3.1.0
+    "@metamask/base-controller": ^3.0.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^3.4.0
+    "@metamask/controller-utils": ^4.0.0
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^8.0.0
-    "@metamask/preferences-controller": ^3.0.0
-    "@metamask/utils": ^5.0.1
+    "@metamask/network-controller": ^10.0.0
+    "@metamask/preferences-controller": ^4.1.0
+    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/utils": ^5.0.2
     "@types/uuid": ^8.3.0
     abort-controller: ^3.0.0
     async-mutex: ^0.2.6
     babel-runtime: ^6.26.0
     eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
     multiformats: ^9.5.2
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/approval-controller": ^2.1.1
-    "@metamask/network-controller": ^8.0.0
-  checksum: 7075fe057f647ea84bcaaef3efa7c257be551a9ec4682c85dfa07e1f39e525cef43cb9841604fa094f165883060b9c1b07ca393875d66b3dab01eb71de35c7a1
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A7.0.0#./.yarn/patches/@metamask-assets-controllers-npm-7.0.0-9dec51787d.patch::locator=metamask-crx%40workspace%3A.":
-  version: 7.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A7.0.0#./.yarn/patches/@metamask-assets-controllers-npm-7.0.0-9dec51787d.patch::version=7.0.0&hash=e60732&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@ethersproject/bignumber": ^5.7.0
-    "@ethersproject/contracts": ^5.7.0
-    "@ethersproject/providers": ^5.7.0
-    "@metamask/abi-utils": ^1.1.0
-    "@metamask/approval-controller": ^2.1.1
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^3.4.0
-    "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^8.0.0
-    "@metamask/preferences-controller": ^3.0.0
-    "@metamask/utils": ^5.0.1
-    "@types/uuid": ^8.3.0
-    abort-controller: ^3.0.0
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.2
-    ethereumjs-util: ^7.0.10
-    immer: ^9.0.6
-    multiformats: ^9.5.2
-    single-call-balance-checker-abi: ^1.0.0
-    uuid: ^8.3.2
-  peerDependencies:
-    "@metamask/approval-controller": ^2.1.1
-    "@metamask/network-controller": ^8.0.0
-  checksum: 150461535d47ac8079f726a4b8b6c130043757d87bc715ae480ac10262613e3f06f930882fec0150717856ff9dfc8c1df3e6ff96a474dec0fe850aa70b2c51a8
+    "@metamask/approval-controller": ^3.1.0
+    "@metamask/network-controller": ^10.0.0
+    "@metamask/preferences-controller": ^4.1.0
+  checksum: 86f10c9f699f00b5e015fd16ec3f319240fe60251c1a74184a22ac525b32a0d111a156c615bfa9ca2df6695509ea0b13a73c61a3422c28663ca849cb2848c31f
   languageName: node
   linkType: hard
 
@@ -4020,7 +3988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0, @metamask/controller-utils@npm:^3.4.0":
+"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.4.0":
   version: 3.4.0
   resolution: "@metamask/controller-utils@npm:3.4.0"
   dependencies:
@@ -4357,6 +4325,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/network-controller@npm:10.0.0"
+  dependencies:
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/controller-utils": ^4.0.0
+    "@metamask/eth-json-rpc-infura": ^8.0.0
+    "@metamask/eth-json-rpc-middleware": ^11.0.0
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/swappable-obj-proxy": ^2.1.0
+    "@metamask/utils": ^5.0.2
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-block-tracker: ^7.0.1
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    json-rpc-engine: ^6.1.0
+    uuid: ^8.3.2
+  checksum: 4ffc32d81eeb108ad8b11c6dcd368f8aafb016a10fd0464bd9afd20261794911017f19898a474985ea3d8d3d1094b336cad7e9064e1621c662042224b6ca3725
+  languageName: node
+  linkType: hard
+
 "@metamask/network-controller@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/network-controller@npm:2.0.0"
@@ -4507,13 +4498,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/preferences-controller@npm:3.0.0"
+"@metamask/preferences-controller@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/preferences-controller@npm:4.1.0"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-  checksum: e86d689270704b7ac72d1d72762d957e2ebca649fa3c354490cbc939eeaed22ce81d4ccfa1afba1167c3bbf17c9444286c7d79904820980007e1f8e8927dc588
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/controller-utils": ^4.0.0
+  checksum: 7a121d959082787767786639f5558496c3782bf119f317c24ccae7dc038e8c1a52676d4b5b1c6d94b6563c94d01f24cd3793167322ad5f28dce803223d774fcd
   languageName: node
   linkType: hard
 
@@ -4545,6 +4536,16 @@ __metadata:
     eth-rpc-errors: ^4.0.0
     immer: ^9.0.6
   checksum: da0b3cb6607201b07ee54f81a4ce8ce3ce047acde33c5f483aa0c8c907bcbe32e70944d95cf4f0df5d4b664388be832320d6973cf61cd00e22f81d16ff0ddfd2
+  languageName: node
+  linkType: hard
+
+"@metamask/rpc-errors@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@metamask/rpc-errors@npm:5.1.1"
+  dependencies:
+    "@metamask/utils": ^5.0.0
+    fast-safe-stringify: ^2.0.6
+  checksum: ccd1b24da66af3ae63960b79c04b86efb8b96acb89ca6f7e0bbfe636d23ba5cddeba533c0692eafb87c44ec6f840085372d0f21b39e05df9a80700ff61538a30
   languageName: node
   linkType: hard
 
@@ -4589,6 +4590,13 @@ __metadata:
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
   checksum: 8b717ac5d53df0027c05509f03d0534700b5898dd1c3a53fb2dc4c0499ca5971b14aae67f522d09eb9f509e77f50afa95fdb3eda1afbff8b071c18a3d2905e93
+  languageName: node
+  linkType: hard
+
+"@metamask/safe-event-emitter@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/safe-event-emitter@npm:3.0.0"
+  checksum: 8dc58a76f9f75bf2405931465fc311c68043d851e6b8ebe9f82ae339073a08a83430dba9338f8e3adc4bfc8067607125074bcafa32baee3a5157f42343dc89e5
   languageName: node
   linkType: hard
 
@@ -15507,6 +15515,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-block-tracker@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "eth-block-tracker@npm:7.0.1"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^5.0.1
+    json-rpc-random-id: ^1.0.1
+    pify: ^3.0.0
+  checksum: b8ecdaebed26423fa8444a779ecf34fb102f873fd1a29135189a3c553f679e34c19151f6b8d1cbbe180fdcc9ba967a7a55af6a72678140d6e3c8e725e630771e
+  languageName: node
+  linkType: hard
+
 "eth-eip712-util-browser@npm:^0.0.3":
   version: 0.0.3
   resolution: "eth-eip712-util-browser@npm:0.0.3"
@@ -23960,8 +23981,8 @@ __metadata:
     "@metamask-institutional/transaction-update": ^0.1.21
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
-    "@metamask/approval-controller": ^3.0.0
-    "@metamask/assets-controllers": ^7.0.0
+    "@metamask/approval-controller": ^3.1.0
+    "@metamask/assets-controllers": ^9.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
     "@metamask/browser-passworder": ^4.1.0
@@ -24314,20 +24335,20 @@ __metadata:
   linkType: hard
 
 "micromark-extension-gfm-autolink-literal@npm:^1.0.0":
-  version: 1.0.4
-  resolution: "micromark-extension-gfm-autolink-literal@npm:1.0.4"
+  version: 1.0.5
+  resolution: "micromark-extension-gfm-autolink-literal@npm:1.0.5"
   dependencies:
     micromark-util-character: ^1.0.0
     micromark-util-sanitize-uri: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: ea66602cc8375bffb414a662f54d7868ed8ba38a7fe9fca6b2c5f6d9ac632f6ed29e88a58dbd45a580c5c629e50c13e9b864382b796d549a69c5f69ba1df51f9
+  checksum: ec2f6bc4a3eb238c1b8be9744454ffbc2957e3d8a248697af5a26bb21479862300c0e40e0a92baf17c299ddf70d4bc4470d4eee112cd92322f87d81e45c2e83d
   languageName: node
   linkType: hard
 
 "micromark-extension-gfm-footnote@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "micromark-extension-gfm-footnote@npm:1.1.0"
+  version: 1.1.2
+  resolution: "micromark-extension-gfm-footnote@npm:1.1.2"
   dependencies:
     micromark-core-commonmark: ^1.0.0
     micromark-factory-space: ^1.0.0
@@ -24337,13 +24358,13 @@ __metadata:
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
     uvu: ^0.5.0
-  checksum: 7a5408625ef2cca5cc18e6591c2522a8a409f466a6fbc0ed938950aafe5fc9bf1eada65e1a4dd4e36ec3e7b24920de1f4b3e2c365d8f5cd2d6ccb1f8c2377c49
+  checksum: c151a629ee1cd92363c018a50f926a002c944ac481ca72b3720b9529e9c20f1cbef98b0fefdcd2d594af37d0d9743673409cac488af0d2b194210fd16375dcb7
   languageName: node
   linkType: hard
 
 "micromark-extension-gfm-strikethrough@npm:^1.0.0":
-  version: 1.0.5
-  resolution: "micromark-extension-gfm-strikethrough@npm:1.0.5"
+  version: 1.0.7
+  resolution: "micromark-extension-gfm-strikethrough@npm:1.0.7"
   dependencies:
     micromark-util-chunked: ^1.0.0
     micromark-util-classify-character: ^1.0.0
@@ -24351,20 +24372,20 @@ __metadata:
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
     uvu: ^0.5.0
-  checksum: 548c0f257753d735c741533411957f04253da53db31e1f398dc5dc1de9f398c45586baad5223dce8f3b55f9433c255e6eb695fc3104256b8c332dd8737136882
+  checksum: 169e310a4408feade0df80180f60d48c5cc5b7070e5e75e0bbd914e9100273508162c4bb20b72d53081dc37f1ff5834b3afa137862576f763878552c03389811
   languageName: node
   linkType: hard
 
 "micromark-extension-gfm-table@npm:^1.0.0":
-  version: 1.0.6
-  resolution: "micromark-extension-gfm-table@npm:1.0.6"
+  version: 1.0.7
+  resolution: "micromark-extension-gfm-table@npm:1.0.7"
   dependencies:
     micromark-factory-space: ^1.0.0
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
     uvu: ^0.5.0
-  checksum: 92a5c15314bc87c9630a0cb1bd0b0ba4493e13e1bc5d02d55fdd843b56bf6b229ced2c73e331dd98d90d721e0929f5cf16737d3dd1864d61e6d0b7748695349a
+  checksum: 4853731285224e409d7e2c94c6ec849165093bff819e701221701aa7b7b34c17702c44f2f831e96b49dc27bb07e445b02b025561b68e62f5c3254415197e7af6
   languageName: node
   linkType: hard
 
@@ -24378,15 +24399,15 @@ __metadata:
   linkType: hard
 
 "micromark-extension-gfm-task-list-item@npm:^1.0.0":
-  version: 1.0.4
-  resolution: "micromark-extension-gfm-task-list-item@npm:1.0.4"
+  version: 1.0.5
+  resolution: "micromark-extension-gfm-task-list-item@npm:1.0.5"
   dependencies:
     micromark-factory-space: ^1.0.0
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
     uvu: ^0.5.0
-  checksum: 2575bb47b320f2479d3cc2492ba7cf79d6baa9cd0200c0ed120fd0e318e64e8ebab4a93a056a3781cb5107193f3b36ebd2d86a5928308bef45fc121291f97eb5
+  checksum: 929f05343d272cffb8008899289f4cffe986ef98fc622ebbd1aa4ff11470e6b32ed3e1f18cd294adb69cabb961a400650078f6c12b322cc515b82b5068b31960
   languageName: node
   linkType: hard
 
@@ -24407,196 +24428,195 @@ __metadata:
   linkType: hard
 
 "micromark-factory-destination@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-factory-destination@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-factory-destination@npm:1.1.0"
   dependencies:
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: 8e733ae9c1c2342f14ff290bf09946e20f6f540117d80342377a765cac48df2ea5e748f33c8b07501ad7a43414b1a6597c8510ede2052b6bf1251fab89748e20
+  checksum: 9e2b5fb5fedbf622b687e20d51eb3d56ae90c0e7ecc19b37bd5285ec392c1e56f6e21aa7cfcb3c01eda88df88fe528f3acb91a5f57d7f4cba310bc3cd7f824fa
   languageName: node
   linkType: hard
 
 "micromark-factory-label@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "micromark-factory-label@npm:1.0.2"
+  version: 1.1.0
+  resolution: "micromark-factory-label@npm:1.1.0"
   dependencies:
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
     uvu: ^0.5.0
-  checksum: 957e9366bdc8dbc1437c0706ff96972fa985ab4b1274abcae12f6094f527cbf5c69e7f2304c23c7f4b96e311ff7911d226563b8b43dcfcd4091e8c985fb97ce6
+  checksum: fcda48f1287d9b148c562c627418a2ab759cdeae9c8e017910a0cba94bb759a96611e1fc6df33182e97d28fbf191475237298983bb89ef07d5b02464b1ad28d5
   languageName: node
   linkType: hard
 
 "micromark-factory-space@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-factory-space@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-factory-space@npm:1.1.0"
   dependencies:
     micromark-util-character: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: 70d3aafde4e68ef4e509a3b644e9a29e4aada00801279e346577b008cbca06d78051bcd62aa7ea7425856ed73f09abd2b36607803055f726f52607ee7cb706b0
+  checksum: b58435076b998a7e244259a4694eb83c78915581206b6e7fc07b34c6abd36a1726ade63df8972fbf6c8fa38eecb9074f4e17be8d53f942e3b3d23d1a0ecaa941
   languageName: node
   linkType: hard
 
 "micromark-factory-title@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "micromark-factory-title@npm:1.0.2"
+  version: 1.1.0
+  resolution: "micromark-factory-title@npm:1.1.0"
   dependencies:
     micromark-factory-space: ^1.0.0
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
-    uvu: ^0.5.0
-  checksum: 9a9cf66babde0bad1e25d6c1087082bfde6dfc319a36cab67c89651cc1a53d0e21cdec83262b5a4c33bff49f0e3c8dc2a7bd464e991d40dbea166a8f9b37e5b2
+  checksum: 4432d3dbc828c81f483c5901b0c6591a85d65a9e33f7d96ba7c3ae821617a0b3237ff5faf53a9152d00aaf9afb3a9f185b205590f40ed754f1d9232e0e9157b1
   languageName: node
   linkType: hard
 
 "micromark-factory-whitespace@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-factory-whitespace@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-factory-whitespace@npm:1.1.0"
   dependencies:
     micromark-factory-space: ^1.0.0
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: 0888386e6ea2dd665a5182c570d9b3d0a172d3f11694ca5a2a84e552149c9f1429f5b975ec26e1f0fa4388c55a656c9f359ce5e0603aff6175ba3e255076f20b
+  checksum: ef0fa682c7d593d85a514ee329809dee27d10bc2a2b65217d8ef81173e33b8e83c549049764b1ad851adfe0a204dec5450d9d20a4ca8598f6c94533a73f73fcd
   languageName: node
   linkType: hard
 
 "micromark-util-character@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "micromark-util-character@npm:1.1.0"
+  version: 1.2.0
+  resolution: "micromark-util-character@npm:1.2.0"
   dependencies:
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: 504a4e3321f69bddf3fec9f0c1058239fc23336bda5be31d532b150491eda47965a251b37f8a7a9db0c65933b3aaa49cf88044fb1028be3af7c5ee6212bf8d5f
+  checksum: 089e79162a19b4a28731736246579ab7e9482ac93cd681c2bfca9983dcff659212ef158a66a5957e9d4b1dba957d1b87b565d85418a5b009f0294f1f07f2aaac
   languageName: node
   linkType: hard
 
 "micromark-util-chunked@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-util-chunked@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-util-chunked@npm:1.1.0"
   dependencies:
     micromark-util-symbol: ^1.0.0
-  checksum: c1efd56e8c4217bcf1c6f1a9fb9912b4a2a5503b00d031da902be922fb3fee60409ac53f11739991291357b2784fb0647ddfc74c94753a068646c0cb0fd71421
+  checksum: c435bde9110cb595e3c61b7f54c2dc28ee03e6a57fa0fc1e67e498ad8bac61ee5a7457a2b6a73022ddc585676ede4b912d28dcf57eb3bd6951e54015e14dc20b
   languageName: node
   linkType: hard
 
 "micromark-util-classify-character@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-util-classify-character@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-util-classify-character@npm:1.1.0"
   dependencies:
     micromark-util-character: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: 180446e6a1dec653f625ded028f244784e1db8d10ad05c5d70f08af9de393b4a03dc6cf6fa5ed8ccc9c24bbece7837abf3bf66681c0b4adf159364b7d5236dfd
+  checksum: 8499cb0bb1f7fb946f5896285fcca65cd742f66cd3e79ba7744792bd413ec46834f932a286de650349914d02e822946df3b55d03e6a8e1d245d1ddbd5102e5b0
   languageName: node
   linkType: hard
 
 "micromark-util-combine-extensions@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-util-combine-extensions@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-util-combine-extensions@npm:1.1.0"
   dependencies:
     micromark-util-chunked: ^1.0.0
     micromark-util-types: ^1.0.0
-  checksum: 5304a820ef75340e1be69d6ad167055b6ba9a3bafe8171e5945a935752f462415a9dd61eb3490220c055a8a11167209a45bfa73f278338b7d3d61fa1464d3f35
+  checksum: ee78464f5d4b61ccb437850cd2d7da4d690b260bca4ca7a79c4bb70291b84f83988159e373b167181b6716cb197e309bc6e6c96a68cc3ba9d50c13652774aba9
   languageName: node
   linkType: hard
 
 "micromark-util-decode-numeric-character-reference@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-util-decode-numeric-character-reference@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-util-decode-numeric-character-reference@npm:1.1.0"
   dependencies:
     micromark-util-symbol: ^1.0.0
-  checksum: f3ae2bb582a80f1e9d3face026f585c0c472335c064bd850bde152376f0394cb2831746749b6be6e0160f7d73626f67d10716026c04c87f402c0dd45a1a28633
+  checksum: 4733fe75146e37611243f055fc6847137b66f0cde74d080e33bd26d0408c1d6f44cabc984063eee5968b133cb46855e729d555b9ff8d744652262b7b51feec73
   languageName: node
   linkType: hard
 
 "micromark-util-decode-string@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "micromark-util-decode-string@npm:1.0.2"
+  version: 1.1.0
+  resolution: "micromark-util-decode-string@npm:1.1.0"
   dependencies:
     decode-named-character-reference: ^1.0.0
     micromark-util-character: ^1.0.0
     micromark-util-decode-numeric-character-reference: ^1.0.0
     micromark-util-symbol: ^1.0.0
-  checksum: 2dbb41c9691cc71505d39706405139fb7d6699429d577a524c7c248ac0cfd09d3dd212ad8e91c143a00b2896f26f81136edc67c5bda32d20446f0834d261b17a
+  checksum: f1625155db452f15aa472918499689ba086b9c49d1322a08b22bfbcabe918c61b230a3002c8bc3ea9b1f52ca7a9bb1c3dd43ccb548c7f5f8b16c24a1ae77a813
   languageName: node
   linkType: hard
 
 "micromark-util-encode@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "micromark-util-encode@npm:1.0.1"
-  checksum: 9290583abfdc79ea3e7eb92c012c47a0e14327888f8aaa6f57ff79b3058d8e7743716b9d91abca3646f15ab3d78fdad9779fdb4ccf13349cd53309dfc845253a
+  version: 1.1.0
+  resolution: "micromark-util-encode@npm:1.1.0"
+  checksum: 4ef29d02b12336918cea6782fa87c8c578c67463925221d4e42183a706bde07f4b8b5f9a5e1c7ce8c73bb5a98b261acd3238fecd152e6dd1cdfa2d1ae11b60a0
   languageName: node
   linkType: hard
 
 "micromark-util-html-tag-name@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "micromark-util-html-tag-name@npm:1.1.0"
-  checksum: a9b783cec89ec813648d59799464c1950fe281ae797b2a965f98ad0167d7fa1a247718eff023b4c015f47211a172f9446b8e6b98aad50e3cd44a3337317dad2c
+  version: 1.2.0
+  resolution: "micromark-util-html-tag-name@npm:1.2.0"
+  checksum: ccf0fa99b5c58676dc5192c74665a3bfd1b536fafaf94723bd7f31f96979d589992df6fcf2862eba290ef18e6a8efb30ec8e1e910d9f3fc74f208871e9f84750
   languageName: node
   linkType: hard
 
 "micromark-util-normalize-identifier@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-util-normalize-identifier@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-util-normalize-identifier@npm:1.1.0"
   dependencies:
     micromark-util-symbol: ^1.0.0
-  checksum: d7c09d5e8318fb72f194af72664bd84a48a2928e3550b2b21c8fbc0ec22524f2a72e0f6663d2b95dc189a6957d3d7759b60716e888909710767cd557be821f8b
+  checksum: 8655bea41ffa4333e03fc22462cb42d631bbef9c3c07b625fd852b7eb442a110f9d2e5902a42e65188d85498279569502bf92f3434a1180fc06f7c37edfbaee2
   languageName: node
   linkType: hard
 
 "micromark-util-resolve-all@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "micromark-util-resolve-all@npm:1.0.0"
+  version: 1.1.0
+  resolution: "micromark-util-resolve-all@npm:1.1.0"
   dependencies:
     micromark-util-types: ^1.0.0
-  checksum: 409667f2bd126ef8acce009270d2aecaaa5584c5807672bc657b09e50aa91bd2e552cf41e5be1e6469244a83349cbb71daf6059b746b1c44e3f35446fef63e50
+  checksum: 1ce6c0237cd3ca061e76fae6602cf95014e764a91be1b9f10d36cb0f21ca88f9a07de8d49ab8101efd0b140a4fbfda6a1efb72027ab3f4d5b54c9543271dc52c
   languageName: node
   linkType: hard
 
 "micromark-util-sanitize-uri@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "micromark-util-sanitize-uri@npm:1.1.0"
+  version: 1.2.0
+  resolution: "micromark-util-sanitize-uri@npm:1.2.0"
   dependencies:
     micromark-util-character: ^1.0.0
     micromark-util-encode: ^1.0.0
     micromark-util-symbol: ^1.0.0
-  checksum: fe6093faa0adeb8fad606184d927ce37f207dcc2ec7256438e7f273c8829686245dd6161b597913ef25a3c4fb61863d3612a40cb04cf15f83ba1b4087099996b
+  checksum: 6663f365c4fe3961d622a580f4a61e34867450697f6806f027f21cf63c92989494895fcebe2345d52e249fe58a35be56e223a9776d084c9287818b40c779acc1
   languageName: node
   linkType: hard
 
 "micromark-util-subtokenize@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "micromark-util-subtokenize@npm:1.0.2"
+  version: 1.1.0
+  resolution: "micromark-util-subtokenize@npm:1.1.0"
   dependencies:
     micromark-util-chunked: ^1.0.0
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.0
     uvu: ^0.5.0
-  checksum: c32ee58a7e1384ab1161a9ee02fbb04ad7b6e96d0b8c93dba9803c329a53d07f22ab394c7a96b2e30d6b8fbe3585b85817dba07277b1317111fc234e166bd2d1
+  checksum: 4a9d780c4d62910e196ea4fd886dc4079d8e424e5d625c0820016da0ed399a281daff39c50f9288045cc4bcd90ab47647e5396aba500f0853105d70dc8b1fc45
   languageName: node
   linkType: hard
 
 "micromark-util-symbol@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "micromark-util-symbol@npm:1.0.1"
-  checksum: c6a3023b3a7432c15864b5e33a1bcb5042ac7aa097f2f452e587bef45433d42d39e0a5cce12fbea91e0671098ba0c3f62a2b30ce1cde66ecbb5e8336acf4391d
+  version: 1.1.0
+  resolution: "micromark-util-symbol@npm:1.1.0"
+  checksum: 02414a753b79f67ff3276b517eeac87913aea6c028f3e668a19ea0fc09d98aea9f93d6222a76ca783d20299af9e4b8e7c797fe516b766185dcc6e93290f11f88
   languageName: node
   linkType: hard
 
 "micromark-util-types@npm:^1.0.0, micromark-util-types@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "micromark-util-types@npm:1.0.2"
-  checksum: 08dc901b7c06ee3dfeb54befca05cbdab9525c1cf1c1080967c3878c9e72cb9856c7e8ff6112816e18ead36ce6f99d55aaa91560768f2f6417b415dcba1244df
+  version: 1.1.0
+  resolution: "micromark-util-types@npm:1.1.0"
+  checksum: b0ef2b4b9589f15aec2666690477a6a185536927ceb7aa55a0f46475852e012d75a1ab945187e5c7841969a842892164b15d58ff8316b8e0d6cc920cabd5ede7
   languageName: node
   linkType: hard
 
 "micromark@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "micromark@npm:3.1.0"
+  version: 3.2.0
+  resolution: "micromark@npm:3.2.0"
   dependencies:
     "@types/debug": ^4.0.0
     debug: ^4.0.0
@@ -24615,7 +24635,7 @@ __metadata:
     micromark-util-symbol: ^1.0.0
     micromark-util-types: ^1.0.1
     uvu: ^0.5.0
-  checksum: 5fe5bc3bf92e2ddd37b5f0034080fc3a4d4b3c1130dd5e435bb96ec75e9453091272852e71a4d74906a8fcf992d6f79d794607657c534bda49941e9950a92e28
+  checksum: 56c15851ad3eb8301aede65603473443e50c92a54849cac1dadd57e4ec33ab03a0a77f3df03de47133e6e8f695dae83b759b514586193269e98c0bf319ecd5e4
   languageName: node
   linkType: hard
 
