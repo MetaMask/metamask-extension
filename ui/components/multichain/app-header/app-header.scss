@@ -1,4 +1,9 @@
 .multichain-app-header {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
   flex-flow: column nowrap;
   z-index: 55;
   min-height: 64px;
@@ -9,19 +14,19 @@
     height: 64px;
 
     @include screen-sm-max {
-      height: 100%;
+      height: $height-screen-sm-max;
     }
 
     @include screen-sm-min {
-      width: 85vw;
+      width: $width-screen-sm-min;
     }
 
     @include screen-md-min {
-      width: 80vw;
+      width: $width-screen-md-min;
     }
 
     @include screen-lg-min {
-      width: 62vw;
+      width: $width-screen-lg-min;
     }
 
     &--avatar-network {
@@ -42,19 +47,19 @@
     height: 64px;
 
     @include screen-sm-max {
-      height: 100%;
+      height: $height-screen-sm-max;
     }
 
     @include screen-sm-min {
-      width: 85vw;
+      width: $width-screen-sm-min;
     }
 
     @include screen-md-min {
-      width: 80vw;
+      width: $width-screen-md-min;
     }
 
     @include screen-lg-min {
-      width: 62vw;
+      width: $width-screen-lg-min;
     }
   }
 }
