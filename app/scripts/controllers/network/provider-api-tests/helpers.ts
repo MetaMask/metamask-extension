@@ -208,16 +208,25 @@ type MockBlockTrackerRequestOptions = {
   blockNumber: string;
 };
 
-const mockNextBlockTrackerRequest = ({
+/**
+ * Mocks the next request for the latest block that the block tracker will make.
+ *
+ * @param args - The arguments.
+ * @param args.nockScope - A nock scope (a set of mocked requests scoped to a
+ * certain base URL).
+ * @param args.blockNumber - The block number that the block tracker should
+ * report, as a 0x-prefixed hex string.
+ */
+function mockNextBlockTrackerRequest({
   nockScope,
   blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
-}: MockBlockTrackerRequestOptions) => {
+}: MockBlockTrackerRequestOptions) {
   mockRpcCall({
     nockScope,
     request: { method: 'eth_blockNumber', params: [] },
     response: { result: blockNumber },
   });
-};
+}
 
 /**
  * Mocks all requests for the latest block that the block tracker will make.
