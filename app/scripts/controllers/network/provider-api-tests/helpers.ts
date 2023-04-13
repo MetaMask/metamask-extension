@@ -148,7 +148,8 @@ function mockRpcCall({
       }
     }
   }
-  const url = (nockScope as any).basePath.includes('infura.io')
+  /* @ts-expect-error The types for Nock do not include `basePath` in the interface for Nock.Scope. */
+  const url = nockScope.basePath.includes('infura.io')
     ? `/v3/${MOCK_INFURA_PROJECT_ID}`
     : '/';
 
