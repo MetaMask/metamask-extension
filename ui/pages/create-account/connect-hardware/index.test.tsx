@@ -86,7 +86,7 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('U2F Error', () => {
-    it('should U2F render error', async () => {
+    it('should render a U2F error', async () => {
       mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStateWithU2F = Object.assign(mockState, {});
       mockStateWithU2F.appState.ledgerTransportType = LedgerTransportTypes.u2f;
@@ -116,7 +116,7 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('should a different U2F render error for firefox', async () => {
+    it('should render a different U2F error for firefox', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
