@@ -64,7 +64,7 @@ type Block = {
  * Primarily used to build the network client and check the availability of a
  * network.
  */
-type ProviderType = BuiltInInfuraNetwork | typeof NETWORK_TYPES.RPC;
+export type ProviderType = BuiltInInfuraNetwork | typeof NETWORK_TYPES.RPC;
 
 /**
  * The network ID of a network.
@@ -86,13 +86,13 @@ type ChainId = Hex;
  */
 export enum NetworkControllerEventType {
   /**
-   * @see {@link NetworkControllerNetworkWillChangeEvent}
-   */
-  NetworkWillChange = 'NetworkController:networkWillChange',
-  /**
    * @see {@link NetworkControllerNetworkDidChangeEvent}
    */
   NetworkDidChange = 'NetworkController:networkDidChange',
+  /**
+   * @see {@link NetworkControllerNetworkWillChangeEvent}
+   */
+  NetworkWillChange = 'NetworkController:networkWillChange',
   /**
    * @see {@link NetworkControllerInfuraIsBlockedEvent}
    */
@@ -108,7 +108,7 @@ export enum NetworkControllerEventType {
  * switched, but the new provider has not been created and no state changes have
  * occurred yet.
  */
-type NetworkControllerNetworkWillChangeEvent = {
+export type NetworkControllerNetworkWillChangeEvent = {
   type: NetworkControllerEventType.NetworkWillChange;
   payload: [];
 };
@@ -117,7 +117,7 @@ type NetworkControllerNetworkWillChangeEvent = {
  * `networkDidChange` is published after a provider has been created for a newly
  * switched network (but before the network has been confirmed to be available).
  */
-type NetworkControllerNetworkDidChangeEvent = {
+export type NetworkControllerNetworkDidChangeEvent = {
   type: NetworkControllerEventType.NetworkDidChange;
   payload: [];
 };
@@ -127,7 +127,7 @@ type NetworkControllerNetworkDidChangeEvent = {
  * network, but when Infura returns an error blocking the user based on their
  * location.
  */
-type NetworkControllerInfuraIsBlockedEvent = {
+export type NetworkControllerInfuraIsBlockedEvent = {
   type: NetworkControllerEventType.InfuraIsBlocked;
   payload: [];
 };
@@ -137,7 +137,7 @@ type NetworkControllerInfuraIsBlockedEvent = {
  * Infura network and Infura does not return an error blocking the user based on
  * their location, or the network is switched to a non-Infura network.
  */
-type NetworkControllerInfuraIsUnblockedEvent = {
+export type NetworkControllerInfuraIsUnblockedEvent = {
   type: NetworkControllerEventType.InfuraIsUnblocked;
   payload: [];
 };
@@ -145,7 +145,7 @@ type NetworkControllerInfuraIsUnblockedEvent = {
 /**
  * The set of events that the NetworkController messenger can publish.
  */
-type NetworkControllerEvent =
+export type NetworkControllerEvent =
   | NetworkControllerNetworkDidChangeEvent
   | NetworkControllerNetworkWillChangeEvent
   | NetworkControllerInfuraIsBlockedEvent
@@ -154,7 +154,7 @@ type NetworkControllerEvent =
 /**
  * The messenger that the NetworkController uses to publish events.
  */
-type NetworkControllerMessenger = RestrictedControllerMessenger<
+export type NetworkControllerMessenger = RestrictedControllerMessenger<
   typeof name,
   never,
   NetworkControllerEvent,
@@ -167,7 +167,7 @@ type NetworkControllerMessenger = RestrictedControllerMessenger<
  * network. Currently has overlap with `NetworkConfiguration`, although the
  * two will be merged down the road.
  */
-type ProviderConfiguration = {
+export type ProviderConfiguration = {
   /**
    * Either a type of Infura network, "localhost" for a locally operated
    * network, or "rpc" for everything else.
@@ -213,6 +213,7 @@ type NetworkDetails = {
   EIPS: {
     [eipNumber: number]: boolean | undefined;
   };
+  [otherProperty: string]: unknown;
 };
 
 /**
@@ -264,7 +265,7 @@ type NetworkConfigurations = Record<
 /**
  * The state that NetworkController holds after combining its individual stores.
  */
-type CompositeState = {
+export type NetworkControllerState = {
   provider: ProviderConfiguration;
   previousProviderStore: ProviderConfiguration;
   networkId: NetworkIdState;
@@ -276,7 +277,7 @@ type CompositeState = {
 /**
  * The options that NetworkController takes.
  */
-type NetworkControllerOptions = {
+export type NetworkControllerOptions = {
   messenger: NetworkControllerMessenger;
   state?: {
     provider?: ProviderConfiguration;
@@ -450,7 +451,7 @@ export class NetworkController extends EventEmitter {
    * Observable store containing a combination of data from all of the
    * individual stores.
    */
-  store: ComposedStore<CompositeState>;
+  store: ComposedStore<NetworkControllerState>;
 
   _provider: SafeEventEmitterProvider | null;
 
@@ -508,7 +509,7 @@ export class NetworkController extends EventEmitter {
       state.networkConfigurations || buildDefaultNetworkConfigurationsState(),
     );
 
-    this.store = new ComposedStore<CompositeState>({
+    this.store = new ComposedStore<NetworkControllerState>({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
       networkId: this.networkIdStore,

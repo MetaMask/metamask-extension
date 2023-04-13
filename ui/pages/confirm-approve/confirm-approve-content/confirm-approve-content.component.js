@@ -30,7 +30,8 @@ import {
   ICON_NAMES,
   Icon,
 } from '../../../components/component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
+import { Text } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
