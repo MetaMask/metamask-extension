@@ -44,10 +44,8 @@ describe('Institutional Duck', () => {
             complianceTenantSubdomain: 'subdomain',
             reportsInProgress: { id: [{ reportId: 'id' }] },
             connectRequests: [{ id: 'id' }],
+            historicalReports: { id: [{ reportId: 'id' }] },
           },
-        },
-        institutionalFeatures: {
-          historicalReports: { id: [{ reportId: 'id' }] },
         },
       };
       expect(getComplianceProjectId(state)).toBe('complianceProjectId');
