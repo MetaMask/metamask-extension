@@ -80,7 +80,6 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
-global.METAMASK_NOTIFIER = notificationManager;
 
 let popupIsOpen = false;
 let notificationIsOpen = false;
@@ -688,7 +687,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyManager.on(
+  controller.encryptionPublicKeyController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -728,17 +727,12 @@ export function setupController(
 
   function getUnapprovedTransactionCount() {
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const { unapprovedEncryptionPublicKeyMsgCount } =
-      controller.encryptionPublicKeyManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
-      unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount +
-      pendingApprovalCount +
-      waitingForUnlockCount
+      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
     );
   }
 
@@ -768,14 +762,9 @@ export function setupController(
           REJECT_NOTIFICATION_CLOSE,
         ),
       );
-    controller.encryptionPublicKeyManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.encryptionPublicKeyManager.rejectMsg(
-          tx.id,
-          REJECT_NOTIFICATION_CLOSE,
-        ),
-      );
+    controller.encryptionPublicKeyController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE,
+    );
 
     // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
     Object.values(controller.approvalController.state.pendingApprovals).forEach(

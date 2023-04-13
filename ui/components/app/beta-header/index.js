@@ -14,7 +14,7 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { ButtonIcon } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import {
   ICON_NAMES,
   ICON_SIZES,
