@@ -12,19 +12,12 @@ import {
 } from '../../../ducks/institutional/institutional';
 import { formatDate } from '../../../helpers/utils/util';
 import Box from '../../ui/box';
+import { Text } from '../../component-library';
 import {
-  Text,
-  Label,
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-  ButtonLink,
-} from '../../component-library';
-import {
-  Color,
-  OVERFLOW_WRAP,
   TextColor,
+  TextVariant,
   JustifyContent,
+  AlignItems,
   BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
@@ -63,25 +56,40 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
       paddingRight={4}
       className="compliance-details"
     >
-      <div className="compliance-details__row">
-        <div className="compliance-details__detail-header">{t('address')}</div>
-        <div className="compliance-details__detail-content--address">
-          {address}
-        </div>
-      </div>
-      <div className="compliance-details__row">
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.TWO_THIRDS}
+        paddingTop={4}
+        paddingBottom={4}
+        className="compliance-details__row"
+      >
+        <Text>{t('address')}</Text>
+        <Text variant={TextVariant.bodyXs}>{address}</Text>
+      </Box>
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.TWO_THIRDS}
+        paddingTop={4}
+        paddingBottom={4}
+        className="compliance-details__row"
+      >
         <Box
           display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
           marginBottom={1}
-          className="compliance-details__detail-header"
+          color={TextColor.textAlternative}
         >
-          {t('riskRating')}
+          <Text marginRight={2}>{t('riskRating')}</Text>
           <InfoTooltip
             position="bottom"
             contentText={<span>{t('riskRatingTooltip')}</span>}
           />
         </Box>
-        <div
+        <Box
           className={classnames('compliance-row__column-risk', {
             'compliance-row__column-risk--green': lastReport?.risk === 'low',
             'compliance-row__column-risk--yellow':
@@ -91,24 +99,36 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
               lastReport?.risk === 'unacceptable',
           })}
         >
-          {lastReport ? lastReport.risk : 'No Report'}
-        </div>
-      </div>
-      <div className="compliance-details__row">
-        <div className="compliance-details__detail-header">
-          {t('reportLastRun')}
+          <Text>{lastReport ? lastReport.risk : 'No Report'}</Text>
+        </Box>
+      </Box>
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.TWO_THIRDS}
+        paddingTop={4}
+        paddingBottom={4}
+        className="compliance-details__row"
+      >
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          color={TextColor.textAlternative}
+        >
+          <Text marginRight={2}>{t('reportLastRun')}</Text>
           <InfoTooltip
             position="bottom"
             contentText={<span>{t('reportLastRunTooltip')}</span>}
           />
-        </div>
-        <div className="compliance-details__detail-content">
+        </Box>
+        <Text color={TextColor.textDefault}>
           {lastReport
             ? formatDate(new Date(lastReport.createTime).getTime())
             : 'N/A'}
-        </div>
-      </div>
-      <div className="compliance-details__footer">
+        </Text>
+      </Box>
+      <Box>
         <SwapsFooter
           onSubmit={() => {
             onGenerate(address);
@@ -125,7 +145,7 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
           approveActive={lastReport}
           showTopBorder
         />
-      </div>
+      </Box>
     </Box>
   );
 };

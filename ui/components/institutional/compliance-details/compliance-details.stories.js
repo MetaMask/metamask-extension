@@ -11,22 +11,17 @@ const customData = {
       complianceProjectId: '',
       complianceClientId: '',
       reportsInProgress: {},
+      historicalReports: {
+        '0xAddress': [
+          {
+            reportId: 'reportId',
+            address: '0xAddress',
+            risk: 'low',
+            creatTime: new Date(),
+          },
+        ],
+      },
     },
-  },
-  institutionalFeatures: {
-    historicalReports: {
-      '0xAddress': [
-        {
-          reportId: 'reportId',
-          address: '0xAddress',
-          risk: 'low',
-          creatTime: new Date(),
-        },
-      ],
-    },
-    complianceProjectId: '',
-    complianceClientId: '',
-    reportsInProgress: {},
   },
 };
 
@@ -36,6 +31,11 @@ export default {
   title: 'Components/Institutional/ComplianceDetails',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: ComplianceDetails,
+  args: {
+    address: '0xAddress',
+    onClose: () => undefined,
+    onGenerate: () => undefined,
+  },
   argTypes: {
     onClick: {
       action: 'onClick',
@@ -45,4 +45,4 @@ export default {
 
 export const DefaultStory = (args) => <ComplianceDetails {...args} />;
 
-DefaultStory.storyName = 'ComplianceSettings';
+DefaultStory.storyName = 'ComplianceDetails';
