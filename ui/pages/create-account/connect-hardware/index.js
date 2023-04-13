@@ -74,6 +74,7 @@ class ConnectHardwareForm extends Component {
     browserSupported: true,
     unlocked: false,
     device: null,
+    isFirefox: false,
   };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -89,6 +90,11 @@ class ConnectHardwareForm extends Component {
 
   componentDidMount() {
     this.checkIfUnlocked();
+    console.log(window.nagivator.userAgent);
+    const useAgent = window.navigator.userAgent;
+    if (new RegExp(/Mozilla/u).test(useAgent)) {
+      this.setState({ isFirefox: true });
+    }
   }
 
   async checkIfUnlocked() {
@@ -289,20 +295,34 @@ class ConnectHardwareForm extends Component {
     if (this.state.error === U2F_ERROR) {
       return (
         <p className="hw-connect__error">
-          {this.context.t('troubleConnectingToWallet', [
-            this.state.device,
-            // eslint-disable-next-line react/jsx-key
-            <a
-              href={ZENDESK_URLS.HARDWARE_CONNECTION}
-              key="hardware-connection-guide"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hw-connect__link"
-              style={{ marginLeft: '5px', marginRight: '5px' }}
-            >
-              {this.context.t('walletConnectionGuide')}
-            </a>,
-          ])}
+          {this.state.device === 'ledger' && this.state.isFirefox
+            ? this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
+                // eslint-disable-next-line react/jsx-key
+                <a
+                  href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                  key="hardware-connection-guide"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hw-connect__link"
+                  style={{ marginLeft: '5px', marginRight: '5px' }}
+                >
+                  {this.context.t('walletConnectionGuide')}
+                </a>,
+              ])
+            : this.context.t('troubleConnectingToWallet', [
+                this.state.device,
+                // eslint-disable-next-line react/jsx-key
+                <a
+                  href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                  key="hardware-connection-guide"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hw-connect__link"
+                  style={{ marginLeft: '5px', marginRight: '5px' }}
+                >
+                  {this.context.t('walletConnectionGuide')}
+                </a>,
+              ])}
         </p>
       );
     }
