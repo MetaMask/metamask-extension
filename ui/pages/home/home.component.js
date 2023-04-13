@@ -2,12 +2,14 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
+// eslint-disable-next-line import/no-duplicates
+import { MetaMetricsContextProp } from '../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  // eslint-disable-next-line import/no-duplicates
 } from '../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
 import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
