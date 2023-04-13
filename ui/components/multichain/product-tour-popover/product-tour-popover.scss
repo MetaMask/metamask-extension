@@ -1,0 +1,29 @@
+.multichain-product-tour {
+  width: 344px;
+  position: relative;
+
+  &__arrow,
+  &__arrow::before {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: inherit;
+  }
+
+  &__arrow {
+    width: 40px;
+    height: 40px;
+    visibility: hidden;
+    top: 0;
+  }
+
+  &__arrow::before {
+    display: block;
+    background-color: inherit;
+    visibility: visible;
+    content: '';
+    transform: rotate(45deg);
+    border-radius: 2px 0 0 0;
+    top: -7px;
+  }
+}
