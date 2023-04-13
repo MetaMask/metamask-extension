@@ -12,7 +12,8 @@ import {
   TextColor,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-import { AvatarNetwork, ButtonIcon, ButtonLink } from '../../component-library';
+import { AvatarNetwork, ButtonLink } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
