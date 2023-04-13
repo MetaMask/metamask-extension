@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Size } from '../../../helpers/constants/design-system';
-
-import { ButtonIcon, Icon, IconName, IconSize } from '..';
+import { ButtonIcon, ButtonIconSize, Icon, IconName, IconSize } from '..';
 import { TextField, TEXT_FIELD_TYPES } from '../text-field';
 
 export const TextFieldSearch = ({
@@ -30,7 +28,7 @@ export const TextFieldSearch = ({
             className="mm-text-field__button-clear"
             ariaLabel="Clear" // TODO: i18n
             iconName={IconName.Close}
-            size={Size.SM}
+            size={ButtonIconSize.SM}
             onClick={clearButtonOnClick}
             {...clearButtonProps}
           />

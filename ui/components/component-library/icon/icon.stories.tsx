@@ -26,7 +26,7 @@ import {
   TextField,
   TextFieldSearch,
   TEXT_FIELD_SIZES,
-  BUTTON_ICON_SIZES,
+  ButtonIconSize,
   BUTTON_LINK_SIZES,
 } from '..';
 
@@ -131,7 +131,7 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
                   endAccessory={
                     <ButtonIcon
                       iconName={IconName.Copy}
-                      size={BUTTON_ICON_SIZES.SM}
+                      size={ButtonIconSize.Sm}
                       color={IconColor.iconAlternative}
                       ariaLabel="Copy to clipboard"
                       title="Copy to clipboard"
