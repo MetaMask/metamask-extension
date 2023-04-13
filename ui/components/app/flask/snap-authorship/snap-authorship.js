@@ -20,7 +20,8 @@ import {
   getSnapName,
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
-import { Text, ButtonIcon } from '../../../component-library';
+import { ButtonIcon } from '../../../component-library/button-icon/deprecated';
+import { Text } from '../../../component-library';
 import {
   ICON_NAMES,
   ICON_SIZES,

@@ -5,7 +5,7 @@ import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
-import { ButtonIcon } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import {
   ICON_NAMES,
   ICON_SIZES,

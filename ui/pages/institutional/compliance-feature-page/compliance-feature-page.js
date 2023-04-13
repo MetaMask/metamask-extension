@@ -13,7 +13,8 @@ import {
   Color,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
-import { ButtonIcon, Text } from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
+import { Text } from '../../../components/component-library';
 import {
   ICON_NAMES,
   ICON_SIZES,

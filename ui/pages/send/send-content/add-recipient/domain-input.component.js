@@ -13,7 +13,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../../../components/component-library';
+import { ButtonIcon } from '../../../../components/component-library/button-icon/deprecated';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
