@@ -422,6 +422,11 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController.getERC1155TokenURI.bind(
             this.assetsContractController,
           ),
+
+        getTokenStandardAndDetails:
+          this.assetsContractController.getTokenStandardAndDetails.bind(
+            this.assetsContractController,
+          ),
         onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
           this.metaMetricsController.trackEvent({
             event: MetaMetricsEventName.NftAdded,
@@ -437,6 +442,14 @@ export default class MetamaskController extends EventEmitter {
               tokenId,
             },
           }),
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'NftController',
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            `${this.approvalController.name}:acceptRequest`,
+            `${this.approvalController.name}:rejectRequest`,
+          ],
+        }),
       },
       {},
       initState.NftController,
@@ -706,6 +719,14 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.getState().provider.chainId,
       initState: initState.CachedBalancesController,
     });
+
+    // this.tokensController.hub.on('pendingSuggestedAsset', async () => {
+    //   await opts.openPopup();
+    // });
+
+    // this.nftController.hub.on('pendingSuggestedNft', async () => {
+    //   await opts.openPopup();
+    // });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -1965,10 +1986,8 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       addToken: tokensController.addToken.bind(tokensController),
-      rejectWatchAsset:
-        tokensController.rejectWatchAsset.bind(tokensController),
-      acceptWatchAsset:
-        tokensController.acceptWatchAsset.bind(tokensController),
+      rejectWatchAsset: this.rejectWatchAssetRequest.bind(this),
+      acceptWatchAsset: this.acceptWatchAssetRequest.bind(this),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setAccountLabel: preferencesController.setAccountLabel.bind(
         preferencesController,
@@ -3308,6 +3327,48 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  handleWatchAssetRequest = (asset, type) => {
+    switch (type) {
+      case 'ERC20':
+        return this.tokensController.watchAsset(asset, type);
+      case 'ERC721':
+      case 'ERC1155':
+        return this.nftController.watchNft(asset, type);
+      default:
+        throw new Error(`Asset type ${type} not supported`);
+    }
+  };
+
+  acceptWatchAssetRequest = (id) => {
+    const suggestedToken = this.tokensController.state.suggestedAssets.find(
+      (asset) => asset.id === id,
+    );
+    const suggestedNft = this.nftController.state.suggestedNfts.find(
+      (asset) => asset.id === id,
+    );
+    if (suggestedToken) {
+      return this.tokensController.acceptWatchAssetRequest(id);
+    }
+    if (suggestedNft) {
+      this.nftController.acceptWatchNft(id);
+    }
+  };
+
+  rejectWatchAssetRequest = (id) => {
+    const suggestedToken = this.tokensController.state.suggestedAssets.find(
+      (asset) => asset.id === id,
+    );
+    const suggestedNft = this.nftController.state.suggestedNfts.find(
+      (asset) => asset.id === id,
+    );
+    if (suggestedToken) {
+      return this.tokensController.rejectWatchAsset(id);
+    }
+    if (suggestedNft) {
+      return this.nftController.rejectWatchNft(id);
+    }
+  };
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -3687,9 +3748,7 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
-        handleWatchAssetRequest: this.tokensController.watchAsset.bind(
-          this.tokensController,
-        ),
+        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
             this.approvalController,
@@ -4099,15 +4158,15 @@ export default class MetamaskController extends EventEmitter {
    */
   findNetworkConfigurationBy(rpcInfo) {
     const { networkConfigurations } = this.networkController.store.getState();
-    const networkConfiguration = Object.values(networkConfigurations).find(
-      (configuration) => {
-        return Object.keys(rpcInfo).some((key) => {
-          return configuration[key] === rpcInfo[key];
-        });
-      },
-    );
+    const [id, networkConfiguration] = Object.entries(
+      networkConfigurations,
+    ).find((configuration) => {
+      return Object.keys(rpcInfo).some((key) => {
+        return configuration[key] === rpcInfo[key];
+      });
+    });
 
-    return networkConfiguration || null;
+    return { ...networkConfiguration, id } || null;
   }
 
   /**

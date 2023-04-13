@@ -2307,9 +2307,13 @@ export function rejectWatchAsset(
   };
 }
 
-export function acceptWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function acceptWatchAsset({
+  suggestedAssetID,
+  closeNotificationPopup,
+}: {
+  suggestedAssetID: string;
+  closeNotificationPopup: boolean;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
@@ -2322,7 +2326,9 @@ export function acceptWatchAsset(
     } finally {
       dispatch(hideLoadingIndication());
     }
-    dispatch(closeCurrentNotificationWindow());
+    if (closeNotificationPopup) {
+      dispatch(closeCurrentNotificationWindow());
+    }
   };
 }
 

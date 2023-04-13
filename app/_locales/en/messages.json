@@ -189,6 +189,9 @@
   "addAlias": {
     "message": "Add alias"
   },
+  "addAllNfts": {
+    "message": "Add all NFTs"
+  },
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },

@@ -503,7 +503,8 @@ export function getTotalUnapprovedCount(state) {
   return (
     unapprovedDecryptMsgCount +
     pendingApprovalCount +
-    getSuggestedAssetCount(state)
+    getSuggestedAssetCount(state) +
+    getSuggestedNftsCount(state)
   );
 }
 
@@ -563,6 +564,15 @@ function getSuggestedAssetCount(state) {
 
 export function getSuggestedAssets(state) {
   return state.metamask.suggestedAssets;
+}
+
+function getSuggestedNftsCount(state) {
+  const { suggestedNfts = [] } = state.metamask;
+  return suggestedNfts.length;
+}
+
+export function getSuggestedNfts(state) {
+  return state.metamask.suggestedNfts;
 }
 
 export function getIsMainnet(state) {

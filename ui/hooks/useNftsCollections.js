@@ -38,7 +38,7 @@ export function useNftsCollections() {
       };
 
       nfts.forEach((nft) => {
-        if (nft?.isCurrentlyOwned === false) {
+        if (nft?.isCurrentlyOwned === false || nft?.isWatched === true) {
           newPreviouslyOwnedCollections.nfts.push(nft);
         } else if (newCollections[nft.address]) {
           newCollections[nft.address].nfts.push(nft);

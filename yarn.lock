@@ -3618,18 +3618,35 @@ __metadata:
 "@metamask/assets-controllers@npm:^6.0.0":
   version: 6.0.0
   resolution: "@metamask/assets-controllers@npm:6.0.0"
+"@metamask/approval-controller@npm:^2.1.0-preview.1c4a59b":
+  version: 2.1.0-preview.7afc2d3
+  resolution: "@metamask/approval-controller@npm:2.1.0-preview.7afc2d3::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fapproval-controller%2F2.1.0-preview.7afc2d3%2F04bc37a6776b6ecbd63915cf142d4da2629f5021"
   dependencies:
+    "@metamask/base-controller": ^2.0.0-preview.7afc2d3
+    "@metamask/controller-utils": ^3.3.0-preview.7afc2d3
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    nanoid: ^3.1.31
+  checksum: 7f2a185538898b5b153e9e877512f71444999728c1f00a8e76696371b21fffeed4095d70a967848f7900f81ad7b3dd9e60dc5d29b209d0efdf0badd9a5e740da
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@npm:6.0.0-preview.1c4a59b":
+  version: 6.0.0-preview.1c4a59b
+  resolution: "@metamask/assets-controllers@npm:6.0.0-preview.1c4a59b::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fassets-controllers%2F6.0.0-preview.1c4a59b%2F3b15d6365e4f4b78f6786398c5274591bf84c1f4"
+  dependencies:
+    "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
     "@metamask/abi-utils": ^1.1.0
-    "@metamask/approval-controller": ^2.1.0
-    "@metamask/base-controller": ^2.0.0
+    "@metamask/approval-controller": ^2.1.0-preview.1c4a59b
+    "@metamask/base-controller": ^2.0.0-preview.1c4a59b
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^3.2.0
+    "@metamask/controller-utils": ^3.3.0-preview.1c4a59b
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^7.0.0
-    "@metamask/preferences-controller": ^3.0.0
+    "@metamask/network-controller": ^7.0.0-preview.1c4a59b
+    "@metamask/preferences-controller": ^3.0.0-preview.1c4a59b
     "@metamask/utils": ^5.0.1
     "@types/uuid": ^8.3.0
     abort-controller: ^3.0.0
@@ -3643,9 +3660,9 @@ __metadata:
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/approval-controller": ^2.1.0
-    "@metamask/network-controller": ^7.0.0
-  checksum: 79c56421567b48b24deab2410645ae60022954ad590e6d91c3770fbeaf24ea3e92608935ae15696349a51bfc5d4337b22cc21f48b0d09bbf4e2f1a0c4aa96904
+    "@metamask/approval-controller": ^2.1.0-preview.1c4a59b
+    "@metamask/network-controller": ^7.0.0-preview.1c4a59b
+  checksum: beaaea69188842c7f75cd27f32b755487e63b45c8c10dd8e765fd87ed145ce432d28b0b918d184ab02143bd4b2bb1d82752deb184288eda1f0418507122b2832
   languageName: node
   linkType: hard
 
@@ -3680,6 +3697,16 @@ __metadata:
     "@metamask/controller-utils": ^3.0.0
     immer: ^9.0.6
   checksum: afd7df59cbcd26261e3d015ac0669261efbfad8e106b55ae7184f7445979b867f78f0d56fe103566150236093847b3acc68473f979e46bd9c67f654857995458
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^2.0.0-preview.1c4a59b, @metamask/base-controller@npm:^2.0.0-preview.7afc2d3, @metamask/base-controller@npm:^2.0.0-preview.ff1fe78":
+  version: 2.0.0-preview.ff1fe78
+  resolution: "@metamask/base-controller@npm:2.0.0-preview.ff1fe78::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fbase-controller%2F2.0.0-preview.ff1fe78%2F2e2c89888f60c4075d4ab19c17f7701c883247fe"
+  dependencies:
+    "@metamask/controller-utils": ^3.1.0-preview.ff1fe78
+    immer: ^9.0.6
+  checksum: dd31c2924086b37989abc76b49810ee1c7e6fc5f7b22130c276b1ef8052fe6f983c45e6e896d3447c0adabb498dec09c2823d8d2e1dbf88db6a4226241f3d7dc
   languageName: node
   linkType: hard
 
@@ -3737,6 +3764,36 @@ __metadata:
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
   checksum: 06b27f9273719ca6eb556c032b77e9066c8d38ad4ff081896a68046e1e4764482f244bf849d51fc622f425e54c9063cc697abdb0cb2f2aaab9a0d8807f2310f3
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^3.1.0-preview.ff1fe78":
+  version: 3.1.0-preview.ff1fe78
+  resolution: "@metamask/controller-utils@npm:3.1.0-preview.ff1fe78::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fcontroller-utils%2F3.1.0-preview.ff1fe78%2Ff86c36bd9458833e39221371d6b94a2e2c1fdf69"
+  dependencies:
+    "@metamask/utils": ^3.3.1
+    "@spruceid/siwe-parser": 1.1.3
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.0
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: 2652211269ce49ff920448189d0255e9d6925b2887978afd899bc02313facc3a4a22bf3bf151ffce58083db07c105d1a1b14f575af8f119c73a24835ef65bb36
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^3.3.0-preview.1c4a59b, @metamask/controller-utils@npm:^3.3.0-preview.7afc2d3":
+  version: 3.3.0-preview.7afc2d3
+  resolution: "@metamask/controller-utils@npm:3.3.0-preview.7afc2d3::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fcontroller-utils%2F3.3.0-preview.7afc2d3%2F38de5fb0613e3166c3dbabddee423a4f63357526"
+  dependencies:
+    "@metamask/utils": ^5.0.1
+    "@spruceid/siwe-parser": 1.1.3
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: e0378ad1101e8f4eaf3a45d30a78776d403389c82a9f0560f6e0eae5f91cd5b644c4c274dc72eec9ac0642506d6cc1b5ea30b7bb8ae02f9e15cc0d78f21ba095
   languageName: node
   linkType: hard
 
@@ -4081,12 +4138,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/network-controller@npm:7.0.0"
+"@metamask/network-controller@npm:^7.0.0-preview.1c4a59b":
+  version: 7.0.0-preview.ff1fe78
+  resolution: "@metamask/network-controller@npm:7.0.0-preview.ff1fe78::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fnetwork-controller%2F7.0.0-preview.ff1fe78%2Ffed8192620ef1758cb3a7bcde334e5fd26f68735"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
+    "@metamask/base-controller": ^2.0.0-preview.ff1fe78
+    "@metamask/controller-utils": ^3.1.0-preview.ff1fe78
     "@metamask/swappable-obj-proxy": ^2.1.0
     "@metamask/utils": ^3.3.1
     async-mutex: ^0.2.6
@@ -4096,7 +4153,7 @@ __metadata:
     immer: ^9.0.6
     uuid: ^8.3.2
     web3-provider-engine: ^16.0.3
-  checksum: 62eeb223f164db1cb5914070b9ec799ee980c0723e9e154afaab3a3032d5ac133c7d1e1cbc506fd9083254f1888a7f7e99137278a107c9b9d854cb9c629b1713
+  checksum: 344ac17965cf5bc4420c6f7c6dadf0cf5a207fa9e372db850511c6c99e98d3e02fd3cbcc723d0d4937a707486384387d70d6148fbb9c1671047986c641abdb84
   languageName: node
   linkType: hard
 
@@ -4214,13 +4271,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/preferences-controller@npm:3.0.0"
+"@metamask/preferences-controller@npm:^3.0.0-preview.1c4a59b":
+  version: 3.0.0-preview.ff1fe78
+  resolution: "@metamask/preferences-controller@npm:3.0.0-preview.ff1fe78::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fpreferences-controller%2F3.0.0-preview.ff1fe78%2Fe4ebb9f72ac23e2d0aa9e818fc7221a5fe30cadd"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-  checksum: e86d689270704b7ac72d1d72762d957e2ebca649fa3c354490cbc939eeaed22ce81d4ccfa1afba1167c3bbf17c9444286c7d79904820980007e1f8e8927dc588
+    "@metamask/base-controller": ^2.0.0-preview.ff1fe78
+    "@metamask/controller-utils": ^3.1.0-preview.ff1fe78
+  checksum: 1292b2d3c3b12277ef589e746a1673cc8e97b55af43ba7bc751cc20dc2ef3e5ee0b99e4c745ac78c95464098da69199a8ac0a22b7819f96e86c441b4555bee4f
   languageName: node
   linkType: hard
 
@@ -4474,6 +4531,19 @@ __metadata:
   linkType: hard
 
 "@metamask/utils@npm:^5.0.0, @metamask/utils@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/utils@npm:5.0.1"
+  dependencies:
+    "@ethereumjs/tx": ^4.1.1
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    semver: ^7.3.8
+    superstruct: ^1.0.3
+  checksum: 29745bd3d2db06bf66263bdec04e93a8f417c46c69d8054149c0046ed54b5f13d26d94a998fff1a31b5a8e7a2200935bfc8392a5fa3c4261e3cecd3ccdd9ddc0
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^5.0.1":
   version: 5.0.1
   resolution: "@metamask/utils@npm:5.0.1"
   dependencies:
@@ -24176,7 +24246,7 @@ __metadata:
     "@metamask/address-book-controller": ^2.0.0
     "@metamask/announcement-controller": ^3.0.0
     "@metamask/approval-controller": ^2.1.0
-    "@metamask/assets-controllers": ^6.0.0
+    "@metamask/assets-controllers": 6.0.0-preview.1c4a59b
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^2.0.0
     "@metamask/contract-metadata": ^2.3.1
