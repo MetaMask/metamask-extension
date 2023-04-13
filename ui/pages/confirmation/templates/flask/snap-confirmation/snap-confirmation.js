@@ -25,49 +25,7 @@ function getValues(pendingApproval, t, actions) {
             snapName,
           },
           // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
-          // TODO: Remove ternary once snap_confirm has been removed.
-          children: content
-            ? mapToTemplate(content)
-            : [
-                {
-                  element: 'Typography',
-                  key: 'title',
-                  children: title,
-                  props: {
-                    variant: TypographyVariant.H3,
-                    fontWeight: 'bold',
-                    boxProps: {
-                      marginBottom: 4,
-                    },
-                  },
-                },
-                ...(description
-                  ? [
-                      {
-                        element: 'Typography',
-                        key: 'subtitle',
-                        children: description,
-                        props: {
-                          variant: TypographyVariant.H6,
-                          boxProps: {
-                            marginBottom: 4,
-                          },
-                        },
-                      },
-                    ]
-                  : []),
-                ...(textAreaContent
-                  ? [
-                      {
-                        element: 'Copyable',
-                        key: 'snap-dialog-content-text',
-                        props: {
-                          text: textAreaContent,
-                        },
-                      },
-                    ]
-                  : []),
-              ],
+          children: mapToTemplate(content),
         },
       },
     ],
