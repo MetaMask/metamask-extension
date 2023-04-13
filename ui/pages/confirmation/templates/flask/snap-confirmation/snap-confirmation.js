@@ -1,11 +1,10 @@
-import { TypographyVariant } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
 import { DelineatorType } from '../../../../../helpers/constants/flask';
 
 function getValues(pendingApproval, t, actions) {
   const {
     snapName,
-    requestData: { content, title, description, textAreaContent },
+    requestData: { content },
   } = pendingApproval;
 
   return {
