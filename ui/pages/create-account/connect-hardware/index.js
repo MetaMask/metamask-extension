@@ -315,7 +315,7 @@ class ConnectHardwareForm extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {this.context.t('walletConnectionGuide')}
+                  {this.context.t('troubleConnectingToLedgerU2FOnFirefox2')}
                 </Button>,
               ])}
             </Text>

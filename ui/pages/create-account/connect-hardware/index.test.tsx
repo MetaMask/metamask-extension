@@ -109,7 +109,7 @@ describe('ConnectHardwareForm', () => {
           }),
         ).toBeInTheDocument();
         const firefoxError = queryByText(
-          "If you're using the latest version of Firefox you might be experiencing a specific issue related Firefox dropping U2F support, for instructions on how to fix this issue",
+          "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
           { exact: false },
         );
         expect(firefoxError).not.toBeInTheDocument();
@@ -141,7 +141,7 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(
           getByText(
-            "If you're using the latest version of Firefox you might be experiencing a specific issue related Firefox dropping U2F support, for instructions on how to fix this issue",
+            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
             { exact: false },
           ),
         ).toBeInTheDocument();
