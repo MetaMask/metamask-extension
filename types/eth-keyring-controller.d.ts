@@ -5,5 +5,11 @@ declare module '@metamask/eth-keyring-controller' {
     signPersonalMessage: (...any) => any;
 
     signTypedMessage: (...any) => any;
+
+    getKeyringForAccount: (address: string) => Promise<{
+      type: string;
+    }>;
+
+    getEncryptionPublicKey: (address: string) => Promise<string>;
   }
 }
