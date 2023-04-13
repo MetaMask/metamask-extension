@@ -1,6 +1,6 @@
 import nock, { Scope as NockScope } from 'nock';
 import sinon from 'sinon';
-import { JSONRPCResponse } from '@json-rpc-specification/meta-schema';
+import type { JSONRPCResponse } from '@json-rpc-specification/meta-schema';
 import EthQuery from 'eth-query';
 import { Hex } from '@metamask/utils';
 import { BuiltInInfuraNetwork } from '../../../../../shared/constants/network';
