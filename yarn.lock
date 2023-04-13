@@ -7416,6 +7416,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jest-when@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "@types/jest-when@npm:3.5.2"
+  dependencies:
+    "@types/jest": "*"
+  checksum: 106230dd71ee266bbd7620ab339a7305054e56ba7638f0eff9f222e67a959df0ad68a7f0108156c50f7005881bae59cd5c38b3760c101d060cdb3dac9cd77ee2
+  languageName: node
+  linkType: hard
+
 "@types/jest@npm:*, @types/jest@npm:^29.1.2":
   version: 29.1.2
   resolution: "@types/jest@npm:29.1.2"
@@ -21909,6 +21918,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-when@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "jest-when@npm:3.5.2"
+  peerDependencies:
+    jest: ">= 25"
+  checksum: 9ad95552d377ef4d517c96a14c38bd8626d6856f518e7efc8a01d76a45a39d3c52281392c98da781c302114c78cd1ea17556c7f638d49d15971fcce9d58306e8
+  languageName: node
+  linkType: hard
+
 "jest-worker@npm:^26.5.0, jest-worker@npm:^26.6.2":
   version: 26.6.2
   resolution: "jest-worker@npm:26.6.2"
@@ -24248,6 +24266,7 @@ __metadata:
     "@types/gulp-dart-sass": ^1.0.1
     "@types/gulp-sourcemaps": ^0.0.35
     "@types/jest": ^29.1.2
+    "@types/jest-when": ^3.5.2
     "@types/madge": ^5.0.0
     "@types/node": ^17.0.21
     "@types/pify": ^5.0.1
@@ -24361,6 +24380,7 @@ __metadata:
     jest-canvas-mock: ^2.3.1
     jest-environment-jsdom: ^29.1.2
     jest-junit: ^14.0.1
+    jest-when: ^3.5.2
     js-yaml: ^4.1.0
     jsdom: ^11.2.0
     json-rpc-engine: ^6.1.0
