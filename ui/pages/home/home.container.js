@@ -121,14 +121,22 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchAssetPendingApprovals = hasPendingApprovals(
+  const hasWatchTokenPendingApprovals = hasPendingApprovals(
     state,
     ApprovalType.WatchAsset,
+    ({ requestData: { asset } }) => asset.tokenId === undefined,
+  );
+
+  const hasWatchNftPendingApprovals = hasPendingApprovals(
+    state,
+    ApprovalType.WatchAsset,
+    ({ requestData: { asset } }) => asset.tokenId !== undefined,
   );
 
   return {
     forgottenPassword,
-    hasWatchAssetPendingApprovals,
+    hasWatchTokenPendingApprovals,
+    hasWatchNftPendingApprovals,
     swapsEnabled,
     hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),

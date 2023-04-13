@@ -1,6 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
-const suggestedAssets = [
+export const suggestedTokens = [
   {
     address: '0x6b175474e89094c44da98b954eedeac495271d0f',
     symbol: 'ETH',
@@ -66,7 +66,7 @@ const suggestedAssets = [
   },
 ];
 
-export const pendingAssetApprovals = suggestedAssets.map((asset, index) => {
+export const pendingSuggestedTokenApprovals = suggestedTokens.map(({ asset }) => {
   return {
     type: ApprovalType.WatchAsset,
     requestData: {
