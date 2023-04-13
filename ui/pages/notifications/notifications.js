@@ -20,7 +20,7 @@ import {
   ICON_SIZES,
   ICON_NAMES,
 } from '../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../components/component-library';
+import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
 import { Color } from '../../helpers/constants/design-system';
 
 export function NotificationItem({ notification, snaps, onItemClick }) {
