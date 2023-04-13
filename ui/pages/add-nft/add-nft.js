@@ -16,7 +16,9 @@ import ActionableMessage from '../../components/ui/actionable-message';
 import PageContainer from '../../components/ui/page-container';
 import {
   addNftVerifyOwnership,
+  addMultipleNftsVerifyOwnership,
   getTokenStandardAndDetails,
+  getMultipleTokenStandardAndDetails,
   ignoreTokens,
   setNewNftAddedMessage,
   updateNftDropDownState,
@@ -41,6 +43,13 @@ import {
   ICON_SIZES,
 } from '../../components/component-library/icon/deprecated';
 import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
+import Checkbox from '../../components/ui/check-box';
+import { Text } from '../../../ui/components/component-library/';
+import {
+  TextVariant,
+} from '../../helpers/constants/design-system';
+// } from '../../../helpers/constants/design-system';
+
 
 export default function AddNft() {
   const t = useI18nContext();
@@ -62,9 +71,12 @@ export default function AddNft() {
       '',
   );
   const [tokenId, setTokenId] = useState('');
+  const [multipleTokenIds, setMultipleTokenIds] = useState(['']);
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+
+  const [checkMultiNFT, setCheckMultiNFT] = useState(false);
 
   const handleAddNft = async () => {
     try {
@@ -119,21 +131,87 @@ export default function AddNft() {
     history.push(DEFAULT_ROUTE);
   };
 
+  const handleAddMultipleNft = async () => {
+    try {
+      await dispatch(addMultipleNftsVerifyOwnership(nftAddress, multipleTokenIds));
+      const newNftDropdownState = {
+        ...nftsDropdownState,
+        [selectedAddress]: {
+          ...nftsDropdownState?.[selectedAddress],
+          [chainId]: {
+            ...nftsDropdownState?.[selectedAddress]?.[chainId],
+            [nftAddress]: true,
+          },
+        },
+      };
+
+      dispatch(updateNftDropDownState(newNftDropdownState));
+    } catch (error) {
+      const { message } = error;
+      dispatch(setNewNftAddedMessage(message));
+      setNftAddFailed(true);
+      return;
+    }
+    if (contractAddressToConvertFromTokenToNft) {
+      await dispatch(
+        ignoreTokens({
+          tokensToIgnore: contractAddressToConvertFromTokenToNft,
+          dontShowLoadingIndicator: true,
+        }),
+      );
+    }
+    dispatch(setNewNftAddedMessage('success'));
+
+    const tokenDetailsArray = await getMultipleTokenStandardAndDetails(
+      nftAddress,
+      null,
+      multipleTokenIds,
+    );
+
+    tokenDetailsArray.forEach((tokenDetails, index) => {
+      trackEvent({
+        event: MetaMetricsEventName.TokenAdded,
+        category: 'Wallet',
+        sensitiveProperties: {
+          token_contract_address: nftAddress,
+          token_symbol: tokenDetails?.symbol,
+          tokenId: multipleTokenIds[index].toString(),
+          asset_type: AssetType.NFT,
+          token_standard: tokenDetails?.standard,
+          source: MetaMetricsTokenEventSource.Custom,
+        },
+      });
+    });
+
+
+    history.push(DEFAULT_ROUTE);
+  };
+
   const validateAndSetAddress = (val) => {
     setDisabled(!isValidHexAddress(val) || !tokenId);
     setNftAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
+    checkMultiNFT ? validateAndSetMultiTokenId(val) : validateAndSetSingleTokenId(val);
+  };
+
+  const validateAndSetSingleTokenId = (val) => {
     setDisabled(!isValidHexAddress(nftAddress) || !val || isNaN(Number(val)));
     setTokenId(val);
-  };
+  }
+
+  const validateAndSetMultiTokenId = (val) => {
+    const tokens = val.split(',');
+    setDisabled(!isValidHexAddress(nftAddress) || !tokens || tokens.some(token => token.trim().length === 0 || isNaN(Number(token))));
+    setMultipleTokenIds(tokens);
+  }
 
   return (
     <PageContainer
       title={t('importNFT')}
       onSubmit={() => {
-        handleAddNft();
+        checkMultiNFT ? handleAddMultipleNft() : handleAddNft();
       }}
       submitText={t('add')}
       onCancel={() => {
@@ -191,13 +269,21 @@ export default function AddNft() {
               dataTestId="token-id"
               titleText={t('tokenId')}
               placeholder={t('nftTokenIdPlaceholder')}
-              value={tokenId}
+              value={checkMultiNFT ? multipleTokenIds : tokenId}
               onChange={(val) => {
                 validateAndSetTokenId(val);
                 setNftAddFailed(false);
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
             />
+          <Text variant={TextVariant.bodySm}>{"Add multiple NFT"}</Text>
+          <Checkbox
+            id="multipleNFTCheckbox"
+            checked={checkMultiNFT}
+            className="unconnected-account-alert__checkbox"
+            onClick={() => setCheckMultiNFT((checked) => !checked)}
+            title={"Add multiple NFT's"}
+          />
           </Box>
         </Box>
       }

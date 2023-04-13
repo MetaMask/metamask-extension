@@ -444,7 +444,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getBalancesInSingleCall.bind(
           this.assetsContractController,
         ),
-      addNft: this.nftController.addNft.bind(this.nftController),
+      addNft: this.nftController.addNft.bind(this.nftController), //
       getNftState: () => this.nftController.state,
     });
 

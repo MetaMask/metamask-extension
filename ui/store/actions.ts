@@ -2195,6 +2195,46 @@ export function addNftVerifyOwnership(
   };
 }
 
+export function addMultipleNftsVerifyOwnership(
+  address: string,
+  tokenIDs: string[],
+  dontShowLoadingIndicator: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add NFT without address');
+    }
+    if (!tokenIDs) {
+      throw new Error('MetaMask - Cannot add NFTs without tokenIDs');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      for (const tokenId of tokenIDs) {
+        await submitRequestToBackground('addNftVerifyOwnership', [
+          address,
+          tokenId,
+        ]);
+      }
+    } catch (error) {
+      if (
+        isErrorWithMessage(error) &&
+        (error.message.includes('This NFT is not owned by the user') ||
+          error.message.includes('Unable to verify ownership'))
+      ) {
+        throw error;
+      } else {
+        logErrorWithMessage(error);
+        dispatch(displayWarning(error));
+      }
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
@@ -2290,6 +2330,25 @@ export async function getTokenStandardAndDetails(
     userAddress,
     tokenId,
   ]);
+}
+
+export async function getMultipleTokenStandardAndDetails(
+  address: string,
+  userAddress: string,
+  tokenIds: string[],
+): Promise<
+  Array<
+    Awaited<
+      ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+    > & { balance?: string }
+  >
+> {
+  const tokenDetailsPromises = tokenIds.map((tokenId) =>
+    getTokenStandardAndDetails(address, userAddress, tokenId),
+  );
+
+  const tokenDetailsArray = await Promise.all(tokenDetailsPromises);
+  return tokenDetailsArray;
 }
 
 export function addTokens(
