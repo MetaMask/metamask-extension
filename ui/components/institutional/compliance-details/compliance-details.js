@@ -11,6 +11,24 @@ import {
   getComplianceTenantSubdomain,
 } from '../../../ducks/institutional/institutional';
 import { formatDate } from '../../../helpers/utils/util';
+import Box from '../../ui/box';
+import {
+  Text,
+  Label,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+  ButtonLink,
+} from '../../component-library';
+import {
+  Color,
+  OVERFLOW_WRAP,
+  TextColor,
+  JustifyContent,
+  BLOCK_SIZES,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
 
 const ComplianceDetails = ({ address, onClose, onGenerate }) => {
   const t = useContext(I18nContext);
@@ -38,7 +56,13 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
   const complianceTenantSubdomain = useSelector(getComplianceTenantSubdomain);
 
   return (
-    <div className="compliance-details">
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      paddingLeft={4}
+      paddingRight={4}
+      className="compliance-details"
+    >
       <div className="compliance-details__row">
         <div className="compliance-details__detail-header">{t('address')}</div>
         <div className="compliance-details__detail-content--address">
@@ -46,13 +70,17 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
         </div>
       </div>
       <div className="compliance-details__row">
-        <div className="compliance-details__detail-header">
+        <Box
+          display={DISPLAY.FLEX}
+          marginBottom={1}
+          className="compliance-details__detail-header"
+        >
           {t('riskRating')}
           <InfoTooltip
             position="bottom"
             contentText={<span>{t('riskRatingTooltip')}</span>}
           />
-        </div>
+        </Box>
         <div
           className={classnames('compliance-row__column-risk', {
             'compliance-row__column-risk--green': lastReport?.risk === 'low',
@@ -98,7 +126,7 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
           showTopBorder
         />
       </div>
-    </div>
+    </Box>
   );
 };
 
