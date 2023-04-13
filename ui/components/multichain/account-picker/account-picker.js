@@ -5,9 +5,10 @@ import {
   Button,
   AvatarAccount,
   AvatarAccountVariant,
+  Icon,
+  IconName,
   Text,
 } from '../../component-library';
-import { ICON_NAMES, Icon } from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   BackgroundColor,
@@ -47,7 +48,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
         {name}
       </Text>
       <Icon
-        name={ICON_NAMES.ARROW_DOWN}
+        name={IconName.ArrowDown}
         color={IconColor.iconDefault}
         size={Size.SM}
       />

@@ -3130,6 +3130,12 @@ export function toggleAccountMenu() {
   };
 }
 
+export function toggleNetworkMenu() {
+  return {
+    type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<

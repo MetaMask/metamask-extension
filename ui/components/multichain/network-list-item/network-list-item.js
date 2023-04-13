@@ -12,9 +12,12 @@ import {
   TextColor,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-import { AvatarNetwork, ButtonLink } from '../../component-library';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import {
+  AvatarNetwork,
+  ButtonIcon,
+  ButtonLink,
+  IconName,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
 
@@ -68,7 +71,7 @@ export const NetworkListItem = ({
         <ButtonIcon
           className="multichain-network-list-item__delete"
           color={IconColor.errorDefault}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
           ariaLabel={t('deleteNetwork')}
           size={Size.SM}
           onClick={(e) => {

@@ -523,15 +523,11 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const {
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    pendingApprovalCount = 0,
-  } = state.metamask;
+  const { unapprovedDecryptMsgCount = 0, pendingApprovalCount = 0 } =
+    state.metamask;
 
   return (
     unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
     pendingApprovalCount +
     getSuggestedAssetCount(state)
   );
@@ -1153,6 +1149,13 @@ export function getProvider(state) {
 
 export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
+}
+
+export function getCurrentNetwork(state) {
+  const allNetworks = getAllNetworks(state);
+  const currentChainId = getCurrentChainId(state);
+
+  return allNetworks.find((network) => network.chainId === currentChainId);
 }
 
 export function getAllNetworks(state) {
