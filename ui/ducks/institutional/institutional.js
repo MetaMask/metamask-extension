@@ -42,7 +42,7 @@ export const getComplianceClientId = (state) =>
 export const getComplianceTenantSubdomain = (state) =>
   state.metamask[name].complianceTenantSubdomain;
 export const getComplianceHistoricalReports = (state) =>
-  state[name].historicalReports;
+  state.metamask[name].historicalReports;
 export const getComplianceReportsInProgress = (state) =>
   state.metamask[name].reportsInProgress;
 export const getInstitutionalConnectRequests = (state) =>
