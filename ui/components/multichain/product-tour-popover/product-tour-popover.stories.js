@@ -6,7 +6,7 @@ export default {
   component: ProductTour,
   argTypes: {
     prevIcon: {
-      control: 'text',
+      control: 'boolean',
     },
     title: {
       control: 'text',
