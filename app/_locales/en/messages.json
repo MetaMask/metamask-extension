@@ -4518,12 +4518,12 @@
   "transferFrom": {
     "message": "Transfer from"
   },
-  "troubleConnectingToWallet": {
-    "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
-    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We had trouble connecting to your Ledger, try reviewing $1. If you're using the latest version of Firefox you might be experiencing a specific issue related Firefox dropping U2F support, for instructions on how to fix this issue go here.",
+    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
+  },
+  "troubleConnectingToWallet": {
+    "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
