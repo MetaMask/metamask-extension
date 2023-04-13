@@ -90,9 +90,8 @@ class ConnectHardwareForm extends Component {
 
   componentDidMount() {
     this.checkIfUnlocked();
-    console.log(window.nagivator.userAgent);
     const useAgent = window.navigator.userAgent;
-    if (new RegExp(/Mozilla/u).test(useAgent)) {
+    if (new RegExp(/Firefox/u).test(useAgent)) {
       this.setState({ isFirefox: true });
     }
   }
@@ -304,7 +303,6 @@ class ConnectHardwareForm extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hw-connect__link"
-                  style={{ marginLeft: '5px', marginRight: '5px' }}
                 >
                   {this.context.t('walletConnectionGuide')}
                 </a>,
