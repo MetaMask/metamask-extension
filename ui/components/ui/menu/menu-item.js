@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Text } from '../../component-library';
-import { Icon, ICON_SIZES } from '../../component-library/icon/deprecated';
+import { Text, Icon, IconSize } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 
 const MenuItem = ({
@@ -20,7 +19,7 @@ const MenuItem = ({
     onClick={onClick}
   >
     {iconName ? (
-      <Icon name={iconName} size={ICON_SIZES.SM} marginRight={2} />
+      <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
     ) : null}
     <div>
       <div>{children}</div>
