@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
+
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
@@ -22,7 +24,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
-import { addHexPrefix, isHexadecimal } from '../../../../app/scripts/lib/util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
@@ -148,7 +149,7 @@ export default function CustomSpendingCap({
       value: txValue,
       data: newData,
     });
-    if (estimatedGasLimit && isHexadecimal(estimatedGasLimit)) {
+    if (estimatedGasLimit && isHexString(estimatedGasLimit)) {
       estimatedGasLimit = addHexPrefix(estimatedGasLimit);
       await updateTransaction({ gasLimit: estimatedGasLimit });
     }
