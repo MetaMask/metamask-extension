@@ -1113,6 +1113,13 @@ export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
 }
 
+export function getCurrentNetwork(state) {
+  const allNetworks = getAllNetworks(state);
+  const currentChainId = getCurrentChainId(state);
+
+  return allNetworks.find((network) => network.chainId === currentChainId);
+}
+
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
   const showTestnetNetworks = getShowTestNetworks(state);
