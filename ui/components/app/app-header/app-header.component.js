@@ -89,6 +89,7 @@ export default class AppHeader extends PureComponent {
           className={classnames('account-menu__icon', {
             'account-menu__icon--disabled': disabled,
           })}
+          disabled={Boolean(disabled)}
           onClick={() => {
             if (!disabled) {
               !isAccountMenuOpen &&

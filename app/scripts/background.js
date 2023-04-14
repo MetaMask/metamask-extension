@@ -208,6 +208,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
+ * @property {boolean} isNetworkMenuOpen - Represents whether the main network selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
@@ -687,7 +688,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyManager.on(
+  controller.encryptionPublicKeyController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -727,17 +728,12 @@ export function setupController(
 
   function getUnapprovedTransactionCount() {
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const { unapprovedEncryptionPublicKeyMsgCount } =
-      controller.encryptionPublicKeyManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
-      unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount +
-      pendingApprovalCount +
-      waitingForUnlockCount
+      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
     );
   }
 
@@ -767,14 +763,9 @@ export function setupController(
           REJECT_NOTIFICATION_CLOSE,
         ),
       );
-    controller.encryptionPublicKeyManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.encryptionPublicKeyManager.rejectMsg(
-          tx.id,
-          REJECT_NOTIFICATION_CLOSE,
-        ),
-      );
+    controller.encryptionPublicKeyController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE,
+    );
 
     // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
