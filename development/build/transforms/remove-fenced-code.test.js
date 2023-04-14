@@ -29,15 +29,12 @@ describe('build/transforms/remove-fenced-code', () => {
       lintTransformedFileMock.mockImplementation(() => Promise.resolve());
     });
 
-    it('rejects invalid build types', () => {
-      expect(() => createRemoveFencedCodeTransform('foobar')).toThrow(
-        /received unrecognized build type "foobar".$/u,
-      );
-    });
-
     it('returns a PassThrough stream for files with ignored extensions', async () => {
       const fileContent = '"Valid JSON content"\n';
-      const stream = createRemoveFencedCodeTransform('main')('file.json');
+      const stream = createRemoveFencedCodeTransform({
+        active: ['main'],
+        all: ['main'],
+      })('file.json');
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -60,7 +57,10 @@ describe('build/transforms/remove-fenced-code', () => {
       const filePrefix = '// A comment\n';
       const fileContent = filePrefix.concat(getMinimalFencedCode());
 
-      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
+      const stream = createRemoveFencedCodeTransform({
+        active: ['main'],
+        all: ['main]'],
+      })(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -92,7 +92,10 @@ describe('build/transforms/remove-fenced-code', () => {
         .filter((line) => line !== '')
         .map((line) => `${line}\n`);
 
-      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
+      const stream = createRemoveFencedCodeTransform({
+        active: ['main'],
+        all: ['main'],
+      })(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -118,7 +121,10 @@ describe('build/transforms/remove-fenced-code', () => {
     it('handles file with fences that is unmodified by the transform', async () => {
       const fileContent = getMinimalFencedCode('main');
 
-      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
+      const stream = createRemoveFencedCodeTransform({
+        active: ['main'],
+        all: ['main'],
+      })(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
