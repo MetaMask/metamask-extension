@@ -267,7 +267,6 @@ type NetworkConfigurations = Record<
  */
 export type NetworkControllerState = {
   provider: ProviderConfiguration;
-  previousProviderStore: ProviderConfiguration;
   networkId: NetworkIdState;
   networkStatus: NetworkStatus;
   networkDetails: NetworkDetails;
@@ -424,7 +423,7 @@ export class NetworkController extends EventEmitter {
    * Observable store containing the provider configuration for the previously
    * configured network.
    */
-  previousProviderStore: ObservableStore<ProviderConfiguration>;
+  #previousProviderConfig: ProviderConfiguration;
 
   /**
    * Observable store containing the network ID for the current network or null
@@ -489,9 +488,7 @@ export class NetworkController extends EventEmitter {
     this.providerStore = new ObservableStore(
       state.provider || buildDefaultProviderConfigState(),
     );
-    this.previousProviderStore = new ObservableStore(
-      this.providerStore.getState(),
-    );
+    this.#previousProviderConfig = this.providerStore.getState();
     this.networkIdStore = new ObservableStore(buildDefaultNetworkIdState());
     this.networkStatusStore = new ObservableStore(
       buildDefaultNetworkStatusState(),
@@ -511,7 +508,6 @@ export class NetworkController extends EventEmitter {
 
     this.store = new ComposedStore<NetworkControllerState>({
       provider: this.providerStore,
-      previousProviderStore: this.previousProviderStore,
       networkId: this.networkIdStore,
       networkStatus: this.networkStatusStore,
       networkDetails: this.networkDetails,
@@ -792,7 +788,7 @@ export class NetworkController extends EventEmitter {
    * calling `resetConnection`).
    */
   rollbackToPreviousProvider(): void {
-    const config = this.previousProviderStore.getState();
+    const config = this.#previousProviderConfig;
     this.providerStore.putState(config);
     this._switchNetwork(config);
   }
@@ -871,7 +867,7 @@ export class NetworkController extends EventEmitter {
    * @param providerConfig - The provider configuration.
    */
   _setProviderConfig(providerConfig: ProviderConfiguration): void {
-    this.previousProviderStore.putState(this.providerStore.getState());
+    this.#previousProviderConfig = this.providerStore.getState();
     this.providerStore.putState(providerConfig);
     this._switchNetwork(providerConfig);
   }
