@@ -106,7 +106,6 @@ export type SignControllerOptions = {
   messenger: SignControllerMessenger;
   keyringController: KeyringController;
   preferencesController: PreferencesController;
-  sendUpdate: () => void;
   getState: () => any;
   metricsEvent: (payload: any, options?: any) => void;
   securityProviderRequest: SecurityProviderRequest;

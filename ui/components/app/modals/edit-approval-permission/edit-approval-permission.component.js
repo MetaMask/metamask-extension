@@ -10,7 +10,7 @@ import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../../shared/lib/transactions-controller-utils';
-import { ButtonIcon } from '../../../component-library';
+import { ButtonIcon } from '../../../component-library/button-icon/deprecated';
 import {
   ICON_SIZES,
   ICON_NAMES,
