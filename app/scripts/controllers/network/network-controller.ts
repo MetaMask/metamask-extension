@@ -904,14 +904,14 @@ export class NetworkController extends EventEmitter {
    * @param providerConfig - The provider configuration object that specifies
    * the new network.
    */
-  _switchNetwork(providerConfig: ProviderConfiguration): void {
+  async _switchNetwork(providerConfig: ProviderConfiguration) {
     this.messenger.publish(NetworkControllerEventType.NetworkWillChange);
     this._resetNetworkId();
     this._resetNetworkStatus();
     this._resetNetworkDetails();
     this._configureProvider(providerConfig);
     this.messenger.publish(NetworkControllerEventType.NetworkDidChange);
-    this.lookupNetwork();
+    await this.lookupNetwork();
   }
 
   /**
