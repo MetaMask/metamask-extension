@@ -660,28 +660,8 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/address-book-controller>@metamask/base-controller": true,
-        "@metamask/address-book-controller>@metamask/controller-utils": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/phishing-controller>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
       }
     },
     "@metamask/announcement-controller": {
@@ -716,12 +696,12 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/controller-utils": true,
         "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
+        "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>events": true,
         "eth-json-rpc-filters>async-mutex": true,
@@ -748,21 +728,6 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/phishing-controller>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/assets-controllers>@metamask/utils": {
@@ -1089,7 +1054,7 @@
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@ngraveio/bc-ur>assert>object-is": true,
         "@storybook/api>telejson>is-regex": true,
-        "mocha>object.assign>object-keys": true,
+        "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
@@ -1194,26 +1159,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/gas-fee-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "eth-query": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/phishing-controller>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/jazzicon": {
@@ -1314,19 +1264,14 @@
     },
     "@metamask/message-manager": {
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/message-manager>@metamask/base-controller": true,
         "@metamask/message-manager>jsonschema": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-sig-util": true,
         "ethereumjs-util": true,
         "uuid": true
-      }
-    },
-    "@metamask/message-manager>@metamask/base-controller": {
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1359,18 +1304,13 @@
         "console.error": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/permission-controller>@metamask/base-controller": true,
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
-      }
-    },
-    "@metamask/permission-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1384,44 +1324,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
-        "@metamask/phishing-controller>isomorphic-fetch": true,
+        "@metamask/controller-utils": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/phishing-controller>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/phishing-controller>isomorphic-fetch": {
-      "globals": {
-        "fetch.bind": true
-      },
-      "packages": {
-        "@metamask/phishing-controller>isomorphic-fetch>whatwg-fetch": true
-      }
-    },
-    "@metamask/phishing-controller>isomorphic-fetch>whatwg-fetch": {
-      "globals": {
-        "Blob": true,
-        "FileReader": true,
-        "FormData": true,
-        "URLSearchParams.prototype.isPrototypeOf": true,
-        "XMLHttpRequest": true,
-        "define": true,
-        "setTimeout": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
@@ -1486,12 +1391,17 @@
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/providers": true,
-        "@metamask/base-controller": true,
-        "@metamask/phishing-controller>isomorphic-fetch": true,
+        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
         "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
+        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
         "fast-json-patch": true,
         "lodash": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controller-utils": {
@@ -1501,7 +1411,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/phishing-controller>isomorphic-fetch": true,
+        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
@@ -1518,6 +1428,25 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@metamask/smart-transactions-controller>isomorphic-fetch": {
+      "globals": {
+        "fetch.bind": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "Blob": true,
+        "FileReader": true,
+        "FormData": true,
+        "URLSearchParams.prototype.isPrototypeOf": true,
+        "XMLHttpRequest": true,
+        "define": true,
+        "setTimeout": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -2555,7 +2484,7 @@
     },
     "browserify>has": {
       "packages": {
-        "mocha>object.assign>function-bind": true
+        "browserify>has>function-bind": true
       }
     },
     "browserify>os-browserify": {
@@ -3610,7 +3539,7 @@
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
-        "mocha>object.assign>object-keys": true
+        "globalthis>define-properties>object-keys": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -4230,7 +4159,7 @@
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -4242,7 +4171,7 @@
       },
       "packages": {
         "browserify>has": true,
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
