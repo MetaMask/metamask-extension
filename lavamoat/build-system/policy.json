@@ -1697,7 +1697,7 @@
     },
     "browserify>has": {
       "packages": {
-        "mocha>object.assign>function-bind": true
+        "browserify>has>function-bind": true
       }
     },
     "browserify>insert-module-globals": {
@@ -1885,12 +1885,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
-      }
-    },
-    "chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "chokidar": {
@@ -2002,7 +1997,7 @@
       "packages": {
         "cross-spawn>path-key": true,
         "cross-spawn>shebang-command": true,
-        "cross-spawn>which": true
+        "mocha>which": true
       }
     },
     "cross-spawn>path-key": {
@@ -2014,21 +2009,6 @@
     "cross-spawn>shebang-command": {
       "packages": {
         "cross-spawn>shebang-command>shebang-regex": true
-      }
-    },
-    "cross-spawn>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "mocha>which>isexe": true
       }
     },
     "debounce-stream>duplexer": {
@@ -2350,7 +2330,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -2471,7 +2451,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -2871,8 +2851,8 @@
         "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
         "eslint>minimatch": true,
-        "eslint>strip-json-comments": true,
         "globby>ignore": true,
+        "mocha>strip-json-comments": true,
         "nock>debug": true
       }
     },
@@ -3094,9 +3074,9 @@
         "process.cwd": true
       },
       "packages": {
-        "chokidar>glob-parent": true,
         "fast-glob>@nodelib/fs.stat": true,
         "fast-glob>@nodelib/fs.walk": true,
+        "fast-glob>glob-parent": true,
         "globby>merge2": true,
         "stylelint>micromatch": true
       }
@@ -3151,6 +3131,15 @@
         "fast-glob>@nodelib/fs.walk>fastq>reusify": true
       }
     },
+    "fast-glob>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
     "fs-extra": {
       "builtin": {
         "assert": true,
@@ -3200,7 +3189,7 @@
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
-        "mocha>object.assign>object-keys": true
+        "globalthis>define-properties>object-keys": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -3370,8 +3359,8 @@
       },
       "packages": {
         "gulp-dart-sass>chalk>ansi-styles": true,
-        "gulp-dart-sass>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "gulp-dart-sass>chalk>escape-string-regexp": true,
+        "gulp-dart-sass>chalk>supports-color": true
       }
     },
     "gulp-dart-sass>chalk>ansi-styles": {
@@ -3391,7 +3380,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-dart-sass>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-dart-sass>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-dart-sass>strip-ansi": {
@@ -3430,9 +3424,9 @@
         "process.platform": true
       },
       "packages": {
+        "gulp-dart-sass>chalk>escape-string-regexp": true,
         "gulp-livereload>chalk>ansi-styles": true,
-        "gulp-livereload>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "gulp-livereload>chalk>supports-color": true
       }
     },
     "gulp-livereload>chalk>ansi-styles": {
@@ -3452,7 +3446,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-livereload>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-livereload>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-livereload>debug": {
@@ -3469,7 +3468,7 @@
       },
       "packages": {
         "gulp-livereload>chalk>supports-color": true,
-        "gulp-livereload>debug>ms": true
+        "mocha>ms": true
       }
     },
     "gulp-livereload>event-stream": {
@@ -3595,7 +3594,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -3699,9 +3698,9 @@
         "process.platform": true
       },
       "packages": {
+        "gulp-dart-sass>chalk>escape-string-regexp": true,
         "gulp-rtlcss>rtlcss>chalk>ansi-styles": true,
-        "gulp-rtlcss>rtlcss>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "gulp-rtlcss>rtlcss>chalk>supports-color": true
       }
     },
     "gulp-rtlcss>rtlcss>chalk>ansi-styles": {
@@ -3721,7 +3720,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-rtlcss>rtlcss>postcss": {
@@ -3947,7 +3951,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -5204,11 +5208,11 @@
         "chokidar>normalize-path": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
+        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
         "gulp>glob-watcher>chokidar>fsevents": true,
-        "gulp>glob-watcher>chokidar>glob-parent": true,
         "gulp>glob-watcher>chokidar>is-binary-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,
         "gulp>glob-watcher>chokidar>upath": true,
@@ -5272,21 +5276,6 @@
       },
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>path-dirname": true,
-        "gulp>glob-watcher>chokidar>glob-parent>is-glob": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>glob-parent>is-glob": {
-      "packages": {
-        "gulp>glob-watcher>chokidar>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>glob-watcher>chokidar>is-binary-path": {
@@ -5663,8 +5652,8 @@
         "process.nextTick": true
       },
       "packages": {
+        "gulp-watch>glob-parent": true,
         "gulp>glob-watcher>is-negated-glob": true,
-        "gulp>vinyl-fs>glob-stream>glob-parent": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
         "gulp>vinyl-fs>glob-stream>pumpify": true,
         "gulp>vinyl-fs>glob-stream>to-absolute-glob": true,
@@ -5673,21 +5662,6 @@
         "nyc>glob": true,
         "readable-stream": true,
         "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>path-dirname": true,
-        "gulp>vinyl-fs>glob-stream>glob-parent>is-glob": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>glob-parent>is-glob": {
-      "packages": {
-        "gulp>vinyl-fs>glob-stream>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>vinyl-fs>glob-stream>ordered-read-streams": {
@@ -5791,7 +5765,7 @@
     "gulp>vinyl-fs>object.assign": {
       "packages": {
         "globalthis>define-properties": true,
-        "mocha>object.assign>object-keys": true,
+        "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
@@ -6092,9 +6066,9 @@
         "process.platform": true
       },
       "packages": {
+        "gulp-dart-sass>chalk>escape-string-regexp": true,
         "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "lavamoat>@babel/highlight>chalk>supports-color": true
       }
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
@@ -6114,7 +6088,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6272,6 +6251,31 @@
         "process.platform": true
       }
     },
+    "mocha>log-symbols": {
+      "packages": {
+        "madge>ora>is-unicode-supported": true,
+        "mocha>log-symbols>chalk": true
+      }
+    },
+    "mocha>log-symbols>chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "mocha>log-symbols>chalk>supports-color": true
+      }
+    },
+    "mocha>log-symbols>chalk>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "sinon>supports-color>has-flag": true
+      }
+    },
     "mocha>minimatch>brace-expansion": {
       "packages": {
         "mocha>minimatch>brace-expansion>concat-map": true,
@@ -6280,22 +6284,15 @@
     },
     "mocha>supports-color": {
       "builtin": {
-        "os.release": true
+        "os.release": true,
+        "tty.isatty": true
       },
       "globals": {
         "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
+        "process.platform": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
-      }
-    },
-    "mocha>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "mocha>which": {
@@ -6565,9 +6562,9 @@
     "react-markdown>unified": {
       "packages": {
         "jsdom>request>extend": true,
+        "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
         "react-markdown>unified>is-buffer": true,
-        "react-markdown>unified>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
@@ -6767,6 +6764,11 @@
         "process.platform": true
       }
     },
+    "sinon>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "source-map": {
       "builtin": {
         "fs.readFile": true,
@@ -6801,7 +6803,7 @@
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -6840,7 +6842,7 @@
       },
       "packages": {
         "browserify>has": true,
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
@@ -6896,6 +6898,7 @@
         "globby>ignore": true,
         "globby>slash": true,
         "lodash": true,
+        "mocha>log-symbols": true,
         "nock>debug": true,
         "nyc>resolve-from": true,
         "stylelint>@stylelint/postcss-css-in-js": true,
@@ -6912,7 +6915,6 @@
         "stylelint>import-lazy": true,
         "stylelint>known-css-properties": true,
         "stylelint>leven": true,
-        "stylelint>log-symbols": true,
         "stylelint>mathml-tag-names": true,
         "stylelint>micromatch": true,
         "stylelint>normalize-selector": true,
@@ -7094,12 +7096,7 @@
         "process.platform": true
       },
       "packages": {
-        "stylelint>chalk>supports-color>has-flag": true
-      }
-    },
-    "stylelint>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -7212,8 +7209,8 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>which": true,
-        "stylelint>global-modules>global-prefix>ini": true
+        "stylelint>global-modules>global-prefix>ini": true,
+        "stylelint>global-modules>global-prefix>which": true
       }
     },
     "stylelint>global-modules>global-prefix>ini": {
@@ -7221,39 +7218,24 @@
         "process": true
       }
     },
-    "stylelint>globjoin": {
+    "stylelint>global-modules>global-prefix>which": {
       "builtin": {
         "path.join": true
-      }
-    },
-    "stylelint>log-symbols": {
-      "packages": {
-        "madge>ora>is-unicode-supported": true,
-        "stylelint>log-symbols>chalk": true
-      }
-    },
-    "stylelint>log-symbols>chalk": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "stylelint>log-symbols>chalk>supports-color": true
-      }
-    },
-    "stylelint>log-symbols>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
       },
       "globals": {
-        "process.env": true,
+        "process.cwd": true,
+        "process.env.OSTYPE": true,
+        "process.env.PATH": true,
+        "process.env.PATHEXT": true,
         "process.platform": true
       },
       "packages": {
-        "stylelint>log-symbols>chalk>supports-color>has-flag": true
+        "mocha>which>isexe": true
       }
     },
-    "stylelint>log-symbols>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+    "stylelint>globjoin": {
+      "builtin": {
+        "path.join": true
       }
     },
     "stylelint>micromatch": {
@@ -7557,9 +7539,9 @@
     },
     "stylelint>table>slice-ansi": {
       "packages": {
-        "mocha>yargs>string-width>is-fullwidth-code-point": true,
         "stylelint>table>slice-ansi>ansi-styles": true,
-        "stylelint>table>slice-ansi>astral-regex": true
+        "stylelint>table>slice-ansi>astral-regex": true,
+        "stylelint>table>slice-ansi>is-fullwidth-code-point": true
       }
     },
     "stylelint>table>slice-ansi>ansi-styles": {
@@ -7569,7 +7551,7 @@
     },
     "stylelint>table>string-width": {
       "packages": {
-        "mocha>yargs>string-width>is-fullwidth-code-point": true,
+        "stylelint>table>slice-ansi>is-fullwidth-code-point": true,
         "stylelint>table>string-width>emoji-regex": true,
         "stylelint>table>string-width>strip-ansi": true
       }
