@@ -6740,7 +6740,7 @@ describe('NetworkController', () => {
     it('throws if the given chain ID is not a 0x-prefixed hex number', async () => {
       const invalidChainId = '1';
       await withController(async ({ controller }) => {
-        expect(() =>
+        await expect(() =>
           controller.upsertNetworkConfiguration(
             {
               /* @ts-expect-error We are intentionally passing bad input. */
@@ -6755,7 +6755,7 @@ describe('NetworkController', () => {
               source: MetaMetricsNetworkEventSource.Dapp,
             },
           ),
-        ).toThrow(
+        ).rejects.toThrow(
           new Error(
             `Invalid chain ID "${invalidChainId}": invalid hex string.`,
           ),
@@ -6765,7 +6765,7 @@ describe('NetworkController', () => {
 
     it('throws if the given chain ID is greater than the maximum allowed ID', async () => {
       await withController(async ({ controller }) => {
-        expect(() =>
+        await expect(() =>
           controller.upsertNetworkConfiguration(
             {
               chainId: '0xFFFFFFFFFFFFFFFF',
@@ -6779,7 +6779,7 @@ describe('NetworkController', () => {
               source: MetaMetricsNetworkEventSource.Dapp,
             },
           ),
-        ).toThrow(
+        ).rejects.toThrow(
           new Error(
             'Invalid chain ID "0xFFFFFFFFFFFFFFFF": numerical value greater than max safe value.',
           ),
@@ -6789,7 +6789,7 @@ describe('NetworkController', () => {
 
     it('throws if the no (or a falsy) rpcUrl is passed', async () => {
       await withController(async ({ controller }) => {
-        expect(() =>
+        await expect(() =>
           controller.upsertNetworkConfiguration(
             /* @ts-expect-error We are intentionally passing bad input. */
             {
@@ -6803,7 +6803,7 @@ describe('NetworkController', () => {
               source: MetaMetricsNetworkEventSource.Dapp,
             },
           ),
-        ).toThrow(
+        ).rejects.toThrow(
           new Error(
             'An rpcUrl is required to add or update network configuration',
           ),
@@ -6813,7 +6813,7 @@ describe('NetworkController', () => {
 
     it('throws if rpcUrl passed is not a valid Url', async () => {
       await withController(async ({ controller }) => {
-        expect(() =>
+        await expect(() =>
           controller.upsertNetworkConfiguration(
             {
               chainId: '0x9999',
@@ -6827,13 +6827,13 @@ describe('NetworkController', () => {
               source: MetaMetricsNetworkEventSource.Dapp,
             },
           ),
-        ).toThrow(new Error('rpcUrl must be a valid URL'));
+        ).rejects.toThrow(new Error('rpcUrl must be a valid URL'));
       });
     });
 
     it('throws if the no (or a falsy) ticker is passed', async () => {
       await withController(async ({ controller }) => {
-        expect(() =>
+        await expect(() =>
           controller.upsertNetworkConfiguration(
             /* @ts-expect-error We are intentionally passing bad input. */
             {
@@ -6847,7 +6847,7 @@ describe('NetworkController', () => {
               source: MetaMetricsNetworkEventSource.Dapp,
             },
           ),
-        ).toThrow(
+        ).rejects.toThrow(
           new Error(
             'A ticker is required to add or update networkConfiguration',
           ),
@@ -6857,7 +6857,7 @@ describe('NetworkController', () => {
 
     it('throws if an options object is not passed as a second argument', async () => {
       await withController(async ({ controller }) => {
-        expect(() =>
+        await expect(() =>
           /* @ts-expect-error We are intentionally passing bad input. */
           controller.upsertNetworkConfiguration({
             chainId: '0x5',
@@ -6865,7 +6865,7 @@ describe('NetworkController', () => {
             rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
             rpcUrl: 'https://mock-rpc-url',
           }),
-        ).toThrow(
+        ).rejects.toThrow(
           new Error(
             "Cannot read properties of undefined (reading 'setActive')",
           ),
@@ -6888,7 +6888,7 @@ describe('NetworkController', () => {
             ticker: 'test_ticker',
           };
 
-          controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
           });
@@ -6926,7 +6926,7 @@ describe('NetworkController', () => {
             invalidKey2: {},
           };
 
-          controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
           });
@@ -6975,7 +6975,7 @@ describe('NetworkController', () => {
             ticker: 'RPC',
           };
 
-          controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
           });
@@ -7024,7 +7024,7 @@ describe('NetworkController', () => {
             rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
             chainId: '0x1' as const,
           };
-          controller.upsertNetworkConfiguration(updatedConfiguration, {
+          await controller.upsertNetworkConfiguration(updatedConfiguration, {
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
           });
@@ -7069,7 +7069,7 @@ describe('NetworkController', () => {
           },
         },
         async ({ controller }) => {
-          controller.upsertNetworkConfiguration(
+          await controller.upsertNetworkConfiguration(
             {
               rpcUrl: 'https://test-rpc-url',
               ticker: 'new-ticker',
@@ -7136,7 +7136,7 @@ describe('NetworkController', () => {
             ticker: 'test_ticker',
           };
 
-          controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
           });
@@ -7180,7 +7180,7 @@ describe('NetworkController', () => {
             ticker: 'test_ticker',
           };
 
-          controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
             setActive: true,
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
@@ -7229,7 +7229,7 @@ describe('NetworkController', () => {
             rpcPrefs: { blockExplorerUrl: 'https://block-explorer' },
           };
 
-          controller.upsertNetworkConfiguration(newNetworkConfiguration, {
+          await controller.upsertNetworkConfiguration(newNetworkConfiguration, {
             referrer: 'https://test-dapp.com',
             source: MetaMetricsNetworkEventSource.Dapp,
           });
@@ -7296,10 +7296,10 @@ describe('NetworkController', () => {
             rpcPrefs: { blockExplorerUrl: 'https://block-explorer' },
           };
 
-          expect(() => {
+          await expect(() =>
             /* @ts-expect-error We are intentionally passing bad input. */
-            controller.upsertNetworkConfiguration(newNetworkConfiguration, {});
-          }).toThrow(
+            controller.upsertNetworkConfiguration(newNetworkConfiguration, {}),
+          ).rejects.toThrow(
             'referrer and source are required arguments for adding or updating a network configuration',
           );
         },
