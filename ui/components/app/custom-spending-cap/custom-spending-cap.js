@@ -140,21 +140,25 @@ export default function CustomSpendingCap({
 
     dispatch(setCustomTokenAmount(String(valueInput)));
 
-    const newData = getCustomTxParamsData(txParams.data, {
-      customPermissionAmount: valueInput,
-      decimals,
-    });
-    const { from, to, value: txValue } = txParams;
-    const estimatedGasLimit = await estimateGas({
-      from,
-      to,
-      value: txValue,
-      data: newData,
-    });
-    if (estimatedGasLimit) {
-      await updateTransaction({
-        gasLimit: hexToDecimal(addHexPrefix(estimatedGasLimit)),
+    try {
+      const newData = getCustomTxParamsData(txParams.data, {
+        customPermissionAmount: valueInput,
+        decimals,
       });
+      const { from, to, value: txValue } = txParams;
+      const estimatedGasLimit = await estimateGas({
+        from,
+        to,
+        value: txValue,
+        data: newData,
+      });
+      if (estimatedGasLimit) {
+        await updateTransaction({
+          gasLimit: hexToDecimal(addHexPrefix(estimatedGasLimit)),
+        });
+      }
+    } catch (exp) {
+      console.error('Error in trying to update gas limit', exp);
     }
     setInputChangeInProgress(false);
   };
