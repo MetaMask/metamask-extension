@@ -928,6 +928,7 @@ function getAllowedAnnouncementIds(state) {
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
+  const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
     1: false,
@@ -949,6 +950,7 @@ function getAllowedAnnouncementIds(state) {
     17: false,
     18: true,
     19: true,
+    20: currentKeyringIsLedger && isFirefox,
   };
 }
 
