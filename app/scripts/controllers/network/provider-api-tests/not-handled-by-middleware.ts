@@ -1,7 +1,16 @@
 /* eslint-disable jest/require-top-level-describe, jest/no-export */
 
 import { fill } from 'lodash';
-import { withMockedCommunications, withNetworkClient } from './helpers';
+import {
+  ProviderType,
+  withMockedCommunications,
+  withNetworkClient,
+} from './helpers';
+
+type TestsForRpcMethodNotHandledByMiddlewareOptions = {
+  providerType: ProviderType;
+  numberOfParameters: number;
+};
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method that
@@ -15,8 +24,11 @@ import { withMockedCommunications, withNetworkClient } from './helpers';
  * RPC method takes.
  */
 export function testsForRpcMethodNotHandledByMiddleware(
-  method,
-  { providerType, numberOfParameters },
+  method: string,
+  {
+    providerType,
+    numberOfParameters,
+  }: TestsForRpcMethodNotHandledByMiddlewareOptions,
 ) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(
