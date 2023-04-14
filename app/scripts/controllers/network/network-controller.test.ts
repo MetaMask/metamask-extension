@@ -1192,7 +1192,7 @@ describe('NetworkController', () => {
             });
             expect(oldChainIdResult).toBe('0x5');
 
-            controller.setActiveNetwork('testNetworkConfigurationId');
+            await controller.setActiveNetwork('testNetworkConfigurationId');
             const promisifiedSendAsync2 = promisify(provider.sendAsync).bind(
               provider,
             );
@@ -2431,15 +2431,9 @@ describe('NetworkController', () => {
                         },
                       },
                       beforeCompleting: async () => {
-                        await waitForStateChanges({
-                          controller,
-                          propertyPath: ['networkStatus'],
-                          operation: () => {
-                            controller.setActiveNetwork(
-                              'testNetworkConfigurationId',
-                            );
-                          },
-                        });
+                        await controller.setActiveNetwork(
+                          'testNetworkConfigurationId',
+                        );
                       },
                     },
                   ],
@@ -2506,15 +2500,9 @@ describe('NetworkController', () => {
                 network1.mockEssentialRpcCalls({
                   eth_getBlockByNumber: {
                     beforeCompleting: async () => {
-                      await waitForStateChanges({
-                        controller,
-                        propertyPath: ['networkStatus'],
-                        operation: () => {
-                          controller.setActiveNetwork(
-                            'testNetworkConfigurationId',
-                          );
-                        },
-                      });
+                      await controller.setActiveNetwork(
+                        'testNetworkConfigurationId',
+                      );
                     },
                   },
                   net_version: {
@@ -2578,15 +2566,9 @@ describe('NetworkController', () => {
                   latestBlock: POST_1559_BLOCK,
                   eth_getBlockByNumber: {
                     beforeCompleting: async () => {
-                      await waitForStateChanges({
-                        controller,
-                        propertyPath: ['networkStatus'],
-                        operation: () => {
-                          controller.setActiveNetwork(
-                            'testNetworkConfigurationId',
-                          );
-                        },
-                      });
+                      await controller.setActiveNetwork(
+                        'testNetworkConfigurationId',
+                      );
                     },
                   },
                 });
@@ -4092,9 +4074,9 @@ describe('NetworkController', () => {
         async ({ controller, network }) => {
           network.mockEssentialRpcCalls();
 
-          expect(() =>
+          await expect(() =>
             controller.setActiveNetwork('invalid-network-configuration-id'),
-          ).toThrow(
+          ).rejects.toThrow(
             new Error(
               'networkConfigurationId invalid-network-configuration-id does not match a configured networkConfiguration',
             ),
@@ -4135,7 +4117,7 @@ describe('NetworkController', () => {
           });
           network.mockEssentialRpcCalls();
 
-          controller.setActiveNetwork('testNetworkConfigurationId1');
+          await controller.setActiveNetwork('testNetworkConfigurationId1');
 
           expect(controller.store.getState().provider).toStrictEqual({
             type: 'rpc',
@@ -4204,6 +4186,8 @@ describe('NetworkController', () => {
             messenger: unrestrictedMessenger,
             eventType: NetworkControllerEventType.NetworkWillChange,
             operation: () => {
+              // Intentionally not awaited because we're checking state
+              // partway through the operation
               controller.setActiveNetwork('testNetworkConfigurationId2');
             },
             beforeResolving: () => {
@@ -4268,6 +4252,8 @@ describe('NetworkController', () => {
             // before networkDidChange
             count: 1,
             operation: () => {
+              // Intentionally not awaited because we're checking state
+              // partway through the operation.
               controller.setActiveNetwork('testNetworkConfigurationId1');
             },
           });
@@ -4327,6 +4313,8 @@ describe('NetworkController', () => {
             // before networkDidChange
             count: 1,
             operation: () => {
+              // Intentionally not awaited because we're checking state
+              // partway through the operation
               controller.setActiveNetwork('testNetworkConfigurationId2');
             },
           });
@@ -4368,7 +4356,7 @@ describe('NetworkController', () => {
             },
           });
 
-          controller.setActiveNetwork('testNetworkConfigurationId');
+          await controller.setActiveNetwork('testNetworkConfigurationId');
 
           const { provider } = controller.getProviderAndBlockTracker();
           assert(provider, 'Provider is somehow unset');
@@ -4416,7 +4404,7 @@ describe('NetworkController', () => {
 
           const { provider: providerBefore } =
             controller.getProviderAndBlockTracker();
-          controller.setActiveNetwork('testNetworkConfigurationId');
+          await controller.setActiveNetwork('testNetworkConfigurationId');
           const { provider: providerAfter } =
             controller.getProviderAndBlockTracker();
 
@@ -4452,8 +4440,8 @@ describe('NetworkController', () => {
           const networkDidChange = await waitForPublishedEvents({
             messenger: unrestrictedMessenger,
             eventType: NetworkControllerEventType.NetworkDidChange,
-            operation: () => {
-              controller.setActiveNetwork('testNetworkConfigurationId');
+            operation: async () => {
+              await controller.setActiveNetwork('testNetworkConfigurationId');
             },
           });
 
@@ -4489,8 +4477,8 @@ describe('NetworkController', () => {
           const infuraIsUnblocked = await waitForPublishedEvents({
             messenger: unrestrictedMessenger,
             eventType: NetworkControllerEventType.InfuraIsUnblocked,
-            operation: () => {
-              controller.setActiveNetwork('testNetworkConfigurationId');
+            operation: async () => {
+              await controller.setActiveNetwork('testNetworkConfigurationId');
             },
           });
 
@@ -4522,13 +4510,7 @@ describe('NetworkController', () => {
               response: SUCCESSFUL_NET_VERSION_RESPONSE,
             },
           });
-          await waitForStateChanges({
-            controller,
-            propertyPath: ['networkStatus'],
-            operation: () => {
-              controller.setActiveNetwork('testNetworkConfigurationId');
-            },
-          });
+          await controller.setActiveNetwork('testNetworkConfigurationId');
 
           expect(controller.store.getState().networkStatus).toBe('available');
         },
@@ -4561,16 +4543,7 @@ describe('NetworkController', () => {
             latestBlock: POST_1559_BLOCK,
           });
 
-          await waitForStateChanges({
-            controller,
-            propertyPath: ['networkDetails'],
-            // setActiveNetwork clears networkDetails first, and then updates it
-            // to what we expect it to be
-            count: 2,
-            operation: () => {
-              controller.setActiveNetwork('testNetworkConfigurationId');
-            },
-          });
+          await controller.setActiveNetwork('testNetworkConfigurationId');
 
           expect(controller.store.getState().networkDetails).toStrictEqual({
             EIPS: {
@@ -5741,12 +5714,7 @@ describe('NetworkController', () => {
               currentNetwork.mockEssentialRpcCalls();
               previousNetwork.mockEssentialRpcCalls();
 
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId2');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId2');
               expect(controller.store.getState().provider).toStrictEqual({
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url-2',
@@ -5814,12 +5782,7 @@ describe('NetworkController', () => {
               });
               currentNetwork.mockEssentialRpcCalls();
               previousNetwork.mockEssentialRpcCalls();
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
 
               await waitForLookupNetworkToComplete({
                 controller,
@@ -5871,12 +5834,7 @@ describe('NetworkController', () => {
               currentNetwork.mockEssentialRpcCalls();
               previousNetwork.mockEssentialRpcCalls();
 
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
               expect(controller.store.getState().networkStatus).toBe(
                 'available',
               );
@@ -5939,12 +5897,7 @@ describe('NetworkController', () => {
               });
               previousNetwork.mockEssentialRpcCalls();
 
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
               expect(controller.store.getState().networkDetails).toStrictEqual({
                 EIPS: {
                   1559: true,
@@ -6010,12 +5963,7 @@ describe('NetworkController', () => {
               });
               currentNetwork.mockEssentialRpcCalls();
               previousNetwork.mockEssentialRpcCalls();
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
 
               await waitForLookupNetworkToComplete({
                 controller,
@@ -6070,12 +6018,7 @@ describe('NetworkController', () => {
               });
               currentNetwork.mockEssentialRpcCalls();
               previousNetwork.mockEssentialRpcCalls();
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
 
               const { provider: providerBefore } =
                 controller.getProviderAndBlockTracker();
@@ -6129,12 +6072,7 @@ describe('NetworkController', () => {
               currentNetwork.mockEssentialRpcCalls();
               previousNetwork.mockEssentialRpcCalls();
 
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
 
               await waitForLookupNetworkToComplete({
                 controller,
@@ -6187,12 +6125,7 @@ describe('NetworkController', () => {
                   response: BLOCKED_INFURA_RESPONSE,
                 },
               });
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
@@ -6257,13 +6190,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              await waitForStateChanges({
-                controller,
-                propertyPath: ['networkStatus'],
-                operation: () => {
-                  controller.setActiveNetwork('currentNetworkConfiguration');
-                },
-              });
+              await controller.setActiveNetwork('currentNetworkConfiguration');
               expect(controller.store.getState().networkStatus).toBe(
                 'unavailable',
               );
@@ -6312,12 +6239,7 @@ describe('NetworkController', () => {
                 latestBlock: POST_1559_BLOCK,
               });
 
-              await waitForLookupNetworkToComplete({
-                controller,
-                operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId');
-                },
-              });
+              await controller.setActiveNetwork('testNetworkConfigurationId');
               expect(controller.store.getState().networkDetails).toStrictEqual({
                 EIPS: {
                   1559: false,
