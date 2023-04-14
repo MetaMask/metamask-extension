@@ -2516,7 +2516,7 @@
     "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
   },
   "notifications20ActionText": {
-    "message": "Learn how to fix this issue here",
+    "message": "Learn more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
   },
 
@@ -2525,7 +2525,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
   },
   "notifications20Title": {
-    "message": "Ledger and Firefox Users Experiencing Connection Issues.",
+    "message": "Ledger and Firefox Users Experiencing Connection Issues",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
   "notifications3ActionText": {
