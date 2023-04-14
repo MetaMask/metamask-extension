@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -50,6 +50,7 @@ export default function CustomSpendingCap({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { updateTransaction } = useGasFeeContext();
+  const inputRef = useRef(null);
 
   const value = useSelector(getCustomTokenAmount);
 
@@ -168,6 +169,15 @@ export default function CustomSpendingCap({
     passTheErrorText(error);
   }, [error, passTheErrorText]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus({
+        preventScroll: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputRef.current]);
+
   const chooseTooltipContentText = decConversionGreaterThan(
     value,
     currentTokenBalance,
@@ -211,8 +221,8 @@ export default function CustomSpendingCap({
             }
           >
             <FormField
+              inputRef={inputRef}
               dataTestId="custom-spending-cap-input"
-              autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
                 decConversionGreaterThan(value, currentTokenBalance)

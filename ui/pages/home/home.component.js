@@ -35,7 +35,8 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../components/component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../components/component-library';
+import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
+import { Text } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -640,7 +641,7 @@ export default class Home extends PureComponent {
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
-            <MenuBar />
+            {process.env.MULTICHAIN ? null : <MenuBar />}
             <div className="home__balance-wrapper">
               <EthOverview />
             </div>

@@ -282,4 +282,22 @@ describe('TokenAllowancePage', () => {
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
   });
+
+  it('should render security provider response if transaction is malicious', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: 1,
+      reason:
+        'This has been flagged as potentially suspicious. If you sign, you could lose access to all of your NFTs and any funds or other assets in your wallet.',
+      reason_header: 'Warning',
+    };
+    const { getByText } = renderWithProvider(
+      <TokenAllowance
+        {...props}
+        txData={{ ...props.txData, securityProviderResponse }}
+      />,
+      store,
+    );
+
+    expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
+  });
 });

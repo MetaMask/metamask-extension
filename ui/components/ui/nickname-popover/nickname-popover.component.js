@@ -15,7 +15,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../component-library/icon/deprecated';
-import { ButtonIcon } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 
 const NicknamePopover = ({
   address,
