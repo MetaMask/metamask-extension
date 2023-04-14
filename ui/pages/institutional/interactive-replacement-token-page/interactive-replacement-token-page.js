@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { showInteractiveReplacementTokenBanner } from '../../../store/actions';
 import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
 // import CustodyLabels from '../../../../components/institutional/custody-labels';
@@ -14,7 +13,10 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../../components/ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import {
+  mmiActionsFactory,
+  showInteractiveReplacementTokenBanner,
+} from '../../../store/institutional/institution-background';
 import Box from '../../../components/ui/box';
 import {
   Text,

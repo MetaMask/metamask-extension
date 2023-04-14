@@ -4654,26 +4654,3 @@ export function requestUserApproval({
     }
   };
 }
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-export function showInteractiveReplacementTokenBanner({
-  url,
-  oldRefreshToken,
-}: {
-  url: string;
-  oldRefreshToken: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
-        url,
-        oldRefreshToken,
-      ]);
-    } catch (err) {
-      if (err) {
-        throw new Error(err.message);
-        dispatch(displayWarning(err.message));
-      }
-    }
-  };
-}
-///: END:ONLY_INCLUDE_IN
