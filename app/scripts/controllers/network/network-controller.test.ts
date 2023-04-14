@@ -647,12 +647,6 @@ describe('NetworkController', () => {
               },
               "networkId": null,
               "networkStatus": "unknown",
-              "previousProviderStore": {
-                "chainId": "0x9999",
-                "nickname": "Test initial state",
-                "rpcUrl": "http://example-custom-rpc.metamask.io",
-                "type": "rpc",
-              },
               "provider": {
                 "chainId": "0x9999",
                 "nickname": "Test initial state",
@@ -677,13 +671,6 @@ describe('NetworkController', () => {
             },
             "networkId": null,
             "networkStatus": "unknown",
-            "previousProviderStore": {
-              "chainId": "0x539",
-              "nickname": "Localhost 8545",
-              "rpcUrl": "http://localhost:8545",
-              "ticker": "ETH",
-              "type": "rpc",
-            },
             "provider": {
               "chainId": "0x539",
               "nickname": "Localhost 8545",
@@ -4117,8 +4104,11 @@ describe('NetworkController', () => {
     });
 
     it('stores the current provider configuration before overwriting it', async () => {
+      const { unrestrictedMessenger, restrictedMessenger } =
+        buildMessengerGroup();
       await withController(
         {
+          messenger: restrictedMessenger,
           state: {
             provider: {
               type: 'rpc',
@@ -4137,16 +4127,43 @@ describe('NetworkController', () => {
           },
         },
         async ({ controller }) => {
-          const network = new CustomNetworkCommunications({
+          const network1 = new CustomNetworkCommunications({
+            customRpcUrl: 'https://mock-rpc-url-1',
+          });
+          network1.mockEssentialRpcCalls();
+          const network2 = new CustomNetworkCommunications({
             customRpcUrl: 'https://mock-rpc-url-2',
           });
-          network.mockEssentialRpcCalls();
+          network2.mockEssentialRpcCalls();
 
-          controller.setActiveNetwork('testNetworkConfigurationId2');
+          await waitForPublishedEvents({
+            messenger: unrestrictedMessenger,
+            eventType: NetworkControllerEventType.NetworkDidChange,
+            operation: () => {
+              controller.setActiveNetwork('testNetworkConfigurationId2');
+            },
+          });
 
-          expect(
-            controller.store.getState().previousProviderStore,
-          ).toStrictEqual({
+          // confirm that provider store has been updated
+          expect(controller.store.getState().provider).toStrictEqual({
+            type: 'rpc',
+            id: 'testNetworkConfigurationId2',
+            rpcUrl: 'https://mock-rpc-url-2',
+            chainId: '0x222',
+            ticker: 'ABC',
+          });
+
+          await waitForPublishedEvents({
+            messenger: unrestrictedMessenger,
+            eventType: NetworkControllerEventType.NetworkDidChange,
+            operation: () => {
+              controller.rollbackToPreviousProvider();
+            },
+          });
+
+          // confirm that the previous provider state has been restored,
+          // proving that it was stored before being overwritten
+          expect(controller.store.getState().provider).toStrictEqual({
             type: 'rpc',
             rpcUrl: 'https://mock-rpc-url-1',
             chainId: '0x111',
@@ -4639,8 +4656,11 @@ describe('NetworkController', () => {
     for (const { networkType, chainId, ticker } of INFURA_NETWORKS) {
       describe(`given a type of "${networkType}"`, () => {
         it('stores the current provider configuration before overwriting it', async () => {
+          const { unrestrictedMessenger, restrictedMessenger } =
+            buildMessengerGroup();
           await withController(
             {
+              messenger: restrictedMessenger,
               state: {
                 provider: {
                   type: 'rpc',
@@ -4677,16 +4697,47 @@ describe('NetworkController', () => {
               },
             },
             async ({ controller }) => {
-              const network = new InfuraNetworkCommunications({
+              const network1 = new CustomNetworkCommunications({
+                customRpcUrl: 'http://mock-rpc-url-2',
+              });
+              network1.mockEssentialRpcCalls();
+              const network2 = new InfuraNetworkCommunications({
                 infuraNetwork: networkType,
               });
-              network.mockEssentialRpcCalls();
+              network2.mockEssentialRpcCalls();
 
-              controller.setProviderType(networkType);
+              await waitForPublishedEvents({
+                messenger: unrestrictedMessenger,
+                eventType: NetworkControllerEventType.NetworkDidChange,
+                operation: () => {
+                  controller.setProviderType(networkType);
+                },
+              });
 
-              expect(
-                controller.store.getState().previousProviderStore,
-              ).toStrictEqual({
+              // confirm that provider store has been updated
+              expect(controller.store.getState().provider).toStrictEqual({
+                chainId,
+                nickname: '',
+                rpcPrefs: {
+                  blockExplorerUrl:
+                    BUILT_IN_NETWORKS[networkType].blockExplorerUrl,
+                },
+                rpcUrl: '',
+                ticker,
+                type: networkType,
+              });
+
+              await waitForPublishedEvents({
+                messenger: unrestrictedMessenger,
+                eventType: NetworkControllerEventType.NetworkDidChange,
+                operation: () => {
+                  controller.rollbackToPreviousProvider();
+                },
+              });
+
+              // confirm that the previous provider state has been restored,
+              // proving that it was stored before being overwritten
+              expect(controller.store.getState().provider).toStrictEqual({
                 type: 'rpc',
                 rpcUrl: 'http://mock-rpc-url-2',
                 chainId: '0xtest2',
