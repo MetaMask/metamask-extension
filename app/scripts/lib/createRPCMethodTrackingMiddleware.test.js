@@ -384,7 +384,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    describe.only('when signature requests are received', () => {
+    describe('when signature requests are received', () => {
       let securityProviderReq, fnHandler;
       beforeEach(() => {
         securityProviderReq = jest.fn().mockReturnValue(() =>
