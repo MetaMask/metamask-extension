@@ -19,7 +19,7 @@ const {
 } = require('superstruct');
 const yaml = require('js-yaml');
 const { uniqWith } = require('lodash');
-const { option } = require('yargs');
+const { number } = require('yargs');
 
 const BUILDS_YML_PATH = path.resolve('./builds.yml');
 

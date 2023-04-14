@@ -52,24 +52,37 @@ class Variables {
   }
 
   /**
+   * Sets one key
+   *
+   * @overload
    * @param {string} key
    * @param {unknown} value
+   * @returns {void}
    */
-  set(key, value) {
+  /**
+   * @overload
+   * @param {Record<string, unknown>} records - Key-Value object
+   * @returns {void}
+   */
+  /**
+   * @param {string | Record<string, unknown>} keyOrRecord
+   * @param {unknown} value
+   * @returns {void}
+   */
+  set(keyOrRecord, value) {
+    if (typeof keyOrRecord === 'object') {
+      for (const [key, recordValue] of Object.entries(keyOrRecord)) {
+        this.set(key, recordValue);
+      }
+      return;
+    }
+    const key = keyOrRecord;
     assert(
       this.isDeclared(key),
       `Tried to modify a variable "${key}" that wasn't declared in builds.yml`,
     );
     assert(value !== DeclaredOnly, `Tried to un-define "${key}" variable`);
     this.#definitions.set(key, value);
-  }
-
-  /**
-   *
-   * @param {Record<string, unknown>} definitions
-   */
-  setMany(definitions) {
-    Object.entries(definitions).forEach(([key, value]) => this.set(key, value));
   }
 
   isDeclared(key) {
@@ -97,4 +110,4 @@ class Variables {
   }
 }
 
-module.exports = { Variables, DeclaredOnly };
+module.exports = { Variables };

@@ -33,7 +33,6 @@ const bifyModuleGroups = require('bify-module-groups');
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
 const { generateIconNames } = require('../generate-icon-names');
-const { DeclaredOnly } = require('../lib/variables');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig } = require('./config');
 const {
@@ -173,10 +172,10 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   let phishingWarningPageUrl = variables.get('PHISHING_WARNING_PAGE_URL');
 
   assert(
-    phishingWarningPageUrl === DeclaredOnly ||
+    phishingWarningPageUrl === null ||
       typeof phishingWarningPageUrl === 'string',
   );
-  if (phishingWarningPageUrl === DeclaredOnly) {
+  if (phishingWarningPageUrl === null) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${phishingWarningManifest.version}/`;
@@ -1151,7 +1150,7 @@ async function setEnvironmentVariables({
   const testing = isTestBuild(buildTarget);
   const iconNames = await generateIconNames();
 
-  variables.setMany({
+  variables.set({
     ICON_NAMES: iconNames,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
