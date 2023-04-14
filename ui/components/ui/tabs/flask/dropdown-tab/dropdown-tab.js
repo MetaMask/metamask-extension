@@ -83,6 +83,7 @@ export const DropdownTab = (props) => {
       flexWrap={FLEX_WRAP.NO_WRAP}
       height={BLOCK_SIZES.FULL}
       style={{ cursor: 'pointer', overflow: 'hidden' }}
+      title={selectedOptionName}
     >
       <Box alignItems={AlignItems.center} padding={2}>
         <Text
