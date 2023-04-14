@@ -1,10 +1,6 @@
 # TODO(ritave): Add support for environments (<root>/development/build/constants.js:@ENVIRONMENT)
 # TODO(ritave): Add support for build targets (<root>/development/build/constants.js:@BUILD_TARGETS)
-# TODO(ritave): Remove build code modifying hardcoded variables
 # TODO(ritave): Warn if not all of declared variables have been defined / used
-# TODO(ritave): assets:
-#                  - src: ./app/build-types/<type>/manifest
-#                    dest: ?
 
 # The priority order of variable definitions (most important to least important):
 # <hardcoded build code>; <environmental variables>; .metamaskprodrc; .metamaskrc; builds.yml:.buildTypes.<type>.env; builds.yml:.features.<feature>.env; builds.yml:.env
