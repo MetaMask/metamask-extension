@@ -379,6 +379,11 @@ function buildDefaultNetworkConfigurationsState(): NetworkConfigurations {
   return {};
 }
 
+/**
+ * Builds the default state for the network controller.
+ *
+ * @returns The default network controller state.
+ */
 function buildDefaultState() {
   return {
     provider: buildDefaultProviderConfigState(),
