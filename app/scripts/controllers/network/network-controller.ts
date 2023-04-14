@@ -787,10 +787,10 @@ export class NetworkController extends EventEmitter {
    * different than the initial network (if it is, then this is equivalent to
    * calling `resetConnection`).
    */
-  rollbackToPreviousProvider(): void {
+  async rollbackToPreviousProvider() {
     const config = this.#previousProviderConfig;
     this.providerStore.putState(config);
-    this._switchNetwork(config);
+    await this._switchNetwork(config);
   }
 
   /**
