@@ -21,9 +21,14 @@ import {
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
-import { AvatarNetwork, Button, PickerNetwork } from '../../component-library';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import {
+  AvatarNetwork,
+  Button,
+  ButtonIcon,
+  IconName,
+  PickerNetwork,
+} from '../../component-library';
+
 import {
   getCurrentNetwork,
   getOriginOfCurrentTab,
@@ -149,7 +154,7 @@ export const AppHeader = ({ onClick }) => {
                   width={BLOCK_SIZES.FULL}
                 >
                   <ButtonIcon
-                    iconName={ICON_NAMES.MORE_VERTICAL}
+                    iconName={IconName.MoreVertical}
                     data-testid="account-options-menu-button"
                     ariaLabel="NEEDS NEW TRANSLATED LABEL" // TODO: Update the label
                     onClick={() => {
