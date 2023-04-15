@@ -10,7 +10,7 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
@@ -87,7 +87,7 @@ const AdvancedGasFeeDefaults = () => {
           onClick={handleUpdateDefaultSettings}
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
-        <Typography
+        <Text
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
           margin={0}
@@ -97,7 +97,7 @@ const AdvancedGasFeeDefaults = () => {
             : t('advancedGasFeeDefaultOptIn', [
                 <strong key="default-value-change">{t('newValues')}</strong>,
               ])}
-        </Typography>
+        </Text>
       </label>
     </Box>
   );

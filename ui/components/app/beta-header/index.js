@@ -4,7 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box/box';
 import Typography from '../../ui/typography/typography';
 import {
-  TypographyVariant,
+  TextVariant,
   Color,
   BLOCK_SIZES,
   DISPLAY,
@@ -32,7 +32,7 @@ const BetaHeader = () => {
       className="beta-header"
       alignItems={AlignItems.center}
     >
-      <Typography
+      <Text
         variant={TypographyVariant.H7}
         marginTop={0}
         marginBottom={0}
@@ -49,7 +49,7 @@ const BetaHeader = () => {
             {t('here')}
           </a>,
         ])}
-      </Typography>
+      </Text>
       <ButtonIcon
         iconName={ICON_NAMES.CLOSE}
         size={ICON_SIZES.SM}
