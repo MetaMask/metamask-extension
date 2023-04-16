@@ -12,7 +12,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -155,7 +155,7 @@ export default function ItemList({
                     /* istanbul ignore next */
                     trackEvent({
                       event: 'Clicked Block Explorer Link',
-                      category: EVENT.CATEGORIES.SWAPS,
+                      category: MetaMetricsEventCategory.Swaps,
                       properties: {
                         link_type: 'Token Tracker',
                         action: 'Verify Contract Address',

@@ -298,9 +298,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerSupportEIP1559()
           .build(),
-        ganacheOptions,
+        ganacheOptions: {
+          ...ganacheOptions,
+          hardfork: 'london',
+        },
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -352,9 +354,12 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           '.transaction-list-item__primary-currency',
         );
         await txValue.click();
-        const baseFeeValue = await driver.waitForSelector({
-          text: '0.000000025',
-        });
+        const baseFeeValue = await driver.waitForSelector(
+          {
+            text: '0.000000025',
+          },
+          { timeout: 15000 },
+        );
         assert.equal(await baseFeeValue.getText(), '0.000000025');
       },
     );

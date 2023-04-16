@@ -29,9 +29,10 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -39,9 +40,8 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import {
   ButtonIcon,
   BUTTON_ICON_SIZES,
-  Icon,
-  ICON_NAMES,
-} from '../../component-library';
+} from '../../component-library/button-icon/deprecated';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -110,15 +110,15 @@ const EthOverview = ({ className }) => {
                   });
                   trackEvent(
                     {
-                      category: EVENT.CATEGORIES.HOME,
-                      event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                      category: MetaMetricsEventCategory.Home,
+                      event: MetaMetricsEventName.PortfolioLinkClicked,
                       properties: {
                         url: portfolioUrl,
                       },
                     },
                     {
                       contextPropsIntoEventProperties: [
-                        CONTEXT_PROPS.PAGE_TITLE,
+                        MetaMetricsContextProp.PageTitle,
                       ],
                     },
                   );
@@ -154,8 +154,8 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               openBuyCryptoInPdapp();
               trackEvent({
-                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavBuyButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Home',
                   text: 'Buy',
@@ -168,15 +168,15 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_RIGHT}
+                name={ICON_NAMES.ARROW_2_UP_RIGHT}
                 color={IconColor.primaryInverse}
               />
             }
             label={t('send')}
             onClick={() => {
               trackEvent({
-                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavSendButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   token_symbol: 'ETH',
                   location: 'Home',
@@ -202,11 +202,11 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               if (isSwapsChain) {
                 trackEvent({
-                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.SWAPS,
+                  event: MetaMetricsEventName.NavSwapButtonClicked,
+                  category: MetaMetricsEventCategory.Swaps,
                   properties: {
                     token_symbol: 'ETH',
-                    location: EVENT.SOURCE.SWAPS.MAIN_VIEW,
+                    location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                   },
                 });
@@ -248,8 +248,8 @@ const EthOverview = ({ className }) => {
                   url: `${bridgeUrl}?metamaskEntry=ext`,
                 });
                 trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.BridgeLinkClicked,
                   properties: {
                     location: 'Home',
                     text: 'Bridge',

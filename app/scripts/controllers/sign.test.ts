@@ -7,8 +7,7 @@ import {
   AbstractMessage,
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
-import { EVENT } from '../../../shared/constants/metametrics';
-import { detectSIWE } from '../../../shared/modules/siwe';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import SignController, {
   SignControllerMessenger,
   SignControllerOptions,
@@ -18,10 +17,6 @@ jest.mock('@metamask/message-manager', () => ({
   MessageManager: jest.fn(),
   PersonalMessageManager: jest.fn(),
   TypedMessageManager: jest.fn(),
-}));
-
-jest.mock('../../../shared/modules/siwe', () => ({
-  detectSIWE: jest.fn(),
 }));
 
 const messageIdMock = '123';
@@ -68,13 +63,6 @@ const stateMessageMock = {
 const requestMock = {
   origin: 'http://test2.com',
 } as OriginalRequest;
-
-const siweMockFound = {
-  isSIWEMessage: true,
-  parsedMessage: { domain: 'test.com', test: 'value' },
-};
-
-const siweMockNotFound = { isSIWEMessage: false };
 
 const createMessengerMock = () =>
   ({
@@ -128,7 +116,6 @@ describe('SignController', () => {
   const messengerMock = createMessengerMock();
   const preferencesControllerMock = createPreferencesControllerMock();
   const keyringControllerMock = createKeyringControllerMock();
-  const detectSIWEMock = detectSIWE as jest.MockedFunction<typeof detectSIWE>;
   const getStateMock = jest.fn();
   const securityProviderRequestMock = jest.fn();
   const metricsEventMock = jest.fn();
@@ -146,8 +133,6 @@ describe('SignController', () => {
     preferencesControllerMock.store.getState.mockReturnValue({
       disabledRpcMethodPreferences: { eth_sign: true },
     });
-
-    detectSIWEMock.mockReturnValue(siweMockNotFound);
 
     signController = new SignController({
       messenger: messengerMock as any,
@@ -270,7 +255,7 @@ describe('SignController', () => {
       expect(metricsEventMock).toHaveBeenCalledTimes(6);
       expect(metricsEventMock).toHaveBeenLastCalledWith({
         event: 'Test Reason',
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         properties: {
           action: 'Sign Request',
           type: messageMock.type,
@@ -354,29 +339,6 @@ describe('SignController', () => {
         requestMock,
       );
     });
-
-    it('adds message to personal message manager including Ethereum sign in data', async () => {
-      detectSIWEMock.mockReturnValueOnce(siweMockFound);
-
-      await signController.newUnsignedPersonalMessage(
-        messageParamsMock,
-        requestMock,
-      );
-
-      expect(
-        personalMessageManagerMock.addUnapprovedMessageAsync,
-      ).toHaveBeenCalledTimes(1);
-
-      expect(
-        personalMessageManagerMock.addUnapprovedMessageAsync,
-      ).toHaveBeenCalledWith(
-        {
-          ...messageParamsMock,
-          siwe: siweMockFound,
-        },
-        requestMock,
-      );
-    });
   });
 
   describe('newUnsignedTypedMessage', () => {
@@ -447,6 +409,14 @@ describe('SignController', () => {
       );
     });
 
+    it('does not throw if accepting approval throws', async () => {
+      messengerMock.call.mockImplementation(() => {
+        throw new Error('Test Error');
+      });
+
+      await signController[signMethodName](messageParamsMock);
+    });
+
     it('rejects message on error', async () => {
       keyringControllerMock[signMethodName].mockReset();
       keyringControllerMock[signMethodName].mockRejectedValue(
@@ -505,6 +475,14 @@ describe('SignController', () => {
         messageParamsMock.metamaskId,
         'Cancel',
       );
+    });
+
+    it('does not throw if rejecting approval throws', async () => {
+      messengerMock.call.mockImplementation(() => {
+        throw new Error('Test Error');
+      });
+
+      await signController[cancelMethodName](messageParamsMock);
     });
   });
 

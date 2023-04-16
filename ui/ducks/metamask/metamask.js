@@ -26,6 +26,7 @@ const initialState = {
   isInitialized: false,
   isUnlocked: false,
   isAccountMenuOpen: false,
+  isNetworkMenuOpen: false,
   identities: {},
   unapprovedTxs: {},
   networkConfigurations: {},
@@ -100,6 +101,12 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
+      };
+
+    case actionConstants.TOGGLE_NETWORK_MENU:
+      return {
+        ...metamaskState,
+        isNetworkMenuOpen: !metamaskState.isNetworkMenuOpen,
       };
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {

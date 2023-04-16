@@ -9,7 +9,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ICON_NAMES } from '../../component-library';
+import { IconName } from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -17,9 +17,9 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT_NAMES,
-  EVENT,
-  CONTEXT_PROPS,
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+  MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
@@ -31,12 +31,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
       <MenuItem
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
         onClick={() => {
           history.push(CONNECTED_ROUTE);
           trackEvent({
-            event: EVENT_NAMES.NAV_CONNECTED_SITES_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavConnectedSitesOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
@@ -47,7 +47,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('connectedSites')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.DIAGRAM}
+        iconName={IconName.Diagram}
         onClick={() => {
           const portfolioUrl = process.env.PORTFOLIO_URL;
           global.platform.openTab({
@@ -55,14 +55,16 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           });
           trackEvent(
             {
-              category: EVENT.CATEGORIES.HOME,
-              event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Home,
+              event: MetaMetricsEventName.PortfolioLinkClicked,
               properties: {
                 url: portfolioUrl,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
           closeMenu();
@@ -73,12 +75,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
           onClick={() => {
             global.platform.openExtensionInBrowser();
             trackEvent({
-              event: EVENT_NAMES.APP_WINDOW_EXPANDED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Account Options',
               },
@@ -91,19 +93,21 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         </MenuItem>
       )}
       <MenuItem
-        iconName={ICON_NAMES.MESSAGE_QUESTION}
+        iconName={IconName.MessageQuestion}
         onClick={() => {
           global.platform.openTab({ url: SUPPORT_LINK });
           trackEvent(
             {
-              category: EVENT.CATEGORIES.HOME,
-              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Home,
+              event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_LINK,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
           closeMenu();
@@ -113,12 +117,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('support')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.SETTING}
+        iconName={IconName.Setting}
         onClick={() => {
           history.push(SETTINGS_ROUTE);
           trackEvent({
-            category: EVENT.CATEGORIES.NAVIGATION,
-            event: EVENT_NAMES.NAV_SETTINGS_OPENED,
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
               location: 'Main Menu',
             },
@@ -129,7 +133,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('settings')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.LOCK}
+        iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);

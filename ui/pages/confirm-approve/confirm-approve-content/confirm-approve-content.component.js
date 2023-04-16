@@ -11,6 +11,8 @@ import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
+import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import {
   BLOCK_SIZES,
   JustifyContent,
@@ -28,10 +30,10 @@ import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
   ICON_NAMES,
-  ButtonIcon,
   Icon,
-  Text,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
+import { Text } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -556,6 +558,15 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />
