@@ -7,6 +7,7 @@ import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
+import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
   getSubjectMetadata,
@@ -22,6 +23,7 @@ import {
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import LedgerInstructionField from '../ledger-instruction-field';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -41,6 +43,8 @@ export default function SignatureRequestSIWE({
       siwe: { parsedMessage },
     },
   } = txData;
+
+  const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
 
   const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
@@ -126,6 +130,13 @@ export default function SignatureRequestSIWE({
           ])}
         </BannerAlert>
       )}
+
+      {isLedgerWallet && (
+        <div className="confirm-approve-content__ledger-instruction-wrapper">
+          <LedgerInstructionField showDataInstruction />
+        </div>
+      )}
+
       {!isSIWEDomainValid && (
         <BannerAlert
           severity={SEVERITIES.DANGER}
