@@ -16,7 +16,7 @@ import Typography from '../../../ui/typography';
 import {
   DISPLAY,
   FONT_WEIGHT,
-  TypographyVariant,
+  TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { sanitizeString } from '../../../../helpers/utils/util';
@@ -35,7 +35,7 @@ function SignatureRequestData({ data }) {
             typeof value !== 'object' || value === null ? DISPLAY.FLEX : null
           }
         >
-          <Typography
+          <Text
             as="span"
             color={TextColor.textDefault}
             marginLeft={4}
@@ -44,11 +44,11 @@ function SignatureRequestData({ data }) {
             }
           >
             {sanitizeString(label.charAt(0).toUpperCase() + label.slice(1))}:{' '}
-          </Typography>
+          </Text>
           {typeof value === 'object' && value !== null ? (
             <SignatureRequestData data={value} />
           ) : (
-            <Typography
+            <Text
               as="span"
               color={TextColor.textDefault}
               marginLeft={4}
@@ -58,8 +58,8 @@ function SignatureRequestData({ data }) {
               isValidHexAddress(value, {
                 mixedCaseUseChecksum: true,
               }) ? (
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm} as="h6"
                   color={TextColor.infoDefault}
                   className="signature-request-data__node__value__address"
                 >
@@ -68,11 +68,11 @@ function SignatureRequestData({ data }) {
                     checksummedRecipientAddress={toChecksumHexAddress(value)}
                     recipientName={getAccountName(identities, value)}
                   />
-                </Typography>
+                </Text>
               ) : (
                 sanitizeString(`${value}`)
               )}
-            </Typography>
+            </Text>
           )}
         </Box>
       ))}
