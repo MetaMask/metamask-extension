@@ -510,6 +510,8 @@ export enum MetaMetricsEventName {
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
+  TermsOfUseShown = 'Terms of Use Shown',
+  TermsOfUseAccepted = 'Terms of Use Accepted',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   SupportLinkClicked = 'Support Link Clicked',
