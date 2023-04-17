@@ -42,26 +42,28 @@ exports[`Confirm Add Institutional Feature opens confirm institutional sucessful
       </p>
     </div>
     
-    <div
-      class="box page-container__footer box--flex-direction-row"
+    <footer
+      class="box page-container__footer box--padding-4 box--flex-direction-row"
     >
-      <footer>
+      <div
+        class="box box--display-flex box--gap-4 box--flex-direction-row"
+      >
         <button
-          class="button btn--rounded btn-default btn--large"
+          class="button btn--rounded btn-secondary"
           role="button"
           tabindex="0"
         >
           Cancel
         </button>
         <button
-          class="button btn--rounded btn-primary btn--large"
+          class="button btn--rounded btn-primary"
           role="button"
           tabindex="0"
         >
           Confirm
         </button>
-      </footer>
-    </div>
+      </div>
+    </footer>
   </div>
 </div>
 `;
