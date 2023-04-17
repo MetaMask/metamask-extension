@@ -1166,6 +1166,9 @@ export default class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
       getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
     });
 
     this.swapsController = new SwapsController({
