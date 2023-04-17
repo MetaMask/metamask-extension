@@ -79,6 +79,9 @@ const state = {
   confirmTransaction: {
     txData: {},
   },
+  send: {
+    draftTransactions: {},
+  },
 };
 
 jest.mock('../../store/actions', () => ({

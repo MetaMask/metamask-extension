@@ -2697,10 +2697,6 @@
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "在MetaMask中显示确认。",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
     "description": "The description for the `snap_dialog` permission"
