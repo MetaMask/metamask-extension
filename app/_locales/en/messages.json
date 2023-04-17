@@ -109,6 +109,9 @@
   "about": {
     "message": "About"
   },
+  "accept": {
+    "message": "Accept"
+  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -304,6 +307,10 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
+  },
+  "agreeTermsOfUse": {
+    "message": "I agree to Metamask's $1",
+    "description": "$1 is the `terms` link"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -2909,14 +2916,6 @@
     "message": "Allow the snap to perform actions that run periodically at fixed times, dates, or intervals. This can be used to trigger time-sensitive interactions or notifications.",
     "description": "An extended description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Display a confirmation in MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
-  "permission_customConfirmationDescription": {
-    "message": "Allow the snap to display MetaMask popups with custom text, and buttons to approve or reject an action.",
-    "description": "An extended description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Display dialog windows in MetaMask.",
     "description": "The description for the `snap_dialog` permission"
@@ -4311,6 +4310,15 @@
   },
   "termsOfUse": {
     "message": "terms of use"
+  },
+  "termsOfUseAgreeText": {
+    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+  },
+  "termsOfUseFooterText": {
+    "message": "Please scroll to read all sections"
+  },
+  "termsOfUseTitle": {
+    "message": "Our Terms of Use have updated"
   },
   "testNetworks": {
     "message": "Test networks"

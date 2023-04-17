@@ -3286,6 +3286,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@json-rpc-specification/meta-schema@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@json-rpc-specification/meta-schema@npm:1.0.6"
+  checksum: 2eb9c6c6c73bb38350c7180d1ad3c5b8462406926cae753741895b457d7b1b9f0b74148daf3462bb167cef39efdd1d9090308edf4d4938956863acb643c146eb
+  languageName: node
+  linkType: hard
+
 "@keystonehq/base-eth-keyring@npm:^0.7.1":
   version: 0.7.1
   resolution: "@keystonehq/base-eth-keyring@npm:0.7.1"
@@ -3595,16 +3602,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/approval-controller@npm:2.0.0"
+"@metamask/approval-controller@npm:^2.0.0, @metamask/approval-controller@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/approval-controller@npm:2.1.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.0.0
+    "@metamask/controller-utils": ^3.1.0
     eth-rpc-errors: ^4.0.0
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 1db5f9c21b04fa4688c17cdfb7da0a14b3fee084fbd8c0cfdcc41572e54140ce093c24b811b85e8ee9d3ccd8987db04d9150d7c6d5ab21daf72b4364a05f3428
+  checksum: 207380e3ed0007aec3b9efcde62ac3ece9fa46cc7b9e6157c0d54271e0936b5a9a05e59adcfb1e47e3f3df397d2d2dc757f3b97745528695182e7c66a5207aca
   languageName: node
   linkType: hard
 
@@ -24143,6 +24150,7 @@ __metadata:
     "@ethersproject/providers": ^5.7.2
     "@formatjs/intl-relativetimeformat": ^5.2.6
     "@fortawesome/fontawesome-free": ^5.13.0
+    "@json-rpc-specification/meta-schema": ^1.0.6
     "@keystonehq/bc-ur-registry-eth": ^0.12.1
     "@keystonehq/metamask-airgapped-keyring": ^0.6.1
     "@lavamoat/allow-scripts": ^2.0.3
@@ -24151,7 +24159,7 @@ __metadata:
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^2.0.0
     "@metamask/announcement-controller": ^3.0.0
-    "@metamask/approval-controller": ^2.0.0
+    "@metamask/approval-controller": ^2.1.0
     "@metamask/assets-controllers": ^5.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^2.0.0

@@ -267,7 +267,7 @@ module.exports = {
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/network/**/*.test.ts',
-        'app/scripts/controllers/network/provider-api-tests/*.js',
+        'app/scripts/controllers/network/provider-api-tests/*.ts',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
