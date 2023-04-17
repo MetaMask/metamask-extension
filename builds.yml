@@ -54,6 +54,21 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
 
+  desktop:
+    features:
+      - desktop
+      - build-flask
+    env:
+      - INFURA_FLASK_PROJECT_ID
+      - SEGMENT_FLASK_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: true
+      - REQUIRE_SNAPS_ALLOWLIST: false
+      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
+      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new'
+      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+    isPrerelease: true
+
   mmi:
     features:
       - build-mmi
