@@ -16,19 +16,17 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize, Text } from '../../../../component-library';
 
-export const DropdownTab = (props) => {
-  const {
-    activeClassName,
-    className,
-    'data-testid': dataTestId,
-    isActive,
-    onClick,
-    onChange,
-    tabIndex,
-    options,
-    selectedOption,
-  } = props;
-
+export const DropdownTab = ({
+  activeClassName,
+  className,
+  'data-testid': dataTestId,
+  isActive,
+  onClick,
+  onChange,
+  tabIndex,
+  options,
+  selectedOption,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dropdownRef = useRef(null);

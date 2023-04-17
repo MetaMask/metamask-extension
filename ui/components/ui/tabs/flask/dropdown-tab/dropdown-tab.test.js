@@ -42,7 +42,7 @@ describe('DropdownTab', () => {
 
     fireEvent.click(element);
 
-    expect(onClick).toHaveBeenCalled();
-    expect(onChange).toHaveBeenCalled();
+    expect(onClick).toHaveBeenCalledWith(args.tabIndex);
+    expect(onChange).toHaveBeenCalledWith(args.options[1].value);
   });
 });
