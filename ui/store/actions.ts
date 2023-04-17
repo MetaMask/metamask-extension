@@ -3179,6 +3179,12 @@ export function toggleAccountMenu() {
   };
 }
 
+export function toggleNetworkMenu() {
+  return {
+    type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -4028,6 +4034,12 @@ export function setRecoveryPhraseReminderLastShown(
         }
       },
     );
+  };
+}
+
+export function setTermsOfUseLastAgreed(lastAgreed: number) {
+  return async () => {
+    await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
   };
 }
 
