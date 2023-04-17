@@ -414,7 +414,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgId - The id of the message to cancel.
    */
   cancelMessage(msgId: string) {
-    this._cancelAbstractMessage(this._messageManager, msgId);
+    return this._cancelAbstractMessage(this._messageManager, msgId);
   }
 
   /**
@@ -423,7 +423,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgId - The ID of the message to cancel.
    */
   cancelPersonalMessage(msgId: string) {
-    this._cancelAbstractMessage(this._personalMessageManager, msgId);
+    return this._cancelAbstractMessage(this._personalMessageManager, msgId);
   }
 
   /**
@@ -432,7 +432,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgId - The ID of the message to cancel.
    */
   cancelTypedMessage(msgId: string) {
-    this._cancelAbstractMessage(this._typedMessageManager, msgId);
+    return this._cancelAbstractMessage(this._typedMessageManager, msgId);
   }
 
   /**
