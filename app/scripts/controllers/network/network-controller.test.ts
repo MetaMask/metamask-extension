@@ -5761,8 +5761,8 @@ describe('NetworkController', () => {
 
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               expect(controller.store.getState().provider).toStrictEqual({
@@ -5827,8 +5827,8 @@ describe('NetworkController', () => {
                   const networkWillChange = await waitForPublishedEvents({
                     messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.NetworkWillChange,
-                    operation: () => {
-                      controller.rollbackToPreviousProvider();
+                    operation: async () => {
+                      await controller.rollbackToPreviousProvider();
                     },
                   });
 
@@ -5891,6 +5891,8 @@ describe('NetworkController', () => {
                     // happens before networkDidChange
                     count: 1,
                     operation: () => {
+                      // Intentionally not awaited because we want to check state
+                      // while this operation is in-progress
                       controller.rollbackToPreviousProvider();
                     },
                   });
@@ -5959,6 +5961,8 @@ describe('NetworkController', () => {
                     // happens before networkDidChange
                     count: 1,
                     operation: () => {
+                      // Intentionally not awaited because we want to check state
+                      // while this operation is in-progress
                       controller.rollbackToPreviousProvider();
                     },
                   });
@@ -6015,8 +6019,8 @@ describe('NetworkController', () => {
 
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
 
@@ -6077,8 +6081,8 @@ describe('NetworkController', () => {
                 controller.getProviderAndBlockTracker();
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               const { provider: providerAfter } =
@@ -6138,8 +6142,8 @@ describe('NetworkController', () => {
                   const networkDidChange = await waitForPublishedEvents({
                     messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.NetworkDidChange,
-                    operation: () => {
-                      controller.rollbackToPreviousProvider();
+                    operation: async () => {
+                      await controller.rollbackToPreviousProvider();
                     },
                   });
                   expect(networkDidChange).toBeTruthy();
@@ -6203,7 +6207,7 @@ describe('NetworkController', () => {
               await waitForLookupNetworkToComplete({
                 controller,
                 operation: async () => {
-                  controller.rollbackToPreviousProvider();
+                  await controller.rollbackToPreviousProvider();
                 },
               });
 
@@ -6266,8 +6270,8 @@ describe('NetworkController', () => {
 
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               expect(controller.store.getState().networkStatus).toBe(
@@ -6323,8 +6327,8 @@ describe('NetworkController', () => {
               await waitForLookupNetworkToComplete({
                 controller,
                 numberOfNetworkDetailsChanges: 2,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               expect(controller.store.getState().networkDetails).toStrictEqual({
@@ -6408,8 +6412,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             expect(controller.store.getState().provider).toStrictEqual({
@@ -6475,8 +6479,8 @@ describe('NetworkController', () => {
                 const networkWillChange = await waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.NetworkWillChange,
-                  operation: () => {
-                    controller.rollbackToPreviousProvider();
+                  operation: async () => {
+                    await controller.rollbackToPreviousProvider();
                   },
                 });
 
@@ -6532,6 +6536,8 @@ describe('NetworkController', () => {
                   // happens before networkDidChange
                   count: 1,
                   operation: () => {
+                    // Intentionally not awaited because we want to check state
+                    // while this operation is in-progress
                     controller.rollbackToPreviousProvider();
                   },
                 });
@@ -6595,6 +6601,8 @@ describe('NetworkController', () => {
                   // happens before networkDidChange
                   count: 1,
                   operation: () => {
+                    // Intentionally not awaited because we want to check state
+                    // while this operation is in-progress
                     controller.rollbackToPreviousProvider();
                   },
                 });
@@ -6646,8 +6654,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
 
@@ -6703,8 +6711,8 @@ describe('NetworkController', () => {
               controller.getProviderAndBlockTracker();
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             const { provider: providerAfter } =
@@ -6759,8 +6767,8 @@ describe('NetworkController', () => {
                 const networkDidChange = await waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.NetworkDidChange,
-                  operation: () => {
-                    controller.rollbackToPreviousProvider();
+                  operation: async () => {
+                    await controller.rollbackToPreviousProvider();
                   },
                 });
                 expect(networkDidChange).toBeTruthy();
@@ -6814,8 +6822,8 @@ describe('NetworkController', () => {
                 const infuraIsUnblocked = await waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
-                  operation: () => {
-                    controller.rollbackToPreviousProvider();
+                  operation: async () => {
+                    await controller.rollbackToPreviousProvider();
                   },
                 });
 
@@ -6871,8 +6879,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             expect(controller.store.getState().networkStatus).toBe('unknown');
@@ -6925,8 +6933,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             expect(controller.store.getState().networkDetails).toStrictEqual({
