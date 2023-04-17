@@ -412,6 +412,7 @@ export default class SignController extends BaseControllerV2<
    * Used to cancel a message submitted via eth_sign.
    *
    * @param msgId - The id of the message to cancel.
+   * @returns A full state update.
    */
   cancelMessage(msgId: string) {
     return this._cancelAbstractMessage(this._messageManager, msgId);
@@ -421,6 +422,7 @@ export default class SignController extends BaseControllerV2<
    * Used to cancel a personal_sign type message.
    *
    * @param msgId - The ID of the message to cancel.
+   * @returns A full state update.
    */
   cancelPersonalMessage(msgId: string) {
     return this._cancelAbstractMessage(this._personalMessageManager, msgId);
@@ -430,6 +432,7 @@ export default class SignController extends BaseControllerV2<
    * Used to cancel a eth_signTypedData type message.
    *
    * @param msgId - The ID of the message to cancel.
+   * @returns A full state update.
    */
   cancelTypedMessage(msgId: string) {
     return this._cancelAbstractMessage(this._typedMessageManager, msgId);
