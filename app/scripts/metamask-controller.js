@@ -854,8 +854,6 @@ export default class MetamaskController extends EventEmitter {
 
     const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
     const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
-    assert(typeof allowLocalSnaps === 'boolean');
-    assert(typeof requireAllowlist === 'boolean');
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
@@ -938,8 +936,8 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = new JsonSnapsRegistry({
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
-      refetchOnAllowlistMiss: process.env.REQUIRE_SNAPS_ALLOWLIST,
-      failOnUnavailableRegistry: process.env.REQUIRE_SNAPS_ALLOWLIST,
+      refetchOnAllowlistMiss: requireAllowlist,
+      failOnUnavailableRegistry: requireAllowlist,
       url: {
         registry: 'https://acl.execution.metamask.io/latest/registry.json',
         signature: 'https://acl.execution.metamask.io/latest/signature.json',
