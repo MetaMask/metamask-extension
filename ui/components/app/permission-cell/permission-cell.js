@@ -53,6 +53,11 @@ const PermissionCell = ({
     iconBackgroundColor = Color.backgroundAlternative;
   }
 
+  let permissionIcon = avatarIcon;
+  if (typeof avatarIcon !== 'string' && avatarIcon?.props?.iconName) {
+    permissionIcon = avatarIcon.props.iconName;
+  }
+
   return (
     <Box
       className="permission-cell"
@@ -64,9 +69,9 @@ const PermissionCell = ({
       paddingBottom={2}
     >
       <Box>
-        {typeof avatarIcon === 'string' ? (
+        {typeof permissionIcon === 'string' ? (
           <AvatarIcon
-            iconName={avatarIcon}
+            iconName={permissionIcon}
             size={ICON_SIZES.MD}
             iconProps={{
               size: ICON_SIZES.SM,
@@ -75,7 +80,7 @@ const PermissionCell = ({
             backgroundColor={iconBackgroundColor}
           />
         ) : (
-          avatarIcon
+          permissionIcon
         )}
       </Box>
       <Box width="full" marginLeft={4} marginRight={4}>
