@@ -15,7 +15,7 @@ describe('Transaction security provider', function () {
   async function mockSecurityProviderDetection(mockServer, scenario) {
     switch (scenario) {
       case 'notMalicious':
-        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+        return await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
           return {
             statusCode: 200,
             json: {
@@ -23,9 +23,8 @@ describe('Transaction security provider', function () {
             },
           };
         });
-        break;
       case 'malicious':
-        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+        return await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
           return {
             statusCode: 200,
             json: {
@@ -36,9 +35,8 @@ describe('Transaction security provider', function () {
             },
           };
         });
-        break;
       case 'notSafe':
-        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+        return await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
           return {
             statusCode: 200,
             json: {
@@ -49,15 +47,13 @@ describe('Transaction security provider', function () {
             },
           };
         });
-        break;
       case 'requestNotVerified':
-        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+        return await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
           return {
             statusCode: 500,
             json: {},
           };
         });
-        break;
       default:
         throw new Error(`Unknown scenario: ${scenario}`);
     }
@@ -84,12 +80,14 @@ describe('Transaction security provider', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
-        testSpecificMock: async (mockServer) =>
-          await mockSecurityProviderDetection(mockServer, 'malicious'),
         dapp: true,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        const mockedEndpoints = await mockSecurityProviderDetection(
+          mockServer,
+          'malicious',
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -109,6 +107,18 @@ describe('Transaction security provider', function () {
           tag: 'h5',
         });
         assert.equal(warningHeader, true);
+
+        // Approve personal sign
+        await driver.clickElement({ text: 'Sign', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+
+        const mockedRequests = await mockedEndpoints.getSeenRequests();
+        assert.equal(
+          mockedRequests.length,
+          1,
+          'Unnecessary API requests have been sent',
+        );
       },
     );
   });
@@ -124,12 +134,14 @@ describe('Transaction security provider', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
-        testSpecificMock: async (mockServer) =>
-          await mockSecurityProviderDetection(mockServer, 'notSafe'),
         dapp: true,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        const mockedEndpoints = await mockSecurityProviderDetection(
+          mockServer,
+          'notSafe',
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -149,6 +161,18 @@ describe('Transaction security provider', function () {
           tag: 'h5',
         });
         assert.equal(warningHeader, true);
+
+        // Approve signing typed data
+        await driver.clickElement({ text: 'Sign', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+
+        const mockedRequests = await mockedEndpoints.getSeenRequests();
+        assert.equal(
+          mockedRequests.length,
+          1,
+          'Unnecessary API requests have been sent',
+        );
       },
     );
   });
@@ -164,12 +188,14 @@ describe('Transaction security provider', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
-        testSpecificMock: async (mockServer) =>
-          await mockSecurityProviderDetection(mockServer, 'notMalicious'),
         dapp: true,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        const mockedEndpoints = await mockSecurityProviderDetection(
+          mockServer,
+          'notMalicious',
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -184,11 +210,35 @@ describe('Transaction security provider', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        const warningHeader = await driver.isElementPresent({
+        const warningNotSafeHeader = await driver.isElementPresent({
           text: 'Request may not be safe',
           tag: 'h5',
         });
-        assert.equal(warningHeader, false);
+        assert.equal(warningNotSafeHeader, false);
+
+        const warningScamHeader = await driver.isElementPresent({
+          text: 'This could be a scam',
+          tag: 'h5',
+        });
+        assert.equal(warningScamHeader, false);
+
+        const warningNotVerifiedHeader = await driver.isElementPresent({
+          text: 'Request not verified',
+          tag: 'h5',
+        });
+        assert.equal(warningNotVerifiedHeader, false);
+
+        // Approve SIWE
+        await driver.clickElement({ text: 'Sign-In', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+
+        const mockedRequests = await mockedEndpoints.getSeenRequests();
+        assert.equal(
+          mockedRequests.length,
+          1,
+          'Unnecessary API requests have been sent',
+        );
       },
     );
   });
@@ -204,12 +254,14 @@ describe('Transaction security provider', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
-        testSpecificMock: async (mockServer) =>
-          await mockSecurityProviderDetection(mockServer, 'requestNotVerified'),
         dapp: true,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        const mockedEndpoints = await mockSecurityProviderDetection(
+          mockServer,
+          'requestNotVerified',
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -229,6 +281,21 @@ describe('Transaction security provider', function () {
           tag: 'h5',
         });
         assert.equal(warningHeader, true);
+
+        // Approve signing typed data V4
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
+        await driver.clickElement({ text: 'Sign', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+
+        const mockedRequests = await mockedEndpoints.getSeenRequests();
+        assert.equal(
+          mockedRequests.length,
+          1,
+          'Unnecessary API requests have been sent',
+        );
       },
     );
   });
