@@ -97,8 +97,8 @@ import {
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -155,7 +155,6 @@ import OnboardingController from './controllers/onboarding';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
 import DecryptMessageManager from './lib/decrypt-message-manager';
-import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -167,6 +166,7 @@ import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import SignController from './controllers/sign';
+import EncryptionPublicKeyController from './controllers/encryption-public-key';
 
 import {
   CaveatMutatorFactories,
@@ -260,6 +260,11 @@ export default class MetamaskController extends EventEmitter {
         name: 'ApprovalController',
       }),
       showApprovalRequest: opts.showUserConfirmation,
+      typesExcludedFromRateLimiting: [
+        MESSAGE_TYPE.ETH_SIGN,
+        MESSAGE_TYPE.PERSONAL_SIGN,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+      ],
     });
 
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
@@ -520,9 +525,15 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      showUnlockRequest: opts.showUserConfirmation,
       preferencesStore: this.preferencesController.store,
       qrHardwareStore: this.qrHardwareKeyring.getMemStore(),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'AppStateController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+        ],
+      }),
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
@@ -1125,7 +1136,18 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
     });
-    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager({
+
+    this.encryptionPublicKeyController = new EncryptionPublicKeyController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'EncryptionPublicKeyController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
+      keyringController: this.keyringController,
+      getState: this.getState.bind(this),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -1207,7 +1229,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkControllerEventType.NetworkWillChange,
       () => {
         this.txController.txStateManager.clearUnapprovedTxs();
-        this.encryptionPublicKeyManager.clearUnapproved();
+        this.encryptionPublicKeyController.clearUnapproved();
         this.decryptMessageManager.clearUnapproved();
         this.signController.clearUnapproved();
       },
@@ -1274,7 +1296,10 @@ export default class MetamaskController extends EventEmitter {
           this.signController,
         ),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
-      processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
+      processEncryptionPublicKey:
+        this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
+          this.encryptionPublicKeyController,
+        ),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
         this.txController.getTransactions({
@@ -1297,7 +1322,7 @@ export default class MetamaskController extends EventEmitter {
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
       DecryptMessageManager: this.decryptMessageManager.memStore,
-      EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
+      EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignController: this.signController,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
@@ -1379,7 +1404,9 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker.resetState,
       this.txController.resetState,
       this.decryptMessageManager.resetState,
-      this.encryptionPublicKeyManager.resetState,
+      this.encryptionPublicKeyController.resetState.bind(
+        this.encryptionPublicKeyController,
+      ),
       this.signController.resetState.bind(this.signController),
       this.swapsController.resetState,
       this.ensController.resetState,
@@ -2010,6 +2037,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setRecoveryPhraseReminderLastShown.bind(
           appStateController,
         ),
+      setTermsOfUseLastAgreed:
+        appStateController.setTermsOfUseLastAgreed.bind(appStateController),
       setOutdatedBrowserWarningLastShown:
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
@@ -2090,9 +2119,15 @@ export default class MetamaskController extends EventEmitter {
       decryptMessageInline: this.decryptMessageInline.bind(this),
       cancelDecryptMessage: this.cancelDecryptMessage.bind(this),
 
-      // EncryptionPublicKeyManager
-      encryptionPublicKey: this.encryptionPublicKey.bind(this),
-      cancelEncryptionPublicKey: this.cancelEncryptionPublicKey.bind(this),
+      // EncryptionPublicKeyController
+      encryptionPublicKey:
+        this.encryptionPublicKeyController.encryptionPublicKey.bind(
+          this.encryptionPublicKeyController,
+        ),
+      cancelEncryptionPublicKey:
+        this.encryptionPublicKeyController.cancelEncryptionPublicKey.bind(
+          this.encryptionPublicKeyController,
+        ),
 
       // onboarding controller
       setSeedPhraseBackedUp:
@@ -3313,109 +3348,6 @@ export default class MetamaskController extends EventEmitter {
    */
   cancelDecryptMessage(msgId) {
     const messageManager = this.decryptMessageManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // eth_getEncryptionPublicKey methods
-
-  /**
-   * Called when a dapp uses the eth_getEncryptionPublicKey method.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @param {object} req - (optional) the original request, containing the origin
-   * Passed back to the requesting Dapp.
-   */
-  async newRequestEncryptionPublicKey(msgParams, req) {
-    const address = msgParams;
-    const keyring = await this.keyringController.getKeyringForAccount(address);
-
-    switch (keyring.type) {
-      case KeyringType.ledger: {
-        return new Promise((_, reject) => {
-          reject(
-            new Error('Ledger does not support eth_getEncryptionPublicKey.'),
-          );
-        });
-      }
-
-      case KeyringType.trezor: {
-        return new Promise((_, reject) => {
-          reject(
-            new Error('Trezor does not support eth_getEncryptionPublicKey.'),
-          );
-        });
-      }
-
-      case KeyringType.lattice: {
-        return new Promise((_, reject) => {
-          reject(
-            new Error('Lattice does not support eth_getEncryptionPublicKey.'),
-          );
-        });
-      }
-
-      case KeyringType.qr: {
-        return Promise.reject(
-          new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
-        );
-      }
-
-      default: {
-        const promise =
-          this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
-            msgParams,
-            req,
-          );
-        this.sendUpdate();
-        this.opts.showUserConfirmation();
-        return promise;
-      }
-    }
-  }
-
-  /**
-   * Signifies a user's approval to receiving encryption public key in queue.
-   * Triggers receiving, and the callback function from newUnsignedEncryptionPublicKey.
-   *
-   * @param {object} msgParams - The params of the message to receive & return to the Dapp.
-   * @returns {Promise<object>} A full state update.
-   */
-  async encryptionPublicKey(msgParams) {
-    log.info('MetaMaskController - encryptionPublicKey');
-    const msgId = msgParams.metamaskId;
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for decryption
-    try {
-      const params = await this.encryptionPublicKeyManager.approveMessage(
-        msgParams,
-      );
-
-      // EncryptionPublicKey message
-      const publicKey = await this.keyringController.getEncryptionPublicKey(
-        params.data,
-      );
-
-      // tells the listener that the message has been processed
-      // and can be returned to the dapp
-      this.encryptionPublicKeyManager.setMsgStatusReceived(msgId, publicKey);
-    } catch (error) {
-      log.info(
-        'MetaMaskController - eth_getEncryptionPublicKey failed.',
-        error,
-      );
-      this.encryptionPublicKeyManager.errorMessage(msgId, error);
-    }
-    return this.getState();
-  }
-
-  /**
-   * Used to cancel a eth_getEncryptionPublicKey type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelEncryptionPublicKey(msgId) {
-    const messageManager = this.encryptionPublicKeyManager;
     messageManager.rejectMsg(msgId);
     return this.getState();
   }

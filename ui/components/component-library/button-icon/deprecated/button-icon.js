@@ -10,10 +10,10 @@ import {
   IconColor,
   JustifyContent,
   Size,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-import { Icon, IconName } from '../icon';
+import Box from '../../../ui/box';
+import { Icon, ICON_NAMES } from '../../icon/deprecated';
 
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
@@ -86,7 +86,7 @@ ButtonIcon.propTypes = {
   /**
    * The name of the icon to display. Should be one of IconName
    */
-  iconName: PropTypes.oneOf(Object.values(IconName)).isRequired,
+  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * iconProps accepts all the props from Icon
    */

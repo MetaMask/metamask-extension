@@ -1,6 +1,15 @@
 /* eslint-disable jest/require-top-level-describe, jest/no-export */
 
-import { withMockedCommunications, withNetworkClient } from './helpers';
+import {
+  ProviderType,
+  withMockedCommunications,
+  withNetworkClient,
+} from './helpers';
+
+type TestsForRpcMethodThatCheckForBlockHashInResponseOptions = {
+  providerType: ProviderType;
+  numberOfParameters: number;
+};
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method that
@@ -15,8 +24,11 @@ import { withMockedCommunications, withNetworkClient } from './helpers';
  * either `infura` or `custom` (default: "infura").
  */
 export function testsForRpcMethodsThatCheckForBlockHashInResponse(
-  method,
-  { numberOfParameters, providerType },
+  method: string,
+  {
+    numberOfParameters,
+    providerType,
+  }: TestsForRpcMethodThatCheckForBlockHashInResponseOptions,
 ) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(

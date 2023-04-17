@@ -29,7 +29,7 @@ import {
   ICON_SIZES,
   ICON_NAMES,
 } from '../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../components/component-library';
+import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();
