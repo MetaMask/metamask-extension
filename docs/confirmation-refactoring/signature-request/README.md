@@ -96,7 +96,7 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
      <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/footer.png" width="150"/>
 
-   - Create a reuable component for Cancel All requests for use across signature request pages [Code](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L326).
+   - Create a reusable component for Cancel All requests for use across signature request pages [Code](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L326).
    - Extract [getNetrowkName](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L60) into a reusable hook / utility method.
    - [msgHexToText](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L79) to be made a utility method.
    - Extract [renderBody](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L114) into a reusable component.
