@@ -222,6 +222,9 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -262,6 +265,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   seedPhrase,
   password,
 ) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -293,6 +299,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
@@ -342,6 +351,9 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
 };
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 

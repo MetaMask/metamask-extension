@@ -11,9 +11,11 @@ import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
+const mockToggleNetworkMenu = jest.fn();
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
+  toggleNetworkMenu: () => mockToggleNetworkMenu,
 }));
 
 const render = (showTestNetworks = false) => {
@@ -25,7 +27,7 @@ const render = (showTestNetworks = false) => {
       },
     },
   });
-  return renderWithProvider(<NetworkListMenu closeMenu={jest.fn()} />, store);
+  return renderWithProvider(<NetworkListMenu onClose={jest.fn()} />, store);
 };
 
 describe('NetworkListMenu', () => {
@@ -56,6 +58,7 @@ describe('NetworkListMenu', () => {
   it('switches networks when an item is clicked', () => {
     const { getByText } = render();
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+    expect(mockToggleNetworkMenu).toHaveBeenCalled();
     expect(mockSetProviderType).toHaveBeenCalled();
   });
 });
