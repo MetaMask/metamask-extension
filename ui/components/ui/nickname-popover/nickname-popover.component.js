@@ -63,7 +63,7 @@ const NicknamePopover = ({
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
             <ButtonIcon
-              iconName={copied ? IconName.CopySuccess : IconName}
+              iconName={copied ? IconName.CopySuccess : IconName.Copy}
               size={IconSize.Sm}
               onClick={() => handleCopy(address)}
             />
