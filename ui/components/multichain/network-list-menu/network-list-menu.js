@@ -10,6 +10,7 @@ import {
   showModal,
   setShowTestNetworks,
   setProviderType,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
@@ -30,7 +31,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 
 const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
 
-export const NetworkListMenu = ({ closeMenu }) => {
+export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const networks = useSelector(getAllNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -42,7 +43,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   return (
-    <Popover onClose={closeMenu} centerTitle title={t('networkMenuHeading')}>
+    <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
       <>
         <Box className="multichain-network-list-menu">
           {networks.map((network) => {
@@ -58,16 +59,17 @@ export const NetworkListMenu = ({ closeMenu }) => {
                 key={network.id || network.chainId}
                 selected={isCurrentNetwork}
                 onClick={() => {
+                  dispatch(toggleNetworkMenu());
                   if (network.providerType) {
                     dispatch(setProviderType(network.providerType));
                   } else {
                     dispatch(setActiveNetwork(network.id));
                   }
-                  closeMenu();
                 }}
                 onDeleteClick={
                   canDeleteNetwork
                     ? () => {
+                        dispatch(toggleNetworkMenu());
                         dispatch(
                           showModal({
                             name: 'CONFIRM_DELETE_NETWORK',
@@ -75,7 +77,6 @@ export const NetworkListMenu = ({ closeMenu }) => {
                             onConfirm: () => undefined,
                           }),
                         );
-                        closeMenu();
                       }
                     : null
                 }
@@ -104,6 +105,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
                 : global.platform.openExtensionInBrowser(
                     ADD_POPULAR_CUSTOM_NETWORK,
                   );
+              dispatch(toggleNetworkMenu());
             }}
           >
             {t('addNetwork')}
@@ -118,5 +120,5 @@ NetworkListMenu.propTypes = {
   /**
    * Executes when the menu should be closed
    */
-  closeMenu: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
