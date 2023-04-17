@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
   Button,
-  ICON_NAMES,
   AvatarAccount,
   AvatarAccountVariant,
-  Text,
   Icon,
+  IconName,
+  Text,
 } from '../../component-library';
 import {
   AlignItems,
@@ -48,7 +48,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
         {name}
       </Text>
       <Icon
-        name={ICON_NAMES.ARROW_DOWN}
+        name={IconName.ArrowDown}
         color={IconColor.iconDefault}
         size={Size.SM}
       />

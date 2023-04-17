@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { ICON_NAMES, ButtonBase } from '../../component-library';
+import { ButtonBase } from '../../component-library';
+// TODO: Replace ICON_NAMES with IconName when ButtonBase/Buttons have been updated
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import {
   BackgroundColor,
   TextVariant,

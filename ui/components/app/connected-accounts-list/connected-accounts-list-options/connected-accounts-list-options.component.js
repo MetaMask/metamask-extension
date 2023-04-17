@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 import { Menu } from '../../../ui/menu';
-import { ButtonIcon, ICON_NAMES } from '../../../component-library';
+import { ICON_NAMES } from '../../../component-library/icon/deprecated';
+import { ButtonIcon } from '../../../component-library/button-icon/deprecated';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const ConnectedAccountsListOptions = ({

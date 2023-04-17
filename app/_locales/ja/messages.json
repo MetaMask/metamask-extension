@@ -1601,11 +1601,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "これは誰にも教えないでください。$1$2",
+    "message": "これは誰にも教えないでください。$1、$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask サポートがこの情報を尋ねることはなく、",
+    "message": "MetaMask サポートがこの情報を尋ねることはなく",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2326,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
-  },
-  "notifications17ActionText": {
-    "message": "セキュリティおよびプライバシー設定を表示"
-  },
-  "notifications17Title": {
-    "message": "セキュリティおよびプライバシー設定"
   },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
@@ -3355,10 +3349,6 @@
   "snaps": {
     "message": "スナップ"
   },
-  "snapsInsightError": {
-    "message": "$1 でエラーが発生しました: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
   },
@@ -3375,7 +3365,8 @@
     "message": "スナップは有効になっている場合にのみ実行されます"
   },
   "snapsUIError": {
-    "message": "スナップにより指定された UI が無効です。"
+    "message": "スナップにより指定された UI が無効です。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"

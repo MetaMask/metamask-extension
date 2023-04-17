@@ -62,8 +62,13 @@ import {
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library/icon/deprecated';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
+import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -269,6 +274,15 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
+      {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+        txData?.securityProviderResponse?.flagAsDangerous !==
+          SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+      (txData?.securityProviderResponse &&
+        Object.keys(txData.securityProviderResponse).length === 0) ? (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      ) : null}
       <Box
         paddingLeft={4}
         paddingRight={4}

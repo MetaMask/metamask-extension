@@ -11,13 +11,13 @@ import { AccountListItemMenu } from '..';
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
-  ButtonIcon,
   Text,
-  ICON_NAMES,
-  ICON_SIZES,
   AvatarFavicon,
   Tag,
   ButtonLink,
+  ButtonIcon,
+  IconName,
+  IconSize,
 } from '../../component-library';
 import {
   Color,
@@ -195,8 +195,8 @@ export const AccountListItem = ({
       <div ref={ref}>
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
-          iconName={ICON_NAMES.MORE_VERTICAL}
-          size={ICON_SIZES.SM}
+          iconName={IconName.MoreVertical}
+          size={IconSize.Sm}
           onClick={(e) => {
             e.stopPropagation();
             setAccountOptionsMenuOpen(true);

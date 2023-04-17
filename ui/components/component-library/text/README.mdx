@@ -59,7 +59,7 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 
 ### Color
 
-Use the `color` prop and the `TextColor` object from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
+Use the `color` prop and the `TextColor` enum from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
 
 <Canvas>
   <Story id="components-componentlibrary-text--color-story" />
@@ -267,6 +267,8 @@ import { Text } from '../../component-library';
 
 Use the `as` prop to change the root html element of the `Text` component
 
+You can also utilize the `ValidTag` enum from `./text.types` to ensure that you are using a valid html element
+
 <Canvas>
   <Story id="components-componentlibrary-text--as" />
 </Canvas>
@@ -313,22 +315,22 @@ Renders the html:
 
 ### Text Direction
 
-Use the `textDirection` prop and the `TEXT_DIRECTIONS` object from `./text.constants.js` to change the text direction of `Text`
+Use the `textDirection` prop and the `TextDirection` enum from `./text.types` to change the text direction of `Text`
 
 <Canvas>
-  <Story id="components-componentlibrary-text--text-direction" />
+  <Story id="components-componentlibrary-text--text-direction-story" />
 </Canvas>
 
 ```jsx
-import { Text, TEXT_DIRECTIONS } from '../../component-library';
+import { Text, TextDirection } from '../../component-library';
 
-<Text textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+<Text textDirection={TextDirection.LeftToRight}>
   This is left to right (ltr) for English and most languages
 </Text>
-<Text textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+<Text textDirection={TextDirection.RightToLeft}>
   This is right to left (rtl) for use with other laguanges such as Arabic. This Enlgish example is incorrect usage.
 </Text>
-<Text textDirection={TEXT_DIRECTIONS.AUTO}>
+<Text textDirection={TextDirection.Auto}>
   Let the user agent decide with the auto option
 </Text>
 ```

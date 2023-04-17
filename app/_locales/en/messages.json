@@ -109,6 +109,9 @@
   "about": {
     "message": "About"
   },
+  "accept": {
+    "message": "Accept"
+  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -304,6 +307,10 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
+  },
+  "agreeTermsOfUse": {
+    "message": "I agree to Metamask's $1",
+    "description": "$1 is the `terms` link"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -654,6 +661,12 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "complianceActivatedDesc": {
+    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
+  },
+  "complianceActivatedTitle": {
+    "message": "Your compliance feature is activated"
+  },
   "complianceBlurb0": {
     "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
   },
@@ -780,6 +793,9 @@
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
   },
+  "connectionError": {
+    "message": "Connection error"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -806,7 +822,7 @@
     "message": "Contract deployment"
   },
   "contractDescription": {
-    "message": "To protect yourself against scammers, take a moment to verify contract details."
+    "message": "To protect yourself against scammers, take a moment to verify third-party details."
   },
   "contractInteraction": {
     "message": "Contract interaction"
@@ -821,10 +837,10 @@
     "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
-    "message": "Contract requesting spending cap"
+    "message": "Third party requesting spending cap"
   },
   "contractTitle": {
-    "message": "Contract details"
+    "message": "Third-party details"
   },
   "contractToken": {
     "message": "Token contract"
@@ -919,6 +935,21 @@
   },
   "custodianAccount": {
     "message": "Custodian account"
+  },
+  "custodyRefreshTokenModalDescription": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyRefreshTokenModalDescription1": {
+    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
+  },
+  "custodyRefreshTokenModalDescription2": {
+    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
+  },
+  "custodyRefreshTokenModalSubtitle": {
+    "message": "Why am I seeing this?"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
   },
   "custodySessionExpired": {
     "message": "Custodian session expired."
@@ -1377,6 +1408,10 @@
   "errorWhileConnectingToRPC": {
     "message": "Error while connecting to the custom network."
   },
+  "errorWithSnap": {
+    "message": "Error with $1",
+    "description": "$1 represents the name of the snap"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1706,6 +1741,9 @@
   "holdToRevealTitle": {
     "message": "Keep your SRP safe"
   },
+  "id": {
+    "message": "Id"
+  },
   "ignoreAll": {
     "message": "Ignore all"
   },
@@ -1795,17 +1833,24 @@
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
   "inputLogicEmptyState": {
-    "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
+    "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
   },
   "inputLogicEqualOrSmallerNumber": {
-    "message": "This allows the contract to spend $1 from your current balance.",
+    "message": "This allows the third party to spend $1 from your current balance.",
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+    "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
+  "insightsFromSnap": {
+    "message": "Insights from $1",
+    "description": "$1 represents the name of the snap"
   },
   "install": {
     "message": "Install"
+  },
+  "institutionalFeatures": {
+    "message": "Institutional Features"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -2136,6 +2181,9 @@
   "mmiAddToken": {
     "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
   },
+  "mmiAuthenticate": {
+    "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
+  },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
@@ -2448,40 +2496,40 @@
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
   },
-  "notifications16ActionText": {
-    "message": "Enable security provider"
+  "notifications18ActionText": {
+    "message": "Enable security alerts"
   },
-  "notifications16DescriptionOne": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request.",
+  "notifications18DescriptionOne": {
+    "message": "Get alerts from third parties when you may have received a malicious request.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-  "notifications16DescriptionThree": {
+  "notifications18DescriptionThree": {
     "message": "Always be sure to do your own due diligence before approving any requests.",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-  "notifications16DescriptionTwo": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!",
+  "notifications18DescriptionTwo": {
+    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
-  "notifications16Title": {
-    "message": "Stay safe with OpenSea"
+  "notifications18Title": {
+    "message": "Stay safe with security alerts"
   },
-  "notifications17ActionText": {
+  "notifications19ActionText": {
     "message": "Enable NFT autodetection"
   },
-  "notifications17DescriptionOne": {
+  "notifications19DescriptionOne": {
     "message": "Two ways you can get started:",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
-  "notifications17DescriptionThree": {
+  "notifications19DescriptionThree": {
     "message": "We only support ERC-721 at the moment.",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
-  "notifications17DescriptionTwo": {
+  "notifications19DescriptionTwo": {
     "message": "Manually add your NFTs, or turn on NFT autodetection in Settings > Experimental.",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
-  "notifications17Title": {
+  "notifications19Title": {
     "message": "See your NFTs like never before"
   },
   "notifications1Description": {
@@ -2922,7 +2970,7 @@
     "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
   },
   "permission_manageBip44Keys": {
-    "message": "Control your \"$1\" accounts and assets.",
+    "message": "Control your $1 accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageBip44KeysDescription": {
@@ -3059,6 +3107,12 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
+  },
+  "projectIdInvalid": {
+    "message": "Provided Project ID is invalid"
+  },
+  "projectName": {
+    "message": "Project Name"
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
@@ -3302,7 +3356,7 @@
     "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
-    "message": "This contract will be unable to spend any more of your current or future tokens."
+    "message": "This third party will be unable to spend any more of your current or future tokens."
   },
   "rpcUrl": {
     "message": "New RPC URL"
@@ -3630,12 +3684,11 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "An error occured with $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
+  },
+  "snapsInvalidUIError": {
+    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
@@ -3650,7 +3703,8 @@
     "message": "A snap will only run if it is enabled"
   },
   "snapsUIError": {
-    "message": "The UI specified by the snap is invalid."
+    "message": "Contact the creators of $1 for further support.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
@@ -4266,6 +4320,15 @@
   "termsOfUse": {
     "message": "terms of use"
   },
+  "termsOfUseAgreeText": {
+    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+  },
+  "termsOfUseFooterText": {
+    "message": "Please scroll to read all sections"
+  },
+  "termsOfUseTitle": {
+    "message": "Our Terms of Use have updated"
+  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4634,7 +4697,7 @@
     "message": "Username"
   },
   "verifyContractDetails": {
-    "message": "Verify contract details"
+    "message": "Verify third-party details"
   },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
@@ -4720,7 +4783,7 @@
     "message": "Warning"
   },
   "warningTooltipText": {
-    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {

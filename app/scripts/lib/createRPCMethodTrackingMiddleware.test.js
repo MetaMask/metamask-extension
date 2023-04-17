@@ -1,11 +1,11 @@
 import { errorCodes } from 'eth-rpc-errors';
+import { detectSIWE } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
-  EVENT_NAMES,
-  METAMETRIC_KEY_OPT,
+  MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { detectSIWE } from '../../../shared/modules/siwe';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -56,7 +56,7 @@ function getNext(timeout = 500) {
 const waitForSeconds = async (seconds) =>
   await new Promise((resolve) => setTimeout(resolve, SECOND * seconds));
 
-jest.mock('../../../shared/modules/siwe', () => ({
+jest.mock('@metamask/controller-utils', () => ({
   detectSIWE: jest.fn().mockImplementation(() => {
     return { isSIWEMessage: false };
   }),
@@ -111,7 +111,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       metricsState.participateInMetaMetrics = true;
     });
 
-    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event`, async () => {
+    it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
       const req = {
         method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
@@ -125,7 +125,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(1);
       expect(trackEvent.mock.calls[0][0]).toMatchObject({
         category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_REQUESTED,
+        event: MetaMetricsEventName.SignatureRequested,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
         },
@@ -133,7 +133,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track a ${EVENT_NAMES.SIGNATURE_APPROVED} event if the user approves`, async () => {
+    it(`should track a ${MetaMetricsEventName.SignatureApproved} event if the user approves`, async () => {
       const req = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
@@ -148,7 +148,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_APPROVED,
+        event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         },
@@ -156,7 +156,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track a ${EVENT_NAMES.SIGNATURE_REJECTED} event if the user approves`, async () => {
+    it(`should track a ${MetaMetricsEventName.SignatureRejected} event if the user approves`, async () => {
       const req = {
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
@@ -171,7 +171,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_REJECTED,
+        event: MetaMetricsEventName.SignatureRejected,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
         },
@@ -179,7 +179,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track a ${EVENT_NAMES.PERMISSIONS_APPROVED} event if the user approves`, async () => {
+    it(`should track a ${MetaMetricsEventName.PermissionsApproved} event if the user approves`, async () => {
       const req = {
         method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
         origin: 'some.dapp',
@@ -192,7 +192,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
-        event: EVENT_NAMES.PERMISSIONS_APPROVED,
+        event: MetaMetricsEventName.PermissionsApproved,
         properties: { method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS },
         referrer: { url: 'some.dapp' },
       });
@@ -261,17 +261,17 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
-        event: EVENT_NAMES.SIGNATURE_APPROVED,
+        event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [METAMETRIC_KEY_OPT.ui_customizations.SIWE],
+          ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
         },
         referrer: { url: 'some.dapp' },
       });
     });
 
     describe(`when '${MESSAGE_TYPE.ETH_SIGN}' is disabled in advanced settings`, () => {
-      it(`should track ${EVENT_NAMES.SIGNATURE_FAILED} and include error property`, async () => {
+      it(`should track ${MetaMetricsEventName.SignatureFailed} and include error property`, async () => {
         const mockError = { code: errorCodes.rpc.methodNotFound };
         const req = {
           method: MESSAGE_TYPE.ETH_SIGN,
@@ -289,7 +289,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         expect(trackEvent.mock.calls[1][0]).toMatchObject({
           category: 'inpage_provider',
-          event: EVENT_NAMES.SIGNATURE_FAILED,
+          event: MetaMetricsEventName.SignatureFailed,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN,
             error: mockError,
@@ -300,7 +300,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     describe('when request is flagged as safe by security provider', () => {
-      it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event`, async () => {
+      it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
         const req = {
           method: MESSAGE_TYPE.ETH_SIGN,
           origin: 'some.dapp',
@@ -315,7 +315,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEvent).toHaveBeenCalledTimes(1);
         expect(trackEvent.mock.calls[0][0]).toMatchObject({
           category: 'inpage_provider',
-          event: EVENT_NAMES.SIGNATURE_REQUESTED,
+          event: MetaMetricsEventName.SignatureRequested,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN,
           },
@@ -329,7 +329,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         flagAsDangerous = 1;
       });
 
-      it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as malicious`, async () => {
+      it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event which is flagged as malicious`, async () => {
         const req = {
           method: MESSAGE_TYPE.ETH_SIGN,
           origin: 'some.dapp',
@@ -344,7 +344,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEvent).toHaveBeenCalledTimes(1);
         expect(trackEvent.mock.calls[0][0]).toMatchObject({
           category: 'inpage_provider',
-          event: EVENT_NAMES.SIGNATURE_REQUESTED,
+          event: MetaMetricsEventName.SignatureRequested,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN,
             ui_customizations: ['flagged_as_malicious'],
@@ -359,7 +359,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         flagAsDangerous = 2;
       });
 
-      it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as safety unknown`, async () => {
+      it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event which is flagged as safety unknown`, async () => {
         const req = {
           method: MESSAGE_TYPE.ETH_SIGN,
           origin: 'some.dapp',
@@ -374,13 +374,74 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEvent).toHaveBeenCalledTimes(1);
         expect(trackEvent.mock.calls[0][0]).toMatchObject({
           category: 'inpage_provider',
-          event: EVENT_NAMES.SIGNATURE_REQUESTED,
+          event: MetaMetricsEventName.SignatureRequested,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN,
             ui_customizations: ['flagged_as_safety_unknown'],
           },
           referrer: { url: 'some.dapp' },
         });
+      });
+    });
+
+    describe('when signature requests are received', () => {
+      let securityProviderReq, fnHandler;
+      beforeEach(() => {
+        securityProviderReq = jest.fn().mockReturnValue(() =>
+          Promise.resolve({
+            flagAsDangerous: 0,
+          }),
+        );
+
+        fnHandler = createRPCMethodTrackingMiddleware({
+          trackEvent,
+          getMetricsState,
+          rateLimitSeconds: 1,
+          securityProviderRequest: securityProviderReq,
+        });
+      });
+      it(`should pass correct data for personal sign`, async () => {
+        const req = {
+          method: 'personal_sign',
+          params: [
+            '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
+            '0x8eeee1781fd885ff5ddef7789486676961873d12',
+            'Example password',
+          ],
+          jsonrpc: '2.0',
+          id: 1142196570,
+          origin: 'https://metamask.github.io',
+          tabId: 1048582817,
+        };
+        const res = { id: 1142196570, jsonrpc: '2.0' };
+        const { next } = getNext();
+
+        await fnHandler(req, res, next);
+
+        expect(securityProviderReq).toHaveBeenCalledTimes(1);
+        const call = securityProviderReq.mock.calls[0][0];
+        expect(call.msgParams.data).toStrictEqual(req.params[0]);
+      });
+      it(`should pass correct data for typed sign`, async () => {
+        const req = {
+          method: 'eth_signTypedData_v4',
+          params: [
+            '0x8eeee1781fd885ff5ddef7789486676961873d12',
+            '{"domain":{"chainId":"5","name":"Ether Mail","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","version":"1"},"message":{"contents":"Hello, Bob!","from":{"name":"Cow","wallets":["0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"]},"to":[{"name":"Bob","wallets":["0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB","0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57","0xB0B0b0b0b0b0B000000000000000000000000000"]}]},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}',
+          ],
+          jsonrpc: '2.0',
+          id: 1142196571,
+          origin: 'https://metamask.github.io',
+          tabId: 1048582817,
+        };
+        const res = { id: 1142196571, jsonrpc: '2.0' };
+        const { next } = getNext();
+
+        await fnHandler(req, res, next);
+
+        expect(securityProviderReq).toHaveBeenCalledTimes(1);
+        const call = securityProviderReq.mock.calls[0][0];
+        expect(call.msgParams.data).toStrictEqual(req.params[1]);
       });
     });
   });
