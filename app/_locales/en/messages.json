@@ -109,6 +109,9 @@
   "about": {
     "message": "About"
   },
+  "accept": {
+    "message": "Accept"
+  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -304,6 +307,10 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
+  },
+  "agreeTermsOfUse": {
+    "message": "I agree to Metamask's $1",
+    "description": "$1 is the `terms` link"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -928,6 +935,21 @@
   },
   "custodianAccount": {
     "message": "Custodian account"
+  },
+  "custodyRefreshTokenModalDescription": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyRefreshTokenModalDescription1": {
+    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
+  },
+  "custodyRefreshTokenModalDescription2": {
+    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
+  },
+  "custodyRefreshTokenModalSubtitle": {
+    "message": "Why am I seeing this?"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
   },
   "custom": {
     "message": "Advanced"
@@ -4312,6 +4334,15 @@
   },
   "termsOfUse": {
     "message": "terms of use"
+  },
+  "termsOfUseAgreeText": {
+    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+  },
+  "termsOfUseFooterText": {
+    "message": "Please scroll to read all sections"
+  },
+  "termsOfUseTitle": {
+    "message": "Our Terms of Use have updated"
   },
   "testNetworks": {
     "message": "Test networks"

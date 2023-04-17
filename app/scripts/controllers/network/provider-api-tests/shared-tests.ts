@@ -2,7 +2,11 @@
 
 import { testsForRpcMethodsThatCheckForBlockHashInResponse } from './block-hash-in-response';
 import { testsForRpcMethodSupportingBlockParam } from './block-param';
-import { withMockedCommunications, withNetworkClient } from './helpers';
+import {
+  ProviderType,
+  withMockedCommunications,
+  withNetworkClient,
+} from './helpers';
 import { testsForRpcMethodAssumingNoBlockParam } from './no-block-param';
 import { testsForRpcMethodNotHandledByMiddleware } from './not-handled-by-middleware';
 
@@ -13,7 +17,7 @@ import { testsForRpcMethodNotHandledByMiddleware } from './not-handled-by-middle
  * @param reason - The exact reason for failure.
  * @returns The error message.
  */
-export function buildInfuraClientRetriesExhaustedErrorMessage(reason) {
+export function buildInfuraClientRetriesExhaustedErrorMessage(reason: string) {
   return new RegExp(
     `^InfuraProvider - cannot complete request. All retries exhausted\\..+${reason}`,
     'us',
@@ -27,7 +31,7 @@ export function buildInfuraClientRetriesExhaustedErrorMessage(reason) {
  * @param method - The RPC method.
  * @returns The error message.
  */
-export function buildJsonRpcEngineEmptyResponseErrorMessage(method) {
+export function buildJsonRpcEngineEmptyResponseErrorMessage(method: string) {
   return new RegExp(
     `^JsonRpcEngine: Response has no error or result for request:.+"method": "${method}"`,
     'us',
@@ -42,7 +46,7 @@ export function buildJsonRpcEngineEmptyResponseErrorMessage(method) {
  * @param reason - The reason.
  * @returns The error message.
  */
-export function buildFetchFailedErrorMessage(url, reason) {
+export function buildFetchFailedErrorMessage(url: string, reason: string) {
   return new RegExp(
     `^request to ${url}(/[^/ ]*)+ failed, reason: ${reason}`,
     'us',
@@ -57,7 +61,7 @@ export function buildFetchFailedErrorMessage(url, reason) {
  * exposed by `createInfuraClient` is tested; if `custom`, then the middleware
  * exposed by `createJsonRpcClient` will be tested.
  */
-export function testsForProviderType(providerType) {
+export function testsForProviderType(providerType: ProviderType) {
   // Ethereum JSON-RPC spec: <https://ethereum.github.io/execution-apis/api-documentation/>
   // Infura documentation: <https://docs.infura.io/infura/networks/ethereum/json-rpc-methods>
 
