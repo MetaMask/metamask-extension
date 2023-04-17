@@ -3,13 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { captureException } from '@sentry/browser';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 
-const createComplianceActionType = (action) =>
-  `metamask/institutional-features/compliance/${action}`;
-
-const SET_HISTORICAL_REPORTS = createComplianceActionType(
-  'SET_HISTORICAL_REPORTS',
-);
-
 const name = 'institutionalFeatures';
 
 const initialState = {
@@ -20,7 +13,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: 'reports',
+  name,
   initialState,
   reducers: {
     setHistoricalReports(state, action) {
@@ -86,15 +79,14 @@ export const fetchHistoricalReports = (address, testProjectId = undefined) => {
           historicalReports: result.items ? result.items : [],
         }),
       );
-      dispatch({
-        type: SET_HISTORICAL_REPORTS,
-        payload: {
+      dispatch(
+        actions.setHistoricalReports({
           address,
           reports: result.items
             ? result.items.filter((report) => report.status !== 'inProgress')
             : [],
-        },
-      });
+        }),
+      );
     } catch (error) {
       console.error(error);
       captureException(error);
