@@ -6,7 +6,7 @@ const { loadBuildTypesConfig } = require('./lib/build-type');
 
 const buildTypesConfig = loadBuildTypesConfig();
 
-const stableBuildTypes = Object.keys(buildTypesConfig.builds).filter(
+const stableBuildTypes = Object.keys(buildTypesConfig.buildTypes).filter(
   // Skip generating policy for MMI until that build has stabilized
   (buildType) => buildType !== 'mmi',
 );
@@ -26,7 +26,7 @@ async function start() {
       yargsInstance
         .option('build-types', {
           alias: ['t'],
-          choices: Object.keys(buildTypesConfig.builds),
+          choices: Object.keys(buildTypesConfig.buildTypes),
           default: stableBuildTypes,
           demandOption: true,
           description: 'The build type(s) to generate policy files for.',

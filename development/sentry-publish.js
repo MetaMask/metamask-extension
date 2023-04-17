@@ -31,7 +31,7 @@ async function start() {
         .option('build-type', {
           default: loadBuildTypesConfig().default,
           description: 'The MetaMask extension build type',
-          choices: Object.keys(loadBuildTypesConfig().builds),
+          choices: Object.keys(loadBuildTypesConfig().buildTypes),
         })
         .option('build-version', {
           default: 0,
