@@ -43,6 +43,7 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
+  inputRef,
 }) {
   return (
     <div
@@ -110,6 +111,7 @@ export default function FormField({
             dataTestId={dataTestId}
             placeholder={placeholder}
             id={id}
+            inputRef={inputRef}
           />
         ) : (
           <input
@@ -125,6 +127,7 @@ export default function FormField({
             data-testid={dataTestId}
             placeholder={placeholder}
             id={id}
+            ref={inputRef}
             {...inputProps}
           />
         )}
@@ -285,4 +288,8 @@ FormField.propTypes = {
    * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
    */
   wrappingLabelProps: PropTypes.object,
+  /**
+   * ref for input component
+   */
+  inputRef: PropTypes.object,
 };
