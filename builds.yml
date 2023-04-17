@@ -145,10 +145,14 @@ env:
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
   - SKIP_BACKGROUND_INITIALIZATION: false
+  - MULTICHAIN: false
+
   # TODO(ritave): Move ManifestV3 into a feature?
   - ENABLE_MV3: false
   - HARDWARE_WALLETS_MV3: false
-  - MULTICHAIN: false
+  # These are exclusively used for MV3
+  - APPLY_LAVAMOAT
+  - FILE_NAMES
 
   ###
   # API keys to 3rd party services
