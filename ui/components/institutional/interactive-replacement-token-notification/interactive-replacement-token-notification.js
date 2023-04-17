@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentKeyring,
   getSelectedAddress,
-  getInteractiveReplacementToken,
 } from '../../../selectors';
+import { getInteractiveReplacementToken } from '../../../selectors/institutional/selectors';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
