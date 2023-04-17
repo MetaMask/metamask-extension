@@ -84,6 +84,7 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', function () {
     it('clicks the "Create New Wallet" button on the welcome screen', async function () {
+      await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 

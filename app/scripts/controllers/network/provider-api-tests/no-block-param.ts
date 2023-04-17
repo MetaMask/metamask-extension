@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe, jest/no-export */
 
 import {
+  ProviderType,
   waitForPromiseToBeFulfilledAfterRunningAllTimers,
   withMockedCommunications,
   withNetworkClient,
@@ -10,6 +11,11 @@ import {
   buildInfuraClientRetriesExhaustedErrorMessage,
   buildJsonRpcEngineEmptyResponseErrorMessage,
 } from './shared-tests';
+
+type TestsForRpcMethodAssumingNoBlockParamOptions = {
+  providerType: ProviderType;
+  numberOfParameters: number;
+};
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method which is
@@ -23,8 +29,11 @@ import {
  * either `infura` or `custom` (default: "infura").
  */
 export function testsForRpcMethodAssumingNoBlockParam(
-  method,
-  { numberOfParameters, providerType },
+  method: string,
+  {
+    numberOfParameters,
+    providerType,
+  }: TestsForRpcMethodAssumingNoBlockParamOptions,
 ) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(

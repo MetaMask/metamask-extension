@@ -410,6 +410,14 @@ describe('SignController', () => {
       );
     });
 
+    it('does not throw if accepting approval throws', async () => {
+      messengerMock.call.mockImplementation(() => {
+        throw new Error('Test Error');
+      });
+
+      await signController[signMethodName](messageParamsMock);
+    });
+
     it('rejects message on error', async () => {
       keyringControllerMock[signMethodName].mockReset();
       keyringControllerMock[signMethodName].mockRejectedValue(
@@ -468,6 +476,14 @@ describe('SignController', () => {
         messageParamsMock.metamaskId,
         'Cancel',
       );
+    });
+
+    it('does not throw if rejecting approval throws', async () => {
+      messengerMock.call.mockImplementation(() => {
+        throw new Error('Test Error');
+      });
+
+      await signController[cancelMethodName](messageParamsMock);
     });
   });
 
