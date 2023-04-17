@@ -80,7 +80,16 @@ export const AccountListItemMenu = ({
       </MenuItem>
       <MenuItem
         onClick={() => {
-          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+          if (process.env.MULTICHAIN) {
+            dispatch(
+              showModal({
+                name: 'MULTICHAIN_ACCOUNT_DETAILS',
+                identity,
+              }),
+            );
+          } else {
+            dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+          }
           trackEvent({
             event: MetaMetricsEventName.NavAccountDetailsOpened,
             category: MetaMetricsEventCategory.Navigation,

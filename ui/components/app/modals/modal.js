@@ -9,6 +9,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
+import { MultichainAccountDetails } from '../../multichain';
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
@@ -110,6 +111,10 @@ const MODALS = {
   ACCOUNT_DETAILS: {
     contents: <AccountDetailsModal />,
     ...accountModalStyle,
+  },
+
+  MULTICHAIN_ACCOUNT_DETAILS: {
+    contents: <MultichainAccountDetails />,
   },
 
   EXPORT_PRIVATE_KEY: {

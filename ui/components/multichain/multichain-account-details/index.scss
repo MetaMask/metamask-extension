@@ -1,0 +1,9 @@
+.multichain-account-details{
+  &__popover{
+    width:328px;
+    height: 470px;
+  }
+  .popover-content{
+    justify-content: flex-end;
+  }
+}

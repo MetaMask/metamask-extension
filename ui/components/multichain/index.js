@@ -5,6 +5,7 @@ export { AccountPicker } from './account-picker';
 export { AppHeader } from './app-header';
 export { DetectedTokensBanner } from './detected-token-banner';
 export { GlobalMenu } from './global-menu';
+export { MultichainAccountDetails } from './multichain-account-details';
 export { MultichainImportTokenLink } from './multichain-import-token-link';
 export { MultichainTokenListItem } from './multichain-token-list-item';
 export { AddressCopyButton } from './address-copy-button';
