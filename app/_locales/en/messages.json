@@ -3786,6 +3786,9 @@
   "stable": {
     "message": "Stable"
   },
+  "stake": {
+    "message": "Stake"
+  },
   "stableLowercase": {
     "message": "stable"
   },

@@ -5,7 +5,10 @@ import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import StakeIcon from '../../ui/icon/icon-stake';
+import {
+  getMmiPortfolioEnabled,
+  getMmiPortfolioUrl,
+} from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 
 import Identicon from '../../ui/identicon';
@@ -45,7 +48,7 @@ import {
   ButtonIcon,
   BUTTON_ICON_SIZES,
 } from '../../component-library/button-icon/deprecated';
-import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -83,14 +86,13 @@ const EthOverview = ({ className }) => {
       event: 'Clicked Stake Button',
     });
   };
-  ///: END:ONLY_INCLUDE_IN
 
   const renderInstitutionalButtons = () => {
     return (
       <>
         <IconButton
           className="eth-overview__button"
-          Icon={StakeIcon}
+          Icon={<Icon name={IconName.Stake} color={IconColor.primaryDefault} />}
           label={t('stake')}
           onClick={() => {
             stakingEvent();
@@ -103,7 +105,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={ICON_NAMES.DIAGRAM} color={IconColor.primaryDefault} />
+              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
             }
             label={t('portfolio')}
             onClick={() => {
@@ -115,6 +117,7 @@ const EthOverview = ({ className }) => {
       </>
     );
   };
+  ///: END:ONLY_INCLUDE_IN
 
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -156,7 +159,7 @@ const EthOverview = ({ className }) => {
                   className="eth-overview__portfolio-button"
                   data-testid="home__portfolio-site"
                   color={IconColor.primaryDefault}
-                  iconName={ICON_NAMES.DIAGRAM}
+                  iconName={IconName.Diagram}
                   ariaLabel={t('portfolio')}
                   size={BUTTON_ICON_SIZES.LG}
                   onClick={() => {
@@ -206,7 +209,7 @@ const EthOverview = ({ className }) => {
             <IconButton
               className="eth-overview__button"
               Icon={
-                <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
+                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
               }
               disabled={!isBuyableChain}
               data-testid="eth-overview-buy"
@@ -237,7 +240,7 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_UP_RIGHT}
+                name={IconName.Arrow2UpRight}
                 color={IconColor.primaryInverse}
               />
             }
@@ -264,7 +267,7 @@ const EthOverview = ({ className }) => {
             disabled={!isSwapsChain}
             Icon={
               <Icon
-                name={ICON_NAMES.SWAP_HORIZONTAL}
+                name={IconName.SwapHorizontal}
                 color={IconColor.primaryInverse}
               />
             }
@@ -308,10 +311,7 @@ const EthOverview = ({ className }) => {
               disabled={!isBridgeChain}
               data-testid="eth-overview-bridge"
               Icon={
-                <Icon
-                  name={ICON_NAMES.BRIDGE}
-                  color={IconColor.primaryInverse}
-                />
+                <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
               }
               label={t('bridge')}
               onClick={() => {
