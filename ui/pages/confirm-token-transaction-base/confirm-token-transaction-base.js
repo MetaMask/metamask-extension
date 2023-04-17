@@ -70,7 +70,6 @@ export default function ConfirmTokenTransactionBase({
       (collection) =>
         collection.address.toLowerCase() === tokenAddress.toLowerCase(),
     );
-    console.log({ tokenSymbol, nftCollection })
     const titleTokenDescription =
       tokenSymbol || nftCollection?.name || t('unknownCollection');
 
