@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmGasDisplay should match snapshot 1`] = `
+<div>
+  <div
+    class="transaction-detail-item"
+  >
+    <div
+      class="transaction-detail-item__row"
+    >
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+      >
+        <div
+          class="box box--display-flex box--flex-direction-row"
+        >
+          <div
+            class="box box--margin-right-1 box--flex-direction-row"
+          >
+            Gas
+          </div>
+          <span
+            class="gas-details-item-title__estimate"
+          >
+            (
+            estimated
+            )
+          </span>
+          <div
+            class="info-tooltip"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="info-tooltip__tooltip-container"
+                data-original-title="null"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <svg
+                  viewBox="0 0 10 10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                    fill="var(--color-icon-alternative)"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </h6>
+      <div
+        class="transaction-detail-item__detail-values"
+      >
+        <h6
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+        >
+          <div
+            class="gas-details-item__currency-container"
+          >
+            <div
+              class="currency-display-component"
+              title="0"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0
+              </span>
+            </div>
+          </div>
+        </h6>
+        <h6
+          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+        >
+          <div
+            class="gas-details-item__currency-container"
+          >
+            <div
+              class="currency-display-component"
+              title="0 ETH"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </h6>
+      </div>
+    </div>
+    <div
+      class="transaction-detail-item__row"
+    >
+      <div>
+        <h6
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--positive typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+        >
+          Maybe in 1 seconds
+        </h6>
+      </div>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+      >
+        <div
+          class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+        >
+          <div
+            class="box box--margin-right-1 box--flex-direction-row"
+          >
+            <strong>
+              Max fee:
+            </strong>
+          </div>
+          <div
+            class="gas-details-item__currency-container"
+          >
+            <div
+              class="currency-display-component"
+              title="0 ETH"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </div>
+      </h6>
+    </div>
+  </div>
+</div>
+`;
