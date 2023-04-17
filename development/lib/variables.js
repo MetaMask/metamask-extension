@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-tag-names */
 const assert = require('assert');
 
 const DeclaredOnly = Symbol(
@@ -24,7 +25,7 @@ class Variables {
    * @throws {TypeError} If there is no definition of a variable.
    */
   get(key) {
-    const value = this.#getMaybe(key);
+    const value = this.getMaybe(key);
     assert(
       value !== DeclaredOnly,
       new TypeError(
@@ -41,7 +42,7 @@ class Variables {
    * @throws {TypeError} If there was no declaration of the variable.
    * @returns The value, or undefined if the variables wasn't defined.
    */
-  #getMaybe(key) {
+  getMaybe(key) {
     assert(
       this.isDeclared(key),
       new TypeError(

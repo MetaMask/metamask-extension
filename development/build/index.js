@@ -5,7 +5,6 @@
 // run any task with "yarn build ${taskName}"
 //
 const path = require('path');
-const assert = require('assert');
 const livereload = require('gulp-livereload');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
@@ -13,7 +12,6 @@ const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
 const difference = require('lodash/difference');
 const { intersection } = require('lodash');
-const { act } = require('react-dom/test-utils');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');

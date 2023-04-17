@@ -1126,7 +1126,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
 }
 
 /**
- * Get environment variables to inject in the current build.
+ * Sets environment variables to inject in the current build.
  *
  * @param {object} options - Build options.
  * @param {BUILD_TARGETS} options.buildTarget - The current build target.
@@ -1136,7 +1136,6 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  * @param options.activeBuild
  * @param options.variables
  * @param options.environment
- * @returns {object} A map of environment variables to inject.
  */
 async function setEnvironmentVariables({
   buildTarget,

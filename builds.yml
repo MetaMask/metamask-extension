@@ -130,7 +130,9 @@ env:
   - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
   - SKIP_BACKGROUND_INITIALIZATION: false
   # TODO(ritave): Move ManifestV3 into a feature?
+  - ENABLE_MV3: false
   - HARDWARE_WALLETS_MV3: false
+  - MULTICHAIN: false
 
   ###
   # API keys to 3rd party services

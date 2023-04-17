@@ -60,9 +60,9 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+import { assert } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
 
-import { assert } from '@metamask/utils';
 import {
   AssetType,
   TransactionStatus,
@@ -938,8 +938,8 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = new JsonSnapsRegistry({
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
-      refetchOnAllowlistMiss: isMain,
-      failOnUnavailableRegistry: isMain,
+      refetchOnAllowlistMiss: process.env.REQUIRE_SNAPS_ALLOWLIST,
+      failOnUnavailableRegistry: process.env.REQUIRE_SNAPS_ALLOWLIST,
       url: {
         registry: 'https://acl.execution.metamask.io/latest/registry.json',
         signature: 'https://acl.execution.metamask.io/latest/signature.json',

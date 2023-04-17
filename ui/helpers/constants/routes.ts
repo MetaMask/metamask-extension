@@ -20,7 +20,7 @@ const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
 ///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
@@ -31,7 +31,7 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
 ///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
@@ -126,7 +126,7 @@ const PATH_NAME_MAP = {
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional features done',
   ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
@@ -184,7 +184,7 @@ export {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   SEND_ROUTE,
@@ -213,7 +213,7 @@ export {
   CONTACT_EDIT_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   NETWORKS_ROUTE,
