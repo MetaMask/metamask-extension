@@ -57,6 +57,7 @@ import {
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
+import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
   getConversionRate,
@@ -993,6 +994,18 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+export function getShowTermsOfUse(state) {
+  const { termsOfUseLastAgreed } = state.metamask;
+
+  if (!termsOfUseLastAgreed) {
+    return true;
+  }
+  return (
+    new Date(termsOfUseLastAgreed).getTime() <
+    new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
+  );
 }
 
 export function getShowOutdatedBrowserWarning(state) {
