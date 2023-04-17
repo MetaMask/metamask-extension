@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
-import { ComposedStore, ObservableStore } from '@metamask/obs-store';
+import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -380,6 +380,21 @@ function buildDefaultNetworkConfigurationsState(): NetworkConfigurations {
 }
 
 /**
+ * Builds the default state for the network controller.
+ *
+ * @returns The default network controller state.
+ */
+function buildDefaultState() {
+  return {
+    provider: buildDefaultProviderConfigState(),
+    networkId: buildDefaultNetworkIdState(),
+    networkStatus: buildDefaultNetworkStatusState(),
+    networkDetails: buildDefaultNetworkDetailsState(),
+    networkConfigurations: buildDefaultNetworkConfigurationsState(),
+  };
+}
+
+/**
  * Returns whether the given argument is a type that our Infura middleware
  * recognizes. We can't calculate this inline because the usual type of `type`,
  * which we get from the provider config, is not a subset of the type of
@@ -415,42 +430,16 @@ export class NetworkController extends EventEmitter {
   #messenger: NetworkControllerMessenger;
 
   /**
-   * Observable store containing the provider configuration.
-   */
-  providerStore: ObservableStore<ProviderConfiguration>;
-
-  /**
    * Observable store containing the provider configuration for the previously
    * configured network.
    */
   #previousProviderConfig: ProviderConfiguration;
 
   /**
-   * Observable store containing the network ID for the current network or null
-   * if there is no current network.
-   */
-  networkIdStore: ObservableStore<NetworkIdState>;
-
-  /**
-   * Observable store for the network status.
-   */
-  networkStatusStore: ObservableStore<NetworkStatus>;
-
-  /**
-   * Observable store for details about the network.
-   */
-  networkDetails: ObservableStore<NetworkDetails>;
-
-  /**
-   * Observable store for network configurations.
-   */
-  networkConfigurationsStore: ObservableStore<NetworkConfigurations>;
-
-  /**
    * Observable store containing a combination of data from all of the
    * individual stores.
    */
-  store: ComposedStore<NetworkControllerState>;
+  store: ObservableStore<NetworkControllerState>;
 
   #provider: SafeEventEmitterProvider | null;
 
@@ -484,35 +473,11 @@ export class NetworkController extends EventEmitter {
 
     this.#messenger = messenger;
 
-    // create stores
-    this.providerStore = new ObservableStore(
-      state.provider || buildDefaultProviderConfigState(),
-    );
-    this.#previousProviderConfig = this.providerStore.getState();
-    this.networkIdStore = new ObservableStore(buildDefaultNetworkIdState());
-    this.networkStatusStore = new ObservableStore(
-      buildDefaultNetworkStatusState(),
-    );
-    // We need to keep track of a few details about the current network.
-    // Ideally we'd merge this.networkStatusStore with this new store, but doing
-    // so will require a decent sized refactor of how we're accessing network
-    // state. Currently this is only used for detecting EIP-1559 support but can
-    // be extended to track other network details.
-    this.networkDetails = new ObservableStore(
-      state.networkDetails || buildDefaultNetworkDetailsState(),
-    );
-
-    this.networkConfigurationsStore = new ObservableStore(
-      state.networkConfigurations || buildDefaultNetworkConfigurationsState(),
-    );
-
-    this.store = new ComposedStore<NetworkControllerState>({
-      provider: this.providerStore,
-      networkId: this.networkIdStore,
-      networkStatus: this.networkStatusStore,
-      networkDetails: this.networkDetails,
-      networkConfigurations: this.networkConfigurationsStore,
+    this.store = new ObservableStore({
+      ...buildDefaultState(),
+      ...state,
     });
+    this.#previousProviderConfig = this.store.getState().provider;
 
     // provider and block tracker
     this.#provider = null;
@@ -543,7 +508,7 @@ export class NetworkController extends EventEmitter {
    * using the provider to gather details about the network.
    */
   async initializeProvider(): Promise<void> {
-    const { type, rpcUrl, chainId } = this.providerStore.getState();
+    const { type, rpcUrl, chainId } = this.store.getState().provider;
     this.#configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
   }
@@ -569,7 +534,7 @@ export class NetworkController extends EventEmitter {
    * and false otherwise.
    */
   async getEIP1559Compatibility(): Promise<boolean> {
-    const { EIPS } = this.networkDetails.getState();
+    const { EIPS } = this.store.getState().networkDetails;
     // NOTE: This isn't necessary anymore because the block cache middleware
     // already prevents duplicate requests from taking place
     if (EIPS[1559] !== undefined) {
@@ -585,10 +550,14 @@ export class NetworkController extends EventEmitter {
     }
 
     const supportsEIP1559 = await this.#determineEIP1559Compatibility(provider);
-    this.networkDetails.updateState({
-      EIPS: {
-        ...this.networkDetails.getState().EIPS,
-        1559: supportsEIP1559,
+    const { networkDetails } = this.store.getState();
+    this.store.updateState({
+      networkDetails: {
+        ...networkDetails,
+        EIPS: {
+          ...networkDetails.EIPS,
+          1559: supportsEIP1559,
+        },
       },
     });
     return supportsEIP1559;
@@ -606,7 +575,7 @@ export class NetworkController extends EventEmitter {
    * blocking requests, or if the network is not Infura-supported.
    */
   async lookupNetwork(): Promise<void> {
-    const { chainId, type } = this.providerStore.getState();
+    const { chainId, type } = this.store.getState().provider;
     const { provider } = this.getProviderAndBlockTracker();
     let networkChanged = false;
     let networkId: NetworkIdState = null;
@@ -692,14 +661,20 @@ export class NetworkController extends EventEmitter {
       listener,
     );
 
-    this.networkStatusStore.putState(networkStatus);
+    this.store.updateState({
+      networkStatus,
+    });
 
     if (networkStatus === NetworkStatus.Available) {
-      this.networkIdStore.putState(networkId);
-      this.networkDetails.updateState({
-        EIPS: {
-          ...this.networkDetails.getState().EIPS,
-          1559: supportsEIP1559,
+      const { networkDetails } = this.store.getState();
+      this.store.updateState({
+        networkId,
+        networkDetails: {
+          ...networkDetails,
+          EIPS: {
+            ...networkDetails.EIPS,
+            1559: supportsEIP1559,
+          },
         },
       });
     } else {
@@ -731,7 +706,7 @@ export class NetworkController extends EventEmitter {
    */
   setActiveNetwork(networkConfigurationId: NetworkConfigurationId): string {
     const targetNetwork =
-      this.networkConfigurationsStore.getState()[networkConfigurationId];
+      this.store.getState().networkConfigurations[networkConfigurationId];
 
     if (!targetNetwork) {
       throw new Error(
@@ -779,7 +754,7 @@ export class NetworkController extends EventEmitter {
    * Re-initializes the provider and block tracker for the current network.
    */
   resetConnection(): void {
-    this.#setProviderConfig(this.providerStore.getState());
+    this.#setProviderConfig(this.store.getState().provider);
   }
 
   /**
@@ -789,7 +764,9 @@ export class NetworkController extends EventEmitter {
    */
   async rollbackToPreviousProvider() {
     const config = this.#previousProviderConfig;
-    this.providerStore.putState(config);
+    this.store.updateState({
+      provider: config,
+    });
     await this.#switchNetwork(config);
   }
 
@@ -843,21 +820,27 @@ export class NetworkController extends EventEmitter {
    * Clears the stored network ID.
    */
   #resetNetworkId(): void {
-    this.networkIdStore.putState(buildDefaultNetworkIdState());
+    this.store.updateState({
+      networkId: buildDefaultNetworkIdState(),
+    });
   }
 
   /**
    * Resets network status to the default ("unknown").
    */
   #resetNetworkStatus(): void {
-    this.networkStatusStore.putState(buildDefaultNetworkStatusState());
+    this.store.updateState({
+      networkStatus: buildDefaultNetworkStatusState(),
+    });
   }
 
   /**
    * Clears details previously stored for the network.
    */
   #resetNetworkDetails(): void {
-    this.networkDetails.putState(buildDefaultNetworkDetailsState());
+    this.store.updateState({
+      networkDetails: buildDefaultNetworkDetailsState(),
+    });
   }
 
   /**
@@ -867,8 +850,8 @@ export class NetworkController extends EventEmitter {
    * @param providerConfig - The provider configuration.
    */
   async #setProviderConfig(providerConfig: ProviderConfiguration) {
-    this.#previousProviderConfig = this.providerStore.getState();
-    this.providerStore.putState(providerConfig);
+    this.#previousProviderConfig = this.store.getState().provider;
+    this.store.updateState({ provider: providerConfig });
     await this.#switchNetwork(providerConfig);
   }
 
@@ -1105,7 +1088,7 @@ export class NetworkController extends EventEmitter {
       );
     }
 
-    const networkConfigurations = this.networkConfigurationsStore.getState();
+    const { networkConfigurations } = this.store.getState();
     const newNetworkConfiguration = {
       rpcUrl,
       chainId,
@@ -1120,11 +1103,13 @@ export class NetworkController extends EventEmitter {
     )?.id;
 
     const newNetworkConfigurationId = oldNetworkConfigurationId || uuid();
-    this.networkConfigurationsStore.putState({
-      ...networkConfigurations,
-      [newNetworkConfigurationId]: {
-        ...newNetworkConfiguration,
-        id: newNetworkConfigurationId,
+    this.store.updateState({
+      networkConfigurations: {
+        ...networkConfigurations,
+        [newNetworkConfigurationId]: {
+          ...newNetworkConfiguration,
+          id: newNetworkConfigurationId,
+        },
       },
     });
 
@@ -1160,9 +1145,11 @@ export class NetworkController extends EventEmitter {
     networkConfigurationId: NetworkConfigurationId,
   ): void {
     const networkConfigurations = {
-      ...this.networkConfigurationsStore.getState(),
+      ...this.store.getState().networkConfigurations,
     };
     delete networkConfigurations[networkConfigurationId];
-    this.networkConfigurationsStore.putState(networkConfigurations);
+    this.store.updateState({
+      networkConfigurations,
+    });
   }
 }
