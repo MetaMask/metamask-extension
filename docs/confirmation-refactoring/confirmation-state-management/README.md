@@ -39,7 +39,7 @@ Refactorings:
     - `isNetworkBusy`
   - `minimumGasLimitDec` is a constant value 21000 should be removed from the context, this can be moved to constants file.
   - Create separate hook for transaction functions [here](https://github.com/MetaMask/metamask-extension/blob/develop/ui/hooks/gasFeeInput/useTransactionFunctions.js), this hook can consume GasFeeContext.
-  - Setters and manual update functions are only used by legacy gas component [edit-fas-fee-popover](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/edit-gas-popover). This component uses useFasFeeInputs hook. We need to create a smaller hook just for this component using above context and hooks.
+  - Setters and manual update functions are only used by legacy gas component [edit-gas-fee-popover](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/edit-gas-popover). This component uses useGasFeeInputs hook. We need to create a smaller hook just for this component using the above context and hooks.
 
 * [confirm-transaction-base.container.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction-base/confirm-transaction-base.container.js) and [confirm-transaction-base.component.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction-base/confirm-transaction-base.component.js) has a lot of code to derive values from state and selected transactions. This can be simplified by using hooks that will he created.
 * We will have a lot of hooks for transaction related fields, these can be grouped into same file / folder.
