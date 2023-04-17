@@ -374,9 +374,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
                       >
-                        <div
-                          class="confirm-page-container-content__currency-container"
-                        >
+                        <div>
                           <div
                             class="currency-display-component"
                             title="0.000021"
@@ -397,18 +395,14 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   <div
                     class="transaction-detail-item__row"
                   >
-                    <div>
-                      
-                    </div>
+                    <div />
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
                     >
                       <strong>
                         Max fee:
                       </strong>
-                      <div
-                        class="confirm-page-container-content__currency-container"
-                      >
+                      <div>
                         <div
                           class="currency-display-component"
                           title="0.000021"
