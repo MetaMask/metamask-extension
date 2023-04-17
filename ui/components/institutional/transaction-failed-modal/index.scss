@@ -1,0 +1,13 @@
+.transaction-failed {
+  &__description {
+    border: 1px solid lightgray;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  &__image {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+}
