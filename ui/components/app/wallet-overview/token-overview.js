@@ -20,6 +20,7 @@ import {
   getCurrentKeyring,
   getIsSwapsChain,
   getIsBuyableChain,
+  getIsBridgeToken,
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -35,8 +36,10 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
 
-import { Icon, IconName } from '../../component-library';
+import { ButtonIcon, Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+
+import { BUTTON_ICON_SIZES } from '../../component-library/button-icon/deprecated';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -55,7 +58,7 @@ const TokenOverview = ({ className, token }) => {
     token.symbol,
   );
   const isSwapsChain = useSelector(getIsSwapsChain);
-
+  const isBridgeToken = useSelector(getIsBridgeToken(token.address));
   const isBuyableChain = useSelector(getIsBuyableChain);
 
   const { openBuyCryptoInPdapp } = useRamps();
@@ -75,11 +78,42 @@ const TokenOverview = ({ className, token }) => {
     <WalletOverview
       balance={
         <div className="token-overview__balance">
-          <CurrencyDisplay
-            className="token-overview__primary-balance"
-            displayValue={balanceToRender}
-            suffix={token.symbol}
-          />
+          <div className="token-overview__primary-container">
+            <CurrencyDisplay
+              style={{ display: 'contents' }}
+              className="token-overview__primary-balance"
+              displayValue={balanceToRender}
+              suffix={token.symbol}
+            />
+            <ButtonIcon
+              className="token-overview__portfolio-button"
+              data-testid="home__portfolio-site"
+              color={IconColor.primaryDefault}
+              iconName={IconName.Diagram}
+              ariaLabel={t('portfolio')}
+              size={BUTTON_ICON_SIZES.LG}
+              onClick={() => {
+                const portfolioUrl = process.env.PORTFOLIO_URL;
+                global.platform.openTab({
+                  url: `${portfolioUrl}?metamaskEntry=ext`,
+                });
+                trackEvent(
+                  {
+                    category: MetaMetricsEventCategory.Home,
+                    event: MetaMetricsEventName.PortfolioLinkClicked,
+                    properties: {
+                      url: portfolioUrl,
+                    },
+                  },
+                  {
+                    contextPropsIntoEventProperties: [
+                      MetaMetricsContextProp.PageTitle,
+                    ],
+                  },
+                );
+              }}
+            />
+          </div>
           {formattedFiatBalance ? (
             <CurrencyDisplay
               className="token-overview__secondary-balance"
@@ -196,34 +230,33 @@ const TokenOverview = ({ className, token }) => {
                   )
             }
           />
-          <IconButton
-            className="eth-overview__button"
-            Icon={
-              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
-            }
-            label={t('portfolio')}
-            data-testid="home__portfolio-site"
-            onClick={() => {
-              const portfolioUrl = process.env.PORTFOLIO_URL;
-              global.platform.openTab({
-                url: `${portfolioUrl}?metamaskEntry=ext`,
-              });
-              trackEvent(
-                {
-                  category: MetaMetricsEventCategory.Home,
-                  event: MetaMetricsEventName.PortfolioLinkClicked,
+          {isBridgeToken && (
+            <IconButton
+              className="token-overview__button"
+              data-testid="token-overview-bridge"
+              Icon={
+                <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
+              }
+              label={t('bridge')}
+              onClick={() => {
+                const portfolioUrl = process.env.PORTFOLIO_URL;
+
+                const bridgeUrl = `${portfolioUrl}/bridge`;
+                global.platform.openTab({
+                  url: `${bridgeUrl}?metamaskEntry=ext_bridge_button&token=${token.address}`,
+                });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.BridgeLinkClicked,
                   properties: {
-                    url: portfolioUrl,
+                    location: 'Token Overview',
+                    text: 'Bridge',
                   },
-                },
-                {
-                  contextPropsIntoEventProperties: [
-                    MetaMetricsContextProp.PageTitle,
-                  ],
-                },
-              );
-            }}
-          />
+                });
+              }}
+              tooltipRender={null}
+            />
+          )}
         </>
       }
       className={className}
