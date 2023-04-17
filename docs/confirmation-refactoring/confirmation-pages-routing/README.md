@@ -57,7 +57,7 @@ Current routing code is complicated, it is also currently tied to state change i
 - Any re-usable routing related code should be moved to [useRouting](https://github.com/MetaMask/metamask-extension/blob/develop/ui/hooks/useRouting.js) hook.
 - Logic to initially check state and redirect to `/pages/confirm-transaction` can be moved from `/pages/home` to `pages/routes`
 - All the route mapping code should be moved to `/pages/confirm-transaction`, this will require getting rid of route mappings in `/pages/confirm-transaction/confirm-token-transaction-switch`, `/pages/confirm-transaction-switch`.
-- `/pages/confirm-transaction-switch` has the code that check the un-approved trancation / message in state and based on its type and asset reditect to a specific route, a utility method can be create to do this mapping and can be included in `/pages/confirm-transaction` component.
+- `/pages/confirm-transaction-switch` has the code that checks the un-approved transaction / message in the state, and based on its type and asset redirect to a specific route, a utility method can be created to do this mapping and can be included in `/pages/confirm-transaction` component.
 - During the send flow initiated within metamask user can be redirected to specific confirmations route **`/confirm-transaction/${id}/XXXX`**
 - Confirmation components have lot of props passing which needs to be reduced. Values can be obtained from redux state or other contexts directly using hooks. Component [confirm-token-transaction-switch](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/confirm-token-transaction-switch.js) has a lot of un-necessary props passing which should be removed and will help to further refactor routing.
 
