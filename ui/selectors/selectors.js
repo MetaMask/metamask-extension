@@ -827,7 +827,7 @@ export const getFullTxData = createDeepEqualSelector(
   (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
-      txData.simulationFails = transaction.simulationFails;
+      fullTxData.simulationFails = { ...transaction.simulationFails };
     }
     if (customTxParamsData) {
       fullTxData = {
