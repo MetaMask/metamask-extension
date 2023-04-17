@@ -13,7 +13,7 @@ State Management is very important piece to keep frontend confirmation code simp
 Refactorings:
 
 - There are confirmations related ducks [here](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks):
-  - [confirm-transaction](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/confirm-transaction): this this redundant and we should be able to get rid of it.
+  - [confirm-transaction](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/confirm-transaction): this is redundant and we should be able to get rid of it.
   - [gas](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/gas): this is not used anywhere and can be removed.
   - [send](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/send): this duck is important state machine for send flow and we should continue to maintain.
 - [gasFeeContext](https://github.com/MetaMask/metamask-extension/blob/develop/ui/contexts/gasFee.js) is huge context written on top of [gasFeeInput](https://github.com/MetaMask/metamask-extension/tree/develop/ui/hooks/gasFeeInput) hook. The context / hook provides about 20 different values used in different places in confirmation pages. We need to break this down:
