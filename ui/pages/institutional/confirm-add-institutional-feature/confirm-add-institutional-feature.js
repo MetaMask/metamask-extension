@@ -7,12 +7,17 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { Text } from '../../../components/component-library';
+import {
+  Text,
+  BUTTON_SIZES,
+  BUTTON_TYPES,
+} from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
   OVERFLOW_WRAP,
   TEXT_ALIGN,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -169,16 +174,15 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
         </Text>
       )}
 
-      <Box className="page-container__footer">
+      <Box as="footer" className="page-container__footer" padding={4}>
         {isLoading ? (
-          <footer>
-            <PulseLoader />
-          </footer>
+          <PulseLoader />
         ) : (
-          <footer>
+          <Box display={DISPLAY.FLEX} gap={4}>
             <Button
-              type="default"
-              large
+              block
+              type={BUTTON_TYPES.SECONDARY}
+              size={BUTTON_SIZES.LG}
               onClick={() => {
                 removeConnectInstitutionalFeature({
                   actions: 'Institutional feature RPC cancel',
@@ -191,12 +195,13 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
             </Button>
             <Button
               type="primary"
-              large
+              block
+              size={BUTTON_SIZES.LG}
               onClick={confirmAddInstitutionalFeature}
             >
               {t('confirm')}
             </Button>
-          </footer>
+          </Box>
         )}
       </Box>
     </Box>
