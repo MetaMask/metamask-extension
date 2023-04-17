@@ -647,12 +647,6 @@ describe('NetworkController', () => {
               },
               "networkId": null,
               "networkStatus": "unknown",
-              "previousProviderStore": {
-                "chainId": "0x9999",
-                "nickname": "Test initial state",
-                "rpcUrl": "http://example-custom-rpc.metamask.io",
-                "type": "rpc",
-              },
               "provider": {
                 "chainId": "0x9999",
                 "nickname": "Test initial state",
@@ -677,13 +671,6 @@ describe('NetworkController', () => {
             },
             "networkId": null,
             "networkStatus": "unknown",
-            "previousProviderStore": {
-              "chainId": "0x539",
-              "nickname": "Localhost 8545",
-              "rpcUrl": "http://localhost:8545",
-              "ticker": "ETH",
-              "type": "rpc",
-            },
             "provider": {
               "chainId": "0x539",
               "nickname": "Localhost 8545",
@@ -4116,46 +4103,6 @@ describe('NetworkController', () => {
       );
     });
 
-    it('stores the current provider configuration before overwriting it', async () => {
-      await withController(
-        {
-          state: {
-            provider: {
-              type: 'rpc',
-              rpcUrl: 'https://mock-rpc-url-1',
-              chainId: '0x111',
-              ticker: 'TEST',
-            },
-            networkConfigurations: {
-              testNetworkConfigurationId2: {
-                id: 'testNetworkConfigurationId2',
-                rpcUrl: 'https://mock-rpc-url-2',
-                chainId: '0x222',
-                ticker: 'ABC',
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          const network = new CustomNetworkCommunications({
-            customRpcUrl: 'https://mock-rpc-url-2',
-          });
-          network.mockEssentialRpcCalls();
-
-          controller.setActiveNetwork('testNetworkConfigurationId2');
-
-          expect(
-            controller.store.getState().previousProviderStore,
-          ).toStrictEqual({
-            type: 'rpc',
-            rpcUrl: 'https://mock-rpc-url-1',
-            chainId: '0x111',
-            ticker: 'TEST',
-          });
-        },
-      );
-    });
-
     it('overwrites the provider configuration given a networkConfigurationId that matches a configured networkConfiguration', async () => {
       await withController(
         {
@@ -4638,68 +4585,6 @@ describe('NetworkController', () => {
   describe('setProviderType', () => {
     for (const { networkType, chainId, ticker } of INFURA_NETWORKS) {
       describe(`given a type of "${networkType}"`, () => {
-        it('stores the current provider configuration before overwriting it', async () => {
-          await withController(
-            {
-              state: {
-                provider: {
-                  type: 'rpc',
-                  rpcUrl: 'http://mock-rpc-url-2',
-                  chainId: '0xtest2',
-                  nickname: 'test-chain-2',
-                  ticker: 'TEST2',
-                  rpcPrefs: {
-                    blockExplorerUrl: 'test-block-explorer-2.com',
-                  },
-                },
-                networkConfigurations: {
-                  testNetworkConfigurationId1: {
-                    rpcUrl: 'https://mock-rpc-url-1',
-                    chainId: '0xtest',
-                    nickname: 'test-chain',
-                    ticker: 'TEST',
-                    rpcPrefs: {
-                      blockExplorerUrl: 'test-block-explorer.com',
-                    },
-                    id: 'testNetworkConfigurationId1',
-                  },
-                  testNetworkConfigurationId2: {
-                    rpcUrl: 'http://mock-rpc-url-2',
-                    chainId: '0xtest2',
-                    nickname: 'test-chain-2',
-                    ticker: 'TEST2',
-                    rpcPrefs: {
-                      blockExplorerUrl: 'test-block-explorer-2.com',
-                    },
-                    id: 'testNetworkConfigurationId2',
-                  },
-                },
-              },
-            },
-            async ({ controller }) => {
-              const network = new InfuraNetworkCommunications({
-                infuraNetwork: networkType,
-              });
-              network.mockEssentialRpcCalls();
-
-              controller.setProviderType(networkType);
-
-              expect(
-                controller.store.getState().previousProviderStore,
-              ).toStrictEqual({
-                type: 'rpc',
-                rpcUrl: 'http://mock-rpc-url-2',
-                chainId: '0xtest2',
-                nickname: 'test-chain-2',
-                ticker: 'TEST2',
-                rpcPrefs: {
-                  blockExplorerUrl: 'test-block-explorer-2.com',
-                },
-              });
-            },
-          );
-        });
-
         it(`overwrites the provider configuration using type: "${networkType}", chainId: "${chainId}", and ticker "${ticker}", clearing rpcUrl and nickname, and removing rpcPrefs`, async () => {
           await withController(
             {
@@ -5876,8 +5761,8 @@ describe('NetworkController', () => {
 
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               expect(controller.store.getState().provider).toStrictEqual({
@@ -5942,8 +5827,8 @@ describe('NetworkController', () => {
                   const networkWillChange = await waitForPublishedEvents({
                     messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.NetworkWillChange,
-                    operation: () => {
-                      controller.rollbackToPreviousProvider();
+                    operation: async () => {
+                      await controller.rollbackToPreviousProvider();
                     },
                   });
 
@@ -6006,6 +5891,8 @@ describe('NetworkController', () => {
                     // happens before networkDidChange
                     count: 1,
                     operation: () => {
+                      // Intentionally not awaited because we want to check state
+                      // while this operation is in-progress
                       controller.rollbackToPreviousProvider();
                     },
                   });
@@ -6074,6 +5961,8 @@ describe('NetworkController', () => {
                     // happens before networkDidChange
                     count: 1,
                     operation: () => {
+                      // Intentionally not awaited because we want to check state
+                      // while this operation is in-progress
                       controller.rollbackToPreviousProvider();
                     },
                   });
@@ -6130,8 +6019,8 @@ describe('NetworkController', () => {
 
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
 
@@ -6192,8 +6081,8 @@ describe('NetworkController', () => {
                 controller.getProviderAndBlockTracker();
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               const { provider: providerAfter } =
@@ -6253,8 +6142,8 @@ describe('NetworkController', () => {
                   const networkDidChange = await waitForPublishedEvents({
                     messenger: unrestrictedMessenger,
                     eventType: NetworkControllerEventType.NetworkDidChange,
-                    operation: () => {
-                      controller.rollbackToPreviousProvider();
+                    operation: async () => {
+                      await controller.rollbackToPreviousProvider();
                     },
                   });
                   expect(networkDidChange).toBeTruthy();
@@ -6318,7 +6207,7 @@ describe('NetworkController', () => {
               await waitForLookupNetworkToComplete({
                 controller,
                 operation: async () => {
-                  controller.rollbackToPreviousProvider();
+                  await controller.rollbackToPreviousProvider();
                 },
               });
 
@@ -6381,8 +6270,8 @@ describe('NetworkController', () => {
 
               await waitForLookupNetworkToComplete({
                 controller,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               expect(controller.store.getState().networkStatus).toBe(
@@ -6438,8 +6327,8 @@ describe('NetworkController', () => {
               await waitForLookupNetworkToComplete({
                 controller,
                 numberOfNetworkDetailsChanges: 2,
-                operation: () => {
-                  controller.rollbackToPreviousProvider();
+                operation: async () => {
+                  await controller.rollbackToPreviousProvider();
                 },
               });
               expect(controller.store.getState().networkDetails).toStrictEqual({
@@ -6523,8 +6412,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             expect(controller.store.getState().provider).toStrictEqual({
@@ -6590,8 +6479,8 @@ describe('NetworkController', () => {
                 const networkWillChange = await waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.NetworkWillChange,
-                  operation: () => {
-                    controller.rollbackToPreviousProvider();
+                  operation: async () => {
+                    await controller.rollbackToPreviousProvider();
                   },
                 });
 
@@ -6647,6 +6536,8 @@ describe('NetworkController', () => {
                   // happens before networkDidChange
                   count: 1,
                   operation: () => {
+                    // Intentionally not awaited because we want to check state
+                    // while this operation is in-progress
                     controller.rollbackToPreviousProvider();
                   },
                 });
@@ -6710,6 +6601,8 @@ describe('NetworkController', () => {
                   // happens before networkDidChange
                   count: 1,
                   operation: () => {
+                    // Intentionally not awaited because we want to check state
+                    // while this operation is in-progress
                     controller.rollbackToPreviousProvider();
                   },
                 });
@@ -6761,8 +6654,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
 
@@ -6818,8 +6711,8 @@ describe('NetworkController', () => {
               controller.getProviderAndBlockTracker();
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             const { provider: providerAfter } =
@@ -6874,8 +6767,8 @@ describe('NetworkController', () => {
                 const networkDidChange = await waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.NetworkDidChange,
-                  operation: () => {
-                    controller.rollbackToPreviousProvider();
+                  operation: async () => {
+                    await controller.rollbackToPreviousProvider();
                   },
                 });
                 expect(networkDidChange).toBeTruthy();
@@ -6929,8 +6822,8 @@ describe('NetworkController', () => {
                 const infuraIsUnblocked = await waitForPublishedEvents({
                   messenger: unrestrictedMessenger,
                   eventType: NetworkControllerEventType.InfuraIsUnblocked,
-                  operation: () => {
-                    controller.rollbackToPreviousProvider();
+                  operation: async () => {
+                    await controller.rollbackToPreviousProvider();
                   },
                 });
 
@@ -6986,8 +6879,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             expect(controller.store.getState().networkStatus).toBe('unknown');
@@ -7040,8 +6933,8 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              operation: () => {
-                controller.rollbackToPreviousProvider();
+              operation: async () => {
+                await controller.rollbackToPreviousProvider();
               },
             });
             expect(controller.store.getState().networkDetails).toStrictEqual({

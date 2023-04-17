@@ -12,8 +12,7 @@ import {
 } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { Text } from '../../component-library';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { Text, IconName } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -74,7 +73,7 @@ export const AccountListItemMenu = ({
             : openBlockExplorer
         }
         subtitle={blockExplorerUrlSubTitle || null}
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
       >
         <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
@@ -92,7 +91,7 @@ export const AccountListItemMenu = ({
           onClose();
           closeMenu?.();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
@@ -108,7 +107,7 @@ export const AccountListItemMenu = ({
             );
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>
