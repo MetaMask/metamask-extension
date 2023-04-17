@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import {
-  FONT_STYLE,
-  FONT_WEIGHT,
-  OVERFLOW_WRAP,
-  TEXT_ALIGN,
+  FontStyle,
+  FontWeight,
+  OverflowWrap,
+  TextAlign,
   TextColor,
-  TEXT_TRANSFORM,
+  TextTransform,
   TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
@@ -99,9 +99,9 @@ describe('Text', () => {
   it('should render the Text with proper font weight class name', () => {
     const { getByText } = render(
       <>
-        <Text fontWeight={FONT_WEIGHT.BOLD}>bold</Text>
-        <Text fontWeight={FONT_WEIGHT.MEDIUM}>medium</Text>
-        <Text fontWeight={FONT_WEIGHT.NORMAL}>normal</Text>
+        <Text fontWeight={FontWeight.Bold}>bold</Text>
+        <Text fontWeight={FontWeight.Medium}>medium</Text>
+        <Text fontWeight={FontWeight.Normal}>normal</Text>
       </>,
     );
     expect(getByText('bold')).toHaveClass('mm-text--font-weight-bold');
@@ -156,8 +156,8 @@ describe('Text', () => {
   it('should render the Text with proper font style class name', () => {
     const { getByText } = render(
       <>
-        <Text fontStyle={FONT_STYLE.ITALIC}>italic</Text>
-        <Text fontStyle={FONT_STYLE.NORMAL}>normal</Text>
+        <Text fontStyle={FontStyle.Italic}>italic</Text>
+        <Text fontStyle={FontStyle.Normal}>normal</Text>
       </>,
     );
     expect(getByText('italic')).toHaveClass('mm-text--font-style-italic');
@@ -167,11 +167,11 @@ describe('Text', () => {
   it('should render the Text with proper text align class name', () => {
     const { getByText } = render(
       <>
-        <Text textAlign={TEXT_ALIGN.LEFT}>left</Text>
-        <Text textAlign={TEXT_ALIGN.CENTER}>center</Text>
-        <Text textAlign={TEXT_ALIGN.RIGHT}>right</Text>
-        <Text textAlign={TEXT_ALIGN.JUSTIFY}>justify</Text>
-        <Text textAlign={TEXT_ALIGN.END}>end</Text>
+        <Text textAlign={TextAlign.Left}>left</Text>
+        <Text textAlign={TextAlign.Center}>center</Text>
+        <Text textAlign={TextAlign.Right}>right</Text>
+        <Text textAlign={TextAlign.Justify}>justify</Text>
+        <Text textAlign={TextAlign.End}>end</Text>
       </>,
     );
 
@@ -185,8 +185,8 @@ describe('Text', () => {
   it('should render the Text with proper overflow wrap class name', () => {
     const { getByText } = render(
       <>
-        <Text overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>break-word</Text>
-        <Text overflowWrap={OVERFLOW_WRAP.NORMAL}>normal</Text>
+        <Text overflowWrap={OverflowWrap.BreakWord}>break-word</Text>
+        <Text overflowWrap={OverflowWrap.Normal}>normal</Text>
       </>,
     );
     expect(getByText('break-word')).toHaveClass(
@@ -207,9 +207,9 @@ describe('Text', () => {
   it('should render the Text with proper text transform class name', () => {
     const { getByText } = render(
       <>
-        <Text textTransform={TEXT_TRANSFORM.UPPERCASE}>uppercase</Text>
-        <Text textTransform={TEXT_TRANSFORM.LOWERCASE}>lowercase</Text>
-        <Text textTransform={TEXT_TRANSFORM.CAPITALIZE}>capitalize</Text>
+        <Text textTransform={TextTransform.Uppercase}>uppercase</Text>
+        <Text textTransform={TextTransform.Lowercase}>lowercase</Text>
+        <Text textTransform={TextTransform.Capitalize}>capitalize</Text>
       </>,
     );
     expect(getByText('uppercase')).toHaveClass(
