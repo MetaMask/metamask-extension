@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
 import {
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PopoverHeaderProps } from '.';
@@ -51,7 +51,7 @@ export const PopoverHeader = forwardRef<PopoverHeaderProps>(
         {...props}
       >
         {typeof children === 'string' ? (
-          <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+          <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {children}
           </Text>
         ) : (
