@@ -2914,14 +2914,6 @@
     "message": "Allow the snap to perform actions that run periodically at fixed times, dates, or intervals. This can be used to trigger time-sensitive interactions or notifications.",
     "description": "An extended description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Display a confirmation in MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
-  "permission_customConfirmationDescription": {
-    "message": "Allow the snap to display MetaMask popups with custom text, and buttons to approve or reject an action.",
-    "description": "An extended description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Display dialog windows in MetaMask.",
     "description": "The description for the `snap_dialog` permission"
