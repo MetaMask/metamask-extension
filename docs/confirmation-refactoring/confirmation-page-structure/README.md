@@ -39,7 +39,7 @@ Other confirmation components listed above map to different types of transaction
    - Convert `confirm-transaction-base` into a functional components and extract out all of these functions into a hook - `handleEdit`, `handleCancelAll`, `handleCancel`, `handleSubmit`, `handleSetApprovalForAll`, etc.
 2. ### [confirm-transaction-base-container](https://github.com/MetaMask/metamask-extension/tree/develop/ui/pages/confirm-transaction-base/confirm-transaction-base.container.js) cleanup:
    This container is doing much work to query and get required transaction related values from state and pass over to `confirm-transaction-base` component. As we refactor state we should get rid of this component.
-   - remove use of `state.confirmTransaction` from the compnent
+   - remove the use of `state.confirmTransaction` from the component
    - create hook to get values derived from metamask state and active transaction.
      State cleanup is detailed more in a separate document [here](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-state-management).
 3. ### [confirm-page-container](https://github.com/MetaMask/metamask-extension/tree/03ccc5366cf31c9fa0fedc2fac533ebc64e6f2b4/ui/components/app/confirm-page-container) cleanup:
