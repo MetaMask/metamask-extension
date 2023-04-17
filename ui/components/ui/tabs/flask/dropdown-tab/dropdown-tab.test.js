@@ -30,7 +30,7 @@ describe('DropdownTab', () => {
 
     fireEvent.click(container.firstChild);
 
-    expect(onClick).toHaveBeenCalled();
+    expect(onClick).toHaveBeenCalledWith(args.tabIndex);
   });
 
   it('registers selection', () => {
