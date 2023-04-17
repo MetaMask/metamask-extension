@@ -3786,11 +3786,11 @@
   "stable": {
     "message": "Stable"
   },
-  "stake": {
-    "message": "Stake"
-  },
   "stableLowercase": {
     "message": "stable"
+  },
+  "stake": {
+    "message": "Stake"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
