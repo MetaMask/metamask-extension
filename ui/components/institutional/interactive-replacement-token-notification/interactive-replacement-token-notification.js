@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCurrentKeyring,
-  getSelectedAddress,
-} from '../../../selectors';
+import PropTypes from 'prop-types';
+import { getCurrentKeyring, getSelectedAddress } from '../../../selectors';
 import { getInteractiveReplacementToken } from '../../../selectors/institutional/selectors';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,8 +19,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   ButtonLink,
   Text,
 } from '../../component-library';
@@ -42,10 +40,6 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
   );
 
   const [showNotification, setShowNotification] = useState(isVisible);
-
-  useEffect(() => {
-    handleShowNotification();
-  }, []);
 
   const handleShowNotification = async () => {
     const hasInteractiveReplacementToken =
@@ -70,7 +64,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
       ),
     );
 
-    const showNotification =
+    const showNotificationValue =
       isUnlocked &&
       interactiveReplacementToken.oldRefreshToken &&
       custodyAccountDetails &&
@@ -90,17 +84,21 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
       tokenAccount?.token + interactiveReplacementToken.url,
     );
 
-    console.log('showNotification', showNotification);
+    console.log('showNotificationValue', showNotificationValue);
     console.log(
       'has the same old token?',
       refreshTokenAccount === interactiveReplacementToken.oldRefreshToken,
     );
 
     setShowNotification(
-      showNotification &&
+      showNotificationValue &&
         refreshTokenAccount === interactiveReplacementToken.oldRefreshToken,
     );
   };
+
+  useEffect(() => {
+    handleShowNotification();
+  }, []);
 
   return showNotification ? (
     <Box
@@ -115,9 +113,9 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
       data-testid="interactive-replacement-token-notification"
     >
       <Icon
-        name={ICON_NAMES.DANGER}
+        name={IconName.Danger}
         color={IconColor.errorDefault}
-        size={ICON_SIZES.XL}
+        size={IconSize.Xl}
       />
       <Text color={TextColor.errorDefault}>{t('custodySessionExpired')}</Text>
       <ButtonLink
@@ -135,3 +133,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
 };
 
 export default InteractiveReplacementTokenNotification;
+
+InteractiveReplacementTokenNotification.propTypes = {
+  isVisible: PropTypes.bool,
+};

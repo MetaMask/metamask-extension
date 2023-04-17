@@ -1,10 +1,10 @@
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import InteractiveReplacementTokenNotification from './interactive-replacement-token-notification';
 

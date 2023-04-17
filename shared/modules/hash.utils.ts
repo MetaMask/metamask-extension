@@ -2,7 +2,7 @@
 export async function sha256(str: string): Promise<string> {
   const buf = await crypto.subtle.digest(
     'SHA-256',
-    new TextEncoder().encode(str)
+    new TextEncoder().encode(str),
   );
 
   return Array.prototype.map
