@@ -58,7 +58,7 @@ export default function MultilayerFeeMessage({
       try {
         const result = await fetchEstimatedL1Fee(
           transaction.chainId,
-          transaction.txParams,
+          transaction,
         );
         setLayer1Total(result);
       } catch (e) {
