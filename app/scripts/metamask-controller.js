@@ -60,7 +60,6 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
-import { assert } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
 
 import {
