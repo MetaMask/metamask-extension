@@ -33,7 +33,7 @@ export const Anchored = () => {
           Menu Item 1
         </MenuItem>
         <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.Eye_Slsh} onClick={action('Menu Item 3')}>
+        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
           Menu Item 3
         </MenuItem>
       </Menu>
