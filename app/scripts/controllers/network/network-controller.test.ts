@@ -730,7 +730,7 @@ describe('NetworkController', () => {
           await expect(async () => {
             await controller.initializeProvider();
           }).rejects.toThrow(
-            'NetworkController - _configureProvider - unknown type "undefined"',
+            'NetworkController - #configureProvider - unknown type "undefined"',
           );
         },
       );
