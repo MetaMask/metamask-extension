@@ -1054,7 +1054,7 @@
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@ngraveio/bc-ur>assert>object-is": true,
         "@storybook/api>telejson>is-regex": true,
-        "mocha>object.assign>object-keys": true,
+        "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
@@ -2484,7 +2484,7 @@
     },
     "browserify>has": {
       "packages": {
-        "mocha>object.assign>function-bind": true
+        "browserify>has>function-bind": true
       }
     },
     "browserify>os-browserify": {
@@ -3539,7 +3539,7 @@
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
-        "mocha>object.assign>object-keys": true
+        "globalthis>define-properties>object-keys": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -4159,7 +4159,7 @@
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -4171,7 +4171,7 @@
       },
       "packages": {
         "browserify>has": true,
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
