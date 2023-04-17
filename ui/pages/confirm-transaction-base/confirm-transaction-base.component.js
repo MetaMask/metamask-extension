@@ -30,18 +30,9 @@ import {
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
-import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
-import GasDetailsItem from '../../components/app/gas-details-item';
-import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
-import Typography from '../../components/ui/typography/typography';
-import {
-  TextColor,
-  FONT_STYLE,
-  TypographyVariant,
-} from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -55,16 +46,13 @@ import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   addHexes,
   hexToDecimal,
-  hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
 import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
-
-const renderHeartBeatIfNotInTest = () =>
-  process.env.IN_TEST ? null : <LoadingHeartBeat />;
+import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -138,7 +126,6 @@ export default class ConfirmTransactionBase extends Component {
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
-    isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
     isHardwareWallet: PropTypes.bool,
@@ -324,11 +311,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       useNativeCurrencyAsPrimaryCurrency,
       primaryTotalTextOverrideMaxAmount,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      isMainnet,
       showLedgerSteps,
-      supportsEIP1559,
       isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
@@ -445,128 +428,6 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
-    const renderGasDetailsItem = () => {
-      return this.supportsEIP1559 ? (
-        <GasDetailsItem
-          key="gas_details"
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-        />
-      ) : (
-        <TransactionDetailItem
-          key="gas-item"
-          detailTitle={
-            txData.dappSuggestedGasFees ? (
-              <>
-                {t('transactionDetailGasHeading')}
-                <InfoTooltip
-                  contentText={t('transactionDetailDappGasTooltip')}
-                  position="top"
-                >
-                  <i className="fa fa-info-circle" />
-                </InfoTooltip>
-              </>
-            ) : (
-              <>
-                {t('transactionDetailGasHeading')}
-                <InfoTooltip
-                  contentText={
-                    <>
-                      <p>
-                        {t('transactionDetailGasTooltipIntro', [
-                          isMainnet ? t('networkNameEthereum') : '',
-                        ])}
-                      </p>
-                      <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                      <p>
-                        <a
-                          href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {t('transactionDetailGasTooltipConversion')}
-                        </a>
-                      </p>
-                    </>
-                  }
-                  position="top"
-                >
-                  <i className="fa fa-info-circle" />
-                </InfoTooltip>
-              </>
-            )
-          }
-          detailText={
-            useCurrencyRateCheck && (
-              <div className="confirm-page-container-content__currency-container test">
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
-                  value={hexMinimumTransactionFee}
-                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                />
-              </div>
-            )
-          }
-          detailTotal={
-            <div className="confirm-page-container-content__currency-container">
-              {renderHeartBeatIfNotInTest()}
-              <UserPreferencedCurrencyDisplay
-                type={PRIMARY}
-                value={hexMinimumTransactionFee}
-                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                numberOfDecimals={6}
-              />
-            </div>
-          }
-          subText={
-            <>
-              <strong key="editGasSubTextFeeLabel">
-                {t('editGasSubTextFeeLabel')}
-              </strong>
-              <div
-                key="editGasSubTextFeeValue"
-                className="confirm-page-container-content__currency-container"
-              >
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
-              </div>
-            </>
-          }
-          subTitle={
-            <>
-              {txData.dappSuggestedGasFees ? (
-                <Typography
-                  variant={TypographyVariant.H7}
-                  fontStyle={FONT_STYLE.ITALIC}
-                  color={TextColor.textAlternative}
-                >
-                  {t('transactionDetailDappGasMoreInfo')}
-                </Typography>
-              ) : (
-                ''
-              )}
-              {supportsEIP1559 && (
-                <GasTiming
-                  maxPriorityFeePerGas={hexWEIToDecGWEI(
-                    maxPriorityFeePerGas ||
-                      txData.txParams.maxPriorityFeePerGas,
-                  ).toString()}
-                  maxFeePerGas={hexWEIToDecGWEI(
-                    maxFeePerGas || txData.txParams.maxFeePerGas,
-                  ).toString()}
-                />
-              )}
-            </>
-          }
-        />
-      );
-    };
-
     const simulationFailureWarning = () => (
       <div className="confirm-page-container-content__error-container">
         <SimulationErrorMessage
@@ -613,9 +474,11 @@ export default class ConfirmTransactionBase extends Component {
           }
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning &&
-              !isMultiLayerFeeNetwork &&
-              renderGasDetailsItem(),
+            !renderSimulationFailureWarning && !isMultiLayerFeeNetwork && (
+              <ConfirmGasDisplay
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              />
+            ),
             !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
               <MultiLayerFeeMessage
                 transaction={txData}

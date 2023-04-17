@@ -2697,10 +2697,6 @@
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "MetaMask に確認を表示します。",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask にダイアログウィンドウを表示します。",
     "description": "The description for the `snap_dialog` permission"

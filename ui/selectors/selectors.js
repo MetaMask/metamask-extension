@@ -268,6 +268,12 @@ export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
   const type = currentKeyring && currentKeyring.type;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  if (type.startsWith('Custody')) {
+    return 'custody';
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   switch (type) {
     case KeyringType.trezor:
     case KeyringType.ledger:
