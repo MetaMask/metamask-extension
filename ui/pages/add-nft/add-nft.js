@@ -8,6 +8,7 @@ import {
   DISPLAY,
   FONT_WEIGHT,
   TypographyVariant,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 
 import Box from '../../components/ui/box';
@@ -44,12 +45,7 @@ import {
 } from '../../components/component-library/icon/deprecated';
 import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
 import Checkbox from '../../components/ui/check-box';
-import { Text } from '../../../ui/components/component-library/';
-import {
-  TextVariant,
-} from '../../helpers/constants/design-system';
-// } from '../../../helpers/constants/design-system';
-
+import { Text } from '../../components/component-library';
 
 export default function AddNft() {
   const t = useI18nContext();
@@ -133,7 +129,9 @@ export default function AddNft() {
 
   const handleAddMultipleNft = async () => {
     try {
-      await dispatch(addMultipleNftsVerifyOwnership(nftAddress, multipleTokenIds));
+      await dispatch(
+        addMultipleNftsVerifyOwnership(nftAddress, multipleTokenIds),
+      );
       const newNftDropdownState = {
         ...nftsDropdownState,
         [selectedAddress]: {
@@ -183,7 +181,6 @@ export default function AddNft() {
       });
     });
 
-
     history.push(DEFAULT_ROUTE);
   };
 
@@ -193,19 +190,27 @@ export default function AddNft() {
   };
 
   const validateAndSetTokenId = (val) => {
-    checkMultiNFT ? validateAndSetMultiTokenId(val) : validateAndSetSingleTokenId(val);
+    checkMultiNFT
+      ? validateAndSetMultiTokenId(val)
+      : validateAndSetSingleTokenId(val);
   };
 
   const validateAndSetSingleTokenId = (val) => {
     setDisabled(!isValidHexAddress(nftAddress) || !val || isNaN(Number(val)));
     setTokenId(val);
-  }
+  };
 
   const validateAndSetMultiTokenId = (val) => {
     const tokens = val.split(',');
-    setDisabled(!isValidHexAddress(nftAddress) || !tokens || tokens.some(token => token.trim().length === 0 || isNaN(Number(token))));
+    setDisabled(
+      !isValidHexAddress(nftAddress) ||
+        !tokens ||
+        tokens.some(
+          (token) => token.trim().length === 0 || isNaN(Number(token)),
+        ),
+    );
     setMultipleTokenIds(tokens);
-  }
+  };
 
   return (
     <PageContainer
@@ -276,14 +281,14 @@ export default function AddNft() {
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
             />
-          <Text variant={TextVariant.bodySm}>{"Add multiple NFT"}</Text>
-          <Checkbox
-            id="multipleNFTCheckbox"
-            checked={checkMultiNFT}
-            className="unconnected-account-alert__checkbox"
-            onClick={() => setCheckMultiNFT((checked) => !checked)}
-            title={"Add multiple NFT's"}
-          />
+            <Text variant={TextVariant.bodySm}>Add multiple NFT</Text>
+            <Checkbox
+              id="multipleNFTCheckbox"
+              checked={checkMultiNFT}
+              className="unconnected-account-alert__checkbox"
+              onClick={() => setCheckMultiNFT((checked) => !checked)}
+              title={"Add multiple NFT's"}
+            />
           </Box>
         </Box>
       }

@@ -2337,11 +2337,9 @@ export async function getMultipleTokenStandardAndDetails(
   userAddress: string,
   tokenIds: string[],
 ): Promise<
-  Array<
-    Awaited<
-      ReturnType<AssetsContractController['getTokenStandardAndDetails']>
-    > & { balance?: string }
-  >
+  (Awaited<
+    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+  > & { balance?: string })[]
 > {
   const tokenDetailsPromises = tokenIds.map((tokenId) =>
     getTokenStandardAndDetails(address, userAddress, tokenId),
