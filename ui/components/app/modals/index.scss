@@ -12,6 +12,14 @@
 @import 'convert-token-to-nft-modal/index';
 @import 'contract-details-modal/index';
 @import 'hold-to-reveal-modal/index';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+@import '../../institutional/confirm-remove-jwt/index';
+@import '../../institutional/custody-confirm-link/index';
+@import '../../institutional/compliance-modal/index';
+@import '../../institutional/compliance-details-modal/index';
+@import '../../institutional/interactive-replacement-token-modal/index';
+@import '../../institutional/transaction-failed/index';
+///: END:ONLY_INCLUDE_IN
 
 .modal {
   z-index: 1050;

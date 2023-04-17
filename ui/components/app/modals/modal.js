@@ -6,9 +6,20 @@ import * as actions from '../../../store/actions';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt';
+import TransactionFailed from '../../institutional/transaction-failed';
+import CustodyConfirmLink from '../../institutional/custody-confirm-link';
+import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
+import ComplianceModal from '../../institutional/compliance-modal';
+import ComplianceDetailsModal from '../../institutional/compliance-details-modal';
+///: END:ONLY_INCLUDE_IN
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
@@ -26,6 +37,9 @@ import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: END:ONLY_INCLUDE_IN
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -74,6 +88,34 @@ const accountModalStyle = {
     borderRadius: '4px',
   },
 };
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+const custodyConfirmModalStyle = {
+  mobileModalStyle: {
+    width: '95%',
+    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    borderRadius: '4px',
+    top: '30%',
+    transform: 'none',
+    left: '0',
+    right: '0',
+    margin: '0 auto',
+  },
+  laptopModalStyle: {
+    width: '360px',
+    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    borderRadius: '4px',
+    top: '30%',
+    transform: 'none',
+    left: '0',
+    right: '0',
+    margin: '0 auto',
+  },
+  contentStyle: {
+    borderRadius: '4px',
+  },
+};
+///: END:ONLY_INCLUDE_IN
 
 const MODALS = {
   ONBOARDING_ADD_NETWORK: {
@@ -277,6 +319,84 @@ const MODALS = {
     },
   },
 
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  COMPLIANCE: {
+    contents: <ComplianceModal />,
+    onHide: (props) => props.hideWarning(),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  COMPLIANCE_DETAILS: {
+    contents: <ComplianceDetailsModal />,
+    onHide: (props) => props.hideWarning(),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      padding: '0px',
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_REMOVE_JWT: {
+    contents: <ConfirmRemoveJWT />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  TRANSACTION_FAILED: {
+    disableBackdropClick: true,
+    contents: <TransactionFailed />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CUSTODY_CONFIRM_LINK: {
+    contents: <CustodyConfirmLink />,
+    // eslint-disable-next-line no-empty-function
+    onHide: () => {},
+    ...custodyConfirmModalStyle,
+  },
+
+  INTERACTIVE_REPLACEMENT_TOKEN_MODAL: {
+    contents: <InteractiveReplacementTokenModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+  ///: END:ONLY_INCLUDE_IN
+
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -296,6 +416,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal());
@@ -306,6 +429,10 @@ function mapDispatchToProps(dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning());
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -315,6 +442,9 @@ class Modal extends Component {
     hideModal: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    setWaitForConfirmDeepLinkDialog: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   hide() {
@@ -345,6 +475,11 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            if (this.props.modalState.name === 'CUSTODY_CONFIRM_LINK') {
+              this.props.setWaitForConfirmDeepLinkDialog(false);
+            }
+            ///: END:ONLY_INCLUDE_IN
             modal.onHide({
               hideWarning: this.props.hideWarning,
             });
