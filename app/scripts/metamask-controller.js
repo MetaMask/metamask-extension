@@ -544,7 +544,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
-        nativeCurrency: this.networkController.providerStore.getState().ticker,
+        nativeCurrency: this.networkController.store.getState().provider.ticker,
       },
     });
 
@@ -981,8 +981,16 @@ export default class MetamaskController extends EventEmitter {
       getNetworkId: () => this.networkController.store.getState().networkId,
       getNetworkStatus: () =>
         this.networkController.store.getState().networkStatus,
-      onNetworkStateChange: (listener) =>
-        this.networkController.networkIdStore.subscribe(listener),
+      onNetworkStateChange: (listener) => {
+        let previousNetworkId =
+          this.networkController.store.getState().networkId;
+        this.networkController.store.subscribe((state) => {
+          if (previousNetworkId !== state.networkId) {
+            listener();
+            previousNetworkId = state.networkId;
+          }
+        });
+      },
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
       preferencesStore: this.preferencesController.store,
