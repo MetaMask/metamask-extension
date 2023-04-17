@@ -2,7 +2,7 @@ import React, { forwardRef, Ref } from 'react';
 import classnames from 'classnames';
 import Box from '../../ui/box';
 import {
-  FONT_WEIGHT,
+  FontWeight,
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -49,7 +49,7 @@ export const Text = forwardRef(function Text(
   let strongTagFontWeight;
 
   if (Tag === 'strong') {
-    strongTagFontWeight = FONT_WEIGHT.BOLD;
+    strongTagFontWeight = FontWeight.Bold;
   }
 
   const computedClassName = classnames(

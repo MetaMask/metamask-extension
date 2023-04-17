@@ -62,6 +62,26 @@
     }
   }
 
+  &-scroll-button {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--color-primary-default);
+    z-index: 201;
+    cursor: pointer;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   &-arrow {
     width: 22px;
     height: 22px;
