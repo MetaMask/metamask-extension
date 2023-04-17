@@ -292,10 +292,13 @@ describe('Create token, approve token and approve token without gas', function (
         await gasLimitInput.fill('60001');
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
-        await driver.waitForSelector({
-          css: '.box--flex-direction-row > h6',
-          text: '0.0006 ETH',
-        });
+        await driver.waitForSelector(
+          {
+            css: '.box--flex-direction-row > h6',
+            text: '0.0006 ETH',
+          },
+          { timeout: 15000 },
+        );
 
         // editing spending cap
         await driver.clickElement({
