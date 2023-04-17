@@ -3,6 +3,7 @@
 import {
   buildMockParams,
   buildRequestWithReplacedBlockParam,
+  ProviderType,
   waitForPromiseToBeFulfilledAfterRunningAllTimers,
   withMockedCommunications,
   withNetworkClient,
@@ -12,6 +13,12 @@ import {
   buildInfuraClientRetriesExhaustedErrorMessage,
   buildJsonRpcEngineEmptyResponseErrorMessage,
 } from './shared-tests';
+
+type TestsForRpcMethodSupportingBlockParam = {
+  providerType: ProviderType;
+  blockParamIndex: number;
+  numberOfParameters: number;
+};
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method that
@@ -28,8 +35,12 @@ import {
  */
 /* eslint-disable-next-line jest/no-export */
 export function testsForRpcMethodSupportingBlockParam(
-  method,
-  { blockParamIndex, numberOfParameters, providerType },
+  method: string,
+  {
+    blockParamIndex,
+    numberOfParameters,
+    providerType,
+  }: TestsForRpcMethodSupportingBlockParam,
 ) {
   describe.each([
     ['given no block tag', undefined],
@@ -1718,9 +1729,9 @@ export function testsForRpcMethodSupportingBlockParam(
         [
           ['less than the current block number', '0x200'],
           ['equal to the curent block number', '0x100'],
-        ],
+        ] as any,
         '%s',
-        (_nestedDesc, currentBlockNumber) => {
+        (_nestedDesc: string, currentBlockNumber: string) => {
           it('makes an additional request to the RPC endpoint', async () => {
             await withMockedCommunications({ providerType }, async (comms) => {
               const request = {
