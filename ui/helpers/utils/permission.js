@@ -15,13 +15,23 @@ import {
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
+  AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   Text,
+  Icon,
   ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
-import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
+import {
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library/icon/deprecated';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { Color, FONT_WEIGHT, TextVariant } from '../constants/design-system';
+import {
+  Color,
+  FONT_WEIGHT,
+  IconColor,
+  TextVariant,
+} from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -31,10 +41,33 @@ import {
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const RIGHT_INFO_ICON = (
+  <Icon
+    name={ICON_NAMES.INFO}
+    size={ICON_SIZES.SM}
+    color={IconColor.iconMuted}
+  />
+);
+///: END:ONLY_INCLUDE_IN
+
+function getLeftIcon(iconName) {
+  return (
+    <AvatarIcon
+      iconName={iconName}
+      size={ICON_SIZES.SM}
+      iconProps={{
+        size: ICON_SIZES.XS,
+      }}
+    />
+  );
+}
+
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: ICON_NAMES.EYE,
+    leftIcon: getLeftIcon(ICON_NAMES.EYE),
+    rightIcon: null,
     weight: 2,
   }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -251,7 +284,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      leftIcon: ICON_NAMES.FLASH,
+      leftIcon: getLeftIcon(ICON_NAMES.FLASH),
+      rightIcon: RIGHT_INFO_ICON,
     };
 
     return Object.keys(snaps).map((snapId) => {
@@ -373,7 +407,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: ICON_NAMES.QUESTION,
+    leftIcon: getLeftIcon(ICON_NAMES.QUESTION),
+    rightIcon: null,
     weight: 4,
   }),
 });

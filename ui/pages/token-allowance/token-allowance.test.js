@@ -237,16 +237,16 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Set a spending cap for your')).toBeInTheDocument();
   });
 
-  it('should click Verify contract details and show popup Contract details, then close popup', () => {
+  it('should click Verify third-party details and show popup Third-party details, then close popup', () => {
     const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
-    const verifyContractDetails = getByText('Verify contract details');
-    fireEvent.click(verifyContractDetails);
+    const verifyThirdPartyDetails = getByText('Verify third-party details');
+    fireEvent.click(verifyThirdPartyDetails);
 
-    expect(getByText('Contract details')).toBeInTheDocument();
+    expect(getByText('Third-party details')).toBeInTheDocument();
 
     const gotIt = getByText('Got it');
     fireEvent.click(gotIt);
@@ -277,5 +277,23 @@ describe('TokenAllowancePage', () => {
     );
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
+  });
+
+  it('should render security provider response if transaction is malicious', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: 1,
+      reason:
+        'This has been flagged as potentially suspicious. If you sign, you could lose access to all of your NFTs and any funds or other assets in your wallet.',
+      reason_header: 'Warning',
+    };
+    const { getByText } = renderWithProvider(
+      <TokenAllowance
+        {...props}
+        txData={{ ...props.txData, securityProviderResponse }}
+      />,
+      store,
+    );
+
+    expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
   });
 });

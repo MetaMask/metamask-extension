@@ -9,7 +9,7 @@ import {
   ICON_SIZES,
 } from '../../../../components/component-library/icon/deprecated';
 
-import { ButtonIcon } from '../../../../components/component-library';
+import { ButtonIcon } from '../../../../components/component-library/button-icon/deprecated';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

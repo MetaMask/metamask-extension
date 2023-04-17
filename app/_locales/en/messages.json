@@ -109,6 +109,9 @@
   "about": {
     "message": "About"
   },
+  "accept": {
+    "message": "Accept"
+  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -304,6 +307,10 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
+  },
+  "agreeTermsOfUse": {
+    "message": "I agree to Metamask's $1",
+    "description": "$1 is the `terms` link"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -815,7 +822,7 @@
     "message": "Contract deployment"
   },
   "contractDescription": {
-    "message": "To protect yourself against scammers, take a moment to verify contract details."
+    "message": "To protect yourself against scammers, take a moment to verify third-party details."
   },
   "contractInteraction": {
     "message": "Contract interaction"
@@ -830,10 +837,10 @@
     "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
-    "message": "Contract requesting spending cap"
+    "message": "Third party requesting spending cap"
   },
   "contractTitle": {
-    "message": "Contract details"
+    "message": "Third-party details"
   },
   "contractToken": {
     "message": "Token contract"
@@ -928,6 +935,21 @@
   },
   "custodianAccount": {
     "message": "Custodian account"
+  },
+  "custodyRefreshTokenModalDescription": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyRefreshTokenModalDescription1": {
+    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
+  },
+  "custodyRefreshTokenModalDescription2": {
+    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
+  },
+  "custodyRefreshTokenModalSubtitle": {
+    "message": "Why am I seeing this?"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
   },
   "custom": {
     "message": "Advanced"
@@ -1808,14 +1830,14 @@
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
   "inputLogicEmptyState": {
-    "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
+    "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
   },
   "inputLogicEqualOrSmallerNumber": {
-    "message": "This allows the contract to spend $1 from your current balance.",
+    "message": "This allows the third party to spend $1 from your current balance.",
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+    "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
   "insightsFromSnap": {
     "message": "Insights from $1",
@@ -2485,6 +2507,9 @@
   "notifications18DescriptionTwo": {
     "message": "OpenSea is the first provider for this feature. More providers coming soon!",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
+  },
+  "notifications18Title": {
+    "message": "Stay safe with security alerts"
   },
   "notifications19ActionText": {
     "message": "Enable NFT autodetection"
@@ -3328,7 +3353,7 @@
     "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
-    "message": "This contract will be unable to spend any more of your current or future tokens."
+    "message": "This third party will be unable to spend any more of your current or future tokens."
   },
   "rpcUrl": {
     "message": "New RPC URL"
@@ -4292,6 +4317,15 @@
   "termsOfUse": {
     "message": "terms of use"
   },
+  "termsOfUseAgreeText": {
+    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+  },
+  "termsOfUseFooterText": {
+    "message": "Please scroll to read all sections"
+  },
+  "termsOfUseTitle": {
+    "message": "Our Terms of Use have updated"
+  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4660,7 +4694,7 @@
     "message": "Username"
   },
   "verifyContractDetails": {
-    "message": "Verify contract details"
+    "message": "Verify third-party details"
   },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
@@ -4746,7 +4780,7 @@
     "message": "Warning"
   },
   "warningTooltipText": {
-    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
