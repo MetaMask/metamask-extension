@@ -729,7 +729,7 @@ export class NetworkController extends EventEmitter {
    * @throws if the `type` is "rpc" or if it is not a known Infura-supported
    * network.
    */
-  setProviderType(type: string): void {
+  async setProviderType(type: string) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPES.RPC,
@@ -740,7 +740,7 @@ export class NetworkController extends EventEmitter {
       `Unknown Infura provider type "${type}".`,
     );
     const network = BUILT_IN_INFURA_NETWORKS[type];
-    this.#setProviderConfig({
+    await this.#setProviderConfig({
       type,
       rpcUrl: '',
       chainId: network.chainId,
@@ -753,8 +753,8 @@ export class NetworkController extends EventEmitter {
   /**
    * Re-initializes the provider and block tracker for the current network.
    */
-  resetConnection(): void {
-    this.#setProviderConfig(this.store.getState().provider);
+  async resetConnection() {
+    await this.#setProviderConfig(this.store.getState().provider);
   }
 
   /**
