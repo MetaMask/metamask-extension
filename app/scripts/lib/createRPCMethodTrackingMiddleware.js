@@ -1,5 +1,7 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+import { isValidAddress } from 'ethereumjs-util';
+
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { SECOND } from '../../../shared/constants/time';
@@ -168,8 +170,17 @@ export default function createRPCMethodTrackingMiddleware({
       if (event === MetaMetricsEventName.SignatureRequested) {
         eventProperties.signature_type = method;
 
-        const data = req?.params?.[0];
-        const from = req?.params?.[1];
+        // In personal messages the first param is data while in typed messages second param is data
+        // if condition below is added to ensure that the right params are captured as data and address.
+        let data;
+        let from;
+        if (isValidAddress(req?.params?.[1])) {
+          data = req?.params?.[0];
+          from = req?.params?.[1];
+        } else {
+          data = req?.params?.[1];
+          from = req?.params?.[0];
+        }
         const paramsExamplePassword = req?.params?.[2];
 
         const msgData = {
