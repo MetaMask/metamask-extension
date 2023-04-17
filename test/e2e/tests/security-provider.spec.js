@@ -76,6 +76,10 @@ describe('Transaction security provider', function () {
           .withPreferencesController({
             transactionSecurityCheckEnabled: true,
           })
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
@@ -130,6 +134,10 @@ describe('Transaction security provider', function () {
           .withPreferencesController({
             transactionSecurityCheckEnabled: true,
           })
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
@@ -183,6 +191,10 @@ describe('Transaction security provider', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             transactionSecurityCheckEnabled: true,
+          })
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
           })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -249,6 +261,10 @@ describe('Transaction security provider', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             transactionSecurityCheckEnabled: true,
+          })
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
           })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
