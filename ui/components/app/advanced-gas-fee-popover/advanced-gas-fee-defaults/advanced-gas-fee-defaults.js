@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
 import {
   DISPLAY,
@@ -18,6 +17,7 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Text } from '../../../component-library';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
@@ -88,7 +88,7 @@ const AdvancedGasFeeDefaults = () => {
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodySm} as="h6"
           color={TextColor.textAlternative}
           margin={0}
         >

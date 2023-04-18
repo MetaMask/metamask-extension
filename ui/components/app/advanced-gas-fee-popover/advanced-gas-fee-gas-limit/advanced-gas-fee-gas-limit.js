@@ -7,9 +7,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MAX_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import Button from '../../../ui/button';
 import FormField from '../../../ui/form-field';
-import Typography from '../../../ui/typography';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
+import { Text } from '../../../component-library';
 
 const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
   return bnLessThan(gasLimit, minimumGasLimitDec) ||
@@ -60,7 +60,7 @@ const AdvancedGasFeeGasLimit = () => {
   return (
     <Text
       tag={TextVariant.bodyMd}
-      variant={TextVariant.bodySm}
+      variant={TextVariant.bodySm} as="h6"
       className="advanced-gas-fee-gas-limit"
       marginTop={4}
       marginLeft={2}

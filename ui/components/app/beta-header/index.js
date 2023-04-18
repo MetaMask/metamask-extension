@@ -2,7 +2,6 @@ import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box/box';
-import Typography from '../../ui/typography/typography';
 import {
   TextVariant,
   Color,
@@ -19,6 +18,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../component-library/icon/deprecated';
+import { Text } from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -33,7 +33,7 @@ const BetaHeader = () => {
       alignItems={AlignItems.center}
     >
       <Text
-        variant={TypographyVariant.H7}
+        variant={TextVariant.bodySm} as="h6"
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
