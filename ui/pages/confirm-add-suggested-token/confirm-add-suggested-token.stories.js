@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { text } from '@storybook/addon-knobs';
 import { store, getNewState } from '../../../.storybook/preview';
 import { suggestedAssets as mockSuggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
 import { updateMetamaskState } from '../../store/actions';
