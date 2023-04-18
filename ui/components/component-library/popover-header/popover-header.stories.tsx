@@ -1,8 +1,8 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { BUTTON_SIZES, Button } from '..';
-import README from './README.mdx';
 import { PopoverHeader } from './popover-header';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader',
@@ -37,15 +37,11 @@ Children.args = {
 };
 
 export const OnBack: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader onBack={() => console.log('Back button click')} {...args}>
-    OnBack Demo
-  </PopoverHeader>
+  <PopoverHeader {...args}>OnBack Demo</PopoverHeader>
 );
 
 export const OnClose: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader onClose={() => console.log('Close button click')} {...args}>
-    OnClose Demo
-  </PopoverHeader>
+  <PopoverHeader {...args}>OnClose Demo</PopoverHeader>
 );
 
 export const StartAccessory: ComponentStory<typeof PopoverHeader> = (args) => (
