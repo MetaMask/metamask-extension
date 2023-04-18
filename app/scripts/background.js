@@ -79,7 +79,6 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
-global.METAMASK_NOTIFIER = notificationManager;
 
 let popupIsOpen = false;
 let notificationIsOpen = false;
@@ -208,6 +207,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
+ * @property {boolean} isNetworkMenuOpen - Represents whether the main network selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
@@ -267,7 +267,23 @@ async function initialize() {
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
-    setupController(initState, initLangCode);
+    let isFirstMetaMaskControllerSetup;
+    if (isManifestV3) {
+      const sessionData = await browser.storage.session.get([
+        'isFirstMetaMaskControllerSetup',
+      ]);
+
+      isFirstMetaMaskControllerSetup =
+        sessionData?.isFirstMetaMaskControllerSetup === undefined;
+      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+    }
+
+    setupController(
+      initState,
+      initLangCode,
+      {},
+      isFirstMetaMaskControllerSetup,
+    );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -409,8 +425,14 @@ export async function loadStateFromPersistence() {
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
+ * @param isFirstMetaMaskControllerSetup
  */
-export function setupController(initState, initLangCode, overrides) {
+export function setupController(
+  initState,
+  initLangCode,
+  overrides,
+  isFirstMetaMaskControllerSetup,
+) {
   //
   // MetaMask Controller
   //
@@ -435,6 +457,7 @@ export function setupController(initState, initLangCode, overrides) {
     },
     localStore,
     overrides,
+    isFirstMetaMaskControllerSetup,
   });
 
   setupEnsIpfsResolver({
@@ -663,7 +686,7 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyManager.on(
+  controller.encryptionPublicKeyController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -702,20 +725,13 @@ export function setupController(initState, initLangCode, overrides) {
   }
 
   function getUnapprovedTransactionCount() {
-    const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const { unapprovedEncryptionPublicKeyMsgCount } =
-      controller.encryptionPublicKeyManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
-      unapprovedTxCount +
-      unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount +
-      pendingApprovalCount +
-      waitingForUnlockCount
+      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
     );
   }
 
@@ -745,14 +761,9 @@ export function setupController(initState, initLangCode, overrides) {
           REJECT_NOTIFICATION_CLOSE,
         ),
       );
-    controller.encryptionPublicKeyManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.encryptionPublicKeyManager.rejectMsg(
-          tx.id,
-          REJECT_NOTIFICATION_CLOSE,
-        ),
-      );
+    controller.encryptionPublicKeyController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE,
+    );
 
     // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
     Object.values(controller.approvalController.state.pendingApprovals).forEach(

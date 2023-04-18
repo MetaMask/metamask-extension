@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -6,16 +6,14 @@ import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import Typography from '../../ui/typography';
+import { Text, ButtonLink } from '../../component-library';
 import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
-import { ButtonLink } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   TEXT_ALIGN,
-  FONT_WEIGHT,
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   Size,
   BLOCK_SIZES,
@@ -43,6 +41,7 @@ export default function CustomSpendingCap({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const inputRef = useRef(null);
 
   const value = useSelector(getCustomTokenAmount);
 
@@ -72,14 +71,14 @@ export default function CustomSpendingCap({
       return {
         className: 'custom-spending-cap__lowerValue',
         description: t('inputLogicEqualOrSmallerNumber', [
-          <Typography
+          <Text
             key="custom-spending-cap"
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySmBold}
+            as="h6"
             className="custom-spending-cap__input-value-and-token-name"
           >
             {replaceCommaToDot(inputNumber)} {tokenName}
-          </Typography>,
+          </Text>,
         ]),
       };
     } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
@@ -141,19 +140,28 @@ export default function CustomSpendingCap({
     passTheErrorText(error);
   }, [error, passTheErrorText]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus({
+        preventScroll: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputRef.current]);
+
   const chooseTooltipContentText = decConversionGreaterThan(
     value,
     currentTokenBalance,
   )
     ? t('warningTooltipText', [
-        <Typography
+        <Text
           key="tooltip-text"
-          variant={TypographyVariant.H7}
-          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TextVariant.bodySmBold}
+          as="h6"
           color={TextColor.errorDefault}
         >
           <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
-        </Typography>,
+        </Text>,
       ])
     : t('inputLogicEmptyState');
 
@@ -184,8 +192,8 @@ export default function CustomSpendingCap({
             }
           >
             <FormField
+              inputRef={inputRef}
               dataTestId="custom-spending-cap-input"
-              autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
                 decConversionGreaterThan(value, currentTokenBalance)
@@ -250,15 +258,17 @@ export default function CustomSpendingCap({
                 'custom-spending-cap__description--with-error-message': error,
               })}
             >
-              <Typography
+              <Text
                 color={TextColor.textDefault}
-                variant={TypographyVariant.H7}
-                boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+                variant={TextVariant.bodySm}
+                as="h6"
+                paddingTop={2}
+                paddingBottom={2}
               >
                 {replaceCommaToDot(value)
                   ? customSpendingCapText
                   : inputLogicEmptyStateText}
-              </Typography>
+              </Text>
             </Box>
           </label>
         </Box>

@@ -113,9 +113,9 @@ async function switchEthereumChainHandler(
         approvedRequestData.type !== NETWORK_TYPES.LOCALHOST &&
         approvedRequestData.type !== NETWORK_TYPES.LINEA_TESTNET
       ) {
-        setProviderType(approvedRequestData.type);
+        await setProviderType(approvedRequestData.type);
       } else {
-        await setActiveNetwork(approvedRequestData);
+        await setActiveNetwork(approvedRequestData.id);
       }
       res.result = null;
     } catch (error) {

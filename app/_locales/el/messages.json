@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
   },
-  "notifications17ActionText": {
-    "message": "Εμφάνιση ρυθμίσεων Ασφάλειας & Απορρήτου"
-  },
-  "notifications17Title": {
-    "message": "Ρυθμίσεις Ασφάλειας & Απορρήτου"
-  },
   "notifications1Description": {
     "message": "Οι χρήστες του MetaMask Mobile μπορούν τώρα να ανταλλάξουν tokens μέσα στο κινητό τους πορτοφόλι. Σαρώστε τον κωδικό QR για να πάρετε την εφαρμογή για κινητά και να αρχίσετε να ανταλλάζετε.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2702,10 +2696,6 @@
   "permission_cronjob": {
     "message": "Προγραμματισμός και εκτέλεση περιοδικών ενεργειών.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Εμφάνιση επιβεβαίωσης στο MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Εμφάνιση παραθύρων διαλόγου στο MetaMask.",

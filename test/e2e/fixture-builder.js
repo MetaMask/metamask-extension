@@ -117,11 +117,21 @@ function defaultFixture() {
           16: {
             date: null,
             id: 16,
-            isShown: true,
+            isShown: false,
           },
           17: {
             date: null,
             id: 17,
+            isShown: false,
+          },
+          18: {
+            date: null,
+            id: 18,
+            isShown: true,
+          },
+          19: {
+            date: null,
+            id: 19,
             isShown: true,
           },
         },
@@ -130,6 +140,7 @@ function defaultFixture() {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
+        termsOfUseLastAgreed: 86400000000000,
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
