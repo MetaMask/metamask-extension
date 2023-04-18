@@ -351,18 +351,29 @@ export default class MetamaskController extends EventEmitter {
       {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
-        onNetworkStateChange: (cb) => {
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          });
-        },
+        // This handler is misnamed, and is a known issue that will be resolved
+        // by planned refactors. It should be onNetworkDidChange which happens
+        // AFTER the provider in the network controller is updated to reflect
+        // the new state of the network controller. In #18041 we changed this
+        // handler to be triggered by the change in the network state because
+        // that is what the handler name implies, but this triggers too soon
+        // causing the provider of the AssetsContractController to trail the
+        // network provider by one update.
+        onNetworkStateChange: (cb) =>
+          networkControllerMessenger.subscribe(
+            NetworkControllerEventType.NetworkDidChange,
+            () => {
+              const networkState = this.networkController.store.getState();
+              const modifiedNetworkState = {
+                ...networkState,
+                providerConfig: {
+                  ...networkState.provider,
+                  chainId: hexToDecimal(networkState.provider.chainId),
+                },
+              };
+              return cb(modifiedNetworkState);
+            },
+          ),
       },
       {
         provider: this.provider,
