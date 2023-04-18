@@ -105,7 +105,7 @@ const SetApproveForAllWarning = ({
             key="non_custodial_bold"
             className="set-approval-for-all-warning__content__bold"
           >
-            {t('nftWarningContentBold', [collectionName])}
+            {t('nftWarningContentBold', [collectionName || ''])}
           </strong>,
           <strong key="non_custodial_grey">
             {t('nftWarningContentGrey')}
