@@ -30,7 +30,6 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
-import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -456,13 +455,6 @@ export default class ConfirmTransactionBase extends Component {
             !renderSimulationFailureWarning && (
               <ConfirmGasDisplay
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-              />
-            ),
-            !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
-              <MultiLayerFeeMessage
-                transaction={txData}
-                layer2fee={hexMinimumTransactionFee}
-                nativeCurrency={nativeCurrency}
               />
             ),
             !isMultiLayerFeeNetwork && (
