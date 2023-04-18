@@ -34,7 +34,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedIdentity,
 } from '../../../selectors';
-import { GlobalMenu, AccountPicker } from '..';
+import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
 import Box from '../../ui/box/box';
 import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
@@ -42,15 +42,19 @@ import MetafoxLogo from '../../ui/metafox-logo';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const AppHeader = ({ onClick }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const [showSwitcherPopover, setShowSwitcherPopover] = useState(true);
+  const [showPermissionsPopover, setShowPermissionsPopover] = useState(false);
+  const [showGlobalPopover, setShowGlobalPopover] = useState(false);
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
-
+  const t = useI18nContext();
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
   const dispatch = useDispatch();
@@ -64,6 +68,13 @@ export const AppHeader = ({ onClick }) => {
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
     origin !== browser.runtime.id;
+  console.log(
+    popupStatus,
+    showSwitcherPopover,
+    showGlobalPopover,
+    showPermissionsPopover,
+    'nidhi',
+  );
 
   return (
     <>
@@ -113,24 +124,44 @@ export const AppHeader = ({ onClick }) => {
               gap={2}
             >
               {popupStatus ? (
-                <Button
-                  className="multichain-app-header__contents--avatar-network"
-                  justifyContent={JustifyContent.flexStart}
-                >
-                  <AvatarNetwork
-                    name={currentNetwork?.nickname}
+                <Box ref={menuRef}>
+                  <Button
+                    className="multichain-app-header__contents--avatar-network"
+                    justifyContent={JustifyContent.flexStart}
+                  >
+                    <AvatarNetwork
+                      name={currentNetwork?.nickname}
+                      src={currentNetwork?.rpcPrefs?.imageUrl}
+                      size={Size.SM}
+                      onClick={() => dispatch(toggleNetworkMenu())}
+                    />
+                  </Button>
+                </Box>
+              ) : (
+                <>
+                  <PickerNetwork
+                    label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
-                    size={Size.SM}
                     onClick={() => dispatch(toggleNetworkMenu())}
                   />
-                </Button>
-              ) : (
-                <PickerNetwork
-                  label={currentNetwork?.nickname}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  onClick={() => dispatch(toggleNetworkMenu())}
-                />
+                </>
               )}
+              {popupStatus && showSwitcherPopover ? (
+                <ProductTour
+                  className="multichain-app-header__product-tour"
+                  anchorElement={menuRef.current}
+                  prevIcon
+                  title={t('switcherTitle')}
+                  description={t('switcherTourDescription')}
+                  currentStep="1"
+                  totalSteps="3"
+                  onClick={() => {
+                    setShowSwitcherPopover(false);
+                    setShowPermissionsPopover(true);
+                  }}
+                  positionObj="88%"
+                />
+              ) : null}
 
               <AccountPicker
                 address={identity.address}
@@ -143,8 +174,27 @@ export const AppHeader = ({ onClick }) => {
                 justifyContent={JustifyContent.spaceBetween}
               >
                 {showStatus ? (
-                  <ConnectedStatusIndicator
-                    onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
+                  <Box ref={menuRef}>
+                    <ConnectedStatusIndicator
+                      onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
+                    />
+                  </Box>
+                ) : null}{' '}
+                {popupStatus && showPermissionsPopover ? (
+                  <ProductTour
+                    className="multichain-app-header__product-tour"
+                    anchorElement={menuRef.current}
+                    closeMenu={() => setAccountOptionsMenuOpen(false)}
+                    prevIcon
+                    title={t('permissionsTitle')}
+                    description={t('permissionsTourDescription')}
+                    currentStep="2"
+                    totalSteps="3"
+                    onClick={() => {
+                      setShowPermissionsPopover(false);
+                      setShowGlobalPopover(true);
+                    }}
+                    positionObj="12%"
                   />
                 ) : null}
                 <Box
@@ -174,6 +224,22 @@ export const AppHeader = ({ onClick }) => {
                 <GlobalMenu
                   anchorElement={menuRef.current}
                   closeMenu={() => setAccountOptionsMenuOpen(false)}
+                />
+              ) : null}
+              {popupStatus && showGlobalPopover ? (
+                <ProductTour
+                  className="multichain-app-header__product-tour"
+                  anchorElement={menuRef.current}
+                  closeMenu={() => setAccountOptionsMenuOpen(false)}
+                  prevIcon
+                  title={t('globalTitle')}
+                  description={t('globalTourDescription')}
+                  currentStep="3"
+                  totalSteps="3"
+                  onClick={() => {
+                    setShowGlobalPopover(false);
+                  }}
+                  positionObj="0%"
                 />
               ) : null}
             </Box>

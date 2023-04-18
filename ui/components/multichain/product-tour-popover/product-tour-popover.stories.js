@@ -23,6 +23,9 @@ export default {
     positionObj: {
       control: 'text',
     },
+    onClick: {
+      control: 'onClick',
+    },
   },
   args: {
     prevIcon: true,
