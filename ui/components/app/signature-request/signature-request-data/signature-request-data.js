@@ -12,7 +12,6 @@ import {
   toChecksumHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import {
   DISPLAY,
   FONT_WEIGHT,
@@ -20,6 +19,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { sanitizeString } from '../../../../helpers/utils/util';
+import { Text } from '../../../component-library';
 
 function SignatureRequestData({ data }) {
   const identities = useSelector(getMemoizedMetaMaskIdentities);
