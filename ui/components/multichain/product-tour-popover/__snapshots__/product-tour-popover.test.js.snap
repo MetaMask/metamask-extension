@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`DetectedTokensBanner should render correctly 1`] = `<div />`;
-
-exports[`DetectedTokensBanner should render prev Icon 1`] = `<div />`;
