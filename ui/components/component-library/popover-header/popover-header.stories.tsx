@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { BUTTON_SIZES, Button } from '..';
 import README from './README.mdx';
-import { PopoverHeader } from '.';
+import { PopoverHeader } from './popover-header';
 
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader',
