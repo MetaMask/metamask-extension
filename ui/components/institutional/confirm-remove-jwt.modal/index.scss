@@ -1,0 +1,13 @@
+.confirm-action-jwt {
+  &__jwt {
+    border: 1px solid #b7b7b7;
+  }
+
+  &__show-more {
+    cursor: pointer;
+  }
+
+  &__accounts-list {
+    margin-left: -5%;
+  }
+}

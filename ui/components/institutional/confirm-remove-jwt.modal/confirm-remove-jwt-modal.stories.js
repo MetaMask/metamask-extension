@@ -2,7 +2,7 @@ import React from 'react';
 import ConfirmRemoveJWT from '.';
 
 export default {
-  title: 'Components/App/Institutional/Modals/ConfirmRemoveJWT',
+  title: 'Components/Institutional/ConfirmRemoveJWT',
   component: ConfirmRemoveJWT,
   args: {
     hideModal: () => {
@@ -11,16 +11,18 @@ export default {
     removeAccount: () => {
       /**/
     },
-    token: 'jwt',
+    token: { address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D' },
     custodyAccountDetails: [
       {
-        address: '0xAddrEss',
-        name: 'name',
+        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+        name: 'Test name account',
         labels: [],
-        authDetails: { token: 'jwt' },
+        authDetails: { token: '0xaD6D458402F60fD3Bd25163575031ACDce07538D' },
       },
     ],
-    accounts: [{ address: '0xaddress', balance: '0x0' }],
+    accounts: [
+      { address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D', balance: '0x0' },
+    ],
   },
 };
 
