@@ -68,13 +68,6 @@ export const AppHeader = ({ onClick }) => {
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
     origin !== browser.runtime.id;
-  console.log(
-    popupStatus,
-    showSwitcherPopover,
-    showGlobalPopover,
-    showPermissionsPopover,
-    'nidhi',
-  );
 
   return (
     <>
