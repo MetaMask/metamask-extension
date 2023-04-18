@@ -20,6 +20,7 @@ import Button from '../../ui/button';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
 import AppLoadingSpinner from '../app-loading-spinner';
+import { Text } from '../../component-library';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -100,9 +101,8 @@ const CancelSpeedupPopover = () => {
           alignItems={AlignItems.center}
           display={DISPLAY.FLEX}
           variant={TextVariant.bodySm}
-          as="h6"
-          marginTop={0}
           marginBottom={2}
+          className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
             <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
@@ -129,7 +129,6 @@ const CancelSpeedupPopover = () => {
             }
           />
         </Text>
-        <div className="cancel-speedup-popover__separator" />
         <Box
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}

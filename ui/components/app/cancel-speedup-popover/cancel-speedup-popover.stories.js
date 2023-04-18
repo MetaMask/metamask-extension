@@ -71,7 +71,11 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <CancelSpeedupPopover {...args} />;
+  return (
+    <div style={{ width: '600px' }}>
+      <CancelSpeedupPopover {...args} />
+    </div>
+  );
 };
 
 DefaultStory.storyName = 'Default';
