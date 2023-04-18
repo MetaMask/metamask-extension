@@ -5,16 +5,28 @@ import { ProductTour } from './product-tour-popover';
 
 describe('DetectedTokensBanner', () => {
   const props = {
-    prevIcon: true,
     title: 'Permissions',
     description: 'Find your connected accounts and manage permissions here.',
     currentStep: '1',
     totalSteps: '3',
   };
   it('should render correctly', () => {
-    const { getByTestId, container } = render(<ProductTour {...props} />);
+    const { getByTestId, container } = render(
+      <ProductTour anchorElement={document.body} {...props} />,
+    );
+    const menuContainer = getByTestId('multichain-product-tour-menu-popover');
+    expect(menuContainer).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
 
-    expect(getByTestId('multichain-product-tour-popover')).toBeDefined();
+  it('should render prev Icon', () => {
+    const { getByTestId, container } = render(
+      <ProductTour anchorElement={document.body} {...props} prevIcon />,
+    );
+    const prevIcon = getByTestId(
+      'multichain-product-tour-menu-popover-prevIcon',
+    );
+    expect(prevIcon).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

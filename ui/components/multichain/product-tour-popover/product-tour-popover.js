@@ -40,21 +40,24 @@ export const ProductTour = ({
   const t = useI18nContext();
   return (
     <Menu
+      className="multichain-product-tour-menu"
       anchorElement={anchorElement}
       onHide={closeMenu}
-      style={{ top: '10px' }}
+      data-testid="multichain-product-tour-menu-popover"
     >
       <Box
-        className={classnames('multichain-product-tour', className)}
+        className={classnames(
+          'multichain-product-tour-menu__container',
+          className,
+        )}
         backgroundColor={Color.infoDefault}
         borderRadius={BorderRadius.LG}
         padding={4}
-        data-testid="multichain-product-tour-popover"
         {...props}
       >
         <Box
           borderColor={Color.borderDefault}
-          className={classnames('multichain-product-tour__arrow')}
+          className={classnames('multichain-product-tour-menu__arrow')}
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
@@ -68,6 +71,7 @@ export const ProductTour = ({
                 size={Size.SM}
                 color={IconColor.infoInverse}
                 onClick={prevClick}
+                data-testid="multichain-product-tour-menu-popover-prevIcon"
               />
             ) : null}
             <Text

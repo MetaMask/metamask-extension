@@ -1633,6 +1633,12 @@
   "general": {
     "message": "General"
   },
+  "globalTitle": {
+    "message": "Global menu"
+  },
+  "globalTourDescription": {
+    "message": "See your portfolio, connected sites, settings, and more."
+  },
   "goBack": {
     "message": "Go back"
   },
@@ -3037,6 +3043,12 @@
   "permissions": {
     "message": "Permissions"
   },
+  "permissionsTitle": {
+    "message": "Permissions"
+  },
+  "permissionsTourDescription": {
+    "message": "Find your connected accounts and manage permissions here."
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -3096,24 +3108,6 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
-  },
-  "switcherTitle":{
-    "message": "Network switcher"
-  },
-  "permissionsTitle":{
-    "message": "Permissions"
-  },
-  "globalTitle":{
-    "message": "Global menu"
-  },
-  "switcherTourDescription":{
-    "message": "Click the icon to switch networks or add a new network."
-  },
-  "permissionsTourDescription":{
-    "message": "Find your connected accounts and manage permissions here."
-  },
-  "globalTourDescription":{
-    "message": "See your portfolio, connected sites, settings, and more."
   },
   "projectIdInvalid": {
     "message": "Provided Project ID is invalid"
@@ -4278,6 +4272,12 @@
   },
   "switchedTo": {
     "message": "You have switched to"
+  },
+  "switcherTitle": {
+    "message": "Network switcher"
+  },
+  "switcherTourDescription": {
+    "message": "Click the icon to switch networks or add a new network."
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
