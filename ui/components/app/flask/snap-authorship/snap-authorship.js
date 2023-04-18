@@ -20,12 +20,7 @@ import {
   getSnapName,
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../component-library';
+import { ButtonIcon, IconName, Text } from '../../../component-library';
 
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';

@@ -245,7 +245,7 @@ const AddNetwork = () => {
                         <Icon
                           className="add-network__warning-icon"
                           name={IconName.Danger}
-                          color={IconSize.iconMuted}
+                          color={IconColor.iconMuted}
                           size={IconSize.Sm}
                         />
                       </Tooltip>
