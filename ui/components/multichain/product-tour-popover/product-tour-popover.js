@@ -16,11 +16,12 @@ import {
   TextVariant,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import { Text } from '../../component-library/text/deprecated';
 import { Button, BUTTON_TYPES } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 
 export const ProductTour = ({
   className,
@@ -62,10 +63,11 @@ export const ProductTour = ({
         <Box>
           <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
             {prevIcon ? (
-              <Icon
-                name={ICON_NAMES.ARROW_LEFT}
+              <ButtonIcon
+                iconName={ICON_NAMES.ARROW_LEFT}
                 size={Size.SM}
                 color={IconColor.infoInverse}
+                onClick={prevClick}
               />
             ) : null}
             <Text

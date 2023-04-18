@@ -3106,6 +3106,24 @@
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
+  "switcherTitle":{
+    "message": "Network switcher"
+  },
+  "permissionsTitle":{
+    "message": "Permissions"
+  },
+  "globalTitle":{
+    "message": "Global menu"
+  },
+  "switcherTourDescription":{
+    "message": "Click the icon to switch networks or add a new network."
+  },
+  "permissionsTourDescription":{
+    "message": "Find your connected accounts and manage permissions here."
+  },
+  "globalTourDescription":{
+    "message": "See your portfolio, connected sites, settings, and more."
+  },
   "projectIdInvalid": {
     "message": "Provided Project ID is invalid"
   },
