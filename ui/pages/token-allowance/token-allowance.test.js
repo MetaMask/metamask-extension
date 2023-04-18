@@ -256,7 +256,7 @@ describe('TokenAllowancePage', () => {
     expect(gotIt).not.toBeInTheDocument();
   });
 
-  it('should show hardware wallet info text', () => {
+  it('should show ledger info text if the sending address is ledger', () => {
     const { queryByText, getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} fromAddressIsLedger />,
       store,
@@ -273,7 +273,7 @@ describe('TokenAllowancePage', () => {
     expect(queryByText('Prior to clicking confirm:')).toBeInTheDocument();
   });
 
-  it('should not show hardware wallet info text', () => {
+  it('should not show ledger info text if the sending address is not ledger', () => {
     const { queryByText, getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} fromAddressIsLedger={false} />,
       store,
