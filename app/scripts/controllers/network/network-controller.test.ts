@@ -17,7 +17,7 @@ import {
   NetworkControllerOptions,
   NetworkControllerState,
 } from './network-controller';
-import { FakeProvider, FakeProviderStub } from './fake-provider-engine';
+import { FakeProvider, FakeProviderStub } from './fake-provider';
 import { FakeBlockTracker } from './fake-block-tracker';
 import {
   createNetworkClient,
