@@ -71,12 +71,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 2,
   }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  [RestrictedMethods.snap_confirm]: ({ t }) => ({
-    label: t('permission_customConfirmation'),
-    description: t('permission_customConfirmationDescription'),
-    leftIcon: ICON_NAMES.SECURITY_TICK,
-    weight: 3,
-  }),
   [RestrictedMethods.snap_dialog]: ({ t }) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription'),
