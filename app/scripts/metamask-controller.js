@@ -62,6 +62,7 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import { SignatureController } from '@metamask/signature-controller';
 import {
   AssetType,
   TransactionStatus,
@@ -165,7 +166,6 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
-import SignController from './controllers/sign';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 
 import {
@@ -1161,9 +1161,9 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.signController = new SignController({
+    this.signatureController = new SignatureController({
       messenger: this.controllerMessenger.getRestricted({
-        name: 'SignController',
+        name: 'SignatureController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
@@ -1171,7 +1171,9 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       keyringController: this.keyringController,
-      preferencesController: this.preferencesController,
+      isEthSignEnabled: () =>
+        this.preferencesController.store.getState()
+          ?.disabledRpcMethodPreferences?.eth_sign,
       getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1242,7 +1244,7 @@ export default class MetamaskController extends EventEmitter {
         this.txController.txStateManager.clearUnapprovedTxs();
         this.encryptionPublicKeyController.clearUnapproved();
         this.decryptMessageManager.clearUnapproved();
-        this.signController.clearUnapproved();
+        this.signatureController.clearUnapproved();
       },
     );
 
@@ -1290,21 +1292,24 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
-      processEthSignMessage: this.signController.newUnsignedMessage.bind(
-        this.signController,
+      processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
+        this.signatureController,
       ),
-      processTypedMessage: this.signController.newUnsignedTypedMessage.bind(
-        this.signController,
-      ),
-      processTypedMessageV3: this.signController.newUnsignedTypedMessage.bind(
-        this.signController,
-      ),
-      processTypedMessageV4: this.signController.newUnsignedTypedMessage.bind(
-        this.signController,
-      ),
+      processTypedMessage:
+        this.signatureController.newUnsignedTypedMessage.bind(
+          this.signatureController,
+        ),
+      processTypedMessageV3:
+        this.signatureController.newUnsignedTypedMessage.bind(
+          this.signatureController,
+        ),
+      processTypedMessageV4:
+        this.signatureController.newUnsignedTypedMessage.bind(
+          this.signatureController,
+        ),
       processPersonalMessage:
-        this.signController.newUnsignedPersonalMessage.bind(
-          this.signController,
+        this.signatureController.newUnsignedPersonalMessage.bind(
+          this.signatureController,
         ),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey:
@@ -1334,7 +1339,7 @@ export default class MetamaskController extends EventEmitter {
       TokenRatesController: this.tokenRatesController,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
-      SignController: this.signController,
+      SignatureController: this.signatureController,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
@@ -1418,7 +1423,7 @@ export default class MetamaskController extends EventEmitter {
       this.encryptionPublicKeyController.resetState.bind(
         this.encryptionPublicKeyController,
       ),
-      this.signController.resetState.bind(this.signController),
+      this.signatureController.resetState.bind(this.signatureController),
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
@@ -2101,22 +2106,25 @@ export default class MetamaskController extends EventEmitter {
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
 
-      // signController
-      signMessage: this.signController.signMessage.bind(this.signController),
-      cancelMessage: this.signController.cancelMessage.bind(
-        this.signController,
+      // signatureController
+      signMessage: this.signatureController.signMessage.bind(
+        this.signatureController,
       ),
-      signPersonalMessage: this.signController.signPersonalMessage.bind(
-        this.signController,
+      cancelMessage: this.signatureController.cancelMessage.bind(
+        this.signatureController,
       ),
-      cancelPersonalMessage: this.signController.cancelPersonalMessage.bind(
-        this.signController,
+      signPersonalMessage: this.signatureController.signPersonalMessage.bind(
+        this.signatureController,
       ),
-      signTypedMessage: this.signController.signTypedMessage.bind(
-        this.signController,
+      cancelPersonalMessage:
+        this.signatureController.cancelPersonalMessage.bind(
+          this.signatureController,
+        ),
+      signTypedMessage: this.signatureController.signTypedMessage.bind(
+        this.signatureController,
       ),
-      cancelTypedMessage: this.signController.cancelTypedMessage.bind(
-        this.signController,
+      cancelTypedMessage: this.signatureController.cancelTypedMessage.bind(
+        this.signatureController,
       ),
 
       // decryptMessageManager
