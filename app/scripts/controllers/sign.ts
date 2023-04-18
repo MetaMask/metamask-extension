@@ -21,6 +21,7 @@ import {
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   OriginalRequest,
+  SecurityProviderRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
 import {
   BaseControllerV2,
@@ -63,9 +64,10 @@ export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
 };
 
-export type StateMessage = Required<AbstractMessage> & {
+export type StateMessage = Required<
+  Omit<AbstractMessage, 'securityProviderResponse'>
+> & {
   msgParams: Required<AbstractMessageParams>;
-  securityProviderResponse: any;
 };
 
 export type SignControllerState = {
@@ -107,10 +109,7 @@ export type SignControllerOptions = {
   preferencesController: PreferencesController;
   getState: () => any;
   metricsEvent: (payload: any, options?: any) => void;
-  securityProviderRequest: (
-    requestData: any,
-    methodName: string,
-  ) => Promise<any>;
+  securityProviderRequest: SecurityProviderRequest;
 };
 
 /**
@@ -143,11 +142,6 @@ export default class SignController extends BaseControllerV2<
 
   private _metricsEvent: (payload: any, options?: any) => void;
 
-  private _securityProviderRequest: (
-    requestData: any,
-    methodName: string,
-  ) => Promise<any>;
-
   /**
    * Construct a Sign controller.
    *
@@ -178,12 +172,23 @@ export default class SignController extends BaseControllerV2<
     this._preferencesController = preferencesController;
     this._getState = getState;
     this._metricsEvent = metricsEvent;
-    this._securityProviderRequest = securityProviderRequest;
 
     this.hub = new EventEmitter();
-    this._messageManager = new MessageManager();
-    this._personalMessageManager = new PersonalMessageManager();
-    this._typedMessageManager = new TypedMessageManager();
+    this._messageManager = new MessageManager(
+      undefined,
+      undefined,
+      securityProviderRequest,
+    );
+    this._personalMessageManager = new PersonalMessageManager(
+      undefined,
+      undefined,
+      securityProviderRequest,
+    );
+    this._typedMessageManager = new TypedMessageManager(
+      undefined,
+      undefined,
+      securityProviderRequest,
+    );
 
     this._messageManagers = [
       this._messageManager,
@@ -412,27 +417,30 @@ export default class SignController extends BaseControllerV2<
    * Used to cancel a message submitted via eth_sign.
    *
    * @param msgId - The id of the message to cancel.
+   * @returns A full state update.
    */
   cancelMessage(msgId: string) {
-    this._cancelAbstractMessage(this._messageManager, msgId);
+    return this._cancelAbstractMessage(this._messageManager, msgId);
   }
 
   /**
    * Used to cancel a personal_sign type message.
    *
    * @param msgId - The ID of the message to cancel.
+   * @returns A full state update.
    */
   cancelPersonalMessage(msgId: string) {
-    this._cancelAbstractMessage(this._personalMessageManager, msgId);
+    return this._cancelAbstractMessage(this._personalMessageManager, msgId);
   }
 
   /**
    * Used to cancel a eth_signTypedData type message.
    *
    * @param msgId - The ID of the message to cancel.
+   * @returns A full state update.
    */
   cancelTypedMessage(msgId: string) {
-    this._cancelAbstractMessage(this._typedMessageManager, msgId);
+    return this._cancelAbstractMessage(this._typedMessageManager, msgId);
   }
 
   /**
@@ -586,15 +594,7 @@ export default class SignController extends BaseControllerV2<
         origin: messageParams.origin as string,
       },
     };
-
-    const messageId = coreMessage.id;
-    const existingMessage = this._getMessage(messageId);
-
-    const securityProviderResponse = existingMessage
-      ? existingMessage.securityProviderResponse
-      : await this._securityProviderRequest(stateMessage, stateMessage.type);
-
-    return { ...stateMessage, securityProviderResponse };
+    return stateMessage;
   }
 
   private _normalizeMsgData(data: string) {
