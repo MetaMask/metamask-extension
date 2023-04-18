@@ -12,22 +12,17 @@ export default {
       page: README,
     },
   },
+  argTypes: {
+    onBack: { action: 'onBack' },
+    onClose: { action: 'onClose' },
+  },
   args: {
     children: 'PopoverHeader',
   },
 } as ComponentMeta<typeof PopoverHeader>;
 
 const Template: ComponentStory<typeof PopoverHeader> = (args) => {
-  return (
-    <PopoverHeader
-      onBack={() => console.log('back')}
-      onClose={() => console.log('close')}
-      backButtonProps={{ 'data-testid': 'back' }}
-      {...args}
-    >
-      PopoverHeader
-    </PopoverHeader>
-  );
+  return <PopoverHeader {...args}>PopoverHeader</PopoverHeader>;
 };
 
 export const DefaultStory = Template.bind({});
