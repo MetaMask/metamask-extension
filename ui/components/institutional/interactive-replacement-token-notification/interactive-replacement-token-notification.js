@@ -93,7 +93,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
     };
 
     handleShowNotification();
-  }, []);
+  }, [dispatch, address, interactiveReplacementToken, isUnlocked, keyring]);
 
   return showNotification ? (
     <Box
