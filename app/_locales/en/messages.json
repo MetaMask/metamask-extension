@@ -1373,11 +1373,11 @@
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
-  "enterCustodianToken": {
-    "message": "Enter your $1 token or add a new token"
-  },
   "enterANumber": {
     "message": "Enter a number"
+  },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
   },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"

@@ -4,7 +4,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   DISPLAY,
-  BorderColor,
   BLOCK_SIZES,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
