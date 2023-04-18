@@ -704,7 +704,7 @@ export class NetworkController extends EventEmitter {
    * @returns The URL of the RPC endpoint representing the newly switched
    * network.
    */
-  setActiveNetwork(networkConfigurationId: NetworkConfigurationId): string {
+  async setActiveNetwork(networkConfigurationId: NetworkConfigurationId) {
     const targetNetwork =
       this.store.getState().networkConfigurations[networkConfigurationId];
 
@@ -714,7 +714,7 @@ export class NetworkController extends EventEmitter {
       );
     }
 
-    this.#setProviderConfig({
+    await this.#setProviderConfig({
       type: NETWORK_TYPES.RPC,
       ...targetNetwork,
     });
