@@ -46,6 +46,7 @@ export default class AppStateController extends EventEmitter {
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
+      showProductTour: true,
       trezorModel: null,
       currentPopupId: undefined,
       ...initState,
@@ -329,6 +330,15 @@ export default class AppStateController extends EventEmitter {
    */
   setShowBetaHeader(showBetaHeader) {
     this.store.updateState({ showBetaHeader });
+  }
+
+  /**
+   * Sets whether the product tour should be shown
+   *
+   * @param showProductTour
+   */
+  setShowProductTour(showProductTour) {
+    this.store.updateState({ showProductTour });
   }
 
   /**

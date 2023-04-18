@@ -1027,6 +1027,9 @@ export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
 
+export function getShowProductTour(state) {
+  return state.metamask.showProductTour;
+}
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1415,6 +1418,10 @@ export function getShouldShowSeedPhraseReminder(state) {
 
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
+}
+
+export function getOnboardedInThisUISession(state) {
+  return state.appState.onboardedInThisUISession;
 }
 
 /**

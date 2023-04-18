@@ -31,18 +31,25 @@ import {
 
 import {
   getCurrentNetwork,
+  getOnboardedInThisUISession,
   getOriginOfCurrentTab,
   getSelectedIdentity,
+  getShowProductTour,
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
 import Box from '../../ui/box/box';
-import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
+import {
+  hideProductTour,
+  toggleAccountMenu,
+  toggleNetworkMenu,
+} from '../../../store/actions';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 
 export const AppHeader = ({ onClick }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -58,6 +65,9 @@ export const AppHeader = ({ onClick }) => {
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
   const dispatch = useDispatch();
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
+  const showProductTourPopup = useSelector(getShowProductTour);
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -68,6 +78,8 @@ export const AppHeader = ({ onClick }) => {
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
     origin !== browser.runtime.id;
+  const showProductTour =
+    completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
 
   return (
     <>
@@ -139,7 +151,7 @@ export const AppHeader = ({ onClick }) => {
                   />
                 </>
               )}
-              {popupStatus && showSwitcherPopover ? (
+              {showProductTour && popupStatus && showSwitcherPopover ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
                   anchorElement={menuRef.current}
@@ -239,6 +251,7 @@ export const AppHeader = ({ onClick }) => {
                   }}
                   onClick={() => {
                     setShowGlobalPopover(false);
+                    hideProductTour();
                   }}
                   positionObj="0%"
                 />

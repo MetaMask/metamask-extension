@@ -2054,6 +2054,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
+      setShowProductTour:
+        appStateController.setShowProductTour.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
