@@ -17,12 +17,12 @@ import {
   NetworkControllerOptions,
   NetworkControllerState,
 } from './network-controller';
-import { FakeProvider, FakeProviderStub } from './fake-provider';
-import { FakeBlockTracker } from './fake-block-tracker';
 import {
   createNetworkClient,
   NetworkClientType,
 } from './create-network-client';
+import { FakeBlockTracker } from './fake-block-tracker';
+import { FakeProvider, FakeProviderStub } from './fake-provider';
 
 jest.mock('./create-network-client');
 
