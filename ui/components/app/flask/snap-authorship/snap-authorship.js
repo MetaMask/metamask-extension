@@ -20,12 +20,13 @@ import {
   getSnapName,
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
-import { ButtonIcon } from '../../../component-library/button-icon/deprecated';
-import { Text } from '../../../component-library';
 import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../component-library/icon/deprecated';
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../component-library';
+
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 
@@ -85,9 +86,8 @@ const SnapAuthorship = ({ snapId, className }) => {
         rel="noopener noreferrer"
         target="_blank"
         href={url}
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
         color={IconColor.infoDefault}
-        size={ICON_SIZES.MD}
         style={{ marginLeft: 'auto' }}
       />
     </Box>

@@ -8,11 +8,7 @@ import {
   DISPLAY,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
@@ -35,13 +31,13 @@ export const CustomSpendingCapTooltip = ({
     >
       {tooltipIcon ? (
         <Icon
-          name={ICON_NAMES.DANGER}
+          name={IconName.Danger}
           className="form-field__heading-title__tooltip__warning-icon"
-          size={ICON_SIZES.AUTO}
+          size={IconSize.Auto}
           style={{ 'vertical-align': 'bottom' }}
         />
       ) : (
-        tooltipIcon !== '' && <Icon name={ICON_NAMES.QUESTION} />
+        tooltipIcon !== '' && <Icon name={IconName.Question} />
       )}
     </Tooltip>
   </Box>
