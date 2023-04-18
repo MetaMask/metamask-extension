@@ -47,6 +47,7 @@ interface AppState {
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
+  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -109,6 +110,7 @@ const initialState: AppState = {
   openMetaMaskTabs: {},
   currentWindowTab: {},
   showWhatsNewPopup: true,
+  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
