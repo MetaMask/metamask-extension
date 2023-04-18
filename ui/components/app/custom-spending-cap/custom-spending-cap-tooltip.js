@@ -37,7 +37,13 @@ export const CustomSpendingCapTooltip = ({
           style={{ 'vertical-align': 'bottom' }}
         />
       ) : (
-        tooltipIcon !== '' && <Icon name={IconName.Question} />
+        tooltipIcon !== '' && (
+          <Icon
+            name={IconName.Question}
+            size={IconSize.Auto}
+            style={{ 'vertical-align': 'bottom' }}
+          />
+        )
       )}
     </Tooltip>
   </Box>
