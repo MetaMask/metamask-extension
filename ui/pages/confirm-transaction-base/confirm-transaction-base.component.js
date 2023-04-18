@@ -69,7 +69,6 @@ export default class ConfirmTransactionBase extends Component {
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
-    hexMinimumTransactionFee: PropTypes.string,
     hexMaximumTransactionFee: PropTypes.string,
     hexTransactionTotal: PropTypes.string,
     methodData: PropTypes.object,
@@ -294,7 +293,6 @@ export default class ConfirmTransactionBase extends Component {
     const {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
-      hexMinimumTransactionFee,
       hexMaximumTransactionFee,
       hexTransactionTotal,
       useNonceField,
