@@ -18,15 +18,20 @@ export default {
       control: 'array',
       table: { category: 'Data' },
     },
+    symbol: {
+      control: 'text',
+      table: { category: 'Data' },
+    },
+    image: {
+      control: 'text',
+      table: { category: 'Data' },
+    },
   },
 };
 
 const { metamask: state } = store.getState();
 
-const PageSet = ({ children, suggestedAssets, tokens }) => {
-  const symbol = text('symbol', 'META');
-  const image = text('Icon URL', 'metamark.svg');
-
+const PageSet = ({ children, suggestedAssets, tokens, symbol, image }) => {
   useEffect(() => {
     if (!suggestedAssets?.length) {
       return;
@@ -57,9 +62,9 @@ const PageSet = ({ children, suggestedAssets, tokens }) => {
   return children;
 };
 
-export const DefaultStory = ({ suggestedAssets, tokens }) => {
+export const DefaultStory = ({ suggestedAssets, tokens, symbol, image }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+    <PageSet suggestedAssets={suggestedAssets} tokens={tokens} symbol={symbol} image={image}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -68,11 +73,13 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [],
+  symbol: 'META',
+  image: 'metamark.svg',
 };
 
-export const WithDuplicateAddress = ({ suggestedAssets, tokens }) => {
+export const WithDuplicateAddress = ({ suggestedAssets, tokens, symbol, image }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+    <PageSet suggestedAssets={suggestedAssets} tokens={tokens} symbol={symbol} image={image}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -84,14 +91,18 @@ WithDuplicateAddress.args = {
       ...mockSuggestedAssets[0].asset,
     },
   ],
+  symbol: 'META',
+  image: 'metamark.svg',
 };
 
 export const WithDuplicateSymbolAndDifferentAddress = ({
   suggestedAssets,
   tokens,
+  symbol,
+  image,
 }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+    <PageSet suggestedAssets={suggestedAssets} tokens={tokens} symbol={symbol} image={image}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -104,4 +115,6 @@ WithDuplicateSymbolAndDifferentAddress.args = {
       address: '0xNonSuggestedAddress',
     },
   ],
+  symbol: 'META',
+  image: 'metamark.svg',
 };
