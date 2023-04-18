@@ -99,7 +99,7 @@ describe('Interactive Replacement Token Notification', () => {
     };
     const store = configureMockStore([thunk])(customMockStore);
 
-    sha256.mockResolvedValueOnce('def');
+    sha256.mockReturnValue('def');
     await act(async () => {
       renderWithProvider(<InteractiveReplacementTokenNotification />, store);
     });
@@ -138,7 +138,7 @@ describe('Interactive Replacement Token Notification', () => {
 
     const store = configureMockStore([thunk])(customMockStore);
 
-    sha256.mockResolvedValueOnce('def');
+    sha256.mockReturnValue('def');
     await act(async () => {
       renderWithProvider(<InteractiveReplacementTokenNotification />, store);
     });
