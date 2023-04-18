@@ -95,7 +95,7 @@ export const fetchHistoricalReports = (address, testProjectId = undefined) => {
 };
 
 export function generateComplianceReport(address) {
-  return async (dispatch, _getState) => {
+  return (dispatch, _getState) => {
     const mmiActions = mmiActionsFactory();
     dispatch(mmiActions.generateComplianceReport(address));
   };
