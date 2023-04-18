@@ -539,6 +539,8 @@ export enum MetaMetricsEventName {
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
   SupportLinkClicked = 'Support Link Clicked',
+  TermsOfUseShown = 'Terms of Use Shown',
+  TermsOfUseAccepted = 'Terms of Use Accepted',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
