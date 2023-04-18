@@ -39,8 +39,7 @@ import {
   getProvider,
   getMmiConfiguration,
 } from '../../../selectors';
-// @TODO Fix import CustodyAccountList is merged ui/pages/create-account/institutional/connect-custody/account-list.js
-import CustodyAccountList from '../../create-account/institutional/connect-custody/account-list';
+import CustodyAccountList from '../../institutional/connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 
 const CustodyPage = () => {
