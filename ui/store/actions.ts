@@ -51,7 +51,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  EVENT,
+  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -3122,6 +3122,12 @@ export function toggleAccountMenu() {
   };
 }
 
+export function toggleNetworkMenu() {
+  return {
+    type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -3974,6 +3980,12 @@ export function setRecoveryPhraseReminderLastShown(
   };
 }
 
+export function setTermsOfUseLastAgreed(lastAgreed: number) {
+  return async () => {
+    await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
+  };
+}
+
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
@@ -4350,7 +4362,7 @@ export async function setSmartTransactionsOptInStatus(
   trackMetaMetricsEvent({
     actionId: generateActionId(),
     event: 'STX OptIn',
-    category: EVENT.CATEGORIES.SWAPS,
+    category: MetaMetricsEventCategory.Swaps,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,

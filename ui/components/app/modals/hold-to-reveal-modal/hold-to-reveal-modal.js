@@ -2,13 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
-import {
-  Text,
-  Button,
-  BUTTON_TYPES,
-  ButtonIcon,
-  ICON_NAMES,
-} from '../../../component-library';
+import { Text, Button, BUTTON_TYPES } from '../../../component-library';
+import { ButtonIcon } from '../../../component-library/button-icon/deprecated';
+import { ICON_NAMES } from '../../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,

@@ -57,13 +57,10 @@ describe('Personal sign', function () {
         const verifySigUtil = await driver.findElement(
           '#personalSignVerifySigUtilResult',
         );
-        const verifyECRecover = await driver.waitForSelector(
-          {
-            css: '#personalSignVerifyECRecoverResult',
-            text: publicAddress,
-          },
-          { timeout: 10000 },
-        );
+        const verifyECRecover = await driver.waitForSelector({
+          css: '#personalSignVerifyECRecoverResult',
+          text: publicAddress,
+        });
         assert.equal(await verifySigUtil.getText(), publicAddress);
         assert.equal(await verifyECRecover.getText(), publicAddress);
       },

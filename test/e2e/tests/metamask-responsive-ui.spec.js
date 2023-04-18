@@ -15,6 +15,8 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        // agree to terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -163,13 +165,10 @@ describe('MetaMask Responsive UI', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-1 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 ETH',
+        });
       },
     );
   });

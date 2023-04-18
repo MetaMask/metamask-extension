@@ -53,7 +53,8 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import NftDefaultImage from '../nft-default-image';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
+import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 

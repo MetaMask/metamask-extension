@@ -26,10 +26,10 @@ import {
 } from '../../helpers/constants/design-system';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
-  ButtonIcon,
   ICON_SIZES,
   ICON_NAMES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();

@@ -2,34 +2,13 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
-import NetworkController from './network';
 
 describe('preferences controller', function () {
   let preferencesController;
-  let network;
-  let currentChainId;
-  let provider;
   let tokenListController;
 
   beforeEach(function () {
-    const sandbox = sinon.createSandbox();
-    currentChainId = CHAIN_IDS.MAINNET;
-    const networkControllerProviderConfig = {
-      getAccounts: () => undefined,
-    };
-    network = new NetworkController({
-      infuraProjectId: 'foo',
-      state: {
-        provider: {
-          type: 'mainnet',
-          chainId: currentChainId,
-        },
-      },
-    });
-    network.initializeProvider(networkControllerProviderConfig);
-    provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
@@ -41,15 +20,11 @@ describe('preferences controller', function () {
       messenger: tokenListMessenger,
     });
 
-    sandbox
-      .stub(network, '_getLatestBlock')
-      .callsFake(() => Promise.resolve({}));
-
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
-      network,
-      provider,
       tokenListController,
+      onInfuraIsBlocked: sinon.spy(),
+      onInfuraIsUnblocked: sinon.spy(),
     });
   });
 

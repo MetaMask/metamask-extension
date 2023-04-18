@@ -1,4 +1,4 @@
-import { INVISIBLE_CHARACTER } from '../../components/component-library';
+import { INVISIBLE_CHARACTER } from '../../components/component-library/text/deprecated';
 
 export function getAccountNameErrorMessage(
   accounts,

@@ -25,16 +25,22 @@ function getDescriptionNode(permission, index) {
   );
 }
 
-export default function PermissionsConnectPermissionList({ permissions }) {
+export default function PermissionsConnectPermissionList({
+  permissions,
+  targetSubjectMetadata,
+}) {
   const t = useI18nContext();
 
   return (
     <div className="permissions-connect-permission-list">
-      {getWeightedPermissions(t, permissions).map(getDescriptionNode)}
+      {getWeightedPermissions(t, permissions, targetSubjectMetadata).map(
+        getDescriptionNode,
+      )}
     </div>
   );
 }
 
 PermissionsConnectPermissionList.propTypes = {
   permissions: PropTypes.object.isRequired,
+  targetSubjectMetadata: PropTypes.object.isRequired,
 };
