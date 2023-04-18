@@ -65,10 +65,10 @@ const state = {
       },
     ],
     unapprovedTxs: {},
-    keyringTypes: [KeyringType.ledger],
+    keyringTypes: [],
     keyrings: [
       {
-        type: KeyringType.ledger,
+        type: KeyringType.hdKeyTree,
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
@@ -258,7 +258,7 @@ describe('TokenAllowancePage', () => {
 
   it('should show hardware wallet info text', () => {
     const { queryByText, getByText, getByTestId } = renderWithProvider(
-      <TokenAllowance {...props} />,
+      <TokenAllowance {...props} fromAddressIsLedger />,
       store,
     );
 
@@ -274,10 +274,18 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should not show hardware wallet info text', () => {
-    const { queryByText } = renderWithProvider(
-      <TokenAllowance {...props} />,
+    const { queryByText, getByText, getByTestId } = renderWithProvider(
+      <TokenAllowance {...props} fromAddressIsLedger={false} />,
       store,
     );
+
+    const textField = getByTestId('custom-spending-cap-input');
+    fireEvent.change(textField, { target: { value: '1' } });
+
+    expect(queryByText('Prior to clicking confirm:')).toBeNull();
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
   });
