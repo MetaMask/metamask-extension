@@ -2,15 +2,15 @@ import React, { useContext } from 'react';
 import {
   FONT_WEIGHT,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
-import Typography from '../../../ui/typography/typography';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
+import { Text } from '../../../component-library';
 
 const NetworkStatistics = () => {
   const t = useContext(I18nContext);
@@ -29,15 +29,15 @@ const NetworkStatistics = () => {
 
   return (
     <div className="network-statistics">
-      <Typography
+      <Text
         color={TextColor.textAlternative}
         fontWeight={FONT_WEIGHT.BOLD}
         marginTop={3}
         marginBottom={3}
-        variant={TypographyVariant.H8}
+        variant={TextVariant.bodyXs} as="h6"
       >
         {t('networkStatus')}
-      </Typography>
+      </Text>
       <div className="network-statistics__info">
         {isNullish(formattedLatestBaseFee) ? null : (
           <div
