@@ -33,12 +33,13 @@ import {
   RejectRequest,
 } from '@metamask/approval-controller';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import PreferencesController from './preferences';
 
 const controllerName = 'SignController';
-const methodNameSign = 'eth_sign';
-const methodNamePersonalSign = 'personal_sign';
-const methodNameTypedSign = 'eth_signTypedData';
+const methodNameSign = MESSAGE_TYPE.ETH_SIGN;
+const methodNamePersonalSign = MESSAGE_TYPE.PERSONAL_SIGN;
+const methodNameTypedSign = MESSAGE_TYPE.ETH_SIGN_TYPED_DATA;
 
 const stateMetadata = {
   unapprovedMsgs: { persist: false, anonymous: false },
@@ -104,7 +105,6 @@ export type SignControllerOptions = {
   messenger: SignControllerMessenger;
   keyringController: KeyringController;
   preferencesController: PreferencesController;
-  sendUpdate: () => void;
   getState: () => any;
   metricsEvent: (payload: any, options?: any) => void;
   securityProviderRequest: (
@@ -412,27 +412,30 @@ export default class SignController extends BaseControllerV2<
    * Used to cancel a message submitted via eth_sign.
    *
    * @param msgId - The id of the message to cancel.
+   * @returns A full state update.
    */
   cancelMessage(msgId: string) {
-    this._cancelAbstractMessage(this._messageManager, msgId);
+    return this._cancelAbstractMessage(this._messageManager, msgId);
   }
 
   /**
    * Used to cancel a personal_sign type message.
    *
    * @param msgId - The ID of the message to cancel.
+   * @returns A full state update.
    */
   cancelPersonalMessage(msgId: string) {
-    this._cancelAbstractMessage(this._personalMessageManager, msgId);
+    return this._cancelAbstractMessage(this._personalMessageManager, msgId);
   }
 
   /**
    * Used to cancel a eth_signTypedData type message.
    *
    * @param msgId - The ID of the message to cancel.
+   * @returns A full state update.
    */
   cancelTypedMessage(msgId: string) {
-    this._cancelAbstractMessage(this._typedMessageManager, msgId);
+    return this._cancelAbstractMessage(this._typedMessageManager, msgId);
   }
 
   /**
@@ -637,14 +640,22 @@ export default class SignController extends BaseControllerV2<
   }
 
   private _acceptApproval(messageId: string) {
-    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    try {
+      this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    } catch (error) {
+      log.info('Failed to accept signature approval request', error);
+    }
   }
 
   private _rejectApproval(messageId: string) {
-    this.messagingSystem.call(
-      'ApprovalController:rejectRequest',
-      messageId,
-      'Cancel',
-    );
+    try {
+      this.messagingSystem.call(
+        'ApprovalController:rejectRequest',
+        messageId,
+        'Cancel',
+      );
+    } catch (error) {
+      log.info('Failed to reject signature approval request', error);
+    }
   }
 }

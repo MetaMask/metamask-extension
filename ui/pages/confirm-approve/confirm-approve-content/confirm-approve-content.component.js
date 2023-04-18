@@ -11,6 +11,8 @@ import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
+import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import {
   BLOCK_SIZES,
   JustifyContent,
@@ -21,7 +23,6 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
-import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
@@ -30,7 +31,9 @@ import {
   ICON_NAMES,
   Icon,
 } from '../../../components/component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
+import { Text } from '../../../components/component-library';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -167,7 +170,7 @@ export default class ConfirmApproveContent extends Component {
       !renderSimulationFailureWarning
     ) {
       return (
-        <GasDetailsItem
+        <ConfirmGasDisplay
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
         />
       );
@@ -555,6 +558,15 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />
