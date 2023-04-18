@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { text } from '@storybook/addon-knobs';
 import { store, getNewState } from '../../../.storybook/preview';
 import { suggestedAssets as mockSuggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
 import { updateMetamaskState } from '../../store/actions';
@@ -18,15 +17,24 @@ export default {
       control: 'array',
       table: { category: 'Data' },
     },
+    symbol: {
+      control: 'text',
+      table: { category: 'Data' },
+    },
+    image: {
+      control: 'text',
+      table: { category: 'Data' },
+    },
+  },
+  args: {
+    symbol: 'ETH',
+    image: './images/eth_logo.svg',
   },
 };
 
 const { metamask: state } = store.getState();
 
-const PageSet = ({ children, suggestedAssets, tokens }) => {
-  const symbol = text('symbol', 'META');
-  const image = text('Icon URL', 'metamark.svg');
-
+const PageSet = ({ children, suggestedAssets, tokens, symbol, image }) => {
   useEffect(() => {
     if (!suggestedAssets?.length) {
       return;
@@ -57,9 +65,14 @@ const PageSet = ({ children, suggestedAssets, tokens }) => {
   return children;
 };
 
-export const DefaultStory = ({ suggestedAssets, tokens }) => {
+export const DefaultStory = ({ suggestedAssets, tokens, symbol, image }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+    <PageSet
+      suggestedAssets={suggestedAssets}
+      tokens={tokens}
+      symbol={symbol}
+      image={image}
+    >
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -70,9 +83,19 @@ DefaultStory.args = {
   tokens: [],
 };
 
-export const WithDuplicateAddress = ({ suggestedAssets, tokens }) => {
+export const WithDuplicateAddress = ({
+  suggestedAssets,
+  tokens,
+  symbol,
+  image,
+}) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+    <PageSet
+      suggestedAssets={suggestedAssets}
+      tokens={tokens}
+      symbol={symbol}
+      image={image}
+    >
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -89,9 +112,16 @@ WithDuplicateAddress.args = {
 export const WithDuplicateSymbolAndDifferentAddress = ({
   suggestedAssets,
   tokens,
+  symbol,
+  image,
 }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+    <PageSet
+      suggestedAssets={suggestedAssets}
+      tokens={tokens}
+      symbol={symbol}
+      image={image}
+    >
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
