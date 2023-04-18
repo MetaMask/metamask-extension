@@ -144,12 +144,13 @@ export default function ConfirmApprove({
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
+  // Code below may need a additional look as ERC1155 tokens do not have a name
   let tokensText;
   if (
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155
   ) {
-    tokensText = assetName || tokenSymbol;
+    tokensText = assetName;
   }
 
   const tokenBalance = userBalance
