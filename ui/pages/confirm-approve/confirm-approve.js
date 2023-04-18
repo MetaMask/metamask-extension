@@ -199,6 +199,7 @@ export default function ConfirmApprove({
             toAddress={toAddress}
             tokenSymbol={tokenSymbol}
             decimals={decimals}
+            fromAddressIsLedger={fromAddressIsLedger}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
