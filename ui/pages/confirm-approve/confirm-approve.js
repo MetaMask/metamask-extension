@@ -218,7 +218,6 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
-
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
