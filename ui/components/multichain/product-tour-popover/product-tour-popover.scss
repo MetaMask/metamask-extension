@@ -1,5 +1,9 @@
-.multichain-product-tour {
-  position: relative;
+.multichain-product-tour-menu {
+  width: 344px;
+  box-shadow: none;
+  left: -7px !important;
+  top: 10px !important; //important is required here since Menu has absolute position added via inline style in base component.
+
 
   &__arrow,
   &__arrow::before {
