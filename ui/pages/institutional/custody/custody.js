@@ -11,8 +11,8 @@ import {
   Button,
   Text,
   Label,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   BUTTON_SIZES,
   BUTTON_TYPES,
 } from '../../../components/component-library';
@@ -39,8 +39,8 @@ import {
   getProvider,
   getMmiConfiguration,
 } from '../../../selectors';
-// @TODO Fix import CustodyAccountList is merged
-// import CustodyAccountList from './account-list';
+// @TODO Fix import CustodyAccountList is merged ui/pages/create-account/institutional/connect-custody/account-list.js
+import CustodyAccountList from '../../create-account/institutional/connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 
 const CustodyPage = () => {
@@ -300,8 +300,8 @@ const CustodyPage = () => {
       >
         <ButtonIcon
           ariaLabel={t('back')}
-          iconName={ICON_NAMES.ARROW_LEFT}
-          size={ICON_SIZES.SM}
+          iconName={IconName.ArrowLeft}
+          size={IconSize.Sm}
           color={Color.iconDefault}
           onClick={() => history.push(DEFAULT_ROUTE)}
           display={DISPLAY.FLEX}
@@ -487,8 +487,8 @@ const CustodyPage = () => {
           >
             <ButtonIcon
               ariaLabel={t('back')}
-              iconName={ICON_NAMES.ARROW_LEFT}
-              size={ICON_SIZES.SM}
+              iconName={IconName.ArrowLeft}
+              size={IconSize.Sm}
               color={Color.iconAlternative}
               onClick={() => cancelConnectCustodianToken()}
               display={[DISPLAY.FLEX]}
