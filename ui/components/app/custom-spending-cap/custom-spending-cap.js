@@ -107,6 +107,9 @@ export default function CustomSpendingCap({
   );
 
   const handleChange = async (valueInput) => {
+    if (!txParams) {
+      return;
+    }
     setInputChangeInProgress(true);
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
