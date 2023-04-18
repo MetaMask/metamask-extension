@@ -304,6 +304,7 @@ export default class SwapsController {
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
             const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+              chainId,
               {
                 txParams: quote.trade,
                 chainId,
