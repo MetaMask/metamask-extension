@@ -21,7 +21,7 @@ import {
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
 import { getPreferences } from '../../../selectors';
-import GasDetailsItem from '../gas-details-item/gas-details-item';
+import { ConfirmGasDisplay } from '../confirm-gas-display';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
@@ -119,7 +119,7 @@ export default function ApproveContentCard({
           (!isMultiLayerFeeNetwork &&
           supportsEIP1559 &&
           !renderSimulationFailureWarning ? (
-            <GasDetailsItem
+            <ConfirmGasDisplay
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
           ) : (
