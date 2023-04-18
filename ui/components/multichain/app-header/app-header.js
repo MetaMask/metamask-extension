@@ -150,7 +150,6 @@ export const AppHeader = ({ onClick }) => {
                 <ProductTour
                   className="multichain-app-header__product-tour"
                   anchorElement={menuRef.current}
-                  prevIcon
                   title={t('switcherTitle')}
                   description={t('switcherTourDescription')}
                   currentStep="1"
@@ -190,6 +189,11 @@ export const AppHeader = ({ onClick }) => {
                     description={t('permissionsTourDescription')}
                     currentStep="2"
                     totalSteps="3"
+                    prevClick={() => {
+                      setShowPermissionsPopover(false);
+                      setShowGlobalPopover(false);
+                      setShowSwitcherPopover(true);
+                    }}
                     onClick={() => {
                       setShowPermissionsPopover(false);
                       setShowGlobalPopover(true);
@@ -236,6 +240,10 @@ export const AppHeader = ({ onClick }) => {
                   description={t('globalTourDescription')}
                   currentStep="3"
                   totalSteps="3"
+                  prevClick={() => {
+                    setShowGlobalPopover(false);
+                    setShowPermissionsPopover(true);
+                  }}
                   onClick={() => {
                     setShowGlobalPopover(false);
                   }}
