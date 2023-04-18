@@ -18,15 +18,17 @@ export default {
       table: { category: 'Data' },
     },
     symbol: {
-      control: 'text', // specify the control type as 'text'
-      defaultValue: 'META', // set the default value
+      control: 'text',
       table: { category: 'Data' },
     },
     image: {
-      control: 'text', // specify the control type as 'text'
-      defaultValue: 'metamark.svg', // set the default value
+      control: 'text',
       table: { category: 'Data' },
     },
+  },
+  args: {
+    symbol: 'ETH',
+    image: './images/eth_logo.svg',
   },
 };
 
