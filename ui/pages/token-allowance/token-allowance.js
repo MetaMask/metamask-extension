@@ -35,7 +35,6 @@ import {
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
-  isHardwareWallet,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -95,6 +94,7 @@ export default function TokenAllowance({
   currentTokenBalance,
   toAddress,
   tokenSymbol,
+  fromAddressIsLedger,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -122,7 +122,6 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const isHardwareWalletConnected = useSelector(isHardwareWallet);
   let customTokenAmount = useSelector(getCustomTokenAmount);
   if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
     customTokenAmount = dappProposedTokenAmount;
@@ -516,7 +515,7 @@ export default function TokenAllowance({
           </Box>
         </Box>
       ) : null}
-      {!isFirstPage && isHardwareWalletConnected && (
+      {!isFirstPage && fromAddressIsLedger && (
         <Box paddingLeft={2} paddingRight={2}>
           <LedgerInstructionField showDataInstruction />
         </Box>
@@ -643,4 +642,8 @@ TokenAllowance.propTypes = {
    * Symbol of the token that is waiting to be allowed
    */
   tokenSymbol: PropTypes.string,
+  /**
+   * Whether the address sending the transaction is a ledger address
+   */
+  fromAddressIsLedger: PropTypes.bool,
 };
