@@ -13,12 +13,12 @@ import {
   TEXT_ALIGN,
   FRACTIONS,
   TextColor,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
 import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
 import ToggleButton from '../../../../components/ui/toggle-button';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
 import Tooltip from '../../../../components/ui/tooltip';
 import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
@@ -34,8 +34,10 @@ import {
   getSubjectsWithSnapPermission,
   getPermissions,
   getPermissionSubjects,
+  getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { formatDate } from '../../../../helpers/utils/util';
+import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
 
 function ViewSnap() {
   const t = useI18nContext();
@@ -64,6 +66,9 @@ function ViewSnap() {
     (state) => snap && getPermissions(state, snap.id),
   );
   const subjects = useSelector((state) => getPermissionSubjects(state));
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, snap?.id),
+  );
   const dispatch = useDispatch();
 
   const onToggle = () => {
@@ -176,9 +181,10 @@ function ViewSnap() {
             >
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
-            <Box width={FRACTIONS.TEN_TWELFTHS}>
-              <PermissionsConnectPermissionList
+            <Box width={BLOCK_SIZES.FULL}>
+              <SnapPermissionsList
                 permissions={permissions ?? {}}
+                targetSubjectMetadata={targetSubjectMetadata}
               />
             </Box>
           </div>

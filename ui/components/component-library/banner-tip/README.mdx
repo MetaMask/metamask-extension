@@ -107,13 +107,13 @@ Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pas
 </Canvas>
 
 ```jsx
-import { BannerTip, ICON_NAMES } from '../../component-library';
+import { BannerTip, IconName } from '../../component-library';
 
 <BannerTip
   title="Action prop demo"
   actionButtonLabel="Action"
   actionButtonProps={{
-    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    icon: IconName.Arrow2Right, // TODO: change to iconName
     iconPositionRight: true,
   }}
   actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
@@ -157,7 +157,7 @@ Use the `startAccessory` prop to pass a ReactNode to the start of the `BannerTip
 import { BannerTip } from '../../component-library';
 
 <BannerTip
-  startAccessory={<Icon name={ICON_NAMES.MESSAGES} />}
+  startAccessory={<Icon name={IconName.Messages} />}
   title="StartAccessory"
 >
   This is a demo of startAccessory override.

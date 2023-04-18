@@ -175,7 +175,7 @@ import { Button } from '../ui/component-library';
 
 ### Icon Name
 
-Use the `startIconName` and/or `endIconName` prop and the `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+Use the `startIconName` and/or `endIconName` prop and the `IconName` enum from `./ui/components/component-library/icon` to select icon.
 
 Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
@@ -185,9 +185,9 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 
 ```jsx
 import { Button } from '../ui/component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<Button startIconName={ICON_NAMES.ADD_SQUARE}>Button</Button>;
+<Button startIconName={IconName.AddSquare}>Button</Button>;
 ```
 
 <Canvas>
@@ -196,7 +196,7 @@ import { ICON_NAMES } from '../icon';
 
 ```jsx
 import { Button } from '../ui/component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<Button endIconName={ICON_NAMES.ARROW_2_RIGHT}>Button</Button>;
+<Button endIconName={IconName.Arrow2Right}>Button</Button>;
 ```

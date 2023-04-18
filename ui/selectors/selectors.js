@@ -24,6 +24,11 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  NetworkStatus,
+  SEPOLIA_DISPLAY_NAME,
+  GOERLI_DISPLAY_NAME,
+  ETH_TOKEN_IMAGE_URL,
+  LINEA_TESTNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -52,6 +57,7 @@ import {
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
+import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
   getConversionRate,
@@ -77,16 +83,13 @@ import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
 /**
- * One of the only remaining valid uses of selecting the network subkey of the
- * metamask state tree is to determine if the network is currently 'loading'.
+ * Returns true if the currently selected network is inaccessible or whether no
+ * provider has been set yet for the currently selected network.
  *
- * This will be used for all cases where this state key is accessed only for that
- * purpose.
- *
- * @param {object} state - redux state object
+ * @param {object} state - Redux state object.
  */
 export function isNetworkLoading(state) {
-  return state.metamask.network === 'loading';
+  return state.metamask.networkStatus !== NetworkStatus.Available;
 }
 
 export function getNetworkIdentifier(state) {
@@ -225,6 +228,12 @@ export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
   const type = currentKeyring && currentKeyring.type;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  if (type.startsWith('Custody')) {
+    return 'custody';
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   switch (type) {
     case KeyringType.trezor:
     case KeyringType.ledger:
@@ -248,7 +257,7 @@ export function getAccountType(state) {
  * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.network;
+  return state.metamask.networkId ?? 'loading';
 }
 
 export const getMetaMaskAccounts = createSelector(
@@ -481,22 +490,11 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const {
-    unapprovedMsgCount = 0,
-    unapprovedPersonalMsgCount = 0,
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
-    pendingApprovalCount = 0,
-  } = state.metamask;
+  const { unapprovedDecryptMsgCount = 0, pendingApprovalCount = 0 } =
+    state.metamask;
 
   return (
-    unapprovedMsgCount +
-    unapprovedPersonalMsgCount +
     unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedTypedMessagesCount +
-    getUnapprovedTxCount(state) +
     pendingApprovalCount +
     getSuggestedAssetCount(state)
   );
@@ -954,8 +952,10 @@ function getAllowedAnnouncementIds(state) {
     13: false,
     14: false,
     15: false,
-    16: true,
-    17: true,
+    16: false,
+    17: false,
+    18: true,
+    19: true,
   };
 }
 
@@ -1000,6 +1000,18 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+export function getShowTermsOfUse(state) {
+  const { termsOfUseLastAgreed } = state.metamask;
+
+  if (!termsOfUseLastAgreed) {
+    return true;
+  }
+  return (
+    new Date(termsOfUseLastAgreed).getTime() <
+    new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
+  );
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1116,6 +1128,70 @@ export function getProvider(state) {
 
 export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
+}
+
+export function getCurrentNetwork(state) {
+  const allNetworks = getAllNetworks(state);
+  const currentChainId = getCurrentChainId(state);
+
+  return allNetworks.find((network) => network.chainId === currentChainId);
+}
+
+export function getAllNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+  const showTestnetNetworks = getShowTestNetworks(state);
+  const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
+
+  const networks = [];
+  // Mainnet always first
+  networks.push({
+    chainId: CHAIN_IDS.MAINNET,
+    nickname: MAINNET_DISPLAY_NAME,
+    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+    rpcPrefs: {
+      imageUrl: ETH_TOKEN_IMAGE_URL,
+    },
+    providerType: NETWORK_TYPES.MAINNET,
+  });
+  // Custom networks added
+  networks.push(
+    ...Object.entries(networkConfigurations)
+      .filter(
+        ([, network]) =>
+          !localhostFilter(network) && network.chainId !== CHAIN_IDS.MAINNET,
+      )
+      .map(([, network]) => network),
+  );
+  // Test networks if flag is on
+  if (showTestnetNetworks) {
+    networks.push(
+      ...[
+        {
+          chainId: CHAIN_IDS.GOERLI,
+          nickname: GOERLI_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+          providerType: NETWORK_TYPES.GOERLI,
+        },
+        {
+          chainId: CHAIN_IDS.SEPOLIA,
+          nickname: SEPOLIA_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+          providerType: NETWORK_TYPES.SEPOLIA,
+        },
+        {
+          chainId: CHAIN_IDS.LINEA_TESTNET,
+          nickname: LINEA_TESTNET_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+          provderType: NETWORK_TYPES.LINEA_TESTNET,
+        },
+      ], // Localhosts
+      ...Object.entries(networkConfigurations)
+        .filter(([, network]) => localhostFilter(network))
+        .map(([, network]) => network),
+    );
+  }
+
+  return networks;
 }
 
 export function getIsOptimism(state) {

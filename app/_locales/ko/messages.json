@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "이더리움 머지가 완료되었습니다!"
   },
-  "notifications17ActionText": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
-  "notifications17Title": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
   "notifications1Description": {
     "message": "MetaMask 모바일 사용자는 이제 모바일 지갑에서 토큰을 스왑할 수 있습니다. QR 코드를 스캔하여 모바일 앱을 설치하고 스왑을 시작하세요.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2702,10 +2696,6 @@
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask에 확인을 표시합니다.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
@@ -3355,10 +3345,6 @@
   "snaps": {
     "message": "스냅"
   },
-  "snapsInsightError": {
-    "message": "$1 관련 오류 발생: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "거래 인사이트를 가져오는 중..."
   },
@@ -3375,7 +3361,8 @@
     "message": "스냅은 활성화된 상태에서만 작동합니다."
   },
   "snapsUIError": {
-    "message": "스냅에서 지정한 UI가 올바르지 않습니다."
+    "message": "스냅에서 지정한 UI가 올바르지 않습니다.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "네트워크에 따라 보안이나 개인 정보 유출의 위험이 있을 수 있습니다. 네트워크 추가 및 사용 이전에 위험 요소를 파악하세요."
@@ -3999,9 +3986,6 @@
   },
   "thisIsBasedOn": {
     "message": "다음에 기반한 정보입니다: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 서비스입니다"
   },
   "time": {
     "message": "시간"

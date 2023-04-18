@@ -1,4 +1,5 @@
 import React from 'react';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -45,7 +46,9 @@ describe('ConfirmSubTitle', () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
       [mockState.metamask.selectedAddress]: {
-        [mockState.metamask.provider.chainId]: [{ address: '0x9' }],
+        [hexToDecimal(mockState.metamask.provider.chainId)]: [
+          { address: '0x9' },
+        ],
       },
     };
     store = configureStore(mockState);

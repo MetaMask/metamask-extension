@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "Hợp nhất Ethereum đã được triển khai!"
   },
-  "notifications17ActionText": {
-    "message": "Hiển thị cài đặt Bảo mật và Quyền riêng tư"
-  },
-  "notifications17Title": {
-    "message": "Cài đặt Bảo mật và Quyền riêng tư"
-  },
   "notifications1Description": {
     "message": "Giờ đây, người dùng MetaMask trên điện thoại di động có thể hoán đổi token trong ví di động của họ. Quét mã QR để tải ứng dụng di động và bắt đầu hoán đổi.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2702,10 +2696,6 @@
   "permission_cronjob": {
     "message": "Lên lịch và thực hiện các hành động theo định kỳ.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Hiển thị xác nhận trong MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Hiển thị cửa sổ hộp thoại trong MetaMask.",
@@ -3355,10 +3345,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "Đã xảy ra lỗi với $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Đang tải thông tin chi tiết về giao dịch..."
   },
@@ -3375,7 +3361,8 @@
     "message": "Snap chỉ hoạt động khi đã bật"
   },
   "snapsUIError": {
-    "message": "Giao diện người dùng được chỉ định bởi snap không hợp lệ."
+    "message": "Giao diện người dùng được chỉ định bởi snap không hợp lệ.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Một số mạng có thể gây ra rủi ro về bảo mật và/hoặc quyền riêng tư. Bạn cần hiểu rõ các rủi ro này trước khi thêm và sử dụng mạng."
@@ -3999,9 +3986,6 @@
   },
   "thisIsBasedOn": {
     "message": "Điều này dựa trên thông tin từ "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm"
   },
   "time": {
     "message": "Thời gian"

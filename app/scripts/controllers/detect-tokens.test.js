@@ -13,12 +13,12 @@ import { convertHexToDecimal } from '@metamask/controller-utils';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
-import NetworkController, { NETWORK_EVENTS } from './network';
+import { NetworkController, NetworkControllerEventType } from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
-  const sandbox = sinon.createSandbox();
-  let assetsContractController,
+  let sandbox,
+    assetsContractController,
     keyringMemStore,
     network,
     preferences,
@@ -32,78 +32,94 @@ describe('DetectTokensController', function () {
     getAccounts: noop,
   };
 
+  const infuraProjectId = 'infura-project-id';
+
   beforeEach(async function () {
-    keyringMemStore = new ObservableStore({ isUnlocked: false });
-    network = new NetworkController({ infuraProjectId: 'foo' });
-    network.initializeProvider(networkControllerProviderConfig);
-    provider = network.getProviderAndBlockTracker().provider;
-
-    const tokenListMessenger = new ControllerMessenger().getRestricted({
-      name: 'TokenListController',
-    });
-    tokenListController = new TokenListController({
-      chainId: '1',
-      preventPollingOnNetworkRestart: false,
-      onNetworkStateChange: sinon.spy(),
-      onPreferencesStateChange: sinon.spy(),
-      messenger: tokenListMessenger,
-    });
-    await tokenListController.start();
-
-    preferences = new PreferencesController({
-      network,
-      provider,
-      tokenListController,
-    });
-    preferences.setAddresses([
-      '0x7e57e2',
-      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
-    ]);
-    preferences.setUseTokenDetection(true);
-
-    tokensController = new TokensController({
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: (cb) =>
-        network.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.provider,
+    sandbox = sinon.createSandbox();
+    // Disable all requests, even those to localhost
+    nock.disableNetConnect();
+    nock('https://mainnet.infura.io')
+      .post(`/v3/${infuraProjectId}`)
+      .reply(200, (_uri, requestBody) => {
+        if (requestBody.method === 'eth_getBlockByNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: {
+              number: '0x42',
             },
           };
-          return cb(modifiedNetworkState);
-        }),
-    });
+        }
 
-    assetsContractController = new AssetsContractController({
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: (cb) =>
-        network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-          const networkState = network.store.getState();
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.provider,
-              chainId: convertHexToDecimal(networkState.provider.chainId),
+        if (requestBody.method === 'eth_blockNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '0x42',
+          };
+        }
+
+        throw new Error(`(Infura) Mock not defined for ${requestBody.method}`);
+      })
+      .persist();
+    nock('https://sepolia.infura.io')
+      .post(`/v3/${infuraProjectId}`)
+      .reply(200, (_uri, requestBody) => {
+        if (requestBody.method === 'eth_getBlockByNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: {
+              number: '0x42',
             },
           };
-          return cb(modifiedNetworkState);
-        }),
-    });
+        }
 
-    sandbox
-      .stub(network, '_getLatestBlock')
-      .callsFake(() => Promise.resolve({}));
-    sandbox
-      .stub(tokensController, '_instantiateNewEthersProvider')
-      .returns(null);
-    sandbox
-      .stub(tokensController, '_detectIsERC721')
-      .returns(Promise.resolve(false));
+        if (requestBody.method === 'eth_blockNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '0x42',
+          };
+        }
+
+        throw new Error(`(Infura) Mock not defined for ${requestBody.method}`);
+      })
+      .persist();
+    nock('http://localhost:8545')
+      .post('/')
+      .reply(200, (_uri, requestBody) => {
+        if (requestBody.method === 'eth_getBlockByNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: {
+              number: '0x42',
+            },
+          };
+        }
+
+        if (requestBody.method === 'eth_blockNumber') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '0x42',
+          };
+        }
+
+        if (requestBody.method === 'net_version') {
+          return {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: '1337',
+          };
+        }
+
+        throw new Error(
+          `(localhost) Mock not defined for ${requestBody.method}`,
+        );
+      })
+      .persist();
     nock('https://token-api.metaswap.codefi.network')
       .get(`/tokens/1`)
       .reply(200, [
@@ -174,9 +190,82 @@ describe('DetectTokensController', function () {
       .get(`/tokens/3`)
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
+
+    keyringMemStore = new ObservableStore({ isUnlocked: false });
+    const networkControllerMessenger = new ControllerMessenger();
+    network = new NetworkController({
+      messenger: networkControllerMessenger,
+      infuraProjectId,
+    });
+    await network.initializeProvider(networkControllerProviderConfig);
+    provider = network.getProviderAndBlockTracker().provider;
+
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      preventPollingOnNetworkRestart: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
+    await tokenListController.start();
+
+    preferences = new PreferencesController({
+      network,
+      provider,
+      tokenListController,
+      onInfuraIsBlocked: sinon.stub(),
+      onInfuraIsUnblocked: sinon.stub(),
+    });
+    preferences.setAddresses([
+      '0x7e57e2',
+      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+    ]);
+    preferences.setUseTokenDetection(true);
+
+    tokensController = new TokensController({
+      config: { provider },
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        network.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+    });
+
+    assetsContractController = new AssetsContractController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        networkControllerMessenger.subscribe(
+          NetworkControllerEventType.NetworkDidChange,
+          () => {
+            const networkState = network.store.getState();
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+                chainId: convertHexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          },
+        ),
+    });
   });
 
-  after(function () {
+  afterEach(function () {
+    nock.enableNetConnect('localhost');
     sandbox.restore();
   });
 
@@ -189,7 +278,7 @@ describe('DetectTokensController', function () {
 
   it('should be called on every polling period', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -215,7 +304,7 @@ describe('DetectTokensController', function () {
 
   it('should not check and add tokens while on unsupported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.SEPOLIA);
+    await network.setProviderType(NETWORK_TYPES.SEPOLIA);
     const tokenListMessengerSepolia = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
@@ -248,7 +337,7 @@ describe('DetectTokensController', function () {
 
   it('should skip adding tokens listed in ignoredTokens array', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -299,7 +388,7 @@ describe('DetectTokensController', function () {
 
   it('should check and add tokens while on supported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -394,7 +483,7 @@ describe('DetectTokensController', function () {
 
   it('should not trigger detect new tokens when not unlocked', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -415,7 +504,7 @@ describe('DetectTokensController', function () {
 
   it('should not trigger detect new tokens when not open', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,

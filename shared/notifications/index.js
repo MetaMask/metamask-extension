@@ -81,13 +81,21 @@ export const UI_NOTIFICATIONS = {
   16: {
     id: 16,
     date: null,
+  },
+  17: {
+    id: 17,
+    date: null,
+  },
+  18: {
+    id: 18,
+    date: null,
     image: {
       src: 'images/open-sea-security-provider.svg',
       width: '100%',
     },
   },
-  17: {
-    id: 17,
+  19: {
+    id: 19,
     date: null,
     image: {
       src: 'images/nfts.svg',
@@ -240,34 +248,34 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    16: {
-      ...UI_NOTIFICATIONS[16],
-      title: t('notifications16Title'),
+    18: {
+      ...UI_NOTIFICATIONS[18],
+      title: t('notifications18Title'),
       description: [
-        t('notifications16DescriptionOne'),
-        t('notifications16DescriptionTwo'),
-        t('notifications16DescriptionThree'),
+        t('notifications18DescriptionOne'),
+        t('notifications18DescriptionTwo'),
+        t('notifications18DescriptionThree'),
       ],
-      actionText: t('notifications16ActionText'),
-      date: UI_NOTIFICATIONS[16].date
+      actionText: t('notifications18ActionText'),
+      date: UI_NOTIFICATIONS[18].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[16].date),
+            new Date(UI_NOTIFICATIONS[18].date),
           )
         : '',
     },
 
-    17: {
-      ...UI_NOTIFICATIONS[17],
-      title: t('notifications17Title'),
+    19: {
+      ...UI_NOTIFICATIONS[19],
+      title: t('notifications19Title'),
       description: [
-        t('notifications17DescriptionOne'),
-        t('notifications17DescriptionTwo'),
-        t('notifications17DescriptionThree'),
+        t('notifications19DescriptionOne'),
+        t('notifications19DescriptionTwo'),
+        t('notifications19DescriptionThree'),
       ],
-      actionText: t('notifications17ActionText'),
-      date: UI_NOTIFICATIONS[17].date
+      actionText: t('notifications19ActionText'),
+      date: UI_NOTIFICATIONS[19].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[17].date),
+            new Date(UI_NOTIFICATIONS[19].date),
           )
         : '',
     },

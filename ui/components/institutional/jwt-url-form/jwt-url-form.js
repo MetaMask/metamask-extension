@@ -5,6 +5,8 @@ import {
   AlignItems,
   DISPLAY,
   BorderColor,
+  BLOCK_SIZES,
+  FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
@@ -22,7 +24,15 @@ const JwtUrlForm = (props) => {
     const showJwtDropdown = props.jwtList.length >= 1;
 
     return (
-      <Box className="jwt-url-form__jwt-container" marginBottom={6}>
+      <Box
+        width={BLOCK_SIZES.FULL}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        marginTop={4}
+        alignItems={AlignItems.center}
+        className="jwt-url-form__jwt-container"
+        marginBottom={6}
+      >
         {showJwtDropdown && (
           <JwtDropdown
             data-testid="jwt-dropdown"
@@ -36,13 +46,15 @@ const JwtUrlForm = (props) => {
         )}
         {showJwtDropdown && !showAddNewToken && (
           <Box
-            className="jwt-url-form__btn__container"
+            width={BLOCK_SIZES.FULL}
             display={DISPLAY.FLEX}
+            flexDirection={FLEX_DIRECTION.COLUMN}
             alignItems={AlignItems.center}
             marginTop={2}
           >
             <Text>{t('or')}</Text>
             <Button
+              data-testid="addNewToken-btn"
               type="secondary"
               medium="true"
               onClick={() => {
@@ -56,7 +68,7 @@ const JwtUrlForm = (props) => {
         )}
         {(!showJwtDropdown || showAddNewToken) && (
           <Box>
-            <Text className="jwt-url-form__instruction">
+            <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
               {props.jwtInputText}
             </Text>
             {fileTooBigError && (
@@ -84,8 +96,10 @@ const JwtUrlForm = (props) => {
 
   const renderAPIURLInput = () => {
     return (
-      <Box className="jwt-url-form__jwt-apiUrlInput">
-        <Text className="jwt-url-form__instruction">{props.urlInputText}</Text>
+      <Box width={BLOCK_SIZES.FULL}>
+        <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
+          {props.urlInputText}
+        </Text>
         <Box>
           <input
             className="jwt-url-form__input"
@@ -105,6 +119,7 @@ const JwtUrlForm = (props) => {
     <Box
       className="jwt-url-form"
       display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
       alignItems={AlignItems.flexStart}
       marginBottom={8}
     >

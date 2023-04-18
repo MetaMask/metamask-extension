@@ -22,6 +22,8 @@ const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
 const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
+const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
 ///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
@@ -124,6 +126,9 @@ const PATH_NAME_MAP = {
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional features done',
+  ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
   [`${CONNECT_ROUTE}/:id`]: 'Connect To Site Confirmation Page',
@@ -222,6 +227,8 @@ export {
   CONNECTED_ACCOUNTS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
   CUSTODY_ACCOUNT_DONE_ROUTE,
+  CUSTODY_ACCOUNT_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   PATH_NAME_MAP,
   SWAPS_ROUTE,
