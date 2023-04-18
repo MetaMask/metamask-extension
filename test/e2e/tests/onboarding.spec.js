@@ -108,6 +108,9 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        // accept terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
         // welcome
         await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -145,6 +148,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
         // metrics
@@ -208,6 +212,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
         // metrics
@@ -260,7 +265,7 @@ describe('MetaMask onboarding', function () {
         title: this.test.title,
       },
 
-      async ({ driver }) => {
+      async ({ driver, secondaryGanacheServer }) => {
         await driver.navigate();
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
 
@@ -300,10 +305,11 @@ describe('MetaMask onboarding', function () {
         );
         assert.equal(await networkDisplay.getText(), networkName);
 
-        const balance1 = await driver.findElement(
+        const balance = await secondaryGanacheServer.getBalance();
+        const balanceElement = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );
-        assert.ok(/^10\sETH$/u.test(await balance1.getText()));
+        assert.equal(`${balance}\nETH`, await balanceElement.getText());
       },
     );
   });

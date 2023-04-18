@@ -85,7 +85,19 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <h6
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
           >
-            This service is experimental
+            <span>
+               
+              This service is experimental. By enabling this feature, you agree to OpenSea's 
+              <a
+                href="http://opensea.io/securityproviderterms"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                terms of use
+              </a>
+              .
+               
+            </span>
           </h6>
           <h5
             class="box box--margin-top-2 box--margin-bottom-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-muted"
@@ -177,7 +189,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="settings-page__content-description"
         >
           <p
-            class="box mm-text mm-text--body-md mm-text--color-text-alternative box--flex-direction-row"
+            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
           >
             We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature.
           </p>
@@ -195,7 +207,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </li>
           </ul>
           <p
-            class="box mm-text mm-text--body-md mm-text--color-text-alternative box--padding-top-4 box--flex-direction-row"
+            class="box mm-text mm-text--body-md box--padding-top-4 box--flex-direction-row box--color-text-alternative"
           >
             Leave this feature off if you don't want the app to pull data from those services.
           </p>

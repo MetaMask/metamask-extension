@@ -1,10 +1,10 @@
-import { TypographyVariant } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
+import { DelineatorType } from '../../../../../helpers/constants/flask';
 
 function getValues(pendingApproval, t, actions) {
   const {
     snapName,
-    requestData: { content, title, description, textAreaContent },
+    requestData: { content },
   } = pendingApproval;
 
   return {
@@ -20,52 +20,11 @@ function getValues(pendingApproval, t, actions) {
           element: 'SnapDelineator',
           key: 'snap-delineator',
           props: {
+            type: DelineatorType.Content,
             snapName,
           },
           // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
-          // TODO: Remove ternary once snap_confirm has been removed.
-          children: content
-            ? mapToTemplate(content)
-            : [
-                {
-                  element: 'Typography',
-                  key: 'title',
-                  children: title,
-                  props: {
-                    variant: TypographyVariant.H3,
-                    fontWeight: 'bold',
-                    boxProps: {
-                      marginBottom: 4,
-                    },
-                  },
-                },
-                ...(description
-                  ? [
-                      {
-                        element: 'Typography',
-                        key: 'subtitle',
-                        children: description,
-                        props: {
-                          variant: TypographyVariant.H6,
-                          boxProps: {
-                            marginBottom: 4,
-                          },
-                        },
-                      },
-                    ]
-                  : []),
-                ...(textAreaContent
-                  ? [
-                      {
-                        element: 'Copyable',
-                        key: 'snap-dialog-content-text',
-                        props: {
-                          text: textAreaContent,
-                        },
-                      },
-                    ]
-                  : []),
-              ],
+          children: mapToTemplate(content),
         },
       },
     ],

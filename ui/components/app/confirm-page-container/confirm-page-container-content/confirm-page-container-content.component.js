@@ -29,11 +29,9 @@ export default class ConfirmPageContainerContent extends Component {
     ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
@@ -48,7 +46,6 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.bool,
     supportsEIP1559: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
@@ -136,11 +133,9 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      title,
       image,
       titleComponent,
       subtitleComponent,
-      hideSubtitle,
       tokenAddress,
       nonce,
       detailsComponent,
@@ -156,7 +151,6 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
-      hideTitle,
       supportsEIP1559,
       hasTopBorder,
       nativeCurrency,
@@ -199,15 +193,12 @@ export default class ConfirmPageContainerContent extends Component {
               !detailsComponent || !dataComponent,
           })}
           action={action}
-          title={title}
           image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
-          hideSubtitle={hideSubtitle}
           tokenAddress={tokenAddress}
           nonce={nonce}
           origin={origin}
-          hideTitle={hideTitle}
           toAddress={toAddress}
           transactionType={transactionType}
         />

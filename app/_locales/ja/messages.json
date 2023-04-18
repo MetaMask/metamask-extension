@@ -329,9 +329,6 @@
     "message": "$1に以下の額までの引き出しと使用を許可します。",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "リクエストを承認する前に、必ず独自のデューデリジェンスを行ってください。"
-  },
   "amount": {
     "message": "金額"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli テストネットワークに接続中"
   },
   "connectingToMainnet": {
     "message": "イーサリアムメインネットに接続中"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "セキュリティプロバイダーを有効にする"
-  },
   "enableSmartTransactions": {
     "message": "スマートトランザクションを有効にする"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Etherscanで表示"
-  },
-  "expandExperience": {
-    "message": "MetaMask Snaps で web3 エクスペリエンスを拡張"
   },
   "expandView": {
     "message": "ビューを展開"
@@ -1519,9 +1513,6 @@
   "general": {
     "message": "一般"
   },
-  "getWarningsFromOpenSea": {
-    "message": "既知の悪質なリクエストを受けた際に OpenSea から警告を受けられます。"
-  },
   "goBack": {
     "message": "戻る"
   },
@@ -1610,11 +1601,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "これは誰にも教えないでください。$1$2",
+    "message": "これは誰にも教えないでください。$1、$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask サポートがこの情報を尋ねることはなく、",
+    "message": "MetaMask サポートがこの情報を尋ねることはなく",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli テストネットワーク"
+  },
   "link": {
     "message": "リンク"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "不正な形式のデータ"
-  },
-  "manageSnaps": {
-    "message": "インストールされたスナップの管理"
   },
   "max": {
     "message": "最大"
@@ -2191,9 +2182,6 @@
     "message": "ナンスが提案され$1よりも大きいです",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "所有者情報が一致していないため、NFT を追加できません。入力された情報が正しいことを確認してください。"
   },
@@ -2278,9 +2266,6 @@
   "notEnoughGas": {
     "message": "ガスが不足しています"
   },
-  "notNow": {
-    "message": "また後で"
-  },
   "notifications": {
     "message": "通知"
   },
@@ -2341,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
-  },
-  "notifications17ActionText": {
-    "message": "セキュリティおよびプライバシー設定を表示"
-  },
-  "notifications17Title": {
-    "message": "セキュリティおよびプライバシー設定"
   },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
@@ -2611,12 +2590,6 @@
   "openSea": {
     "message": "OpenSea (ベータ)"
   },
-  "openSeaAltText": {
-    "message": "OpenSea セキュリティプロバイダー"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea は、この機能を提供する最初のセキュリティプロバイダーです。他のプロバイダーも近日追加予定です！"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2723,10 +2696,6 @@
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask に確認を表示します。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask にダイアログウィンドウを表示します。",
@@ -3271,12 +3240,6 @@
   "show": {
     "message": "表示"
   },
-  "showAdvancedGasInline": {
-    "message": "高度なガスコントロール"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "これを選択すると、ガス代と限度額のコントロールが送金画面と確認画面に直接表示されます。"
-  },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に変換を表示"
   },
@@ -3382,10 +3345,6 @@
   "snaps": {
     "message": "スナップ"
   },
-  "snapsInsightError": {
-    "message": "$1 でエラーが発生しました: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
   },
@@ -3402,7 +3361,8 @@
     "message": "スナップは有効になっている場合にのみ実行されます"
   },
   "snapsUIError": {
-    "message": "スナップにより指定された UI が無効です。"
+    "message": "スナップにより指定された UI が無効です。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
@@ -3510,9 +3470,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea で安全を確保"
   },
   "step1LatticeWallet": {
     "message": "Lattice1を接続する"
@@ -4029,9 +3986,6 @@
   },
   "thisIsBasedOn": {
     "message": "これは次の情報源からの情報に基づくものです: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは実験段階です"
   },
   "time": {
     "message": "時間"

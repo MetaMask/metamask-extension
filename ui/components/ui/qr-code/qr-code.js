@@ -7,7 +7,13 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Tooltip from '../tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { AddressCopyButton } from '../../multichain/address-copy-button';
+import Box from '../box/box';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library/icon/deprecated';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -56,25 +62,31 @@ function QrCodeView(props) {
           __html: qrImage.createTableTag(4),
         }}
       />
-      <Tooltip
-        wrapperClassName="qr-code__address-container__tooltip-wrapper"
-        position="bottom"
-        title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-      >
-        <div
-          className="qr-code__address-container"
-          onClick={() => {
-            handleCopy(toChecksumHexAddress(data));
-          }}
+      {process.env.MULTICHAIN ? (
+        <Box marginLeft={2} marginRight={2}>
+          <AddressCopyButton wrap address={toChecksumHexAddress(data)} />
+        </Box>
+      ) : (
+        <Tooltip
+          wrapperClassName="qr-code__address-container__tooltip-wrapper"
+          position="bottom"
+          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
         >
-          <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
-          <Icon
-            name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-            size={ICON_SIZES.SM}
-            marginInlineStart={3}
-          />
-        </div>
-      </Tooltip>
+          <div
+            className="qr-code__address-container"
+            onClick={() => {
+              handleCopy(toChecksumHexAddress(data));
+            }}
+          >
+            <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
+            <Icon
+              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+              size={ICON_SIZES.SM}
+              marginInlineStart={3}
+            />
+          </div>
+        </Tooltip>
+      )}
     </div>
   );
 }

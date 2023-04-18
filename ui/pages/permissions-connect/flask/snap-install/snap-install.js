@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
-import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
@@ -18,10 +16,11 @@ import {
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
+import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
 
 export default function SnapInstall({
   request,
@@ -89,12 +88,15 @@ export default function SnapInstall({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <SnapsAuthorshipPill
-          snapId={targetSubjectMetadata.origin}
-          version={targetSubjectMetadata.version}
-        />
+        <Box paddingLeft={4} paddingRight={4}>
+          <SnapAuthorship snapId={targetSubjectMetadata.origin} />
+        </Box>
         {!hasError && (
-          <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+          <Text
+            variant={TextVariant.headingLg}
+            paddingTop={4}
+            paddingBottom={2}
+          >
             {t('snapInstall')}
           </Text>
         )}
@@ -115,9 +117,9 @@ export default function SnapInstall({
           <>
             <Text
               className="headers__permission-description"
+              paddingBottom={4}
               paddingLeft={4}
               paddingRight={4}
-              paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapInstallRequestsPermission', [
@@ -125,8 +127,9 @@ export default function SnapInstall({
                 <b key="2">{snapName}</b>,
               ])}
             </Text>
-            <PermissionsConnectPermissionList
+            <SnapPermissionsList
               permissions={requestState.permissions || {}}
+              targetSubjectMetadata={targetSubjectMetadata}
             />
           </>
         )}
@@ -137,11 +140,7 @@ export default function SnapInstall({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
-            >
+            <Text textAlign={TEXT_ALIGN.CENTER}>
               {t('snapInstallRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,
@@ -155,9 +154,6 @@ export default function SnapInstall({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Box className="snap-install__footer--no-source-code" paddingTop={4}>
-          <PermissionsConnectFooter />
-        </Box>
         <PageContainerFooter
           cancelButtonType="default"
           hideCancel={hasError}

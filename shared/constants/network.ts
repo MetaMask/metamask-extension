@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash';
+import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
@@ -95,6 +95,7 @@ export const NETWORK_TYPES = {
   MAINNET: 'mainnet',
   RPC: 'rpc',
   SEPOLIA: 'sepolia',
+  LINEA_TESTNET: 'lineatestnet',
 } as const;
 
 /**
@@ -120,6 +121,7 @@ export const NETWORK_IDS = {
   GOERLI: '5',
   LOCALHOST: '1337',
   SEPOLIA: '11155111',
+  LINEA_TESTNET: '59140',
 } as const;
 
 /**
@@ -145,6 +147,7 @@ export const CHAIN_IDS = {
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
+  LINEA_TESTNET: '0xe704',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
@@ -160,6 +163,7 @@ export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
+export const LINEA_TESTNET_DISPLAY_NAME = 'Linea Goerli test network';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
 export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
@@ -189,6 +193,7 @@ export const MAINNET_RPC_URL = getRpcUrl({
 });
 export const GOERLI_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.GOERLI });
 export const SEPOLIA_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.SEPOLIA });
+export const LINEA_TESTNET_RPC_URL = 'https://rpc.goerli.linea.build';
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 /**
@@ -233,11 +238,12 @@ export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
-];
+] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.LINEA_TESTNET,
   CHAIN_IDS.LOCALHOST,
 ];
 
@@ -256,6 +262,10 @@ export const TEST_NETWORK_TICKER_MAP: {
   [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
     CURRENCY_SYMBOLS.ETH
   }`,
+  [NETWORK_TYPES.LINEA_TESTNET]:
+    `Linea${CURRENCY_SYMBOLS.ETH}` as `${Capitalize<
+      typeof NETWORK_TYPES.LINEA_TESTNET
+    >}${typeof CURRENCY_SYMBOLS.ETH}`,
 };
 
 /**
@@ -274,6 +284,12 @@ export const BUILT_IN_NETWORKS = {
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
+  [NETWORK_TYPES.LINEA_TESTNET]: {
+    networkId: NETWORK_IDS.LINEA_TESTNET,
+    chainId: CHAIN_IDS.LINEA_TESTNET,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
+    blockExplorerUrl: 'https://explorer.goerli.linea.build',
+  },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
     chainId: CHAIN_IDS.MAINNET,
@@ -285,19 +301,29 @@ export const BUILT_IN_NETWORKS = {
   },
 } as const;
 
+export const BUILT_IN_INFURA_NETWORKS = pick(
+  BUILT_IN_NETWORKS,
+  INFURA_PROVIDER_TYPES,
+);
+
+export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
+
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [NETWORK_TYPES.LINEA_TESTNET]: LINEA_TESTNET_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [NETWORK_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [NETWORK_IDS.LINEA_TESTNET]: LINEA_TESTNET_DISPLAY_NAME,
   [NETWORK_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.LINEA_TESTNET]: LINEA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 } as const;
@@ -306,12 +332,14 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
+  [CHAIN_IDS.LINEA_TESTNET]: NETWORK_TYPES.LINEA_TESTNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
 } as const;
 
 export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.GOERLI]: GOERLI_RPC_URL,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
+  [CHAIN_IDS.LINEA_TESTNET]: LINEA_TESTNET_RPC_URL,
   [CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
 } as const;
@@ -333,6 +361,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [NETWORK_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
+  [NETWORK_IDS.LINEA_TESTNET]: NETWORK_TYPES.LINEA_TESTNET,
   [NETWORK_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
 } as const;
 
@@ -340,6 +369,7 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
+  [CHAIN_IDS.LINEA_TESTNET]: NETWORK_IDS.LINEA_TESTNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
 } as const;
 
@@ -379,6 +409,11 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
       CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
     }`,
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
+  },
+  [CHAIN_IDS.LINEA_TESTNET]: {
+    domain: 'linea.build',
+    subdomain: 'explorer.goerli',
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_TESTNET],
   },
   [CHAIN_IDS.BSC]: {
     domain: 'bscscan.com',
@@ -504,6 +539,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.MOONRIVER
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.LINEA_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -650,3 +686,33 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
 ];
+
+export const SHOULD_SHOW_LINEA_TESTNET_NETWORK =
+  new Date().getTime() > Date.UTC(2023, 2, 28, 8);
+
+/**
+ * Represents the availability state of the currently selected network.
+ */
+export enum NetworkStatus {
+  /**
+   * The network may or may not be able to receive requests, but either no
+   * attempt has been made to determine this, or an attempt was made but was
+   * unsuccessful.
+   */
+  Unknown = 'unknown',
+  /**
+   * The network is able to receive and respond to requests.
+   */
+  Available = 'available',
+  /**
+   * The network is unable to receive and respond to requests for unknown
+   * reasons.
+   */
+  Unavailable = 'unavailable',
+  /**
+   * The network is not only unavailable, but is also inaccessible for the user
+   * specifically based on their location. This state only applies to Infura
+   * networks.
+   */
+  Blocked = 'blocked',
+}

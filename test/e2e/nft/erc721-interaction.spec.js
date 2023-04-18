@@ -59,13 +59,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Send Token');
+        await driver.findElement({ text: 'Send TDC' });
       },
     );
   });
@@ -130,7 +127,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction
@@ -202,7 +198,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction
@@ -277,7 +272,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction

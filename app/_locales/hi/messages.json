@@ -329,9 +329,6 @@
     "message": "$1 को निम्नलिखित तक राशि निकालने और खर्च करने की अनुमति दें:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "किसी भी अनुरोध को मंजूरी देने से पहले हमेशा अपनी खुद की उचित कर्मठता सुनिश्चित करें।"
-  },
   "amount": {
     "message": "राशि"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "सुरक्षा प्रदाता सक्षम करें"
-  },
   "enableSmartTransactions": {
     "message": "स्मार्ट लेनदेन को सक्षम करें"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
-  },
-  "expandExperience": {
-    "message": "MetaMask स्नैप्स के साथ अपने web3 अनुभव का विस्तार करें"
   },
   "expandView": {
     "message": "दृश्य का विस्तार करें"
@@ -1519,9 +1513,6 @@
   "general": {
     "message": "सामान्य"
   },
-  "getWarningsFromOpenSea": {
-    "message": "जब भी आप एक ज्ञात दुर्भावनापूर्ण अनुरोध प्राप्त करते हैं, OpenSea से चेतावनी प्राप्त करें।"
-  },
   "goBack": {
     "message": "वापस जाएं"
   },
@@ -1610,11 +1601,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "इसे किसी के साथ साझा न करें। $1$2",
+    "message": "इसे किसी के साथ साझा न करें। $1,$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा,",
+    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क"
+  },
   "link": {
     "message": "लिंक"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "विकृत डेटा"
-  },
-  "manageSnaps": {
-    "message": "अपने इंस्टाल किए गए स्नैप्स मैनेज करें"
   },
   "max": {
     "message": "अधिकतम"
@@ -2191,9 +2182,6 @@
     "message": "नॉन्स $1 के सुझाए गए नॉन्स से अधिक है",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "एनएफटी"
-  },
   "nftAddFailedMessage": {
     "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
   },
@@ -2278,9 +2266,6 @@
   "notEnoughGas": {
     "message": "पर्याप्त गैस नहीं"
   },
-  "notNow": {
-    "message": "अभी नहीं"
-  },
   "notifications": {
     "message": "सूचनाएं"
   },
@@ -2341,12 +2326,6 @@
   },
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
-  },
-  "notifications17ActionText": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
-  },
-  "notifications17Title": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile उपयोगकर्ता अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",
@@ -2611,12 +2590,6 @@
   "openSea": {
     "message": "OpenSea (बीटा)"
   },
-  "openSeaAltText": {
-    "message": "OpenSea सुरक्षा प्रदाता"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea इस सुविधा के लिए पहला सुरक्षा प्रदाता है।अधिक प्रदाता जल्द ही आ रहे हैं!"
-  },
   "openSeaNew": {
     "message": "ओपनसी"
   },
@@ -2723,10 +2696,6 @@
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask में पुष्टि को दर्शाएं।",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
@@ -3271,12 +3240,6 @@
   "show": {
     "message": "दिखाएं"
   },
-  "showAdvancedGasInline": {
-    "message": "उन्नत गैस नियंत्रण"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
-  },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
   },
@@ -3382,10 +3345,6 @@
   "snaps": {
     "message": "स्नैप्स"
   },
-  "snapsInsightError": {
-    "message": "$1: $2 के साथ त्रुटि हुई",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
   },
@@ -3402,7 +3361,8 @@
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
   },
   "snapsUIError": {
-    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।"
+    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और उपयोग करने से पहले जोखिमों को समझें।"
@@ -3510,9 +3470,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea के साथ सुरक्षित रहें"
   },
   "step1LatticeWallet": {
     "message": "अपना Lattice1 कनेक्ट करें"
@@ -4029,9 +3986,6 @@
   },
   "thisIsBasedOn": {
     "message": "से प्राप्त जानकारी पर आधारित है"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रयोगात्मक है"
   },
   "time": {
     "message": "समय"
