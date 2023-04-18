@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -11,17 +12,17 @@ const state = {
   },
   metamask: {
     accounts: {
-      '0xAddress': {
-        address: '0xAddress',
-        balance: '0x1F4',
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        balance: '0x0',
       },
     },
     gasEstimateType: 'none',
-    selectedAddress: '0xAddress',
+    selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     identities: {
-      '0xAddress': {
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         name: 'Account 1',
-        address: '0xAddress',
       },
     },
     cachedBalances: {},
@@ -64,12 +65,22 @@ const state = {
       },
     ],
     unapprovedTxs: {},
+    keyringTypes: [KeyringType.ledger],
+    keyrings: [
+      {
+        type: KeyringType.ledger,
+        accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+      },
+    ],
   },
   history: {
     mostRecentOverviewPage: '/',
   },
   confirmTransaction: {
     txData: {},
+  },
+  send: {
+    draftTransactions: {},
   },
 };
 
@@ -229,19 +240,63 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Set a spending cap for your')).toBeInTheDocument();
   });
 
-  it('should click Verify contract details and show popup Contract details, then close popup', () => {
+  it('should click Verify third-party details and show popup Third-party details, then close popup', () => {
     const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
-    const verifyContractDetails = getByText('Verify contract details');
-    fireEvent.click(verifyContractDetails);
+    const verifyThirdPartyDetails = getByText('Verify third-party details');
+    fireEvent.click(verifyThirdPartyDetails);
 
-    expect(getByText('Contract details')).toBeInTheDocument();
+    expect(getByText('Third-party details')).toBeInTheDocument();
 
     const gotIt = getByText('Got it');
     fireEvent.click(gotIt);
     expect(gotIt).not.toBeInTheDocument();
+  });
+
+  it('should show hardware wallet info text', () => {
+    const { queryByText, getByText, getByTestId } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    const textField = getByTestId('custom-spending-cap-input');
+    fireEvent.change(textField, { target: { value: '1' } });
+
+    expect(queryByText('Prior to clicking confirm:')).toBeNull();
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
+
+    expect(queryByText('Prior to clicking confirm:')).toBeInTheDocument();
+  });
+
+  it('should not show hardware wallet info text', () => {
+    const { queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    expect(queryByText('Prior to clicking confirm:')).toBeNull();
+  });
+
+  it('should render security provider response if transaction is malicious', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: 1,
+      reason:
+        'This has been flagged as potentially suspicious. If you sign, you could lose access to all of your NFTs and any funds or other assets in your wallet.',
+      reason_header: 'Warning',
+    };
+    const { getByText } = renderWithProvider(
+      <TokenAllowance
+        {...props}
+        txData={{ ...props.txData, securityProviderResponse }}
+      />,
+      store,
+    );
+
+    expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
   });
 });

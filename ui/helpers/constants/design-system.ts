@@ -46,6 +46,8 @@ export enum Color {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
+  lineaTestnetInverse = 'lineatestnet-inverse',
   transparent = 'transparent',
   localhost = 'localhost',
   inherit = 'inherit',
@@ -75,6 +77,7 @@ export enum BackgroundColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -100,6 +103,7 @@ export enum BorderColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -108,6 +112,7 @@ export enum TextColor {
   textDefault = 'text-default',
   textAlternative = 'text-alternative',
   textMuted = 'text-muted',
+  overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
   primaryInverse = 'primary-inverse',
   errorDefault = 'error-default',
@@ -121,8 +126,11 @@ export enum TextColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
+  lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
+  transparent = 'transparent',
 }
 
 export enum IconColor {
@@ -143,6 +151,8 @@ export enum IconColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
+  lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
 }
@@ -287,13 +297,32 @@ export const BLOCK_SIZES = {
   FULL: 'full',
 };
 
+export enum TextAlign {
+  Left = 'left',
+  Center = 'center',
+  Right = 'right',
+  Justify = 'justify',
+  End = 'end',
+  Start = 'start',
+}
+
 export const TEXT_ALIGN = {
   LEFT: 'left',
   CENTER: 'center',
   RIGHT: 'right',
   JUSTIFY: 'justify',
   END: 'end',
+  START: 'start',
 };
+
+export enum TextTransform {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Uppercase = 'uppercase',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Lowercase = 'lowercase',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Capitalize = 'capitalize',
+}
 
 export const TEXT_TRANSFORM = {
   UPPERCASE: 'uppercase',
@@ -301,17 +330,34 @@ export const TEXT_TRANSFORM = {
   CAPITALIZE: 'capitalize',
 };
 
+export enum FontWeight {
+  Bold = 'bold',
+  Medium = 'medium',
+  Normal = 'normal',
+}
+
 export const FONT_WEIGHT = {
   BOLD: 'bold',
   MEDIUM: 'medium',
   NORMAL: 'normal',
 };
 
+export enum OverflowWrap {
+  BreakWord = 'break-word',
+  Anywhere = 'anywhere',
+  Normal = 'normal',
+}
+
 export const OVERFLOW_WRAP = {
   BREAK_WORD: 'break-word',
   ANYWHERE: 'anywhere',
   NORMAL: 'normal',
 };
+
+export enum FontStyle {
+  Italic = 'italic',
+  Normal = 'normal',
+}
 
 export const FONT_STYLE = {
   ITALIC: 'italic',

@@ -160,6 +160,9 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Oppretter forbindelse med Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },
@@ -655,12 +658,6 @@
   },
   "settings": {
     "message": "Innstillinger"
-  },
-  "showAdvancedGasInline": {
-    "message": "Avanserte datakraftskontroller"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Velg dette for å vise bensinpris og begrensningskontroller direkte på send- og bekreftskjermbildene."
   },
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på Testnets "

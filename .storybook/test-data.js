@@ -1,5 +1,5 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
-import { HardwareKeyringTypes } from '../shared/constants/hardware-wallets';
+import { KeyringType } from '../shared/constants/keyring';
 
 const state = {
   invalidCustomNetwork: {
@@ -263,12 +263,12 @@ const state = {
         enabled: true,
         id: 'local:http://localhost:8080/',
         initialPermissions: {
-          snap_confirm: {},
+          snap_dialog: {},
         },
         manifest: {
           description: 'An example MetaMask Snap.',
           initialPermissions: {
-            snap_confirm: {},
+            snap_dialog: {},
           },
           manifestVersion: '0.1',
           proposedName: 'MetaMask Example Snap',
@@ -298,7 +298,7 @@ const state = {
         enabled: true,
         id: 'npm:http://localhost:8080/',
         initialPermissions: {
-          snap_confirm: {},
+          snap_dialog: {},
           eth_accounts: {},
           snap_manageState: {},
         },
@@ -306,7 +306,7 @@ const state = {
           description:
             'This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.',
           initialPermissions: {
-            snap_confirm: {},
+            snap_dialog: {},
             eth_accounts: {},
             snap_manageState: {},
           },
@@ -600,13 +600,6 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'goerli',
-      ticker: 'ETH',
-      nickname: '',
-      rpcUrl: '',
-      chainId: '0x5',
-    },
-    previousProviderStore: {
       type: 'goerli',
       ticker: 'ETH',
       nickname: '',
@@ -1168,19 +1161,22 @@ const state = {
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
     keyringTypes: [
-      HardwareKeyringTypes.imported,
-      HardwareKeyringTypes.hdKeyTree,
-      HardwareKeyringTypes.trezor,
-      HardwareKeyringTypes.ledger,
+      KeyringType.imported,
+      KeyringType.hdKeyTree,
+      KeyringType.trezor,
+      KeyringType.ledger,
     ],
     keyrings: [
       {
-        type: HardwareKeyringTypes.hdKeyTree,
+        type: KeyringType.hdKeyTree,
         accounts: [
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-          '0x9d0ba4ddac06032527b140912ec808ab9451b788',
         ],
+      },
+      {
+        type: KeyringType.ledger,
+        accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
     networkConfigurations: {
@@ -1353,9 +1349,9 @@ const state = {
       },
       'local:http://localhost:8080/': {
         permissions: {
-          snap_confirm: {
+          snap_dialog: {
             invoker: 'local:http://localhost:8080/',
-            parentCapability: 'snap_confirm',
+            parentCapability: 'snap_dialog',
             id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
             date: 1620710693178,
             caveats: [],

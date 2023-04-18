@@ -142,6 +142,9 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Kumokonekta sa Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
@@ -598,12 +601,6 @@
   },
   "settings": {
     "message": "Mga Setting"
-  },
-  "showAdvancedGasInline": {
-    "message": "Mga advanced na kontrol sa gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Piliin ito para ipakita ang presyo ng gas at limitahan ang mga kontrol nang direkta sa screen ng pagpapadala at pagkumpirma."
   },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa mga Testnet"

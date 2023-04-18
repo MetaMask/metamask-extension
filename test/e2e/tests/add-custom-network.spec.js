@@ -392,7 +392,9 @@ describe('Custom network', function () {
           text: 'Delete',
         });
 
-        await driver.findElement('.modal-container__footer');
+        await driver.waitForSelector('.modal-container__footer', {
+          timeout: 15000,
+        });
         // should be deleted from the modal shown again to complete  deletion custom network
         await driver.clickElement({
           tag: 'button',

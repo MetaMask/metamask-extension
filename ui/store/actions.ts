@@ -51,7 +51,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  EVENT,
+  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -86,6 +86,12 @@ import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-ma
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import {
+  checkForUnapprovedTypedMessages,
+  updateCustodyState,
+} from './institutional/institution-actions';
+///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
   callBackgroundMethod,
@@ -713,6 +719,11 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -840,6 +851,11 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1848,6 +1864,10 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    updateCustodyState(dispatch, newState, getState());
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -3102,6 +3122,12 @@ export function toggleAccountMenu() {
   };
 }
 
+export function toggleNetworkMenu() {
+  return {
+    type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -3676,6 +3702,7 @@ export function approvePermissionsRequest(
       if (err) {
         dispatch(displayWarning(err));
       }
+      forceUpdateMetamaskState(dispatch);
     });
   };
 }
@@ -3950,6 +3977,12 @@ export function setRecoveryPhraseReminderLastShown(
         }
       },
     );
+  };
+}
+
+export function setTermsOfUseLastAgreed(lastAgreed: number) {
+  return async () => {
+    await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
   };
 }
 
@@ -4329,7 +4362,7 @@ export async function setSmartTransactionsOptInStatus(
   trackMetaMetricsEvent({
     actionId: generateActionId(),
     event: 'STX OptIn',
-    category: EVENT.CATEGORIES.SWAPS,
+    category: MetaMetricsEventCategory.Swaps,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,
@@ -4554,12 +4587,11 @@ export function hideBetaHeader() {
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
-      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4568,19 +4600,6 @@ export function setTransactionSecurityCheckEnabled(
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
-}
-
-export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    await submitRequestToBackground(
-      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
-    );
-  };
 }
 
 // QR Hardware Wallets

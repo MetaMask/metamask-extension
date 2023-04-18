@@ -329,9 +329,6 @@
     "message": "允许 $1 提取和消费最高以下金额：",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "在批准任何请求之前，始终确保执行自身尽职调查。"
-  },
   "amount": {
     "message": "数额"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
+  },
+  "connectingToLineaTestnet": {
+    "message": "正在连接Linea测试网络"
   },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "启用安全服务提供商"
-  },
   "enableSmartTransactions": {
     "message": "启用智能交易"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "在 Etherscan 上查看"
-  },
-  "expandExperience": {
-    "message": "扩展MetaMask Snap的web3体验"
   },
   "expandView": {
     "message": "展开视图"
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "常规"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "每当收到已知恶意请求，即从 OpenSea 获取警告。"
   },
   "goBack": {
     "message": "返回"
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
   },
+  "lineatestnet": {
+    "message": "Linea测试网络"
+  },
   "link": {
     "message": "链接"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "格式错误的数据"
-  },
-  "manageSnaps": {
-    "message": "管理已安装的Snap"
   },
   "max": {
     "message": "最大"
@@ -2191,9 +2182,6 @@
     "message": "Nonce 高于建议的 nouce 值 $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "非同质化代币(NFT)"
-  },
   "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
   },
@@ -2278,9 +2266,6 @@
   "notEnoughGas": {
     "message": "燃料不足"
   },
-  "notNow": {
-    "message": "暂时不"
-  },
   "notifications": {
     "message": "通知"
   },
@@ -2341,15 +2326,6 @@
   },
   "notifications15Title": {
     "message": "以太坊合并来了！"
-  },
-  "notifications17ActionText": {
-    "message": "显示安全和隐私设置"
-  },
-  "notifications17Description": {
-    "message": "本次更新提供更多选项，让您可以更好地管理自己的隐私。我们增加了数据收集方式的透明度，以及更清晰的分享选项。您可以通过安全和隐私设置更改您的首选项，或删除扩展使用数据。"
-  },
-  "notifications17Title": {
-    "message": "安全和隐私设置"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
@@ -2614,12 +2590,6 @@
   "openSea": {
     "message": "OpenSea（测试版）"
   },
-  "openSeaAltText": {
-    "message": "OpenSea 安全服务提供商"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea 是该功能的第一个安全服务提供商。即将推出更多提供商！"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2726,10 +2696,6 @@
   "permission_cronjob": {
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "在MetaMask中显示确认。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
@@ -3274,12 +3240,6 @@
   "show": {
     "message": "显示"
   },
-  "showAdvancedGasInline": {
-    "message": "高级燃料控制"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
-  },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
   },
@@ -3379,22 +3339,11 @@
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "此Snap正在请求以下权限："
-  },
   "snapUpdate": {
     "message": "更新Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1需要更新版本的snap。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
@@ -3412,7 +3361,8 @@
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
@@ -3520,9 +3470,6 @@
   },
   "statusNotConnected": {
     "message": "未连接"
-  },
-  "staySafeWithOpenSea": {
-    "message": "通过 OpenSea 确保安全"
   },
   "step1LatticeWallet": {
     "message": "关联您的 Lattice1"
@@ -4039,9 +3986,6 @@
   },
   "thisIsBasedOn": {
     "message": "所根据的信息是来自"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的"
   },
   "time": {
     "message": "时间"

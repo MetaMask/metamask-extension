@@ -329,9 +329,6 @@
     "message": "$1에서 다음 금액까지 인출 및 지출하도록 허용:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "모든 요청을 승인하기 전에 주의 깊게 직접 확인하세요."
-  },
   "amount": {
     "message": "금액"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerli 테스트 네트워크에 연결 중"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli 테스트 네트워크에 연결 중"
   },
   "connectingToMainnet": {
     "message": "이더리움 메인넷에 연결 중"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "보안 업체 활성화"
-  },
   "enableSmartTransactions": {
     "message": "스마트 트랜잭션 활성화"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Etherscan에서 보기"
-  },
-  "expandExperience": {
-    "message": "MetaMask 스냅으로 web3 경험을 확대하세요"
   },
   "expandView": {
     "message": "보기 확장"
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "일반"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "알려진 악성 요청을 받을 때마다 OpenSea로부터 경고 알림을 받으세요."
   },
   "goBack": {
     "message": "뒤로 가기"
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "이 토큰을 추가할까요?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli 테스트 네트워크"
+  },
   "link": {
     "message": "링크"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "잘못된 데이터"
-  },
-  "manageSnaps": {
-    "message": "설치된 스냅을 관리하세요"
   },
   "max": {
     "message": "최대"
@@ -2191,9 +2182,6 @@
     "message": "임시값이 권장 임시값인 $1보다 큽니다.",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT\n"
-  },
   "nftAddFailedMessage": {
     "message": "소유권 정보가 일치하지 않아 NFT를 추가할 수 없습니다. 올바른 정보를 입력했는지 확인하세요."
   },
@@ -2278,9 +2266,6 @@
   "notEnoughGas": {
     "message": "가스 부족"
   },
-  "notNow": {
-    "message": "나중에"
-  },
   "notifications": {
     "message": "알림"
   },
@@ -2341,15 +2326,6 @@
   },
   "notifications15Title": {
     "message": "이더리움 머지가 완료되었습니다!"
-  },
-  "notifications17ActionText": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
-  "notifications17Description": {
-    "message": "이 업데이트에는 자신의 개인정보 보호를 위해 행사할 수 있는 옵션이 더욱 많습니다. 데이터 수집 방법을 더욱 투명하게 하였고, 데이터 공유에 관련하여 명확한 옵션을 추가했습니다. 보안 및 개인 정보 설정을 통해 기본 설정을 변경하거나 확장 프로그램 사용 데이터를 삭제하세요."
-  },
-  "notifications17Title": {
-    "message": "보안 및 개인정보 설정 표시"
   },
   "notifications1Description": {
     "message": "MetaMask 모바일 사용자는 이제 모바일 지갑에서 토큰을 스왑할 수 있습니다. QR 코드를 스캔하여 모바일 앱을 설치하고 스왑을 시작하세요.",
@@ -2614,12 +2590,6 @@
   "openSea": {
     "message": "OpenSea (베타)"
   },
-  "openSeaAltText": {
-    "message": "OpenSea 보안 업체"
-  },
-  "openSeaDescription": {
-    "message": "이 기능의 1차 보안 업체는 OpenSea입니다. 곧 다른 보안 업체도 마련하겠습니다!"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2726,10 +2696,6 @@
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask에 확인을 표시합니다.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
@@ -3274,12 +3240,6 @@
   "show": {
     "message": "보기"
   },
-  "showAdvancedGasInline": {
-    "message": "고급 가스 제어 기능"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "이 항목을 선택하면 보내기 및 확인 화면에서 바로 가스 가격과 한도 조절을 확인할 수 있습니다."
-  },
   "showFiatConversionInTestnets": {
     "message": "테스트넷에 전환 표시"
   },
@@ -3379,22 +3339,11 @@
     "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "이 스냅이 다음 권한을 요청하고 있습니다."
-  },
   "snapUpdate": {
     "message": "스냅 업데이트"
   },
-  "snapUpdateExplanation": {
-    "message": "$1에는 스냅의 새 버전이 필요합니다",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "스냅"
-  },
-  "snapsInsightError": {
-    "message": "$1 관련 오류 발생: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "거래 인사이트를 가져오는 중..."
@@ -3412,7 +3361,8 @@
     "message": "스냅은 활성화된 상태에서만 작동합니다."
   },
   "snapsUIError": {
-    "message": "스냅에서 지정한 UI가 올바르지 않습니다."
+    "message": "스냅에서 지정한 UI가 올바르지 않습니다.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "네트워크에 따라 보안이나 개인 정보 유출의 위험이 있을 수 있습니다. 네트워크 추가 및 사용 이전에 위험 요소를 파악하세요."
@@ -3520,9 +3470,6 @@
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea로 보안을 유지하세요"
   },
   "step1LatticeWallet": {
     "message": "Lattice1을 연결하세요."
@@ -4039,9 +3986,6 @@
   },
   "thisIsBasedOn": {
     "message": "다음에 기반한 정보입니다: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 서비스입니다"
   },
   "time": {
     "message": "시간"

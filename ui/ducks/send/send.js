@@ -505,7 +505,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee({
+      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
         txParams: {
           gasPrice: draftTransaction.gas.gasPrice,
           gas: draftTransaction.gas.gasLimit,
@@ -2100,7 +2100,7 @@ export function updateSendAsset(
         details.standard === TokenStandard.ERC1155 ||
         details.standard === TokenStandard.ERC721
       ) {
-        if (type === AssetType.token && process.env.NFTS_V1) {
+        if (type === AssetType.token) {
           dispatch(
             showModal({
               name: 'CONVERT_TOKEN_TO_NFT',

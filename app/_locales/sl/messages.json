@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezovanje na testno omrežje Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
@@ -405,6 +408,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
+  },
+  "lineatestnet": {
+    "message": "Testno omrežje Linea Goerli"
   },
   "links": {
     "message": "Povezave"
@@ -659,12 +665,6 @@
   },
   "settings": {
     "message": "Nastavitve"
-  },
-  "showAdvancedGasInline": {
-    "message": "Napredno krmiljenje plina"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izberite to možnost, če želite prikazati ceno plina in omejiti nadzor neposredno na zaslonih za pošiljanje in potrditev."
   },
   "showFiatConversionInTestnets": {
     "message": "Pokažite pretvorbo na testnih omrežjih"

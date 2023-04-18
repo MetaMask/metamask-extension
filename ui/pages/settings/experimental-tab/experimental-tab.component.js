@@ -5,7 +5,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import Typography from '../../../components/ui/typography/typography';
 import { Text } from '../../../components/component-library';
 import {
@@ -77,7 +77,7 @@ export default class ExperimentalTab extends PureComponent {
                 value={openSeaEnabled}
                 onToggle={(value) => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.SETTINGS,
+                    category: MetaMetricsEventCategory.Settings,
                     event: 'Enabled/Disable OpenSea',
                     properties: {
                       action: 'Enabled/Disable OpenSea',
@@ -119,7 +119,7 @@ export default class ExperimentalTab extends PureComponent {
                 value={useNftDetection}
                 onToggle={(value) => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.SETTINGS,
+                    category: MetaMetricsEventCategory.Settings,
                     event: 'NFT Detected',
                     properties: {
                       action: 'NFT Detected',
@@ -193,7 +193,7 @@ export default class ExperimentalTab extends PureComponent {
                   value={transactionSecurityCheckEnabled}
                   onToggle={(value) => {
                     this.context.trackEvent({
-                      category: EVENT.CATEGORIES.SETTINGS,
+                      category: MetaMetricsEventCategory.Settings,
                       event: 'Enabled/Disable TransactionSecurityCheck',
                       properties: {
                         action: 'Enabled/Disable TransactionSecurityCheck',
@@ -209,7 +209,16 @@ export default class ExperimentalTab extends PureComponent {
                 color={TextColor.textAlternative}
                 marginTop={0}
               >
-                {t('thisServiceIsExperimental')}
+                {t('thisServiceIsExperimental', [
+                  <a
+                    href="http://opensea.io/securityproviderterms"
+                    key="termsOfUse"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {t('termsOfUse')}
+                  </a>,
+                ])}
               </Typography>
               <Typography
                 variant={TypographyVariant.H5}
@@ -253,7 +262,7 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {this.renderTransactionSecurityCheckToggle()}
-        {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
+        {this.renderOpenSeaEnabledToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
           this.renderDesktopEnableButton()

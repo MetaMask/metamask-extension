@@ -1,4 +1,4 @@
-import { ICON_NAMES } from '../../components/component-library';
+import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -75,13 +75,6 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('clearActivity'),
     descriptionMessage: (t) => t('clearActivityDescription'),
     route: `${ADVANCED_ROUTE}#clear-activity`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('showAdvancedGasInline'),
-    descriptionMessage: (t) => t('showAdvancedGasInlineDescription'),
-    route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -256,6 +249,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineatestnet'),
+    descriptionMessage: (t) => t('lineatestnet'),
+    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('localhost'),
     descriptionMessage: (t) => t('localhost'),
     route: `${NETWORKS_ROUTE}#networks-localhost`,
@@ -334,7 +334,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
     icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('experimental'),
@@ -342,7 +341,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('useNftDetectionDescription'),
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('advanced'),
