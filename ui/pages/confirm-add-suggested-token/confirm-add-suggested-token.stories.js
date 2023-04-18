@@ -63,7 +63,12 @@ const PageSet = ({ children, suggestedAssets, tokens, symbol, image }) => {
 
 export const DefaultStory = ({ suggestedAssets, tokens, symbol, image }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens} symbol={symbol} image={image}>
+    <PageSet
+      suggestedAssets={suggestedAssets}
+      tokens={tokens}
+      symbol={symbol}
+      image={image}
+    >
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -76,9 +81,19 @@ DefaultStory.args = {
   image: 'metamark.svg',
 };
 
-export const WithDuplicateAddress = ({ suggestedAssets, tokens, symbol, image }) => {
+export const WithDuplicateAddress = ({
+  suggestedAssets,
+  tokens,
+  symbol,
+  image,
+}) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens} symbol={symbol} image={image}>
+    <PageSet
+      suggestedAssets={suggestedAssets}
+      tokens={tokens}
+      symbol={symbol}
+      image={image}
+    >
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -101,7 +116,12 @@ export const WithDuplicateSymbolAndDifferentAddress = ({
   image,
 }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens} symbol={symbol} image={image}>
+    <PageSet
+      suggestedAssets={suggestedAssets}
+      tokens={tokens}
+      symbol={symbol}
+      image={image}
+    >
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
