@@ -87,9 +87,10 @@ export function MetaMetricsProvider({ children }) {
         },
         options,
       );
-    },
-    [context],
-  );
+    }, [
+      context,
+      addContextPropsIntoEventProperties,
+    ]);
 
   // Used to prevent double tracking page calls
   const previousMatch = useRef();

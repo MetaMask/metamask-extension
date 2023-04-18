@@ -82,7 +82,14 @@ const ConfirmTxScreen = ({ match }) => {
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
-  }, []);
+  }, [
+    chainId,
+    navigateToMostRecentOverviewPage,
+    networkId,
+    sendTo,
+    unapprovedMessagesTotal,
+    unapprovedTxs,
+  ]);
 
   useEffect(() => {
     if (!prevValue) {
@@ -141,6 +148,10 @@ const ConfirmTxScreen = ({ match }) => {
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
+    dispatch,
+    index,
+    navigateToMostRecentOverviewPage,
+    prevValue,
   ]);
 
   const getTxData = () => {
