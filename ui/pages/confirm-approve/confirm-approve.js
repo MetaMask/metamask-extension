@@ -149,7 +149,7 @@ export default function ConfirmApprove({
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155
   ) {
-    tokensText = assetName;
+    tokensText = assetName || tokenSymbol;
   }
 
   const tokenBalance = userBalance
@@ -217,6 +217,7 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
+
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
