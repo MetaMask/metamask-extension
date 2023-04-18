@@ -17,8 +17,30 @@ export default function MultilayerFeeMessage({
   plainStyle,
 }) {
   const t = useContext(I18nContext);
-
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
+
+  useEffect(() => {
+    if (!transaction?.txParams) {
+      return;
+    }
+    const getEstimatedL1Fee = async () => {
+      try {
+        const result = await fetchEstimatedL1Fee(
+          transaction?.chainId,
+          transaction,
+        );
+        setLayer1Total(result);
+      } catch (e) {
+        captureException(e);
+        setLayer1Total(null);
+      }
+    };
+    getEstimatedL1Fee();
+  }, [transaction]);
+
+  if (!transaction?.txParams) {
+    return null;
+  }
 
   let layer1Total = t('unknown');
   let feeTotalInFiat = t('unknown');
@@ -46,28 +68,13 @@ export default function MultilayerFeeMessage({
   const totalInWeiHex = sumHexes(
     layer2fee || '0x0',
     fetchedLayer1Total || '0x0',
-    transaction.txParams.value || '0x0',
+    transaction?.txParams?.value || '0x0',
   );
 
   const totalBN = new Numeric(totalInWeiHex, 16, EtherDenomination.WEI);
   const totalInEth = `${totalBN
     .toDenomination(EtherDenomination.ETH)
     .toFixed(12)} ${nativeCurrency}`;
-  useEffect(() => {
-    const getEstimatedL1Fee = async () => {
-      try {
-        const result = await fetchEstimatedL1Fee(
-          transaction.chainId,
-          transaction,
-        );
-        setLayer1Total(result);
-      } catch (e) {
-        captureException(e);
-        setLayer1Total(null);
-      }
-    };
-    getEstimatedL1Fee();
-  }, [transaction]);
 
   const totalInFiat = (
     <UserPreferencedCurrencyDisplay
