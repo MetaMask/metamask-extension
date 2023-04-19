@@ -150,7 +150,17 @@ export const AppHeader = ({ onClick }) => {
               <AccountPicker
                 address={identity.address}
                 name={identity.name}
-                onClick={() => dispatch(toggleAccountMenu())}
+                onClick={() => {
+                  dispatch(toggleAccountMenu());
+
+                  trackEvent({
+                    event: MetaMetricsEventName.NavAccountMenuOpened,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                    },
+                  });
+                }}
               />
               <Box
                 display={DISPLAY.FLEX}
