@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import Identicon from '../../ui/identicon';
-import Tooltip from '../../ui/tooltip';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -179,17 +178,16 @@ const TokenOverview = ({ className, token }) => {
             data-testid="eth-overview-send"
             disabled={token.isERC721}
           />
-          <IconButton
-            className="token-overview__button"
-            disabled={!isSwapsChain}
-            Icon={
-              <Icon
-                name={IconName.SwapHorizontal}
-                color={IconColor.primaryInverse}
-              />
-            }
-            onClick={() => {
-              if (isSwapsChain) {
+          {isSwapsChain && (
+            <IconButton
+              className="token-overview__button"
+              Icon={
+                <Icon
+                  name={IconName.SwapHorizontal}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              onClick={() => {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
@@ -213,23 +211,11 @@ const TokenOverview = ({ className, token }) => {
                 } else {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
-              }
-            }}
-            label={t('swap')}
-            tooltipRender={
-              isSwapsChain
-                ? null
-                : (contents) => (
-                    <Tooltip
-                      title={t('currentlyUnavailable')}
-                      position="bottom"
-                      disabled={isSwapsChain}
-                    >
-                      {contents}
-                    </Tooltip>
-                  )
-            }
-          />
+              }}
+              label={t('swap')}
+              tooltipRender={null}
+            />
+          )}
           {isBridgeToken && (
             <IconButton
               className="token-overview__button"
