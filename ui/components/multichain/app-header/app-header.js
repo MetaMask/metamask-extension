@@ -169,7 +169,13 @@ export const AppHeader = ({ onClick }) => {
               >
                 {showStatus ? (
                   <ConnectedStatusIndicator
-                    onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
+                    onClick={() => {
+                      history.push(CONNECTED_ACCOUNTS_ROUTE);
+                      trackEvent({
+                        event: MetaMetricsEventName.NavConnectedSitesOpened,
+                        category: MetaMetricsEventCategory.Navigation,
+                      });
+                    }}
                   />
                 ) : null}
                 <Box
