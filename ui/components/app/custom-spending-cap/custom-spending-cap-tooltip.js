@@ -40,8 +40,7 @@ export const CustomSpendingCapTooltip = ({
         tooltipIcon !== '' && (
           <Icon
             name={IconName.Question}
-            size={IconSize.Auto}
-            style={{ 'vertical-align': 'bottom' }}
+            size={IconSize.Inherit}
           />
         )
       )}
