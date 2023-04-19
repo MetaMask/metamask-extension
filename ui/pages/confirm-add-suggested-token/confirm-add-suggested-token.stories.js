@@ -1,111 +1,65 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { store, getNewState } from '../../../.storybook/preview';
+import { Provider } from 'react-redux';
 import { suggestedAssets as mockSuggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
-import { updateMetamaskState } from '../../store/actions';
+
+import configureStore from '../../store/store';
+
+import mockState from '../../../.storybook/test-data';
+
 import ConfirmAddSuggestedToken from '.';
+
+const store = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    suggestedAssets: [...mockSuggestedAssets],
+    tokens: [],
+  },
+});
 
 export default {
   title: 'Pages/ConfirmAddSuggestedToken',
-  argTypes: {
-    tokens: {
-      control: 'array',
-      table: { category: 'Data' },
-    },
-    suggestedAssets: {
-      control: 'array',
-      table: { category: 'Data' },
-    },
-    symbol: {
-      control: 'text',
-      table: { category: 'Data' },
-    },
-    image: {
-      control: 'text',
-      table: { category: 'Data' },
-    },
-  },
-  args: {
-    symbol: 'ETH',
-    image: './images/eth_logo.svg',
-  },
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-const { metamask: state } = store.getState();
-
-const PageSet = ({ children, suggestedAssets, tokens, symbol, image }) => {
-  useEffect(() => {
-    if (!suggestedAssets?.length) {
-      return;
-    }
-
-    suggestedAssets[0].asset.image = image;
-    suggestedAssets[0].asset.symbol = symbol;
-
-    store.dispatch(
-      updateMetamaskState(
-        getNewState(state, {
-          suggestedAssets,
-        }),
-      ),
-    );
-  }, [image, suggestedAssets, symbol]);
-
-  useEffect(() => {
-    store.dispatch(
-      updateMetamaskState(
-        getNewState(state, {
-          tokens,
-        }),
-      ),
-    );
-  }, [tokens]);
-
-  return children;
-};
-
-export const DefaultStory = (args) => {
-  return (
-    <PageSet {...args}>
-      <ConfirmAddSuggestedToken />
-    </PageSet>
-  );
-};
+export const DefaultStory = () => <ConfirmAddSuggestedToken />;
 DefaultStory.storyName = 'Default';
-DefaultStory.args = {
-  suggestedAssets: [...mockSuggestedAssets],
-  tokens: [],
-};
 
-export const WithDuplicateAddress = (args) => {
-  return (
-    <PageSet {...args}>
-      <ConfirmAddSuggestedToken />
-    </PageSet>
-  );
-};
-WithDuplicateAddress.args = {
-  suggestedAssets: [...mockSuggestedAssets],
-  tokens: [
-    {
-      ...mockSuggestedAssets[0].asset,
-    },
-  ],
-};
+export const WithDuplicateAddress = () => <ConfirmAddSuggestedToken />;
+const WithDuplicateAddressStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    suggestedAssets: [...mockSuggestedAssets],
+    tokens: [
+      {
+        ...mockSuggestedAssets[0].asset,
+      },
+    ],
+  },
+});
+WithDuplicateAddress.decorators = [
+  (story) => <Provider store={WithDuplicateAddressStore}>{story()}</Provider>,
+];
 
-export const WithDuplicateSymbolAndDifferentAddress = (args) => {
-  return (
-    <PageSet {...args}>
-      <ConfirmAddSuggestedToken />
-    </PageSet>
-  );
-};
-WithDuplicateSymbolAndDifferentAddress.args = {
-  suggestedAssets: [...mockSuggestedAssets],
-  tokens: [
-    {
-      ...mockSuggestedAssets[0].asset,
-      address: '0xNonSuggestedAddress',
-    },
-  ],
-};
+export const WithDuplicateSymbolAndDifferentAddress = () => (
+  <ConfirmAddSuggestedToken />
+);
+const WithDuplicateSymbolAndDifferentAddressStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    suggestedAssets: [...mockSuggestedAssets],
+    tokens: [
+      {
+        ...mockSuggestedAssets[0].asset,
+        address: '0xNonSuggestedAddress',
+      },
+    ],
+  },
+});
+WithDuplicateSymbolAndDifferentAddress.decorators = [
+  (story) => (
+    <Provider store={WithDuplicateSymbolAndDifferentAddressStore}>
+      {story()}
+    </Provider>
+  ),
+];
