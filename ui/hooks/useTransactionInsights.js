@@ -6,7 +6,7 @@ import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
 import { getInsightSnaps } from '../selectors';
 import { Tab } from '../components/ui/tabs';
-import DropdownTab from '../components/ui/tabs/flask/dropdown-tab';
+import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
 
 const isAllowedTransactionTypes = (transactionType) =>
