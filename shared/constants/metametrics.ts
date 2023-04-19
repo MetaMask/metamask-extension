@@ -545,6 +545,7 @@ export enum MetaMetricsEventName {
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
+  TokenDetailsOpened = 'Token Details Opened',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -584,6 +585,7 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Desktop = 'Desktop',
   ServiceWorkers = 'service_workers',
+  Tokens = 'Tokens',
 }
 
 export enum MetaMetricsEventLinkType {
