@@ -543,6 +543,7 @@ export enum MetaMetricsEventName {
   ///: END:ONLY_INCLUDE_IN
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
+  AccountRemoved = 'Account Removed',
 }
 
 export enum MetaMetricsEventAccountType {
