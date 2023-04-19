@@ -7,7 +7,6 @@ import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
-  INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
@@ -30,7 +29,6 @@ export default class SendContent extends Component {
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     networkOrAccountNotSupports1559: PropTypes.bool,
-    getIsBalanceInsufficient: PropTypes.bool,
     asset: PropTypes.object,
     assetError: PropTypes.string,
     recipient: PropTypes.object,
@@ -47,7 +45,6 @@ export default class SendContent extends Component {
       isEthGasPrice,
       noGasPrice,
       networkOrAccountNotSupports1559,
-      getIsBalanceInsufficient,
       asset,
       assetError,
       recipient,
@@ -60,8 +57,6 @@ export default class SendContent extends Component {
       gasError = GAS_PRICE_EXCESSIVE_ERROR_KEY;
     } else if (noGasPrice) {
       gasError = GAS_PRICE_FETCH_FAILURE_ERROR_KEY;
-    } else if (getIsBalanceInsufficient) {
-      gasError = INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY;
     }
     const showHexData =
       this.props.showHexData &&

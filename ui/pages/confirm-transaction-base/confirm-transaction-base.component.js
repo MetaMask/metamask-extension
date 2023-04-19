@@ -801,6 +801,7 @@ export default class ConfirmTransactionBase extends Component {
       image,
       isApprovalOrRejection,
       assetStandard,
+      title,
     } = this.props;
     const {
       submitting,
@@ -861,6 +862,7 @@ export default class ConfirmTransactionBase extends Component {
           showEdit={!isContractInteractionFromDapp && Boolean(onEdit)}
           action={functionType}
           image={image}
+          title={title}
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           detailsComponent={this.renderDetails()}
