@@ -37,6 +37,10 @@ export interface PopoverProps extends BoxProps {
    */
   hasArrow?: boolean;
   /**
+   * Pass any `BoxProps` to the Popover arrow
+   */
+  arrowProps?: BoxProps;
+  /**
    * Boolean to control the width of the Popover to match the width of the reference element
    * Default: false
    */

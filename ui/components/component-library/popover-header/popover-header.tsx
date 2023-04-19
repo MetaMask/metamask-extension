@@ -2,8 +2,10 @@ import React from 'react';
 import classnames from 'classnames';
 import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
 import {
+  IconColor,
   TextVariant,
   TextAlign,
+  Color,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PopoverHeaderProps } from '.';
@@ -23,6 +25,7 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
   return (
     <HeaderBase
       className={classnames('mm-popover-header', className)}
+      marginBottom={4}
       startAccessory={
         startAccessory ||
         (onBack && (
@@ -30,6 +33,7 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
             size={ButtonIconSize.Sm}
+            color={IconColor.inherit}
             onClick={onBack}
             {...backButtonProps}
           />
@@ -42,6 +46,7 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
             iconName={IconName.Close}
             ariaLabel={t('close')}
             size={ButtonIconSize.Sm}
+            color={IconColor.inherit}
             onClick={onClose}
             {...closeButtonProps}
           />
@@ -50,7 +55,11 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
       {...props}
     >
       {typeof children === 'string' ? (
-        <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+        <Text
+          variant={TextVariant.headingSm}
+          textAlign={TextAlign.Center}
+          color={Color.inherit}
+        >
           {children}
         </Text>
       ) : (

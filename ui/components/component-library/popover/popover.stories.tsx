@@ -650,6 +650,10 @@ export const WithPopoverHeader = ({ args }) => {
       ></Box>
       <Popover
         referenceElement={refTitleElement}
+        // backgroundColor={BackgroundColor.primaryDefault}
+        // color={Color.primaryInverse}
+        // borderColor={BorderColor.primaryDefault}
+        // arrowProps={{ borderColor: BorderColor.primaryDefault }}
         isOpen={true}
         hasArrow
         {...args}
@@ -657,6 +661,7 @@ export const WithPopoverHeader = ({ args }) => {
         <PopoverHeader
           onClose={() => console.log('close')}
           onBack={() => console.log('back')}
+          color={Color.inherit}
         >
           Popover Title
         </PopoverHeader>

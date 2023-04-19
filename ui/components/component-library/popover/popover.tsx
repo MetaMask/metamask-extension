@@ -33,6 +33,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       isOpen,
       title,
       isPortal = false,
+      arrowProps,
       ...props
     }: PopoverProps,
     ref: Ref<PopoverRef>,
@@ -113,6 +114,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
             alignItems={AlignItems.center}
             style={styles.arrow}
             {...attributes.arrow}
+            {...arrowProps}
           />
         )}
       </Box>
