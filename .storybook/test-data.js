@@ -172,9 +172,9 @@ const state = {
       },
       '0x6b175474e89094c44da98b954eedeac495271d0f': {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        symbol: 'META',
+        symbol: 'ETH',
         decimals: 18,
-        image: 'metamark.svg',
+        image: './images/eth_logo.svg',
         unlisted: false,
       },
       '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
@@ -263,12 +263,12 @@ const state = {
         enabled: true,
         id: 'local:http://localhost:8080/',
         initialPermissions: {
-          snap_confirm: {},
+          snap_dialog: {},
         },
         manifest: {
           description: 'An example MetaMask Snap.',
           initialPermissions: {
-            snap_confirm: {},
+            snap_dialog: {},
           },
           manifestVersion: '0.1',
           proposedName: 'MetaMask Example Snap',
@@ -298,7 +298,7 @@ const state = {
         enabled: true,
         id: 'npm:http://localhost:8080/',
         initialPermissions: {
-          snap_confirm: {},
+          snap_dialog: {},
           eth_accounts: {},
           snap_manageState: {},
         },
@@ -306,7 +306,7 @@ const state = {
           description:
             'This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.',
           initialPermissions: {
-            snap_confirm: {},
+            snap_dialog: {},
             eth_accounts: {},
             snap_manageState: {},
           },
@@ -600,13 +600,6 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'goerli',
-      ticker: 'ETH',
-      nickname: '',
-      rpcUrl: '',
-      chainId: '0x5',
-    },
-    previousProviderStore: {
       type: 'goerli',
       ticker: 'ETH',
       nickname: '',
@@ -1356,9 +1349,9 @@ const state = {
       },
       'local:http://localhost:8080/': {
         permissions: {
-          snap_confirm: {
+          snap_dialog: {
             invoker: 'local:http://localhost:8080/',
-            parentCapability: 'snap_confirm',
+            parentCapability: 'snap_dialog',
             id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
             date: 1620710693178,
             caveats: [],

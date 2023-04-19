@@ -1,5 +1,5 @@
 import React from 'react';
-import DropdownTab from './dropdown-tab';
+import DropdownTab from './flask/dropdown-tab';
 import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 

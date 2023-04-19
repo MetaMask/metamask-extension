@@ -297,6 +297,15 @@ export const BLOCK_SIZES = {
   FULL: 'full',
 };
 
+export enum TextAlign {
+  Left = 'left',
+  Center = 'center',
+  Right = 'right',
+  Justify = 'justify',
+  End = 'end',
+  Start = 'start',
+}
+
 export const TEXT_ALIGN = {
   LEFT: 'left',
   CENTER: 'center',
@@ -306,11 +315,26 @@ export const TEXT_ALIGN = {
   START: 'start',
 };
 
+export enum TextTransform {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Uppercase = 'uppercase',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Lowercase = 'lowercase',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Capitalize = 'capitalize',
+}
+
 export const TEXT_TRANSFORM = {
   UPPERCASE: 'uppercase',
   LOWERCASE: 'lowercase',
   CAPITALIZE: 'capitalize',
 };
+
+export enum FontWeight {
+  Bold = 'bold',
+  Medium = 'medium',
+  Normal = 'normal',
+}
 
 export const FONT_WEIGHT = {
   BOLD: 'bold',
@@ -318,11 +342,22 @@ export const FONT_WEIGHT = {
   NORMAL: 'normal',
 };
 
+export enum OverflowWrap {
+  BreakWord = 'break-word',
+  Anywhere = 'anywhere',
+  Normal = 'normal',
+}
+
 export const OVERFLOW_WRAP = {
   BREAK_WORD: 'break-word',
   ANYWHERE: 'anywhere',
   NORMAL: 'normal',
 };
+
+export enum FontStyle {
+  Italic = 'italic',
+  Normal = 'normal',
+}
 
 export const FONT_STYLE = {
   ITALIC: 'italic',

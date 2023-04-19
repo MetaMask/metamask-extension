@@ -66,28 +66,6 @@
     height: 1px;
     width: 100%;
   }
-
-  &__scroll-button {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    height: 32px;
-    width: 32px;
-    border-radius: 14px;
-    border: 1px solid var(--color-border-default);
-    background: var(--color-background-alternative);
-    color: var(--color-icon-default);
-    z-index: 201;
-    cursor: pointer;
-    opacity: 0.8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
 }
 
 .popover-wrap.whats-new-popup__popover {
