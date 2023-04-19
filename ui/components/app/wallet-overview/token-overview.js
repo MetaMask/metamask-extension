@@ -19,11 +19,8 @@ import {
   getCurrentKeyring,
   getIsSwapsChain,
   getIsBuyableChain,
-<<<<<<< HEAD
   getIsBridgeToken,
-=======
   getCurrentChainId,
->>>>>>> 758fb8706 (Action Buttons - Buy Button Clicked)
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -246,6 +243,9 @@ const TokenOverview = ({ className, token }) => {
                   properties: {
                     location: 'Token Overview',
                     text: 'Bridge',
+                    url: portfolioUrl,
+                    chain_id: chainId,
+                    token_symbol: token.symbol,
                   },
                 });
               }}
