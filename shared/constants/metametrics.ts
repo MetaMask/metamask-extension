@@ -545,6 +545,7 @@ export enum MetaMetricsEventName {
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
   TestNetworksDisplayed = 'Test Networks Displayed',
+  AddNetworkButtonClick = 'Add Network Button Clicked',
 }
 
 export enum MetaMetricsEventAccountType {
