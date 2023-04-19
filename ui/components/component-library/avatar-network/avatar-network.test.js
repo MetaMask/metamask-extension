@@ -13,7 +13,7 @@ import { AvatarNetwork } from './avatar-network';
 describe('AvatarNetwork', () => {
   const args = {
     name: 'ethereum',
-    src: './images/eth_logo.svg',
+    src: './images/eth_logo.png',
     showHalo: false,
   };
 
