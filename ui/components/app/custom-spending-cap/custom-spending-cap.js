@@ -8,8 +8,7 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text, ButtonLink } from '../../component-library';
-import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+import { Text, ButtonLink, Icon, IconName } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -196,7 +195,7 @@ export default function CustomSpendingCap({
           as="h6"
           color={TextColor.errorDefault}
         >
-          <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
+          <Icon name={IconName.Warning} /> {t('beCareful')}
         </Text>,
       ])
     : t('inputLogicEmptyState');
