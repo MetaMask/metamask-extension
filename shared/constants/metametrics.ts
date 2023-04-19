@@ -539,6 +539,7 @@ export enum MetaMetricsEventName {
   OnboardingTwitterClick = 'External Link Clicked',
   ServiceWorkerRestarted = 'Service Worker Restarted',
   AccountDetailMenuOpened = 'Account Details Menu Opened',
+  BlockExplorerLinkClicked = 'Block Explorer Clicked',
 }
 
 export enum MetaMetricsEventAccountType {
