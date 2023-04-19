@@ -1,6 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   activeTabHasPermissions,
   getFirstPermissionRequest,
@@ -26,6 +27,7 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
+  hasApprovalRequest,
 } from '../../selectors';
 
 import {
@@ -65,7 +67,6 @@ import Home from './home.component';
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedAssets,
     seedPhraseBackedUp,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
@@ -108,9 +109,14 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
+  const hasSuggestedAssetApprovalRequest = hasApprovalRequest(
+    state,
+    ApprovalType.WatchAsset,
+  );
+
   return {
     forgottenPassword,
-    suggestedAssets,
+    hasSuggestedAssetApprovalRequest,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),

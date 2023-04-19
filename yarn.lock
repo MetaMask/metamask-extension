@@ -3649,7 +3649,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A5.0.1#./.yarn/patches/@metamask-assets-controllers-npm-5.0.1-b44afd7348.patch::locator=metamask-crx%40workspace%3A.":
   version: 5.0.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A5.0.1#./.yarn/patches/@metamask-assets-controllers-npm-5.0.1-b44afd7348.patch::version=5.0.1&hash=b26d73&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A5.0.1#./.yarn/patches/@metamask-assets-controllers-npm-5.0.1-b44afd7348.patch::version=5.0.1&hash=6b0804&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
@@ -3675,7 +3675,7 @@ __metadata:
     uuid: ^8.3.2
   peerDependencies:
     "@metamask/network-controller": ^6.0.0
-  checksum: fe780a1d1e4afd52c1dbe2f6d11b4190a42b9168f13950774fd664bea1b08bb244ec2d68dba3cc14a7d7ef4f340459c586ea923daef33e44dd34fa9fc8fd9661
+  checksum: 1142ab64e0bb9080f7155bb55a6232f0fe6c0fc58c7290763c79b67fb4aa032ed942a2f9048b119f329e68064cd97fc553d745351d5451f2a198922f5086af29
   languageName: node
   linkType: hard
 
