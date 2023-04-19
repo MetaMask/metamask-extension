@@ -540,6 +540,7 @@ export enum MetaMetricsEventName {
   ServiceWorkerRestarted = 'Service Worker Restarted',
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
+  AccountRemoved = 'Account Removed',
 }
 
 export enum MetaMetricsEventAccountType {

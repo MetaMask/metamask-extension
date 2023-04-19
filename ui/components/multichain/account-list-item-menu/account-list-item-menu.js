@@ -9,7 +9,9 @@ import {
   getRpcPrefsForCurrentProvider,
   getBlockExplorerLinkText,
   getCurrentChainId,
+  getHardwareWalletType,
 } from '../../../selectors';
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
 import { Text, IconName } from '../../component-library';
@@ -38,6 +40,14 @@ export const AccountListItemMenu = ({
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
+
+  const deviceName = useSelector(getHardwareWalletType);
+
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+
+  console.log('keyring: ', keyring);
 
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
@@ -75,7 +85,7 @@ export const AccountListItemMenu = ({
 
           trackEvent({
             event: MetaMetricsEventName.BlockExplorerLinkClicked,
-            category: MetaMetricsEventCategory.Navigation,
+            category: MetaMetricsEventCategory.Accounts,
             properties: {
               location: 'Account Options',
               chain_id: chainId,
@@ -115,6 +125,14 @@ export const AccountListItemMenu = ({
                 identity,
               }),
             );
+            trackEvent({
+              event: MetaMetricsEventName.AccountRemoved,
+              category: MetaMetricsEventCategory.Accounts,
+              properties: {
+                account_hardware_type: deviceName,
+                chain_id: chainId,
+              },
+            });
             onClose();
           }}
           iconName={IconName.Trash}
