@@ -21,7 +21,6 @@ import { Text } from '../../component-library/text/deprecated';
 import { Button, BUTTON_TYPES } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 
 export const ProductTour = ({
   className,
