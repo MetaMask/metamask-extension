@@ -46,7 +46,7 @@ const createDecryptMessageManagerMock = <T>() =>
     subscribe: jest.fn(),
     updateMessage: jest.fn(),
     updateMessageErrorInline: jest.fn(),
-    updateMessageDataInline: jest.fn(),
+    setResult: jest.fn(),
     hub: {
       on: jest.fn(),
     },
@@ -189,33 +189,10 @@ describe('EncryptionPublicKeyController', () => {
       messageToDecrypt,
     );
 
-    expect(decryptMessageManagerMock.updateMessageDataInline).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.updateMessageDataInline).toBeCalledWith(
+    expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
+    expect(decryptMessageManagerMock.setResult).toBeCalledWith(
       messageIdMock,
       'decryptedMessage',
-    );
-    expect(result).toBe(mockExtState);
-  });
-
-  it('should extend message if decrypt message inline fails', async () => {
-    const messageToDecrypt = {
-      ...messageMock,
-      data: '0x7b22666f6f223a22626172227d',
-    };
-    decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
-    keyringControllerMock.decryptMessage.mockRejectedValue(
-      new Error('failure on decryption'),
-    );
-    getStateMock.mockReturnValue(mockExtState);
-
-    const result = await decryptMessageController.decryptMessageInline(
-      messageToDecrypt,
-    );
-
-    expect(decryptMessageManagerMock.updateMessageErrorInline).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.updateMessageErrorInline).toBeCalledWith(
-      messageIdMock,
-      'failure on decryption',
     );
     expect(result).toBe(mockExtState);
   });

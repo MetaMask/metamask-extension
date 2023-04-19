@@ -24,7 +24,6 @@ import {
 } from '@metamask/approval-controller';
 import { Patch } from 'immer';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { EVENT } from '../../../shared/constants/metametrics';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
@@ -44,7 +43,11 @@ export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
 };
 
-export type StateMessage = AbstractMessage;
+export type StateMessage = Required<
+  Omit<AbstractMessage, 'securityProviderResponse'>
+> & {
+  messageParams: string;
+};
 
 export type DecryptMessageControllerState = {
   unapprovedDecryptMsgs: Record<string, StateMessage>;
@@ -128,6 +131,7 @@ export default class DecryptMessageController extends BaseControllerV2<
     this.hub = new EventEmitter();
 
     this._decryptMessageManager = new DecryptMessageManager(
+      undefined,
       undefined,
       undefined,
       ['decrypted']
@@ -246,10 +250,8 @@ export default class DecryptMessageController extends BaseControllerV2<
       error = (e as Error).message;
     }
 
-    if (error) {
-      this._decryptMessageManager.updateMessageErrorInline(messageId, error);
-    } else {
-      this._decryptMessageManager.updateMessageDataInline(messageId, rawData);
+    if (!error) {
+      this._decryptMessageManager.setResult(messageId, rawData);
     }
 
     return this._getState();
@@ -316,7 +318,7 @@ export default class DecryptMessageController extends BaseControllerV2<
     >,
     updateState: (
       state: DecryptMessageControllerState,
-      newMessages: any, // TODO
+      newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,
   ) {
