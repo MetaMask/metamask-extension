@@ -61,7 +61,7 @@ export default {
   },
   args: {
     name: 'eth',
-    src: './images/eth_logo.svg',
+    src: './images/eth_logo.png',
     size: Size.MD,
     showHalo: false,
   },
@@ -126,7 +126,7 @@ export const SizeStory = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.svg"
+            src="./images/eth_logo.png"
             name="ETH"
             size={Size.XS}
             borderColor={BackgroundColor.backgroundDefault}
@@ -139,7 +139,7 @@ export const SizeStory = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.svg"
+            src="./images/eth_logo.png"
             name="ETH"
             size={Size.XS}
             borderColor={BackgroundColor.backgroundDefault}
@@ -152,7 +152,7 @@ export const SizeStory = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.svg"
+            src="./images/eth_logo.png"
             name="ETH"
             size={Size.XS}
             borderColor={BackgroundColor.backgroundDefault}
@@ -165,7 +165,7 @@ export const SizeStory = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.svg"
+            src="./images/eth_logo.png"
             name="ETH"
             size={Size.XS}
             borderColor={BackgroundColor.backgroundDefault}
@@ -178,7 +178,7 @@ export const SizeStory = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.svg"
+            src="./images/eth_logo.png"
             name="ETH"
             size={Size.SM}
             borderColor={BackgroundColor.backgroundDefault}
@@ -297,7 +297,7 @@ Name.args = {
 
 export const Src = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <AvatarToken {...args} src="./images/eth_logo.svg" />
+    <AvatarToken {...args} src="./images/eth_logo.png" />
     <AvatarToken {...args} src="./images/arbitrum.svg" />
     <AvatarToken {...args} src="./images/bnb.png" />
     <AvatarToken
