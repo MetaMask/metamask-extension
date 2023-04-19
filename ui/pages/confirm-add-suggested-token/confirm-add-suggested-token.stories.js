@@ -26,6 +26,10 @@ export default {
       table: { category: 'Data' },
     },
   },
+  args: {
+    symbol: 'ETH',
+    image: './images/eth_logo.svg',
+  },
 };
 
 const { metamask: state } = store.getState();
