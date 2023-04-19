@@ -44,7 +44,7 @@ export default {
   args: {
     tokenAddress: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
     tokenSymbol: 'ETH',
-    tokenImage: './images/eth_logo.svg',
+    tokenImage: './images/eth_logo.png',
     identiconBorder: true,
   },
 };
