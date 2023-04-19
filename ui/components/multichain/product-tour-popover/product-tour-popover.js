@@ -57,7 +57,7 @@ export const ProductTour = ({
       >
         <Box
           borderColor={Color.borderDefault}
-          className={classnames('multichain-product-tour-menu__arrow')}
+          className="multichain-product-tour-menu__arrow"
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}

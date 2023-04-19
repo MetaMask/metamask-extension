@@ -54,9 +54,7 @@ import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 export const AppHeader = ({ onClick }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const [showSwitcherPopover, setShowSwitcherPopover] = useState(true);
-  const [showPermissionsPopover, setShowPermissionsPopover] = useState(false);
-  const [showGlobalPopover, setShowGlobalPopover] = useState(false);
+  const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -151,7 +149,9 @@ export const AppHeader = ({ onClick }) => {
                   />
                 </>
               )}
-              {showProductTour && popupStatus && showSwitcherPopover ? (
+              {showProductTour &&
+              popupStatus &&
+              multichainProductTourStep === 1 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
                   anchorElement={menuRef.current}
@@ -159,10 +159,9 @@ export const AppHeader = ({ onClick }) => {
                   description={t('switcherTourDescription')}
                   currentStep="1"
                   totalSteps="3"
-                  onClick={() => {
-                    setShowSwitcherPopover(false);
-                    setShowPermissionsPopover(true);
-                  }}
+                  onClick={() =>
+                    setMultichainProductTourStep(multichainProductTourStep + 1)
+                  }
                   positionObj="88%"
                 />
               ) : null}
@@ -184,7 +183,7 @@ export const AppHeader = ({ onClick }) => {
                     />
                   </Box>
                 ) : null}{' '}
-                {popupStatus && showPermissionsPopover ? (
+                {popupStatus && multichainProductTourStep === 2 ? (
                   <ProductTour
                     className="multichain-app-header__product-tour"
                     anchorElement={menuRef.current}
@@ -194,15 +193,16 @@ export const AppHeader = ({ onClick }) => {
                     description={t('permissionsTourDescription')}
                     currentStep="2"
                     totalSteps="3"
-                    prevClick={() => {
-                      setShowPermissionsPopover(false);
-                      setShowGlobalPopover(false);
-                      setShowSwitcherPopover(true);
-                    }}
-                    onClick={() => {
-                      setShowPermissionsPopover(false);
-                      setShowGlobalPopover(true);
-                    }}
+                    prevClick={() =>
+                      setMultichainProductTourStep(
+                        multichainProductTourStep - 1,
+                      )
+                    }
+                    onClick={() =>
+                      setMultichainProductTourStep(
+                        multichainProductTourStep + 1,
+                      )
+                    }
                     positionObj="12%"
                   />
                 ) : null}
@@ -235,7 +235,7 @@ export const AppHeader = ({ onClick }) => {
                   closeMenu={() => setAccountOptionsMenuOpen(false)}
                 />
               ) : null}
-              {popupStatus && showGlobalPopover ? (
+              {popupStatus && multichainProductTourStep === 3 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
                   anchorElement={menuRef.current}
@@ -245,12 +245,10 @@ export const AppHeader = ({ onClick }) => {
                   description={t('globalTourDescription')}
                   currentStep="3"
                   totalSteps="3"
-                  prevClick={() => {
-                    setShowGlobalPopover(false);
-                    setShowPermissionsPopover(true);
-                  }}
+                  prevClick={() =>
+                    setMultichainProductTourStep(multichainProductTourStep - 1)
+                  }
                   onClick={() => {
-                    setShowGlobalPopover(false);
                     hideProductTour();
                   }}
                   positionObj="0%"
