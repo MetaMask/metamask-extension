@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -96,12 +96,14 @@ jest.mock('../../store/actions', () => ({
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
   updateCustomNonce: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
+  estimateGas: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
 jest.mock('../../contexts/gasFee', () => ({
   useGasFeeContext: () => ({
     maxPriorityFeePerGas: '0.1',
     maxFeePerGas: '0.1',
+    updateTransaction: jest.fn(),
   }),
 }));
 
@@ -215,8 +217,10 @@ describe('TokenAllowancePage', () => {
       store,
     );
 
-    const useDefault = getByText('Use default');
-    fireEvent.click(useDefault);
+    act(() => {
+      const useDefault = getByText('Use default');
+      fireEvent.click(useDefault);
+    });
 
     const input = getByTestId('custom-spending-cap-input');
     expect(input.value).toBe('1');

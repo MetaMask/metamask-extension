@@ -96,34 +96,36 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              <ButtonIcon
-                className="eth-overview__portfolio-button"
-                data-testid="home__portfolio-site"
-                color={IconColor.primaryDefault}
-                iconName={ICON_NAMES.DIAGRAM}
-                ariaLabel={t('portfolio')}
-                size={BUTTON_ICON_SIZES.LG}
-                onClick={() => {
-                  const portfolioUrl = process.env.PORTFOLIO_URL;
-                  global.platform.openTab({
-                    url: `${portfolioUrl}?metamaskEntry=ext`,
-                  });
-                  trackEvent(
-                    {
-                      category: MetaMetricsEventCategory.Home,
-                      event: MetaMetricsEventName.PortfolioLinkClicked,
-                      properties: {
-                        url: portfolioUrl,
+              {process.env.MULTICHAIN ? null : (
+                <ButtonIcon
+                  className="eth-overview__portfolio-button"
+                  data-testid="home__portfolio-site"
+                  color={IconColor.primaryDefault}
+                  iconName={ICON_NAMES.DIAGRAM}
+                  ariaLabel={t('portfolio')}
+                  size={BUTTON_ICON_SIZES.LG}
+                  onClick={() => {
+                    const portfolioUrl = process.env.PORTFOLIO_URL;
+                    global.platform.openTab({
+                      url: `${portfolioUrl}?metamaskEntry=ext`,
+                    });
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.PortfolioLinkClicked,
+                        properties: {
+                          url: portfolioUrl,
+                        },
                       },
-                    },
-                    {
-                      contextPropsIntoEventProperties: [
-                        MetaMetricsContextProp.PageTitle,
-                      ],
-                    },
-                  );
-                }}
-              />
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                />
+              )}
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -273,7 +275,7 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
+      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };
