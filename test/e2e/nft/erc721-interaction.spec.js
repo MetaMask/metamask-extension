@@ -62,9 +62,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Send Token');
+        await driver.findElement({ text: 'Send TDC' });
       },
     );
   });
