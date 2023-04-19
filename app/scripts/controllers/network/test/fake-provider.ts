@@ -195,22 +195,14 @@ export class FakeProvider extends SafeEventEmitterProvider {
             result: stub.response.result,
           });
         } else if ('error' in stub.response) {
-          if (typeof stub.response.error === 'string') {
-            callback(null, {
-              jsonrpc: '2.0',
-              id: 1,
-              error: {
-                code: -999,
-                message: stub.response.error,
-              },
-            });
-          } else {
-            callback(null, {
-              jsonrpc: '2.0',
-              id: 1,
-              error: stub.response.error,
-            });
-          }
+          callback(null, {
+            jsonrpc: '2.0',
+            id: 1,
+            error: {
+              code: -999,
+              message: stub.response.error,
+            },
+          });
         }
       } else if ('error' in stub) {
         callback(stub.error);
