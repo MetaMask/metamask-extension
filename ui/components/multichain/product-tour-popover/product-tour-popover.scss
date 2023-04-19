@@ -4,7 +4,6 @@
   left: -7px !important;
   top: 10px !important; //important is required here since Menu has absolute position added via inline style in base component.
 
-
   &__arrow,
   &__arrow::before {
     position: absolute;
@@ -31,14 +30,13 @@
   }
 
   &__button {
-  &:hover {
-    color: var(--color-primary-default);
-  }
+    &:hover {
+      color: var(--color-primary-default);
+    }
 
-  &:active {
-    opacity: 0.5;
-    background-color: var(--color-primary-inverse);
+    &:active {
+      opacity: 0.5;
+      background-color: var(--color-primary-inverse);
+    }
   }
-}
-
 }
