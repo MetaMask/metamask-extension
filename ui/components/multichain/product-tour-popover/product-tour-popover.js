@@ -67,7 +67,7 @@ export const ProductTour = ({
           <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
             {prevIcon ? (
               <ButtonIcon
-                iconName={ICON_NAMES.ARROW_LEFT}
+                iconName={IconName.ArrowLeft}
                 size={Size.SM}
                 color={IconColor.infoInverse}
                 onClick={prevClick}
