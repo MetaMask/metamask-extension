@@ -34,9 +34,6 @@ export default {
     secondary: {
       control: 'text',
     },
-    identiconBorder: {
-      control: 'boolean',
-    },
     isERC721: {
       control: 'boolean',
     },

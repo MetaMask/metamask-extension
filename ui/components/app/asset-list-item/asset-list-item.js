@@ -35,7 +35,6 @@ const AssetListItem = ({
   warning,
   primary,
   secondary,
-  identiconBorder,
   isERC721,
 }) => {
   const t = useI18nContext();
@@ -169,7 +168,6 @@ AssetListItem.propTypes = {
   warning: PropTypes.node,
   primary: PropTypes.string,
   secondary: PropTypes.string,
-  identiconBorder: PropTypes.bool,
   isERC721: PropTypes.bool,
 };
 
