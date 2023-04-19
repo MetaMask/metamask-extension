@@ -16,7 +16,7 @@ import {
   TextVariant,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import { Button, BUTTON_TYPES } from '../../component-library';
+import { Button, BUTTON_TYPES, ButtonIcon, IconName, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
 
