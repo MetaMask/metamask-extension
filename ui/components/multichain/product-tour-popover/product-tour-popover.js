@@ -37,21 +37,23 @@ export const ProductTour = ({
   anchorElement,
   onClick,
   prevClick,
+  productTourDirection,
   ...props
 }) => {
   const t = useI18nContext();
   return (
     <Menu
-      className="multichain-product-tour-menu"
+      className={classnames(
+        'multichain-product-tour-menu',
+        productTourDirection === "rtl" && 'multichain-product-tour-menu--rtl',
+        className,
+      )}
       anchorElement={anchorElement}
       onHide={closeMenu}
       data-testid="multichain-product-tour-menu-popover"
     >
       <Box
-        className={classnames(
-          'multichain-product-tour-menu__container',
-          className,
-        )}
+        className="multichain-product-tour-menu__container"
         backgroundColor={Color.infoDefault}
         borderRadius={BorderRadius.LG}
         padding={4}
@@ -172,4 +174,8 @@ ProductTour.propTypes = {
    * The handler to be passed to prevIcon
    */
   prevClick: PropTypes.func,
+  /**
+   * Direction to determine the css for menu component
+   */
+  productTourDirection: PropTypes.string,
 };
