@@ -114,7 +114,7 @@ export const Children: ComponentStory<typeof BadgeWrapper> = () => (
     >
       <AvatarToken
         name="Eth"
-        src="./images/eth_logo.svg"
+        src="./images/eth_logo.png"
         borderColor={BorderColor.borderMuted}
       />
     </BadgeWrapper>
