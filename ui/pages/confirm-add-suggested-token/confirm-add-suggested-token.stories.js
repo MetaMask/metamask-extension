@@ -136,6 +136,4 @@ WithDuplicateSymbolAndDifferentAddress.args = {
       address: '0xNonSuggestedAddress',
     },
   ],
-  symbol: 'META',
-  image: 'metamark.svg',
 };
