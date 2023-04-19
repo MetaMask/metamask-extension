@@ -548,6 +548,7 @@ export enum MetaMetricsEventName {
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
+  TokenDetailsOpened = 'Token Details Opened',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -590,6 +591,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
+  Tokens = 'Tokens',
 }
 
 export enum MetaMetricsEventLinkType {
