@@ -38,10 +38,7 @@ export const CustomSpendingCapTooltip = ({
         />
       ) : (
         tooltipIcon !== '' && (
-          <Icon
-            name={IconName.Question}
-            size={IconSize.Inherit}
-          />
+          <Icon name={IconName.Question} size={IconSize.Inherit} />
         )
       )}
     </Tooltip>
