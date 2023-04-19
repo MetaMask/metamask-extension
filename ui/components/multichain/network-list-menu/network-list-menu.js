@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -28,6 +28,11 @@ import { Button, BUTTON_TYPES, Text } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
 
@@ -38,6 +43,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const currentChainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -65,6 +71,16 @@ export const NetworkListMenu = ({ onClose }) => {
                   } else {
                     dispatch(setActiveNetwork(network.id));
                   }
+                  trackEvent({
+                    event: MetaMetricsEventName.NavNetworkSwitched,
+                    category: MetaMetricsEventCategory.Network,
+                    properties: {
+                      location: 'Network Menu',
+                      chain_id: currentChainId,
+                      from_network: currentChainId,
+                      to_network: network.id || network.chainId,
+                    },
+                  });
                 }}
                 onDeleteClick={
                   canDeleteNetwork
