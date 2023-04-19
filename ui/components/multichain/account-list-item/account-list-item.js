@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -37,6 +37,11 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -78,6 +83,8 @@ export const AccountListItem = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
+
+  const trackEvent = useContext(MetaMetricsContext);
 
   return (
     <Box
@@ -199,6 +206,13 @@ export const AccountListItem = ({
           size={IconSize.Sm}
           onClick={(e) => {
             e.stopPropagation();
+            trackEvent({
+              event: MetaMetricsEventName.AccountDetailMenuOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'Account Options',
+              },
+            });
             setAccountOptionsMenuOpen(true);
           }}
           data-testid="account-list-item-menu-button"
