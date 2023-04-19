@@ -105,8 +105,6 @@ WithDuplicateAddress.args = {
       ...mockSuggestedAssets[0].asset,
     },
   ],
-  symbol: 'META',
-  image: 'metamark.svg',
 };
 
 export const WithDuplicateSymbolAndDifferentAddress = ({
