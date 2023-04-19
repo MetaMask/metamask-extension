@@ -1,11 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { isObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 84;
 
 /**
- * Ensure that each networkConfigurations object in state.NetworkController.networkConfigurations has an
- * `id` property which matches the key pointing that object
+ * The `network` property in state was replaced with `networkId` and `networkStatus`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -24,35 +23,25 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (!isObject(state.NetworkController)) {
+  if (
+    !hasProperty(state, 'NetworkController') ||
+    !isObject(state.NetworkController) ||
+    !hasProperty(state.NetworkController, 'network')
+  ) {
     return state;
   }
-  const { NetworkController } = state;
 
-  if (!isObject(NetworkController.networkConfigurations)) {
-    return state;
+  const NetworkController = { ...state.NetworkController };
+
+  if (NetworkController.network === 'loading') {
+    NetworkController.networkId = null;
+    NetworkController.networkStatus = 'unknown';
+  } else {
+    NetworkController.networkId = NetworkController.network;
+    NetworkController.networkStatus = 'available';
   }
 
-  const { networkConfigurations } = NetworkController;
+  delete NetworkController.network;
 
-  const newNetworkConfigurations: Record<string, Record<string, unknown>> = {};
-
-  for (const networkConfigurationId of Object.keys(networkConfigurations)) {
-    const networkConfiguration = networkConfigurations[networkConfigurationId];
-    if (!isObject(networkConfiguration)) {
-      return state;
-    }
-    newNetworkConfigurations[networkConfigurationId] = {
-      ...networkConfiguration,
-      id: networkConfigurationId,
-    };
-  }
-
-  return {
-    ...state,
-    NetworkController: {
-      ...NetworkController,
-      networkConfigurations: newNetworkConfigurations,
-    },
-  };
+  return { ...state, NetworkController };
 }
