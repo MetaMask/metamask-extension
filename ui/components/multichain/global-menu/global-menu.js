@@ -38,7 +38,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             event: MetaMetricsEventName.NavConnectedSitesOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
-              location: 'Account Options',
+              location: 'Global Menu',
             },
           });
           closeMenu();
