@@ -13,6 +13,8 @@ export default {
     },
   },
   argTypes: {
+    children: { control: 'text' },
+    className: { control: 'text' },
     onBack: { action: 'onBack' },
     onClose: { action: 'onClose' },
   },
