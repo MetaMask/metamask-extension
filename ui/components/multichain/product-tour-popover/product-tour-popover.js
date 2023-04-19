@@ -107,7 +107,7 @@ export const ProductTour = ({
             </Box>
             <Box onClick={onClick}>
               <Button
-                backgroundColor={BackgroundColor.backgroundDefault}
+                backgroundColor={Color.primaryInverse}
                 type={BUTTON_TYPES.PRIMARY}
               >
                 <Text
