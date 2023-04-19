@@ -1,0 +1,30 @@
+.popover-wrap.terms-of-use__popover {
+  .terms-of-use {
+    &__terms-list {
+      list-style: decimal none outside;
+    }
+
+    &__footer-text {
+      align-self: center;
+    }
+  }
+
+  .popover-header {
+    &__title {
+      margin-bottom: 0;
+    }
+  }
+
+  .popover-footer {
+    border-top: none;
+  }
+
+  @include screen-sm-min {
+    max-height: 750px;
+    width: 500px;
+  }
+
+  @include screen-sm-max {
+    max-height: 568px;
+  }
+}
