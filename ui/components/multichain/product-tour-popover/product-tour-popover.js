@@ -16,8 +16,6 @@ import {
   TextVariant,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
-import { Text } from '../../component-library/text/deprecated';
 import { Button, BUTTON_TYPES } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
