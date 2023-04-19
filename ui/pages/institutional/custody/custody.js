@@ -34,6 +34,7 @@ import {
   BLOCK_SIZES,
   TextColor,
   TEXT_ALIGN,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import {
@@ -47,6 +48,7 @@ import {
 } from '../../../selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
+import { Size } from '../../../helpers/constants/design-system';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -349,7 +351,7 @@ const CustodyPage = () => {
           onClick={() => history.push(DEFAULT_ROUTE)}
           display={DISPLAY.FLEX}
         />
-        <Text as="h4" marginTop={4} marginBottom={4}>
+        <Text as="h4" variant={TextVariant.bodyLgMedium} marginTop={4} marginBottom={4}>
           {t('connectCustodialAccountTitle')}
         </Text>
         <Text

@@ -94,7 +94,6 @@ export default function CustodyAccountList({
               >
                 <Label
                   display={DISPLAY.FLEX}
-                  justifyContent={JustifyContent.center}
                   marginTop={2}
                   marginLeft={2}
                   htmlFor={`address-${idx}`}
@@ -114,6 +113,7 @@ export default function CustodyAccountList({
                   display={DISPLAY.FLEX}
                   size={TextVariant.bodySm}
                   marginTop={2}
+                  marginLeft={2}
                   marginRight={3}
                   htmlFor={`address-${idx}`}
                 >
