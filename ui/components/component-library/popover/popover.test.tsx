@@ -1,8 +1,9 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { PopoverHeader } from '../popover-header';
 import { Popover } from './popover';
-import { PopoverPosition } from './popover.constants';
+import { PopoverPosition } from './popover.types';
 
 describe('Popover', () => {
   it('should render popover element correctly', () => {
@@ -17,16 +18,6 @@ describe('Popover', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render popover title', () => {
-    const { getByText } = render(
-      <Popover data-testid="popover" title="Popover test" isOpen={true}>
-        Popover
-      </Popover>,
-    );
-    expect(getByText('Popover test')).toBeDefined();
-    expect(getByText('Popover test')).toHaveClass('mm-popover__header-title');
-  });
-
   it('should render popover children', () => {
     const { getByText } = render(
       <Popover isOpen={true}>Popover content goes here</Popover>,
@@ -37,13 +28,13 @@ describe('Popover', () => {
   it('should render popover back button', () => {
     const onBackTest = jest.fn();
     const { getByTestId } = render(
-      <Popover
-        data-testid="popover"
-        isOpen={true}
-        onBack={onBackTest}
-        backButtonProps={{ 'data-testid': 'back' }}
-      >
-        Popover
+      <Popover data-testid="popover" isOpen={true}>
+        <PopoverHeader
+          onBack={onBackTest}
+          backButtonProps={{ 'data-testid': 'back' }}
+        >
+          onClose Test
+        </PopoverHeader>
       </Popover>,
     );
 
@@ -56,13 +47,13 @@ describe('Popover', () => {
   it('should render popover close button', () => {
     const onCloseTest = jest.fn();
     const { getByTestId } = render(
-      <Popover
-        data-testid="popover"
-        isOpen={true}
-        onClose={onCloseTest}
-        closeButtonProps={{ 'data-testid': 'close' }}
-      >
-        Popover
+      <Popover data-testid="popover" isOpen={true}>
+        <PopoverHeader
+          onClose={onCloseTest}
+          closeButtonProps={{ 'data-testid': 'close' }}
+        >
+          onClose Test
+        </PopoverHeader>
       </Popover>,
     );
 
@@ -216,12 +207,7 @@ describe('Popover', () => {
 
   it('should render an arrow on popover', () => {
     const { getByTestId } = render(
-      <Popover
-        data-testid="popover"
-        isOpen={true}
-        hasArrow
-        closeButtonProps={{ 'data-testid': 'close' }}
-      >
+      <Popover data-testid="popover" isOpen={true} hasArrow>
         Popover
       </Popover>,
     );
