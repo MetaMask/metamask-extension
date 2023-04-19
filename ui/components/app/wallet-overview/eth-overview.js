@@ -259,6 +259,8 @@ const EthOverview = ({ className }) => {
                   properties: {
                     location: 'Home',
                     text: 'Bridge',
+                    chain_id: chainId,
+                    token_symbol: 'ETH',
                   },
                 });
               }

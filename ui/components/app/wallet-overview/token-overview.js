@@ -219,6 +219,8 @@ const TokenOverview = ({ className, token }) => {
                   event: MetaMetricsEventName.PortfolioLinkClicked,
                   properties: {
                     url: portfolioUrl,
+                    chain_id: chainId,
+                    token_symbol: token.symbol,
                   },
                 },
                 {
