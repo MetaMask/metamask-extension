@@ -6,11 +6,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 class SelectedAccount extends Component {
@@ -71,11 +67,9 @@ class SelectedAccount extends Component {
               <div className="selected-account__copy">
                 <Icon
                   name={
-                    this.state.copied
-                      ? ICON_NAMES.COPY_SUCCESS
-                      : ICON_NAMES.COPY
+                    this.state.copied ? IconName.CopySuccess : IconName.Copy
                   }
-                  size={ICON_SIZES.SM}
+                  size={IconSize.Sm}
                   color={IconColor.iconAlternative}
                 />
               </div>
