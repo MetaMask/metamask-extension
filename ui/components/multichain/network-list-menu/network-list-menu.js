@@ -131,6 +131,10 @@ export const NetworkListMenu = ({ onClose }) => {
                     ADD_POPULAR_CUSTOM_NETWORK,
                   );
               dispatch(toggleNetworkMenu());
+              trackEvent({
+                event: MetaMetricsEventName.AddNetworkButtonClick,
+                category: MetaMetricsEventCategory.Network,
+              });
             }}
           >
             {t('addNetwork')}
