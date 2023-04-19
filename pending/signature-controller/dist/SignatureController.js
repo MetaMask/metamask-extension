@@ -74,11 +74,10 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
         this._keyringController = keyringController;
         this._isEthSignEnabled = isEthSignEnabled;
         this._getState = getState;
-        this._securityProviderRequest = securityProviderRequest;
         this.hub = new events_1.default();
-        this._messageManager = new message_manager_1.MessageManager();
-        this._personalMessageManager = new message_manager_1.PersonalMessageManager();
-        this._typedMessageManager = new message_manager_1.TypedMessageManager();
+        this._messageManager = new message_manager_1.MessageManager(undefined, undefined, securityProviderRequest);
+        this._personalMessageManager = new message_manager_1.PersonalMessageManager(undefined, undefined, securityProviderRequest);
+        this._typedMessageManager = new message_manager_1.TypedMessageManager(undefined, undefined, securityProviderRequest);
         this._handleMessageManagerEvents(this._messageManager, methodNameSign, 'unapprovedMessage');
         this._handleMessageManagerEvents(this._personalMessageManager, methodNamePersonalSign, 'unapprovedPersonalMessage');
         this._handleMessageManagerEvents(this._typedMessageManager, methodNameTypedSign, 'unapprovedTypedMessage');

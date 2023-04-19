@@ -41,7 +41,7 @@ export declare type SignatureControllerOptions = {
     keyringController: KeyringController;
     isEthSignEnabled: () => boolean;
     getState: () => any;
-    securityProviderRequest: (requestData: any, methodName: string) => Promise<any>;
+    securityProviderRequest?: (requestData: any, methodName: string) => Promise<any>;
 };
 /**
  * Controller for creating signing requests requiring user approval.
@@ -54,7 +54,6 @@ export declare class SignatureController extends BaseControllerV2<typeof control
     private _messageManager;
     private _personalMessageManager;
     private _typedMessageManager;
-    private _securityProviderRequest;
     /**
      * Construct a Sign controller.
      *
