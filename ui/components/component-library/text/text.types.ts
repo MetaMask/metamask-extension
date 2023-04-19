@@ -1,12 +1,12 @@
 import React from 'react';
 import type { BoxProps } from '../../ui/box/box.d';
 import {
-  FONT_WEIGHT,
-  FONT_STYLE,
+  FontWeight,
+  FontStyle,
   TextVariant,
-  TEXT_ALIGN,
-  TEXT_TRANSFORM,
-  OVERFLOW_WRAP,
+  TextAlign,
+  TextTransform,
+  OverflowWrap,
   TextColor,
   Color,
 } from '../../../helpers/constants/design-system';
@@ -70,35 +70,35 @@ export interface TextProps extends BoxProps {
    */
   color?: TextColor | Color;
   /**
-   * The font-weight of the Text component. Should use the FONT_WEIGHT object from
+   * The font-weight of the Text component. Should use the FontWeight enum from
    * ./ui/helpers/constants/design-system.js
    */
-  fontWeight?: keyof typeof FONT_WEIGHT;
+  fontWeight?: FontWeight;
   /**
-   * The font-style of the Text component. Should use the FONT_STYLE object from
+   * The font-style of the Text component. Should use the FontStyle enum from
    * ./ui/helpers/constants/design-system.js
    */
-  fontStyle?: keyof typeof FONT_STYLE;
+  fontStyle?: FontStyle;
   /**
-   * The textTransform of the Text component. Should use the TEXT_TRANSFORM object from
+   * The textTransform of the Text component. Should use the TextTransform enum from
    * ./ui/helpers/constants/design-system.js
    */
-  textTransform?: keyof typeof TEXT_TRANSFORM;
+  textTransform?: TextTransform;
   /**
-   * The text-align of the Text component. Should use the TEXT_ALIGN object from
+   * The text-align of the Text component. Should use the TextAlign enum from
    * ./ui/helpers/constants/design-system.js
    */
-  textAlign?: keyof typeof TEXT_ALIGN;
+  textAlign?: TextAlign;
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
    */
   textDirection?: TextDirection;
   /**
-   * The overflow-wrap of the Text component. Should use the OVERFLOW_WRAP object from
+   * The overflow-wrap of the Text component. Should use the OverflowWrap enum from
    * ./ui/helpers/constants/design-system.js
    */
-  overflowWrap?: keyof typeof OVERFLOW_WRAP;
+  overflowWrap?: OverflowWrap;
   /**
    * Used for long strings that can be cut off...
    */

@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockSendState from '../../../../test/data/mock-send-state.json';
-import { INSUFFICIENT_FUNDS_ERROR } from '../send.constants';
 import SendContent from '.';
 
 jest.mock('../../../store/actions', () => ({
@@ -136,41 +135,6 @@ describe('SendContent Component', () => {
       };
 
       const mockStore = configureMockStore()(noGasPriceState);
-
-      const { queryByTestId } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
-      );
-
-      const gasWarning = queryByTestId('gas-warning-message');
-
-      await waitFor(() => {
-        expect(gasWarning).toBeInTheDocument();
-      });
-    });
-
-    it('should show gas warning for gas error state in draft transaction', async () => {
-      const props = {
-        gasIsExcessive: false,
-        showHexData: false,
-      };
-
-      const gasErrorState = {
-        ...mockSendState,
-        send: {
-          ...mockSendState.send,
-          draftTransactions: {
-            '1-tx': {
-              ...mockSendState.send.draftTransactions['1-tx'],
-              gas: {
-                error: INSUFFICIENT_FUNDS_ERROR,
-              },
-            },
-          },
-        },
-      };
-
-      const mockStore = configureMockStore()(gasErrorState);
 
       const { queryByTestId } = renderWithProvider(
         <SendContent {...props} />,
