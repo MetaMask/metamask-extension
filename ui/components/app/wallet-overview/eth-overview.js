@@ -37,7 +37,10 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { ButtonIcon, BUTTON_ICON_SIZES } from '../../component-library';
+import {
+  ButtonIcon,
+  BUTTON_ICON_SIZES,
+} from '../../component-library/button-icon/deprecated';
 import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -93,34 +96,36 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              <ButtonIcon
-                className="eth-overview__portfolio-button"
-                data-testid="home__portfolio-site"
-                color={IconColor.primaryDefault}
-                iconName={ICON_NAMES.DIAGRAM}
-                ariaLabel={t('portfolio')}
-                size={BUTTON_ICON_SIZES.LG}
-                onClick={() => {
-                  const portfolioUrl = process.env.PORTFOLIO_URL;
-                  global.platform.openTab({
-                    url: `${portfolioUrl}?metamaskEntry=ext`,
-                  });
-                  trackEvent(
-                    {
-                      category: MetaMetricsEventCategory.Home,
-                      event: MetaMetricsEventName.PortfolioLinkClicked,
-                      properties: {
-                        url: portfolioUrl,
+              {process.env.MULTICHAIN ? null : (
+                <ButtonIcon
+                  className="eth-overview__portfolio-button"
+                  data-testid="home__portfolio-site"
+                  color={IconColor.primaryDefault}
+                  iconName={ICON_NAMES.DIAGRAM}
+                  ariaLabel={t('portfolio')}
+                  size={BUTTON_ICON_SIZES.LG}
+                  onClick={() => {
+                    const portfolioUrl = process.env.PORTFOLIO_URL;
+                    global.platform.openTab({
+                      url: `${portfolioUrl}?metamaskEntry=ext`,
+                    });
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.PortfolioLinkClicked,
+                        properties: {
+                          url: portfolioUrl,
+                        },
                       },
-                    },
-                    {
-                      contextPropsIntoEventProperties: [
-                        MetaMetricsContextProp.PageTitle,
-                      ],
-                    },
-                  );
-                }}
-              />
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                />
+              )}
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -165,7 +170,7 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_RIGHT}
+                name={ICON_NAMES.ARROW_2_UP_RIGHT}
                 color={IconColor.primaryInverse}
               />
             }
@@ -270,7 +275,7 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
+      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };

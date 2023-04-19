@@ -32,7 +32,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ButtonIcon } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
 import {
   Icon,
   ICON_NAMES,
