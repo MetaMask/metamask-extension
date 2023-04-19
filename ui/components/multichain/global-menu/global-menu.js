@@ -139,6 +139,13 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         onClick={() => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);
+          trackEvent({
+            category: MetaMetricsEventCategory.AppLocked,
+            event: MetaMetricsEventName.NavSettingsOpened,
+            properties: {
+              location: 'Global Menu',
+            },
+          });
           closeMenu();
         }}
         data-testid="global-menu-lock"

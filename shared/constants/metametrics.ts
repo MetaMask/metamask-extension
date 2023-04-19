@@ -458,6 +458,7 @@ export enum MetaMetricsEventName {
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
+  AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BridgeLinkClicked = 'Bridge Link Clicked',
   DecryptionApproved = 'Decryption Approved',
