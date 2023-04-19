@@ -49,7 +49,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new'
+      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
@@ -65,7 +65,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new'
+      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
@@ -135,7 +135,7 @@ features:
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
   - SWAPS_USE_DEV_APIS: false
-  - PORTFOLIO_URL: 'https://portfolio.metamask.io'
+  - PORTFOLIO_URL: https://portfolio.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password

@@ -31,8 +31,16 @@ module.exports = function createStaticAssetTasks({
     copyTargetsDevs[browser] = copyTargetsDev;
   });
 
-  const additionalAssets =
-    loadBuildTypesConfig().buildTypes[buildType].assets ?? [];
+  const buildConfig = loadBuildTypesConfig();
+
+  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+
+  const additionalAssets = activeFeatures.flatMap(
+    (feature) =>
+      buildConfig.features[feature].assets?.filter(
+        (asset) => !('exclusiveInclude' in asset),
+      ) ?? [],
+  );
 
   Object.entries(copyTargetsProds).forEach(([_, copyTargetsProd]) =>
     copyTargetsProd.push(...additionalAssets),
@@ -94,7 +102,7 @@ module.exports = function createStaticAssetTasks({
     await Promise.all(
       sources.map(async (src) => {
         const relativePath = path.relative(baseDir, src);
-        await fs.copy(src, `${dest}${relativePath}`);
+        await fs.copy(src, `${dest}${relativePath}`, { overwrite: true });
       }),
     );
   }
