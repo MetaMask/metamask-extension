@@ -224,7 +224,7 @@ exports[`Signature Request Component render should match snapshot when we are us
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
           >
-            Verify contract details
+            Verify third-party details
           </h6>
         </a>
       </div>
@@ -369,7 +369,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xCD2...D826
                           </div>
@@ -445,7 +445,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xDea...beeF
                           </div>
@@ -580,7 +580,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xbBb...BBbB
                               </div>
@@ -656,7 +656,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...Ea57
                               </div>
@@ -732,7 +732,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...0000
                               </div>
@@ -999,7 +999,7 @@ exports[`Signature Request Component render should match snapshot when we want t
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
           >
-            Verify contract details
+            Verify third-party details
           </h6>
         </a>
       </div>
@@ -1144,7 +1144,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xCD2...D826
                           </div>
@@ -1220,7 +1220,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xDea...beeF
                           </div>
@@ -1355,7 +1355,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xbBb...BBbB
                               </div>
@@ -1431,7 +1431,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...Ea57
                               </div>
@@ -1507,7 +1507,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...0000
                               </div>

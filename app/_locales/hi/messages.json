@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
   },
-  "expandExperience": {
-    "message": "MetaMask स्नैप्स के साथ अपने web3 अनुभव का विस्तार करें"
-  },
   "expandView": {
     "message": "दृश्य का विस्तार करें"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "विकृत डेटा"
   },
-  "manageSnaps": {
-    "message": "अपने इंस्टाल किए गए स्नैप्स मैनेज करें"
-  },
   "max": {
     "message": "अधिकतम"
   },
@@ -2187,9 +2181,6 @@
   "nextNonceWarning": {
     "message": "नॉन्स $1 के सुझाए गए नॉन्स से अधिक है",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "एनएफटी"
   },
   "nftAddFailedMessage": {
     "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
@@ -2705,10 +2696,6 @@
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask में पुष्टि को दर्शाएं।",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
@@ -3253,12 +3240,6 @@
   "show": {
     "message": "दिखाएं"
   },
-  "showAdvancedGasInline": {
-    "message": "उन्नत गैस नियंत्रण"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
-  },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
   },
@@ -3358,22 +3339,11 @@
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "ये स्नैप निम्नलिखित अनुमतियों हेतु अनुरोध कर रहा है:"
-  },
   "snapUpdate": {
     "message": "स्नैप अपडेट करें"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 को आपके स्नैप के नए वर्जन की जरूरत है।",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "स्नैप्स"
-  },
-  "snapsInsightError": {
-    "message": "$1: $2 के साथ त्रुटि हुई",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
@@ -3391,7 +3361,8 @@
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
   },
   "snapsUIError": {
-    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।"
+    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और उपयोग करने से पहले जोखिमों को समझें।"

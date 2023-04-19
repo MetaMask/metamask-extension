@@ -191,9 +191,14 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = 'Failed transaction';
-    const message = `Transaction ${nonce} failed! ${
+    let message = `Transaction ${nonce} failed! ${
       errorMessage || txMeta.err.message
     }`;
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (isNaN(nonce)) {
+      message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
+    }
+    ///: END:ONLY_INCLUDE_IN
     await this._showNotification(title, message);
   }
 

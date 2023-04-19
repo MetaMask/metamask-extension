@@ -16,7 +16,8 @@
         "name": null
       }
     },
-    "warning": null
+    "warning": null,
+    "customTokenAmount": "10"
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
@@ -72,7 +73,8 @@
     "featureFlags": {
       "showIncomingTransactions": true
     },
-    "network": "5",
+    "networkId": "5",
+    "networkStatus": "available",
     "provider": {
       "type": "rpc",
       "chainId": "0x5",
@@ -1534,7 +1536,18 @@
         "origin": "tmashuang.github.io"
       }
     ],
-    "desktopEnabled": false
+    "desktopEnabled": false,
+    "pendingApprovals": {
+      "testApprovalId": {
+        "id": "testApprovalId",
+        "time": 1528133319641,
+        "origin": "metamask",
+        "type": "transaction",
+        "requestData": { "txId": "testTransactionId" },
+        "requestState": { "test": "value" }
+      }
+    },
+    "pendingApprovalCount": 1
   },
   "send": {
     "amountMode": "INPUT",

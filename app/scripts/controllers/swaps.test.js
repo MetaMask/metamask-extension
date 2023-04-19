@@ -4,7 +4,11 @@ import sinon from 'sinon';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
-import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  NETWORK_IDS,
+  NetworkStatus,
+} from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -14,7 +18,6 @@ import {
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
 } from '../../../shared/constants/smartTransactions';
 import SwapsController, { utils } from './swaps';
-import { NETWORK_EVENTS } from './network';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -98,16 +101,11 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 function getMockNetworkController() {
   return {
     store: {
-      getState: () => {
-        return {
-          network: NETWORK_IDS.GOERLI,
-        };
-      },
+      getState: sinon.stub().returns({
+        networkId: NETWORK_IDS.GOERLI,
+        networkStatus: NetworkStatus.Available,
+      }),
     },
-    on: sinon
-      .stub()
-      .withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE)
-      .callsArgAsync(1),
   };
 }
 
@@ -158,11 +156,12 @@ const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
 describe('SwapsController', function () {
   let provider;
 
-  const getSwapsController = () => {
+  const getSwapsController = (_provider = provider) => {
     return new SwapsController({
       getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       networkController: getMockNetworkController(),
-      provider,
+      onNetworkDidChange: sinon.stub(),
+      provider: _provider,
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
@@ -209,9 +208,11 @@ describe('SwapsController', function () {
 
     it('should replace ethers instance when network changes', function () {
       const networkController = getMockNetworkController();
+      const onNetworkDidChange = sinon.stub();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
+        onNetworkDidChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -219,9 +220,13 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const onNetworkDidChange = networkController.on.getCall(0).args[1];
+      const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
-      onNetworkDidChange(NETWORK_IDS.MAINNET);
+      networkController.store.getState.returns({
+        networkId: NETWORK_IDS.MAINNET,
+        networkStatus: NetworkStatus.Available,
+      });
+      changeNetwork(NETWORK_IDS.MAINNET);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -233,9 +238,11 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to loading', function () {
       const networkController = getMockNetworkController();
+      const onNetworkDidChange = sinon.stub();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
+        onNetworkDidChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -243,9 +250,13 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const onNetworkDidChange = networkController.on.getCall(0).args[1];
+      const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
-      onNetworkDidChange('loading');
+      networkController.store.getState.returns({
+        networkId: null,
+        networkStatus: NetworkStatus.Unknown,
+      });
+      changeNetwork('loading');
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -257,9 +268,11 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to the same network', function () {
       const networkController = getMockNetworkController();
+      const onNetworkDidChange = sinon.stub();
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
+        onNetworkDidChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -267,9 +280,13 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const onNetworkDidChange = networkController.on.getCall(0).args[1];
+      const changeNetwork = onNetworkDidChange.getCall(0).args[0];
 
-      onNetworkDidChange(NETWORK_IDS.GOERLI);
+      networkController.store.getState.returns({
+        networkId: NETWORK_IDS.GOERLI,
+        networkStatus: NetworkStatus.Available,
+      });
+      changeNetwork(NETWORK_IDS.GOERLI);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -700,6 +717,72 @@ describe('SwapsController', function () {
         assert.strictEqual(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...MOCK_FETCH_METADATA,
+          }),
+          true,
+        );
+      });
+
+      it('calls returns the correct quotes on the optimism chain', async function () {
+        fetchTradesInfoStub.resetHistory();
+        const OPTIMISM_MOCK_FETCH_METADATA = {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.OPTIMISM,
+        };
+        const optimismProviderResultStub = {
+          // 1 gwei
+          eth_gasPrice: '0x0de0b6b3a7640000',
+          // by default, all accounts are external accounts (not contracts)
+          eth_getCode: '0x',
+          eth_call:
+            '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
+        };
+        const optimismProvider = createTestProviderTools({
+          scaffold: optimismProviderResultStub,
+          networkId: 10,
+          chainId: 10,
+        }).provider;
+
+        swapsController = getSwapsController(optimismProvider);
+
+        fetchTradesInfoStub.resolves(getMockQuotes());
+
+        // Make it so approval is not required
+        sandbox
+          .stub(swapsController, '_getERC20Allowance')
+          .resolves(BigNumber.from(1));
+
+        const [newQuotes] = await swapsController.fetchAndSetQuotes(
+          MOCK_FETCH_PARAMS,
+          OPTIMISM_MOCK_FETCH_METADATA,
+        );
+
+        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
+          ...getMockQuotes()[TEST_AGG_ID_BEST],
+          sourceTokenInfo: undefined,
+          destinationTokenInfo: {
+            symbol: 'FOO',
+            decimals: 18,
+          },
+          isBestQuote: true,
+          // TODO: find a way to calculate these values dynamically
+          gasEstimate: 2000000,
+          gasEstimateWithRefund: '0xb8cae',
+          savings: {
+            fee: '-0.061067',
+            metaMaskFee: '0.5050505050505050505',
+            performance: '6',
+            total: '5.4338824949494949495',
+            medianMetaMaskFee: '0.44444444444444444444',
+          },
+          ethFee: '0.113822',
+          multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
+          overallValueOfQuote: '49.886178',
+          metaMaskFeeInEth: '0.5050505050505050505',
+          ethValueOfTokens: '50',
+        });
+        assert.strictEqual(
+          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
+            ...OPTIMISM_MOCK_FETCH_METADATA,
           }),
           true,
         );

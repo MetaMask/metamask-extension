@@ -5,16 +5,25 @@ import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
+import CheckBox from '../../../components/ui/check-box';
+import Box from '../../../components/ui/box';
 import {
-  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
+  TextVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  setFirstTimeFlowType,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -30,6 +39,7 @@ export default function OnboardingWelcome() {
   const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const [termsChecked, setTermsChecked] = useState(false);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -47,30 +57,46 @@ export default function OnboardingWelcome() {
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
       properties: {
         account_type: 'metamask',
       },
     });
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
+  const toggleTermsCheck = () => {
+    setTermsChecked((currentTermsChecked) => !currentTermsChecked);
+  };
+  const termsOfUse = t('agreeTermsOfUse', [
+    <a
+      className="create-new-vault__terms-link"
+      key="create-new-vault__link-text"
+      href="https://metamask.io/terms.html"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {t('terms')}
+    </a>,
+  ]);
 
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_IMPORT_STARTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletImportStarted,
       properties: {
         account_type: 'imported',
       },
     });
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
 
   trackEvent({
-    category: EVENT.CATEGORIES.ONBOARDING,
-    event: EVENT_NAMES.ONBOARDING_WELCOME,
+    category: MetaMetricsEventCategory.Onboarding,
+    event: MetaMetricsEventName.OnboardingWelcome,
     properties: {
       message_title: t('welcomeToMetaMask'),
       app_version: global?.platform?.getVersion(),
@@ -81,16 +107,17 @@ export default function OnboardingWelcome() {
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
-          <Typography
-            variant={TypographyVariant.H2}
-            align={TEXT_ALIGN.CENTER}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeToMetaMask')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
+          </Text>
+          <Text textAlign={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
             {t('welcomeToMetaMaskIntro')}
-          </Typography>
+          </Text>
           <div className="onboarding-welcome__mascot">
             <Mascot
               animationEventEmitter={eventEmitter}
@@ -100,16 +127,17 @@ export default function OnboardingWelcome() {
           </div>
         </div>
         <div>
-          <Typography
-            variant={TypographyVariant.H2}
-            align={TEXT_ALIGN.CENTER}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeExploreTitle')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          </Text>
+          <Text textAlign={TEXT_ALIGN.CENTER}>
             {t('welcomeExploreDescription')}
-          </Typography>
+          </Text>
           <div className="onboarding-welcome__image">
             <img
               src="/images/onboarding-welcome-say-hello.svg"
@@ -120,16 +148,17 @@ export default function OnboardingWelcome() {
           </div>
         </div>
         <div>
-          <Typography
-            variant={TypographyVariant.H2}
-            align={TEXT_ALIGN.CENTER}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeLoginTitle')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          </Text>
+          <Text textAlign={TEXT_ALIGN.CENTER}>
             {t('welcomeLoginDescription')}
-          </Typography>
+          </Text>
           <div className="onboarding-welcome__image">
             <img
               src="/images/onboarding-welcome-decentralised-apps.svg"
@@ -142,10 +171,34 @@ export default function OnboardingWelcome() {
       </Carousel>
       <ul className="onboarding-welcome__buttons">
         <li>
+          <Box
+            alignItems={AlignItems.center}
+            className="onboarding__terms-of-use"
+          >
+            <CheckBox
+              id="onboarding__terms-checkbox"
+              className="onboarding__terms-checkbox"
+              dataTestId="onboarding-terms-checkbox"
+              checked={termsChecked}
+              onClick={toggleTermsCheck}
+            />
+            <label
+              className="onboarding__terms-label"
+              htmlFor="onboarding__terms-checkbox"
+            >
+              <Text variant={TextVariant.bodyMd} marginLeft={2} as="span">
+                {termsOfUse}
+              </Text>
+            </label>
+          </Box>
+        </li>
+
+        <li>
           <Button
             data-testid="onboarding-create-wallet"
             type="primary"
             onClick={onCreateClick}
+            disabled={!termsChecked}
           >
             {t('onboardingCreateWallet')}
           </Button>
@@ -155,6 +208,7 @@ export default function OnboardingWelcome() {
             data-testid="onboarding-import-wallet"
             type="secondary"
             onClick={onImportClick}
+            disabled={!termsChecked}
           >
             {t('onboardingImportWallet')}
           </Button>

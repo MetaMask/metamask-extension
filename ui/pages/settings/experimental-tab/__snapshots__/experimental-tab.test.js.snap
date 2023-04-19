@@ -189,7 +189,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="settings-page__content-description"
         >
           <p
-            class="box mm-text mm-text--body-md mm-text--color-text-alternative box--flex-direction-row"
+            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
           >
             We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature.
           </p>
@@ -207,7 +207,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </li>
           </ul>
           <p
-            class="box mm-text mm-text--body-md mm-text--color-text-alternative box--padding-top-4 box--flex-direction-row"
+            class="box mm-text mm-text--body-md box--padding-top-4 box--flex-direction-row box--color-text-alternative"
           >
             Leave this feature off if you don't want the app to pull data from those services.
           </p>

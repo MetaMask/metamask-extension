@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Xem trên Etherscan"
   },
-  "expandExperience": {
-    "message": "Mở rộng trải nghiệm web3 của bạn với MetaMask Snap"
-  },
   "expandView": {
     "message": "Mở rộng cửa sổ xem"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Dữ liệu không đúng định dạng"
   },
-  "manageSnaps": {
-    "message": "Quản lý các Snap đã cài đặt"
-  },
   "max": {
     "message": "Tối đa"
   },
@@ -2187,9 +2181,6 @@
   "nextNonceWarning": {
     "message": "Số chỉ dùng một lần lớn hơn số chỉ dùng một lần gợi ý là $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
@@ -2705,10 +2696,6 @@
   "permission_cronjob": {
     "message": "Lên lịch và thực hiện các hành động theo định kỳ.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Hiển thị xác nhận trong MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Hiển thị cửa sổ hộp thoại trong MetaMask.",
@@ -3253,12 +3240,6 @@
   "show": {
     "message": "Hiển thị"
   },
-  "showAdvancedGasInline": {
-    "message": "Quyền kiểm soát gas nâng cao"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chọn tùy chọn này để hiển thị các quyền kiểm soát giá gas và giới hạn ngay trên màn hình gửi và xác nhận."
-  },
   "showFiatConversionInTestnets": {
     "message": "Hiển thị tỷ lệ quy đổi trên các mạng thử nghiệm"
   },
@@ -3358,22 +3339,11 @@
     "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Snap này đang yêu cầu các quyền sau:"
-  },
   "snapUpdate": {
     "message": "Cập nhật Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 cần một phiên bản Snap mới hơn.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "Đã xảy ra lỗi với $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Đang tải thông tin chi tiết về giao dịch..."
@@ -3391,7 +3361,8 @@
     "message": "Snap chỉ hoạt động khi đã bật"
   },
   "snapsUIError": {
-    "message": "Giao diện người dùng được chỉ định bởi snap không hợp lệ."
+    "message": "Giao diện người dùng được chỉ định bởi snap không hợp lệ.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Một số mạng có thể gây ra rủi ro về bảo mật và/hoặc quyền riêng tư. Bạn cần hiểu rõ các rủi ro này trước khi thêm và sử dụng mạng."
