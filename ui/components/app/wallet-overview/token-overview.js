@@ -19,7 +19,11 @@ import {
   getCurrentKeyring,
   getIsSwapsChain,
   getIsBuyableChain,
+<<<<<<< HEAD
   getIsBridgeToken,
+=======
+  getCurrentChainId,
+>>>>>>> 758fb8706 (Action Buttons - Buy Button Clicked)
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -56,6 +60,7 @@ const TokenOverview = ({ className, token }) => {
     balanceToRender,
     token.symbol,
   );
+  const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeToken = useSelector(getIsBridgeToken(token.address));
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -137,6 +142,8 @@ const TokenOverview = ({ className, token }) => {
                 properties: {
                   location: 'Token Overview',
                   text: 'Buy',
+                  chain_id: chainId,
+                  token_symbol: token.symbol,
                 },
               });
             }}
