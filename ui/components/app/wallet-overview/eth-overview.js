@@ -23,6 +23,7 @@ import {
   getIsBuyableChain,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
+  getCurrentChainId,
 } from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
@@ -62,6 +63,7 @@ const EthOverview = ({ className }) => {
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const chainId = useSelector(getCurrentChainId);
 
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -160,6 +162,7 @@ const EthOverview = ({ className }) => {
                 properties: {
                   location: 'Home',
                   text: 'Buy',
+                  chain_id: chainId,
                 },
               });
             }}

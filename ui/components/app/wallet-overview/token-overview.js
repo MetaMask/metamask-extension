@@ -20,6 +20,7 @@ import {
   getCurrentKeyring,
   getIsSwapsChain,
   getIsBuyableChain,
+  getCurrentChainId,
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -54,6 +55,7 @@ const TokenOverview = ({ className, token }) => {
     balanceToRender,
     token.symbol,
   );
+  const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -104,6 +106,7 @@ const TokenOverview = ({ className, token }) => {
                 properties: {
                   location: 'Token Overview',
                   text: 'Buy',
+                  chain_id: chainId,
                 },
               });
             }}
