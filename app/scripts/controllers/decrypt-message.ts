@@ -25,6 +25,7 @@ import {
 import { Patch } from 'immer';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 const controllerName = 'DecryptMessageController';
@@ -294,7 +295,7 @@ export default class DecryptMessageController extends BaseControllerV2<
     if (reason) {
       this._metricsEvent({
         event: reason,
-        category: EVENT.CATEGORIES.MESSAGES,
+        category: MetaMetricsEventCategory.Messages,
         properties: {
           action: 'Decrypt Message Request',
         },

@@ -1,6 +1,6 @@
 import { DecryptMessageManager } from '@metamask/message-manager';
 import { AbstractMessage, OriginalRequest } from '@metamask/message-manager/dist/AbstractMessageManager';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import DecryptMessageController, {
   DecryptMessageControllerMessenger,
   DecryptMessageControllerOptions,
@@ -249,7 +249,7 @@ describe('EncryptionPublicKeyController', () => {
     expect(metricsEventMock).toBeCalledTimes(1);
     expect(metricsEventMock).toBeCalledWith({
       event: 'reason to cancel',
-      category: EVENT.CATEGORIES.MESSAGES,
+      category: MetaMetricsEventCategory.Messages,
       properties: {
         action: 'Decrypt Message Request',
       },
