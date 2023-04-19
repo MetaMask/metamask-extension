@@ -49,7 +49,7 @@ Note that multiple build types can be specified by separating them with
 commands inside the parameter parentheses:
 
 ```javascript
-///: BEGIN:ONLY_INCLUDE_IN(build-beta,flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
 ```
 
 ### Gotchas
