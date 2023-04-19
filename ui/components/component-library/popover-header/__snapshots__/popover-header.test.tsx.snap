@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Popover should render popover element correctly 1`] = `
+exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
 <div>
   <div
     class="box mm-header-base mm-popover-header box--display-flex box--flex-direction-row box--justify-content-space-between"
