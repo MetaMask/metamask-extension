@@ -16,7 +16,8 @@
         "name": null
       }
     },
-    "warning": null
+    "warning": null,
+    "customTokenAmount": "10"
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"

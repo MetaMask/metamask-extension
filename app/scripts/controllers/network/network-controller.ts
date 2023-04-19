@@ -1141,9 +1141,12 @@ export class NetworkController extends EventEmitter {
    * @param networkConfigurationId - The unique id for the network configuration
    * to remove.
    */
-  removeNetworkConfiguration(
-    networkConfigurationId: NetworkConfigurationId,
-  ): void {
+  removeNetworkConfiguration(networkConfigurationId: NetworkConfigurationId) {
+    if (!this.store.getState().networkConfigurations[networkConfigurationId]) {
+      throw new Error(
+        `networkConfigurationId ${networkConfigurationId} does not match a configured networkConfiguration`,
+      );
+    }
     const networkConfigurations = {
       ...this.store.getState().networkConfigurations,
     };
