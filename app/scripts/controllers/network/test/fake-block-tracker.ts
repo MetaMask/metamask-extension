@@ -1,11 +1,11 @@
 import { PollingBlockTracker } from 'eth-block-tracker';
 
 /**
- * Implements just enough of the block tracker interface to pass the tests but
- * nothing more.
+ * Acts like a PollingBlockTracker, but doesn't start the polling loop or
+ * make any requests.
  */
 export class FakeBlockTracker extends PollingBlockTracker {
-  public eventNames() {
-    return [];
+  async _start() {
+    // do nothing
   }
 }

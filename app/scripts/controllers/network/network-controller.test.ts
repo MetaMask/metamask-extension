@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import { v4 } from 'uuid';
 import nock from 'nock';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { PollingBlockTracker } from 'eth-block-tracker';
 import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
 import { when, resetAllWhenMocks } from 'jest-when';
 import { ethErrors } from 'eth-rpc-errors';
@@ -237,24 +236,7 @@ describe('NetworkController', () => {
 
     it('stops the block tracker for the currently selected network as long as the provider has been initialized', async () => {
       await withController(async ({ controller }) => {
-        const fakeProvider = buildFakeProvider([
-          {
-            request: {
-              method: 'eth_blockNumber',
-            },
-            response: {
-              result: '0x1',
-            },
-          },
-          {
-            request: {
-              method: 'eth_blockNumber',
-            },
-            response: {
-              result: '0x2',
-            },
-          },
-        ]);
+        const fakeProvider = buildFakeProvider();
         const fakeNetworkClient = buildFakeClient(fakeProvider);
         mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
         await controller.initializeProvider();
@@ -8301,7 +8283,7 @@ function buildFakeClient(
 ) {
   return {
     provider,
-    blockTracker: new FakeBlockTracker({ provider }) as PollingBlockTracker,
+    blockTracker: new FakeBlockTracker({ provider }),
   };
 }
 
