@@ -41,4 +41,3 @@ export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
 export { Popover } from './popover';
-

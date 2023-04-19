@@ -64,9 +64,9 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   //   setIsOpen(true);
   // };
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  // const handleClose = () => {
+  //   setIsOpen(false);
+  // };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
