@@ -289,6 +289,7 @@ const EthOverview = ({ className }) => {
                     token_symbol: 'ETH',
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
+                    chain_id: chainId,
                   },
                 });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
