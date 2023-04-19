@@ -357,7 +357,7 @@ export default class MetamaskController extends EventEmitter {
         // network provider by one update.
         onNetworkStateChange: (cb) =>
           networkControllerMessenger.subscribe(
-            NetworkControllerEventType.NetworkDidChange,
+            NetworkControllerEventTypes.NetworkDidChange,
             () => {
               const networkState = this.networkController.store.getState();
               const modifiedNetworkState = {
