@@ -1196,7 +1196,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       networkController: this.networkController,
       onNetworkStateChange: (listener) =>
-        this.networkController.networkIdStore.subscribe(listener),
+        this.networkController.store.subscribe(listener),
       provider: this.provider,
       getProviderConfig: () => this.networkController.store.getState().provider,
       getTokenRatesState: () => this.tokenRatesController.state,
