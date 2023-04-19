@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
@@ -30,6 +30,7 @@ import {
 } from '../../component-library';
 
 import {
+  getCurrentChainId,
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
@@ -60,6 +61,7 @@ export const AppHeader = ({ onClick }) => {
   const history = useHistory();
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
+  const chainId = useSelector(getCurrentChainId);
 
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
@@ -71,7 +73,7 @@ export const AppHeader = ({ onClick }) => {
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
 
-  // used to get the environment and connection status
+  // Used to get the environment and connection status
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -82,6 +84,19 @@ export const AppHeader = ({ onClick }) => {
   const productTourDirection = document
     .querySelector('[dir]')
     ?.getAttribute('dir');
+
+  // Callback for network dropdown
+  const networkOpenCallback = useCallback(() => {
+    dispatch(toggleNetworkMenu());
+    trackEvent({
+      event: MetaMetricsEventName.NavNetworkMenuOpened,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'App header',
+        chain_id: chainId,
+      },
+    });
+  }, [chainId, dispatch, trackEvent]);
 
   return (
     <>
@@ -140,14 +155,14 @@ export const AppHeader = ({ onClick }) => {
                 name={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 size={Size.SM}
-                onClick={() => dispatch(toggleNetworkMenu())}
+                onClick={() => networkOpenCallback()}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
               />
               <PickerNetwork
                 margin={2}
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={() => dispatch(toggleNetworkMenu())}
+                onClick={() => networkOpenCallback()}
                 display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
               />
               {showProductTour &&
