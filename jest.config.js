@@ -4,7 +4,6 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/network/**/*.js',
     '<rootDir>/app/scripts/controllers/network/**/*.ts',
     '!<rootDir>/app/scripts/controllers/network/**/test/*.ts',
-    '!<rootDir>/app/scripts/controllers/network/**/provider-api-tests/*.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/flask/**/*.js',
