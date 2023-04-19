@@ -546,6 +546,8 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  NftScreenOpened = 'NFT Screen Opened',
+  ActivityScreenOpened = 'Activity Screen Opened',
 }
 
 export enum MetaMetricsEventAccountType {
