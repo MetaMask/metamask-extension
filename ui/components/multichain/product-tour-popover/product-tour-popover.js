@@ -72,7 +72,7 @@ export const ProductTour = ({
               />
             ) : null}
             <Text
-              textAlign={TEXT_ALIGN.CENTER}
+              textAlign={TextAlign.Center}
               variant={TextVariant.headingSm}
               width={BLOCK_SIZES.FULL}
               color={TextColor.infoInverse}
