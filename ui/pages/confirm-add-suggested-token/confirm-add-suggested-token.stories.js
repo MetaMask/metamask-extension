@@ -7,7 +7,6 @@ import ConfirmAddSuggestedToken from '.';
 
 export default {
   title: 'Pages/ConfirmAddSuggestedToken',
-
   argTypes: {
     tokens: {
       control: 'array',
@@ -65,14 +64,9 @@ const PageSet = ({ children, suggestedAssets, tokens, symbol, image }) => {
   return children;
 };
 
-export const DefaultStory = ({ suggestedAssets, tokens, symbol, image }) => {
+export const DefaultStory = (args) => {
   return (
-    <PageSet
-      suggestedAssets={suggestedAssets}
-      tokens={tokens}
-      symbol={symbol}
-      image={image}
-    >
+    <PageSet {...args}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -81,23 +75,11 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [],
-  symbol: 'ETH',
-  image: './images/eth_logo.svg',
 };
 
-export const WithDuplicateAddress = ({
-  suggestedAssets,
-  tokens,
-  symbol,
-  image,
-}) => {
+export const WithDuplicateAddress = (args) => {
   return (
-    <PageSet
-      suggestedAssets={suggestedAssets}
-      tokens={tokens}
-      symbol={symbol}
-      image={image}
-    >
+    <PageSet {...args}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -109,23 +91,11 @@ WithDuplicateAddress.args = {
       ...mockSuggestedAssets[0].asset,
     },
   ],
-  symbol: 'ETH',
-  image: './images/eth_logo.svg',
 };
 
-export const WithDuplicateSymbolAndDifferentAddress = ({
-  suggestedAssets,
-  tokens,
-  symbol,
-  image,
-}) => {
+export const WithDuplicateSymbolAndDifferentAddress = (args) => {
   return (
-    <PageSet
-      suggestedAssets={suggestedAssets}
-      tokens={tokens}
-      symbol={symbol}
-      image={image}
-    >
+    <PageSet {...args}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
@@ -138,6 +108,4 @@ WithDuplicateSymbolAndDifferentAddress.args = {
       address: '0xNonSuggestedAddress',
     },
   ],
-  symbol: 'ETH',
-  image: './images/eth_logo.svg',
 };
