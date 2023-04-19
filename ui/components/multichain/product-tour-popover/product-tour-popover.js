@@ -109,13 +109,10 @@ export const ProductTour = ({
               <Button
                 backgroundColor={Color.primaryInverse}
                 type={BUTTON_TYPES.PRIMARY}
+                color={TextColor.primaryDefault}
+                className="multichain-product-tour__button"
               >
-                <Text
-                  color={TextColor.primaryDefault}
-                  variant={TextVariant.bodyMd}
-                >
-                  {t('recoveryPhraseReminderConfirm')}
-                </Text>
+                {t('recoveryPhraseReminderConfirm')}
               </Button>
             </Box>
           </Box>
