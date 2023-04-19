@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -65,10 +65,10 @@ const state = {
       },
     ],
     unapprovedTxs: {},
-    keyringTypes: [KeyringType.ledger],
+    keyringTypes: [],
     keyrings: [
       {
-        type: KeyringType.ledger,
+        type: KeyringType.hdKeyTree,
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
@@ -96,12 +96,14 @@ jest.mock('../../store/actions', () => ({
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
   updateCustomNonce: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
+  estimateGas: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
 jest.mock('../../contexts/gasFee', () => ({
   useGasFeeContext: () => ({
     maxPriorityFeePerGas: '0.1',
     maxFeePerGas: '0.1',
+    updateTransaction: jest.fn(),
   }),
 }));
 
@@ -215,8 +217,10 @@ describe('TokenAllowancePage', () => {
       store,
     );
 
-    const useDefault = getByText('Use default');
-    fireEvent.click(useDefault);
+    act(() => {
+      const useDefault = getByText('Use default');
+      fireEvent.click(useDefault);
+    });
 
     const input = getByTestId('custom-spending-cap-input');
     expect(input.value).toBe('1');
@@ -256,9 +260,9 @@ describe('TokenAllowancePage', () => {
     expect(gotIt).not.toBeInTheDocument();
   });
 
-  it('should show hardware wallet info text', () => {
+  it('should show ledger info text if the sending address is ledger', () => {
     const { queryByText, getByText, getByTestId } = renderWithProvider(
-      <TokenAllowance {...props} />,
+      <TokenAllowance {...props} fromAddressIsLedger />,
       store,
     );
 
@@ -273,11 +277,19 @@ describe('TokenAllowancePage', () => {
     expect(queryByText('Prior to clicking confirm:')).toBeInTheDocument();
   });
 
-  it('should not show hardware wallet info text', () => {
-    const { queryByText } = renderWithProvider(
-      <TokenAllowance {...props} />,
+  it('should not show ledger info text if the sending address is not ledger', () => {
+    const { queryByText, getByText, getByTestId } = renderWithProvider(
+      <TokenAllowance {...props} fromAddressIsLedger={false} />,
       store,
     );
+
+    const textField = getByTestId('custom-spending-cap-input');
+    fireEvent.change(textField, { target: { value: '1' } });
+
+    expect(queryByText('Prior to clicking confirm:')).toBeNull();
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
   });

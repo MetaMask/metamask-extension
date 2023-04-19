@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
+import { addHexPrefix } from 'ethereumjs-util';
+
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
@@ -22,24 +24,31 @@ import {
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
   DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { estimateGas } from '../../../store/actions';
+import { getCustomTxParamsData } from '../../../pages/confirm-approve/confirm-approve.util';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
+  txParams,
   tokenName,
   currentTokenBalance,
   dappProposedValue,
   siteOrigin,
   passTheErrorText,
   decimals,
+  setInputChangeInProgress,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const { updateTransaction } = useGasFeeContext();
   const inputRef = useRef(null);
 
   const value = useSelector(getCustomTokenAmount);
@@ -96,12 +105,17 @@ export default function CustomSpendingCap({
     getInputTextLogic(value).description,
   );
 
-  const handleChange = (valueInput) => {
+  const handleChange = async (valueInput) => {
+    if (!txParams) {
+      return;
+    }
+    setInputChangeInProgress(true);
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
     const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
     if (match?.[1]?.length > decimals) {
+      setInputChangeInProgress(false);
       return;
     }
 
@@ -127,6 +141,28 @@ export default function CustomSpendingCap({
     }
 
     dispatch(setCustomTokenAmount(String(valueInput)));
+
+    try {
+      const newData = getCustomTxParamsData(txParams.data, {
+        customPermissionAmount: valueInput,
+        decimals,
+      });
+      const { from, to, value: txValue } = txParams;
+      const estimatedGasLimit = await estimateGas({
+        from,
+        to,
+        value: txValue,
+        data: newData,
+      });
+      if (estimatedGasLimit) {
+        await updateTransaction({
+          gasLimit: hexToDecimal(addHexPrefix(estimatedGasLimit)),
+        });
+      }
+    } catch (exp) {
+      console.error('Error in trying to update gas limit', exp);
+    }
+    setInputChangeInProgress(false);
   };
 
   useEffect(() => {
@@ -278,6 +314,10 @@ export default function CustomSpendingCap({
 
 CustomSpendingCap.propTypes = {
   /**
+   * Transaction params
+   */
+  txParams: PropTypes.object.isRequired,
+  /**
    * Displayed the token name currently tracked in description related to the input state
    */
   tokenName: PropTypes.string,
@@ -301,4 +341,8 @@ CustomSpendingCap.propTypes = {
    * Number of decimals
    */
   decimals: PropTypes.string,
+  /**
+   * Updating input state to changing
+   */
+  setInputChangeInProgress: PropTypes.func.isRequired,
 };

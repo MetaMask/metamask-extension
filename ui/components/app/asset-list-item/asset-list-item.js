@@ -31,7 +31,6 @@ const AssetListItem = ({
   warning,
   primary,
   secondary,
-  identiconBorder,
   isERC721,
 }) => {
   const t = useI18nContext();
@@ -133,7 +132,6 @@ const AssetListItem = ({
           address={tokenAddress}
           image={tokenImage}
           alt={`${primary} ${tokenSymbol}`}
-          imageBorder={identiconBorder}
         />
       }
       midContent={midContent}
@@ -166,7 +164,6 @@ AssetListItem.propTypes = {
   warning: PropTypes.node,
   primary: PropTypes.string,
   secondary: PropTypes.string,
-  identiconBorder: PropTypes.bool,
   isERC721: PropTypes.bool,
 };
 
