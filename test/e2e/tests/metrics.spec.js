@@ -4,8 +4,6 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('Segment metrics', function () {
   async function mockSegment(mockServer) {
-    mockServer.reset();
-    await mockServer.forAnyRequest().thenPassThrough();
     return await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({ batch: [{ type: 'page' }] })
@@ -36,18 +34,17 @@ describe('Segment metrics', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
-        failOnConsoleError: false,
+        testSpecificMock: mockSegment,
       },
-      async ({ driver, mockServer }) => {
-        const mockedEndpoints = await mockSegment(mockServer);
+      async ({ driver, mockedEndpoint }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
         await driver.wait(async () => {
-          const isPending = await mockedEndpoints.isPending();
+          const isPending = await mockedEndpoint.isPending();
           return isPending === false;
         }, 10000);
-        const mockedRequests = await mockedEndpoints.getSeenRequests();
+        const mockedRequests = await mockedEndpoint.getSeenRequests();
         assert.equal(mockedRequests.length, 3);
         const [firstMock, secondMock, thirdMock] = mockedRequests;
         let [mockJson] = firstMock.body.json.batch;
