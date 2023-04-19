@@ -110,14 +110,16 @@ export class FakeProvider extends SafeEventEmitterProvider {
 
   sendAsync = (
     payload: JsonRpcRequest<any>,
-    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
+    callback?: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) => {
     return this.#handleSend(payload, callback);
   };
 
   #handleSend(
     payload: JsonRpcRequest<any>,
-    callback?: (error: unknown, response?: JsonRpcResponse<any>) => void,
+    callback:
+      | ((error: unknown, response?: JsonRpcResponse<any>) => void)
+      | undefined,
   ) {
     if (Array.isArray(payload)) {
       throw new Error("Arrays aren't supported");
@@ -157,15 +159,7 @@ export class FakeProvider extends SafeEventEmitterProvider {
         this.#stubs.splice(index, 1);
       }
 
-      if (callback === undefined) {
-        this.#handleRequest(stub, (error, response) => {
-          console.warn(
-            'got result or error but not doing anything with it',
-            error,
-            response,
-          );
-        });
-      } else if (stub.delay) {
+      if (stub.delay) {
         originalSetTimeout(() => {
           this.#handleRequest(stub, callback);
         }, stub.delay);
@@ -179,7 +173,9 @@ export class FakeProvider extends SafeEventEmitterProvider {
 
   async #handleRequest(
     stub: FakeProviderStub,
-    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
+    callback:
+      | ((error: unknown, response?: JsonRpcResponse<any>) => void)
+      | undefined,
   ) {
     if (stub.beforeCompleting) {
       await stub.beforeCompleting();
@@ -187,33 +183,38 @@ export class FakeProvider extends SafeEventEmitterProvider {
 
     if ('implementation' in stub) {
       stub.implementation();
-    } else if ('response' in stub) {
-      if ('result' in stub.response) {
-        return callback(null, {
-          jsonrpc: '2.0',
-          id: 1,
-          result: stub.response.result,
-        });
-      } else if ('error' in stub.response) {
-        if (typeof stub.response.error === 'string') {
-          return callback(null, {
+      return;
+    }
+
+    if (callback) {
+      if ('response' in stub) {
+        if ('result' in stub.response) {
+          callback(null, {
             jsonrpc: '2.0',
             id: 1,
-            error: {
-              code: -999,
-              message: stub.response.error,
-            },
+            result: stub.response.result,
           });
+        } else if ('error' in stub.response) {
+          if (typeof stub.response.error === 'string') {
+            callback(null, {
+              jsonrpc: '2.0',
+              id: 1,
+              error: {
+                code: -999,
+                message: stub.response.error,
+              },
+            });
+          } else {
+            callback(null, {
+              jsonrpc: '2.0',
+              id: 1,
+              error: stub.response.error,
+            });
+          }
         }
-        return callback(null, {
-          jsonrpc: '2.0',
-          id: 1,
-          error: stub.response.error,
-        });
+      } else if ('error' in stub) {
+        callback(stub.error);
       }
-    } else if ('error' in stub) {
-      return callback(stub.error);
     }
-    return undefined;
   }
 }
