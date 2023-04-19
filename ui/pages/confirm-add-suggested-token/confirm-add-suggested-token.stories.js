@@ -81,6 +81,8 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [],
+  symbol: 'ETH',
+  image: './images/eth_logo.svg',
 };
 
 export const WithDuplicateAddress = ({
@@ -107,6 +109,8 @@ WithDuplicateAddress.args = {
       ...mockSuggestedAssets[0].asset,
     },
   ],
+  symbol: 'ETH',
+  image: './images/eth_logo.svg',
 };
 
 export const WithDuplicateSymbolAndDifferentAddress = ({
@@ -134,4 +138,6 @@ WithDuplicateSymbolAndDifferentAddress.args = {
       address: '0xNonSuggestedAddress',
     },
   ],
+  symbol: 'ETH',
+  image: './images/eth_logo.svg',
 };
