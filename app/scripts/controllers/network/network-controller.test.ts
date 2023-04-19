@@ -4576,9 +4576,10 @@ describe('NetworkController', () => {
               // partway through the operation.
               controller.setActiveNetwork('testNetworkConfiguration');
             },
+            beforeResolving: () => {
+              expect(controller.store.getState().networkStatus).toBe('unknown');
+            },
           });
-
-          expect(controller.store.getState().networkStatus).toBe('unknown');
         },
       );
     });
@@ -4666,11 +4667,12 @@ describe('NetworkController', () => {
               // partway through the operation
               controller.setActiveNetwork('testNetworkConfiguration');
             },
-          });
-
-          expect(controller.store.getState().networkDetails).toStrictEqual({
-            EIPS: {
-              1559: undefined,
+            beforeResolving: () => {
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: undefined,
+                },
+              });
             },
           });
         },
@@ -5080,8 +5082,12 @@ describe('NetworkController', () => {
                   // partway through the operation
                   controller.setProviderType(networkType);
                 },
+                beforeResolving: () => {
+                  expect(controller.store.getState().networkStatus).toBe(
+                    'unknown',
+                  );
+                },
               });
-              expect(controller.store.getState().networkStatus).toBe('unknown');
             },
           );
         });
@@ -5162,10 +5168,14 @@ describe('NetworkController', () => {
                   // partway through the operation
                   controller.setProviderType(networkType);
                 },
-              });
-              expect(controller.store.getState().networkDetails).toStrictEqual({
-                EIPS: {
-                  1559: undefined,
+                beforeResolving: () => {
+                  expect(
+                    controller.store.getState().networkDetails,
+                  ).toStrictEqual({
+                    EIPS: {
+                      1559: undefined,
+                    },
+                  });
                 },
               });
             },
@@ -6349,11 +6359,12 @@ describe('NetworkController', () => {
                       // while this operation is in-progress
                       controller.rollbackToPreviousProvider();
                     },
+                    beforeResolving: () => {
+                      expect(controller.store.getState().networkStatus).toBe(
+                        'unknown',
+                      );
+                    },
                   });
-
-                  expect(controller.store.getState().networkStatus).toBe(
-                    'unknown',
-                  );
                 },
               });
             },
@@ -6437,13 +6448,14 @@ describe('NetworkController', () => {
                       // while this operation is in-progress
                       controller.rollbackToPreviousProvider();
                     },
-                  });
-
-                  expect(
-                    controller.store.getState().networkDetails,
-                  ).toStrictEqual({
-                    EIPS: {
-                      1559: undefined,
+                    beforeResolving: () => {
+                      expect(
+                        controller.store.getState().networkDetails,
+                      ).toStrictEqual({
+                        EIPS: {
+                          1559: undefined,
+                        },
+                      });
                     },
                   });
                 },
@@ -7087,11 +7099,12 @@ describe('NetworkController', () => {
                     // while this operation is in-progress
                     controller.rollbackToPreviousProvider();
                   },
+                  beforeResolving: () => {
+                    expect(controller.store.getState().networkStatus).toBe(
+                      'unknown',
+                    );
+                  },
                 });
-
-                expect(controller.store.getState().networkStatus).toBe(
-                  'unknown',
-                );
               },
             });
           },
@@ -7162,12 +7175,14 @@ describe('NetworkController', () => {
                     // while this operation is in-progress
                     controller.rollbackToPreviousProvider();
                   },
-                });
-                expect(
-                  controller.store.getState().networkDetails,
-                ).toStrictEqual({
-                  EIPS: {
-                    1559: undefined,
+                  beforeResolving: () => {
+                    expect(
+                      controller.store.getState().networkDetails,
+                    ).toStrictEqual({
+                      EIPS: {
+                        1559: undefined,
+                      },
+                    });
                   },
                 });
               },
@@ -8389,6 +8404,15 @@ async function withoutCallingGetEIP1559Compatibility({
  * promise that this function returns (default: 150).
  * @param args.operation - A function to run that will presumably produce the
  * state changes in question.
+ * @param args.beforeResolving - In some tests, state updates happen so fast, we
+ * need to make an assertion immediately after the event in question occurs.
+ * However, if we wait until the promise this function returns resolves to do
+ * so, some other state update to the same
+ * property may have happened. This option allows you to make an assertion
+ * _before_ the promise resolves. This has the added benefit of allowing you to
+ * maintain the "arrange, act, assert" ordering in your test, meaning that you
+ * can still call the method that kicks off the event and then make the
+ * assertion afterward instead of the other way around.
  * @returns A promise that resolves to an array of state objects (that is, the
  * contents of the store) when the specified number of filtered state changes
  * have occurred, or all of them if no number has been specified.
@@ -8401,12 +8425,16 @@ async function waitForStateChanges({
   operation = () => {
     // do nothing
   },
+  beforeResolving = async () => {
+    // do nothing
+  },
 }: {
   controller: NetworkController;
   propertyPath: string[];
   count?: number | null;
   duration?: number;
   operation?: () => void | Promise<void>;
+  beforeResolving?: () => void | Promise<void>;
 }) {
   const initialState = { ...controller.store.getState() };
   let isTimerRunning = false;
@@ -8429,10 +8457,12 @@ async function waitForStateChanges({
       isTimerRunning = false;
     };
 
-    const end = () => {
+    async function end() {
       stopTimer();
 
       controller.store.unsubscribe(eventListener);
+
+      await beforeResolving();
 
       const shouldEnd =
         expectedInterestingStateCount === null
@@ -8467,7 +8497,7 @@ async function waitForStateChanges({
           ].join('\n\n'),
         );
       }
-    };
+    }
 
     const resetTimer = () => {
       stopTimer();
@@ -8580,26 +8610,27 @@ async function waitForPublishedEvents<E extends NetworkControllerEvent>({
         }
       };
 
-      function end() {
+      async function end() {
         if (!alreadyEnded) {
           alreadyEnded = true;
           messenger.unsubscribe(eventType, eventListener);
-          Promise.resolve(beforeResolving()).then(() => {
-            if (interestingEventPayloads.length === expectedNumberOfEvents) {
-              resolve(interestingEventPayloads);
-            } else {
-              // Using a string instead of an Error leads to better backtraces.
-              /* eslint-disable-next-line prefer-promise-reject-errors */
-              reject(
-                `Expected to receive ${expectedNumberOfEvents} ${eventType} event(s), but received ${
-                  interestingEventPayloads.length
-                } after ${timeBeforeAssumingNoMoreEvents}ms.\n\nAll payloads:\n\n${inspect(
-                  allEventPayloads,
-                  { depth: null },
-                )}`,
-              );
-            }
-          });
+
+          await beforeResolving();
+
+          if (interestingEventPayloads.length === expectedNumberOfEvents) {
+            resolve(interestingEventPayloads);
+          } else {
+            // Using a string instead of an Error leads to better backtraces.
+            /* eslint-disable-next-line prefer-promise-reject-errors */
+            reject(
+              `Expected to receive ${expectedNumberOfEvents} ${eventType} event(s), but received ${
+                interestingEventPayloads.length
+              } after ${timeBeforeAssumingNoMoreEvents}ms.\n\nAll payloads:\n\n${inspect(
+                allEventPayloads,
+                { depth: null },
+              )}`,
+            );
+          }
         }
       }
 

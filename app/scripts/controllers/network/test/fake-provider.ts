@@ -177,46 +177,43 @@ export class FakeProvider extends SafeEventEmitterProvider {
     }
   }
 
-  #handleRequest(
+  async #handleRequest(
     stub: FakeProviderStub,
     callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) {
-    const promiseForBeforeCompleting =
-      stub.beforeCompleting === undefined
-        ? Promise.resolve()
-        : Promise.resolve(stub.beforeCompleting());
+    if (stub.beforeCompleting) {
+      await stub.beforeCompleting();
+    }
 
-    promiseForBeforeCompleting.then(() => {
-      if ('implementation' in stub) {
-        stub.implementation();
-      } else if ('response' in stub) {
-        if ('result' in stub.response) {
+    if ('implementation' in stub) {
+      stub.implementation();
+    } else if ('response' in stub) {
+      if ('result' in stub.response) {
+        return callback(null, {
+          jsonrpc: '2.0',
+          id: 1,
+          result: stub.response.result,
+        });
+      } else if ('error' in stub.response) {
+        if (typeof stub.response.error === 'string') {
           return callback(null, {
             jsonrpc: '2.0',
             id: 1,
-            result: stub.response.result,
-          });
-        } else if ('error' in stub.response) {
-          if (typeof stub.response.error === 'string') {
-            return callback(null, {
-              jsonrpc: '2.0',
-              id: 1,
-              error: {
-                code: -999,
-                message: stub.response.error,
-              },
-            });
-          }
-          return callback(null, {
-            jsonrpc: '2.0',
-            id: 1,
-            error: stub.response.error,
+            error: {
+              code: -999,
+              message: stub.response.error,
+            },
           });
         }
-      } else if ('error' in stub) {
-        return callback(stub.error);
+        return callback(null, {
+          jsonrpc: '2.0',
+          id: 1,
+          error: stub.response.error,
+        });
       }
-      return undefined;
-    });
+    } else if ('error' in stub) {
+      return callback(stub.error);
+    }
+    return undefined;
   }
 }
