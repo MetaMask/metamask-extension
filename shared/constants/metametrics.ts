@@ -542,6 +542,7 @@ export enum MetaMetricsEventName {
   UserClickedDeepLink = 'User clicked deeplink',
   ///: END:ONLY_INCLUDE_IN
   AccountDetailMenuOpened = 'Account Details Menu Opened',
+  BlockExplorerLinkClicked = 'Block Explorer Clicked',
 }
 
 export enum MetaMetricsEventAccountType {

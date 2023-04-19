@@ -50,6 +50,7 @@ export const AccountListItemMenu = ({
         url_domain: getURLHostName(addressLink),
       },
     });
+
     global.platform.openTab({
       url: addressLink,
     });
@@ -67,11 +68,20 @@ export const AccountListItemMenu = ({
       onHide={onClose}
     >
       <MenuItem
-        onClick={
+        onClick={() => {
           blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl
-            : openBlockExplorer
-        }
+            ? routeToAddBlockExplorerUrl()
+            : openBlockExplorer();
+
+          trackEvent({
+            event: MetaMetricsEventName.BlockExplorerLinkClicked,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              location: 'Account Options',
+              chain_id: chainId,
+            },
+          });
+        }}
         subtitle={blockExplorerUrlSubTitle || null}
         iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
