@@ -155,14 +155,14 @@ export const AppHeader = ({ onClick }) => {
                 name={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 size={Size.SM}
-                onClick={() => networkOpenCallback()}
+                onClick={networkOpenCallback}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
               />
               <PickerNetwork
                 margin={2}
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={() => networkOpenCallback()}
+                onClick={networkOpenCallback}
                 display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
               />
               {showProductTour &&
@@ -204,6 +204,7 @@ export const AppHeader = ({ onClick }) => {
                 justifyContent={JustifyContent.spaceBetween}
               >
                 {showStatus ? (
+<<<<<<< HEAD
                   <Box ref={menuRef}>
                     <ConnectedStatusIndicator
                       onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
@@ -232,6 +233,16 @@ export const AppHeader = ({ onClick }) => {
                     }
                     positionObj={productTourDirection === 'rtl' ? '74%' : '12%'}
                     productTourDirection={productTourDirection}
+=======
+                  <ConnectedStatusIndicator
+                    onClick={() => {
+                      history.push(CONNECTED_ACCOUNTS_ROUTE);
+                      trackEvent({
+                        event: MetaMetricsEventName.NavConnectedSitesOpened,
+                        category: MetaMetricsEventCategory.Navigation,
+                      });
+                    }}
+>>>>>>> 4a956fa96 (Connected Sites - Connected Sites Opened)
                   />
                 ) : null}
                 <Box
