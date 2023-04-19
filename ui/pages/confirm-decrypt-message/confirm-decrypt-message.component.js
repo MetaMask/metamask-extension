@@ -221,7 +221,7 @@ export default class ConfirmDecryptMessage extends Component {
                 } else {
                   this.setState({
                     hasDecrypted: true,
-                    rawMessage: result.rawData,
+                    rawMessage: result,
                   });
                 }
               });

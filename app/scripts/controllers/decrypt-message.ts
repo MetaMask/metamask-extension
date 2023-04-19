@@ -253,7 +253,7 @@ export default class DecryptMessageController extends BaseControllerV2<
       this._decryptMessageManager.setResult(messageId, rawData);
     }
 
-    return this._getState();
+    return rawData;
   }
 
   /**

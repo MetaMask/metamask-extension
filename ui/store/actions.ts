@@ -709,29 +709,23 @@ export function signPersonalMsg(
 
 export function decryptMsgInline(
   decryptedMsgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<string | null>, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('action - decryptMsgInline');
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`actions calling background.decryptMessageInline`);
 
-    let newState;
+    let rawMessage = null;
     try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('decryptMessageInline', [decryptedMsgData]);
+      rawMessage = await submitRequestToBackground<string>(
+        'decryptMessageInline',
+        [decryptedMsgData],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
       throw error;
     }
-
-    dispatch(updateMetamaskState(newState));
-    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId];
+    return rawMessage;
   };
 }
 

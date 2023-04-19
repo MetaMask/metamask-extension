@@ -176,7 +176,6 @@ describe('EncryptionPublicKeyController', () => {
     };
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
     keyringControllerMock.decryptMessage.mockResolvedValue('decryptedMessage');
-    getStateMock.mockReturnValue(mockExtState);
 
     const result = await decryptMessageController.decryptMessageInline(
       messageToDecrypt,
@@ -187,7 +186,7 @@ describe('EncryptionPublicKeyController', () => {
       messageIdMock,
       'decryptedMessage',
     );
-    expect(result).toBe(mockExtState);
+    expect(result).toBe('decryptedMessage');
   });
 
   it('should be able to cancel decrypt message', async () => {

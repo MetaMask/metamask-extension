@@ -4041,7 +4041,7 @@ __metadata:
 
 "@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.0.0#./.yarn/patches/@metamask-message-manager-npm-3.0.0-6452b962f2.patch::locator=metamask-crx%40workspace%3A.":
   version: 3.0.0
-  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.0.0#./.yarn/patches/@metamask-message-manager-npm-3.0.0-6452b962f2.patch::version=3.0.0&hash=ff31af&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.0.0#./.yarn/patches/@metamask-message-manager-npm-3.0.0-6452b962f2.patch::version=3.0.0&hash=cc168d&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": ^2.0.0
     "@metamask/controller-utils": ^3.1.0
@@ -4050,7 +4050,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: ebfae2d06e3dceb8e70812d2ebd61235a5eae7f3e3bfd08394e4fa2be99fd4dae9da4dd23fe4f075e32e7304a0c3f20c90c7202cf516f3dba7286a97cc9aaedf
+  checksum: a1253fc7e4c88cecf83c7d492672ace19305afcd2ee166aed1be40ca0e855675236be70f88ddf29411417bea3053643784d108e84f5bf1ac5f27fc2dd8ede1f2
   languageName: node
   linkType: hard
 
