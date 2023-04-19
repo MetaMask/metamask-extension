@@ -152,7 +152,7 @@ export const AppHeader = ({ onClick }) => {
                   />
                 </>
               )}
-              {
+              {showProductTour &&
               popupStatus &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
