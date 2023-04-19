@@ -725,14 +725,11 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const { unapprovedDecryptMsgCount } = controller.decryptMessageController;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
-    return (
-      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
-    );
+    return pendingApprovalCount + waitingForUnlockCount;
   }
 
   notificationManager.on(

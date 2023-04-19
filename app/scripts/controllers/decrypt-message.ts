@@ -45,9 +45,7 @@ export type CoreMessage = AbstractMessage & {
 
 export type StateMessage = Required<
   Omit<AbstractMessage, 'securityProviderResponse'>
-> & {
-  messageParams: string;
-};
+>;
 
 export type DecryptMessageControllerState = {
   unapprovedDecryptMsgs: Record<string, StateMessage>;
@@ -134,7 +132,7 @@ export default class DecryptMessageController extends BaseControllerV2<
       undefined,
       undefined,
       undefined,
-      ['decrypted']
+      ['decrypted'],
     );
 
     this._decryptMessageManager.hub.on('updateBadge', () => {
@@ -221,8 +219,9 @@ export default class DecryptMessageController extends BaseControllerV2<
       this._decryptMessageManager.setMessageStatusAndResult(
         messageId,
         rawMessage,
-        'decrypted'
+        'decrypted',
       );
+      this._acceptApproval(messageId);
     } catch (error) {
       return this._cancelAbstractMessage(
         this._decryptMessageManager,
@@ -265,6 +264,7 @@ export default class DecryptMessageController extends BaseControllerV2<
    */
   cancelDecryptMessage(messageId: string) {
     this._decryptMessageManager.rejectMessage(messageId);
+    this._rejectApproval(messageId);
     return this._getState();
   }
 
@@ -283,6 +283,10 @@ export default class DecryptMessageController extends BaseControllerV2<
         );
       },
     );
+  }
+
+  private _acceptApproval(messageId: string) {
+    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
   }
 
   private _cancelAbstractMessage(
@@ -356,7 +360,7 @@ export default class DecryptMessageController extends BaseControllerV2<
     const stateMessage = {
       ...coreMessageData,
       rawSig: coreMessage.rawSig as string,
-      messageParams: messageParams.from,
+      msgParams: messageParams,
       origin: messageParams.origin,
     };
 

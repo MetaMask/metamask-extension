@@ -1,5 +1,5 @@
 import { DecryptMessageManager } from '@metamask/message-manager';
-import { AbstractMessage, OriginalRequest } from '@metamask/message-manager/dist/AbstractMessageManager';
+import { AbstractMessage } from '@metamask/message-manager/dist/AbstractMessageManager';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import DecryptMessageController, {
   DecryptMessageControllerMessenger,
@@ -173,13 +173,6 @@ describe('EncryptionPublicKeyController', () => {
     const messageToDecrypt = {
       ...messageMock,
       data: '0x7b22666f6f223a22626172227d',
-    };
-    const decryptedMessage = {
-      ...messageToDecrypt,
-      rawData: 'decryptedMessage',
-      data: {
-        foo: 'bar',
-      },
     };
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
     keyringControllerMock.decryptMessage.mockResolvedValue('decryptedMessage');
