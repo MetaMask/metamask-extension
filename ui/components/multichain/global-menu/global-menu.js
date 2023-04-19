@@ -126,7 +126,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
-              location: 'Main Menu',
+              location: 'Global Menu',
             },
           });
           closeMenu();
