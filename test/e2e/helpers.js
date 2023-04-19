@@ -105,7 +105,7 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    await setupMocking(mockServer, testSpecificMock);
+    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
@@ -143,10 +143,10 @@ async function withFixtures(options, testSuite) {
 
     await testSuite({
       driver: driverProxy ?? driver,
-      mockServer,
       contractRegistry,
       ganacheServer,
       secondaryGanacheServer,
+      mockedEndpoint,
     });
   } catch (error) {
     failed = true;
