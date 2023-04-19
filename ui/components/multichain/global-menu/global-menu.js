@@ -83,7 +83,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
-                location: 'Account Options',
+                location: 'Global Menu',
               },
             });
             closeMenu();
