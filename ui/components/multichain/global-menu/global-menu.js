@@ -59,6 +59,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.PortfolioLinkClicked,
               properties: {
                 url: portfolioUrl,
+                location: 'Global Menu',
               },
             },
             {
