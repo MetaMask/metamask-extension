@@ -541,6 +541,7 @@ export enum MetaMetricsEventName {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   UserClickedDeepLink = 'User clicked deeplink',
   ///: END:ONLY_INCLUDE_IN
+  AccountDetailMenuOpened = 'Account Details Menu Opened',
 }
 
 export enum MetaMetricsEventAccountType {
