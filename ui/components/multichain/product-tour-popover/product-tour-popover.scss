@@ -30,3 +30,14 @@
     top: -7px;
   }
 }
+
+.multichain-product-tour__button {
+  &:hover {
+    color: var(--color-primary-default);
+  }
+
+  &:active {
+    opacity: 0.5;
+    background-color: var(--color-primary-inverse);
+  }
+}
