@@ -81,8 +81,6 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [],
-  symbol: 'META',
-  image: 'metamark.svg',
 };
 
 export const WithDuplicateAddress = ({
