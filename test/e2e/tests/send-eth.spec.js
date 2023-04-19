@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
@@ -334,7 +334,15 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await priorityFeeInput.fill('1');
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.delay(tinyDelayMs);
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          text: '0.02367237 ETH',
+        });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          text: '0.02367237 ETH',
+        });
+
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
