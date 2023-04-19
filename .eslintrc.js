@@ -18,6 +18,7 @@ module.exports = {
     'storybook-build/**/*',
     'jest-coverage/**/*',
     'coverage/**/*',
+    'pending',
   ],
   overrides: [
     /**

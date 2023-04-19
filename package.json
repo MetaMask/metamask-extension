@@ -59,7 +59,7 @@
     "lint:eslint:fix": "yarn lint:eslint --fix",
     "lint:lockfile:dedupe": "yarn dedupe --check",
     "lint:lockfile:dedupe:fix": "yarn dedupe",
-    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname true --allowed-schemes \"https:\" \"git+https:\" \"npm:\" \"patch:\" \"workspace:\"",
+    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname true --allowed-schemes \"https:\" \"git+https:\" \"npm:\" \"patch:\" \"workspace:\" \"file:\"",
     "lint:shellcheck": "./development/shellcheck.sh",
     "lint:styles": "stylelint -- */**/*.scss",
     "lint:styles:fix": "yarn lint:styles --fix",
