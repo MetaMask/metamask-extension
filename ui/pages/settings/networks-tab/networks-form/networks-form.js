@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
@@ -23,12 +29,17 @@ import {
 } from '../../../../store/actions';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../../shared/constants/metametrics';
 import {
   infuraProjectId,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -95,6 +106,8 @@ const NetworksForm = ({
   );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
+
+  const trackEvent = useContext(MetaMetricsContext);
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -542,6 +555,18 @@ const NetworksForm = ({
             networkConfigurationId,
           }),
         );
+
+        trackEvent({
+          event: MetaMetricsEventName.CustomNetworkAdded,
+          category: MetaMetricsEventCategory.Network,
+          properties: {
+            block_explorer_url: blockExplorerUrl,
+            chain_id: prefixedChainId,
+            network_name: networkName,
+            source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+            symbol: ticker,
+          },
+        });
 
         submitCallback?.();
       }

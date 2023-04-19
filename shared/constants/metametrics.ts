@@ -543,6 +543,7 @@ export enum MetaMetricsEventName {
   AccountRemoved = 'Account Removed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  CustomNetworkAdded = 'Custom Network Added',
 }
 
 export enum MetaMetricsEventAccountType {
