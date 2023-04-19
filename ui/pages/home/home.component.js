@@ -88,7 +88,7 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    hasSuggestedAssetApprovalRequest: PropTypes.bool,
+    hasSuggestedAssetPendingApprovals: PropTypes.bool,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -169,7 +169,7 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       isNotification,
       showAwaitingSwapScreen,
-      hasSuggestedAssetApprovalRequest,
+      hasSuggestedAssetPendingApprovals,
       swapsFetchParams,
       unconfirmedTransactionsCount,
     } = this.props;
@@ -180,7 +180,7 @@ export default class Home extends PureComponent {
     } else if (
       firstPermissionsRequestId ||
       unconfirmedTransactionsCount > 0 ||
-      hasSuggestedAssetApprovalRequest ||
+      hasSuggestedAssetPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
@@ -193,7 +193,7 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId,
       history,
       isNotification,
-      hasSuggestedAssetApprovalRequest,
+      hasSuggestedAssetPendingApprovals,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
@@ -210,7 +210,7 @@ export default class Home extends PureComponent {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (hasSuggestedAssetApprovalRequest) {
+    } else if (hasSuggestedAssetPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
