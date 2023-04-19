@@ -78,6 +78,9 @@ export const AppHeader = ({ onClick }) => {
     origin !== browser.runtime.id;
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
+  const productTourDirection = document
+    .querySelector('[dir]')
+    ?.getAttribute('dir');
 
   return (
     <>
@@ -149,7 +152,7 @@ export const AppHeader = ({ onClick }) => {
                   />
                 </>
               )}
-              {showProductTour &&
+              {
               popupStatus &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
@@ -162,7 +165,8 @@ export const AppHeader = ({ onClick }) => {
                   onClick={() =>
                     setMultichainProductTourStep(multichainProductTourStep + 1)
                   }
-                  positionObj="88%"
+                  positionObj={productTourDirection === 'rtl' ? '0%' : '88%'}
+                  productTourDirection={productTourDirection}
                 />
               ) : null}
 
@@ -203,7 +207,8 @@ export const AppHeader = ({ onClick }) => {
                         multichainProductTourStep + 1,
                       )
                     }
-                    positionObj="12%"
+                    positionObj={productTourDirection === 'rtl' ? '74%' : '12%'}
+                    productTourDirection={productTourDirection}
                   />
                 ) : null}
                 <Box
@@ -251,7 +256,8 @@ export const AppHeader = ({ onClick }) => {
                   onClick={() => {
                     hideProductTour();
                   }}
-                  positionObj="0%"
+                  positionObj={productTourDirection === 'rtl' ? '89%' : '0%'}
+                  productTourDirection={productTourDirection}
                 />
               ) : null}
             </Box>

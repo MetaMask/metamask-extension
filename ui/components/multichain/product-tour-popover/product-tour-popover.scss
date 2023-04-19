@@ -4,6 +4,11 @@
   left: -7px !important;
   top: 10px !important; //important is required here since Menu has absolute position added via inline style in base component.
 
+  &--rtl {
+    left: 6px !important;
+    right: 6px !important;
+  }
+
   &__arrow,
   &__arrow::before {
     position: absolute;
