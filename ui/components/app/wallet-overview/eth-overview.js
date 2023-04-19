@@ -261,6 +261,7 @@ const EthOverview = ({ className }) => {
                   token_symbol: 'ETH',
                   location: 'Home',
                   text: 'Send',
+                  chain_id: chainId,
                 },
               });
               dispatch(

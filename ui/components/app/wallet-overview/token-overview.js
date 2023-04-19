@@ -159,6 +159,7 @@ const TokenOverview = ({ className, token }) => {
                   token_symbol: token.symbol,
                   location: MetaMetricsSwapsEventSource.TokenView,
                   text: 'Send',
+                  chain_id: chainId,
                 },
               });
               try {
