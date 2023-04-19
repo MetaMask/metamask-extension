@@ -3,8 +3,8 @@ import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { PopoverHeader } from './popover-header';
 
-describe('Popover', () => {
-  it('should render popover element correctly', () => {
+describe('PopoverHeader', () => {
+  it('should render PopoverHeader correctly', () => {
     const { getByTestId, container } = render(
       <PopoverHeader data-testid="popover-header">
         Popover Header
