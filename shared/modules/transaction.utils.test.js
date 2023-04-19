@@ -224,6 +224,7 @@ describe('Transaction.utils', function () {
         getCodeResponse: '0x',
       });
     });
+
     it('should return a token approve type when when the recipient is a contract and data is for the respective method call', async function () {
       const _providerResultStub = {
         // 1 gwei
