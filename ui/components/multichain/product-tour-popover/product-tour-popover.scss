@@ -29,9 +29,8 @@
     border-radius: 2px 0 0 0;
     top: -7px;
   }
-}
 
-.multichain-product-tour__button {
+  &__button {
   &:hover {
     color: var(--color-primary-default);
   }
@@ -40,4 +39,6 @@
     opacity: 0.5;
     background-color: var(--color-primary-inverse);
   }
+}
+
 }

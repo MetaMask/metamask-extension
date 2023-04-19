@@ -15,7 +15,13 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { Button, BUTTON_TYPES, ButtonIcon, IconName, Text } from '../../component-library';
+import {
+  Button,
+  BUTTON_TYPES,
+  ButtonIcon,
+  IconName,
+  Text,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
 
@@ -109,7 +115,7 @@ export const ProductTour = ({
                 backgroundColor={Color.primaryInverse}
                 type={BUTTON_TYPES.PRIMARY}
                 color={TextColor.primaryDefault}
-                className="multichain-product-tour__button"
+                className="multichain-product-tour-menu__button"
               >
                 {t('recoveryPhraseReminderConfirm')}
               </Button>
