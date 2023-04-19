@@ -39,9 +39,10 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   ButtonIcon,
-  BUTTON_ICON_SIZES,
-} from '../../component-library/button-icon/deprecated';
-import { Icon, IconName } from '../../component-library';
+  ButtonIconSize,
+  Icon,
+  IconName,
+} from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -101,9 +102,9 @@ const EthOverview = ({ className }) => {
                   className="eth-overview__portfolio-button"
                   data-testid="home__portfolio-site"
                   color={IconColor.primaryDefault}
-                  iconName={ICON_NAMES.DIAGRAM}
+                  iconName={IconName.Diagram}
                   ariaLabel={t('portfolio')}
-                  size={BUTTON_ICON_SIZES.LG}
+                  size={ButtonIconSize.Lg}
                   onClick={() => {
                     const portfolioUrl = process.env.PORTFOLIO_URL;
                     global.platform.openTab({
