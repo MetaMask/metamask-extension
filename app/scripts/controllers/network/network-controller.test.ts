@@ -8133,14 +8133,14 @@ describe('NetworkController', () => {
   });
 
   describe('removeNetworkConfigurations', () => {
-    it('should remove a network configuration', async () => {
-      const networkConfigurationId = 'networkConfigurationId';
+    it('removes a network configuration', async () => {
+      const networkConfigurationId = 'testNetworkConfigurationId';
       await withController(
         {
           state: {
             networkConfigurations: {
               [networkConfigurationId]: {
-                id: 'aaaaaa',
+                id: networkConfigurationId,
                 rpcUrl: 'https://test-rpc-url',
                 ticker: 'old_rpc_ticker',
                 nickname: 'old_rpc_chainName',
@@ -8151,22 +8151,41 @@ describe('NetworkController', () => {
           },
         },
         async ({ controller }) => {
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual([
-            {
-              id: 'aaaaaa',
-              rpcUrl: 'https://test-rpc-url',
-              ticker: 'old_rpc_ticker',
-              nickname: 'old_rpc_chainName',
-              rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-              chainId: '0x1',
-            },
-          ]);
           controller.removeNetworkConfiguration(networkConfigurationId);
+
           expect(
             controller.store.getState().networkConfigurations,
           ).toStrictEqual({});
+        },
+      );
+    });
+
+    it('throws if the networkConfigurationId it is passed does not correspond to a network configuration in state', async () => {
+      const testNetworkConfigurationId = 'testNetworkConfigurationId';
+      const invalidNetworkConfigurationId = 'invalidNetworkConfigurationId';
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              [testNetworkConfigurationId]: {
+                rpcUrl: 'https://rpc-url.com',
+                ticker: 'old_rpc_ticker',
+                nickname: 'old_rpc_nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: '0x1',
+                id: testNetworkConfigurationId,
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          expect(() =>
+            controller.removeNetworkConfiguration(
+              invalidNetworkConfigurationId,
+            ),
+          ).toThrow(
+            `networkConfigurationId ${invalidNetworkConfigurationId} does not match a configured networkConfiguration`,
+          );
         },
       );
     });

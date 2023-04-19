@@ -72,6 +72,7 @@ const scuttlingConfigBase = {
     Date: '',
     JSON: '',
     encodeURIComponent: '',
+    console: '',
     crypto: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
