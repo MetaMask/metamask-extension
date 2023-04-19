@@ -544,6 +544,7 @@ export enum MetaMetricsEventName {
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
+  TestNetworksDisplayed = 'Test Networks Displayed',
 }
 
 export enum MetaMetricsEventAccountType {

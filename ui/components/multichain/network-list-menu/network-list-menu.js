@@ -108,7 +108,16 @@ export const NetworkListMenu = ({ onClose }) => {
           <Text>{t('showTestnetNetworks')}</Text>
           <ToggleButton
             value={showTestNetworks}
-            onToggle={(value) => dispatch(setShowTestNetworks(!value))}
+            onToggle={(value) => {
+              const shouldShowTestNetworks = !value;
+              dispatch(setShowTestNetworks(shouldShowTestNetworks));
+              if (shouldShowTestNetworks) {
+                trackEvent({
+                  event: MetaMetricsEventName.TestNetworksDisplayed,
+                  category: MetaMetricsEventCategory.Network,
+                });
+              }
+            }}
           />
         </Box>
         <Box padding={4}>
