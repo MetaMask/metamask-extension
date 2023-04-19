@@ -14,7 +14,7 @@ import {
   Size,
   TextColor,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { Button, BUTTON_TYPES, ButtonIcon, IconName, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
