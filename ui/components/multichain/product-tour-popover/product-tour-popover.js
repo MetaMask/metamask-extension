@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
 import {
   AlignItems,
-  BackgroundColor,
   BLOCK_SIZES,
   BorderRadius,
   Color,
