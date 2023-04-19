@@ -20,6 +20,11 @@ import {
 } from '../../../helpers/constants/routes';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -218,6 +223,8 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
+  const trackEvent = useContext(MetaMetricsContext);
+
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
     idRefMap[notifications[notifications.length - 1].id].current.scrollIntoView(
@@ -267,6 +274,15 @@ export default function WhatsNewPopup({ onClose }) {
       className="whats-new-popup__popover"
       onClose={() => {
         updateViewedNotifications(seenNotifications);
+        trackEvent({
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.WhatsNewViewed,
+          properties: {
+            number_viewed: Object.keys(seenNotifications).pop(),
+            completed_all: true,
+            clicked_link: true, // TODO: What does this represent?
+          },
+        });
         onClose();
       }}
       popoverRef={popoverRef}

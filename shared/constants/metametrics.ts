@@ -551,6 +551,7 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
+  WhatsNewViewed = `What's New Viewed`,
 }
 
 export enum MetaMetricsEventAccountType {
