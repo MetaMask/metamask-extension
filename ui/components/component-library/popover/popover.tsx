@@ -1,22 +1,17 @@
 import React, { useState, forwardRef, useImperativeHandle, Ref } from 'react';
 import { createPortal } from 'react-dom';
-import { usePopper, Placement } from 'react-popper';
+import { usePopper } from 'react-popper';
 import classnames from 'classnames';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderColor,
   BorderRadius,
-  Color,
   DISPLAY,
   JustifyContent,
-  Size,
-  TextVariant,
-  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ButtonIcon, IconName, Text } from '..';
 import { PopoverPosition, PopoverProps } from '.';
-
-type PopoverPosition = Placement;
 
 interface PopoverRef {
   closePopover: () => void;
@@ -26,7 +21,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
   (
     {
       children,
-      className,
+      className = '',
       position = PopoverPosition.Auto,
       hasArrow = false,
       matchWidth,
@@ -37,10 +32,6 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       referenceElement,
       isOpen,
       title,
-      onClose,
-      closeButtonProps,
-      onBack,
-      backButtonProps,
       isPortal = false,
       ...props
     }: PopoverProps,
@@ -94,15 +85,15 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
 
     const PopoverContent = (
       <Box
-        borderColor={Color.borderDefault}
+        borderColor={BorderColor.borderDefault}
         borderRadius={BorderRadius.XL}
-        backgroundColor={Color.backgroundDefault}
+        backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         className={classnames(
           'mm-popover',
           {
-            'mm-popover--open': isOpen,
-            'mm-popover--reference-hidden': referenceHidden,
+            'mm-popover--open': Boolean(isOpen),
+            'mm-popover--reference-hidden': Boolean(referenceHidden),
           },
           className,
         )}
@@ -111,47 +102,10 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
         {...props}
         style={{ ...styles.popper, ...contentStyle, ...props.style }}
       >
-        {/* TODO: Replace with HeaderBase  Start */}
-        <Box
-          className="mm-popover__header"
-          paddingLeft={onBack || onClose ? 8 : 0}
-          paddingRight={onBack || onClose ? 8 : 0}
-        >
-          {onBack && (
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              className="mm-popover__header-button-back"
-              size={Size.SM}
-              ariaLabel="back"
-              onClick={onBack}
-              {...backButtonProps}
-            />
-          )}
-
-          <Text
-            variant={TextVariant.headingSm}
-            className="mm-popover__header-title"
-            textAlign={TEXT_ALIGN.CENTER}
-          >
-            {title}
-          </Text>
-
-          {onClose && (
-            <ButtonIcon
-              iconName={IconName.Close}
-              className="mm-popover__header-button-close"
-              size={Size.SM}
-              ariaLabel="close"
-              onClick={onClose}
-              {...closeButtonProps}
-            />
-          )}
-        </Box>
-        {/* TODO: Replace with HeaderBase END */}
         {children}
         {hasArrow && (
           <Box
-            borderColor={Color.borderDefault}
+            borderColor={BorderColor.borderDefault}
             className={classnames('mm-popover__arrow')}
             ref={setArrowElement}
             display={DISPLAY.FLEX}

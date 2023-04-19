@@ -1,5 +1,22 @@
 import type { BoxProps } from '../../ui/box/box.d';
-import { Text } from '..';
+
+export enum PopoverPosition {
+  Auto = 'auto',
+  AutoStart = 'auto-start',
+  AutoEnd = 'auto-end',
+  Top = 'top',
+  TopStart = 'top-start',
+  TopEnd = 'top-end',
+  Right = 'right',
+  RightStart = 'right-start',
+  RightEnd = 'right-end',
+  Bottom = 'bottom',
+  BottomStart = 'bottom-start',
+  BottomEnd = 'bottom-end',
+  Left = 'left',
+  LeftStart = 'left-start',
+  LeftEnd = 'left-end',
+}
 
 export interface PopoverProps extends BoxProps {
   /**
@@ -50,36 +67,11 @@ export interface PopoverProps extends BoxProps {
    */
   isOpen?: boolean;
   /**
-   * Popover title
+   * Offset to be applied to the Popover horizontal and vertical offsets in pixels
+   * Requires an array of two numbers
+   * default: [0, 8]
    */
-  title?: string;
-  /**
-   * Popover title props to be passed to the Text component
-   */
-  titleProps?: Text.propTypes;
-  /**
-   * The onClick handler for the close `ButtonIcon`
-   * When passed this will allow for the close `ButtonIcon` to show
-   */
-  onClose?: func;
-  /**
-   * The onClick handler for the close `ButtonIcon`
-   * When passed this will allow for the close `ButtonIcon` to show
-   */
-  offset?: array;
-  /**
-   * The props to pass to the close `ButtonIcon`
-   */
-  closeButtonProps?: ButtonIconProps;
-  /**
-   * The onClick handler for the back `ButtonIcon`
-   * When passed this will allow for the back `ButtonIcon` to show
-   */
-  onBack?: func;
-  /**
-   * The props to pass to the back `ButtonIcon`
-   */
-  backButtonProps?: ButtonIconProps;
+  offset?: [number, number];
   /**
    * Boolean to allow the Popover to be rendered in a createPortal
    */
