@@ -1,8 +1,6 @@
 import { inspect, isDeepStrictEqual } from 'util';
 import {
   JsonRpcEngine,
-  JsonRpcSuccess,
-  JsonRpcFailure,
   JsonRpcRequest,
   JsonRpcResponse,
 } from 'json-rpc-engine';
@@ -36,22 +34,22 @@ const originalSetTimeout = global.setTimeout;
  * @property discardAfterMatching - Usually after the stub matches a request, it
  * is discarded, but setting this to true prevents that from happening. True by
  * default.
+ * @property beforeCompleting - Sometimes it is useful to do something after the
+ * request is kicked off but before it ends (or, in terms of a `fetch` promise,
+ * when the promise is initiated but before it is resolved). You can pass an
+ * (async) function for this option to do this.
  */
-export type FakeProviderStub<Params, Response> = {
+export type FakeProviderStub = {
   request: {
     method: string;
-    params?: Params[];
+    params?: any[];
   };
   delay?: number;
   discardAfterMatching?: boolean;
   beforeCompleting?: () => void | Promise<void>;
 } & (
   | {
-      response:
-        | (Omit<JsonRpcSuccess<Response>, 'id' | 'jsonrpc' | 'result'> & {
-            result: Response;
-          })
-        | (Omit<JsonRpcFailure, 'id' | 'jsonrpc'> & { error: string });
+      response: { result: any } | { error: string };
     }
   | {
       error: unknown;
@@ -68,7 +66,7 @@ export type FakeProviderStub<Params, Response> = {
  * of specific invocations of `sendAsync` matching a `method`.
  */
 interface FakeProviderEngineOptions {
-  stubs?: FakeProviderStub<any, any>[];
+  stubs?: FakeProviderStub[];
 }
 
 /**
@@ -83,11 +81,11 @@ interface FakeProviderEngineOptions {
 // we'd need a `SafeEventEmitterProvider` _interface_ and that doesn't exist (at
 // least not yet).
 export class FakeProvider extends SafeEventEmitterProvider {
-  calledStubs: FakeProviderStub<any, any>[];
+  calledStubs: FakeProviderStub[];
 
-  #originalStubs: FakeProviderStub<any, any>[];
+  #originalStubs: FakeProviderStub[];
 
-  #stubs: FakeProviderStub<any, any>[];
+  #stubs: FakeProviderStub[];
 
   /**
    * Makes a new instance of the fake provider.
@@ -103,23 +101,23 @@ export class FakeProvider extends SafeEventEmitterProvider {
     this.calledStubs = [];
   }
 
-  send = <Params, Response>(
-    payload: JsonRpcRequest<Params>,
-    callback: (error: unknown, response?: JsonRpcResponse<Response>) => void,
+  send = (
+    payload: JsonRpcRequest<any>,
+    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) => {
     return this.#handleSend(payload, callback);
   };
 
-  sendAsync = <Params, Response>(
-    payload: JsonRpcRequest<Params>,
-    callback: (error: unknown, response?: JsonRpcResponse<Response>) => void,
+  sendAsync = (
+    payload: JsonRpcRequest<any>,
+    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) => {
     return this.#handleSend(payload, callback);
   };
 
-  #handleSend<Params, Response>(
-    payload: JsonRpcRequest<Params>,
-    callback?: (error: unknown, response?: JsonRpcResponse<Response>) => void,
+  #handleSend(
+    payload: JsonRpcRequest<any>,
+    callback?: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) {
     if (Array.isArray(payload)) {
       throw new Error("Arrays aren't supported");
@@ -179,9 +177,9 @@ export class FakeProvider extends SafeEventEmitterProvider {
     }
   }
 
-  #handleRequest<Params, Response>(
-    stub: FakeProviderStub<Params, Response>,
-    callback: (error: unknown, response?: JsonRpcResponse<Response>) => void,
+  #handleRequest(
+    stub: FakeProviderStub,
+    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) {
     const promiseForBeforeCompleting =
       stub.beforeCompleting === undefined

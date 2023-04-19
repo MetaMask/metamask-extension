@@ -8295,7 +8295,7 @@ function buildFakeClient(
  * responses.
  * @returns The object.
  */
-function buildFakeProvider(stubs: FakeProviderStub<any, any>[] = []) {
+function buildFakeProvider(stubs: FakeProviderStub[] = []) {
   const completeStubs = stubs.slice();
   if (!stubs.some((stub) => stub.request.method === 'eth_getBlockByNumber')) {
     completeStubs.unshift({
