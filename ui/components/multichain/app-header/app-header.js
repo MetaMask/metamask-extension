@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,6 +30,7 @@ import {
 } from '../../component-library';
 
 import {
+  getCurrentChainId,
   getCurrentNetwork,
   getOriginOfCurrentTab,
   getSelectedIdentity,
@@ -50,6 +51,7 @@ export const AppHeader = ({ onClick }) => {
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+  const chainId = useSelector(getCurrentChainId);
 
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
@@ -58,12 +60,25 @@ export const AppHeader = ({ onClick }) => {
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
 
-  // used to get the environment and connection status
+  // Used to get the environment and connection status
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
     origin !== browser.runtime.id;
+
+  // Callback for network dropdown
+  const networkOpenCallback = useCallback(() => {
+    dispatch(toggleNetworkMenu());
+    trackEvent({
+      event: MetaMetricsEventName.NavNetworkMenuOpened,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'App header',
+        chain_id: chainId,
+      },
+    });
+  }, [chainId, dispatch, trackEvent]);
 
   return (
     <>
@@ -121,14 +136,14 @@ export const AppHeader = ({ onClick }) => {
                     name={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
                     size={Size.SM}
-                    onClick={() => dispatch(toggleNetworkMenu())}
+                    onClick={networkOpenCallback}
                   />
                 </Button>
               ) : (
                 <PickerNetwork
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
-                  onClick={() => dispatch(toggleNetworkMenu())}
+                  onClick={networkOpenCallback}
                 />
               )}
 
