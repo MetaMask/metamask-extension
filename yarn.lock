@@ -4270,6 +4270,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/signature-controller@file:pending/signature-controller::locator=metamask-crx%40workspace%3A.":
+  version: 1.0.0
+  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=bf0ef9&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/approval-controller": ^2.1.0
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.1.0
+    "@metamask/message-manager": ^3.0.0
+    eth-rpc-errors: ^4.0.0
+    ethereumjs-util: ^7.0.10
+    immer: ^9.0.6
+  checksum: 5f4b3ebd42b467e49fea8466a441bd5bc579fdb76cecb644f8926c330f8a74f3bb20eb3409ff8481d651c53ff8c84cb92db029695253f19ee9e6cbb8ccb93415
+  languageName: node
+  linkType: hard
+
 "@metamask/slip44@npm:^2.1.0":
   version: 2.1.0
   resolution: "@metamask/slip44@npm:2.1.0"
@@ -24197,6 +24212,7 @@ __metadata:
     "@metamask/rpc-methods": ^0.32.2
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/scure-bip39": ^2.0.3
+    "@metamask/signature-controller": "file:pending/signature-controller"
     "@metamask/slip44": ^2.1.0
     "@metamask/smart-transactions-controller": ^3.1.0
     "@metamask/snaps-controllers": ^0.32.2

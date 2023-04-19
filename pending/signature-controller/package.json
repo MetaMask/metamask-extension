@@ -1,0 +1,48 @@
+{
+  "name": "@metamask/signature-controller",
+  "version": "1.0.0",
+  "description": "Processes signing requests in order to sign arbitrary and typed data",
+  "keywords": [
+    "MetaMask",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/core/tree/main/packages/signature-controller#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/core/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/core.git"
+  },
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build:docs": "typedoc",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/signature-controller",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@metamask/approval-controller": "^2.1.0",
+    "@metamask/base-controller": "^2.0.0",
+    "@metamask/controller-utils": "^3.1.0",
+    "@metamask/message-manager": "^3.0.0",
+    "eth-rpc-errors": "^4.0.0",
+    "ethereumjs-util": "^7.0.10",
+    "immer": "^9.0.6"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "yalcSig": "43b3242689a3044e626bafd376bf4115"
+}

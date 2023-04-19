@@ -65,3 +65,6 @@ test-results/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Temporary
+!pending/signature-controller/dist
