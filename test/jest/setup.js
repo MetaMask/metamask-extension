@@ -3,8 +3,6 @@
 import nock from 'nock';
 import '@testing-library/jest-dom';
 
-process.env.SUPPORT_LINK = 'https://support.metamask.io';
-
 jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
