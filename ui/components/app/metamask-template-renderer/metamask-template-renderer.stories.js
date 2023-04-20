@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   TextColor,
@@ -98,5 +97,5 @@ export const DefaultStory = (args) => (
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  sections: SECTIONS
+  sections: SECTIONS,
 };
