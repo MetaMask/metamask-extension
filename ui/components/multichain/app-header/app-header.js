@@ -23,7 +23,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
-  Button,
   ButtonIcon,
   IconName,
   PickerNetwork,
@@ -86,7 +85,7 @@ export const AppHeader = ({ onClick }) => {
     <>
       {isUnlocked && !popupStatus ? (
         <Box
-          display={DISPLAY.FLEX}
+          display={[DISPLAY.NONE, DISPLAY.FLEX]}
           alignItems={AlignItems.center}
           margin={2}
           className="multichain-app-header-logo"
@@ -129,29 +128,24 @@ export const AppHeader = ({ onClick }) => {
               padding={2}
               gap={2}
             >
-              {popupStatus ? (
-                <Box ref={menuRef}>
-                  <Button
-                    className="multichain-app-header__contents--avatar-network"
-                    justifyContent={JustifyContent.flexStart}
-                  >
-                    <AvatarNetwork
-                      name={currentNetwork?.nickname}
-                      src={currentNetwork?.rpcPrefs?.imageUrl}
-                      size={Size.SM}
-                      onClick={() => dispatch(toggleNetworkMenu())}
-                    />
-                  </Button>
-                </Box>
-              ) : (
-                <>
-                  <PickerNetwork
-                    label={currentNetwork?.nickname}
-                    src={currentNetwork?.rpcPrefs?.imageUrl}
-                    onClick={() => dispatch(toggleNetworkMenu())}
-                  />
-                </>
-              )}
+              <AvatarNetwork
+                className="multichain-app-header__contents--avatar-network"
+                ref={menuRef}
+                as="button"
+                aria-label="Network Menu" // TODO: needs locale
+                padding={0}
+                name={currentNetwork?.nickname}
+                src={currentNetwork?.rpcPrefs?.imageUrl}
+                size={Size.SM}
+                onClick={() => dispatch(toggleNetworkMenu())}
+                display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
+              />
+              <PickerNetwork
+                label={currentNetwork?.nickname}
+                src={currentNetwork?.rpcPrefs?.imageUrl}
+                onClick={() => dispatch(toggleNetworkMenu())}
+                display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+              />
               {showProductTour &&
               popupStatus &&
               multichainProductTourStep === 1 ? (

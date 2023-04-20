@@ -24,7 +24,13 @@ export default {
       control: 'text',
     },
     onClick: {
-      control: 'onClick',
+      action: 'onClick',
+    },
+    onHide: {
+      action: 'onHide',
+    },
+    closeMenu: {
+      action: 'closeMenu',
     },
   },
   args: {

@@ -19,44 +19,51 @@ import { Text } from '../text';
 
 import { AVATAR_BASE_SIZES } from './avatar-base.constants';
 
-export const AvatarBase = ({
-  size = AVATAR_BASE_SIZES.MD,
-  children,
-  backgroundColor = BackgroundColor.backgroundAlternative,
-  borderColor = BorderColor.borderDefault,
-  color = TextColor.textDefault,
-  className,
-  ...props
-}) => {
-  let fallbackTextVariant;
+export const AvatarBase = React.forwardRef(
+  (
+    {
+      size = AVATAR_BASE_SIZES.MD,
+      children,
+      backgroundColor = BackgroundColor.backgroundAlternative,
+      borderColor = BorderColor.borderDefault,
+      color = TextColor.textDefault,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
+    let fallbackTextVariant;
 
-  if (size === AVATAR_BASE_SIZES.LG || size === AVATAR_BASE_SIZES.XL) {
-    fallbackTextVariant = TextVariant.bodyLgMedium;
-  } else if (size === AVATAR_BASE_SIZES.SM || size === AVATAR_BASE_SIZES.MD) {
-    fallbackTextVariant = TextVariant.bodySm;
-  } else {
-    fallbackTextVariant = TextVariant.bodyXs;
-  }
-  return (
-    <Text
-      className={classnames(
-        'mm-avatar-base',
-        `mm-avatar-base--size-${size}`,
-        className,
-      )}
-      as="div"
-      display={DISPLAY.FLEX}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.full}
-      variant={fallbackTextVariant}
-      textTransform={TEXT_TRANSFORM.UPPERCASE}
-      {...{ backgroundColor, borderColor, color, ...props }}
-    >
-      {children}
-    </Text>
-  );
-};
+    if (size === AVATAR_BASE_SIZES.LG || size === AVATAR_BASE_SIZES.XL) {
+      fallbackTextVariant = TextVariant.bodyLgMedium;
+    } else if (size === AVATAR_BASE_SIZES.SM || size === AVATAR_BASE_SIZES.MD) {
+      fallbackTextVariant = TextVariant.bodySm;
+    } else {
+      fallbackTextVariant = TextVariant.bodyXs;
+    }
+    return (
+      <Text
+        className={classnames(
+          'mm-avatar-base',
+          `mm-avatar-base--size-${size}`,
+          className,
+        )}
+        ref={ref}
+        as="div"
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        borderRadius={BorderRadius.full}
+        variant={fallbackTextVariant}
+        textTransform={TEXT_TRANSFORM.UPPERCASE}
+        {...{ backgroundColor, borderColor, color, ...props }}
+      >
+        {children}
+      </Text>
+    );
+  },
+);
+
 AvatarBase.propTypes = {
   /**
    * The size of the AvatarBase.
@@ -95,3 +102,5 @@ AvatarBase.propTypes = {
    */
   ...Text.propTypes,
 };
+
+AvatarBase.displayName = 'AvatarBase';

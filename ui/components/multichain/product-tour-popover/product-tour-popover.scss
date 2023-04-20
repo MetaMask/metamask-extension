@@ -34,6 +34,16 @@
     top: -7px;
   }
 
+  &__header {
+    position: relative;
+  }
+
+  &__previous-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
   &__button {
     &:hover {
       color: var(--color-primary-default);

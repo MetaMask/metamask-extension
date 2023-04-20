@@ -6,7 +6,7 @@ import {
   AlignItems,
   BLOCK_SIZES,
   BorderRadius,
-  Color,
+  BackgroundColor,
   DISPLAY,
   IconColor,
   JustifyContent,
@@ -16,8 +16,7 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
-  Button,
-  BUTTON_TYPES,
+  ButtonBase,
   ButtonIcon,
   IconName,
   Text,
@@ -51,78 +50,75 @@ export const ProductTour = ({
       anchorElement={anchorElement}
       onHide={closeMenu}
       data-testid="multichain-product-tour-menu-popover"
+      {...props}
     >
       <Box
         className="multichain-product-tour-menu__container"
-        backgroundColor={Color.infoDefault}
+        backgroundColor={BackgroundColor.infoDefault}
         borderRadius={BorderRadius.LG}
         padding={4}
-        {...props}
       >
         <Box
-          borderColor={Color.borderDefault}
+          borderWidth={1}
           className="multichain-product-tour-menu__arrow"
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
           style={{ right: positionObj }}
         />
-        <Box>
-          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-            {prevIcon ? (
-              <ButtonIcon
-                iconName={IconName.ArrowLeft}
-                size={Size.SM}
-                color={IconColor.infoInverse}
-                onClick={prevClick}
-                data-testid="multichain-product-tour-menu-popover-prevIcon"
-              />
-            ) : null}
-            <Text
-              textAlign={TextAlign.Center}
-              variant={TextVariant.headingSm}
-              width={BLOCK_SIZES.FULL}
-              color={TextColor.infoInverse}
-            >
-              {title}
-            </Text>
-          </Box>
-
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          className="multichain-product-tour-menu__header"
+        >
+          {prevIcon ? (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              size={Size.SM}
+              color={IconColor.infoInverse}
+              onClick={prevClick}
+              className="multichain-product-tour-menu__previous-icon"
+              data-testid="multichain-product-tour-menu-popover-prevIcon"
+            />
+          ) : null}
+          <Text
+            textAlign={TextAlign.Center}
+            variant={TextVariant.headingSm}
+            width={BLOCK_SIZES.FULL}
+            color={TextColor.infoInverse}
+          >
+            {title}
+          </Text>
+        </Box>
+        <Text
+          paddingBottom={2}
+          paddingTop={2}
+          color={TextColor.infoInverse}
+          variant={TextVariant.bodyMd}
+        >
+          {description}
+        </Text>
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+        >
           <Text
             paddingBottom={2}
             paddingTop={2}
             color={TextColor.infoInverse}
             variant={TextVariant.bodyMd}
           >
-            {description}
+            {currentStep}/{totalSteps}
           </Text>
-          <Box
-            display={DISPLAY.FLEX}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
+          <ButtonBase
+            backgroundColor={BackgroundColor.primaryInverse}
+            color={TextColor.primaryDefault}
+            className="multichain-product-tour-menu__button"
+            onClick={onClick}
           >
-            <Box>
-              {' '}
-              <Text
-                paddingBottom={2}
-                paddingTop={2}
-                color={TextColor.infoInverse}
-                variant={TextVariant.bodyMd}
-              >
-                {currentStep}/{totalSteps}
-              </Text>
-            </Box>
-            <Box onClick={onClick}>
-              <Button
-                backgroundColor={Color.primaryInverse}
-                type={BUTTON_TYPES.PRIMARY}
-                color={TextColor.primaryDefault}
-                className="multichain-product-tour-menu__button"
-              >
-                {t('recoveryPhraseReminderConfirm')}
-              </Button>
-            </Box>
-          </Box>
+            {t('recoveryPhraseReminderConfirm')}
+          </ButtonBase>
         </Box>
       </Box>
     </Menu>
