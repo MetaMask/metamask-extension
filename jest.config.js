@@ -17,7 +17,7 @@ module.exports = {
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: ['json'],
+  coverageReporters: ['html', 'json'],
   reporters: [
     'default',
     [
