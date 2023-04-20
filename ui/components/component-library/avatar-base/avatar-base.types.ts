@@ -3,7 +3,7 @@ import {
   BorderColor,
   IconColor,
   TextColor,
-} from "../../../helpers/constants/design-system";
+} from '../../../helpers/constants/design-system';
 
 export enum AvatarBaseSize {
   Xs = 'xs',
