@@ -4,7 +4,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -17,6 +20,11 @@ const mockHistoryPush = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setFirstTimeFlowType: jest.fn().mockReturnValue(
+    jest.fn((type) => {
+      return type;
+    }),
+  ),
+  setTermsOfUseLastAgreed: jest.fn().mockReturnValue(
     jest.fn((type) => {
       return type;
     }),
@@ -81,19 +89,24 @@ describe('Onboarding Welcome Component', () => {
 
     it('should set first time flow to create and route to metametrics', () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
-
+      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
+      fireEvent.click(termsCheckbox);
       const createWallet = screen.getByTestId('onboarding-create-wallet');
       fireEvent.click(createWallet);
 
+      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
       expect(setFirstTimeFlowType).toHaveBeenCalledWith('create');
     });
 
     it('should set first time flow to import and route to metametrics', () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
+      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
+      fireEvent.click(termsCheckbox);
 
       const createWallet = screen.getByTestId('onboarding-import-wallet');
       fireEvent.click(createWallet);
 
+      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
       expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
       expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
     });

@@ -9,7 +9,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { IconName } from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -31,7 +31,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
       <MenuItem
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
         onClick={() => {
           history.push(CONNECTED_ROUTE);
           trackEvent({
@@ -47,7 +47,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('connectedSites')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.DIAGRAM}
+        iconName={IconName.Diagram}
         onClick={() => {
           const portfolioUrl = process.env.PORTFOLIO_URL;
           global.platform.openTab({
@@ -75,7 +75,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
           onClick={() => {
             global.platform.openExtensionInBrowser();
             trackEvent({
@@ -93,7 +93,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         </MenuItem>
       )}
       <MenuItem
-        iconName={ICON_NAMES.MESSAGE_QUESTION}
+        iconName={IconName.MessageQuestion}
         onClick={() => {
           global.platform.openTab({ url: SUPPORT_LINK });
           trackEvent(
@@ -117,7 +117,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('support')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.SETTING}
+        iconName={IconName.Setting}
         onClick={() => {
           history.push(SETTINGS_ROUTE);
           trackEvent({
@@ -133,7 +133,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('settings')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.LOCK}
+        iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);
