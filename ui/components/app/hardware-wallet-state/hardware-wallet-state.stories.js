@@ -40,26 +40,10 @@ export default {
   },
 };
 
-export const LockedStory = (args) => (
+export const DefaultStory = (args) => (
   <Provider
     store={customStore({ hardwareWalletState: HardwareWalletStates.locked })}
   >
-    <HardwareWalletState {...args} />
-  </Provider>
-);
-LockedStory.storyName = 'Locked';
-
-export const UnlockedStory = (args) => (
-  <Provider
-    store={customStore({ hardwareWalletState: HardwareWalletStates.unlocked })}
-  >
-    <HardwareWalletState {...args} />
-  </Provider>
-);
-UnlockedStory.storyName = 'Unlocked';
-
-export const DefaultStory = (args) => (
-  <Provider store={customStore({})}>
     <HardwareWalletState {...args} />
   </Provider>
 );
