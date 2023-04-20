@@ -54,7 +54,6 @@ const ExportPrivateKeyModal = ({
   const [privateKey, setPrivateKey] = useState(null);
   const [showWarning, setShowWarning] = useState(true);
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
-
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
@@ -219,7 +218,9 @@ const ExportPrivateKeyModal = ({
     );
   };
 
-  const renderPrivateKey = (selectedIdentity) => {
+  const { name, address } = selectedIdentity;
+
+  const renderPrivateKey = () => {
     return (
       <>
         <Text
@@ -281,8 +282,6 @@ const ExportPrivateKeyModal = ({
       </>
     );
   };
-
-  const { name, address } = selectedIdentity;
 
   return (
     <AccountModalContainer

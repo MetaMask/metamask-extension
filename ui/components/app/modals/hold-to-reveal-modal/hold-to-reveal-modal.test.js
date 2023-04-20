@@ -10,7 +10,7 @@ import {
   holdToRevealContent3,
   holdToRevealContent4,
   holdToRevealContent5,
-  holdToRevealTitle,
+  holdToRevealSRPTitle,
 } from '../../../../../app/_locales/en/messages.json';
 import HoldToRevealModal from '.';
 
@@ -33,6 +33,7 @@ describe('Hold to Reveal Modal', () => {
       <HoldToRevealModal
         onLongPressed={onLongPressStub}
         hideModal={mockHideModalStub}
+        holdToRevealType="SRP"
       />,
       mockStore,
     );
@@ -40,7 +41,7 @@ describe('Hold to Reveal Modal', () => {
     const holdButton = getByText('Hold to reveal SRP');
     expect(holdButton).toBeInTheDocument();
 
-    const warningTitle = getByText(holdToRevealTitle.message);
+    const warningTitle = getByText(holdToRevealSRPTitle.message);
     expect(warningTitle).toBeInTheDocument();
     const warningText1 = getByText(
       holdToRevealContent1.message.replace(' $1', ''),
