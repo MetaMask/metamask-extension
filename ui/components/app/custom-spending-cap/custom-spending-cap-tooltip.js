@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box';
-import Typography from '../../ui/typography';
 import Tooltip from '../../ui/tooltip';
 import {
   TextColor,
   DISPLAY,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-<<<<<<< Updated upstream
-import { Icon, IconName, IconSize } from '../../component-library';
-=======
-import { Icon } from '../../component-library/icon/deprecated';
-import { IconName, IconSize, Text } from '../../component-library';
->>>>>>> Stashed changes
+
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
@@ -24,14 +19,15 @@ export const CustomSpendingCapTooltip = ({
       interactive
       position="top"
       html={
-        <Typography
-          variant={TypographyVariant.H7}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           margin={3}
           color={TextColor.textAlternative}
           className="form-field__heading-title__tooltip"
         >
           {tooltipContentText}
-        </Typography>
+        </Text>
       }
     >
       {tooltipIcon ? (
