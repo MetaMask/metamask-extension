@@ -44,7 +44,9 @@ export const ProductTour = ({
     <Menu
       className={classnames(
         'multichain-product-tour-menu',
-        productTourDirection === 'rtl' && 'multichain-product-tour-menu--rtl',
+        {
+          'multichain-product-tour-menu--rtl': productTourDirection === 'rtl',
+        },
         className,
       )}
       anchorElement={anchorElement}
