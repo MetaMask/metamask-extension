@@ -4287,16 +4287,16 @@ __metadata:
 
 "@metamask/signature-controller@file:pending/signature-controller::locator=metamask-crx%40workspace%3A.":
   version: 1.0.0
-  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=8df7f9&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=a669ea&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^2.1.0
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
+    "@metamask/controller-utils": ^3.2.0
     "@metamask/message-manager": ^3.1.0
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: 14beecb2fcccef9100f1fe03eca50bdae13b0149e35d46f523ca073ba6d8e4cfe127ba9c11fc477b4254fb092e9ef82e2b8c0eaf55d207fd4e29efc52d442d77
+  checksum: 269dc2e780f75456f49de8d60341967e8e38b4a927fecb69779bb452163d04e97f05573f56ca55fe0c873896a11a54a706db85651415ef1d2fbdec52a4fc20c5
   languageName: node
   linkType: hard
 
