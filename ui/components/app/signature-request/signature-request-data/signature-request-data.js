@@ -59,7 +59,8 @@ function SignatureRequestData({ data }) {
                 mixedCaseUseChecksum: true,
               }) ? (
                 <Text
-                  variant={TextVariant.bodySm} as="h6"
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.infoDefault}
                   className="signature-request-data__node__value__address"
                 >
