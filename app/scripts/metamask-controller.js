@@ -1346,10 +1346,20 @@ export default class MetamaskController extends EventEmitter {
       ApprovalController: this.approvalController,
     };
 
+    // This is a vault controller that has encrypted state
+    this.vault = new Vault({
+      KeyringController: this.keyringController.store,
+    });
+
+    // This is the persisted state
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
-      KeyringController: this.keyringController.store,
+      // This used to include the encrypted vault. Instead lets make it
+      // unencrypted, but remove it from the persisted state, replacing
+      // it with the vault.
+      // KeyringController: this.keyringController.store,
+      Vault: this.vault,
       PreferencesController: this.preferencesController.store,
       MetaMetricsController: this.metaMetricsController.store,
       AddressBookController: this.addressBookController,
