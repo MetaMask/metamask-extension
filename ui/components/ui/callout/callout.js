@@ -5,11 +5,7 @@ import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { ButtonIcon, IconName, IconSize } from '../../component-library';
 
 export default function Callout({
   severity,
@@ -47,8 +43,8 @@ export default function Callout({
       </Typography>
       {dismiss && (
         <ButtonIcon
-          iconName={ICON_NAMES.CLOSE}
-          size={ICON_SIZES.SM}
+          iconName={IconName.Close}
+          size={IconSize.Sm}
           className="callout__close-button"
           onClick={() => {
             setRemoved(true);
