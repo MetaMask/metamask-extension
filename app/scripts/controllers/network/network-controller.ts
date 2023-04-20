@@ -1034,7 +1034,7 @@ export class NetworkController extends EventEmitter {
    * @throws if `rpcUrl` is not a valid URL.
    * @returns The ID for the added or updated network configuration.
    */
-  upsertNetworkConfiguration(
+  async upsertNetworkConfiguration(
     {
       rpcUrl,
       chainId,
@@ -1051,7 +1051,7 @@ export class NetworkController extends EventEmitter {
       referrer: string;
       source: string;
     },
-  ): NetworkConfigurationId {
+  ): Promise<NetworkConfigurationId> {
     assert.ok(
       isPrefixedFormattedHexString(chainId),
       `Invalid chain ID "${chainId}": invalid hex string.`,
@@ -1129,7 +1129,7 @@ export class NetworkController extends EventEmitter {
     }
 
     if (setActive) {
-      this.setActiveNetwork(newNetworkConfigurationId);
+      await this.setActiveNetwork(newNetworkConfigurationId);
     }
 
     return newNetworkConfigurationId;
@@ -1141,9 +1141,12 @@ export class NetworkController extends EventEmitter {
    * @param networkConfigurationId - The unique id for the network configuration
    * to remove.
    */
-  removeNetworkConfiguration(
-    networkConfigurationId: NetworkConfigurationId,
-  ): void {
+  removeNetworkConfiguration(networkConfigurationId: NetworkConfigurationId) {
+    if (!this.store.getState().networkConfigurations[networkConfigurationId]) {
+      throw new Error(
+        `networkConfigurationId ${networkConfigurationId} does not match a configured networkConfiguration`,
+      );
+    }
     const networkConfigurations = {
       ...this.store.getState().networkConfigurations,
     };

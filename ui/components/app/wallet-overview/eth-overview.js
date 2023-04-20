@@ -39,9 +39,10 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   ButtonIcon,
-  BUTTON_ICON_SIZES,
-} from '../../component-library/button-icon/deprecated';
-import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+  ButtonIconSize,
+  Icon,
+  IconName,
+} from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -96,34 +97,36 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              <ButtonIcon
-                className="eth-overview__portfolio-button"
-                data-testid="home__portfolio-site"
-                color={IconColor.primaryDefault}
-                iconName={ICON_NAMES.DIAGRAM}
-                ariaLabel={t('portfolio')}
-                size={BUTTON_ICON_SIZES.LG}
-                onClick={() => {
-                  const portfolioUrl = process.env.PORTFOLIO_URL;
-                  global.platform.openTab({
-                    url: `${portfolioUrl}?metamaskEntry=ext`,
-                  });
-                  trackEvent(
-                    {
-                      category: MetaMetricsEventCategory.Home,
-                      event: MetaMetricsEventName.PortfolioLinkClicked,
-                      properties: {
-                        url: portfolioUrl,
+              {process.env.MULTICHAIN ? null : (
+                <ButtonIcon
+                  className="eth-overview__portfolio-button"
+                  data-testid="home__portfolio-site"
+                  color={IconColor.primaryDefault}
+                  iconName={IconName.Diagram}
+                  ariaLabel={t('portfolio')}
+                  size={ButtonIconSize.Lg}
+                  onClick={() => {
+                    const portfolioUrl = process.env.PORTFOLIO_URL;
+                    global.platform.openTab({
+                      url: `${portfolioUrl}?metamaskEntry=ext`,
+                    });
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.PortfolioLinkClicked,
+                        properties: {
+                          url: portfolioUrl,
+                        },
                       },
-                    },
-                    {
-                      contextPropsIntoEventProperties: [
-                        MetaMetricsContextProp.PageTitle,
-                      ],
-                    },
-                  );
-                }}
-              />
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                />
+              )}
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -145,9 +148,7 @@ const EthOverview = ({ className }) => {
         <>
           <IconButton
             className="eth-overview__button"
-            Icon={
-              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
-            }
+            Icon={<Icon name={IconName.Add} color={IconColor.primaryInverse} />}
             disabled={!isBuyableChain}
             data-testid="eth-overview-buy"
             label={t('buy')}
@@ -168,7 +169,7 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_UP_RIGHT}
+                name={IconName.Arrow2UpRight}
                 color={IconColor.primaryInverse}
               />
             }
@@ -195,7 +196,7 @@ const EthOverview = ({ className }) => {
             disabled={!isSwapsChain}
             Icon={
               <Icon
-                name={ICON_NAMES.SWAP_HORIZONTAL}
+                name={IconName.SwapHorizontal}
                 color={IconColor.primaryInverse}
               />
             }
@@ -237,7 +238,7 @@ const EthOverview = ({ className }) => {
             disabled={!isBridgeChain}
             data-testid="eth-overview-bridge"
             Icon={
-              <Icon name={ICON_NAMES.BRIDGE} color={IconColor.primaryInverse} />
+              <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
             }
             label={t('bridge')}
             onClick={() => {
@@ -273,7 +274,7 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
+      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };

@@ -58,7 +58,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         <Text variant={TextVariant.headingSm}>{t('holdToRevealTitle')}</Text>
         <ButtonIcon
           className="hold-to-reveal-modal__close"
-          iconName={IconName.CLOSE}
+          iconName={IconName.Close}
           size={Size.SM}
           onClick={() => {
             trackEvent({

@@ -221,7 +221,7 @@ export const CURRENCY_SYMBOLS = {
   OPTIMISM: 'OP',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';

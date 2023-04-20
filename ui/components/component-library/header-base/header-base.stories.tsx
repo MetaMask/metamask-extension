@@ -14,7 +14,7 @@ import {
   AlignItems,
   BackgroundColor,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { HeaderBase } from './header-base';
 import README from './README.mdx';
@@ -37,7 +37,7 @@ export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   children: (
-    <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+    <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
       Title is sentence case no period
     </Text>
   ),
@@ -62,7 +62,7 @@ DefaultStory.storyName = 'Default';
 export const Children = (args) => {
   return (
     <HeaderBase {...args}>
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Title is sentence case no period
       </Text>
     </HeaderBase>
@@ -82,7 +82,7 @@ export const StartAccessory = (args) => {
       }
       {...args}
     >
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Title is sentence case no period
       </Text>
     </HeaderBase>
@@ -102,7 +102,7 @@ export const EndAccessory = (args) => {
       }
       {...args}
     >
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Title is sentence case no period
       </Text>
     </HeaderBase>
@@ -116,7 +116,7 @@ export const UseCaseDemos = (args) => (
       <HeaderBase marginBottom={4} {...args}>
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -139,7 +139,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -162,7 +162,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -193,7 +193,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -225,7 +225,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -260,7 +260,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
