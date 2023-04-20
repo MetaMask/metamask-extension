@@ -7,7 +7,7 @@ import {
   Button,
   BUTTON_TYPES,
   ButtonIcon,
-  ICON_NAMES,
+  IconName,
 } from '../../../component-library';
 import {
   AlignItems,
@@ -51,7 +51,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         <Text variant={TextVariant.headingSm}>{t('holdToRevealTitle')}</Text>
         <ButtonIcon
           className="hold-to-reveal-modal__close"
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.Close}
           size={Size.SM}
           onClick={handleCancel}
           ariaLabel={t('close')}

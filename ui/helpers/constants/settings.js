@@ -1,4 +1,4 @@
-import { ICON_NAMES } from '../../components/component-library';
+import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,

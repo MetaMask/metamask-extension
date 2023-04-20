@@ -6,6 +6,119 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.28.3]
+### Fixed
+- Fix network switching prompted by dapps for users that added the network prior to v10.28.0. ([#18513](https://github.com/MetaMask/metamask-extension/pull/18513))
+
+## [10.28.2]
+### Fixed
+- Fix network switching prompted by dapps by fixing the `wallet_switchEthereumChain` handler. ([#18483](https://github.com/MetaMask/metamask-extension/pull/18483))
+- Fix to ensure all users see the NFT and transaction security notifications ([#18460](https://github.com/MetaMask/metamask-extension/pull/18460))
+- Fix issue blocking Hindi, Japanese and Turkish language users from installing from the Chrome store ([#18487](https://github.com/MetaMask/metamask-extension/pull/18487))
+
+## [10.28.1]
+### Changed
+- Fix release automation ([#18427](https://github.com/MetaMask/metamask-extension/pull/18427))
+
+## [10.28.0]
+### Added
+- Adding NFT autodetection to "What's New" Announcements ([#17653](https://github.com/MetaMask/metamask-extension/pull/17653))
+- [FLASK] Add WebAssembly endowment ([#17694](https://github.com/MetaMask/metamask-extension/pull/17694))
+- Bridge tokens by redirecting to Portfolio from wallet overview page ([#17952](https://github.com/MetaMask/metamask-extension/pull/17952))
+- [MMI] Adds the MMI support link and the mmi_website link as well ([#17853](https://github.com/MetaMask/metamask-extension/pull/17853))
+- What's new - OpenSea security provider ([#16831](https://github.com/MetaMask/metamask-extension/pull/16831))
+- Open sea security provider warning message ([#17662](https://github.com/MetaMask/metamask-extension/pull/17662))
+- SRP hold to reveal ([#17232](https://github.com/MetaMask/metamask-extension/pull/17232))
+- Additional incoming transactions support ([#14219](https://github.com/MetaMask/metamask-extension/pull/14219))
+
+### Changed
+- UX: Loaclize the avatar-favicon description text ([#18132](https://github.com/MetaMask/metamask-extension/pull/18132))
+- 17921 Update TransactionAlerts with BannerAlert ([#17940](https://github.com/MetaMask/metamask-extension/pull/17940))
+- Part of 17670: Replace Typography with Text confirm-approve-content.component.js and home.component.js ([#18049](https://github.com/MetaMask/metamask-extension/pull/18049))
+- UX: Icon: Update buy icon ([#18123](https://github.com/MetaMask/metamask-extension/pull/18123))
+- Display internet protocol on the domain in SIWE screen ([#18052](https://github.com/MetaMask/metamask-extension/pull/18052))
+- Wrap balance and portfolio button ([#18109](https://github.com/MetaMask/metamask-extension/pull/18109))
+- UX Icon: Updated Icon for Disclosure ([#17877](https://github.com/MetaMask/metamask-extension/pull/17877))
+- Updating AvatarWithBage to BadgeWrapper ([#17851](https://github.com/MetaMask/metamask-extension/pull/17851))
+- [FLASK] BREAKING - snaps-monorepo@0.30.0 ([#17718](https://github.com/MetaMask/metamask-extension/pull/17718))
+- increment keyring controller version ([#18036](https://github.com/MetaMask/metamask-extension/pull/18036))
+- Bump Snow 1.5.0 ([#17985](https://github.com/MetaMask/metamask-extension/pull/17985))
+- Avoid blob url for files downloads ([#17986](https://github.com/MetaMask/metamask-extension/pull/17986))
+- Upgrading the Import Account modal ([#17763](https://github.com/MetaMask/metamask-extension/pull/17763))
+- identify desktop is paired in the metrics event ([#17892](https://github.com/MetaMask/metamask-extension/pull/17892))
+- [MMI] Conditional change title in home if buildType is MMI ([#17898](https://github.com/MetaMask/metamask-extension/pull/17898))
+- [MMI] Prevent multiple instances of MM at the same browser ([#17856](https://github.com/MetaMask/metamask-extension/pull/17856))
+- Buy crypto by redirecting to onramp experience on pdapp instead of deposit popover ([#17689](https://github.com/MetaMask/metamask-extension/pull/17689))
+- Update snaps locale messages for casing and content ([#17915](https://github.com/MetaMask/metamask-extension/pull/17915))
+- Ux: Icon: Update fa-eye with ICON_NAMES.EYE ([#17800](https://github.com/MetaMask/metamask-extension/pull/17800))
+- UX: Icon: Stop using fa-times ([#17811](https://github.com/MetaMask/metamask-extension/pull/17811))
+- Selector performance improvements ([#17410](https://github.com/MetaMask/metamask-extension/pull/17410))
+- UX: Update Settings Icon ([#17561](https://github.com/MetaMask/metamask-extension/pull/17561))
+- UX Icon: updated fa-exclamation-circle ([#17879](https://github.com/MetaMask/metamask-extension/pull/17879))
+- Update minimum browser versions ([#12847](https://github.com/MetaMask/metamask-extension/pull/12847))
+- UX: Icon: Remove fa-exclamation-triangle usages ([#17691](https://github.com/MetaMask/metamask-extension/pull/17691))
+- UX: Icons: Remove icon-import ([#17816](https://github.com/MetaMask/metamask-extension/pull/17816))
+- UX: Icons: Remove IconCheck and fa-check ([#17787](https://github.com/MetaMask/metamask-extension/pull/17787))
+- UX Icon: updated fas-question icon ([#17828](https://github.com/MetaMask/metamask-extension/pull/17828))
+- UX: Icons: Stop using FA in TransactionActivityLog ([#17667](https://github.com/MetaMask/metamask-extension/pull/17667))
+- Ux: Icon: Improve alignment of asset list chevron ([#17791](https://github.com/MetaMask/metamask-extension/pull/17791))
+- UX: Icons: Remove IconWithLabel ([#17815](https://github.com/MetaMask/metamask-extension/pull/17815))
+- UX: Move Portfolio link to its own button ([#17722](https://github.com/MetaMask/metamask-extension/pull/17722))
+- UX Icon: Replace fa-user ([#17809](https://github.com/MetaMask/metamask-extension/pull/17809))
+- UX: Icons: Fix alignment of settings icons in full screen ([#17783](https://github.com/MetaMask/metamask-extension/pull/17783))
+- Cleanup: clearTimeout on useEffect for gas estimation and prevent state update on unmounted ConfirmTransactionBase ([#17804](https://github.com/MetaMask/metamask-extension/pull/17804))
+- Part of 17670: Replace Typography with Text approve-content-card ([#17753](https://github.com/MetaMask/metamask-extension/pull/17753))
+- UX: Icons: Remove lock icon ([#17739](https://github.com/MetaMask/metamask-extension/pull/17739))
+- Update HelpText component ([#17705](https://github.com/MetaMask/metamask-extension/pull/17705))
+- Change transaction type for send with approve transaction ([#17777](https://github.com/MetaMask/metamask-extension/pull/17777))
+- UX: Icon: Remove Plus icon ([#17666](https://github.com/MetaMask/metamask-extension/pull/17666))
+- Updating TextField component ([#17732](https://github.com/MetaMask/metamask-extension/pull/17732))
+- UX:  Update three-dot icon for settings ([#17558](https://github.com/MetaMask/metamask-extension/pull/17558))
+- Updating Label component ([#17731](https://github.com/MetaMask/metamask-extension/pull/17731))
+- Pass `excludedPermissions` to `SnapController` ([#17321](https://github.com/MetaMask/metamask-extension/pull/17321))
+- UX: Update fa-search icon ([#17527](https://github.com/MetaMask/metamask-extension/pull/17527))
+- UX: Icons: Remove legacy connect icon ([#17673](https://github.com/MetaMask/metamask-extension/pull/17673))
+- UX: Icons: Remove usage of pencil icon ([#17676](https://github.com/MetaMask/metamask-extension/pull/17676))
+- Rename reset account settings ([#17457](https://github.com/MetaMask/metamask-extension/pull/17457))
+- Make username mandatory in the edit contact screen ([#17425](https://github.com/MetaMask/metamask-extension/pull/17425))
+- New Crowdin translations by Github Action ([#17082](https://github.com/MetaMask/metamask-extension/pull/17082))
+
+### Removed
+- NFTs: Remove feature flag for release ([#17401](https://github.com/MetaMask/metamask-extension/pull/17401))
+- Removed a feature flag ([#17922](https://github.com/MetaMask/metamask-extension/pull/17922))
+- UX: Remove legacy metametrics modal ([#17817](https://github.com/MetaMask/metamask-extension/pull/17817))
+- UX: Icons: Remove unused overview icons ([#17671](https://github.com/MetaMask/metamask-extension/pull/17671))
+- Remove CancelTransaction modal ([#17819](https://github.com/MetaMask/metamask-extension/pull/17819))
+
+### Fixed
+- Fix ThemeType casing issue ([#18039](https://github.com/MetaMask/metamask-extension/pull/18039))
+- Fix #17948 - Allow editing of NFT sends ([#17970](https://github.com/MetaMask/metamask-extension/pull/17970))
+- Fix #17848 - Ensure NFT collections toggle appropriately ([#17972](https://github.com/MetaMask/metamask-extension/pull/17972))
+- Force update mock state and render nfts item test fix ([#18044](https://github.com/MetaMask/metamask-extension/pull/18044))
+- fix network dropdown bug ([#18079](https://github.com/MetaMask/metamask-extension/pull/18079))
+- Fix #17932 - Ensure NFT last sold price is formatted correctly ([#17983](https://github.com/MetaMask/metamask-extension/pull/17983))
+- Use tokenList to get token details, when available, in getTokenStanda… ([#17891](https://github.com/MetaMask/metamask-extension/pull/17891))
+- delay chain validation ([#17413](https://github.com/MetaMask/metamask-extension/pull/17413))
+- fix(17542): fix fiat currency display in few txn actions ([#18011](https://github.com/MetaMask/metamask-extension/pull/18011))
+- fix(17716): increase threshold to include all options for nonce search ([#17999](https://github.com/MetaMask/metamask-extension/pull/17999))
+- fix issue with fragment messageIds ([#17949](https://github.com/MetaMask/metamask-extension/pull/17949))
+- UX: Icons: Fix Chevrons in Settings Tabs ([#17971](https://github.com/MetaMask/metamask-extension/pull/17971))
+- fix(17857): show correctly converted account balance in sign&encrypt windows ([#17973](https://github.com/MetaMask/metamask-extension/pull/17973))
+- Edit Token Transfer displays mixed info with regular Send Tx (ETH) ([#17507](https://github.com/MetaMask/metamask-extension/pull/17507))
+- fix(17855): persist popup when sw is restarted ([#17855](https://github.com/MetaMask/metamask-extension/pull/17855))
+- Fix incorrect balance in signature request header ([#17829](https://github.com/MetaMask/metamask-extension/pull/17829))
+- fix keeping the user login after the first login ([#17950](https://github.com/MetaMask/metamask-extension/pull/17950))
+- Fixed accounts auto scrolling ([#17075](https://github.com/MetaMask/metamask-extension/pull/17075))
+- Fix a bug where non-address types would be rendered as addresses in EIP-712 ([#17846](https://github.com/MetaMask/metamask-extension/pull/17846))
+- Transaction-list-item-details pop up to display the correct token information on token approve item ([#17422](https://github.com/MetaMask/metamask-extension/pull/17422))
+- ConfirmDecryptMessage: avoid mutation of state in decryptMsg/completedTx action ([#17895](https://github.com/MetaMask/metamask-extension/pull/17895))
+- Fix GetEncryptionKey TypeError Cannot destructure property 'msgParams' of 'txData' ([#17808](https://github.com/MetaMask/metamask-extension/pull/17808))
+- Fix state in confirm transaction ([#17838](https://github.com/MetaMask/metamask-extension/pull/17838))
+- window open noopener ([#17882](https://github.com/MetaMask/metamask-extension/pull/17882))
+- avoid mutation of state in signTransaction action ([#17772](https://github.com/MetaMask/metamask-extension/pull/17772))
+- MenuItem: Fix layout of menu item with subtitle ([#17650](https://github.com/MetaMask/metamask-extension/pull/17650))
+- fix: fix url for flask build ([#17784](https://github.com/MetaMask/metamask-extension/pull/17784))
+
 ## [10.27.0]
 ### Added
 - feat: add the ConsenSys zkEVM (Linea) as a default network ([#17875](https://github.com/MetaMask/metamask-extension/pull/17875))
@@ -227,7 +340,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] **BREAKING**: Snap RPC methods now use `@metamask/key-tree@6.0.0` ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
   - In the new version, all hexadecimal values are prefixed with `0x`
   - All fields containing the word `Buffer` has also been renamed to `Bytes`
-  - Please update your snap to use the latest version 
+  - Please update your snap to use the latest version
 
 ### Fixed
 - Fix Settings Search pointing into the incorrect row for Token Detection entry ([#16407](https://github.com/MetaMask/metamask-extension/pull/16407))
@@ -3540,7 +3653,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.27.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.28.3...HEAD
+[10.28.3]: https://github.com/MetaMask/metamask-extension/compare/v10.28.2...v10.28.3
+[10.28.2]: https://github.com/MetaMask/metamask-extension/compare/v10.28.1...v10.28.2
+[10.28.1]: https://github.com/MetaMask/metamask-extension/compare/v10.28.0...v10.28.1
+[10.28.0]: https://github.com/MetaMask/metamask-extension/compare/v10.27.0...v10.28.0
 [10.27.0]: https://github.com/MetaMask/metamask-extension/compare/v10.26.2...v10.27.0
 [10.26.2]: https://github.com/MetaMask/metamask-extension/compare/v10.26.1...v10.26.2
 [10.26.1]: https://github.com/MetaMask/metamask-extension/compare/v10.26.0...v10.26.1

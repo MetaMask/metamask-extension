@@ -7,9 +7,9 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Tooltip from '../tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import { AddressCopyButton } from '../../multichain/address-copy-button';
 import Box from '../box/box';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -76,8 +76,8 @@ function QrCodeView(props) {
           >
             <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
             <Icon
-              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-              size={ICON_SIZES.SM}
+              name={copied ? IconName.CopySuccess : IconName.Copy}
+              size={IconSize.Sm}
               marginInlineStart={3}
             />
           </div>

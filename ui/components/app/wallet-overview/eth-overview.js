@@ -29,18 +29,19 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   ButtonIcon,
-  BUTTON_ICON_SIZES,
+  ButtonIconSize,
   Icon,
-  ICON_NAMES,
+  IconName,
 } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -96,34 +97,36 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              <ButtonIcon
-                className="eth-overview__portfolio-button"
-                data-testid="home__portfolio-site"
-                color={IconColor.primaryDefault}
-                iconName={ICON_NAMES.DIAGRAM}
-                ariaLabel={t('portfolio')}
-                size={BUTTON_ICON_SIZES.LG}
-                onClick={() => {
-                  const portfolioUrl = process.env.PORTFOLIO_URL;
-                  global.platform.openTab({
-                    url: `${portfolioUrl}?metamaskEntry=ext`,
-                  });
-                  trackEvent(
-                    {
-                      category: EVENT.CATEGORIES.HOME,
-                      event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
-                      properties: {
-                        url: portfolioUrl,
+              {process.env.MULTICHAIN ? null : (
+                <ButtonIcon
+                  className="eth-overview__portfolio-button"
+                  data-testid="home__portfolio-site"
+                  color={IconColor.primaryDefault}
+                  iconName={IconName.Diagram}
+                  ariaLabel={t('portfolio')}
+                  size={ButtonIconSize.Lg}
+                  onClick={() => {
+                    const portfolioUrl = process.env.PORTFOLIO_URL;
+                    global.platform.openTab({
+                      url: `${portfolioUrl}?metamaskEntry=ext`,
+                    });
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.PortfolioLinkClicked,
+                        properties: {
+                          url: portfolioUrl,
+                        },
                       },
-                    },
-                    {
-                      contextPropsIntoEventProperties: [
-                        CONTEXT_PROPS.PAGE_TITLE,
-                      ],
-                    },
-                  );
-                }}
-              />
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                />
+              )}
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -145,17 +148,15 @@ const EthOverview = ({ className }) => {
         <>
           <IconButton
             className="eth-overview__button"
-            Icon={
-              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
-            }
+            Icon={<Icon name={IconName.Add} color={IconColor.primaryInverse} />}
             disabled={!isBuyableChain}
             data-testid="eth-overview-buy"
             label={t('buy')}
             onClick={() => {
               openBuyCryptoInPdapp();
               trackEvent({
-                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavBuyButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Home',
                   text: 'Buy',
@@ -168,15 +169,15 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_RIGHT}
+                name={IconName.Arrow2UpRight}
                 color={IconColor.primaryInverse}
               />
             }
             label={t('send')}
             onClick={() => {
               trackEvent({
-                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
-                category: EVENT.CATEGORIES.NAVIGATION,
+                event: MetaMetricsEventName.NavSendButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   token_symbol: 'ETH',
                   location: 'Home',
@@ -195,18 +196,18 @@ const EthOverview = ({ className }) => {
             disabled={!isSwapsChain}
             Icon={
               <Icon
-                name={ICON_NAMES.SWAP_HORIZONTAL}
+                name={IconName.SwapHorizontal}
                 color={IconColor.primaryInverse}
               />
             }
             onClick={() => {
               if (isSwapsChain) {
                 trackEvent({
-                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.SWAPS,
+                  event: MetaMetricsEventName.NavSwapButtonClicked,
+                  category: MetaMetricsEventCategory.Swaps,
                   properties: {
                     token_symbol: 'ETH',
-                    location: EVENT.SOURCE.SWAPS.MAIN_VIEW,
+                    location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                   },
                 });
@@ -237,7 +238,7 @@ const EthOverview = ({ className }) => {
             disabled={!isBridgeChain}
             data-testid="eth-overview-bridge"
             Icon={
-              <Icon name={ICON_NAMES.BRIDGE} color={IconColor.primaryInverse} />
+              <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
             }
             label={t('bridge')}
             onClick={() => {
@@ -248,8 +249,8 @@ const EthOverview = ({ className }) => {
                   url: `${bridgeUrl}?metamaskEntry=ext`,
                 });
                 trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.BridgeLinkClicked,
                   properties: {
                     location: 'Home',
                     text: 'Bridge',
@@ -273,7 +274,7 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
+      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };

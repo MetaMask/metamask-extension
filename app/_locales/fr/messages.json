@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "La fusion Ethereum est en marche !"
   },
-  "notifications17ActionText": {
-    "message": "Afficher les paramètres de sécurité et de confidentialité"
-  },
-  "notifications17Title": {
-    "message": "Paramètres de sécurité et de confidentialité"
-  },
   "notifications1Description": {
     "message": "Les utilisateurs de MetaMask Mobile peuvent désormais échanger des jetons dans leur portefeuille mobile. Scannez le code QR pour obtenir l’application mobile et commencez à échanger.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2702,10 +2696,6 @@
   "permission_cronjob": {
     "message": "Planifiez et exécutez des actions périodiques.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Afficher une confirmation dans MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Afficher les boîtes de dialogue dans MetaMask.",
@@ -3355,10 +3345,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Une erreur s’est produite avec $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Chargement de l’aperçu de transaction…"
   },
@@ -3375,7 +3361,8 @@
     "message": "Un snap ne s’exécute que s’il est activé"
   },
   "snapsUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
+    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Certains réseaux peuvent présenter des risques pour la sécurité et/ou la vie privée. Informez-vous sur les risques avant d’ajouter et d’utiliser un réseau."

@@ -13,7 +13,7 @@ import {
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import { BadgeWrapper, Icon, ICON_NAMES } from '../../component-library';
+import { BadgeWrapper, Icon, IconName } from '../../component-library';
 import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
@@ -68,7 +68,7 @@ export const MultichainConnectedSiteMenu = ({
           }
         >
           <Icon
-            name={ICON_NAMES.GLOBAL}
+            name={IconName.Global}
             size={Size.LG}
             color={IconColor.iconDefault}
           />

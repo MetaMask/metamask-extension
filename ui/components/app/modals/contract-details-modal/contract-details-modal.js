@@ -25,7 +25,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
-import { ButtonIcon, ICON_NAMES } from '../../../component-library';
+import { ButtonIcon, IconName } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,
@@ -146,9 +146,7 @@ export default function ContractDetailsModal({
                   <ButtonIcon
                     display={DISPLAY.FLEX}
                     iconName={
-                      copiedTokenAddress
-                        ? ICON_NAMES.COPY_SUCCESS
-                        : ICON_NAMES.COPY
+                      copiedTokenAddress ? IconName.CopySuccess : IconName.Copy
                     }
                     onClick={() => handleCopyTokenAddress(tokenAddress)}
                     color={Color.iconMuted}
@@ -162,7 +160,7 @@ export default function ContractDetailsModal({
                 <Tooltip position="top" title={t('openInBlockExplorer')}>
                   <ButtonIcon
                     display={DISPLAY.FLEX}
-                    iconName={ICON_NAMES.EXPORT}
+                    iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
                       const blockExplorerTokenLink = getAccountLink(
@@ -243,7 +241,7 @@ export default function ContractDetailsModal({
               <ButtonIcon
                 display={DISPLAY.FLEX}
                 iconName={
-                  copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                  copiedToAddress ? IconName.CopySuccess : IconName.Copy
                 }
                 onClick={() => handleCopyToAddress(toAddress)}
                 color={Color.iconMuted}
@@ -257,7 +255,7 @@ export default function ContractDetailsModal({
             <Tooltip position="top" title={t('openInBlockExplorer')}>
               <ButtonIcon
                 display={DISPLAY.FLEX}
-                iconName={ICON_NAMES.EXPORT}
+                iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
                   const blockExplorerTokenLink = getAccountLink(

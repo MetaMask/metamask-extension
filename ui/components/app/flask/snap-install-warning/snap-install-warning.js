@@ -15,7 +15,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import { AvatarIcon, ICON_NAMES, Text } from '../../../component-library';
+import { AvatarIcon, Text, IconName } from '../../../component-library';
 import Box from '../../../ui/box/box';
 
 /**
@@ -78,7 +78,7 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
     >
       <Box justifyContent={JustifyContent.center} marginBottom={6}>
         <AvatarIcon
-          iconName={ICON_NAMES.DANGER}
+          iconName={IconName.Danger}
           backgroundColor={BackgroundColor.warningMuted}
           color={IconColor.warningDefault}
           size={Size.LG}

@@ -52,7 +52,7 @@ const {
 } = require('./transforms/remove-fenced-code');
 
 // map dist files to bag of needed native APIs against LM scuttling
-const scuttlingConfig = {
+const scuttlingConfigBase = {
   'sentry-install.js': {
     // globals sentry need to function
     window: '',
@@ -70,9 +70,9 @@ const scuttlingConfig = {
     Number: '',
     Request: '',
     Date: '',
-    document: '',
     JSON: '',
     encodeURIComponent: '',
+    console: '',
     crypto: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
@@ -84,6 +84,16 @@ const scuttlingConfig = {
     appState: '',
     extra: '',
     stateHooks: '',
+  },
+};
+
+const mv3ScuttlingConfig = { ...scuttlingConfigBase };
+
+const standardScuttlingConfig = {
+  ...scuttlingConfigBase,
+  'sentry-install.js': {
+    ...scuttlingConfigBase['sentry-install.js'],
+    document: '',
   },
 };
 
@@ -932,9 +942,8 @@ function setupBundlerDefaults(
 
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
-
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
   }
 }
 
@@ -988,7 +997,11 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
+  const scuttlingConfig =
+    envVars.ENABLE_MV3 === 'true'
+      ? mv3ScuttlingConfig
+      : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
@@ -1111,6 +1124,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     ICON_NAMES: iconNames,
     MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
+    ENABLE_MV3: config.ENABLE_MV3,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

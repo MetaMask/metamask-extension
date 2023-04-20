@@ -13,7 +13,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/deprecated';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -116,7 +116,7 @@ export default class PermissionConnect extends Component {
     getRequestAccountTabIds();
 
     if (!permissionsRequest) {
-      history.push(DEFAULT_ROUTE);
+      history.replace(DEFAULT_ROUTE);
       return;
     }
 
@@ -130,17 +130,17 @@ export default class PermissionConnect extends Component {
 
       switch (requestType) {
         case 'wallet_installSnap':
-          history.push(snapInstallPath);
+          history.replace(snapInstallPath);
           break;
         case 'wallet_updateSnap':
-          history.push(snapUpdatePath);
+          history.replace(snapUpdatePath);
           break;
         case 'wallet_installSnapResult':
-          history.push(snapResultPath);
+          history.replace(snapResultPath);
           break;
         default:
           ///: END:ONLY_INCLUDE_IN
-          history.push(confirmPermissionPath);
+          history.replace(confirmPermissionPath);
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
       }
       ///: END:ONLY_INCLUDE_IN
@@ -247,7 +247,7 @@ export default class PermissionConnect extends Component {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
     }
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,mmi)
     if (approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
     }

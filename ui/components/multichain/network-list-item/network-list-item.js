@@ -16,7 +16,7 @@ import {
   AvatarNetwork,
   ButtonIcon,
   ButtonLink,
-  ICON_NAMES,
+  IconName,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
@@ -71,7 +71,7 @@ export const NetworkListItem = ({
         <ButtonIcon
           className="multichain-network-list-item__delete"
           color={IconColor.errorDefault}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
           ariaLabel={t('deleteNetwork')}
           size={Size.SM}
           onClick={(e) => {

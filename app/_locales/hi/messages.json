@@ -1601,11 +1601,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "इसे किसी के साथ साझा न करें। $1$2",
+    "message": "इसे किसी के साथ साझा न करें। $1,$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा,",
+    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2327,12 +2327,6 @@
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
   },
-  "notifications17ActionText": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
-  },
-  "notifications17Title": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobile उपयोगकर्ता अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2702,10 +2696,6 @@
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask में पुष्टि को दर्शाएं।",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
@@ -3355,10 +3345,6 @@
   "snaps": {
     "message": "स्नैप्स"
   },
-  "snapsInsightError": {
-    "message": "$1: $2 के साथ त्रुटि हुई",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
   },
@@ -3375,7 +3361,8 @@
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
   },
   "snapsUIError": {
-    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।"
+    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और उपयोग करने से पहले जोखिमों को समझें।"

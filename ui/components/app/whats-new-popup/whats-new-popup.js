@@ -61,11 +61,23 @@ function getActionFunctionById(id, history) {
     },
     16: () => {
       updateViewedNotifications({ 16: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
     },
     17: () => {
       updateViewedNotifications({ 17: true });
+    },
+    18: () => {
+      updateViewedNotifications({ 18: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+    },
+    19: () => {
+      updateViewedNotifications({ 19: true });
       history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
+    },
+    20: () => {
+      updateViewedNotifications({ 20: true });
+      global.platform.openTab({
+        url: ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE,
+      });
     },
   };
 
@@ -266,8 +278,8 @@ export default function WhatsNewPopup({ onClose }) {
           const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
-          // Displays the NFTs & OpenSea notifications 16,17 with full image
-          return index === 0 || id === 1 || id === 16 || id === 17
+          // Displays the NFTs & OpenSea notifications 18,19 with full image
+          return index === 0 || id === 1 || id === 18 || id === 19
             ? renderFirstNotification(notification, idRefMap, history, isLast)
             : renderSubsequentNotification(
                 notification,

@@ -14,17 +14,14 @@ import {
   AlignItems,
   DISPLAY,
   BorderRadius,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
 import {
   getSnapName,
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
-import {
-  ICON_NAMES,
-  ICON_SIZES,
-  Text,
-  ButtonIcon,
-} from '../../../component-library';
+import { ButtonIcon, IconName, Text } from '../../../component-library';
+
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 
@@ -59,7 +56,7 @@ const SnapAuthorship = ({ snapId, className }) => {
       paddingRight={4}
       borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
-      style={{ maxWidth: 'fit-content', width: '100%' }}
+      width={BLOCK_SIZES.FULL}
     >
       <Box>
         <SnapAvatar snapId={snapId} />
@@ -84,9 +81,9 @@ const SnapAuthorship = ({ snapId, className }) => {
         rel="noopener noreferrer"
         target="_blank"
         href={url}
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
         color={IconColor.infoDefault}
-        size={ICON_SIZES.MD}
+        style={{ marginLeft: 'auto' }}
       />
     </Box>
   );
