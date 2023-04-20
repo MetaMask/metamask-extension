@@ -2015,9 +2015,6 @@
   "missingToken": {
     "message": "Tokeninizi görmüyor musunuz?"
   },
-  "mobileSyncWarning": {
-    "message": "\"Uzantı ile senkronize et\" özelliği geçici olarak devre dışı bırakılmış. MetaMask mobilde uzantı cüzdanınızı kullanmak istiyorsanız mobil uygulamaya gidin: cüzdan kurulum ayarlarına geri dönün ve \"Gizli Kurtarma İfadesi ile İçe Aktar\" seçeneğini seçin. Ardından cüzdanınızı mobil uygulamada içe aktarmak için uzantı cüzdanınızın gizli ifadesini kullanın."
-  },
   "moreComingSoon": {
     "message": "Daha fazlası çok yakında..."
   },
@@ -3929,33 +3926,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Sembol en fazla 11 karakter olmalıdır."
-  },
-  "syncFailed": {
-    "message": "Senkronizasyon başarısız oldu"
-  },
-  "syncInProgress": {
-    "message": "Senkronizasyon sürüyor"
-  },
-  "syncWithMobile": {
-    "message": "Mobil ile senkronize et"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Bu kodu tararken hiç kimsenin ekranınıza bakmadığından emin olun"
-  },
-  "syncWithMobileComplete": {
-    "message": "Verileriniz başarılı bir şekilde senkronize edildi. MetaMask mobil uygulamasının tadını çıkarın!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Hesaplarınızı ve bilgilerinizi mobil cihazınızla senkronize edebilirsiniz. MetaMask mobil uygulamasını açın, \"Ayarlar\" kısmına gidin ve \"Tarayıcı Uzantısından Senkronize Et\" seçeneğine dokunun"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Metamask Mobil uygulamasını ilk defa açıyorsanız telefonunuzdaki adımları izleyin."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMask mobil uygulamanızla bu kodu tarayın"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mobil ile senkronize et"
   },
   "tenPercentIncreased": {
     "message": "%10 artış"

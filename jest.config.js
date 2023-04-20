@@ -3,6 +3,7 @@ module.exports = {
     '<rootDir>/app/scripts/constants/error-utils.js',
     '<rootDir>/app/scripts/controllers/network/**/*.js',
     '<rootDir>/app/scripts/controllers/network/**/*.ts',
+    '!<rootDir>/app/scripts/controllers/network/**/test/*.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/flask/**/*.js',
@@ -16,7 +17,7 @@ module.exports = {
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: ['json'],
+  coverageReporters: ['html', 'json'],
   reporters: [
     'default',
     [

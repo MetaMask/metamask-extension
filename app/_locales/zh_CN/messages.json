@@ -2015,9 +2015,6 @@
   "missingToken": {
     "message": "没有看到您的代币？"
   },
-  "mobileSyncWarning": {
-    "message": "“与扩展程序同步”功能暂时被禁用。如果您想要在 MetaMask 移动设备上使用您的扩展程序钱包，那么在您的移动应用程序上：返回钱包设置选项并选择“使用账户助记词导入”选项。使用您的扩展程序钱包的助记词来将您的钱包导入移动设备。"
-  },
   "moreComingSoon": {
     "message": "更多即将到来……"
   },
@@ -3929,33 +3926,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
-  },
-  "syncFailed": {
-    "message": "同步失败"
-  },
-  "syncInProgress": {
-    "message": "同步进行中"
-  },
-  "syncWithMobile": {
-    "message": "与移动设备同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "扫描此代码时，请确保附近没有其他人在看您的屏幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 MetaMask 移动应用程序吧！"
-  },
-  "syncWithMobileDesc": {
-    "message": "您可以将您的账户和信息与您的移动设备同步。打开 MetaMask 移动应用程序，进入“设置”，点击“从浏览器扩展程序同步”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "使用 MetaMask 移动应用程序扫描此代码"
-  },
-  "syncWithMobileTitle": {
-    "message": "与移动设备同步"
   },
   "tenPercentIncreased": {
     "message": "增加10%"

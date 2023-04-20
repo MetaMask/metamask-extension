@@ -65,13 +65,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('syncWithMobile'),
-    descriptionMessage: (t) => t('syncWithMobile'),
-    route: `${ADVANCED_ROUTE}#sync-withmobile`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('clearActivity'),
     descriptionMessage: (t) => t('clearActivityDescription'),
     route: `${ADVANCED_ROUTE}#clear-activity`,
