@@ -2050,12 +2050,12 @@
       "packages": {
         "@ngraveio/bc-ur>@apocentre/alias-sampling": true,
         "@ngraveio/bc-ur>bignumber.js": true,
+        "@ngraveio/bc-ur>cbor-sync": true,
         "@ngraveio/bc-ur>crc": true,
         "@ngraveio/bc-ur>jsbi": true,
         "addons-linter>sha.js": true,
         "browserify>assert": true,
-        "browserify>buffer": true,
-        "pubnub>cbor-sync": true
+        "browserify>buffer": true
       }
     },
     "@ngraveio/bc-ur>assert>object-is": {
@@ -2068,6 +2068,14 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@ngraveio/bc-ur>cbor-sync": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@ngraveio/bc-ur>crc": {
@@ -4226,32 +4234,6 @@
     "prop-types>react-is": {
       "globals": {
         "console": true
-      }
-    },
-    "pubnub": {
-      "globals": {
-        "ActiveXObject": true,
-        "XMLHttpRequest": true,
-        "addEventListener": true,
-        "btoa": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "define": true,
-        "localStorage.getItem": true,
-        "localStorage.setItem": true,
-        "location": true,
-        "navigator": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
-    "pubnub>cbor-sync": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "pump": {

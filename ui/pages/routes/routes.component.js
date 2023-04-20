@@ -18,7 +18,6 @@ import Lock from '../lock';
 import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
-import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
@@ -51,7 +50,6 @@ import {
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
   LOCK_ROUTE,
-  MOBILE_SYNC_ROUTE,
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
@@ -222,11 +220,6 @@ export default class Routes extends Component {
         <Authenticated
           path={REVEAL_SEED_ROUTE}
           component={RevealSeedConfirmation}
-          exact
-        />
-        <Authenticated
-          path={MOBILE_SYNC_ROUTE}
-          component={MobileSyncPage}
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
