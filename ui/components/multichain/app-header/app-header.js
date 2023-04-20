@@ -129,6 +129,7 @@ export const AppHeader = ({ onClick }) => {
               gap={2}
             >
               <AvatarNetwork
+                margin={2}
                 className="multichain-app-header__contents--avatar-network"
                 ref={menuRef}
                 as="button"
@@ -141,6 +142,7 @@ export const AppHeader = ({ onClick }) => {
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
               />
               <PickerNetwork
+                margin={2}
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={() => dispatch(toggleNetworkMenu())}

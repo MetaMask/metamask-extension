@@ -1637,7 +1637,7 @@
     "message": "Global menu"
   },
   "globalTourDescription": {
-    "message": "See your portfolio, connected sites, settings, and more."
+    "message": "See your portfolio, connected sites, settings, and more"
   },
   "goBack": {
     "message": "Go back"
@@ -3056,7 +3056,7 @@
     "message": "Permissions"
   },
   "permissionsTourDescription": {
-    "message": "Find your connected accounts and manage permissions here."
+    "message": "Find your connected accounts and manage permissions here"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -4286,7 +4286,7 @@
     "message": "Network switcher"
   },
   "switcherTourDescription": {
-    "message": "Click the icon to switch networks or add a new network."
+    "message": "Click the icon to switch networks or add a new network"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
