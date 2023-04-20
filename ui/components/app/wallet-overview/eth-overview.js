@@ -39,9 +39,10 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   ButtonIcon,
-  BUTTON_ICON_SIZES,
-} from '../../component-library/button-icon/deprecated';
-import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+  ButtonIconSize,
+  Icon,
+  IconName,
+} from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -101,9 +102,9 @@ const EthOverview = ({ className }) => {
                   className="eth-overview__portfolio-button"
                   data-testid="home__portfolio-site"
                   color={IconColor.primaryDefault}
-                  iconName={ICON_NAMES.DIAGRAM}
+                  iconName={IconName.Diagram}
                   ariaLabel={t('portfolio')}
-                  size={BUTTON_ICON_SIZES.LG}
+                  size={ButtonIconSize.Lg}
                   onClick={() => {
                     const portfolioUrl = process.env.PORTFOLIO_URL;
                     global.platform.openTab({
@@ -147,9 +148,7 @@ const EthOverview = ({ className }) => {
         <>
           <IconButton
             className="eth-overview__button"
-            Icon={
-              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
-            }
+            Icon={<Icon name={IconName.Add} color={IconColor.primaryInverse} />}
             disabled={!isBuyableChain}
             data-testid="eth-overview-buy"
             label={t('buy')}
@@ -170,7 +169,7 @@ const EthOverview = ({ className }) => {
             data-testid="eth-overview-send"
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_UP_RIGHT}
+                name={IconName.Arrow2UpRight}
                 color={IconColor.primaryInverse}
               />
             }
@@ -197,7 +196,7 @@ const EthOverview = ({ className }) => {
             disabled={!isSwapsChain}
             Icon={
               <Icon
-                name={ICON_NAMES.SWAP_HORIZONTAL}
+                name={IconName.SwapHorizontal}
                 color={IconColor.primaryInverse}
               />
             }
@@ -239,7 +238,7 @@ const EthOverview = ({ className }) => {
             disabled={!isBridgeChain}
             data-testid="eth-overview-bridge"
             Icon={
-              <Icon name={ICON_NAMES.BRIDGE} color={IconColor.primaryInverse} />
+              <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
             }
             label={t('bridge')}
             onClick={() => {

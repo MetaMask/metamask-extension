@@ -15,6 +15,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
   INFURA_BLOCKAGE:
     'https://metamask.zendesk.com/hc/en-us/articles/360059386712',
+  LEDGER_FIREFOX_U2F_GUIDE:
+    'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
   LEGACY_WEB3: 'https://metamask.zendesk.com/hc/en-us/articles/360053147012',
   NFT_TOKENS:
     'https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet',
