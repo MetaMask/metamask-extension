@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -38,12 +38,28 @@ export const NetworkListMenu = ({ onClose }) => {
   const currentChainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
   const history = useHistory();
+  const inputRef = useRef();
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
+  useEffect(() => {
+    if (inputRef.current) {
+      const itemNode = inputRef.current.rootNode;
+      const networkNameNode = itemNode.querySelector(
+        '.multichain-network-list-item--selected .mm-button-link',
+      );
+      networkNameNode.focus();
+    }
+  }, [inputRef]);
+
   return (
-    <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
+    <Popover
+      onClose={onClose}
+      ref={inputRef}
+      centerTitle
+      title={t('networkMenuHeading')}
+    >
       <>
         <Box className="multichain-network-list-menu">
           {networks.map((network) => {
