@@ -31,7 +31,7 @@
   "dependencies": {
     "@metamask/approval-controller": "^2.1.0",
     "@metamask/base-controller": "^2.0.0",
-    "@metamask/controller-utils": "^3.1.0",
+    "@metamask/controller-utils": "^3.2.0",
     "@metamask/message-manager": "^3.0.0",
     "eth-rpc-errors": "^4.0.0",
     "ethereumjs-util": "^7.0.10",
