@@ -88,7 +88,8 @@ const AdvancedGasFeeDefaults = () => {
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
         <Text
-          variant={TextVariant.bodySm} as="h6"
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textAlternative}
           margin={0}
         >
