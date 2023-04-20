@@ -731,27 +731,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Sümbol peab olema 11 tähemärki või vähem."
   },
-  "syncWithMobile": {
-    "message": "Mobiiliga sünkroonimine"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Veenduge, et keegi teine ei vaata selle koodi skannimisel teie ekraani"
-  },
-  "syncWithMobileComplete": {
-    "message": "Teie andmed on edukalt sünkroonitud. Nautige MetaMaski mobiilirakendust!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Saate sünkroonida oma kontod ja teabe oma mobiiliseadmega. Avage MetaMaski mobiilirakendus, avage \"Settings\" (Seaded) ja puudutage valikut \"Sync from Browser Extension\" (Sünkroonimine lehitseja laiendusest)"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Järgige MetaMaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skanneerige see kood MetaMaski mobiilirakendusega"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mobiiliga sünkroonimine"
-  },
   "terms": {
     "message": "Teenusetingimused"
   },
