@@ -5006,10 +5006,10 @@ describe('NetworkController', () => {
 
               expect(controller.store.getState().provider).toStrictEqual({
                 type: networkType,
-                rpcUrl: '',
+                rpcUrl: undefined,
                 chainId,
                 ticker,
-                nickname: '',
+                nickname: undefined,
                 rpcPrefs: { blockExplorerUrl },
               });
             },
@@ -6975,10 +6975,10 @@ describe('NetworkController', () => {
             await controller.setProviderType('goerli');
             expect(controller.store.getState().provider).toStrictEqual({
               type: 'goerli',
-              rpcUrl: '',
+              rpcUrl: undefined,
               chainId: '0x5',
               ticker: 'GoerliETH',
-              nickname: '',
+              nickname: undefined,
               rpcPrefs: {
                 blockExplorerUrl: 'https://goerli.etherscan.io',
               },
