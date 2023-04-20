@@ -45,7 +45,7 @@ export const complianceActivated = (state) =>
 
 export const getComplianceHistoricalReportsByAddress = (address) =>
   createSelector(getComplianceHistoricalReports, (reports) =>
-    reports ? reports[address] : [undefined],
+    reports ? reports[address] : [],
   );
 
 export const getComplianceReportsInProgressByAddress = (address) =>
