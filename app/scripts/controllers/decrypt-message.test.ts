@@ -181,11 +181,6 @@ describe('EncryptionPublicKeyController', () => {
       messageToDecrypt,
     );
 
-    expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.setResult).toBeCalledWith(
-      messageIdMock,
-      'decryptedMessage',
-    );
     expect(result).toBe('decryptedMessage');
   });
 

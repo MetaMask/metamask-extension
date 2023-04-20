@@ -238,22 +238,8 @@ export default class DecryptMessageController extends BaseControllerV2<
    * @returns A full state update.
    */
   async decryptMessageInline(messageParams: DecryptMessageParamsMetamask) {
-    const messageId = messageParams.metamaskId as string;
-
-    let rawData;
-    let error;
-    try {
-      messageParams.data = this._parseMessageData(messageParams.data);
-      rawData = await this._keyringController.decryptMessage(messageParams);
-    } catch (e) {
-      error = (e as Error).message;
-    }
-
-    if (!error) {
-      this._decryptMessageManager.setResult(messageId, rawData);
-    }
-
-    return rawData;
+    messageParams.data = this._parseMessageData(messageParams.data);
+    return await this._keyringController.decryptMessage(messageParams);
   }
 
   /**
