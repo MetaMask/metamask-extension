@@ -164,7 +164,7 @@ export default function AddNft() {
                     <ButtonIcon
                       className="add-nft__close"
                       iconName={IconName.Close}
-                      size={IconSize.Sm}
+                      size={ButtonIconSize.Sm}
                       ariaLabel={t('close')}
                       data-testid="add-nft-error-close"
                       onClick={() => setNftAddFailed(false)}
