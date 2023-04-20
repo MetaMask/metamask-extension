@@ -1,9 +1,9 @@
 import {
   BackgroundColor,
   BorderColor,
-  IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { TextProps } from '../text';
 
 export enum AvatarBaseSize {
   Xs = 'xs',
@@ -13,7 +13,7 @@ export enum AvatarBaseSize {
   Xl = 'xl',
 }
 
-export interface AvatarBaseProps {
+export interface AvatarBaseProps extends TextProps {
   /**
    * The size of the AvatarBase.
    * Possible values could be 'AvatarBaseSize.Xs'(16px), 'AvatarBaseSize.Sm'(24px),
@@ -24,7 +24,7 @@ export interface AvatarBaseProps {
   /**
    * The children to be rendered inside the AvatarBase
    */
-  children?: React.ReactNode;
+  children: React.ReactNode;
   /**
    * The background color of the AvatarBase
    * Defaults to Color.backgroundAlternative
@@ -39,12 +39,9 @@ export interface AvatarBaseProps {
    * The color of the text inside the AvatarBase
    * Defaults to TextColor.textDefault
    */
-  color?: TextColor | IconColor;
+  color?: TextColor;
   /**
    * Additional classNames to be added to the AvatarBase
    */
   className?: string;
-  /**
-   * AvatarBase also accepts all Text props including variant and all Box props
-   */
 }

@@ -100,11 +100,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args: AvatarBaseProps) => (
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarBase {...args} size={AvatarBaseSize.Xs} />
-    <AvatarBase {...args} size={AvatarBaseSize.Sm} />
-    <AvatarBase {...args} size={AvatarBaseSize.Md} />
-    <AvatarBase {...args} size={AvatarBaseSize.Lg} />
-    <AvatarBase {...args} size={AvatarBaseSize.Xl} />
+    <AvatarBase {...args} size={AvatarBaseSize.Xs} children="" />
+    <AvatarBase {...args} size={AvatarBaseSize.Sm} children="" />
+    <AvatarBase {...args} size={AvatarBaseSize.Md} children="" />
+    <AvatarBase {...args} size={AvatarBaseSize.Lg} children="" />
+    <AvatarBase {...args} size={AvatarBaseSize.Xl} children="" />
   </Box>
 );
 
