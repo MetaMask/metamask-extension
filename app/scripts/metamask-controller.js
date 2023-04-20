@@ -1176,9 +1176,17 @@ export default class MetamaskController extends EventEmitter {
           ?.disabledRpcMethodPreferences?.eth_sign,
       getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
+    });
+
+    this.signatureController.hub.on('cancelWithReason', (message, reason) => {
+      this.metaMetricsController.trackEvent({
+        event: reason,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          action: 'Sign Request',
+          type: message.type,
+        },
+      });
     });
 
     this.swapsController = new SwapsController({
