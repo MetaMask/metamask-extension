@@ -5,7 +5,6 @@ import {
   BackgroundColor,
   BorderColor,
   TextColor,
-  IconColor,
   DISPLAY,
   JustifyContent,
   AlignItems,

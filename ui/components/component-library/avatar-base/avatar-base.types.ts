@@ -1,8 +1,9 @@
 import {
   BackgroundColor,
   BorderColor,
+  IconColor,
   TextColor,
-} from '../../../helpers/constants/design-system';
+} from "../../../helpers/constants/design-system";
 
 export enum AvatarBaseSize {
   Xs = 'xs',
@@ -38,7 +39,7 @@ export interface AvatarBaseProps {
    * The color of the text inside the AvatarBase
    * Defaults to TextColor.textDefault
    */
-  color?: TextColor;
+  color?: TextColor | IconColor;
   /**
    * Additional classNames to be added to the AvatarBase
    */
