@@ -17,14 +17,12 @@ import { disableSnap, enableSnap } from '../../../../store/actions';
 import { getSnaps } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../../components/component-library/icon/deprecated';
-import {
   BannerTip,
   BannerTipLogoType,
   ButtonLink,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 
@@ -93,10 +91,10 @@ const SnapListTab = () => {
             alignItems={AlignItems.center}
           >
             <Icon
-              name={ICON_NAMES.SNAPS}
+              name={IconName.Snaps}
               color={Color.iconMuted}
               className="snap-list-tab__no-snaps_icon"
-              size={ICON_SIZES.AUTO}
+              size={IconSize.Auto}
             />
             <Text
               color={Color.textMuted}

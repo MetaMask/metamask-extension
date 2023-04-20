@@ -27,11 +27,7 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
-import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../components/component-library/icon/deprecated';
+import { ButtonIcon, Icon, IconName } from '../../components/component-library';
 import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
@@ -125,7 +121,7 @@ class SettingsPage extends PureComponent {
             {currentPath !== SETTINGS_ROUTE && (
               <ButtonIcon
                 ariaLabel={t('back')}
-                iconName={ICON_NAMES.ARROW_LEFT}
+                iconName={IconName.ArrowLeft}
                 className="settings-page__back-button"
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
@@ -263,7 +259,7 @@ class SettingsPage extends PureComponent {
     const tabs = [
       {
         content: t('general'),
-        icon: <Icon name={ICON_NAMES.SETTING} />,
+        icon: <Icon name={IconName.Setting} />,
         key: GENERAL_ROUTE,
       },
       {
@@ -273,7 +269,7 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('contacts'),
-        icon: <Icon name={ICON_NAMES.BOOK} />,
+        icon: <Icon name={IconName.Book} />,
         key: CONTACT_LIST_ROUTE,
       },
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -292,7 +288,7 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('alerts'),
-        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
+        icon: <Icon name={IconName.Notification} />,
         key: ALERTS_ROUTE,
       },
       {

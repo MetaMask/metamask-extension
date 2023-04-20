@@ -35,10 +35,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../../components/component-library/icon/deprecated';
+import { Icon, IconName } from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,
@@ -227,7 +224,7 @@ export default function CreatePassword({
             titleDetail={
               isValid && (
                 <div className="create-password__form--checkmark">
-                  <Icon name={ICON_NAMES.CHECK} />
+                  <Icon name={IconName.Check} />
                 </div>
               )
             }
