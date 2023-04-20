@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
-import Button from '../../ui/button';
+import { Button } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
