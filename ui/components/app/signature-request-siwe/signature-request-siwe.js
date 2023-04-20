@@ -64,7 +64,8 @@ export default function SignatureRequestSIWE({
   const isSIWEDomainValid = checkSIWEDomain();
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
-  const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
+  const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
+    useState(false);
 
   const showSecurityProviderBanner =
     (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
@@ -170,16 +171,16 @@ export default function SignatureRequestSIWE({
               onSubmit={onSign}
               submitText={t('confirm')}
               submitButtonType="danger-primary"
-              disabled={!agreeToDomainWarning}
+              disabled={!hasAgreedToDomainWarning}
             />
           }
         >
           <div className="signature-request-siwe__warning-popover__checkbox-wrapper">
             <Checkbox
               id="signature-request-siwe_domain-checkbox"
-              checked={agreeToDomainWarning}
+              checked={hasAgreedToDomainWarning}
               className="signature-request-siwe__warning-popover__checkbox-wrapper__checkbox"
-              onClick={() => setAgreeToDomainWarning((checked) => !checked)}
+              onClick={() => setHasAgreedToDomainWarning((checked) => !checked)}
             />
             <label
               className="signature-request-siwe__warning-popover__checkbox-wrapper__label"
