@@ -2,9 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
-import { Text, Button, BUTTON_TYPES } from '../../../component-library';
-import { ButtonIcon } from '../../../component-library/button-icon/deprecated';
-import { ICON_NAMES } from '../../../component-library/icon/deprecated';
+import {
+  Text,
+  Button,
+  BUTTON_TYPES,
+  ButtonIcon,
+  IconName,
+} from '../../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -50,7 +54,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal, willHide }) => {
         {willHide && (
           <ButtonIcon
             className="hold-to-reveal-modal__close"
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             size={Size.SM}
             onClick={handleCancel}
             ariaLabel={t('close')}

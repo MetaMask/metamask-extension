@@ -6,7 +6,7 @@ import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
 
 describe('AvatarFavicon', () => {
   const args = {
-    src: './images/eth_logo.svg',
+    src: './images/eth_logo.png',
     name: 'test',
   };
 
