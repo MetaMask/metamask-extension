@@ -12,6 +12,14 @@ import {
 
 import { ICON_SIZES, ICON_NAMES } from './icon.constants';
 
+/**
+ * @deprecated This is the javascript version of `Icon` which has been deprecated in favour of the TypeScript version of the same name.
+ *
+ * To use the TS version update the imports and enums as follows:
+ *
+ * `import { Icon, IconSize, IconName } from '../../component-library'`;
+ */
+
 export const Icon = ({
   name,
   size = Size.MD,
