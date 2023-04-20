@@ -4037,6 +4037,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/message-manager@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/message-manager@npm:3.1.0"
+  dependencies:
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.2.0
+    "@types/uuid": ^8.3.0
+    eth-sig-util: ^3.0.0
+    ethereumjs-util: ^7.0.10
+    jsonschema: ^1.2.4
+    uuid: ^8.3.2
+  checksum: d96d1071abc704a761b61bda715a2f2ccc0cf6604b095bbd1141d8de6c621aa5e6113d47c787cbdb8ee037f4bc1bf003b8575b87588cd9af8a27479e8ee5fdd7
+  languageName: node
+  linkType: hard
+
 "@metamask/metamask-eth-abis@npm:3.0.0, @metamask/metamask-eth-abis@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/metamask-eth-abis@npm:3.0.0"
@@ -4272,16 +4287,16 @@ __metadata:
 
 "@metamask/signature-controller@file:pending/signature-controller::locator=metamask-crx%40workspace%3A.":
   version: 1.0.0
-  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=d948ec&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=8df7f9&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^2.1.0
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.2.0
-    "@metamask/message-manager": ^3.0.0
-    eth-rpc-errors: ^4.0.0
+    "@metamask/controller-utils": ^3.1.0
+    "@metamask/message-manager": ^3.1.0
+    eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: 4ed7e0452b0dbc300adf0d76a3584273f6231a77b8ddb72db08d3780afa60e7c8db37ca4ad23072bec565040c5be1630e06ad69a53bb7ee6483aedb9abe7d891
+  checksum: 14beecb2fcccef9100f1fe03eca50bdae13b0149e35d46f523ca073ba6d8e4cfe127ba9c11fc477b4254fb092e9ef82e2b8c0eaf55d207fd4e29efc52d442d77
   languageName: node
   linkType: hard
 

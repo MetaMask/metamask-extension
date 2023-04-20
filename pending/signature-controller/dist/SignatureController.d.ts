@@ -7,7 +7,6 @@ import { AcceptRequest, AddApprovalRequest, RejectRequest } from '@metamask/appr
 declare const controllerName = "SignatureController";
 declare type StateMessage = Required<AbstractMessage> & {
     msgParams: Required<AbstractMessageParams>;
-    securityProviderResponse: any;
 };
 declare type SignatureControllerState = {
     unapprovedMsgs: Record<string, StateMessage>;

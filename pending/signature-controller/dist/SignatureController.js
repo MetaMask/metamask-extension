@@ -31,9 +31,6 @@ const ethereumjs_util_1 = require("ethereumjs-util");
 const base_controller_1 = require("@metamask/base-controller");
 const controller_utils_1 = require("@metamask/controller-utils");
 const controllerName = 'SignatureController';
-const methodNameSign = 'eth_sign';
-const methodNamePersonalSign = 'personal_sign';
-const methodNameTypedSign = 'eth_signTypedData';
 const stateMetadata = {
     unapprovedMsgs: { persist: false, anonymous: false },
     unapprovedPersonalMsgs: { persist: false, anonymous: false },
@@ -78,9 +75,9 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
         this._messageManager = new message_manager_1.MessageManager(undefined, undefined, securityProviderRequest);
         this._personalMessageManager = new message_manager_1.PersonalMessageManager(undefined, undefined, securityProviderRequest);
         this._typedMessageManager = new message_manager_1.TypedMessageManager(undefined, undefined, securityProviderRequest);
-        this._handleMessageManagerEvents(this._messageManager, methodNameSign, 'unapprovedMessage');
-        this._handleMessageManagerEvents(this._personalMessageManager, methodNamePersonalSign, 'unapprovedPersonalMessage');
-        this._handleMessageManagerEvents(this._typedMessageManager, methodNameTypedSign, 'unapprovedTypedMessage');
+        this._handleMessageManagerEvents(this._messageManager, controller_utils_1.ApprovalType.EthSign, 'unapprovedMessage');
+        this._handleMessageManagerEvents(this._personalMessageManager, controller_utils_1.ApprovalType.PersonalSign, 'unapprovedPersonalMessage');
+        this._handleMessageManagerEvents(this._typedMessageManager, controller_utils_1.ApprovalType.EthSignTypedData, 'unapprovedTypedMessage');
         this._subscribeToMessageState(this._messageManager, (state, newMessages, messageCount) => {
             state.unapprovedMsgs = newMessages;
             state.unapprovedMsgCount = messageCount;
@@ -187,7 +184,7 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
      */
     signMessage(msgParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this._signAbstractMessage(this._messageManager, methodNameSign, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () { return yield this._keyringController.signMessage(cleanMsgParams); }));
+            return yield this._signAbstractMessage(this._messageManager, controller_utils_1.ApprovalType.EthSign, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () { return yield this._keyringController.signMessage(cleanMsgParams); }));
         });
     }
     /**
@@ -199,7 +196,7 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
      */
     signPersonalMessage(msgParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this._signAbstractMessage(this._personalMessageManager, methodNamePersonalSign, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () { return yield this._keyringController.signPersonalMessage(cleanMsgParams); }));
+            return yield this._signAbstractMessage(this._personalMessageManager, controller_utils_1.ApprovalType.PersonalSign, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () { return yield this._keyringController.signPersonalMessage(cleanMsgParams); }));
         });
     }
     /**
@@ -214,7 +211,7 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
     signTypedMessage(msgParams, opts = { parseJsonData: true }) {
         return __awaiter(this, void 0, void 0, function* () {
             const { version } = msgParams;
-            return yield this._signAbstractMessage(this._typedMessageManager, methodNameTypedSign, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () {
+            return yield this._signAbstractMessage(this._typedMessageManager, controller_utils_1.ApprovalType.EthSignTypedData, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () {
                 const finalMessageParams = opts.parseJsonData
                     ? this._removeJsonData(cleanMsgParams, version)
                     : cleanMsgParams;
@@ -316,20 +313,22 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
         this._rejectApproval(messageId);
         return this._getState();
     }
-    _handleMessageManagerEvents(messageManager, methodName, eventName) {
+    _handleMessageManagerEvents(messageManager, approvalType, eventName) {
         messageManager.hub.on('updateBadge', () => {
             this.hub.emit('updateBadge');
         });
         messageManager.hub.on('unapprovedMessage', (msgParams) => {
             this.hub.emit(eventName, msgParams);
-            this._requestApproval(msgParams, methodName);
+            this._requestApproval(msgParams, approvalType);
         });
     }
     _subscribeToMessageState(messageManager, updateState) {
         messageManager.subscribe((state) => {
             const newMessages = this._migrateMessages(state.unapprovedMessages);
-            this.update((draftState) => {
-                updateState(draftState, newMessages, state.unapprovedMessagesCount);
+            this.update(() => {
+                const newState = Object.assign({}, this.state);
+                updateState(newState, newMessages, state.unapprovedMessagesCount);
+                return newState;
             });
         });
     }
@@ -360,9 +359,8 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
         return Object.assign(Object.assign(Object.assign({}, this.state.unapprovedMsgs), this.state.unapprovedPersonalMsgs), this.state.unapprovedTypedMessages)[messageId];
     }
     _requestApproval(msgParams, type) {
-        var _a;
         const id = msgParams.metamaskId;
-        const origin = (_a = msgParams.origin) !== null && _a !== void 0 ? _a : controller_utils_1.ORIGIN_METAMASK;
+        const origin = msgParams.origin || controller_utils_1.ORIGIN_METAMASK;
         this.messagingSystem
             .call('ApprovalController:addRequest', {
             id,

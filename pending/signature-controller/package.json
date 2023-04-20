@@ -32,8 +32,8 @@
     "@metamask/approval-controller": "^2.1.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/controller-utils": "^3.2.0",
-    "@metamask/message-manager": "^3.0.0",
-    "eth-rpc-errors": "^4.0.0",
+    "@metamask/message-manager": "^3.1.0",
+    "eth-rpc-errors": "^4.0.2",
     "ethereumjs-util": "^7.0.10",
     "immer": "^9.0.6"
   },
@@ -44,5 +44,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "yalcSig": "a9dd580a9d520174f6fdd7f07c6e456e"
+  "yalcSig": "a83183d27d3848e5851d414dd63550e5"
 }
