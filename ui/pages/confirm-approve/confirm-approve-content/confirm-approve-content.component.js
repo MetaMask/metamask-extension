@@ -23,7 +23,6 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
-import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
@@ -32,7 +31,9 @@ import {
   ICON_NAMES,
   Icon,
 } from '../../../components/component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
+import { Text } from '../../../components/component-library';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -169,7 +170,7 @@ export default class ConfirmApproveContent extends Component {
       !renderSimulationFailureWarning
     ) {
       return (
-        <GasDetailsItem
+        <ConfirmGasDisplay
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
         />
       );

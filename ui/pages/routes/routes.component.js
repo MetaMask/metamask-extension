@@ -30,6 +30,11 @@ import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import AppHeader from '../../components/app/app-header';
+import {
+  AppHeader as MultichainAppHeader,
+  AccountListMenu,
+  NetworkListMenu,
+} from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
@@ -88,7 +93,6 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -126,6 +130,8 @@ export default class Routes extends Component {
     completedOnboarding: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
     toggleAccountMenu: PropTypes.func,
+    isNetworkMenuOpen: PropTypes.bool,
+    toggleNetworkMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -315,7 +321,11 @@ export default class Routes extends Component {
   }
 
   onEditTransactionPage() {
-    return this.props.sendStage === SEND_STAGES.EDIT;
+    return (
+      this.props.sendStage === SEND_STAGES.EDIT ||
+      this.props.sendStage === SEND_STAGES.DRAFT ||
+      this.props.sendStage === SEND_STAGES.ADD_RECIPIENT
+    );
   }
 
   onSwapsPage() {
@@ -425,6 +435,8 @@ export default class Routes extends Component {
       completedOnboarding,
       isAccountMenuOpen,
       toggleAccountMenu,
+      isNetworkMenuOpen,
+      toggleNetworkMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -467,23 +479,29 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && (
-          <AppHeader
-            hideNetworkIndicator={this.onInitializationUnlockPage()}
-            disableNetworkIndicator={this.onSwapsPage()}
-            onClick={this.onAppHeaderClick}
-            disabled={
-              this.onConfirmPage() ||
-              this.onEditTransactionPage() ||
-              (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
-            }
-          />
-        )}
+        {!this.hideAppHeader() &&
+          (process.env.MULTICHAIN ? (
+            <MultichainAppHeader />
+          ) : (
+            <AppHeader
+              hideNetworkIndicator={this.onInitializationUnlockPage()}
+              disableNetworkIndicator={this.onSwapsPage()}
+              onClick={this.onAppHeaderClick}
+              disabled={
+                this.onConfirmPage() ||
+                this.onEditTransactionPage() ||
+                (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
+              }
+            />
+          ))}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
         {process.env.MULTICHAIN ? null : <AccountMenu />}
         {process.env.MULTICHAIN && isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
+        {process.env.MULTICHAIN && isNetworkMenuOpen ? (
+          <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

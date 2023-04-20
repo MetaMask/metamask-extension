@@ -2694,10 +2694,6 @@
     "message": "Планируйте и выполняйте периодические действия.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Показать подтверждение в MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Отображение диалоговых окон в MetaMask.",
     "description": "The description for the `snap_dialog` permission"

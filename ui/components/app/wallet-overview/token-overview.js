@@ -35,7 +35,7 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
 
-import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import WalletOverview from './wallet-overview';
 
@@ -93,9 +93,7 @@ const TokenOverview = ({ className, token }) => {
         <>
           <IconButton
             className="token-overview__button"
-            Icon={
-              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
-            }
+            Icon={<Icon name={IconName.Add} color={IconColor.primaryInverse} />}
             label={t('buy')}
             data-testid="token-overview-buy"
             onClick={() => {
@@ -139,7 +137,7 @@ const TokenOverview = ({ className, token }) => {
             }}
             Icon={
               <Icon
-                name={ICON_NAMES.ARROW_2_RIGHT}
+                name={IconName.Arrow2UpRight}
                 color={IconColor.primaryInverse}
               />
             }
@@ -152,7 +150,7 @@ const TokenOverview = ({ className, token }) => {
             disabled={!isSwapsChain}
             Icon={
               <Icon
-                name={ICON_NAMES.SWAP_HORIZONTAL}
+                name={IconName.SwapHorizontal}
                 color={IconColor.primaryInverse}
               />
             }
@@ -201,10 +199,7 @@ const TokenOverview = ({ className, token }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon
-                name={ICON_NAMES.DIAGRAM}
-                color={IconColor.primaryInverse}
-              />
+              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
             label={t('portfolio')}
             data-testid="home__portfolio-site"

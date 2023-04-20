@@ -2694,10 +2694,6 @@
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "MetaMask में पुष्टि को दर्शाएं।",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
     "description": "The description for the `snap_dialog` permission"

@@ -2694,10 +2694,6 @@
     "message": "Agende e execute ações periódicas.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Exibir uma confirmação na MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Exibir janelas de diálogo na MetaMask.",
     "description": "The description for the `snap_dialog` permission"

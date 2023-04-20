@@ -2694,10 +2694,6 @@
     "message": "Jadwalkan dan lakukan tindakan berkala.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Tampilkan konfirmasi di MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Tampilkan jendela dialog di MetaMask.",
     "description": "The description for the `snap_dialog` permission"

@@ -2694,10 +2694,6 @@
     "message": "Mag-iskedyul at magsagawa ng mga pana-panahong mga aksyon.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Ipakita ang kumpirmasyon sa MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Ipakita ang mga dialog window sa MetaMask.",
     "description": "The description for the `snap_dialog` permission"

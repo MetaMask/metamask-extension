@@ -2694,10 +2694,6 @@
     "message": "정기적 활동 예약 및 실행",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "MetaMask에 확인을 표시합니다.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
     "description": "The description for the `snap_dialog` permission"
