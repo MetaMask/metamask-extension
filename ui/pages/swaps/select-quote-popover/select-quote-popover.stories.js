@@ -49,7 +49,7 @@ export const DefaultStory = (args) => {
   const handleSubmit = () => {
     setShowPopover(false);
     args.onSubmit();
-  }
+  };
 
   return (
     <div>
