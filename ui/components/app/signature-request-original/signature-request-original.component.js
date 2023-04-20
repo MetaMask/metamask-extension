@@ -23,8 +23,8 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
-  IconColor,
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  IconColor,
   DISPLAY,
   BLOCK_SIZES,
   TextVariant,
