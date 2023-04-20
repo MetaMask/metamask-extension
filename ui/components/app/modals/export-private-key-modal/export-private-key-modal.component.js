@@ -269,11 +269,11 @@ const ExportPrivateKeyModal = ({
           >
             {renderPasswordLabel(privateKey)}
             {renderPasswordInput(privateKey)}
-            {showWarning ? (
+            {showWarning && (
               <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
                 {warning}
               </Text>
-            ) : null}
+            )}
           </Box>
           <BannerAlert
             padding={[1, 3, 0, 3]}
