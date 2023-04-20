@@ -158,15 +158,9 @@ describe('EncryptionPublicKeyController', () => {
     keyringControllerMock.decryptMessage.mockRejectedValue(new Error('error'));
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessage(
-      messageToDecrypt,
-    );
-
-    expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
-      messageIdMock,
-    );
-    expect(result).toBe(mockExtState);
+    return expect(
+      decryptMessageController.decryptMessage(messageToDecrypt),
+    ).rejects.toThrow('error');
   });
 
   it('should decrypt message inline', async () => {

@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import log from 'loglevel';
 import {
   DecryptMessageManager,
   DecryptMessageParams,
@@ -22,8 +23,8 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
+import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
@@ -223,10 +224,9 @@ export default class DecryptMessageController extends BaseControllerV2<
       );
       this._acceptApproval(messageId);
     } catch (error) {
-      return this._cancelAbstractMessage(
-        this._decryptMessageManager,
-        messageId,
-      );
+      log.info('MetaMaskController - eth_decrypt failed.', error);
+      this._cancelAbstractMessage(this._decryptMessageManager, messageId);
+      throw error;
     }
     return this._getState();
   }
@@ -355,21 +355,20 @@ export default class DecryptMessageController extends BaseControllerV2<
 
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
-    const origin = messageParams.origin || controllerName;
-
-    this.messagingSystem
-      .call(
+    const origin = messageParams.origin || ORIGIN_METAMASK;
+    try {
+      this.messagingSystem.call(
         'ApprovalController:addRequest',
         {
           id,
           origin,
-          type: MESSAGE_TYPE.ETH_DECRYPT,
+          type: ApprovalType.EthDecrypt,
         },
         true,
-      )
-      .catch(() => {
-        // Intentionally ignored as promise not currently used
-      });
+      );
+    } catch (error) {
+      log.info('Error adding request to approval controller', error);
+    }
   }
 
   private _parseMessageData(data: string) {
@@ -379,10 +378,14 @@ export default class DecryptMessageController extends BaseControllerV2<
   }
 
   private _rejectApproval(messageId: string) {
-    this.messagingSystem.call(
-      'ApprovalController:rejectRequest',
-      messageId,
-      'Cancel',
-    );
+    try {
+      this.messagingSystem.call(
+        'ApprovalController:rejectRequest',
+        messageId,
+        'Cancel',
+      );
+    } catch (error) {
+      log.info('Error rejecting request to approval controller', error);
+    }
   }
 }
