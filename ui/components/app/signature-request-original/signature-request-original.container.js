@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { ApprovalType } from '@metamask/controller-utils';
 import { goHome, cancelMsgs, showModal } from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
@@ -108,13 +108,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   let cancel;
   let sign;
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
+  if (type === ApprovalType.PersonalSign) {
     cancel = cancelPersonalMessage;
     sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
+  } else if (type === ApprovalType.EthSignTypedData) {
     cancel = cancelTypedMessage;
     sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
+  } else if (type === ApprovalType.EthSign) {
     cancel = cancelMessage;
     sign = signMessage;
   }

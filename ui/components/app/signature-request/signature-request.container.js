@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -20,7 +21,6 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { cancelMsgs, showModal } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -124,13 +124,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   let cancel;
   let sign;
 
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
+  if (type === ApprovalType.PersonalSign) {
     cancel = cancelPersonalMessage;
     sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
+  } else if (type === ApprovalType.EthSignTypedData) {
     cancel = cancelTypedMessage;
     sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
+  } else if (type === ApprovalType.EthSign) {
     cancel = cancelMessage;
     sign = signMessage;
   }

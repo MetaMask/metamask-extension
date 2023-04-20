@@ -11,7 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { ApprovalType } from '@metamask/controller-utils';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
@@ -198,9 +198,9 @@ export default function ConfirmationPage({
     getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
 
   const SNAP_DIALOG_TYPE = [
-    MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-    MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+    ApprovalType.SnapDialogAlert,
+    ApprovalType.SnapDialogConfirmation,
+    ApprovalType.SnapDialogPrompt,
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
@@ -208,7 +208,7 @@ export default function ConfirmationPage({
 
   const INPUT_STATE_CONFIRMATIONS = [
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+    ApprovalType.SnapDialogPrompt,
     ///: END:ONLY_INCLUDE_IN
   ];
 
@@ -284,7 +284,7 @@ export default function ConfirmationPage({
       setShowWarningModal(true);
     } else {
       const inputState = hasInputState(pendingConfirmation.type)
-        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+        ? inputStates[ApprovalType.SnapDialogPrompt]
         : null;
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);

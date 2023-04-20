@@ -12,6 +12,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   isEqual,
 } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -38,7 +39,6 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -63,7 +63,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -161,9 +161,9 @@ export function hasUnsignedQRHardwareMessage(state) {
     return false;
   }
   switch (type) {
-    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-    case MESSAGE_TYPE.ETH_SIGN:
-    case MESSAGE_TYPE.PERSONAL_SIGN:
+    case ApprovalType.EthSignTypedData:
+    case ApprovalType.EthSign:
+    case ApprovalType.PersonalSign:
       return Boolean(
         qrKeyring.accounts.find(
           (account) => account.toLowerCase() === from.toLowerCase(),
@@ -551,7 +551,7 @@ export function getUnapprovedConfirmations(state) {
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
   return unapprovedConfirmations.filter((approval) =>
-    TEMPLATED_CONFIRMATION_MESSAGE_TYPES.includes(approval.type),
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
 }
 

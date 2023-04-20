@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
+import { ApprovalType } from '@metamask/controller-utils';
 import LedgerInstructionField from '../ledger-instruction-field';
 
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   getURLHostName,
   sanitizeString,
@@ -158,13 +158,13 @@ export default class SignatureRequestOriginal extends Component {
       msgParams: { data },
     } = txData;
 
-    if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
+    if (type === ApprovalType.PersonalSign) {
       rows = [
         { name: this.context.t('message'), value: this.msgHexToText(data) },
       ];
-    } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
+    } else if (type === ApprovalType.EthSignTypedData) {
       rows = data;
-    } else if (type === MESSAGE_TYPE.ETH_SIGN) {
+    } else if (type === ApprovalType.EthSign) {
       rows = [{ name: this.context.t('message'), value: data }];
     }
 
@@ -313,7 +313,7 @@ export default class SignatureRequestOriginal extends Component {
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async (event) => {
-          if (type === MESSAGE_TYPE.ETH_SIGN) {
+          if (type === ApprovalType.EthSign) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
             await sign(event);

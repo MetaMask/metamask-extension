@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { ApprovalType } from '@metamask/controller-utils';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
@@ -49,7 +49,7 @@ const props = {
       data: MOCK_SIGN_DATA,
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
-    type: MESSAGE_TYPE.ETH_SIGN,
+    type: ApprovalType.EthSign,
   },
   selectedAccount: {
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -113,7 +113,7 @@ describe('SignatureRequestOriginal', () => {
         ],
         origin: 'https://happydapp.website/governance?futarchy=true',
       },
-      type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+      type: ApprovalType.EthSignTypedData,
     };
     const { getByText } = render(txData);
     expect(getByText('Message \\u202E test:')).toBeInTheDocument();

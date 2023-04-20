@@ -1,6 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_TYPE_MAP,
   NETWORK_TO_NAME_MAP,
@@ -14,7 +14,7 @@ import {
 } from '../../../../../shared/modules/network.utils';
 
 const switchEthereumChain = {
-  methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
+  methodNames: [ApprovalType.SwitchEthereumChain],
   implementation: switchEthereumChainHandler,
   hookNames: {
     getCurrentChainId: true,
@@ -109,7 +109,7 @@ async function switchEthereumChainHandler(
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
       if (
@@ -130,7 +130,7 @@ async function switchEthereumChainHandler(
   return end(
     ethErrors.provider.custom({
       code: 4902, // To-be-standardized "unrecognized chain ID" error
-      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${ApprovalType.AddEthereumChain} first.`,
     }),
   );
 }

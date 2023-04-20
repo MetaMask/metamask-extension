@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ApprovalType } from '@metamask/controller-utils';
 import { getCurrentQRHardwareState } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -11,7 +12,6 @@ import {
   cancelMsg,
   cancelTypedMsg,
 } from '../../../store/actions';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
@@ -45,15 +45,15 @@ const QRHardwarePopover = () => {
   const signRequestCancel = useCallback(() => {
     let action = cancelTx;
     switch (_txData.type) {
-      case MESSAGE_TYPE.PERSONAL_SIGN: {
+      case ApprovalType.PersonalSign: {
         action = cancelPersonalMsg;
         break;
       }
-      case MESSAGE_TYPE.ETH_SIGN: {
+      case ApprovalType.EthSign: {
         action = cancelMsg;
         break;
       }
-      case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA: {
+      case ApprovalType.EthSignTypedData: {
         action = cancelTypedMsg;
         break;
       }
