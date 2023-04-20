@@ -1589,9 +1589,6 @@
   "history": {
     "message": "Histórico"
   },
-  "holdToReveal": {
-    "message": "Segure para revelar a FRS"
-  },
   "holdToRevealContent1": {
     "message": "Sua Frase de Recuperação Secreta concede $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1611,9 +1608,6 @@
   "holdToRevealContent5": {
     "message": "mas os phishers talvez solicitem.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Mantenha sua FRS em segurança"
   },
   "ignoreAll": {
     "message": "Ignorar tudo"

@@ -1589,9 +1589,6 @@
   "history": {
     "message": "Verlauf"
   },
-  "holdToReveal": {
-    "message": "Halten, um GWP anzuzeigen"
-  },
   "holdToRevealContent1": {
     "message": "Ihre geheime Wiederherstellungsphrase bietet $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1611,9 +1608,6 @@
   "holdToRevealContent5": {
     "message": "Betrüger aber schon.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Bewahren Sie Ihre GWP sicher auf"
   },
   "ignoreAll": {
     "message": "Alle ignorieren"
