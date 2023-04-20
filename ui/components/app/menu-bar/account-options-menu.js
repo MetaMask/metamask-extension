@@ -28,7 +28,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { IconName } from '../../component-library';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext();
@@ -87,7 +87,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             </span>
           ) : null
         }
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
       >
         {t(
           blockExplorerLinkText.firstPart,
@@ -109,7 +109,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             global.platform.openExtensionInBrowser();
             onClose();
           }}
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
         >
           {t('expandView')}
         </MenuItem>
@@ -127,7 +127,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           });
           onClose();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         {t('accountDetails')}
       </MenuItem>
@@ -144,7 +144,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           history.push(CONNECTED_ROUTE);
           onClose();
         }}
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
       >
         {t('connectedSites')}
       </MenuItem>
@@ -160,7 +160,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             );
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           {t('removeAccount')}
         </MenuItem>

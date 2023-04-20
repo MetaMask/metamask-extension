@@ -14,8 +14,7 @@ import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ButtonIcon, IconName } from '../../component-library';
 import AccountOptionsMenu from './account-options-menu';
 
 export default function MenuBar() {
@@ -41,7 +40,7 @@ export default function MenuBar() {
       <SelectedAccount />
       <span style={{ display: 'inherit' }} ref={ref}>
         <ButtonIcon
-          iconName={ICON_NAMES.MORE_VERTICAL}
+          iconName={IconName.MoreVertical}
           className="menu-bar__account-options"
           data-testid="account-options-menu-button"
           ariaLabel={t('accountOptions')}
