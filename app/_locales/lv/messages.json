@@ -737,27 +737,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
   },
-  "syncWithMobile": {
-    "message": "Sinhronizēt ar tālruni"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pārliecinieties, ka neviens cits neskatās jūsu ekrānā, kad skenējat šo kodu."
-  },
-  "syncWithMobileComplete": {
-    "message": "Jūsu dati sekmīgi sinhronizēti. Patīkamu MetaMask mobilās lietotnes lietošanu!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Jūs varat sinhronizēt savus kontus un informāciju ar mobilo ierīci. Atveriet MetaMask mobilo lietotni, ejiet uz \"Iestatījumi\" un pieskarieties pie \"Sinhronizēt no pārlūka paplašinājuma\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ja esat pirmoreiz atvēris MetaMask mobilo lietotni, vienkārši sekojiet norādēm tālrunī."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Noskenējiet šo kodu ar MetaMask mobilo lietotni"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinhronizēt ar tālruni"
-  },
   "terms": {
     "message": "Lietošanas noteikumi"
   },
