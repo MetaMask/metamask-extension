@@ -113,7 +113,7 @@ export default class SwapsController {
     fetchTradesInfo = defaultFetchTradesInfo,
     getCurrentChainId,
     getEIP1559GasFeeEstimates,
-    onNetworkDidChange,
+    onNetworkStateChange,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
@@ -137,7 +137,7 @@ export default class SwapsController {
 
     this.ethersProvider = new Web3Provider(provider);
     this._currentNetworkId = networkController.store.getState().networkId;
-    onNetworkDidChange(() => {
+    onNetworkStateChange(() => {
       const { networkId, networkStatus } = networkController.store.getState();
       if (
         networkStatus === NetworkStatus.Available &&
@@ -304,6 +304,7 @@ export default class SwapsController {
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
             const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+              chainId,
               {
                 txParams: quote.trade,
                 chainId,

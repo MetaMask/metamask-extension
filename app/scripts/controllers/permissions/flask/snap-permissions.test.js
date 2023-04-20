@@ -16,7 +16,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
       getSnap: () => undefined,
       getSnapRpcHandler: () => undefined,
       getSnapState: () => undefined,
-      showConfirmation: () => undefined,
       updateSnapState: () => undefined,
     };
 
