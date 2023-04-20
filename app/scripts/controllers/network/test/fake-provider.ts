@@ -110,16 +110,14 @@ export class FakeProvider extends SafeEventEmitterProvider {
 
   sendAsync = (
     payload: JsonRpcRequest<any>,
-    callback?: (error: unknown, response?: JsonRpcResponse<any>) => void,
+    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) => {
     return this.#handleSend(payload, callback);
   };
 
   #handleSend(
     payload: JsonRpcRequest<any>,
-    callback:
-      | ((error: unknown, response?: JsonRpcResponse<any>) => void)
-      | undefined,
+    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) {
     if (Array.isArray(payload)) {
       throw new Error("Arrays aren't supported");
@@ -173,9 +171,7 @@ export class FakeProvider extends SafeEventEmitterProvider {
 
   async #handleRequest(
     stub: FakeProviderStub,
-    callback:
-      | ((error: unknown, response?: JsonRpcResponse<any>) => void)
-      | undefined,
+    callback: (error: unknown, response?: JsonRpcResponse<any>) => void,
   ) {
     if (stub.beforeCompleting) {
       await stub.beforeCompleting();
@@ -186,27 +182,25 @@ export class FakeProvider extends SafeEventEmitterProvider {
       return;
     }
 
-    if (callback) {
-      if ('response' in stub) {
-        if ('result' in stub.response) {
-          callback(null, {
-            jsonrpc: '2.0',
-            id: 1,
-            result: stub.response.result,
-          });
-        } else if ('error' in stub.response) {
-          callback(null, {
-            jsonrpc: '2.0',
-            id: 1,
-            error: {
-              code: -999,
-              message: stub.response.error,
-            },
-          });
-        }
-      } else if ('error' in stub) {
-        callback(stub.error);
+    if ('response' in stub) {
+      if ('result' in stub.response) {
+        callback(null, {
+          jsonrpc: '2.0',
+          id: 1,
+          result: stub.response.result,
+        });
+      } else if ('error' in stub.response) {
+        callback(null, {
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -999,
+            message: stub.response.error,
+          },
+        });
       }
+    } else if ('error' in stub) {
+      callback(stub.error);
     }
   }
 }
