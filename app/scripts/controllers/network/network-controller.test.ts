@@ -381,6 +381,12 @@ describe('NetworkController', () => {
                   },
                   response: SUCCESSFUL_NET_VERSION_RESPONSE,
                 },
+                {
+                  request: {
+                    method: 'eth_getBlockByNumber',
+                  },
+                  response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                },
               ]);
               const fakeNetworkClient = buildFakeClient(fakeProvider);
               mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
@@ -610,6 +616,12 @@ describe('NetworkController', () => {
                   method: 'net_version',
                 },
                 response: SUCCESSFUL_NET_VERSION_RESPONSE,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                },
+                response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
               },
             ]);
             const fakeNetworkClient = buildFakeClient(fakeProvider);
@@ -4888,6 +4900,12 @@ describe('NetworkController', () => {
               },
               response: SUCCESSFUL_NET_VERSION_RESPONSE,
             },
+            {
+              request: {
+                method: 'eth_getBlockByNumber',
+              },
+              response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+            },
           ]);
           const fakeNetworkClient = buildFakeClient(fakeProvider);
           mockCreateNetworkClient()
@@ -5330,6 +5348,12 @@ describe('NetworkController', () => {
         it('determines the status of the network, storing it in state', async () => {
           await withController(async ({ controller }) => {
             const fakeProvider = buildFakeProvider([
+              {
+                request: {
+                  method: 'net_version',
+                },
+                response: SUCCESSFUL_NET_VERSION_RESPONSE,
+              },
               {
                 request: {
                   method: 'eth_getBlockByNumber',
