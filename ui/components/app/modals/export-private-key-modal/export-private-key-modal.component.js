@@ -116,6 +116,7 @@ const ExportPrivateKeyModal = ({
     if (!privateKeyInput) {
       return (
         <TextField
+          width={BLOCK_SIZES.FULL}
           placeholder={t('enterPassword')}
           type={TEXT_FIELD_TYPES.PASSWORD}
           className="export-private-key-modal__password-input"
@@ -159,7 +160,8 @@ const ExportPrivateKeyModal = ({
         flexDirection={FLEX_DIRECTION.ROW}
         width={BLOCK_SIZES.FULL}
         justifyContent={JustifyContent.spaceBetween}
-        padding={[0, 5]}
+        marginTop={3}
+        padding={[5, 0, 5, 0]}
       >
         {!privateKeyInput && (
           <Button
@@ -251,9 +253,12 @@ const ExportPrivateKeyModal = ({
           {t('showPrivateKeys')}
         </Text>
         <Box
+          width={BLOCK_SIZES.FULL}
           flexDirection={FLEX_DIRECTION.COLUMN}
           display={DISPLAY.FLEX}
           alignItems={AlignItems.flexStart}
+          paddingLeft={5}
+          paddingRight={5}
         >
           {renderPasswordLabel(privateKey)}
           {renderPasswordInput(privateKey)}
