@@ -37,11 +37,7 @@ import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { IconColor } from '../../../helpers/constants/design-system';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { Icon, IconName, IconSize } from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -229,8 +225,8 @@ export default class AccountMenu extends Component {
             {isSelected ? (
               <Icon
                 color={IconColor.successDefault}
-                name={ICON_NAMES.CHECK}
-                size={ICON_SIZES.LG}
+                name={IconName.Check}
+                size={IconSize.Lg}
               />
             ) : null}
           </div>
@@ -374,9 +370,7 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={
-            <Icon name={ICON_NAMES.ADD} color={IconColor.iconAlternative} />
-          }
+          icon={<Icon name={IconName.Add} color={IconColor.iconAlternative} />}
           text={t('createAccount')}
         />
         <AccountMenuItem
@@ -393,7 +387,7 @@ export default class AccountMenu extends Component {
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
           icon={
-            <Icon name={ICON_NAMES.IMPORT} color={IconColor.iconAlternative} />
+            <Icon name={IconName.Import} color={IconColor.iconAlternative} />
           }
           text={t('importAccount')}
         />
@@ -415,10 +409,7 @@ export default class AccountMenu extends Component {
             }
           }}
           icon={
-            <Icon
-              name={ICON_NAMES.HARDWARE}
-              color={IconColor.iconAlternative}
-            />
+            <Icon name={IconName.Hardware} color={IconColor.iconAlternative} />
           }
           text={t('connectHardwareWallet')}
         />
@@ -433,7 +424,7 @@ export default class AccountMenu extends Component {
               }}
               icon={
                 <div className="account-menu__notifications">
-                  <Icon name={ICON_NAMES.NOTIFICATION} size={ICON_SIZES.LG} />
+                  <Icon name={IconName.Notification} size={IconSize.Lg} />
                   {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
                       {unreadNotificationsCount}
@@ -466,10 +457,7 @@ export default class AccountMenu extends Component {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
-            <Icon
-              name={ICON_NAMES.MESSAGES}
-              color={IconColor.iconAlternative}
-            />
+            <Icon name={IconName.Messages} color={IconColor.iconAlternative} />
           }
           text={supportText}
         />
@@ -488,7 +476,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <Icon
-              name={ICON_NAMES.SETTING}
+              name={IconName.Setting}
               color={IconColor.iconAlternative}
               ariaLabel={t('settings')}
             />
