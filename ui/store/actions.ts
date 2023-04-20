@@ -51,7 +51,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  EVENT,
+  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -315,29 +315,6 @@ export function tryReverseResolveAddress(
           logErrorWithMessage(err);
         }
         resolve();
-      });
-    });
-  };
-}
-
-export function fetchInfoToSync(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchInfoToSync`);
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('fetchInfoToSync', [], (err, result) => {
-        if (err) {
-          if (isErrorWithMessage(err)) {
-            dispatch(displayWarning(err.message));
-          }
-          reject(err);
-          return;
-        }
-        resolve(result);
       });
     });
   };
@@ -3696,6 +3673,7 @@ export function approvePermissionsRequest(
       if (err) {
         dispatch(displayWarning(err));
       }
+      forceUpdateMetamaskState(dispatch);
     });
   };
 }
@@ -4349,7 +4327,7 @@ export async function setSmartTransactionsOptInStatus(
   trackMetaMetricsEvent({
     actionId: generateActionId(),
     event: 'STX OptIn',
-    category: EVENT.CATEGORIES.SWAPS,
+    category: MetaMetricsEventCategory.Swaps,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,

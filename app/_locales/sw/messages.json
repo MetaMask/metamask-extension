@@ -656,12 +656,6 @@
   "settings": {
     "message": "Mipangilio"
   },
-  "showAdvancedGasInline": {
-    "message": "Udhibiti wa juu wa gesi"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chagua hii ili uonyeshe bei ya gesi na punguza vidhibiti moja kwa moja kwenye skrini za tuma na thibitisha."
-  },
   "showFiatConversionInTestnets": {
     "message": "Onyesha Ubadilishaji kwenye Testnets"
   },
@@ -724,27 +718,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Alama lazima iwe na herufi 11 au chache."
-  },
-  "syncWithMobile": {
-    "message": "Oanisha na simu"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Hakikisha hakuna mtu mwingine anayeangalia kwenye skrini yako unapokuwa unakagua msimbo huu."
-  },
-  "syncWithMobileComplete": {
-    "message": "Umefanikiwa kuoanisha data yako. Furahia programu yako ya simu ya MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Unaweza kuoanisha akaunti zako na taarifa kwa kifaa chako cha simu ya mkononi. Fungua programu ya simu ya MetaMask, kisha nenda kwenye \"Mipangilio\" na bofya kwenye \"Oanisha kutoka kwenye Kiendelezi cha Kivinjari\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ikiwa ndio umefungua tu programu ya simu ya MetaMask kwa mara ya kwanza, fuata hatua kwenye simu yako."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Kagua msimbo huu kwa kutumia programu yako ya simu ya MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Oanisha na simu"
   },
   "terms": {
     "message": "Masharti ya Matumizi"

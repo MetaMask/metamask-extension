@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Посмотреть на Etherscan"
   },
-  "expandExperience": {
-    "message": "Расширьте свои возможности web3 с помощью MetaMask Snaps"
-  },
   "expandView": {
     "message": "Развернуть представление"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Искаженные данные"
   },
-  "manageSnaps": {
-    "message": "Управляйте установленными снапами"
-  },
   "max": {
     "message": "Макс."
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "Не видите свой токен?"
-  },
-  "mobileSyncWarning": {
-    "message": "Функция «Синхронизация с расширением» временно отключена. Если вы хотите использовать свой кошелек из расширения браузера в мобильной версии MetaMask, тогда в мобильном приложении вернитесь к параметрам настройки кошелька и выберите параметр «Импортировать с помощью секретной фразы для восстановления». Используйте секретную фразу своего кошелька из расширения, чтобы импортировать кошелек на мобильное устройство."
   },
   "moreComingSoon": {
     "message": "Скоро появится больше..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "Одноразовый номер больше, чем предложенный одноразовый номер $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "Показать"
   },
-  "showAdvancedGasInline": {
-    "message": "Расширенное управление газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Выберите это, чтобы отображать цену газа и управление лимитами непосредственно на экранах отправки и подтверждения."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показывать конвертацию в тестовых сетях"
   },
@@ -3358,22 +3340,11 @@
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Этот снап запрашивает следующие разрешения:"
-  },
   "snapUpdate": {
     "message": "Обновить снап"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 нужна более новая версия вашей привязки.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Снапы"
-  },
-  "snapsInsightError": {
-    "message": "Произошла ошибка с $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Загрузка аналитики по транзакции..."
@@ -3391,7 +3362,8 @@
     "message": "Снап будет работать только в том случае, если он включен"
   },
   "snapsUIError": {
-    "message": "Пользовательский интерфейс, указанный привязкой, недействителен."
+    "message": "Пользовательский интерфейс, указанный привязкой, недействителен.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
-  },
-  "syncFailed": {
-    "message": "Ошибка синхронизации"
-  },
-  "syncInProgress": {
-    "message": "Выполняется синхронизация"
-  },
-  "syncWithMobile": {
-    "message": "Синхронизировать с мобильным устройством"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Убедитесь, что никто не смотрит на ваш экран, когда вы сканируете этот код"
-  },
-  "syncWithMobileComplete": {
-    "message": "Ваши данные успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в раздел «Настройки» и нажмите «Синхронизировать из расширения браузера»."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Если вы открываете приложение MetaMask Mobile в первый раз, просто следуйте инструкциям на телефоне."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Отсканируйте этот код с помощью мобильного приложения MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Синхронизировать с мобильным устройством"
   },
   "tenPercentIncreased": {
     "message": "Увеличение на 10%"

@@ -12,7 +12,7 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
@@ -76,7 +76,7 @@ export default class TransactionListItemDetails extends PureComponent {
       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Clicked Block Explorer Link',
         properties: {
           link_type: 'Transaction Block Explorer',
@@ -109,7 +109,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { hash } = transaction;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.NAVIGATION,
+      category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
       properties: {
         action: 'Activity Log',
@@ -250,7 +250,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
+                    category: MetaMetricsEventCategory.Navigation,
                     event: 'Copied "To" Address',
                     properties: {
                       action: 'Activity Log',
@@ -260,7 +260,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 }}
                 onSenderClick={() => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
+                    category: MetaMetricsEventCategory.Navigation,
                     event: 'Copied "From" Address',
                     properties: {
                       action: 'Activity Log',

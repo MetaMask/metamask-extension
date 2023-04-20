@@ -659,12 +659,6 @@
   "settings": {
     "message": "Innstillinger"
   },
-  "showAdvancedGasInline": {
-    "message": "Avanserte datakraftskontroller"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Velg dette for å vise bensinpris og begrensningskontroller direkte på send- og bekreftskjermbildene."
-  },
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på Testnets "
   },
@@ -724,27 +718,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet må være 11 tegn eller færre."
-  },
-  "syncWithMobile": {
-    "message": "Synkroniser med mobil "
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pass på at ingen andre ser på skjermen din mens du skanner denne koden "
-  },
-  "syncWithMobileComplete": {
-    "message": "Dataene dine er blitt synkronisert med suksess. Kos deg med mobilappen for MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Du kan synkronisere kontoene og informasjonen din med den mobile enheten din. Åpne mobilappen for MetaMask, gå til \"Innstillinger\" og trykk på \"Synkronisering fra nettleserutvidelse\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Hvis du åpner mobilappen for MetaMask for første gang, følger du bare trinnene på telefonen."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skann denne koden med din mobilapp for MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkronisér med mobil"
   },
   "terms": {
     "message": "Brukervilkår"

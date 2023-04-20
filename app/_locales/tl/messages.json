@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Tingnan sa Etherscan"
   },
-  "expandExperience": {
-    "message": "Palawakin ang iyong karanasan sa web3 gamit ang MetaMask Snaps"
-  },
   "expandView": {
     "message": "I-expand ang view"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Pangit na datos"
   },
-  "manageSnaps": {
-    "message": "Pamahalaan ang iyong mga naka-install na snap"
-  },
   "max": {
     "message": "Max"
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "Hindi mo ba nakikita ang iyong mga token?"
-  },
-  "mobileSyncWarning": {
-    "message": "Ang feature na 'I-sync gamit ang extension' ay pansamantalang hindi gumagana. Kung gusto mong gamitin ang iyong extension wallet sa MetaMask mobile, pagkatapos ay sa iyong mobile app: bumalik sa mga opsyon sa pag-setup ng wallet at piliin ang opsyong 'Mag-import gamit ang Secret Recovery Phrase'. Gamitin ang lihim na parirala ng iyong extension wallet upang pagkatapos ay i-import ang iyong wallet sa mobile."
   },
   "moreComingSoon": {
     "message": "Marami pang parating..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "Mas mataas ang noncesa iminumungkahing nonce na $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Hindi maidaragdag ang NFT dahil hindi tumutugma ang mga detalye ng pagmamay-ari. Siguraduhing tamang impormasyon ang iyong nailagay."
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "Ipakita"
   },
-  "showAdvancedGasInline": {
-    "message": "Mga advanced na kontrol sa gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Piliin ito para direktang maipakita ang presyo ng gas at mga kontrol sa limitasyon sa mga screen ng pagpapadala at pagkumpirma."
-  },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa Testnets"
   },
@@ -3358,22 +3340,11 @@
     "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Hinihiling ng snap na ito ang mga sumusunod na pahintulot:"
-  },
   "snapUpdate": {
     "message": "I-update ang snap"
   },
-  "snapUpdateExplanation": {
-    "message": "Kailangan ng $1 ng bagong bersyon ng iyong snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Mga Snap"
-  },
-  "snapsInsightError": {
-    "message": "Nagkaroon ng error sa $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Naglo-load ng insight sa transaksyon..."
@@ -3391,7 +3362,8 @@
     "message": "Tatakbo lamang ang snap kapag pinagana ito"
   },
   "snapsUIError": {
-    "message": "Ang UI na tinukoy sa pamamagitan ng snap ay hindi wasto."
+    "message": "Ang UI na tinukoy sa pamamagitan ng snap ay hindi wasto.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Maaaring magdulot ang ilang network ng mga panganib sa seguridad at/o pagkapribado. Unawain ang mga panganib bago idagdag o gamitin ang isang network."
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Dapat ay 11 character o mas kaunti ang simbolo."
-  },
-  "syncFailed": {
-    "message": "Bigong ma-sync"
-  },
-  "syncInProgress": {
-    "message": "Kasalukuyang nagsi-sync"
-  },
-  "syncWithMobile": {
-    "message": "I-sync sa mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Tiyaking walang ibang nakakakita sa iyong screen kapag na-scan mo ang code na ito"
-  },
-  "syncWithMobileComplete": {
-    "message": "Matagumpay na na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Puwede mong i-sync ang iyong mga account at impormasyon sa mobile device mo. Buksan ang MetaMask mobile app, pumunta sa \"Mga Setting\" at i-tap ang \"I-sync mula sa Browser Extension\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kung unang pagkakataon mong bubuksan ang MetaMask Mobile app, sundin lang ang mga hakbang sa iyong telepono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "I-scan ang code na ito gamit ang iyong MetaMask mobile app"
-  },
-  "syncWithMobileTitle": {
-    "message": "I-sync sa mobile"
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"

@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "在 Etherscan 上查看"
   },
-  "expandExperience": {
-    "message": "扩展MetaMask Snap的web3体验"
-  },
   "expandView": {
     "message": "展开视图"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "格式错误的数据"
   },
-  "manageSnaps": {
-    "message": "管理已安装的Snap"
-  },
   "max": {
     "message": "最大"
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "没有看到您的代币？"
-  },
-  "mobileSyncWarning": {
-    "message": "“与扩展程序同步”功能暂时被禁用。如果您想要在 MetaMask 移动设备上使用您的扩展程序钱包，那么在您的移动应用程序上：返回钱包设置选项并选择“使用账户助记词导入”选项。使用您的扩展程序钱包的助记词来将您的钱包导入移动设备。"
   },
   "moreComingSoon": {
     "message": "更多即将到来……"
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "Nonce 高于建议的 nouce 值 $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "非同质化代币(NFT)"
   },
   "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "显示"
   },
-  "showAdvancedGasInline": {
-    "message": "高级燃料控制"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
-  },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
   },
@@ -3358,22 +3340,11 @@
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "此Snap正在请求以下权限："
-  },
   "snapUpdate": {
     "message": "更新Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1需要更新版本的snap。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
@@ -3391,7 +3362,8 @@
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
-  },
-  "syncFailed": {
-    "message": "同步失败"
-  },
-  "syncInProgress": {
-    "message": "同步进行中"
-  },
-  "syncWithMobile": {
-    "message": "与移动设备同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "扫描此代码时，请确保附近没有其他人在看您的屏幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 MetaMask 移动应用程序吧！"
-  },
-  "syncWithMobileDesc": {
-    "message": "您可以将您的账户和信息与您的移动设备同步。打开 MetaMask 移动应用程序，进入“设置”，点击“从浏览器扩展程序同步”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "使用 MetaMask 移动应用程序扫描此代码"
-  },
-  "syncWithMobileTitle": {
-    "message": "与移动设备同步"
   },
   "tenPercentIncreased": {
     "message": "增加10%"

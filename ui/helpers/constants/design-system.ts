@@ -112,6 +112,7 @@ export enum TextColor {
   textDefault = 'text-default',
   textAlternative = 'text-alternative',
   textMuted = 'text-muted',
+  overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
   primaryInverse = 'primary-inverse',
   errorDefault = 'error-default',
@@ -129,6 +130,7 @@ export enum TextColor {
   lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
+  transparent = 'transparent',
 }
 
 export enum IconColor {
@@ -301,6 +303,7 @@ export const TEXT_ALIGN = {
   RIGHT: 'right',
   JUSTIFY: 'justify',
   END: 'end',
+  START: 'start',
 };
 
 export const TEXT_TRANSFORM = {

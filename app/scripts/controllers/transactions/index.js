@@ -1,4 +1,4 @@
-import EventEmitter from 'safe-event-emitter';
+import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
@@ -39,11 +39,12 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
+  NetworkStatus,
 } from '../../../../shared/constants/network';
 import {
   determineTransactionAssetType,
@@ -115,7 +116,8 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  *
  * @param {object} opts
  * @param {object} opts.initState - initial transaction list default is an empty array
- * @param {Function} opts.getNetworkState - Get the current network state.
+ * @param {Function} opts.getNetworkId - Get the current network ID.
+ * @param {Function} opts.getNetworkStatus - Get the current network status.
  * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
@@ -129,7 +131,8 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
 export default class TransactionController extends EventEmitter {
   constructor(opts) {
     super();
-    this.getNetworkState = opts.getNetworkState;
+    this.getNetworkId = opts.getNetworkId;
+    this.getNetworkStatus = opts.getNetworkStatus;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -167,7 +170,8 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
-      getNetworkState: this.getNetworkState,
+      getNetworkId: this.getNetworkId,
+      getNetworkStatus: this.getNetworkStatus,
       getCurrentChainId: opts.getCurrentChainId,
     });
 
@@ -226,10 +230,13 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    const networkState = this.getNetworkState();
+    const networkStatus = this.getNetworkStatus();
     const chainId = this._getCurrentChainId();
     const integerChainId = parseInt(chainId, 16);
-    if (networkState === 'loading' || Number.isNaN(integerChainId)) {
+    if (
+      networkStatus !== NetworkStatus.Available ||
+      Number.isNaN(integerChainId)
+    ) {
       return 0;
     }
     return integerChainId;
@@ -272,12 +279,13 @@ export default class TransactionController extends EventEmitter {
       });
     }
 
-    // For 'rpc' we need to use the same basic configuration as mainnet,
-    // since we only support EVM compatible chains, and then override the
+    // For 'rpc' we need to use the same basic configuration as mainnet, since
+    // we only support EVM compatible chains, and then override the
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
-    const networkId = this.getNetworkState();
+    const networkStatus = this.getNetworkStatus();
+    const networkId = this.getNetworkId();
 
     const customChainParams = {
       name,
@@ -291,7 +299,8 @@ export default class TransactionController extends EventEmitter {
       // on a custom network that requires valid network id. I have not ran
       // into this limitation on any network I have attempted, even when
       // hardcoding networkId to 'loading'.
-      networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
+      networkId:
+        networkStatus === NetworkStatus.Available ? parseInt(networkId, 10) : 0,
     };
 
     return Common.forCustomChain(
@@ -2018,7 +2027,7 @@ export default class TransactionController extends EventEmitter {
         this._trackMetaMetricsEvent({
           event: 'Swap Failed',
           sensitiveProperties: { ...txMeta.swapMetaData },
-          category: EVENT.CATEGORIES.SWAPS,
+          category: MetaMetricsEventCategory.Swaps,
         });
       } else {
         const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -2053,7 +2062,7 @@ export default class TransactionController extends EventEmitter {
 
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',
-          category: EVENT.CATEGORIES.SWAPS,
+          category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             ...txMeta.swapMetaData,
             token_to_amount_received: tokensReceived,
@@ -2405,7 +2414,7 @@ export default class TransactionController extends EventEmitter {
       // occur.
       case TransactionMetaMetricsEvent.added:
         this.createEventFragment({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           initialEvent: TransactionMetaMetricsEvent.added,
           successEvent: TransactionMetaMetricsEvent.approved,
           failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -2427,7 +2436,7 @@ export default class TransactionController extends EventEmitter {
       case TransactionMetaMetricsEvent.approved:
       case TransactionMetaMetricsEvent.rejected:
         this.createEventFragment({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           successEvent: TransactionMetaMetricsEvent.approved,
           failureEvent: TransactionMetaMetricsEvent.rejected,
           properties,
@@ -2449,7 +2458,7 @@ export default class TransactionController extends EventEmitter {
       // properties to the transaction event.
       case TransactionMetaMetricsEvent.submitted:
         this.createEventFragment({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           initialEvent: TransactionMetaMetricsEvent.submitted,
           successEvent: TransactionMetaMetricsEvent.finalized,
           properties,
@@ -2469,7 +2478,7 @@ export default class TransactionController extends EventEmitter {
       // fragment does not exist.
       case TransactionMetaMetricsEvent.finalized:
         this.createEventFragment({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           successEvent: TransactionMetaMetricsEvent.finalized,
           properties,
           sensitiveProperties,

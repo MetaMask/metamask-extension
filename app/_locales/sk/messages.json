@@ -650,12 +650,6 @@
   "settings": {
     "message": "Nastavení"
   },
-  "showAdvancedGasInline": {
-    "message": "Pokročilé ovládacie prvky GAS"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vyberte túto možnosť vtedy, keď chcete priamo na obrazovke odosielania a potvrdenia zobraziť ceny za GAS a ovládacie prvky limitov."
-  },
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
   },
@@ -715,27 +709,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musí být mezi 0 a 12 znaky."
-  },
-  "syncWithMobile": {
-    "message": "Synchronizácia s mobilom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pri skenovaní tohto kódu sa uistite, že sa nikto iný nedíva na vašu obrazovku"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaše údaje boli úspešne synchronizované. Užite si mobilnú aplikáciu MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Svoje účty a informácie môžete synchronizovať so svojim mobilným zariadením. Otvorte mobilnú aplikáciu MetaMask, prejdite na „Nastavenia“ a kliknite na „Synchronizovať z rozšírenia prehliadača“."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ak otvoríte mobilnú aplikáciu MetaMask prvýkrát, postupujte podľa pokynov v telefóne."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Naskenujte tento kód pomocou mobilnej aplikácie MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synchronizácia s mobilom"
   },
   "terms": {
     "message": "Podmínky použití"

@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Etherscanで表示"
   },
-  "expandExperience": {
-    "message": "MetaMask Snaps で web3 エクスペリエンスを拡張"
-  },
   "expandView": {
     "message": "ビューを展開"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "不正な形式のデータ"
   },
-  "manageSnaps": {
-    "message": "インストールされたスナップの管理"
-  },
   "max": {
     "message": "最大"
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "トークンが見当たりませんか？"
-  },
-  "mobileSyncWarning": {
-    "message": "「拡張機能と同期」機能は一時的に無効になっています。拡張ウォレットをMetaMaskモバイルで使用する場合は、モバイルアプリでウォレットの設定オプションに戻り、「シークレットリカバリーフレーズでインポート」オプションを選択します。拡張ウォレットのシークレットフレーズを使用して、ウォレットをモバイルにインポートします。"
   },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "ナンスが提案され$1よりも大きいです",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "所有者情報が一致していないため、NFT を追加できません。入力された情報が正しいことを確認してください。"
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "表示"
   },
-  "showAdvancedGasInline": {
-    "message": "高度なガスコントロール"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "これを選択すると、ガス代と限度額のコントロールが送金画面と確認画面に直接表示されます。"
-  },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に変換を表示"
   },
@@ -3358,22 +3340,11 @@
     "message": "スナップ「$1」に $2 へのキーアクセスを許可しようとしています。この操作は取り消し不能であり、$2 アカウントとアセットのコントロールを「$1」に許可することになります。続行する前に、必ず「$1」が信頼できることを確認してください。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "このスナップが次のパーミッションをリクエストしています:"
-  },
   "snapUpdate": {
     "message": "スナップを更新"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 に新しいバージョンのスナップが必要です。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "スナップ"
-  },
-  "snapsInsightError": {
-    "message": "$1 でエラーが発生しました: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
@@ -3391,7 +3362,8 @@
     "message": "スナップは有効になっている場合にのみ実行されます"
   },
   "snapsUIError": {
-    "message": "スナップにより指定された UI が無効です。"
+    "message": "スナップにより指定された UI が無効です。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "シンボルは11文字以下にする必要があります。"
-  },
-  "syncFailed": {
-    "message": "同期に失敗しました"
-  },
-  "syncInProgress": {
-    "message": "同期中"
-  },
-  "syncWithMobile": {
-    "message": "モバイルと同期"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "このコードをスキャンするとき、画面を誰にも見られていないことを確認してください"
-  },
-  "syncWithMobileComplete": {
-    "message": "データの同期に成功しました。MetaMaskモバイルアプリをご活用ください!"
-  },
-  "syncWithMobileDesc": {
-    "message": "アカウントと情報を、モバイルデバイスと同期させることができます。MetaMaskモバイルアプリを開き、「設定」に進み、「ブラウザ拡張機能から同期」をタップします。"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "MetaMaskモバイルアプリを初めて開く場合は、スマートフォンを以下のステップに従って操作してください。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMaskモバイルアプリでこのコードをスキャンします"
-  },
-  "syncWithMobileTitle": {
-    "message": "モバイルと同期"
   },
   "tenPercentIncreased": {
     "message": "10% の増加"

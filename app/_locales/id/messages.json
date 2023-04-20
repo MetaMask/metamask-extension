@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Lihat di Etherscan"
   },
-  "expandExperience": {
-    "message": "Perluas pengalaman web3 Anda dengan MetaMask Snaps"
-  },
   "expandView": {
     "message": "Perluas tampilan"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Format data salah"
   },
-  "manageSnaps": {
-    "message": "Kelola Snap yang Anda instal"
-  },
   "max": {
     "message": "Maks"
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "Tidak melihat token Anda?"
-  },
-  "mobileSyncWarning": {
-    "message": "Fitur 'Sinkronkan dengan ekstensi' dinonaktifkan untuk sementara waktu. Jika Anda ingin menggunakan dompet ekstensi Anda di ponsel MetaMask, maka pada aplikasi seluler Anda: kembali ke opsi pengaturan dompet dan pilih opsi 'Impor dengan Frasa Pemulihan Rahasia'. Gunakan frasa rahasia dompet ekstensi Anda untuk mengimpor dompet Anda ke ponsel nantinya."
   },
   "moreComingSoon": {
     "message": "Selanjutnya akan segera hadir..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "Nonce lebih tinggi dari nonce $1 yang disarankan",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "Tampil"
   },
-  "showAdvancedGasInline": {
-    "message": "Kontrol gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menampilkan biaya gas dan kontrol batas secara langsung di layar kirim dan konfirmasi."
-  },
   "showFiatConversionInTestnets": {
     "message": "Tampilkan konversi di jaringan uji"
   },
@@ -3358,22 +3340,11 @@
     "message": "Anda memberikan $2 akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset $2 Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Snap ini meminta izin berikut:"
-  },
   "snapUpdate": {
     "message": "Perbarui Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 memerlukan versi snap yang lebih baru.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "Terjadi kesalahan dengan $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Memuat wawasan transaksi..."
@@ -3391,7 +3362,8 @@
     "message": "Snap hanya akan beroperasi jika diaktifkan"
   },
   "snapsUIError": {
-    "message": "UI yang ditentukan oleh snap tidak valid."
+    "message": "UI yang ditentukan oleh snap tidak valid.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan & menggunakan jaringan."
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol harus terdiri dari 11 karakter atau kurang."
-  },
-  "syncFailed": {
-    "message": "Sinkronisasi gagal"
-  },
-  "syncInProgress": {
-    "message": "Sinkronisasi sedang berlangsung"
-  },
-  "syncWithMobile": {
-    "message": "Sinkronkan dengan seluler"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pastikan tidak ada orang lain yang melihat layar Anda saat memindai kode ini"
-  },
-  "syncWithMobileComplete": {
-    "message": "Data Anda telah berhasil disinkronkan. Nikmati aplikasi seluler MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Anda dapat menyinkronkan akun dan informasi dengan perangkat seluler Anda. Buka aplikasi seluler MetaMask, buka \"Pengaturan\" dan ketuk \"Sinkronkan dari Ekstensi Peramban\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jika Anda baru membuka aplikasi seluler MetaMask untuk pertama kali, cukup ikuti langkah-langkah yang ada di ponsel Anda."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Pindai kode ini dengan aplikasi seluler MetaMask Anda"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinkronkan dengan seluler"
   },
   "tenPercentIncreased": {
     "message": "Meningkat 10%"

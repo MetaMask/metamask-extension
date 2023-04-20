@@ -1,7 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../component-library/icon/deprecated';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class TransactionConfirmed extends PureComponent {

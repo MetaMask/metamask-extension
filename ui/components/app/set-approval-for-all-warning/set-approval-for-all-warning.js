@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Identicon from '../../ui/identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library/icon/deprecated';
 
 const SetApproveForAllWarning = ({
   collectionName,
@@ -105,7 +105,7 @@ const SetApproveForAllWarning = ({
             key="non_custodial_bold"
             className="set-approval-for-all-warning__content__bold"
           >
-            {t('nftWarningContentBold', [collectionName])}
+            {t('nftWarningContentBold', [collectionName || ''])}
           </strong>,
           <strong key="non_custodial_grey">
             {t('nftWarningContentGrey')}

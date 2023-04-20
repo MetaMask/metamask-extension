@@ -671,12 +671,6 @@
   "settings": {
     "message": "Postavke"
   },
-  "showAdvancedGasInline": {
-    "message": "Napredno upravljanje gorivom"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Odaberite ovu stavku za prikaz cijene goriva i izravno ograničite kontrole prilikom slanja i potvrđivanja zaslona."
-  },
   "showFiatConversionInTestnets": {
     "message": "Prikaži konverziju na usluzi Testnets"
   },
@@ -739,27 +733,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mora biti 11 znakova ili manje."
-  },
-  "syncWithMobile": {
-    "message": "Sinkroniziraj s mobilnim telefonom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pazite da nitko ne gleda u vaš zaslon dok skenirate ovaj kôd"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaši su podatci uspješno sinkronizirani. Uživajte u mobilnoj aplikaciji MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Možete sinkronizirati svoje račune i informacije s vašim mobilnim telefonom. Otvorite mobilnu aplikaciju MetaMask, idite u stavku „Postavke” i dodirnite „Sinkroniziraj iz dodatka preglednika”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kad otvorite mobilnu aplikaciju MetaMask po prvi puta, pridržavajte se koraka koji se prikazuju na telefonu."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skenirajte ovaj kôd uporabom mobilne aplikacije MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinkroniziraj s mobilnim telefonom"
   },
   "terms": {
     "message": "Odredbe uporabe"

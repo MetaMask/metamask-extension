@@ -18,7 +18,6 @@ import Lock from '../lock';
 import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
-import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
@@ -51,7 +50,6 @@ import {
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
   LOCK_ROUTE,
-  MOBILE_SYNC_ROUTE,
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
@@ -90,6 +88,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -125,6 +124,8 @@ export default class Routes extends Component {
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
+    toggleAccountMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -219,11 +220,6 @@ export default class Routes extends Component {
         <Authenticated
           path={REVEAL_SEED_ROUTE}
           component={RevealSeedConfirmation}
-          exact
-        />
-        <Authenticated
-          path={MOBILE_SYNC_ROUTE}
-          component={MobileSyncPage}
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
@@ -427,6 +423,8 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
       completedOnboarding,
+      isAccountMenuOpen,
+      toggleAccountMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -483,7 +481,10 @@ export default class Routes extends Component {
         )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
-        <AccountMenu />
+        {process.env.MULTICHAIN ? null : <AccountMenu />}
+        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+          <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}

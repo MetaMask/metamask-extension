@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Ver en Etherscan"
   },
-  "expandExperience": {
-    "message": "Amplíe su experiencia web3 con complementos de MetaMask"
-  },
   "expandView": {
     "message": "Expandir vista"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Datos con formato incorrecto"
   },
-  "manageSnaps": {
-    "message": "Administre sus complementos instalados"
-  },
   "max": {
     "message": "Máx."
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "¿No ve su token?"
-  },
-  "mobileSyncWarning": {
-    "message": "La función 'Sincronizar con la extensión' está temporalmente desactivada. Si desea utilizar su cartera de extensión en MetaMask móvil, haga lo siguiente en la aplicación móvil: vuelva a las opciones de configuración de la cartera y seleccione la opción 'Importar con frase secreta de recuperación'. Use la frase secreta de su cartera de extensión para importar su cartera al móvil."
   },
   "moreComingSoon": {
     "message": "Más próximamente..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "El nonce es superior al nonce sugerido de $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "No se puede agregar el NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "Mostrar"
   },
-  "showAdvancedGasInline": {
-    "message": "Controles avanzados de gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Seleccione esta opción para mostrar el precio del gas y limitar los controles directamente en las pantallas de envío y confirmación."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversión en redes de prueba"
   },
@@ -3358,22 +3340,11 @@
     "message": "Está otorgando acceso clave de $2 al complemento \"$1\". Esto es irrevocable y le otorga a \"$1\" el control de sus cuentas y activos de $2. Asegúrese de que confía en \"$1\" antes de continuar.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Este complemento solicita los siguientes permisos:"
-  },
   "snapUpdate": {
     "message": "Actualizar complemento"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 necesita una versión más reciente de su complemento.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Complementos"
-  },
-  "snapsInsightError": {
-    "message": "Ocurrió un error con $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Cargando información de transacción..."
@@ -3391,7 +3362,8 @@
     "message": "Un complemento solo se ejecutará si está habilitado"
   },
   "snapsUIError": {
-    "message": "La IU especificada por el complemento no es válida."
+    "message": "La IU especificada por el complemento no es válida.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Algunas redes pueden presentar riesgos de seguridad y/o privacidad. Comprenda los riesgos antes de agregar y utilizar una red."
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "El símbolo debe tener 11 caracteres o menos."
-  },
-  "syncFailed": {
-    "message": "Error al sincronizar"
-  },
-  "syncInProgress": {
-    "message": "Sincronización en progreso"
-  },
-  "syncWithMobile": {
-    "message": "Sincronizar con dispositivo móvil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Asegúrese de que nadie vea su pantalla cuando escanee este código"
-  },
-  "syncWithMobileComplete": {
-    "message": "Los datos se sincronizaron correctamente. ¡Disfrute de la aplicación móvil de MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Puede sincronizar sus cuentas y su información con el dispositivo móvil. Abra la aplicación móvil de MetaMask, vaya a \"Configuración\" y presione \"Sincronizar desde la extensión del explorador\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Si acaba de abrir la aplicación móvil de MetaMask por primera vez, siga los pasos que aparecen en el teléfono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escanear este código con la aplicación móvil de MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizar con dispositivo móvil"
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"

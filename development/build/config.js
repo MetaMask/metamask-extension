@@ -3,10 +3,8 @@ const { readFile } = require('fs/promises');
 const ini = require('ini');
 const { BuildType } = require('../lib/build-type');
 
-const commonConfigurationPropertyNames = ['PUBNUB_PUB_KEY', 'PUBNUB_SUB_KEY'];
-
 const configurationPropertyNames = [
-  ...commonConfigurationPropertyNames,
+  'MULTICHAIN',
   'INFURA_PROJECT_ID',
   'PHISHING_WARNING_PAGE_URL',
   'PORTFOLIO_URL',
@@ -19,10 +17,10 @@ const configurationPropertyNames = [
   'DISABLE_WEB_SOCKET_ENCRYPTION',
   'METAMASK_DEBUG',
   'SKIP_OTP_PAIRING_FLOW',
+  'ENABLE_MV3',
 ];
 
 const productionConfigurationPropertyNames = [
-  ...commonConfigurationPropertyNames,
   'INFURA_BETA_PROJECT_ID',
   'INFURA_FLASK_PROJECT_ID',
   'INFURA_PROD_PROJECT_ID',
@@ -99,7 +97,7 @@ async function getProductionConfig(buildType) {
   };
 
   const requiredEnvironmentVariables = {
-    all: ['PUBNUB_PUB_KEY', 'PUBNUB_SUB_KEY', 'SENTRY_DSN'],
+    all: ['SENTRY_DSN'],
     [BuildType.beta]: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY'],
     [BuildType.flask]: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY'],
     [BuildType.main]: ['INFURA_PROD_PROJECT_ID', 'SEGMENT_PROD_WRITE_KEY'],

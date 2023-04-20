@@ -675,12 +675,6 @@
   "settings": {
     "message": "Asetukset"
   },
-  "showAdvancedGasInline": {
-    "message": "Bensan lisävalvonta"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valitse tämä näyttääksesi gas-hinta ja rajoittaaksesi  säätimiä suoraan lähetä- ja vahvista-ruuduissa."
-  },
   "showFiatConversionInTestnets": {
     "message": "Näytä vaihtokurssi koeverkoissa"
   },
@@ -743,27 +737,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolin on oltava 11 merkkiä tai vähemmän."
-  },
-  "syncWithMobile": {
-    "message": "Synkronoi mobiililaitteelle"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Varmista, ettei kukaan muu katsele näyttöäsi, kun skannaat koodin"
-  },
-  "syncWithMobileComplete": {
-    "message": "Tietojesi synkronoiminen onnistui. Nauti MetaMask-mobiilisovelluksesta!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Voit synkronoida tilisi ja tietosi mobiililaitteidesi kesken. Avaa MetaMaskin mobiilisovellus, siirry \"Asetukset\"-osioon ja napauta \"Synkronoi selainlaajennuksesta\" -vaihtoehtoa"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jos avaat MetaMaskin mobiilisovelluksen vasta ensimmäistä kertaa, noudata vain puhelimesi ilmoittamia vaiheita."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Lue tämä koodi MetaMask-mobiilisovelluksellasi"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkronoi mobiililaitteen kanssa"
   },
   "terms": {
     "message": "Käyttöehdot"

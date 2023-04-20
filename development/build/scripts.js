@@ -52,7 +52,7 @@ const {
 } = require('./transforms/remove-fenced-code');
 
 // map dist files to bag of needed native APIs against LM scuttling
-const scuttlingConfig = {
+const scuttlingConfigBase = {
   'sentry-install.js': {
     // globals sentry need to function
     window: '',
@@ -70,9 +70,9 @@ const scuttlingConfig = {
     Number: '',
     Request: '',
     Date: '',
-    document: '',
     JSON: '',
     encodeURIComponent: '',
+    console: '',
     crypto: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
@@ -84,6 +84,16 @@ const scuttlingConfig = {
     appState: '',
     extra: '',
     stateHooks: '',
+  },
+};
+
+const mv3ScuttlingConfig = { ...scuttlingConfigBase };
+
+const standardScuttlingConfig = {
+  ...scuttlingConfigBase,
+  'sentry-install.js': {
+    ...scuttlingConfigBase['sentry-install.js'],
+    document: '',
   },
 };
 
@@ -907,6 +917,9 @@ function setupBundlerDefaults(
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
+  // This dependency uses WASM which we cannot execute in accordance with our CSP
+  bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
+
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
@@ -929,9 +942,8 @@ function setupBundlerDefaults(
 
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
-
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
   }
 }
 
@@ -985,7 +997,11 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
+  const scuttlingConfig =
+    envVars.ENABLE_MV3 === 'true'
+      ? mv3ScuttlingConfig
+      : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
@@ -1106,7 +1122,9 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
+    MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
+    ENABLE_MV3: config.ENABLE_MV3,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
@@ -1121,8 +1139,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
     PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
-    PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
-    PUBNUB_SUB_KEY: config.PUBNUB_SUB_KEY || '',
     SEGMENT_HOST: config.SEGMENT_HOST,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
     SENTRY_DSN: config.SENTRY_DSN,

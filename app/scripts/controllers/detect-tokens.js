@@ -8,7 +8,10 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -167,8 +170,8 @@ export default class DetectTokensController {
 
         if (tokensWithBalance.length > 0) {
           this._trackMetaMetricsEvent({
-            event: EVENT_NAMES.TOKEN_DETECTED,
-            category: EVENT.CATEGORIES.WALLET,
+            event: MetaMetricsEventName.TokenDetected,
+            category: MetaMetricsEventCategory.Wallet,
             properties: {
               tokens: eventTokensDetails,
               token_standard: TokenStandard.ERC20,

@@ -24,11 +24,11 @@ import {
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
-  REJECT_NOTFICIATION_CLOSE,
-  REJECT_NOTFICIATION_CLOSE_SIG,
-  EVENT,
-  EVENT_NAMES,
-  TRAITS,
+  REJECT_NOTIFICATION_CLOSE,
+  REJECT_NOTIFICATION_CLOSE_SIG,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -223,7 +223,8 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} provider - The current selected network provider.
  * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
- * @property {string} network - A stringified number of the current network ID.
+ * @property {string} networkId - The stringified number of the current network ID.
+ * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
@@ -267,7 +268,23 @@ async function initialize() {
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
-    setupController(initState, initLangCode);
+    let isFirstMetaMaskControllerSetup;
+    if (isManifestV3) {
+      const sessionData = await browser.storage.session.get([
+        'isFirstMetaMaskControllerSetup',
+      ]);
+
+      isFirstMetaMaskControllerSetup =
+        sessionData?.isFirstMetaMaskControllerSetup === undefined;
+      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+    }
+
+    setupController(
+      initState,
+      initLangCode,
+      {},
+      isFirstMetaMaskControllerSetup,
+    );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -409,8 +426,14 @@ export async function loadStateFromPersistence() {
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
+ * @param isFirstMetaMaskControllerSetup
  */
-export function setupController(initState, initLangCode, overrides) {
+export function setupController(
+  initState,
+  initLangCode,
+  overrides,
+  isFirstMetaMaskControllerSetup,
+) {
   //
   // MetaMask Controller
   //
@@ -436,6 +459,7 @@ export function setupController(initState, initLangCode, overrides) {
     },
     localStore,
     overrides,
+    isFirstMetaMaskControllerSetup,
   });
 
   setupEnsIpfsResolver({
@@ -555,6 +579,10 @@ export function setupController(initState, initLangCode, overrides) {
           if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
             // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
             remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+
+            controller.appStateController.setServiceWorkerLastActiveTime(
+              Date.now(),
+            );
           }
         });
       }
@@ -656,14 +684,6 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.messageManager.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.personalMessageManager.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
   controller.decryptMessageManager.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -672,7 +692,7 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.typedMessageManager.on(
+  controller.signController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -708,23 +728,17 @@ export function setupController(initState, initLangCode, overrides) {
 
   function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
-    const { unapprovedMsgCount } = controller.messageManager;
-    const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
-    const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
       unapprovedTxCount +
-      unapprovedMsgCount +
-      unapprovedPersonalMsgCount +
       unapprovedDecryptMsgCount +
       unapprovedEncryptionPublicKeyMsgCount +
-      unapprovedTypedMessagesCount +
       pendingApprovalCount +
       waitingForUnlockCount
     );
@@ -747,36 +761,13 @@ export function setupController(initState, initLangCode, overrides) {
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.messageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.messageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.personalMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.personalMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.typedMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.typedMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
+    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
     controller.decryptMessageManager.messages
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>
         controller.decryptMessageManager.rejectMsg(
           tx.id,
-          REJECT_NOTFICIATION_CLOSE,
+          REJECT_NOTIFICATION_CLOSE,
         ),
       );
     controller.encryptionPublicKeyManager.messages
@@ -784,7 +775,7 @@ export function setupController(initState, initLangCode, overrides) {
       .forEach((tx) =>
         controller.encryptionPublicKeyManager.rejectMsg(
           tx.id,
-          REJECT_NOTFICIATION_CLOSE,
+          REJECT_NOTIFICATION_CLOSE,
         ),
       );
 
@@ -880,11 +871,13 @@ async function openPopup() {
 const addAppInstalledEvent = () => {
   if (controller) {
     controller.metaMetricsController.updateTraits({
-      [TRAITS.INSTALL_DATE_EXT]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+      [MetaMetricsUserTrait.InstallDateExt]: new Date()
+        .toISOString()
+        .split('T')[0], // yyyy-mm-dd
     });
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: EVENT.CATEGORIES.APP,
-      event: EVENT_NAMES.APP_INSTALLED,
+      category: MetaMetricsEventCategory.App,
+      event: MetaMetricsEventName.AppInstalled,
       properties: {},
     });
     return;

@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Etherscan'de görüntüle"
   },
-  "expandExperience": {
-    "message": "MetaMask Snap'leri ile web3 deneyimini genişlet"
-  },
   "expandView": {
     "message": "Görünümü genişlet"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Hatalı biçimlendirilmiş veri"
   },
-  "manageSnaps": {
-    "message": "Yüklü snap'lerini yönet"
-  },
   "max": {
     "message": "Maksimum"
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "Tokeninizi görmüyor musunuz?"
-  },
-  "mobileSyncWarning": {
-    "message": "\"Uzantı ile senkronize et\" özelliği geçici olarak devre dışı bırakılmış. MetaMask mobilde uzantı cüzdanınızı kullanmak istiyorsanız mobil uygulamaya gidin: cüzdan kurulum ayarlarına geri dönün ve \"Gizli Kurtarma İfadesi ile İçe Aktar\" seçeneğini seçin. Ardından cüzdanınızı mobil uygulamada içe aktarmak için uzantı cüzdanınızın gizli ifadesini kullanın."
   },
   "moreComingSoon": {
     "message": "Daha fazlası çok yakında..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "Geçici anahtar, önerilen $1 geçici anahtarından daha büyük",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Sahiplik bilgileri eşleşmediği için NFT eklenemiyor. Doğru bilgileri girdiğinizden emin olun."
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "Göster"
   },
-  "showAdvancedGasInline": {
-    "message": "Gelişmiş gaz kontrolleri"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
-  },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında dönüşümü göster"
   },
@@ -3358,22 +3340,11 @@
     "message": "\"$1\" için $2 anahtar erişimi veriyorsunuz. Bu iptal edilemez ve $2 hesaplarınıza ve varlıklarınıza \"$1\" kontrolü verir. İlerlemeden önce \"$1\" alanına güvendiğinizden emin olun.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Bu ek, aşağıdaki izinleri istiyor:"
-  },
   "snapUpdate": {
     "message": "Snap'i güncelle"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 için daha yeni bir snap sürümü gerekli.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap'ler"
-  },
-  "snapsInsightError": {
-    "message": "$1: $2 ile ilgili bir hata oldu",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "İşlem ayrıntıları yükleniyor..."
@@ -3391,7 +3362,8 @@
     "message": "Bir snap yalnızca etkinleştirilmişse çalışır"
   },
   "snapsUIError": {
-    "message": "Snap tarafından belirtilen Kullanıcı Arayüzü geçersiz."
+    "message": "Snap tarafından belirtilen Kullanıcı Arayüzü geçersiz.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Sembol en fazla 11 karakter olmalıdır."
-  },
-  "syncFailed": {
-    "message": "Senkronizasyon başarısız oldu"
-  },
-  "syncInProgress": {
-    "message": "Senkronizasyon sürüyor"
-  },
-  "syncWithMobile": {
-    "message": "Mobil ile senkronize et"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Bu kodu tararken hiç kimsenin ekranınıza bakmadığından emin olun"
-  },
-  "syncWithMobileComplete": {
-    "message": "Verileriniz başarılı bir şekilde senkronize edildi. MetaMask mobil uygulamasının tadını çıkarın!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Hesaplarınızı ve bilgilerinizi mobil cihazınızla senkronize edebilirsiniz. MetaMask mobil uygulamasını açın, \"Ayarlar\" kısmına gidin ve \"Tarayıcı Uzantısından Senkronize Et\" seçeneğine dokunun"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Metamask Mobil uygulamasını ilk defa açıyorsanız telefonunuzdaki adımları izleyin."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMask mobil uygulamanızla bu kodu tarayın"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mobil ile senkronize et"
   },
   "tenPercentIncreased": {
     "message": "%10 artış"

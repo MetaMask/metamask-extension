@@ -11,6 +11,8 @@ import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
+import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import {
   BLOCK_SIZES,
   JustifyContent,
@@ -28,10 +30,9 @@ import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
   ICON_NAMES,
-  ButtonIcon,
   Icon,
-  Text,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/deprecated';
+import { ButtonIcon, Text } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -210,9 +211,13 @@ export default class ConfirmApproveContent extends Component {
 
   renderERC721OrERC1155PermissionContent() {
     const { t } = this.context;
-    const { origin, toAddress, isContract, isSetApproveForAll } = this.props;
+    const { origin, toAddress, isContract, isSetApproveForAll, tokenSymbol } =
+      this.props;
 
     const titleTokenDescription = this.getTitleTokenDescription();
+    const approvedAssetText = tokenSymbol
+      ? t('allOfYour', [titleTokenDescription])
+      : t('allYourNFTsOf', [titleTokenDescription]);
 
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
@@ -227,9 +232,7 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
-            {isSetApproveForAll
-              ? t('allOfYour', [titleTokenDescription])
-              : titleTokenDescription}
+            {isSetApproveForAll ? approvedAssetText : titleTokenDescription}
           </div>
         </div>
         <div className="flex-row">
@@ -376,7 +379,7 @@ export default class ConfirmApproveContent extends Component {
       if (assetName || tokenSymbol) {
         titleTokenDescription = `${assetName ?? tokenSymbol}`;
       } else {
-        titleTokenDescription = t('nft');
+        titleTokenDescription = t('thisCollection');
       }
     }
 
@@ -451,9 +454,20 @@ export default class ConfirmApproveContent extends Component {
     let title;
 
     if (isSetApproveForAll) {
-      title = t('approveAllTokensTitle', [titleTokenDescription]);
-      if (isApprovalOrRejection === false) {
-        title = t('revokeAllTokensTitle', [titleTokenDescription]);
+      if (tokenSymbol) {
+        title = t('approveAllTokensTitle', [titleTokenDescription]);
+        if (isApprovalOrRejection === false) {
+          title = t('revokeAllTokensTitle', [titleTokenDescription]);
+        }
+      } else {
+        title = t('approveAllTokensTitleWithoutSymbol', [
+          titleTokenDescription,
+        ]);
+        if (isApprovalOrRejection === false) {
+          title = t('revokeAllTokensTitleWithoutSymbol', [
+            titleTokenDescription,
+          ]);
+        }
       }
     } else if (
       assetStandard === TokenStandard.ERC721 ||
@@ -485,9 +499,15 @@ export default class ConfirmApproveContent extends Component {
     let description = t('trustSiteApprovePermission', [grantee]);
 
     if (isSetApproveForAll && isApprovalOrRejection === false) {
-      description = t('revokeApproveForAllDescription', [
-        this.getTitleTokenDescription(),
-      ]);
+      if (tokenSymbol) {
+        description = t('revokeApproveForAllDescription', [
+          this.getTitleTokenDescription(),
+        ]);
+      } else {
+        description = t('revokeApproveForAllDescriptionWithoutSymbol', [
+          this.getTitleTokenDescription(),
+        ]);
+      }
     } else if (
       isSetApproveForAll ||
       assetStandard === TokenStandard.ERC721 ||
@@ -496,7 +516,13 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      description = t('approveTokenDescription');
+      if (tokenSymbol) {
+        description = t('approveTokenDescription');
+      } else {
+        description = t('approveTokenDescriptionWithoutSymbol', [
+          this.getTitleTokenDescription(),
+        ]);
+      }
     }
     return description;
   }
@@ -531,6 +557,15 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />

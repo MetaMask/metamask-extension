@@ -1317,9 +1317,6 @@
   "etherscanViewOn": {
     "message": "Προβολή στην Etherscan"
   },
-  "expandExperience": {
-    "message": "Επεκτείνετε την εμπειρία σας στο web3 με τα Snap του MetaMask"
-  },
   "expandView": {
     "message": "Ανάπτυξη Προβολής"
   },
@@ -1952,9 +1949,6 @@
   "malformedData": {
     "message": "Παραμορφωμένα δεδομένα"
   },
-  "manageSnaps": {
-    "message": "Διαχειριστείτε τα εγκατεστημένα Snap σας"
-  },
   "max": {
     "message": "Μέγ."
   },
@@ -2026,9 +2020,6 @@
   },
   "missingToken": {
     "message": "Δεν βλέπετε το token σας;"
-  },
-  "mobileSyncWarning": {
-    "message": "Η λειτουργία 'Συγχρονισμός με επέκταση' είναι προσωρινά απενεργοποιημένη. Αν θέλετε να χρησιμοποιήσετε το πορτοφόλι της επέκτασής σας στο MetaMask mobile, τότε στην εφαρμογή για το κινητό σας: επιστρέψτε στις επιλογές εγκατάστασης του πορτοφολιού και επιλέξτε την επιλογή 'Εισαγωγή με Μυστική Φράση Ανάκτησης'. Χρησιμοποιήστε τη μυστική φράση του πορτοφολιού της επέκτασής σας για να εισαγάγετε το πορτοφόλι σας στο κινητό."
   },
   "moreComingSoon": {
     "message": "Περισσότερα έρχονται σύντομα..."
@@ -2187,9 +2178,6 @@
   "nextNonceWarning": {
     "message": "Το Nonce είναι υψηλότερο από το προτεινόμενο nonce του $1",
     "description": "The next nonce according to MetaMask's internal logic"
-  },
-  "nft": {
-    "message": "NFT"
   },
   "nftAddFailedMessage": {
     "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
@@ -3253,12 +3241,6 @@
   "show": {
     "message": "Εμφάνιση"
   },
-  "showAdvancedGasInline": {
-    "message": "Προωθημένος έλεγχος gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Επιλέξτε αυτό για να εμφανίσετε τις τιμές αερίου και να περιορίσετε τα στοιχεία ελέγχου απευθείας στις οθόνες αποστολής και επιβεβαίωσης."
-  },
   "showFiatConversionInTestnets": {
     "message": "Εμφάνιση Μετατροπής σε Δοκιμαστικά Δίκτυα"
   },
@@ -3358,22 +3340,11 @@
     "message": "Εκχωρείτε στο $2 βασική πρόσβαση στο snap \"$1\". Αυτό είναι αμετάκλητο και παρέχει στο \"$1\" τον έλεγχο των λογαριασμών και των περιουσιακών σας στοιχείων $2. Βεβαιωθείτε ότι εμπιστεύεστε το \"$1\" προτού συνεχίσετε.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Αυτό το snap αιτείται τις παρακάτω άδειες:"
-  },
   "snapUpdate": {
     "message": "Ενημέρωση Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "Το $1 χρειάζεται μια νεότερη έκδοση του snap σας.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightError": {
-    "message": "Παρουσιάστηκε ένα σφάλμα με $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Φόρτωση πληροφοριών συναλλαγών..."
@@ -3391,7 +3362,8 @@
     "message": "Ένα snap θα εκτελεστεί μόνο εάν είναι ενεργοποιημένο"
   },
   "snapsUIError": {
-    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη."
+    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Ορισμένα δίκτυα ενδέχεται να ενέχουν κινδύνους για την ασφάλεια ή/και το απόρρητο. Ενημερωθείτε για τους κινδύνους πριν προσθέσετε και χρησιμοποιήσετε ένα δίκτυο."
@@ -3964,33 +3936,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Το σύμβολο πρέπει να είναι τουλάχιστον 11 χαρακτήρες."
-  },
-  "syncFailed": {
-    "message": "Ο συγχρονισμός απέτυχε"
-  },
-  "syncInProgress": {
-    "message": "Συγχρονισμός σε εξέλιξη"
-  },
-  "syncWithMobile": {
-    "message": "Συγχρονισμός με κινητό"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Σιγουρευτείτε ότι κανένας δεν κοιτάζει στην οθόνη σας όταν κάνετε σάρωση αυτού του κωδικού"
-  },
-  "syncWithMobileComplete": {
-    "message": "Τα δεδομένα σας έχουν συγχρονιστεί με επιτυχία. Απολαύστε την εφαρμογή MetaMask για κινητά!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Μπορείτε να συγχρονίσετε τους λογαριασμούς και τις πληροφορίες σας με την κινητή συσκευή σας. Ανοίξτε την εφαρμογή MetaMask για κινητά, μεταβείτε στην ενότητα \"Ρυθμίσεις\" και πατήστε \"Συγχρονισμός από Επέκταση Προγράμματος Περιήγησης\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Εάν απλά ανοίξετε την εφαρμογή MetaMask Mobile για πρώτη φορά, απλώς ακολουθήστε τα βήματα στο τηλέφωνό σας."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Σαρώστε αυτόν τον κώδικα με την εφαρμογή MetaMask για κινητά"
-  },
-  "syncWithMobileTitle": {
-    "message": "Συγχρονισμός με κινητό"
   },
   "tenPercentIncreased": {
     "message": "10% αύξηση"

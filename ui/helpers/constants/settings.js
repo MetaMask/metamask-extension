@@ -1,4 +1,4 @@
-import { ICON_NAMES } from '../../components/component-library';
+import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -65,23 +65,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('syncWithMobile'),
-    descriptionMessage: (t) => t('syncWithMobile'),
-    route: `${ADVANCED_ROUTE}#sync-withmobile`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('clearActivity'),
     descriptionMessage: (t) => t('clearActivityDescription'),
     route: `${ADVANCED_ROUTE}#clear-activity`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('showAdvancedGasInline'),
-    descriptionMessage: (t) => t('showAdvancedGasInlineDescription'),
-    route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
     icon: 'fas fa-sliders-h',
   },
   {
