@@ -94,22 +94,25 @@ export default class AccountDetailsModal extends Component {
             data: address,
           }}
         />
+        {process.env.MULTICHAIN ? null : (
+          <>
+            <div className="account-details-modal__divider" />
 
-        <div className="account-details-modal__divider" />
-
-        <Button
-          type="secondary"
-          className="account-details-modal__button"
-          onClick={
-            blockExplorerLinkText.firstPart === 'addBlockExplorer'
-              ? routeToAddBlockExplorerUrl
-              : openBlockExplorer
-          }
-        >
-          {this.context.t(blockExplorerLinkText.firstPart, [
-            blockExplorerLinkText.secondPart,
-          ])}
-        </Button>
+            <Button
+              type="secondary"
+              className="account-details-modal__button"
+              onClick={
+                blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                  ? routeToAddBlockExplorerUrl
+                  : openBlockExplorer
+              }
+            >
+              {this.context.t(blockExplorerLinkText.firstPart, [
+                blockExplorerLinkText.secondPart,
+              ])}
+            </Button>
+          </>
+        )}
 
         {exportPrivateKeyFeatureEnabled && (
           <Button
