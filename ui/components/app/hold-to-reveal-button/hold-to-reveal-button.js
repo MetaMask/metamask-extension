@@ -19,6 +19,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [hasTriggeredUnlock, setHasTriggeredUnlock] = useState(false);
+
   /**
    * Prevent animation events from propogating up
    *
