@@ -5,7 +5,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
-import { Button } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -29,7 +28,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text, Button } from '../../component-library';
 
 const CustodyConfirmLink = () => {
   const t = useI18nContext();
