@@ -163,6 +163,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [skip e2e] bump coverage ([#18165](https://github.com/MetaMask/metamask-extension/pull/18165))
 - Fix disabled 'eth_sign' event & add 'Request Disabled' event type ([#18007](https://github.com/MetaMask/metamask-extension/pull/18007))
 - Fixed hardware wallet info popup on token allowance screen ([#17881](https://github.com/MetaMask/metamask-extension/pull/17881))
+## [10.28.3]
+### Fixed
+- Fix network switching prompted by dapps for users that added the network prior to v10.28.0. ([#18513](https://github.com/MetaMask/metamask-extension/pull/18513))
+
+## [10.28.2]
+### Fixed
+- Fix network switching prompted by dapps by fixing the `wallet_switchEthereumChain` handler. ([#18483](https://github.com/MetaMask/metamask-extension/pull/18483))
+- Fix to ensure all users see the NFT and transaction security notifications ([#18460](https://github.com/MetaMask/metamask-extension/pull/18460))
+- Fix issue blocking Hindi, Japanese and Turkish language users from installing from the Chrome store ([#18487](https://github.com/MetaMask/metamask-extension/pull/18487))
 
 ## [10.28.1]
 ### Changed
@@ -3803,6 +3812,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.29.0...HEAD
 [10.29.0]: https://github.com/MetaMask/metamask-extension/compare/v10.28.1...v10.29.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.28.3...HEAD
+[10.28.3]: https://github.com/MetaMask/metamask-extension/compare/v10.28.2...v10.28.3
+[10.28.2]: https://github.com/MetaMask/metamask-extension/compare/v10.28.1...v10.28.2
 [10.28.1]: https://github.com/MetaMask/metamask-extension/compare/v10.28.0...v10.28.1
 [10.28.0]: https://github.com/MetaMask/metamask-extension/compare/v10.27.0...v10.28.0
 [10.27.0]: https://github.com/MetaMask/metamask-extension/compare/v10.26.2...v10.27.0
