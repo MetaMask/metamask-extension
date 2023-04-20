@@ -94,7 +94,7 @@ const SnapListTab = () => {
               name={IconName.Snaps}
               color={Color.iconMuted}
               className="snap-list-tab__no-snaps_icon"
-              size={IconSize.Auto}
+              size={IconSize.Inherit}
             />
             <Text
               color={Color.textMuted}
