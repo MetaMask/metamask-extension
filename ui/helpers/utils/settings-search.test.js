@@ -27,8 +27,6 @@ const t = (key) => {
       return 'State logs';
     case 'stateLogsDescription':
       return 'State logs contain your public account addresses and sent transactions.';
-    case 'syncWithMobile':
-      return 'Sync with mobile';
     case 'clearActivity':
       return 'Clear activity and nonce data';
     case 'clearActivityDescription':
