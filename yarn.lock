@@ -3740,6 +3740,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@metamask/controller-utils@npm:3.2.0"
+  dependencies:
+    "@metamask/utils": ^5.0.1
+    "@spruceid/siwe-parser": 1.1.3
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: 06b27f9273719ca6eb556c032b77e9066c8d38ad4ff081896a68046e1e4764482f244bf849d51fc622f425e54c9063cc697abdb0cb2f2aaab9a0d8807f2310f3
+  languageName: node
+  linkType: hard
+
 "@metamask/design-tokens@npm:^1.6.0, @metamask/design-tokens@npm:^1.9.0":
   version: 1.11.1
   resolution: "@metamask/design-tokens@npm:1.11.1"
@@ -4024,33 +4039,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/message-manager@npm:3.0.0"
+"@metamask/message-manager@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/message-manager@npm:3.1.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
+    "@metamask/controller-utils": ^3.2.0
     "@types/uuid": ^8.3.0
     eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: 14e0a4a398d95ce720e515bd1f35aee7b7b9f5f59367210a9125fe66fb561b630ae51b61f32048767f0bb30dd4a2e442e47c8d850de78f820feda7f72e4dc05e
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.0.0#./.yarn/patches/@metamask-message-manager-npm-3.0.0-6452b962f2.patch::locator=metamask-crx%40workspace%3A.":
-  version: 3.0.0
-  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.0.0#./.yarn/patches/@metamask-message-manager-npm-3.0.0-6452b962f2.patch::version=3.0.0&hash=cc168d&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-    "@types/uuid": ^8.3.0
-    eth-sig-util: ^3.0.0
-    ethereumjs-util: ^7.0.10
-    jsonschema: ^1.2.4
-    uuid: ^8.3.2
-  checksum: a1253fc7e4c88cecf83c7d492672ace19305afcd2ee166aed1be40ca0e855675236be70f88ddf29411417bea3053643784d108e84f5bf1ac5f27fc2dd8ede1f2
+  checksum: d96d1071abc704a761b61bda715a2f2ccc0cf6604b095bbd1141d8de6c621aa5e6113d47c787cbdb8ee037f4bc1bf003b8575b87588cd9af8a27479e8ee5fdd7
   languageName: node
   linkType: hard
 
@@ -4489,6 +4489,19 @@ __metadata:
   linkType: hard
 
 "@metamask/utils@npm:^5.0.0, @metamask/utils@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/utils@npm:5.0.1"
+  dependencies:
+    "@ethereumjs/tx": ^4.1.1
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    semver: ^7.3.8
+    superstruct: ^1.0.3
+  checksum: 29745bd3d2db06bf66263bdec04e93a8f417c46c69d8054149c0046ed54b5f13d26d94a998fff1a31b5a8e7a2200935bfc8392a5fa3c4261e3cecd3ccdd9ddc0
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^5.0.1":
   version: 5.0.1
   resolution: "@metamask/utils@npm:5.0.1"
   dependencies:
@@ -24106,7 +24119,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^3.0.0
+    "@metamask/message-manager": ^3.1.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^2.0.0
     "@metamask/obs-store": ^8.1.0
