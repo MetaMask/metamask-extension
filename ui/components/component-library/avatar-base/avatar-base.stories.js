@@ -110,7 +110,7 @@ export const Size = (args) => (
 export const Children = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarBase {...args}>
-      <img src="./images/eth_logo.svg" />
+      <img src="./images/eth_logo.png" />
     </AvatarBase>
     <AvatarBase {...args}>
       <img width="100%" src="./images/arbitrum.svg" />
