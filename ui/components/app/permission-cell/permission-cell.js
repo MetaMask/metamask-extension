@@ -11,12 +11,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AvatarIcon, Text } from '../../component-library';
 import {
+  AvatarIcon,
+  Text,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+  IconName,
+  IconSize,
+} from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
@@ -32,24 +33,24 @@ const PermissionCell = ({
   const t = useI18nContext();
 
   let infoIconColor = IconColor.iconMuted;
-  let infoIcon = ICON_NAMES.INFO;
-  let iconColor = Color.primaryDefault;
+  let infoIcon = IconName.Info;
+  let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
 
   if (!revoked && weight === 1) {
-    iconColor = Color.warningDefault;
+    iconColor = IconColor.warningDefault;
     iconBackgroundColor = Color.warningMuted;
     infoIconColor = IconColor.warningDefault;
-    infoIcon = ICON_NAMES.DANGER;
+    infoIcon = IconName.Danger;
   }
 
   if (dateApproved) {
-    iconColor = Color.iconMuted;
+    iconColor = IconColor.iconMuted;
     iconBackgroundColor = Color.backgroundAlternative;
   }
 
   if (revoked) {
-    iconColor = Color.iconMuted;
+    iconColor = IconColor.iconMuted;
     iconBackgroundColor = Color.backgroundAlternative;
   }
 
@@ -72,9 +73,9 @@ const PermissionCell = ({
         {typeof permissionIcon === 'string' ? (
           <AvatarIcon
             iconName={permissionIcon}
-            size={ICON_SIZES.MD}
+            size={IconSize.Md}
             iconProps={{
-              size: ICON_SIZES.SM,
+              size: IconSize.Sm,
             }}
             color={iconColor}
             backgroundColor={iconBackgroundColor}
@@ -108,7 +109,7 @@ const PermissionCell = ({
       </Box>
       <Box>
         <Tooltip html={<div>{description}</div>} position="bottom">
-          <Icon color={infoIconColor} name={infoIcon} size={ICON_SIZES.SM} />
+          <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
         </Tooltip>
       </Box>
     </Box>
