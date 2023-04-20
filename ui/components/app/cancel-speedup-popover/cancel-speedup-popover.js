@@ -16,11 +16,10 @@ import { useTransactionModalContext } from '../../../contexts/transaction-modal'
 import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
-import Button from '../../ui/button';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
 import AppLoadingSpinner from '../app-loading-spinner';
-import { Text } from '../../component-library';
+import { Text, Button, ButtonLink } from '../../component-library';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -101,7 +100,7 @@ const CancelSpeedupPopover = () => {
           alignItems={AlignItems.center}
           display={DISPLAY.FLEX}
           variant={TextVariant.bodySm}
-          marginBottom={2}
+          marginBottom={4}
           className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
@@ -110,22 +109,21 @@ const CancelSpeedupPopover = () => {
           <InfoTooltip
             position="top"
             contentText={
-              <Box>
-                {t('cancelSpeedUpTransactionTooltip', [
-                  editGasMode === EditGasModes.cancel
-                    ? t('cancel')
-                    : t('speedUp'),
-                ])}
-                <div>
-                  <a
-                    href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('learnMoreUpperCase')}
-                  </a>
-                </div>
-              </Box>
+              <>
+                <Text>
+                  {t('cancelSpeedUpTransactionTooltip', [
+                    editGasMode === EditGasModes.cancel
+                      ? t('cancel')
+                      : t('speedUp'),
+                  ])}
+                </Text>
+                <ButtonLink
+                  href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                  target="_blank"
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </>
             }
           />
         </Text>
@@ -142,9 +140,7 @@ const CancelSpeedupPopover = () => {
             <GasDetailsItem />
           </Box>
         </Box>
-        <Button type="primary" onClick={submitTransactionChange}>
-          {t('submit')}
-        </Button>
+        <Button onClick={submitTransactionChange}>{t('submit')}</Button>
       </div>
     </Popover>
   );

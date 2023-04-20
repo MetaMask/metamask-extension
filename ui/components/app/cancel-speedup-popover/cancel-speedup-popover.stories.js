@@ -41,7 +41,6 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
 export default {
   title: 'Components/App/CancelSpeedupPopover',
   component: CancelSpeedupPopover,
-
   decorators: [
     (story) => (
       <Provider store={store}>
