@@ -40,7 +40,7 @@ WithImage.args = {
   addBorder: false,
   diameter: 32,
   useBlockie: false,
-  image: './images/eth_logo.svg',
+  image: './images/eth_logo.png',
   alt: 'Ethereum',
   imageBorder: true,
 };

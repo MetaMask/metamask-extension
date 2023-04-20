@@ -10,7 +10,7 @@ import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, ICON_NAMES } from '../../../component-library/icon/deprecated';
+import { Icon, IconName } from '../../../component-library';
 
 export default function ConfirmPageContainerHeader({
   onEdit,
@@ -54,7 +54,7 @@ export default function ConfirmPageContainerHeader({
               visibility: showEdit ? 'initial' : 'hidden',
             }}
           >
-            <Icon name={ICON_NAMES.ARROW_LEFT} />
+            <Icon name={IconName.ArrowLeft} />
             <span
               data-testid="confirm-page-back-edit-button"
               className="confirm-page-container-header__back-button"

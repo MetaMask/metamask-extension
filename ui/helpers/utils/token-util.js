@@ -261,17 +261,15 @@ export async function getAssetDetails(
     // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
     return { toAddress, tokenId };
   }
-
+  const tokenValue = getTokenValueParam(tokenData);
+  const tokenDecimals = tokenDetails?.decimals;
   const tokenAmount =
     tokenData &&
-    tokenDetails?.decimals &&
-    calcTokenAmount(
-      getTokenValueParam(tokenData),
-      tokenDetails?.decimals,
-    ).toString(10);
+    tokenValue &&
+    tokenDecimals &&
+    calcTokenAmount(tokenValue, tokenDecimals).toString(10);
 
-  const decimals =
-    tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
+  const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
 
   if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;
