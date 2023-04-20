@@ -16,11 +16,7 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { Icon, IconName, IconSize } from '../../component-library';
 import Box from '../../ui/box/box';
 
 const AssetListItem = ({
@@ -143,9 +139,9 @@ const AssetListItem = ({
         !isERC721 && (
           <Box>
             <Icon
-              name={ICON_NAMES.ARROW_RIGHT}
+              name={IconName.ArrowRight}
               color={Color.iconDefault}
-              size={ICON_SIZES.SM}
+              size={IconSize.Sm}
               style={{ verticalAlign: 'middle' }}
             />
             {sendTokenButton}
