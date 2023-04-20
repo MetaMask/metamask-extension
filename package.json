@@ -207,13 +207,7 @@
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/assets-controllers@^4.0.1": "patch:@metamask/assets-controllers@npm%3A4.0.1#./.yarn/patches/@metamask-assets-controllers-npm-4.0.1-2cb3225e77.patch",
-    "@metamask/assets-controllers@^5.0.0": "patch:@metamask/assets-controllers@npm%3A5.0.1#./.yarn/patches/@metamask-assets-controllers-npm-5.0.1-b44afd7348.patch",
-    "@metamask/controller-utils@^3.1.0": "patch:@metamask/controller-utils@npm%3A3.1.0#./.yarn/patches/@metamask-controller-utils-npm-3.1.0-7330964428.patch",
-    "@metamask/controller-utils@^3.0.0": "patch:@metamask/controller-utils@npm%3A3.1.0#./.yarn/patches/@metamask-controller-utils-npm-3.1.0-7330964428.patch",
-    "@metamask/controller-utils@^1.0.0": "patch:@metamask/controller-utils@npm%3A3.1.0#./.yarn/patches/@metamask-controller-utils-npm-3.1.0-7330964428.patch",
-    "@metamask/controller-utils@^2.0.0": "patch:@metamask/controller-utils@npm%3A3.1.0#./.yarn/patches/@metamask-controller-utils-npm-3.1.0-7330964428.patch"
+    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
@@ -235,10 +229,10 @@
     "@metamask/address-book-controller": "^2.0.0",
     "@metamask/announcement-controller": "^3.0.0",
     "@metamask/approval-controller": "^2.1.0",
-    "@metamask/assets-controllers": "^5.0.0",
+    "@metamask/assets-controllers": "^6.0.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/contract-metadata": "^2.3.1",
-    "@metamask/controller-utils": "^3.1.0",
+    "@metamask/controller-utils": "^3.2.0",
     "@metamask/design-tokens": "^1.9.0",
     "@metamask/desktop": "^0.3.0",
     "@metamask/eth-json-rpc-infura": "^8.0.0",
