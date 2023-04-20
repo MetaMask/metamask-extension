@@ -113,8 +113,6 @@ const ExportPrivateKeyModal = ({
   };
 
   const renderPasswordInput = (privateKeyInput) => {
-    const plainKey = privateKeyInput && stripHexPrefix(privateKeyInput);
-
     if (!privateKeyInput) {
       return (
         <TextField
@@ -125,6 +123,8 @@ const ExportPrivateKeyModal = ({
         />
       );
     }
+
+    const plainKey = privateKeyInput && stripHexPrefix(privateKeyInput);
 
     return (
       <Box
