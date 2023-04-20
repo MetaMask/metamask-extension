@@ -8,9 +8,9 @@ import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { Text } from '../../../component-library';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
-import { Text } from '../../../component-library';
 
 const NetworkStatistics = () => {
   const t = useContext(I18nContext);
@@ -34,7 +34,8 @@ const NetworkStatistics = () => {
         fontWeight={FONT_WEIGHT.BOLD}
         marginTop={3}
         marginBottom={3}
-        variant={TextVariant.bodyXs} as="h6"
+        variant={TextVariant.bodyXs}
+        as="h6"
       >
         {t('networkStatus')}
       </Text>
