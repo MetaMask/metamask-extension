@@ -91,6 +91,7 @@ const RevealSeedPage = () => {
               setCompletedLongPress(true);
               setScreen(REVEAL_SEED_SCREEN);
             },
+            holdToRevealType: 'SRP',
           }),
         );
       })

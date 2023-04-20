@@ -88,7 +88,7 @@ describe('Export Private Key Modal', () => {
 
     await waitFor(() => {
       expect(mockExportAccount).toHaveBeenCalled();
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(queryByText('Keep your private key safe')).toBeInTheDocument();
     });
   });
 
@@ -108,10 +108,10 @@ describe('Export Private Key Modal', () => {
 
     await waitFor(() => {
       expect(mockExportAccount).toHaveBeenCalled();
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(queryByText('Keep your private key safe')).toBeInTheDocument();
     });
 
-    const holdButton = getByText('Hold to reveal SRP');
+    const holdButton = getByText('Hold to reveal Private Key');
     expect(holdButton).toBeInTheDocument();
 
     fireEvent.mouseDown(holdButton);

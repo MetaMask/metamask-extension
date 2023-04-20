@@ -217,6 +217,66 @@ const ExportPrivateKeyModal = ({
     );
   };
 
+  const renderPrivateKey = (selectedIdentity) => {
+    return (
+      <>
+        <Text
+          as="span"
+          marginTop={2}
+          variant={TextVariant.bodyLgMedium}
+          fontWeight={FONT_WEIGHT.NORMAL}
+        >
+          {name}
+        </Text>
+        <Box
+          className="ellip-address-wrapper"
+          borderStyle={BorderStyle.solid}
+          borderColor={BorderColor.borderDefault}
+          borderWidth={1}
+          marginTop={2}
+          padding={[1, 2, 1, 2]}
+        >
+          {toChecksumHexAddress(address)}
+        </Box>
+        <Box
+          className="export-private-key-modal__divider"
+          width={BLOCK_SIZES.FULL}
+          margin={[5, 0, 3, 0]}
+        />
+        <Text
+          variant={TextVariant.bodyLgMedium}
+          margin={[4, 0, 4, 0]}
+          fontWeight={FONT_WEIGHT.NORMAL}
+        >
+          {t('showPrivateKeys')}
+        </Text>
+        <Box
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.flexStart}
+        >
+          {renderPasswordLabel(privateKey)}
+          {renderPasswordInput(privateKey)}
+          {showWarning && (
+            <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
+              {warning}
+            </Text>
+          )}
+        </Box>
+        <BannerAlert
+          padding={[1, 3, 0, 3]}
+          marginLeft={5}
+          marginRight={5}
+          marginTop={4}
+          severity="danger"
+        >
+          {t('privateKeyWarning')}
+        </BannerAlert>
+        {renderButtons(privateKey, address, hideModal)}
+      </>
+    );
+  };
+
   const { name, address } = selectedIdentity;
 
   return (
@@ -230,62 +290,10 @@ const ExportPrivateKeyModal = ({
         <HoldToRevealModal
           onLongPressed={() => setShowHoldToReveal(false)}
           willHide={false}
+          holdToRevealType="PrivateKey"
         />
       ) : (
-        <>
-          <Text
-            as="span"
-            marginTop={2}
-            variant={TextVariant.bodyLgMedium}
-            fontWeight={FONT_WEIGHT.NORMAL}
-          >
-            {name}
-          </Text>
-          <Box
-            className="ellip-address-wrapper"
-            borderStyle={BorderStyle.solid}
-            borderColor={BorderColor.borderDefault}
-            borderWidth={1}
-            marginTop={2}
-            padding={[1, 2, 1, 2]}
-          >
-            {toChecksumHexAddress(address)}
-          </Box>
-          <Box
-            className="export-private-key-modal__divider"
-            width={BLOCK_SIZES.FULL}
-            margin={[5, 0, 3, 0]}
-          />
-          <Text
-            variant={TextVariant.bodyLgMedium}
-            margin={[4, 0, 4, 0]}
-            fontWeight={FONT_WEIGHT.NORMAL}
-          >
-            {t('showPrivateKeys')}
-          </Text>
-          <Box
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            alignItems={AlignItems.flexStart}
-          >
-            {renderPasswordLabel(privateKey)}
-            {renderPasswordInput(privateKey)}
-            {showWarning && (
-              <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
-                {warning}
-              </Text>
-            )}
-          </Box>
-          <BannerAlert
-            padding={[1, 3, 0, 3]}
-            marginLeft={5}
-            marginRight={5}
-            marginTop={4}
-            severity="danger"
-          >
-            {t('privateKeyWarning')}
-          </BannerAlert>
-          {renderButtons(privateKey, address, hideModal)}
-        </>
+        renderPrivateKey(selectedIdentity)
       )}
     </AccountModalContainer>
   );
