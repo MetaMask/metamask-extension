@@ -39,7 +39,7 @@ import {
 import {
   ButtonIcon,
   IconName,
-  IconSize,
+  ButtonIconSize,
 } from '../../components/component-library';
 
 export default function AddNft() {
