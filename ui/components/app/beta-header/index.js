@@ -33,7 +33,8 @@ const BetaHeader = () => {
       alignItems={AlignItems.center}
     >
       <Text
-        variant={TextVariant.bodySm} as="h6"
+        variant={TextVariant.bodySm}
+        as="h6"
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
