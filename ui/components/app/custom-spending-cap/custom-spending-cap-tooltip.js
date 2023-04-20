@@ -12,6 +12,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../component-library/icon/deprecated';
+import { Text } from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
