@@ -1,8 +1,12 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { getPersistentState } from '@metamask/base-controller';
+import { getVaultState, getPersistentState } from '@metamask/base-controller';
 
 /**
  * @typedef {import('@metamask/base-controller').ControllerMessenger} ControllerMessenger
+ */
+
+/**
+ * @typedef {'Memory' | 'Persistent' | 'Vault'} StoreType
  */
 
 /**
@@ -29,11 +33,11 @@ export default class ComposableObservableStore extends ObservableStore {
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
    * @param {object} [options.state] - The initial store state
-   * @param {boolean} [options.persist] - Whether or not to apply the persistence for v2 controllers
+   * @param {StoreType} [options.type] - The type of store this is (in-memory, persistent, or vault)
    */
-  constructor({ config, controllerMessenger, state, persist }) {
+  constructor({ config, controllerMessenger, state, type = 'Memory' }) {
     super(state);
-    this.persist = persist;
+    this.type = type;
     this.controllerMessenger = controllerMessenger;
     if (config) {
       this.updateStructure(config);
@@ -65,7 +69,9 @@ export default class ComposableObservableStore extends ObservableStore {
           `${store.name}:stateChange`,
           (state) => {
             let updatedState = state;
-            if (this.persist) {
+            if (this.type === 'Vault') {
+              updatedState = getVaultState(state, config[key].metadata);
+            } else if (this.type === 'Persistent') {
               updatedState = getPersistentState(state, config[key].metadata);
             }
             this.updateState({ [key]: updatedState });

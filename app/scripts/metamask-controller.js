@@ -233,7 +233,13 @@ export default class MetamaskController extends EventEmitter {
     this.store = new ComposableObservableStore({
       state: initState,
       controllerMessenger: this.controllerMessenger,
-      persist: true,
+      type: 'Persistent',
+    });
+
+    this.vaultStore = new ComposableObservableStore({
+      state: initState,
+      controllerMessenger: this.controllerMessenger,
+      type: 'Vault',
     });
 
     // external connections by origin
@@ -1346,9 +1352,15 @@ export default class MetamaskController extends EventEmitter {
       ApprovalController: this.approvalController,
     };
 
+    this.vaultStore.updateStructure({
+      // Just includes vault state
+      KeyringController: this.keyringController.store,
+    });
+
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
+      // Just includes persisted state
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
       MetaMetricsController: this.metaMetricsController.store,
