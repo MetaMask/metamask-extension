@@ -10,7 +10,7 @@ import {
   AlignItems,
   BorderRadius,
   TextVariant,
-  TEXT_TRANSFORM,
+  TextTransform,
 } from '../../../helpers/constants/design-system';
 
 import { Text, ValidTag } from '../text';
@@ -48,7 +48,7 @@ export const AvatarBase = ({
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.full}
       variant={fallbackTextVariant}
-      textTransform={TEXT_TRANSFORM.UPPERCASE as 'UPPERCASE'}
+      textTransform={TextTransform.Uppercase}
       {...{ backgroundColor, borderColor, color, ...props }}
     >
       {children}
