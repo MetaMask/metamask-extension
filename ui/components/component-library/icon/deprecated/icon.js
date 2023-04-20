@@ -19,6 +19,7 @@ import { ICON_SIZES, ICON_NAMES } from './icon.constants';
  *
  * `import { Icon, IconSize, IconName } from '../../component-library'`;
  */
+
 export const Icon = ({
   name,
   size = Size.MD,
