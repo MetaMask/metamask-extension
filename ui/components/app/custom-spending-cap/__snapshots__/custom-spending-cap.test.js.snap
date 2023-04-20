@@ -42,7 +42,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                        class="box mm-icon mm-icon--size-inherit box--display-inline-block box--flex-direction-row box--color-inherit"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
