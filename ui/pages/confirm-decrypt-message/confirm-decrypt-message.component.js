@@ -20,6 +20,7 @@ import {
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
+import { IconName } from '../../components/component-library';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -231,7 +232,7 @@ export default class ConfirmDecryptMessage extends Component {
             }}
           >
             <div className="request-decrypt-message__message-lock__container">
-              <i className="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon" />
+              <Icon name={IconName.Lock} className="request-decrypt-message__message-lock__container__icon" />
               <div className="request-decrypt-message__message-lock__container__text">
                 {t('decryptMetamask')}
               </div>

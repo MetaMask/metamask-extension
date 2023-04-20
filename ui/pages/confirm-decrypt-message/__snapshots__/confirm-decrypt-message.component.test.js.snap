@@ -226,8 +226,9 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
           <div
             class="request-decrypt-message__message-lock__container"
           >
-            <i
-              class="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon"
+            <Icon
+              name={IconName.Lock}
+              class="request-decrypt-message__message-lock__container__icon"
             />
             <div
               class="request-decrypt-message__message-lock__container__text"
@@ -491,8 +492,9 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
           <div
             class="request-decrypt-message__message-lock__container"
           >
-            <i
-              class="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon"
+            <Icon
+              name={IconName.Lock}
+              class="request-decrypt-message__message-lock__container__icon"
             />
             <div
               class="request-decrypt-message__message-lock__container__text"
