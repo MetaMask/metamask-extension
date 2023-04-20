@@ -14,11 +14,7 @@ import {
   Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../component-library/icon/deprecated';
+import { Icon, IconName, IconSize } from '../../../component-library';
 
 export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
@@ -51,14 +47,14 @@ export const Copyable = ({ text }) => {
       >
         {copied ? (
           <Icon
-            name={ICON_NAMES.COPY_SUCCESS}
-            size={ICON_SIZES.LG}
+            name={IconName.CopySuccess}
+            size={IconSize.Lg}
             color={Color.iconAlternative}
           />
         ) : (
           <Icon
-            name={ICON_NAMES.COPY}
-            size={ICON_SIZES.LG}
+            name={IconName.Copy}
+            size={IconSize.Lg}
             color={Color.iconAlternative}
             onClick={() => handleCopy(text)}
           />
