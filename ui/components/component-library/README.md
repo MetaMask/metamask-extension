@@ -1,6 +1,6 @@
 # Component Library
 
-This folder contains design system components that are built 1:1 with the Figma [DS Components](https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/DS-Components?node-id=16%3A6&t=RFUEn25IPHUhqHVo-1) UI kit and should be used where possible in all UI feature work
+This folder contains design system components that are built 1:1 with the Figma [DS Components](https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/DS-Components?node-id=16-6) UI kit and should be used where possible in all UI feature work.
 
 ## Architecture
 
