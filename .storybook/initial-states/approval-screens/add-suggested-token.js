@@ -4,7 +4,7 @@ export const suggestedAssets = [
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
       symbol: 'ETH',
       decimals: 18,
-      image: './images/eth_logo.svg',
+      image: './images/eth_logo.png',
       unlisted: false,
     },
   },
