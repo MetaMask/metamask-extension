@@ -236,7 +236,9 @@ export const AppHeader = ({ onClick }) => {
                   closeMenu={() => setAccountOptionsMenuOpen(false)}
                 />
               ) : null}
-              {popupStatus && multichainProductTourStep === 3 ? (
+              {showProductTour &&
+              popupStatus &&
+              multichainProductTourStep === 3 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
                   anchorElement={menuRef.current}
