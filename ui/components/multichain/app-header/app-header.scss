@@ -30,15 +30,7 @@
     }
 
     &--avatar-network {
-      background-color: transparent;
-      width: min-content;
-      padding: 8px;
-
-      &:hover,
-      &:active {
-        box-shadow: none;
-        background: transparent;
-      }
+      padding: 0; // TODO: Remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
     }
   }
 
