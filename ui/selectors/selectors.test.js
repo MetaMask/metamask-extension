@@ -452,7 +452,11 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeToken', () => {
+<<<<<<< HEAD
     mockState.metamask.providerConfig.chainId = '0xa';
+=======
+    mockState.metamask.provider.chainId = '0xa';
+>>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
     const isOptimismTokenSupported = selectors.getIsBridgeToken(
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);
@@ -463,7 +467,11 @@ describe('Selectors', () => {
     )(mockState);
     expect(isOptimismUnknownTokenSupported).toBeFalsy();
 
+<<<<<<< HEAD
     mockState.metamask.providerConfig.chainId = '0xfa';
+=======
+    mockState.metamask.provider.chainId = '0xfa';
+>>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
     const isFantomTokenSupported = selectors.getIsBridgeToken(
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);
