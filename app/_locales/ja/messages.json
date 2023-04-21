@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "トークンが見当たりませんか？"
   },
-  "mobileSyncWarning": {
-    "message": "「拡張機能と同期」機能は一時的に無効になっています。拡張ウォレットをMetaMaskモバイルで使用する場合は、モバイルアプリでウォレットの設定オプションに戻り、「シークレットリカバリーフレーズでインポート」オプションを選択します。拡張ウォレットのシークレットフレーズを使用して、ウォレットをモバイルにインポートします。"
-  },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
   },
@@ -2696,10 +2693,6 @@
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask に確認を表示します。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask にダイアログウィンドウを表示します。",
@@ -3939,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "シンボルは11文字以下にする必要があります。"
-  },
-  "syncFailed": {
-    "message": "同期に失敗しました"
-  },
-  "syncInProgress": {
-    "message": "同期中"
-  },
-  "syncWithMobile": {
-    "message": "モバイルと同期"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "このコードをスキャンするとき、画面を誰にも見られていないことを確認してください"
-  },
-  "syncWithMobileComplete": {
-    "message": "データの同期に成功しました。MetaMaskモバイルアプリをご活用ください!"
-  },
-  "syncWithMobileDesc": {
-    "message": "アカウントと情報を、モバイルデバイスと同期させることができます。MetaMaskモバイルアプリを開き、「設定」に進み、「ブラウザ拡張機能から同期」をタップします。"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "MetaMaskモバイルアプリを初めて開く場合は、スマートフォンを以下のステップに従って操作してください。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMaskモバイルアプリでこのコードをスキャンします"
-  },
-  "syncWithMobileTitle": {
-    "message": "モバイルと同期"
   },
   "tenPercentIncreased": {
     "message": "10% の増加"

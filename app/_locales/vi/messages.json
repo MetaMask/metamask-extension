@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "Không thấy token của mình?"
   },
-  "mobileSyncWarning": {
-    "message": "Tính năng 'Đồng bộ với tiện ích' tạm thời bị tắt. Nếu bạn muốn sử dụng ví tiện ích trên thiết bị di động MetaMask, thì trên ứng dụng di động: hãy quay lại các tùy chọn thiết lập ví và chọn phương án 'Nhập bằng Cụm Mật Khẩu Khôi Phục Bí Mật'. Sử dụng cụm mật khẩu bí mật của ví tiện ích để nhập ví của bạn vào thiết bị di động."
-  },
   "moreComingSoon": {
     "message": "Sắp có thêm..."
   },
@@ -2696,10 +2693,6 @@
   "permission_cronjob": {
     "message": "Lên lịch và thực hiện các hành động theo định kỳ.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Hiển thị xác nhận trong MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Hiển thị cửa sổ hộp thoại trong MetaMask.",
@@ -3939,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Ký hiệu không được dài quá 11 ký tự."
-  },
-  "syncFailed": {
-    "message": "Đồng bộ thất bại"
-  },
-  "syncInProgress": {
-    "message": "Đang đồng bộ"
-  },
-  "syncWithMobile": {
-    "message": "Đồng bộ với thiết bị di động"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Đảm bảo rằng không có ai nhìn vào màn hình của bạn khi quét mã này"
-  },
-  "syncWithMobileComplete": {
-    "message": "Đã đồng bộ thành công dữ liệu của bạn. Tận hưởng ứng dụng MetaMask trên thiết bị di động!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Bạn có thể đồng bộ tài khoản và thông tin của mình với thiết bị di động. Mở ứng dụng MetaMask trên thiết bị di động, chuyển đến phần \"Cài đặt\" và nhấn vào \"Đồng bộ với tiện ích trình duyệt\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Nếu mới mở ứng dụng MetaMask trên thiết bị di động lần đầu tiên, bạn chỉ cần làm theo các bước hướng dẫn trên điện thoại."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Quét mã này bằng ứng dụng MetaMask trên thiết bị di động"
-  },
-  "syncWithMobileTitle": {
-    "message": "Đồng bộ với thiết bị di động"
   },
   "tenPercentIncreased": {
     "message": "Tăng 10%"

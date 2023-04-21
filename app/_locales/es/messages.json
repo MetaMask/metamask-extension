@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "¿No ve su token?"
   },
-  "mobileSyncWarning": {
-    "message": "La función 'Sincronizar con la extensión' está temporalmente desactivada. Si desea utilizar su cartera de extensión en MetaMask móvil, haga lo siguiente en la aplicación móvil: vuelva a las opciones de configuración de la cartera y seleccione la opción 'Importar con frase secreta de recuperación'. Use la frase secreta de su cartera de extensión para importar su cartera al móvil."
-  },
   "moreComingSoon": {
     "message": "Más próximamente..."
   },
@@ -2696,10 +2693,6 @@
   "permission_cronjob": {
     "message": "Programar y ejecutar acciones periódicas.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Mostrar una confirmación en MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Mostrar ventanas de diálogo en MetaMask.",
@@ -3939,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "El símbolo debe tener 11 caracteres o menos."
-  },
-  "syncFailed": {
-    "message": "Error al sincronizar"
-  },
-  "syncInProgress": {
-    "message": "Sincronización en progreso"
-  },
-  "syncWithMobile": {
-    "message": "Sincronizar con dispositivo móvil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Asegúrese de que nadie vea su pantalla cuando escanee este código"
-  },
-  "syncWithMobileComplete": {
-    "message": "Los datos se sincronizaron correctamente. ¡Disfrute de la aplicación móvil de MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Puede sincronizar sus cuentas y su información con el dispositivo móvil. Abra la aplicación móvil de MetaMask, vaya a \"Configuración\" y presione \"Sincronizar desde la extensión del explorador\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Si acaba de abrir la aplicación móvil de MetaMask por primera vez, siga los pasos que aparecen en el teléfono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escanear este código con la aplicación móvil de MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizar con dispositivo móvil"
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"

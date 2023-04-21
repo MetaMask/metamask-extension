@@ -85,6 +85,7 @@ export default function CreatePassword({
     if (isTooShort) {
       return {
         className: 'create-password__weak',
+        dataTestId: 'short-password-error',
         text: t('passwordNotLongEnough'),
         description: '',
       };
@@ -92,6 +93,7 @@ export default function CreatePassword({
     if (score >= 4) {
       return {
         className: 'create-password__strong',
+        dataTestId: 'strong-password',
         text: t('strong'),
         description: '',
       };
@@ -99,12 +101,14 @@ export default function CreatePassword({
     if (score === 3) {
       return {
         className: 'create-password__average',
+        dataTestId: 'average-password',
         text: t('average'),
         description: t('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
+      dataTestId: 'weak-password',
       text: t('weak'),
       description: t('passwordStrengthDescription'),
     };
@@ -116,7 +120,11 @@ export default function CreatePassword({
     const { score } = zxcvbn(passwordInput);
     const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
     const passwordStrengthComponent = t('passwordStrength', [
-      <span key={score} className={passwordStrengthLabel.className}>
+      <span
+        key={score}
+        data-testid={passwordStrengthLabel.dataTestId}
+        className={passwordStrengthLabel.className}
+      >
         {passwordStrengthLabel.text}
       </span>,
     ]);
@@ -206,6 +214,7 @@ export default function CreatePassword({
               <Typography variant={TypographyVariant.H7}>
                 <a
                   href=""
+                  data-testid="show-password"
                   className="create-password__form--password-button"
                   onClick={(e) => {
                     e.preventDefault();

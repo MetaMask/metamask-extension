@@ -35,7 +35,6 @@ import {
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
-  isHardwareWallet,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -67,6 +66,8 @@ import {
   ICON_NAMES,
 } from '../../components/component-library/icon/deprecated';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
+import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -93,6 +94,7 @@ export default function TokenAllowance({
   currentTokenBalance,
   toAddress,
   tokenSymbol,
+  fromAddressIsLedger,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -103,6 +105,7 @@ export default function TokenAllowance({
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
   const [showContractDetails, setShowContractDetails] = useState(false);
+  const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
   const [isFirstPage, setIsFirstPage] = useState(
     dappProposedTokenAmount !== '0' && !thisOriginIsAllowedToSkipFirstPage,
@@ -120,7 +123,6 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const isHardwareWalletConnected = useSelector(isHardwareWallet);
   let customTokenAmount = useSelector(getCustomTokenAmount);
   if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
     customTokenAmount = dappProposedTokenAmount;
@@ -272,6 +274,15 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
+      {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+        txData?.securityProviderResponse?.flagAsDangerous !==
+          SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+      (txData?.securityProviderResponse &&
+        Object.keys(txData.securityProviderResponse).length === 0) ? (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      ) : null}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -392,12 +403,14 @@ export default function TokenAllowance({
       <Box margin={[4, 4, 3, 4]}>
         {isFirstPage ? (
           <CustomSpendingCap
+            txParams={txData?.txParams}
             tokenName={tokenSymbol}
             currentTokenBalance={currentTokenBalance}
             dappProposedValue={dappProposedTokenAmount}
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
             decimals={decimals}
+            setInputChangeInProgress={setInputChangeInProgress}
           />
         ) : (
           <ReviewSpendingCap
@@ -505,7 +518,7 @@ export default function TokenAllowance({
           </Box>
         </Box>
       ) : null}
-      {!isFirstPage && isHardwareWalletConnected && (
+      {!isFirstPage && fromAddressIsLedger && (
         <Box paddingLeft={2} paddingRight={2}>
           <LedgerInstructionField showDataInstruction />
         </Box>
@@ -515,7 +528,9 @@ export default function TokenAllowance({
         submitText={isFirstPage ? t('next') : t('approveButtonText')}
         onCancel={() => handleReject()}
         onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
-        disabled={disableNextButton || disableApproveButton}
+        disabled={
+          inputChangeInProgress || disableNextButton || disableApproveButton
+        }
       >
         {unapprovedTxCount > 1 && (
           <Button
@@ -632,4 +647,8 @@ TokenAllowance.propTypes = {
    * Symbol of the token that is waiting to be allowed
    */
   tokenSymbol: PropTypes.string,
+  /**
+   * Whether the address sending the transaction is a ledger address
+   */
+  fromAddressIsLedger: PropTypes.bool,
 };

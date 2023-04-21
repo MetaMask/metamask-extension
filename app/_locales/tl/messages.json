@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "Hindi mo ba nakikita ang iyong mga token?"
   },
-  "mobileSyncWarning": {
-    "message": "Ang feature na 'I-sync gamit ang extension' ay pansamantalang hindi gumagana. Kung gusto mong gamitin ang iyong extension wallet sa MetaMask mobile, pagkatapos ay sa iyong mobile app: bumalik sa mga opsyon sa pag-setup ng wallet at piliin ang opsyong 'Mag-import gamit ang Secret Recovery Phrase'. Gamitin ang lihim na parirala ng iyong extension wallet upang pagkatapos ay i-import ang iyong wallet sa mobile."
-  },
   "moreComingSoon": {
     "message": "Marami pang parating..."
   },
@@ -2696,10 +2693,6 @@
   "permission_cronjob": {
     "message": "Mag-iskedyul at magsagawa ng mga pana-panahong mga aksyon.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Ipakita ang kumpirmasyon sa MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Ipakita ang mga dialog window sa MetaMask.",
@@ -3939,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Dapat ay 11 character o mas kaunti ang simbolo."
-  },
-  "syncFailed": {
-    "message": "Bigong ma-sync"
-  },
-  "syncInProgress": {
-    "message": "Kasalukuyang nagsi-sync"
-  },
-  "syncWithMobile": {
-    "message": "I-sync sa mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Tiyaking walang ibang nakakakita sa iyong screen kapag na-scan mo ang code na ito"
-  },
-  "syncWithMobileComplete": {
-    "message": "Matagumpay na na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Puwede mong i-sync ang iyong mga account at impormasyon sa mobile device mo. Buksan ang MetaMask mobile app, pumunta sa \"Mga Setting\" at i-tap ang \"I-sync mula sa Browser Extension\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kung unang pagkakataon mong bubuksan ang MetaMask Mobile app, sundin lang ang mga hakbang sa iyong telepono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "I-scan ang code na ito gamit ang iyong MetaMask mobile app"
-  },
-  "syncWithMobileTitle": {
-    "message": "I-sync sa mobile"
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"

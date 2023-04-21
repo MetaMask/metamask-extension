@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "토큰이 보이지 않나요?"
   },
-  "mobileSyncWarning": {
-    "message": "'확장 프로그램과 동기화' 기능이 일시적으로 비활성화됩니다. MetaMask 모바일에서 확장 지갑을 사용하려면 모바일 앱에서 지갑 설정 옵션으로 돌아가 '비밀 복구 구문 가져오기' 옵션을 선택하세요. 확장 지갑의 비밀 구문을 사용하시면 지갑을 모바일로 가져올 수 있습니다."
-  },
   "moreComingSoon": {
     "message": "더 추가 예정..."
   },
@@ -2696,10 +2693,6 @@
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask에 확인을 표시합니다.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
@@ -3939,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
-  },
-  "syncFailed": {
-    "message": "동기화 실패"
-  },
-  "syncInProgress": {
-    "message": "동기화 진행 중"
-  },
-  "syncWithMobile": {
-    "message": "모바일과 동기화"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "이 코드를 스캔할 때는 다른 사람이 화면을 보지 못하게 하세요"
-  },
-  "syncWithMobileComplete": {
-    "message": "데이터가 동기화되었습니다. MetaMask 모바일 앱을 마음껏 이용하세요!"
-  },
-  "syncWithMobileDesc": {
-    "message": "계정과 정보를 모바일 장치와 동기화할 수 있습니다. MetaMask 모바일 앱을 열고 \"설정\"으로 이동하여 \"브라우저 확장에서 동기화\"를 탭합니다."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "MetaMask 모바일 앱을 처음 여는 경우라면 휴대폰에 나타나는 지시사항을 따르세요."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMask 모바일 앱으로 이 코드를 스캔하세요"
-  },
-  "syncWithMobileTitle": {
-    "message": "모바일과 동기화"
   },
   "tenPercentIncreased": {
     "message": "10% 인상"

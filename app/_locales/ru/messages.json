@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "Не видите свой токен?"
   },
-  "mobileSyncWarning": {
-    "message": "Функция «Синхронизация с расширением» временно отключена. Если вы хотите использовать свой кошелек из расширения браузера в мобильной версии MetaMask, тогда в мобильном приложении вернитесь к параметрам настройки кошелька и выберите параметр «Импортировать с помощью секретной фразы для восстановления». Используйте секретную фразу своего кошелька из расширения, чтобы импортировать кошелек на мобильное устройство."
-  },
   "moreComingSoon": {
     "message": "Скоро появится больше..."
   },
@@ -2696,10 +2693,6 @@
   "permission_cronjob": {
     "message": "Планируйте и выполняйте периодические действия.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Показать подтверждение в MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Отображение диалоговых окон в MetaMask.",
@@ -3939,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
-  },
-  "syncFailed": {
-    "message": "Ошибка синхронизации"
-  },
-  "syncInProgress": {
-    "message": "Выполняется синхронизация"
-  },
-  "syncWithMobile": {
-    "message": "Синхронизировать с мобильным устройством"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Убедитесь, что никто не смотрит на ваш экран, когда вы сканируете этот код"
-  },
-  "syncWithMobileComplete": {
-    "message": "Ваши данные успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в раздел «Настройки» и нажмите «Синхронизировать из расширения браузера»."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Если вы открываете приложение MetaMask Mobile в первый раз, просто следуйте инструкциям на телефоне."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Отсканируйте этот код с помощью мобильного приложения MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Синхронизировать с мобильным устройством"
   },
   "tenPercentIncreased": {
     "message": "Увеличение на 10%"
