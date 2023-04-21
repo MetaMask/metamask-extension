@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import Identicon from '../../ui/identicon';
 import { I18nContext } from '../../../contexts/i18n';
@@ -52,6 +52,7 @@ const EthOverview = ({ className }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const balanceIsCached = useSelector(isBalanceCached);
@@ -246,7 +247,9 @@ const EthOverview = ({ className }) => {
                 const portfolioUrl = process.env.PORTFOLIO_URL;
                 const bridgeUrl = `${portfolioUrl}/bridge`;
                 global.platform.openTab({
-                  url: `${bridgeUrl}?metamaskEntry=ext`,
+                  url: `${bridgeUrl}?metamaskEntry=ext_bridge_button${
+                    location.pathname.includes('asset') ? '&token=native' : ''
+                  }`,
                 });
                 trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
