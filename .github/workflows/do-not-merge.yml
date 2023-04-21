@@ -9,7 +9,7 @@ on:
 jobs:
   do-not-merge:
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.*.labels.*.name, 'DO-NOT-MERGE') }}
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'DO-NOT-MERGE') }}
     steps:
       - name: 'Check for label "DO-NOT-MERGE"'
         run: |
