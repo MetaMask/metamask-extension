@@ -59,7 +59,7 @@ function QrCodeView(props) {
         }}
       />
       {process.env.MULTICHAIN ? (
-        <Box marginBottom={4} marginTop={4}>
+        <Box marginBottom={4}>
           <AddressCopyButton wrap address={toChecksumHexAddress(data)} />
         </Box>
       ) : (
