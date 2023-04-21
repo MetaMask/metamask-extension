@@ -1139,8 +1139,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
     PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
-    PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
-    PUBNUB_SUB_KEY: config.PUBNUB_SUB_KEY || '',
     SEGMENT_HOST: config.SEGMENT_HOST,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
     SENTRY_DSN: config.SENTRY_DSN,

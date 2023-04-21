@@ -25,7 +25,6 @@ const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
 const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
 ///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
-const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
@@ -68,7 +67,6 @@ const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
-const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/import-mobile';
 const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
 const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
@@ -120,7 +118,6 @@ const PATH_NAME_MAP = {
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
   [`${CONTACT_VIEW_ROUTE}/:address`]: 'View Contact Settings Page',
   [REVEAL_SEED_ROUTE]: 'Reveal Secret Recovery Phrase Page',
-  [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
   [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
@@ -182,7 +179,6 @@ export {
   LOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
-  MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
   IMPORT_TOKEN_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
@@ -252,7 +248,6 @@ export {
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_IMPORT_MOBILE_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,

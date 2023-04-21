@@ -726,27 +726,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
-  "syncWithMobile": {
-    "message": "ከሞባይል ጋር አሳምር"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "ይህን ኮድ ስካን ሲያደርጉ ሌላ ሰው የእርስዎን ማያ እየተመለከተ አለመሆኑን ያረጋግጡ"
-  },
-  "syncWithMobileComplete": {
-    "message": "ውሂብዎ በሚገባ ተሳምሯል። በ MetaMask የሞባይል መተግበሪያ ይደሰቱ!"
-  },
-  "syncWithMobileDesc": {
-    "message": "መለያዎችዎንና መረጃዎችዎን ከሞባይል መሳሪያዎ ጋር ያሳምሩ። የ MetaMask የሞባይል መተግበሪያን ይክፈቱ፣ ወደ \"ቅንብሮች\" ይሂዱና \"ከማሰሺያ ቅጥያ አሳምር\" የሚለውን ይንኩ"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "የ MetaMask የሞባይል መተግበሪያን ለመጀመሪያ ጊዜ ገና እየከፈቱ ከሆነ፣ በስልክዎ ላይ ያሉትን ቅደም ተከተሎች ብቻ ይከተሉ።"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "ይህን ኮድ በ MetaMask የሞባይል መተግበሪያዎ ስካን ያድርጉ"
-  },
-  "syncWithMobileTitle": {
-    "message": "ከሞባይል ጋር አሳምር"
-  },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
   },

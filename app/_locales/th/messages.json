@@ -377,9 +377,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
   },
-  "syncWithMobileComplete": {
-    "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
-  },
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"
   },
