@@ -320,29 +320,6 @@ export function tryReverseResolveAddress(
   };
 }
 
-export function fetchInfoToSync(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchInfoToSync`);
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('fetchInfoToSync', [], (err, result) => {
-        if (err) {
-          if (isErrorWithMessage(err)) {
-            dispatch(displayWarning(err.message));
-          }
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    });
-  };
-}
-
 export function resetAccount(): ThunkAction<
   Promise<string>,
   MetaMaskReduxState,
@@ -4581,6 +4558,10 @@ export function hideTestNetMessage() {
 
 export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
+}
+
+export function hideProductTour() {
+  return submitRequestToBackground('setShowProductTour', [false]);
 }
 
 // TODO: codeword NOT_A_THUNK @brad-decker

@@ -951,6 +951,9 @@
   "custodyRefreshTokenModalTitle": {
     "message": "Your custodian session has expired"
   },
+  "custodySessionExpired": {
+    "message": "Custodian session expired."
+  },
   "custom": {
     "message": "Advanced"
   },
@@ -1633,6 +1636,12 @@
   "general": {
     "message": "General"
   },
+  "globalTitle": {
+    "message": "Global menu"
+  },
+  "globalTourDescription": {
+    "message": "See your portfolio, connected sites, settings, and more"
+  },
   "goBack": {
     "message": "Go back"
   },
@@ -1987,16 +1996,16 @@
     "message": "Prior to clicking confirm:"
   },
   "ledgerConnectionInstructionStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device."
   },
   "ledgerConnectionInstructionStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced"
+    "message": "Enable Use Ledger Live under Settings > Advanced."
   },
   "ledgerConnectionInstructionStepThree": {
-    "message": "Plug in your Ledger device and select the Ethereum app"
+    "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
   "ledgerConnectionInstructionStepTwo": {
-    "message": "Open and unlock Ledger Live App"
+    "message": "Open and unlock Ledger Live App."
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
@@ -2180,9 +2189,6 @@
   },
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
-  },
-  "mobileSyncWarning": {
-    "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
   "moreComingSoon": {
     "message": "More coming soon..."
@@ -2396,6 +2402,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noReport": {
+    "message": "No Report"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -2541,7 +2550,6 @@
     "message": "Learn more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
   },
-
   "notifications20Description": {
     "message": "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
@@ -2799,7 +2807,7 @@
     "message": "Open Codefi Compliance"
   },
   "openFullScreenForLedgerWebHid": {
-    "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
+    "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
@@ -2810,6 +2818,9 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
+  },
+  "operationFailed": {
+    "message": "Operation Failed"
   },
   "optional": {
     "message": "Optional"
@@ -3050,6 +3061,12 @@
   "permissions": {
     "message": "Permissions"
   },
+  "permissionsTitle": {
+    "message": "Permissions"
+  },
+  "permissionsTourDescription": {
+    "message": "Find your connected accounts and manage permissions here"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -3231,6 +3248,12 @@
   "replace": {
     "message": "replace"
   },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
+  },
   "requestFailed": {
     "message": "Request failed"
   },
@@ -3360,8 +3383,17 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "riskRating": {
+    "message": "Risk rating"
+  },
+  "riskRatingTooltip": {
+    "message": "The risk rating of the address you are interacting with based on your risk settings"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "runReport": {
+    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3577,6 +3609,9 @@
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
+  "showReport": {
+    "message": "Show report"
+  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -3647,7 +3682,7 @@
     "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below align with your intended actions. Only proceed with authors you trust."
+    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
   },
   "snapInstallWarningCheckPlural": {
     "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
@@ -3793,6 +3828,9 @@
   },
   "stableLowercase": {
     "message": "stable"
+  },
+  "stake": {
+    "message": "Stake"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -4274,6 +4312,12 @@
   "switchedTo": {
     "message": "You have switched to"
   },
+  "switcherTitle": {
+    "message": "Network switcher"
+  },
+  "switcherTourDescription": {
+    "message": "Click the icon to switch networks or add a new network"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -4282,33 +4326,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
-  },
-  "syncFailed": {
-    "message": "Sync failed"
-  },
-  "syncInProgress": {
-    "message": "Sync in progress"
-  },
-  "syncWithMobile": {
-    "message": "Sync with mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Make sure nobody else is looking at your screen when you scan this code"
-  },
-  "syncWithMobileComplete": {
-    "message": "Your data has been synced successfully. Enjoy the MetaMask mobile app!"
-  },
-  "syncWithMobileDesc": {
-    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "If you just open the MetaMask Mobile app for the first time, just follow the steps in your phone."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scan this code with your MetaMask mobile app"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sync with mobile"
   },
   "tenPercentIncreased": {
     "message": "10% increase"
@@ -4503,6 +4520,10 @@
   "transactionErrored": {
     "message": "Transaction encountered an error."
   },
+  "transactionFailed": {
+    "message": "Transaction Failed"
+  },
+
   "transactionFee": {
     "message": "Transaction fee"
   },
