@@ -80,7 +80,7 @@ export default class ContactListTab extends Component {
         <div>
           <Icon
             name={IconName.Book}
-            color={Color.iconMuted}
+            color={IconColor.iconMuted}
             className="address-book__icon"
             size={IconSize.Xl}
           />
