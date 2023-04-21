@@ -181,7 +181,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/bridge?metamaskEntry=ext`),
+          url: expect.stringContaining(
+            '/bridge?metamaskEntry=ext_bridge_button',
+          ),
         }),
       );
     });
