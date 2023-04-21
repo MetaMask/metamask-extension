@@ -5,6 +5,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import TransactionFailed from '.';
 
+const mockErrorMessage = 'Something went wrong';
+
 describe('Transaction Failed', () => {
   const mockStore = {
     ...testData,
@@ -13,23 +15,21 @@ describe('Transaction Failed', () => {
   const store = configureMockStore()(mockStore);
 
   it('renders the error message', () => {
-    const errorMessage = 'Something went wrong';
     renderWithProvider(
-      <TransactionFailed errorMessage={errorMessage} />,
+      <TransactionFailed errorMessage={mockErrorMessage} />,
       store,
     );
-    const errorMessageElement = screen.getByText(errorMessage);
+    const errorMessageElement = screen.getByText(mockErrorMessage);
     expect(errorMessageElement).toBeInTheDocument();
   });
 
   it('renders the correct title when operation fails', () => {
     const operationFailed = true;
-    const errorMessage = 'Something went wrong';
     const title = 'Operation Failed!';
     renderWithProvider(
       <TransactionFailed
         operationFailed={operationFailed}
-        errorMessage={errorMessage}
+        errorMessage={mockErrorMessage}
       />,
       store,
     );
@@ -39,12 +39,11 @@ describe('Transaction Failed', () => {
 
   it('renders the correct title when transaction fails', () => {
     const operationFailed = false;
-    const errorMessage = 'Something went wrong';
     const title = 'Transaction Failed!';
     renderWithProvider(
       <TransactionFailed
         operationFailed={operationFailed}
-        errorMessage={errorMessage}
+        errorMessage={mockErrorMessage}
       />,
       store,
     );
