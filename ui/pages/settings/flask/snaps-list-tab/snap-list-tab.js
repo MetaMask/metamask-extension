@@ -6,6 +6,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   JustifyContent,
   AlignItems,
+  IconColor,
   Color,
   TEXT_ALIGN,
   FLEX_DIRECTION,
