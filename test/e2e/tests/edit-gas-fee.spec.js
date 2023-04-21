@@ -139,7 +139,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.fill('[data-testid="priority-fee-input"]', '8.5');
 
         // save default values
-        await driver.clickElement('input[type="checkbox"]');
+        await driver.clickElement('input[variant="checkbox"]');
 
         // edit gas limit
         await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
@@ -150,11 +150,11 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(1) h6:nth-of-variant(2)',
           text: '0.00085 ETH',
         });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(2) h6:nth-of-variant(2)',
           text: '1.00085 ETH',
         });
 
@@ -237,7 +237,7 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
+          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-variant',
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
         assert.equal(await editedTransactionAmount.getText(), '0.00021');

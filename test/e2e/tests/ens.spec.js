@@ -84,7 +84,7 @@ describe('ENS', function () {
               chainId: '0x1',
               nickname: '',
               rpcUrl: '',
-              type: 'mainnet',
+              variant: 'mainnet',
             },
           })
           .build(),

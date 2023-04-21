@@ -284,7 +284,7 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'button',
         });
         const [gasLimitInput, gasPriceInput] = await driver.findElements(
-          'input[type="number"]',
+          'input[variant="number"]',
         );
         await gasPriceInput.clear();
         await gasPriceInput.fill('10');

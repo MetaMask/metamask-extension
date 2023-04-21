@@ -16,30 +16,30 @@ async function main() {
           .option('browser', {
             default: process.env.SELENIUM_BROWSER,
             description: `Set the browser used; either 'chrome' or 'firefox'.`,
-            type: 'string',
+            variant: 'string',
             choices: ['chrome', 'firefox'],
           })
           .option('debug', {
             default: process.env.E2E_DEBUG === 'true',
             description:
               'Run tests in debug mode, logging each driver interaction',
-            type: 'boolean',
+            variant: 'boolean',
           })
           .option('retries', {
             default: 0,
             description:
               'Set how many times the test should be retried upon failure.',
-            type: 'number',
+            variant: 'number',
           })
           .option('leave-running', {
             default: false,
             description:
               'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
-            type: 'boolean',
+            variant: 'boolean',
           })
           .positional('e2e-test-path', {
             describe: 'The path for the E2E test to run.',
-            type: 'string',
+            variant: 'string',
             normalize: true,
           }),
     )

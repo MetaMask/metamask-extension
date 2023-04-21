@@ -54,7 +54,7 @@ const CAVEATS = {
   eth_accounts: (accounts) => {
     return [
       {
-        type: CaveatTypes.restrictReturnedAccounts,
+        variant: CaveatTypes.restrictReturnedAccounts,
         value: accounts,
       },
     ];
@@ -62,7 +62,7 @@ const CAVEATS = {
 };
 
 /**
- * Each function here corresponds to what would be a type or interface consumed
+ * Each function here corresponds to what would be a variant or interface consumed
  * by permissions controller functions if we used TypeScript.
  */
 const PERMS = {

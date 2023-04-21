@@ -50,10 +50,10 @@ describe('Sentry errors', function () {
         const [mockedRequest] = await mockedEndpoint.getSeenRequests();
         const mockJsonBody = mockedRequest.body.json;
         const { level, extra } = mockJsonBody;
-        const [{ type, value }] = mockJsonBody.exception.values;
+        const [{ variant, value }] = mockJsonBody.exception.values;
         const { participateInMetaMetrics } = extra.appState.store.metamask;
         // Verify request
-        assert.equal(type, 'TestError');
+        assert.equal(variant, 'TestError');
         assert.equal(value, 'Test Error');
         assert.equal(level, 'error');
         assert.equal(participateInMetaMetrics, true);

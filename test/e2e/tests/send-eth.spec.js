@@ -253,7 +253,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.waitForSelector({
           text: '0.00021 ETH',
         });
-        const inputs = await driver.findElements('input[type="number"]');
+        const inputs = await driver.findElements('input[variant="number"]');
         const gasPriceInput = inputs[1];
         await gasPriceInput.fill('100');
         await driver.waitForSelector({
@@ -261,7 +261,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         });
         await driver.clickElement({ text: 'Save', tag: 'button' });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(1) h6:nth-of-variant(2)',
           text: '0.0021 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -271,7 +271,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         // finds the transaction in the transactions list
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-variant(1)',
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',
@@ -335,11 +335,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(1) h6:nth-of-variant(2)',
           text: '0.02367237 ETH',
         });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(2) h6:nth-of-variant(2)',
           text: '0.02367237 ETH',
         });
 
@@ -350,7 +350,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         // finds the transaction in the transactions list
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-variant(1)',
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',

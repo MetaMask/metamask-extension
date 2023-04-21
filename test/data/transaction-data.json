@@ -16,7 +16,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 12,
@@ -77,7 +77,7 @@
           "gasPrice": "0x2540be400"
         },
         "origin": "metamask",
-        "type": "sentEther",
+        "variant": "sentEther",
         "nonceDetails": {
           "params": {
             "highestLocallyConfirmed": 12,
@@ -138,7 +138,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 12,
@@ -203,7 +203,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -264,7 +264,7 @@
           "gasPrice": "0x2540be400"
         },
         "origin": "metamask",
-        "type": "sentEther",
+        "variant": "sentEther",
         "nonceDetails": {
           "params": {
             "highestLocallyConfirmed": 0,
@@ -325,7 +325,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -390,7 +390,7 @@
         "gasPrice": "0x306dc4200"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -452,7 +452,7 @@
           "gasPrice": "0x306dc4200"
         },
         "origin": "metamask",
-        "type": "sentEther",
+        "variant": "sentEther",
         "nonceDetails": {
           "params": {
             "highestLocallyConfirmed": 0,
@@ -514,7 +514,7 @@
         "gasPrice": "0x306dc4200"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -579,7 +579,7 @@
         "value": "0x1043561a882930000"
       },
       "hash": "0x5ca26d1cdcabef1ac2ad5b2b38604c9ced65d143efc7525f848c46f28e0e4116",
-      "type": "incoming"
+      "variant": "incoming"
     },
     "transactions": [
       {
@@ -597,7 +597,7 @@
           "value": "0x1043561a882930000"
         },
         "hash": "0x5ca26d1cdcabef1ac2ad5b2b38604c9ced65d143efc7525f848c46f28e0e4116",
-        "type": "incoming"
+        "variant": "incoming"
       }
     ],
     "primaryTransaction": {
@@ -615,7 +615,7 @@
         "value": "0x1043561a882930000"
       },
       "hash": "0x5ca26d1cdcabef1ac2ad5b2b38604c9ced65d143efc7525f848c46f28e0e4116",
-      "type": "incoming"
+      "variant": "incoming"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -636,7 +636,7 @@
         "value": "0x0"
       },
       "hash": "0xa42b2b433e5bd2616b52e30792aedb6a3c374a752a95d43d99e2a8b143937889",
-      "type": "incoming"
+      "variant": "incoming"
     },
     "transactions": [
       {
@@ -654,7 +654,7 @@
           "value": "0x0"
         },
         "hash": "0xa42b2b433e5bd2616b52e30792aedb6a3c374a752a95d43d99e2a8b143937889",
-        "type": "incoming"
+        "variant": "incoming"
       }
     ],
     "primaryTransaction": {
@@ -672,7 +672,7 @@
         "value": "0x0"
       },
       "hash": "0xa42b2b433e5bd2616b52e30792aedb6a3c374a752a95d43d99e2a8b143937889",
-      "type": "incoming"
+      "variant": "incoming"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -693,7 +693,7 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "incoming"
+      "variant": "incoming"
     },
     "transactions": [
       {
@@ -711,7 +711,7 @@
           "value": "0xde0b6b3a7640000"
         },
         "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-        "type": "incoming"
+        "variant": "incoming"
       }
     ],
     "primaryTransaction": {
@@ -729,7 +729,7 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "incoming"
+      "variant": "incoming"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -752,7 +752,7 @@
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
       "destinationTokenSymbol": "ABC",
       "sourceTokenSymbol": "ETH",
-      "type": "swap"
+      "variant": "swap"
     },
     "transactions": [
       {
@@ -770,7 +770,7 @@
           "value": "0xde0b6b3a7640000"
         },
         "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-        "type": "swap",
+        "variant": "swap",
         "destinationTokenSymbol": "ABC",
         "destinationTokenAddress": "0xabca64466f257793eaa52fcfff5066894b76a149",
         "sourceTokenSymbol": "ETH"
@@ -791,7 +791,7 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "swap",
+      "variant": "swap",
       "destinationTokenSymbol": "ABC",
       "destinationTokenAddress": "0xabca64466f257793eaa52fcfff5066894b76a149",
       "sourceTokenSymbol": "ETH"
@@ -815,7 +815,7 @@
         "data": "0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "contractDeployment",
+      "variant": "contractDeployment",
       "origin": "https://metamask.github.io"
     },
     "transactions": [
@@ -834,7 +834,7 @@
           "data": "0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029"
         },
         "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-        "type": "contractDeployment"
+        "variant": "contractDeployment"
       }
     ],
     "primaryTransaction": {
@@ -852,7 +852,7 @@
         "data": "0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "contractDeployment"
+      "variant": "contractDeployment"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -885,7 +885,7 @@
           "maxPriorityFeePerGas": "0x3B9ACA00"
         },
         "origin": "https://goerli.etherscan.io",
-        "type": "safetransferfrom",
+        "variant": "safetransferfrom",
         "userFeeLevel": "dappSuggested",
         "defaultGasEstimates": {
           "estimateType": "dappSuggested",
@@ -970,7 +970,7 @@
           "to": "0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b",
           "transactionHash": "0xe8717d7b075f8bb555cd4bb9846659a7dfba70dc017a84782a2d23d21f948ee3",
           "transactionIndex": "23",
-          "type": "0x2"
+          "variant": "0x2"
         },
         "baseFeePerGas": "0x3c6f300f1",
         "blockTimestamp": "627aacc2"
@@ -1001,7 +1001,7 @@
         "maxPriorityFeePerGas": "0x3B9ACA00"
       },
       "origin": "https://goerli.etherscan.io",
-      "type": "safetransferfrom",
+      "variant": "safetransferfrom",
       "userFeeLevel": "dappSuggested",
       "defaultGasEstimates": {
         "estimateType": "dappSuggested",
@@ -1086,7 +1086,7 @@
         "to": "0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b",
         "transactionHash": "0xe8717d7b075f8bb555cd4bb9846659a7dfba70dc017a84782a2d23d21f948ee3",
         "transactionIndex": "23",
-        "type": "0x2"
+        "variant": "0x2"
       },
       "baseFeePerGas": "0x3c6f300f1",
       "blockTimestamp": "627aacc2"
@@ -1116,7 +1116,7 @@
         "maxPriorityFeePerGas": "0x3B9ACA00"
       },
       "origin": "https://goerli.etherscan.io",
-      "type": "safetransferfrom",
+      "variant": "safetransferfrom",
       "userFeeLevel": "dappSuggested",
       "defaultGasEstimates": {
         "estimateType": "dappSuggested",
@@ -1201,7 +1201,7 @@
         "to": "0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b",
         "transactionHash": "0xe8717d7b075f8bb555cd4bb9846659a7dfba70dc017a84782a2d23d21f948ee3",
         "transactionIndex": "23",
-        "type": "0x2"
+        "variant": "0x2"
       },
       "baseFeePerGas": "0x3c6f300f1",
       "blockTimestamp": "627aacc2"
@@ -1227,7 +1227,7 @@
         "maxPriorityFeePerGas": "0x4a817c800"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "approve",
+      "variant": "approve",
       "origin": "https://metamask.github.io"
     },
     "transactions": [
@@ -1248,7 +1248,7 @@
           "maxPriorityFeePerGas": "0x4a817c800"
         },
         "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-        "type": "approve"
+        "variant": "approve"
       }
     ],
     "primaryTransaction": {
@@ -1268,7 +1268,7 @@
         "maxPriorityFeePerGas": "0x4a817c800"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "type": "approve"
+      "variant": "approve"
     },
     "hasRetried": false,
     "hasCancelled": false

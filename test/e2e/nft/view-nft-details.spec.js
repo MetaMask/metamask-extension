@@ -46,7 +46,7 @@ describe('View NFT details', function () {
         assert.equal(await nftName.getText(), 'Test Dapp Collectibles #1');
 
         const nftDescription = await driver.findElement(
-          '.nft-details__info h6:nth-of-type(2)',
+          '.nft-details__info h6:nth-of-variant(2)',
         );
         assert.equal(
           await nftDescription.getText(),

@@ -5,7 +5,7 @@ const proxy = require('selenium-webdriver/proxy');
 /**
  * Proxy host to use for HTTPS requests
  *
- * @type {string}
+ * @variant {string}
  */
 const HTTPS_PROXY_HOST = '127.0.0.1:8000';
 

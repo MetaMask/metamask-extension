@@ -202,7 +202,7 @@ function defaultFixture() {
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
-          type: 'rpc',
+          variant: 'rpc',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -330,7 +330,7 @@ function onboardingFixture() {
         networkStatus: 'available',
         provider: {
           ticker: 'ETH',
-          type: 'rpc',
+          variant: 'rpc',
           rpcUrl: 'http://localhost:8545',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -476,7 +476,7 @@ class FixtureBuilder {
             to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             value: '0xDE0B6B3A7640000',
           },
-          type: 'incoming',
+          variant: 'incoming',
         },
       },
     });
@@ -602,7 +602,7 @@ class FixtureBuilder {
               invoker: 'http://127.0.0.1:8080',
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
+                  variant: 'restrictReturnedAccounts',
                   value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
                 },
               ],
@@ -623,7 +623,7 @@ class FixtureBuilder {
             [WALLET_SNAP_PERMISSION_KEY]: {
               caveats: [
                 {
-                  type: SnapCaveatType.SnapIds,
+                  variant: SnapCaveatType.SnapIds,
                   value: {
                     'npm@metamask/test-snap-bip32': {},
                     'npm@metamask/test-snap-bip44': {},
@@ -784,7 +784,7 @@ class FixtureBuilder {
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -810,7 +810,7 @@ class FixtureBuilder {
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
         7911313280012624: {
           chainId: CHAIN_IDS.LOCALHOST,
@@ -841,7 +841,7 @@ class FixtureBuilder {
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -867,7 +867,7 @@ class FixtureBuilder {
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
         7911313280012625: {
           chainId: CHAIN_IDS.LOCALHOST,
@@ -898,7 +898,7 @@ class FixtureBuilder {
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -924,7 +924,7 @@ class FixtureBuilder {
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
         7911313280012626: {
           chainId: CHAIN_IDS.LOCALHOST,
@@ -955,7 +955,7 @@ class FixtureBuilder {
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -981,7 +981,7 @@ class FixtureBuilder {
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
       },
     });
@@ -1008,7 +1008,7 @@ class FixtureBuilder {
                 to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
                 value: '0xde0b6b3a7640000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -1039,7 +1039,7 @@ class FixtureBuilder {
               to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
               value: '0xde0b6b3a7640000',
             },
-            type: 'sentEther',
+            variant: 'sentEther',
           },
           status: 'unapproved',
           time: 1617228030067,
@@ -1050,7 +1050,7 @@ class FixtureBuilder {
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
             value: '0xde0b6b3a7640000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
       },
     });
@@ -1076,10 +1076,10 @@ class FixtureBuilder {
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                type: '0x2',
+                variant: '0x2',
                 value: '0xde0b6b3a7640000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -1109,10 +1109,10 @@ class FixtureBuilder {
               maxFeePerGas: '0x59682f0c',
               maxPriorityFeePerGas: '0x59682f00',
               to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-              type: '0x2',
+              variant: '0x2',
               value: '0xde0b6b3a7640000',
             },
-            type: 'sentEther',
+            variant: 'sentEther',
           },
           status: 'unapproved',
           time: 1617228030067,
@@ -1122,10 +1122,10 @@ class FixtureBuilder {
             maxFeePerGas: '0x59682f0c',
             maxPriorityFeePerGas: '0x59682f00',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            type: '0x2',
+            variant: '0x2',
             value: '0xde0b6b3a7640000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
       },
     });
@@ -1151,10 +1151,10 @@ class FixtureBuilder {
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                type: '0x2',
+                variant: '0x2',
                 value: '0xde0b6b3a7640000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -1220,10 +1220,10 @@ class FixtureBuilder {
               maxFeePerGas: '0x59682f0c',
               maxPriorityFeePerGas: '0x59682f00',
               to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-              type: '0x2',
+              variant: '0x2',
               value: '0xde0b6b3a7640000',
             },
-            type: 'sentEther',
+            variant: 'sentEther',
           },
           status: 'approved',
           time: 1617228030067,
@@ -1233,10 +1233,10 @@ class FixtureBuilder {
             maxFeePerGas: '0x59682f0c',
             maxPriorityFeePerGas: '0x59682f00',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            type: '0x2',
+            variant: '0x2',
             value: '0xde0b6b3a7640000',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
       },
     });
@@ -1262,10 +1262,10 @@ class FixtureBuilder {
                 maxFeePerGas: '0x4c03c96f8',
                 maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                type: '0x2',
+                variant: '0x2',
                 value: '0xde0b6b3a7640000',
               },
-              type: 'simpleSend',
+              variant: 'simpleSend',
             },
             [
               {
@@ -1375,7 +1375,7 @@ class FixtureBuilder {
                   gasUsed: '5208',
                   status: '0x1',
                   to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                  type: '0x2',
+                  variant: '0x2',
                 },
               },
             ],
@@ -1423,7 +1423,7 @@ class FixtureBuilder {
             from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x5208',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            type: '0x2',
+            variant: '0x2',
             value: '0xde0b6b3a7640000',
           },
           txReceipt: {
@@ -1435,9 +1435,9 @@ class FixtureBuilder {
             from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             status: '0x1',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            type: '0x2',
+            variant: '0x2',
           },
-          type: 'simpleSend',
+          variant: 'simpleSend',
         },
       },
     });

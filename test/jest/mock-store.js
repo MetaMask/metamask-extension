@@ -170,7 +170,7 @@ export const createSwapsMockStore = () => {
           },
           origin: 'metamask',
           actionId: 1667403993358.877,
-          type: 'swap',
+          variant: 'swap',
           userFeeLevel: 'medium',
           defaultGasEstimates: {
             estimateType: 'medium',
@@ -255,7 +255,7 @@ export const createSwapsMockStore = () => {
       keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [
         {
-          type: KeyringType.hdKeyTree,
+          variant: KeyringType.hdKeyTree,
           accounts: [
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -263,7 +263,7 @@ export const createSwapsMockStore = () => {
           ],
         },
         {
-          type: KeyringType.imported,
+          variant: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],

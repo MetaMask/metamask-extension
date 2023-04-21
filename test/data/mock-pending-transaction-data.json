@@ -16,10 +16,10 @@
       "gas": "0x5208",
       "maxFeePerGas": "0x47868c00",
       "maxPriorityFeePerGas": "0x47868c00",
-      "type": "0x2"
+      "variant": "0x2"
     },
     "origin": "metamask",
-    "type": "simpleSend",
+    "variant": "simpleSend",
     "history": [
       {
         "id": 6854191329910881,
@@ -36,10 +36,10 @@
           "gas": "0x5208",
           "maxFeePerGas": "0x47868c00",
           "maxPriorityFeePerGas": "0x47868c00",
-          "type": "0x2"
+          "variant": "0x2"
         },
         "origin": "metamask",
-        "type": "simpleSend"
+        "variant": "simpleSend"
       },
       [
         {
@@ -92,10 +92,10 @@
       "gas": "0x5208",
       "maxFeePerGas": "0x47868c00",
       "maxPriorityFeePerGas": "0x47868c00",
-      "type": "0x2"
+      "variant": "0x2"
     },
     "origin": "metamask",
-    "type": "simpleSend",
+    "variant": "simpleSend",
     "history": [
       {
         "id": 6854191329910881,
@@ -112,10 +112,10 @@
           "gas": "0x5208",
           "maxFeePerGas": "0x47868c00",
           "maxPriorityFeePerGas": "0x47868c00",
-          "type": "0x2"
+          "variant": "0x2"
         },
         "origin": "metamask",
-        "type": "simpleSend"
+        "variant": "simpleSend"
       },
       [
         {
@@ -169,10 +169,10 @@
         "gas": "0x5208",
         "maxFeePerGas": "0x47868c00",
         "maxPriorityFeePerGas": "0x47868c00",
-        "type": "0x2"
+        "variant": "0x2"
       },
       "origin": "metamask",
-      "type": "simpleSend",
+      "variant": "simpleSend",
       "history": [
         {
           "id": 6854191329910881,
@@ -189,10 +189,10 @@
             "gas": "0x5208",
             "maxFeePerGas": "0x47868c00",
             "maxPriorityFeePerGas": "0x47868c00",
-            "type": "0x2"
+            "variant": "0x2"
           },
           "origin": "metamask",
-          "type": "simpleSend"
+          "variant": "simpleSend"
         },
         [
           {

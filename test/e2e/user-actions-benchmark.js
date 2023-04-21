@@ -99,7 +99,7 @@ async function main() {
       _yargs.option('out', {
         description:
           'Output filename. Output printed to STDOUT of this is omitted.',
-        type: 'string',
+        variant: 'string',
         normalize: true,
       }),
   );

@@ -33,27 +33,27 @@ async function main() {
         _yargs
           .option('browser', {
             description: `Set the browser used; either 'chrome' or 'firefox'.`,
-            type: 'string',
+            variant: 'string',
             choices: ['chrome', 'firefox'],
           })
           .option('debug', {
             default: process.env.E2E_DEBUG === 'true',
             description:
               'Run tests in debug mode, logging each driver interaction',
-            type: 'boolean',
+            variant: 'boolean',
           })
           .option('snaps', {
             description: `run snaps e2e tests`,
-            type: 'boolean',
+            variant: 'boolean',
           })
           .option('mv3', {
             description: `run mv3 specific e2e tests`,
-            type: 'boolean',
+            variant: 'boolean',
           })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
-            type: 'number',
+            variant: 'number',
           }),
     )
     .strict()

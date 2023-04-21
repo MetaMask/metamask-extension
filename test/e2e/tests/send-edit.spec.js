@@ -46,7 +46,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement({ text: 'Edit', tag: 'button' });
 
         const [gasLimitInput, gasPriceInput] = await driver.findElements(
-          'input[type="number"]',
+          'input[variant="number"]',
         );
         await gasPriceInput.fill('8');
         await gasLimitInput.fill('100000');
@@ -54,11 +54,11 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(1) h6:nth-of-variant(2)',
           text: '0.0008 ETH',
         });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(2) h6:nth-of-variant(2)',
           text: '2.2008 ETH',
         });
 
@@ -138,18 +138,18 @@ describe('Editing Confirm Transaction', function () {
         await driver.fill('[data-testid="gas-limit-input"]', '100000');
 
         // save default values
-        await driver.clickElement('input[type="checkbox"]');
+        await driver.clickElement('input[variant="checkbox"]');
 
         // Submit gas fee changes
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(1) h6:nth-of-variant(2)',
           text: '0.0008 ETH',
         });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-variant(2) h6:nth-of-variant(2)',
           text: '2.2008 ETH',
         });
 

@@ -62,7 +62,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-variant(1)',
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',
@@ -82,7 +82,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-variant(2)',
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',

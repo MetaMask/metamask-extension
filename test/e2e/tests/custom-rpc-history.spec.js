@@ -44,7 +44,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.networks-tab__subheader');
 
-        const customRpcInputs = await driver.findElements('input[type="text"]');
+        const customRpcInputs = await driver.findElements('input[variant="text"]');
         const networkNameInput = customRpcInputs[1];
         const rpcUrlInput = customRpcInputs[2];
         const chainIdInput = customRpcInputs[3];
@@ -100,7 +100,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.networks-tab__subheader');
 
-        const customRpcInputs = await driver.findElements('input[type="text"]');
+        const customRpcInputs = await driver.findElements('input[variant="text"]');
         const rpcUrlInput = customRpcInputs[2];
 
         await rpcUrlInput.clear();
@@ -144,7 +144,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.networks-tab__subheader');
 
-        const customRpcInputs = await driver.findElements('input[type="text"]');
+        const customRpcInputs = await driver.findElements('input[variant="text"]');
         const rpcUrlInput = customRpcInputs[2];
         const chainIdInput = customRpcInputs[3];
 
@@ -291,7 +291,7 @@ describe('Stores custom RPC history', function () {
         await lastNetworkListItem.click();
 
         await driver.waitForSelector({
-          css: '.form-field .form-field__input:nth-of-type(1)',
+          css: '.form-field .form-field__input:nth-of-variant(1)',
           value: 'http://127.0.0.1:8545/2',
         });
 

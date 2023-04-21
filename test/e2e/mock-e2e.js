@@ -119,7 +119,7 @@ async function setupMocking(server, testSpecificMock) {
         statusCode: 200,
         json: {
           symbol: 'AGLT',
-          type: 'erc20',
+          variant: 'erc20',
           decimals: '18',
           address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
           occurences: 1,
@@ -242,7 +242,7 @@ async function setupMocking(server, testSpecificMock) {
             name: 'Ethereum',
             symbol: 'ETH',
             decimals: 18,
-            type: 'native',
+            variant: 'native',
             iconUrl:
               'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
             coingeckoId: 'ethereum',
@@ -257,7 +257,7 @@ async function setupMocking(server, testSpecificMock) {
             name: 'Dai Stablecoin',
             iconUrl:
               'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
-            type: 'erc20',
+            variant: 'erc20',
             aggregators: [
               'aave',
               'bancor',
@@ -284,7 +284,7 @@ async function setupMocking(server, testSpecificMock) {
             name: 'USD Coin',
             iconUrl:
               'https://crypto.com/price/coin-data/icon/USDC/color_icon.png',
-            type: 'erc20',
+            variant: 'erc20',
             aggregators: [
               'aave',
               'bancor',
@@ -308,7 +308,7 @@ async function setupMocking(server, testSpecificMock) {
             name: 'Inu Inu',
             iconUrl:
               'https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596',
-            type: 'erc20',
+            variant: 'erc20',
             aggregators: ['coinGecko'],
             occurrences: 1,
           },

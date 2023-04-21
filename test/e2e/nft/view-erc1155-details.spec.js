@@ -38,7 +38,7 @@ describe('View ERC1155 NFT details', function () {
         );
         await importedNftImage.click();
         const detailsPageAccount = await driver.findElement(
-          '.asset-breadcrumb span:nth-of-type(2)',
+          '.asset-breadcrumb span:nth-of-variant(2)',
         );
         assert.equal(await detailsPageAccount.getText(), 'Account 1');
 
@@ -47,7 +47,7 @@ describe('View ERC1155 NFT details', function () {
         assert.equal(await nftName.getText(), 'Rocks');
 
         const nftDescription = await driver.findElement(
-          '.nft-details__info h6:nth-of-type(2)',
+          '.nft-details__info h6:nth-of-variant(2)',
         );
         assert.equal(
           await nftDescription.getText(),

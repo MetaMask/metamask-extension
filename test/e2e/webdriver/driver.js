@@ -54,7 +54,7 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
 class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
-   * @param {string} browser - The type of browser this driver is controlling
+   * @param {string} browser - The variant of browser this driver is controlling
    * @param extensionUrl
    * @param {number} timeout
    */
@@ -482,7 +482,7 @@ class Driver {
     const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
     await this.driver.onLogEvent(cdpConnection, (event) => {
-      if (event.type === 'error') {
+      if (event.variant === 'error') {
         const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
         );
@@ -526,7 +526,7 @@ function collectMetrics() {
         load: navigationEntry.loadEventEnd,
         domInteractive: navigationEntry.domInteractive,
         redirectCount: navigationEntry.redirectCount,
-        type: navigationEntry.type,
+        variant: navigationEntry.variant,
       });
     });
 

@@ -3,7 +3,7 @@
     "config": {},
     "NetworkController": {
       "provider": {
-        "type": "mainnet",
+        "variant": "mainnet",
         "rpcTarget": "https://mainnet.infura.io/metamask"
       },
       "network": "1"

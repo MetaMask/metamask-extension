@@ -38,7 +38,7 @@ describe('eth_subscribe', function () {
           body.appendChild(responseContainer);
 
           window.ethereum.addListener('message', (message) => {
-            if (message.type === 'eth_subscription') {
+            if (message.variant === 'eth_subscription') {
               const response = document.createElement('p');
               response.setAttribute('data-testid', 'eth-subscribe-response');
               response.append(JSON.stringify(message.data.result));

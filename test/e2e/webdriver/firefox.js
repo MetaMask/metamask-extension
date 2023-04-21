@@ -9,14 +9,14 @@ const proxy = require('selenium-webdriver/proxy');
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
  * will be created as random directories inside this.
  *
- * @type {string}
+ * @variant {string}
  */
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 
 /**
  * Proxy host to use for HTTPS requests
  *
- * @type {string}
+ * @variant {string}
  */
 const HTTPS_PROXY_HOST = '127.0.0.1:8000';
 

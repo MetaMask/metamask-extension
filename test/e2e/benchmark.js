@@ -79,12 +79,12 @@ async function profilePageLoad(pages, numSamples, retries) {
     if (runResults.some((result) => result.navigation.lenth > 1)) {
       throw new Error(`Multiple navigations not supported`);
     } else if (
-      runResults.some((result) => result.navigation[0].type !== 'navigate')
+      runResults.some((result) => result.navigation[0].variant !== 'navigate')
     ) {
       throw new Error(
-        `Navigation type ${
-          runResults.find((result) => result.navigation[0].type !== 'navigate')
-            .navigation[0].type
+        `Navigation variant ${
+          runResults.find((result) => result.navigation[0].variant !== 'navigate')
+            .navigation[0].variant
         } not supported`,
       );
     }
@@ -131,19 +131,19 @@ async function main() {
         .option('samples', {
           default: DEFAULT_NUM_SAMPLES,
           description: 'The number of times the benchmark should be run.',
-          type: 'number',
+          variant: 'number',
         })
         .option('out', {
           description:
             'Output filename. Output printed to STDOUT of this is omitted.',
-          type: 'string',
+          variant: 'string',
           normalize: true,
         })
         .option('retries', {
           default: 0,
           description:
             'Set how many times each benchmark sample should be retried upon failure.',
-          type: 'number',
+          variant: 'number',
         }),
   );
 

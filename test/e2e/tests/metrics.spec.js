@@ -6,7 +6,7 @@ describe('Segment metrics', function () {
   async function mockSegment(mockServer) {
     return await mockServer
       .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({ batch: [{ type: 'page' }] })
+      .withJsonBodyIncluding({ batch: [{ variant: 'page' }] })
       .times(3)
       .thenCallback(() => {
         return {

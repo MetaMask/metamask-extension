@@ -195,7 +195,7 @@ async function start() {
           alias: ['h'],
           default: false,
           description: 'Generate HTML report',
-          type: 'boolean',
+          variant: 'boolean',
         })
         .strict(),
   );

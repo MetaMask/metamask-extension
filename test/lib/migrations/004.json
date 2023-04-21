@@ -59,7 +59,7 @@
     "vault": "{\"data\":\"Z5UFCeI/Tg9F9No0dC7eIhe4evCG91m6qeXhGpSeX48HHCQ/BepyNONKrh05YjB9hXCAd3Jy93judD+pcXNy7WS9zLujjmMI6sI90ToSrzThnMrOE6ixcH7HGS+TCcqvwBhZEsAQqUcQeHhT9CcdCQAxkKwBk8CK8W290MVeZoQVGK88hB2R8kL3mo/uayS5AnHPwWOS0rocgSfd/ioiucClpw==\",\"iv\":\"AYufeEPwp9f2Rdrfq7yS8g==\",\"salt\":\"g7BQIEx8tosH3IxWhPnrgZFu1XRkQn1Pp7l1ehTQQCo=\"}",
     "config": {
       "provider": {
-        "type": "testnet"
+        "variant": "testnet"
       },
       "selectedAccount": "0x0beb674745816b125fbc07285d39fd373e64895c"
     },

@@ -97,7 +97,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('Check if user select different type of secret recovery phrase', async function () {
+  it('Check if user select different variant of secret recovery phrase', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -281,7 +281,7 @@ describe('MetaMask onboarding', function () {
           networkUrlField,
           chainIdField,
           currencySymbolField,
-        ] = await driver.findElements('input[type="text"]');
+        ] = await driver.findElements('input[variant="text"]');
         await networkNameField.sendKeys(networkName);
         await networkUrlField.sendKeys(networkUrl);
         await chainIdField.sendKeys(chainId.toString());

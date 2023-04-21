@@ -315,7 +315,7 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement('.dropdown__select');
         await driver.clickElement({ text: 'JSON File', tag: 'option' });
 
-        const fileInput = await driver.findElement('input[type="file"]');
+        const fileInput = await driver.findElement('input[variant="file"]');
         const importJsonFile = path.join(
           __dirname,
           '..',
@@ -431,7 +431,7 @@ describe('MetaMask Import UI', function () {
         await driver.delay(regularDelayMs);
 
         // should open the TREZOR Connect popup
-        await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
+        await driver.clickElement('.hw-connect__btn:nth-of-variant(2)');
         await driver.delay(largeDelayMs * 2);
         await driver.clickElement({ text: 'Continue', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);

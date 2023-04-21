@@ -101,27 +101,27 @@ async function start() {
           alias: ['m'],
           default: false,
           description: 'Run Mocha tests',
-          type: 'boolean',
+          variant: 'boolean',
         })
         .option('jestDev', {
           alias: ['d'],
           default: false,
           description: 'Run Jest tests with development folder config',
-          type: 'boolean',
+          variant: 'boolean',
         })
         .option('jestGlobal', {
           alias: ['g'],
           default: false,
           demandOption: false,
           description: 'Run Jest global (primary config) tests',
-          type: 'boolean',
+          variant: 'boolean',
         })
         .option('coverage', {
           alias: ['c'],
           default: true,
           demandOption: false,
           description: 'Collect coverage',
-          type: 'boolean',
+          variant: 'boolean',
         })
         .option('fakeParallelism', {
           alias: ['f'],
@@ -129,7 +129,7 @@ async function start() {
           demandOption: false,
           description:
             'Pretend to be CircleCI and fake parallelism (use at your own risk)',
-          type: 'number',
+          variant: 'number',
         })
         .option('maxWorkers', {
           alias: ['mw'],
@@ -137,7 +137,7 @@ async function start() {
           demandOption: false,
           description:
             'The safer way to increase performance locally, sets the number of processes to use internally. Recommended 2',
-          type: 'number',
+          variant: 'number',
         })
         .strict(),
   );
