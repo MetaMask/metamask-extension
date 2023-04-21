@@ -1,0 +1,17 @@
+# Fails the pull request if it has the "DO-NOT-MERGE" label
+
+name: Do Not Merge
+
+on:
+  pull_request:
+    types: [opened, reopened, labeled, unlabeled, synchronize]
+
+jobs:
+  do-not-merge:
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.*.labels.*.name, 'DO-NOT-MERGE') }}
+    steps:
+      - name: 'Check for label "DO-NOT-MERGE"'
+        run: |
+          echo 'This check fails PRs with the "DO-NOT-MERGE" label'
+          exit 1
