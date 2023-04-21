@@ -951,6 +951,9 @@
   "custodyRefreshTokenModalTitle": {
     "message": "Your custodian session has expired"
   },
+  "custodySessionExpired": {
+    "message": "Custodian session expired."
+  },
   "custom": {
     "message": "Advanced"
   },
