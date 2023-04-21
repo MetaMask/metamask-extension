@@ -1,20 +1,8 @@
 @import '../../../components/institutional/jwt-dropdown/jwt-dropdown.scss';
 @import '../../../components/institutional/jwt-url-form/jwt-url-form.scss';
 
-.custody-select-all {
-  font-size: 12px;
-}
-
 .custody-accounts-empty {
   min-height: 300px;
-
-  &__title {
-    font-size: 14px;
-  }
-
-  &__subtitle {
-    font-size: 12px;
-  }
 
   &__footer {
     border-top: 1px solid var(--color-border-muted);
