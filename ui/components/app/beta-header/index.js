@@ -13,11 +13,8 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+
+import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
 import { Text } from '../../component-library';
 
 const BetaHeader = () => {
@@ -52,8 +49,8 @@ const BetaHeader = () => {
         ])}
       </Text>
       <ButtonIcon
-        iconName={ICON_NAMES.CLOSE}
-        size={ICON_SIZES.SM}
+        iconName={IconName.Close}
+        size={ButtonIconSize.Sm}
         color={IconColor.warningInverse}
         className="beta-header__button"
         data-testid="beta-header-close"
