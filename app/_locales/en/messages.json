@@ -1987,16 +1987,16 @@
     "message": "Prior to clicking confirm:"
   },
   "ledgerConnectionInstructionStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device."
   },
   "ledgerConnectionInstructionStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced"
+    "message": "Enable Use Ledger Live under Settings > Advanced."
   },
   "ledgerConnectionInstructionStepThree": {
-    "message": "Plug in your Ledger device and select the Ethereum app"
+    "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
   "ledgerConnectionInstructionStepTwo": {
-    "message": "Open and unlock Ledger Live App"
+    "message": "Open and unlock Ledger Live App."
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
@@ -2795,7 +2795,7 @@
     "message": "Open Codefi Compliance"
   },
   "openFullScreenForLedgerWebHid": {
-    "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
+    "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
