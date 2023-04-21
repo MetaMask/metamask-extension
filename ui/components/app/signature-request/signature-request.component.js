@@ -168,8 +168,6 @@ export default class SignatureRequest extends PureComponent {
     });
   };
 
-
-
   render() {
     const {
       txData: {
@@ -283,7 +281,7 @@ export default class SignatureRequest extends PureComponent {
 
           {
             ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-            this.props.selectedAccount.address !== this.props.fromAccount.address ? (
+            this.props.selectedAccount.address === address ? null : (
               <Box
                 className="request-signature__mismatch-info"
                 display={DISPLAY.FLEX}
@@ -303,12 +301,12 @@ export default class SignatureRequest extends PureComponent {
                   as="h7"
                 >
                   {this.context.t('mismatchAccount', [
-                    shortenAddress(selectedAccount.address),
+                    shortenAddress(this.props.selectedAccount.address),
                     shortenAddress(address),
                   ])}
                 </Text>
               </Box>
-            ) : null
+            )
             ///: END:ONLY_INCLUDE_IN
           }
 
