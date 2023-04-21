@@ -2021,9 +2021,6 @@
   "missingToken": {
     "message": "Não está vendo seu token?"
   },
-  "mobileSyncWarning": {
-    "message": "A funcionalidade \"Sincronizar com a extensão\" está temporariamente desativada. Se você quer usar sua carteira de extensão na MetaMask mobile, então, no seu app mobile: volte às opções de configuração da carteira e selecione a opção \"Importar com frase de recuperação secreta\". Use a frase secreta da sua carteira de extensão para, então, importar a sua carteira no celular."
-  },
   "moreComingSoon": {
     "message": "Mais em breve..."
   },
@@ -3935,33 +3932,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter 11 caracteres ou menos."
-  },
-  "syncFailed": {
-    "message": "Falha na sincronização"
-  },
-  "syncInProgress": {
-    "message": "Sincronização em andamento"
-  },
-  "syncWithMobile": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Ao escanear esse código, verifique se não há mais ninguém olhando para a sua tela"
-  },
-  "syncWithMobileComplete": {
-    "message": "Seus dados foram sincronizados. Curta o app da MetaMask para dispositivos móveis!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Você pode sincronizar suas contas e informações com o seu dispositivo móvel. Abra o aplicativo da MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Se você tiver acabado de abrir o app da MetaMask para dispositivos móveis pela primeira vez, basta seguir as etapas no seu telefone."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escaneie esse código com seu app da MetaMask para dispositivos móveis"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizar com dispositivo móvel"
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"
