@@ -99,7 +99,7 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
               lastReport?.risk === 'unacceptable',
           })}
         >
-          <Text>{lastReport ? lastReport.risk : 'No Report'}</Text>
+          <Text>{lastReport ? lastReport.risk : t('noReport')}</Text>
         </Box>
       </Box>
       <Box

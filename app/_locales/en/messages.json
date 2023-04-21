@@ -2396,6 +2396,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noReport": {
+    "message": "No Report"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
