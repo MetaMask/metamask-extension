@@ -90,10 +90,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import {
-  toChecksumHexAddress,
-  stripHexPrefix,
-} from '../../shared/modules/hexstring-utils';
+import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -342,6 +339,14 @@ export default class MetamaskController extends EventEmitter {
         }),
       config: { provider: this.provider },
       state: initState.TokensController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'TokensController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -700,10 +705,6 @@ export default class MetamaskController extends EventEmitter {
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
       initState: initState.CachedBalancesController,
-    });
-
-    this.tokensController.hub.on('pendingSuggestedAsset', async () => {
-      await opts.openPopup();
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -1942,9 +1943,6 @@ export default class MetamaskController extends EventEmitter {
       cancelQRHardwareSignRequest:
         qrHardwareKeyring.cancelSignRequest.bind(qrHardwareKeyring),
 
-      // mobile
-      fetchInfoToSync: this.fetchInfoToSync.bind(this),
-
       // vault management
       submitPassword: this.submitPassword.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
@@ -2580,110 +2578,6 @@ export default class MetamaskController extends EventEmitter {
         });
       }
     });
-  }
-
-  /**
-   * Collects all the information that we want to share
-   * with the mobile client for syncing purposes
-   *
-   * @returns {Promise<object>} Parts of the state that we want to syncx
-   */
-  async fetchInfoToSync() {
-    // Preferences
-    const { currentLocale, identities, selectedAddress, useTokenDetection } =
-      this.preferencesController.store.getState();
-
-    const isTokenDetectionInactiveInMainnet =
-      !useTokenDetection &&
-      this.networkController.store.getState().provider.chainId ===
-        CHAIN_IDS.MAINNET;
-
-    const { networkConfigurations } = this.networkController.store.getState();
-
-    const { tokenList } = this.tokenListController.state;
-    const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
-      ? STATIC_MAINNET_TOKEN_LIST
-      : tokenList;
-
-    const preferences = {
-      currentLocale,
-      identities,
-      selectedAddress,
-    };
-
-    // Tokens
-    const { allTokens, allIgnoredTokens } = this.tokensController.state;
-
-    // Filter ERC20 tokens
-    const allERC20Tokens = {};
-
-    Object.keys(allTokens).forEach((chainId) => {
-      allERC20Tokens[chainId] = {};
-      Object.keys(allTokens[chainId]).forEach((accountAddress) => {
-        const checksummedAccountAddress = toChecksumHexAddress(accountAddress);
-        allERC20Tokens[chainId][checksummedAccountAddress] = allTokens[chainId][
-          checksummedAccountAddress
-        ].filter((asset) => {
-          if (asset.isERC721 === undefined) {
-            // the tokenList will be holding only erc20 tokens
-            if (
-              caseInSensitiveTokenList[asset.address?.toLowerCase()] !==
-              undefined
-            ) {
-              return true;
-            }
-          } else if (asset.isERC721 === false) {
-            return true;
-          }
-          return false;
-        });
-      });
-    });
-
-    // Accounts
-    const [hdKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    const hdAccounts = await hdKeyring.getAccounts();
-    const simpleKeyPairKeyringAccounts = await Promise.all(
-      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
-    );
-    const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce(
-      (acc, accounts) => [...acc, ...accounts],
-      [],
-    );
-    const accounts = {
-      hd: hdAccounts
-        .filter((item, pos) => hdAccounts.indexOf(item) === pos)
-        .map((address) => toChecksumHexAddress(address)),
-      simpleKeyPair: simpleKeyPairAccounts
-        .filter((item, pos) => simpleKeyPairAccounts.indexOf(item) === pos)
-        .map((address) => toChecksumHexAddress(address)),
-      ledger: [],
-      trezor: [],
-      lattice: [],
-    };
-
-    // transactions
-
-    let { transactions } = this.txController.store.getState();
-    // delete tx for other accounts that we're not importing
-    transactions = Object.values(transactions).filter((tx) => {
-      const checksummedTxFrom = toChecksumHexAddress(tx.txParams.from);
-      return accounts.hd.includes(checksummedTxFrom);
-    });
-
-    return {
-      accounts,
-      preferences,
-      transactions,
-      tokens: { allTokens: allERC20Tokens, allIgnoredTokens },
-      network: this.networkController.store.getState(),
-      networkConfigurations,
-    };
   }
 
   /**
