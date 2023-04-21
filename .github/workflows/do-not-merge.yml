@@ -1,6 +1,6 @@
 # Fails the pull request if it has the "DO-NOT-MERGE" label
 
-name: Do Not Merge
+name: Check "DO-NOT-MERGE" label
 
 on:
   pull_request:
@@ -13,5 +13,5 @@ jobs:
     steps:
       - name: 'Check for label "DO-NOT-MERGE"'
         run: |
-          echo 'This check fails PRs with the "DO-NOT-MERGE" label'
+          echo 'This check fails PRs with the "DO-NOT-MERGE" label to block merging'
           exit 1
