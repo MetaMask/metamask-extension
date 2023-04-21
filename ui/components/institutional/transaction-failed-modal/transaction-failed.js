@@ -13,7 +13,7 @@ import {
   TEXT_ALIGN,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text, Icon, IconName, IconSize } from '../../component-library';
 
 const TransactionFailedModal = ({
   hideModal,
@@ -39,11 +39,7 @@ const TransactionFailedModal = ({
         paddingRight={4}
         style={{ flex: 1, overflowY: 'auto' }}
       >
-        <img
-          className="transaction-failed__image"
-          src="images/icons/warning.svg"
-          alt=""
-        />
+        <Icon name={IconName.Warning} size={IconSize.Xl} />
         <Text
           as="h1"
           variant={TextVariant.displayMd}
