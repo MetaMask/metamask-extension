@@ -286,7 +286,11 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
+<<<<<<< HEAD
           providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+=======
+          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+>>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -307,7 +311,11 @@ describe('TokenOverview', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
+<<<<<<< HEAD
             '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+=======
+            '/bridge?metamaskEntry=ext_bridge_button&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+>>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
           ),
         }),
       );
@@ -324,7 +332,11 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
+<<<<<<< HEAD
           providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+=======
+          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+>>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
         },
       };
       const mockedStore = configureMockStore([thunk])(
