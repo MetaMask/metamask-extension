@@ -510,4 +510,23 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain(mockState);
     expect(isFantomSupported).toBeFalsy();
   });
+
+  it('#getIsBridgeToken', () => {
+    mockState.metamask.provider.chainId = '0xa';
+    const isOptimismTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
+    )(mockState);
+    expect(isOptimismTokenSupported).toBeTruthy();
+
+    const isOptimismUnknownTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e60',
+    )(mockState);
+    expect(isOptimismUnknownTokenSupported).toBeFalsy();
+
+    mockState.metamask.provider.chainId = '0xfa';
+    const isFantomTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
+    )(mockState);
+    expect(isFantomTokenSupported).toBeFalsy();
+  });
 });
