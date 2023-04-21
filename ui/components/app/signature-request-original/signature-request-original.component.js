@@ -113,45 +113,6 @@ export default class SignatureRequestOriginal extends Component {
     }
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  renderMismatchMessage = () => {
-    const { selectedAccount } = this.props;
-    const {
-      fromAccount: { address },
-    } = this.props;
-
-    if (selectedAccount.address === address) {
-      return null;
-    }
-
-    return (
-      <Box
-        className="request-signature__mismatch-info"
-        display={DISPLAY.FLEX}
-        width={BLOCK_SIZES.FULL}
-        padding={4}
-        marginBottom={4}
-        backgroundColor={BackgroundColor.primaryMuted}
-      >
-        <Icon
-          name={IconName.Info}
-          color={IconColor.infoDefault}
-          marginRight={2}
-        />
-        <Text
-          variant={TextVariant.bodyXs}
-          color={TextColor.textDefault}
-          as="h7"
-        >
-          {this.context.t('mismatchAccount', [
-            shortenAddress(selectedAccount.address),
-            shortenAddress(address),
-          ])}
-        </Text>
-      </Box>
-    );
-  };
-  ///: END:ONLY_INCLUDE_IN
 
   renderAccountInfo = () => {
     return (
@@ -224,11 +185,37 @@ export default class SignatureRequestOriginal extends Component {
           />
         ) : null}
 
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-          this.renderMismatchMessage()
-          ///: END:ONLY_INCLUDE_IN
-        }
+{
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            this.props.selectedAccount.address !== this.props.fromAccount.address ? (
+              <Box
+                className="request-signature__mismatch-info"
+                display={DISPLAY.FLEX}
+                width={BLOCK_SIZES.FULL}
+                padding={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.primaryMuted}
+              >
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.infoDefault}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textDefault}
+                  as="h7"
+                >
+                  {this.context.t('mismatchAccount', [
+                    shortenAddress(selectedAccount.address),
+                    shortenAddress(address),
+                  ])}
+                </Text>
+              </Box>
+            ) : null
+            ///: END:ONLY_INCLUDE_IN
+          }
+
         <div className="request-signature__origin">
           <SiteOrigin
             title={txData.msgParams.origin}

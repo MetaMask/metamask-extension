@@ -168,45 +168,7 @@ export default class SignatureRequest extends PureComponent {
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  renderMismatchMessage = () => {
-    const { selectedAccount } = this.props;
-    const {
-      fromAccount: { address },
-    } = this.props;
 
-    if (selectedAccount.address === address) {
-      return null;
-    }
-
-    return (
-      <Box
-        className="request-signature__mismatch-info"
-        display={DISPLAY.FLEX}
-        width={BLOCK_SIZES.FULL}
-        padding={4}
-        marginBottom={4}
-        backgroundColor={BackgroundColor.primaryMuted}
-      >
-        <Icon
-          name={IconName.Info}
-          color={IconColor.infoDefault}
-          marginRight={2}
-        />
-        <Text
-          variant={TextVariant.bodyXs}
-          color={TextColor.textDefault}
-          as="h7"
-        >
-          {this.context.t('mismatchAccount', [
-            shortenAddress(selectedAccount.address),
-            shortenAddress(address),
-          ])}
-        </Text>
-      </Box>
-    );
-  };
-  ///: END:ONLY_INCLUDE_IN
 
   render() {
     const {
@@ -321,7 +283,32 @@ export default class SignatureRequest extends PureComponent {
 
           {
             ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-            this.renderMismatchMessage()
+            this.props.selectedAccount.address !== this.props.fromAccount.address ? (
+              <Box
+                className="request-signature__mismatch-info"
+                display={DISPLAY.FLEX}
+                width={BLOCK_SIZES.FULL}
+                padding={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.primaryMuted}
+              >
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.infoDefault}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textDefault}
+                  as="h7"
+                >
+                  {this.context.t('mismatchAccount', [
+                    shortenAddress(selectedAccount.address),
+                    shortenAddress(address),
+                  ])}
+                </Text>
+              </Box>
+            ) : null
             ///: END:ONLY_INCLUDE_IN
           }
 
