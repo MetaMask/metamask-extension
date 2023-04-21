@@ -122,100 +122,100 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Message:
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Click to sign in and accept the Terms of Service: https://community.metamask.io/tos
-          </h6>
+          </p>
         </div>
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             URI:
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             http://localhost:8080
-          </h6>
+          </p>
         </div>
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Version:
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             1
-          </h6>
+          </p>
         </div>
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Chain ID:
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             1
-          </h6>
+          </p>
         </div>
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Nonce:
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             STMt6KQMwwdOXE306
-          </h6>
+          </p>
         </div>
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Issued At:
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             2023-03-18T21:40:40.823Z
-          </h6>
+          </p>
         </div>
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             Resources: 2
           </h4>
-          <h6
-            class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row typography signature-request-siwe-message__sub-text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          <p
+            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
           >
             ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu
 https://example.com/my-web2-claim.json
-          </h6>
+          </p>
         </div>
       </div>
     </div>
