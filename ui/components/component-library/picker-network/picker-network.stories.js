@@ -38,6 +38,10 @@ export const Label = (args) => (
     <PickerNetwork {...args} label="Arbitrum One" />
     <PickerNetwork {...args} label="Polygon Mainnet" />
     <PickerNetwork {...args} label="Optimism" />
+    <PickerNetwork
+      {...args}
+      label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
+    />
   </Box>
 );
 
@@ -50,6 +54,18 @@ export const Src = (args) => (
       src="./images/matic-token.png"
     />
     <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
+  </Box>
+);
+
+export const MaxWidth = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <PickerNetwork {...args} label="Optimism" />
+    <PickerNetwork {...args} label="x" />
+    <PickerNetwork
+      {...args}
+      style={{ maxWidth: '200px' }}
+      label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
+    />
   </Box>
 );
 
