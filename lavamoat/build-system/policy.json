@@ -4409,11 +4409,11 @@
       "packages": {
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base": true,
         "gulp-watch>chokidar>braces>snapdragon>base>class-utils": true,
+        "gulp-watch>chokidar>braces>snapdragon>base>component-emitter": true,
         "gulp-watch>chokidar>braces>snapdragon>base>define-property": true,
         "gulp-watch>chokidar>braces>snapdragon>base>mixin-deep": true,
         "gulp-watch>chokidar>braces>snapdragon>base>pascalcase": true,
-        "gulp>gulp-cli>isobject": true,
-        "pubnub>superagent>component-emitter": true
+        "gulp>gulp-cli>isobject": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base": {
@@ -4424,9 +4424,9 @@
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>to-object-path": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>union-value": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>unset-value": true,
+        "gulp-watch>chokidar>braces>snapdragon>base>component-emitter": true,
         "gulp>gulp-cli>array-sort>get-value": true,
-        "gulp>gulp-cli>isobject": true,
-        "pubnub>superagent>component-emitter": true
+        "gulp>gulp-cli>isobject": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>collection-visit": {

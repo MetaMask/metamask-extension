@@ -2018,9 +2018,6 @@
   "missingToken": {
     "message": "Sie sehen Ihren Token nicht?"
   },
-  "mobileSyncWarning": {
-    "message": "Die Funktion \"Mit Erweiterung synchronisieren\" ist vorübergehend deaktiviert. Wenn Sie Ihre Erweiterungs-Wallet auf MetaMask mobile verwenden möchten, dann gehen Sie in Ihrer mobilen App zurück zu den Einrichtungsoptionen für die Wallet und wählen Sie die Option \"Import mit Geheime Wiederherstellungsphrase\". Verwenden Sie die Geheime Wiederherstellungsphrase Ihrer Erweiterungs-Wallet, um Ihre Wallet in Mobile zu importieren."
-  },
   "moreComingSoon": {
     "message": "Mehr in Kürze ..."
   },
@@ -3932,33 +3929,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Das Symbol darf maximal 11 Zeichen lang sein."
-  },
-  "syncFailed": {
-    "message": "Sync fehlgeschlagen"
-  },
-  "syncInProgress": {
-    "message": "Synchronisation läuft"
-  },
-  "syncWithMobile": {
-    "message": "Mit Mobilgerät synchronisieren"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Stellen Sie sicher, dass niemand sonst auf Ihren Bildschirm blickt, wenn Sie diesen Code scannen"
-  },
-  "syncWithMobileComplete": {
-    "message": "Ihre Daten wurden erfolgreich synchronisiert. Viel Spaß mit der MetaMask-Handy-App!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Sie können Ihre Konten und Informationen mit Ihrem Mobilgerät synchronisieren. Öffnen Sie die MetaMask-Mobilapp, gehen Sie zu \"Einstellungen\" und tippen Sie auf \"Von Browsererweiterung aus synchronisieren\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Wenn Sie die MetaMask-Mobilapp gerade zum ersten Mal öffnen, folgen Sie einfach den Schritten auf Ihrem Telefon."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scannen Sie diesen Code mit Ihrer MetaMask-Mobilapp"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mit Mobilgerät synchronisieren"
   },
   "tenPercentIncreased": {
     "message": "10% Erhöhung"
