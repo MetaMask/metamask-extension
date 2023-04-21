@@ -604,7 +604,10 @@
       "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
       "resolve-url-loader>es6-iterator>es5-ext": false,
       "@storybook/test-runner>playwright": true,
-      "playwright": false
+      "playwright": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false
     }
   },
   "packageManager": "yarn@3.2.4"
