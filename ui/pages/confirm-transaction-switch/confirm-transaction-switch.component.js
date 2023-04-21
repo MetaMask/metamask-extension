@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { ApprovalType } from '@metamask/controller-utils';
 import Loading from '../../components/ui/loading-screen';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -18,6 +17,7 @@ import {
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
 } from '../../helpers/constants/routes';
 import { TransactionType } from '../../../shared/constants/transaction';
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
@@ -77,9 +77,9 @@ export default class ConfirmTransactionSwitch extends Component {
       return this.redirectToTransaction();
     } else if (txData.msgParams) {
       let pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${SIGNATURE_REQUEST_PATH}`;
-      if (txData.type === ApprovalType.EthDecrypt) {
+      if (txData.type === MESSAGE_TYPE.ETH_DECRYPT) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${DECRYPT_MESSAGE_REQUEST_PATH}`;
-      } else if (txData.type === ApprovalType.EthGetEncryptionPublicKey) {
+      } else if (txData.type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`;
       }
       return <Redirect to={{ pathname }} />;

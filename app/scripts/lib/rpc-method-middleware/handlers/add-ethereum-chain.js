@@ -2,7 +2,10 @@ import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
-import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  UNKNOWN_TICKER_SYMBOL,
+} from '../../../../../shared/constants/app';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -10,7 +13,7 @@ import {
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 
 const addEthereumChain = {
-  methodNames: [ApprovalType.AddEthereumChain],
+  methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
   hookNames: {
     upsertNetworkConfiguration: true,

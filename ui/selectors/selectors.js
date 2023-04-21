@@ -12,7 +12,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
   isEqual,
 } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -89,6 +88,7 @@ import {
 } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
@@ -161,9 +161,9 @@ export function hasUnsignedQRHardwareMessage(state) {
     return false;
   }
   switch (type) {
-    case ApprovalType.EthSignTypedData:
-    case ApprovalType.EthSign:
-    case ApprovalType.PersonalSign:
+    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+    case MESSAGE_TYPE.ETH_SIGN:
+    case MESSAGE_TYPE.PERSONAL_SIGN:
       return Boolean(
         qrKeyring.accounts.find(
           (account) => account.toLowerCase() === from.toLowerCase(),

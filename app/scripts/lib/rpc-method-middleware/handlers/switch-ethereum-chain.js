@@ -12,9 +12,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const switchEthereumChain = {
-  methodNames: [ApprovalType.SwitchEthereumChain],
+  methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
     getCurrentChainId: true,
@@ -130,7 +131,7 @@ async function switchEthereumChainHandler(
   return end(
     ethErrors.provider.custom({
       code: 4902, // To-be-standardized "unrecognized chain ID" error
-      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${ApprovalType.AddEthereumChain} first.`,
+      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
     }),
   );
 }

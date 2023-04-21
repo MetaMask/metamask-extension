@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 
-import { ApprovalType } from '@metamask/controller-utils';
 import { goHome, cancelMsgs, showModal } from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
@@ -25,6 +24,7 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequestOriginal from './signature-request-original.component';
 
 function mapStateToProps(state, ownProps) {
@@ -108,13 +108,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   let cancel;
   let sign;
-  if (type === ApprovalType.PersonalSign) {
+  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
     cancel = cancelPersonalMessage;
     sign = signPersonalMessage;
-  } else if (type === ApprovalType.EthSignTypedData) {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     cancel = cancelTypedMessage;
     sign = signTypedMessage;
-  } else if (type === ApprovalType.EthSign) {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
     cancel = cancelMessage;
     sign = signMessage;
   }

@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { ApprovalType } from '@metamask/controller-utils';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -24,6 +23,7 @@ import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { cancelMsgs, showModal } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request.component';
 
 function mapStateToProps(state, ownProps) {
@@ -124,13 +124,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   let cancel;
   let sign;
 
-  if (type === ApprovalType.PersonalSign) {
+  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
     cancel = cancelPersonalMessage;
     sign = signPersonalMessage;
-  } else if (type === ApprovalType.EthSignTypedData) {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     cancel = cancelTypedMessage;
     sign = signTypedMessage;
-  } else if (type === ApprovalType.EthSign) {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
     cancel = cancelMessage;
     sign = signMessage;
   }

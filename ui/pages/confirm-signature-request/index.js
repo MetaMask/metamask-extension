@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import log from 'loglevel';
-import { ApprovalType } from '@metamask/controller-utils';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -19,6 +18,7 @@ import {
 } from '../../selectors';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 const SIGN_MESSAGE_TYPE = {
@@ -35,7 +35,7 @@ const signatureSelect = (txData) => {
 
   // Temporarily direct only v3 and v4 requests to new code.
   if (
-    type === ApprovalType.EthSignTypedData &&
+    type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA &&
     (version === 'V3' || version === 'V4')
   ) {
     return SignatureRequest;
