@@ -2537,6 +2537,19 @@
     "message": "Swapping on mobile is here!",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
   },
+  "notifications20ActionText": {
+    "message": "Learn more",
+    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
+  },
+
+  "notifications20Description": {
+    "message": "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
+  },
+  "notifications20Title": {
+    "message": "Ledger and Firefox Users Experiencing Connection Issues",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
@@ -2913,14 +2926,6 @@
   "permission_cronjobDescription": {
     "message": "Allow the snap to perform actions that run periodically at fixed times, dates, or intervals. This can be used to trigger time-sensitive interactions or notifications.",
     "description": "An extended description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Display a confirmation in MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
-  "permission_customConfirmationDescription": {
-    "message": "Allow the snap to display MetaMask popups with custom text, and buttons to approve or reject an action.",
-    "description": "An extended description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Display dialog windows in MetaMask.",
@@ -4551,6 +4556,22 @@
   },
   "transferFrom": {
     "message": "Transfer from"
+  },
+  "troubleConnectingToLedgerU2FOnFirefox": {
+    "message": "We're having trouble connecting your Ledger. $1",
+    "description": "$1 is a link to the wallet connection guide;"
+  },
+  "troubleConnectingToLedgerU2FOnFirefox2": {
+    "message": "Review our hardware wallet connection guide and try again.",
+    "description": "$1 of the ledger wallet connection guide"
+  },
+  "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution": {
+    "message": "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue $1.",
+    "description": "It is a link to the ledger website for the workaround."
+  },
+  "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2": {
+    "message": "here",
+    "description": "Second part of the error message; It is a link to the ledger website for the workaround."
   },
   "troubleConnectingToWallet": {
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",

@@ -348,18 +348,29 @@ export default class MetamaskController extends EventEmitter {
       {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
-        onNetworkStateChange: (cb) => {
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          });
-        },
+        // This handler is misnamed, and is a known issue that will be resolved
+        // by planned refactors. It should be onNetworkDidChange which happens
+        // AFTER the provider in the network controller is updated to reflect
+        // the new state of the network controller. In #18041 we changed this
+        // handler to be triggered by the change in the network state because
+        // that is what the handler name implies, but this triggers too soon
+        // causing the provider of the AssetsContractController to trail the
+        // network provider by one update.
+        onNetworkStateChange: (cb) =>
+          networkControllerMessenger.subscribe(
+            NetworkControllerEventType.NetworkDidChange,
+            () => {
+              const networkState = this.networkController.store.getState();
+              const modifiedNetworkState = {
+                ...networkState,
+                providerConfig: {
+                  ...networkState.provider,
+                  chainId: hexToDecimal(networkState.provider.chainId),
+                },
+              };
+              return cb(modifiedNetworkState);
+            },
+          ),
       },
       {
         provider: this.provider,
@@ -544,7 +555,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
-        nativeCurrency: this.networkController.providerStore.getState().ticker,
+        nativeCurrency: this.networkController.store.getState().provider.ticker,
       },
     });
 
@@ -981,8 +992,16 @@ export default class MetamaskController extends EventEmitter {
       getNetworkId: () => this.networkController.store.getState().networkId,
       getNetworkStatus: () =>
         this.networkController.store.getState().networkStatus,
-      onNetworkStateChange: (listener) =>
-        this.networkController.networkIdStore.subscribe(listener),
+      onNetworkStateChange: (listener) => {
+        let previousNetworkId =
+          this.networkController.store.getState().networkId;
+        this.networkController.store.subscribe((state) => {
+          if (previousNetworkId !== state.networkId) {
+            listener();
+            previousNetworkId = state.networkId;
+          }
+        });
+      },
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
       preferencesStore: this.preferencesController.store,
@@ -1176,10 +1195,8 @@ export default class MetamaskController extends EventEmitter {
         this.txController.txGasUtil,
       ),
       networkController: this.networkController,
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
-      ),
+      onNetworkStateChange: (listener) =>
+        this.networkController.store.subscribe(listener),
       provider: this.provider,
       getProviderConfig: () => this.networkController.store.getState().provider,
       getTokenRatesState: () => this.tokenRatesController.state,
@@ -1527,12 +1544,6 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getSnapState',
         ),
-        showConfirmation: (origin, confirmationData) =>
-          this.approvalController.addAndShowApprovalRequest({
-            origin,
-            type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-            requestData: confirmationData,
-          }),
         showDialog: (origin, type, content, placeholder) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
@@ -3240,32 +3251,6 @@ export default class MetamaskController extends EventEmitter {
     return await this.txController.newUnapprovedTransaction(txParams, req);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  /**
-   * Gets an "app key" corresponding to an Ethereum address. An app key is more
-   * or less an addrdess hashed together with some string, in this case a
-   * subject identifier / origin.
-   *
-   * @todo Figure out a way to derive app keys that doesn't depend on the user's
-   * Ethereum addresses.
-   * @param {string} subject - The identifier of the subject whose app key to
-   * retrieve.
-   * @param {string} [requestedAccount] - The account whose app key to retrieve.
-   * The first account in the keyring will be used by default.
-   */
-  async getAppKeyForSubject(subject, requestedAccount) {
-    let account;
-
-    if (requestedAccount) {
-      account = requestedAccount;
-    } else {
-      [account] = await this.keyringController.getAccounts();
-    }
-
-    return this.keyringController.exportAppKeyForAddress(account, subject);
-  }
-  ///: END:ONLY_INCLUDE_IN
-
   // eth_decrypt methods
 
   /**
@@ -3871,7 +3856,6 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
       createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
-        getAppKey: this.getAppKeyForSubject.bind(this, origin),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),

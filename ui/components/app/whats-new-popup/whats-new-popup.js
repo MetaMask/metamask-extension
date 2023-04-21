@@ -73,6 +73,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 19: true });
       history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
     },
+    20: () => {
+      updateViewedNotifications({ 20: true });
+      global.platform.openTab({
+        url: ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE,
+      });
+    },
   };
 
   return actionFunctions[id];
