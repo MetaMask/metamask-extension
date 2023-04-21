@@ -4039,7 +4039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^3.1.0":
+"@metamask/message-manager@npm:3.1.0":
   version: 3.1.0
   resolution: "@metamask/message-manager@npm:3.1.0"
   dependencies:
@@ -4051,6 +4051,21 @@ __metadata:
     jsonschema: ^1.2.4
     uuid: ^8.3.2
   checksum: d96d1071abc704a761b61bda715a2f2ccc0cf6604b095bbd1141d8de6c621aa5e6113d47c787cbdb8ee037f4bc1bf003b8575b87588cd9af8a27479e8ee5fdd7
+  languageName: node
+  linkType: hard
+
+"@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.1.0#./.yarn/patches/@metamask-message-manager-npm-3.1.0-64952d0622.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.1.0
+  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A3.1.0#./.yarn/patches/@metamask-message-manager-npm-3.1.0-64952d0622.patch::version=3.1.0&hash=9520be&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.2.0
+    "@types/uuid": ^8.3.0
+    eth-sig-util: ^3.0.0
+    ethereumjs-util: ^7.0.10
+    jsonschema: ^1.2.4
+    uuid: ^8.3.2
+  checksum: 10ef3b253bcb0b130ebcbb02df53f0646a9f6b2c7816ec1b06988bebc147fc1ab5ac62f1147cba4e7f0c65935661097fbc9998e96ef6cec7688b5acb66ebfce5
   languageName: node
   linkType: hard
 
