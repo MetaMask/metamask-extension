@@ -2810,6 +2810,9 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
+  "operationFailed": {
+    "message": "Operation Failed"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -4478,6 +4481,10 @@
   "transactionErrored": {
     "message": "Transaction encountered an error."
   },
+  "transactionFailed": {
+    "message": "Transaction Failed"
+  },
+
   "transactionFee": {
     "message": "Transaction fee"
   },
