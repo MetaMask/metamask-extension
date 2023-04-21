@@ -73,3 +73,7 @@ export function getMMIAddressFromModalOrAddress(state) {
 export function getMMIConfiguration(state) {
   return state.metamask.mmiConfiguration;
 }
+
+export function getInteractiveReplacementToken(state) {
+  return state.metamask.interactiveReplacementToken || {};
+}
