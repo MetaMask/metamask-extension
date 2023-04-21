@@ -124,7 +124,7 @@ const ExportPrivateKeyModal = ({
       );
     }
 
-    const plainKey = privateKeyInput && stripHexPrefix(privateKeyInput);
+    const plainKey = stripHexPrefix(privateKeyInput);
 
     return (
       <Box
