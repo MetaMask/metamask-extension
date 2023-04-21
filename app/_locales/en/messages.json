@@ -2402,6 +2402,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noReport": {
+    "message": "No Report"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -3245,6 +3248,12 @@
   "replace": {
     "message": "replace"
   },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
+  },
   "requestFailed": {
     "message": "Request failed"
   },
@@ -3374,8 +3383,17 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "riskRating": {
+    "message": "Risk rating"
+  },
+  "riskRatingTooltip": {
+    "message": "The risk rating of the address you are interacting with based on your risk settings"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "runReport": {
+    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3590,6 +3608,9 @@
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
+  },
+  "showReport": {
+    "message": "Show report"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
