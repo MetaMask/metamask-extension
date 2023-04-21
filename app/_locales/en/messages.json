@@ -3682,7 +3682,7 @@
     "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below align with your intended actions. Only proceed with authors you trust."
+    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
   },
   "snapInstallWarningCheckPlural": {
     "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
