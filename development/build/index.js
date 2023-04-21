@@ -87,7 +87,6 @@ async function defineAndRunBuildTasks() {
       `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
     );
 
-<<<<<<< HEAD
     // build lavamoat runtime file
     await lavapack.buildRuntime({
       scuttleGlobalThis: applyLavaMoat && shouldScuttle,
@@ -139,8 +138,6 @@ async function defineAndRunBuildTasks() {
     });
   }
 
-=======
->>>>>>> f89f96343 (Fix mv3 beta build (#18690))
   const browserPlatforms = platform ? [platform] : ['firefox', 'chrome'];
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);

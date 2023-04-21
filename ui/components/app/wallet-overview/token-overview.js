@@ -20,11 +20,8 @@ import {
   getIsSwapsChain,
   getIsBuyableChain,
   getIsBridgeToken,
-<<<<<<< HEAD
   getCurrentChainId,
   getMetaMetricsId,
-=======
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -44,10 +41,7 @@ import { ButtonIcon, Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 import { BUTTON_ICON_SIZES } from '../../component-library/button-icon/deprecated';
-<<<<<<< HEAD
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-=======
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -103,15 +97,9 @@ const TokenOverview = ({ className, token }) => {
               ariaLabel={t('portfolio')}
               size={BUTTON_ICON_SIZES.LG}
               onClick={() => {
-<<<<<<< HEAD
                 const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
                 global.platform.openTab({
                   url: portfolioUrl,
-=======
-                const portfolioUrl = process.env.PORTFOLIO_URL;
-                global.platform.openTab({
-                  url: `${portfolioUrl}?metamaskEntry=ext`,
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
                 });
                 trackEvent(
                   {
@@ -246,7 +234,6 @@ const TokenOverview = ({ className, token }) => {
               }
               label={t('bridge')}
               onClick={() => {
-<<<<<<< HEAD
                 const portfolioUrl = getPortfolioUrl(
                   'bridge',
                   'ext_bridge_button',
@@ -254,13 +241,6 @@ const TokenOverview = ({ className, token }) => {
                 );
                 global.platform.openTab({
                   url: `${portfolioUrl}&token=${token.address}`,
-=======
-                const portfolioUrl = process.env.PORTFOLIO_URL;
-
-                const bridgeUrl = `${portfolioUrl}/bridge`;
-                global.platform.openTab({
-                  url: `${bridgeUrl}?metamaskEntry=ext_bridge_button&token=${token.address}`,
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
                 });
                 trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
@@ -268,12 +248,9 @@ const TokenOverview = ({ className, token }) => {
                   properties: {
                     location: 'Token Overview',
                     text: 'Bridge',
-<<<<<<< HEAD
                     url: portfolioUrl,
                     chain_id: chainId,
                     token_symbol: token.symbol,
-=======
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
                   },
                 });
               }}

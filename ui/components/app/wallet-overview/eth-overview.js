@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { useHistory, useLocation } from 'react-router-dom';
-<<<<<<< HEAD
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -11,8 +10,6 @@ import {
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
-=======
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
 
 import Identicon from '../../ui/identicon';
 import { I18nContext } from '../../../contexts/i18n';
@@ -324,7 +321,6 @@ const EthOverview = ({ className }) => {
                   )
             }
           />
-<<<<<<< HEAD
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <IconButton
@@ -333,33 +329,6 @@ const EthOverview = ({ className }) => {
               data-testid="eth-overview-bridge"
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
-=======
-          <IconButton
-            className="eth-overview__button"
-            disabled={!isBridgeChain}
-            data-testid="eth-overview-bridge"
-            Icon={
-              <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
-            }
-            label={t('bridge')}
-            onClick={() => {
-              if (isBridgeChain) {
-                const portfolioUrl = process.env.PORTFOLIO_URL;
-                const bridgeUrl = `${portfolioUrl}/bridge`;
-                global.platform.openTab({
-                  url: `${bridgeUrl}?metamaskEntry=ext_bridge_button${
-                    location.pathname.includes('asset') ? '&token=native' : ''
-                  }`,
-                });
-                trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.BridgeLinkClicked,
-                  properties: {
-                    location: 'Home',
-                    text: 'Bridge',
-                  },
-                });
->>>>>>> 19257361e (Show Bridge button in TokenOverview component (#18630))
               }
               label={t('bridge')}
               onClick={() => {
