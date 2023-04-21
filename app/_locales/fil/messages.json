@@ -659,27 +659,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Ang simbolo ay dapat na 11 character o mas kaunti."
   },
-  "syncWithMobile": {
-    "message": "I-sync sa mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Tiyaking walang ibang taong tumitingin sa iyong screen kapag sina-scan mo ang code na ito"
-  },
-  "syncWithMobileComplete": {
-    "message": "Matagumpay na na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Maaari mong i-sync ang iyong mga account at impormasyon sa iyong mobile device. Buksan ang MetaMask mobile app, pumunta sa \"Settings\" at mag-tap sa \"Sync from Browser Extension\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kung bubuksan mo ang MetaMask Mobile app sa unang pagkakataon, sundin lang ang mga hakbang sa iyong telepono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "I-scan ang code na ito sa iyong MetaMask mobile app"
-  },
-  "syncWithMobileTitle": {
-    "message": "I-sync sa mobile"
-  },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"
   },
