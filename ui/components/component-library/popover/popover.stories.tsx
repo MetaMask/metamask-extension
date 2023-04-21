@@ -90,7 +90,6 @@ const Template: ComponentStory<typeof Popover> = (args) => {
 
   return (
     <Box
-      style={{ height: '200vh', width: '200vw' }}
       display={DISPLAY.FLEX}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
