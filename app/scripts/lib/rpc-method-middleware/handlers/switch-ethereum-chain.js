@@ -6,7 +6,7 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
+  CHAIN_IDS,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -27,7 +27,7 @@ const switchEthereumChain = {
 export default switchEthereumChain;
 
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
-  if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+  if (chainId in CHAIN_ID_TO_TYPE_MAP && chainId !== CHAIN_IDS.LINEA_TESTNET) {
     return {
       chainId,
       ticker: CURRENCY_SYMBOLS.ETH,
@@ -110,8 +110,8 @@ async function switchEthereumChainHandler(
       });
       if (
         chainId in CHAIN_ID_TO_TYPE_MAP &&
-        approvedRequestData.type !== NETWORK_TYPES.LOCALHOST &&
-        approvedRequestData.type !== NETWORK_TYPES.LINEA_TESTNET
+        approvedRequestData.chainId !== CHAIN_IDS.LOCALHOST &&
+        approvedRequestData.chainId !== CHAIN_IDS.LINEA_TESTNET
       ) {
         await setProviderType(approvedRequestData.type);
       } else {
