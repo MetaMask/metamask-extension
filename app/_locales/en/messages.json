@@ -3811,6 +3811,9 @@
   "stableLowercase": {
     "message": "stable"
   },
+  "stake": {
+    "message": "Stake"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
