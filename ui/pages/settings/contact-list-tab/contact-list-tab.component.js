@@ -16,7 +16,7 @@ import {
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { Color } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
