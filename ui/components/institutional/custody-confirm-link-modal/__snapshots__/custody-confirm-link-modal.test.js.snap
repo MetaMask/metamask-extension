@@ -31,9 +31,7 @@ exports[`Custody Confirm Link should match snapshot 1`] = `
       Approve the transaction in the Saturn Custody app. Once all required custody approvals have been performed the transaction will complete. Check your Saturn Custody app for status.
     </p>
     <button
-      class="button btn--rounded btn-primary custody-confirm-link__btn"
-      role="button"
-      tabindex="0"
+      class="box mm-text mm-button-base mm-button-base--size-md custody-confirm-link__btn mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
     >
       Close
     </button>
