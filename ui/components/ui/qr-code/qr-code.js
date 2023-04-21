@@ -55,11 +55,11 @@ function QrCodeView(props) {
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
-          __html: qrImage.createTableTag(4),
+          __html: qrImage.createTableTag(5, 24),
         }}
       />
       {process.env.MULTICHAIN ? (
-        <Box marginLeft={2} marginRight={2}>
+        <Box marginBottom={4} marginTop={4}>
           <AddressCopyButton wrap address={toChecksumHexAddress(data)} />
         </Box>
       ) : (

@@ -25,36 +25,38 @@ export default function AccountModalContainer(props, context) {
   } = props;
 
   return process.env.MULTICHAIN && isAccountDetailsModal ? (
-    <>
-      <Popover
-        className="multichain-account-details__popover"
-        contentProps={{ justifyContent: JustifyContent.flexEnd }}
-        title={
-          <Box
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-          >
-            <AvatarAccount address={selectedIdentity.address} size={Size.LG} />
-          </Box>
-        }
-        onClose={() => {
-          console.log('onClose');
-        }}
-      >
+    <Popover
+      className="multichain-account-details__popover"
+      headerProps={{
+        padding: 0,
+        paddingRight: 4,
+        paddingTop: 4,
+        paddingLeft: 4,
+      }}
+      title={
         <Box
-          padding={4}
           display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexStart}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          gap={2}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
         >
-          {children}
+          <AvatarAccount address={selectedIdentity.address} size={Size.LG} />
         </Box>
-      </Popover>
-    </>
+      }
+      onClose={hideModal}
+    >
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.flexStart}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
+        {children}
+      </Box>
+    </Popover>
   ) : (
     <div
       className={classnames(className, 'account-modal')}
