@@ -3619,6 +3619,9 @@
   "showPermissions": {
     "message": "Show permissions"
   },
+  "showPrivateKey": {
+    "message": "Show Private Key"
+  },
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },

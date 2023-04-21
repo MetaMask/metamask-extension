@@ -12,8 +12,6 @@ import {
   Size,
 } from '../../../../helpers/constants/design-system';
 import { AvatarAccount } from '../../../component-library';
-// import EditableLabel from '../../../ui/editable-label/editable-label';
-// import { setAccountLabel } from '../../../../store/actions';
 
 export default function AccountModalContainer(props, context) {
   const {
@@ -22,10 +20,11 @@ export default function AccountModalContainer(props, context) {
     showBackButton,
     backButtonAction,
     hideModal,
+    isAccountDetailsModal,
     children,
   } = props;
 
-  return process.env.MULTICHAIN ? (
+  return process.env.MULTICHAIN && isAccountDetailsModal ? (
     <>
       <Popover
         className="multichain-account-details__popover"
@@ -38,16 +37,6 @@ export default function AccountModalContainer(props, context) {
             justifyContent={JustifyContent.center}
           >
             <AvatarAccount address={selectedIdentity.address} size={Size.LG} />
-            {/* TODO: fix ui side effect on ExportPrivateKey Modal, it uses the same popover */}
-            {/* Debating moving EditableLabel into this component so that it's in the header, for styling purposes, but not sure if it's necessary */}
-            {/* <EditableLabel
-              className="account-details-modal__name"
-              defaultValue={selectedIdentity.name}
-              onSubmit={(label) => {
-                setAccountLabel(selectedIdentity.name, label);
-              }}
-              accounts={accounts}
-            /> */}
           </Box>
         }
         onClose={() => {
@@ -106,5 +95,6 @@ AccountModalContainer.propTypes = {
   showBackButton: PropTypes.bool,
   backButtonAction: PropTypes.func,
   hideModal: PropTypes.func.isRequired,
+  isAccountDetailsModal: PropTypes.bool,
   children: PropTypes.node,
 };

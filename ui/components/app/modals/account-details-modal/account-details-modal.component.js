@@ -81,7 +81,10 @@ export default class AccountDetailsModal extends Component {
     };
 
     return (
-      <AccountModalContainer className="account-details-modal">
+      <AccountModalContainer
+        className="account-details-modal"
+        isAccountDetailsModal
+      >
         <EditableLabel
           className="account-details-modal__name"
           defaultValue={name}
@@ -130,7 +133,9 @@ export default class AccountDetailsModal extends Component {
               showExportPrivateKeyModal();
             }}
           >
-            {this.context.t('exportPrivateKey')}
+            {process.env.MULTICHAIN
+              ? this.context.t('showPrivateKey')
+              : this.context.t('exportPrivateKey')}
           </Button>
         )}
       </AccountModalContainer>
