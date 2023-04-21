@@ -288,7 +288,7 @@ describe('MetaMask onboarding', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.waitForElementNotPresent('span .modal');
+        await driver.waitForElementNotPresent('.popover-bg');
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // After login, check that notification message for added network is displayed

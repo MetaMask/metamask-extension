@@ -79,7 +79,7 @@ describe('Add account', function () {
           '[data-testid="account-options-menu__account-details"]',
         );
 
-        const detailsModal = await driver.findVisibleElement('span .modal');
+        const detailsModal = await driver.findVisibleElement('.popover-bg');
         // get the public address for the "second account"
         await driver.waitForSelector('.qr-code__address');
         const secondAccountAddress = await driver.findElement({
@@ -106,7 +106,7 @@ describe('Add account', function () {
 
         // get the public address for the "third account"
         const secondDetailsModal = await driver.findVisibleElement(
-          'span .modal',
+          '.popover-bg',
         );
         await driver.waitForSelector('.qr-code__address');
         const thirdAccountAddress = await driver.findElement({
@@ -162,7 +162,7 @@ describe('Add account', function () {
           '[data-testid="account-options-menu__account-details"]',
         );
         const thirdDetailsModal = await driver.findVisibleElement(
-          'span .modal',
+          '.popover-bg',
         );
         // get the public address for the "second account"
         await driver.waitForSelector('.qr-code__address');

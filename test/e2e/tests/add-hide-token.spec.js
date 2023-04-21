@@ -65,7 +65,7 @@ describe('Hide token', function () {
 
         await driver.clickElement('[data-testid="asset-options__hide"]');
         // wait for confirm hide modal to be visible
-        const confirmHideModal = await driver.findVisibleElement('span .modal');
+        const confirmHideModal = await driver.findVisibleElement('.popover-bg');
 
         await driver.clickElement(
           '[data-testid="hide-token-confirmation__hide"]',

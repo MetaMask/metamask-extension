@@ -77,7 +77,7 @@ describe('Incremental Security', function () {
         const publicAddress = await address.getText();
 
         // wait for account modal to be visible
-        const accountModal = await driver.findVisibleElement('span .modal');
+        const accountModal = await driver.findVisibleElement('.popover-bg');
 
         await driver.clickElement('.account-modal__close');
 

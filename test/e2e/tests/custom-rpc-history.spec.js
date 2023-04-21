@@ -298,13 +298,13 @@ describe('Stores custom RPC history', function () {
         await driver.clickElement('.btn-danger');
 
         // wait for confirm delete modal to be visible
-        await driver.findVisibleElement('span .modal');
+        await driver.findVisibleElement('.popover-bg');
 
         await driver.clickElement(
           '.button.btn-danger-primary.modal-container__footer-button',
         );
 
-        await driver.waitForElementNotPresent('span .modal');
+        await driver.waitForElementNotPresent('.popover-bg');
 
         const newNetworkListItems = await driver.findElements(
           '.networks-tab__networks-list-name',

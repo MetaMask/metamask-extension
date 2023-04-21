@@ -51,7 +51,7 @@ describe('MetaMask Import UI', function () {
         );
         await driver.findVisibleElement('.qr-code__wrapper');
         // shows a QR code for the account
-        const detailsModal = await driver.findVisibleElement('span .modal');
+        const detailsModal = await driver.findVisibleElement('.popover-bg');
         // shows the correct account address
         const address = await driver.findElement('.qr-code__address');
 
