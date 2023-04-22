@@ -71,12 +71,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 2,
   }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  [RestrictedMethods.snap_confirm]: ({ t }) => ({
-    label: t('permission_customConfirmation'),
-    description: t('permission_customConfirmationDescription'),
-    leftIcon: ICON_NAMES.SECURITY_TICK,
-    weight: 3,
-  }),
   [RestrictedMethods.snap_dialog]: ({ t }) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription'),
@@ -373,7 +367,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: t('permission_ethereumProvider'),
     description: t('permission_ethereumProviderDescription'),
     leftIcon: ICON_NAMES.ETHEREUM,
-    weight: 1,
+    weight: 2,
     id: 'ethereum-provider-access',
     message: t('ethereumProviderAccess', [targetSubjectMetadata?.origin]),
   }),

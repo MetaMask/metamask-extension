@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Color } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ButtonIcon, IconName } from '../../component-library';
 
 export default class EditableLabel extends Component {
   static propTypes = {
@@ -60,7 +59,7 @@ export default class EditableLabel extends Component {
           autoFocus
         />
         <ButtonIcon
-          iconName={ICON_NAMES.CHECK}
+          iconName={IconName.Check}
           className="editable-label__icon-button"
           onClick={() => this.handleSubmit(isValidAccountName)}
         />
@@ -76,7 +75,7 @@ export default class EditableLabel extends Component {
       <div className={classnames('editable-label', this.props.className)}>
         <div className="editable-label__value">{this.state.value}</div>
         <ButtonIcon
-          iconName={ICON_NAMES.EDIT}
+          iconName={IconName.Edit}
           ariaLabel={this.context.t('edit')}
           data-testid="editable-label-button"
           onClick={() => this.setState({ isEditing: true })}
