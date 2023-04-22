@@ -183,8 +183,7 @@ export default function ApproveContentCard({
                       <Box>
                         <Text
                           variant={TextVariant.headingSm}
-                          fontWeight={FontWeight.Bold}
-                          color={TextColor.TEXT_DEFAULT}
+                          color={TextColor.textDefault}
                           as="h4"
                         >
                           {formatCurrency(
