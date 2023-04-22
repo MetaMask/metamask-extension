@@ -60,7 +60,7 @@ const AdvancedGasFeeGasLimit = () => {
   return (
     <Text
       variant={TextVariant.bodySm}
-      as="h6"
+      as="p"
       className="advanced-gas-fee-gas-limit"
       marginTop={4}
       marginLeft={2}
