@@ -29,7 +29,7 @@ aliases:
   - &shallow-git-clone
     name: Shallow Git Clone
     command: |
-      #!/bin/sh
+      #!/bin/bash
       set -e
       set -u
       set -o pipefail
