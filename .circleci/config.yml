@@ -38,7 +38,7 @@ aliases:
       # This SSH key is the current github.com SSH key as of April 2023, but it will need to be changed whenever github changes their key (probably every few years)
       GITHUB_SSH_KEY="AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
       mkdir -p ~/.ssh
-      echo github.com ssh-rsa $GITHUB_SSH_KEY >> ~/.ssh/known_hosts
+      echo github.com ssh-ed25519 $GITHUB_SSH_KEY >> ~/.ssh/known_hosts
 
       git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
 
