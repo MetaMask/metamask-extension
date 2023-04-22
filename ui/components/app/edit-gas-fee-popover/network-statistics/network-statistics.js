@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import {
-  FONT_WEIGHT,
+  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
