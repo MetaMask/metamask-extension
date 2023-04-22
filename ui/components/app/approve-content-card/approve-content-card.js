@@ -10,9 +10,9 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
-  FontWeight,
+  FONT_WEIGHT,
   JustifyContent,
-  TextAlign,
+  TEXT_ALIGN,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -132,7 +132,7 @@ export default function ApproveContentCard({
                   >
                     <Text
                       variant={TextVariant.bodySm}
-                      fontWeight={FontWeight.Normal}
+                      fontWeight={FONT_WEIGHT.NORMAL}
                       color={TextColor.textMuted}
                       as="h6"
                     >
@@ -162,13 +162,13 @@ export default function ApproveContentCard({
                     display={DISPLAY.FLEX}
                     flexDirection={FLEX_DIRECTION.COLUMN}
                     alignItems={AlignItems.flexEnd}
-                    textAlign={TextAlign.Right}
+                    textAlign={TEXT_ALIGN.RIGHT}
                   >
                     {useCurrencyRateCheck && (
                       <Box>
                         <Text
                           variant={TextVariant.headingSm}
-                          fontWeight={FontWeight.Bold}
+                          fontWeight={FONT_WEIGHT.BOLD}
                           color={TextColor.TEXT_DEFAULT}
                           as="h4"
                         >
@@ -182,7 +182,7 @@ export default function ApproveContentCard({
                     <Box>
                       <Text
                         variant={TextVariant.bodySm}
-                        fontWeight={FontWeight.Normal}
+                        fontWeight={FONT_WEIGHT.NORMAL}
                         color={TextColor.textMuted}
                         as="h6"
                       >
