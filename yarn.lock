@@ -9830,13 +9830,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async@npm:0.9.x":
-  version: 0.9.2
-  resolution: "async@npm:0.9.2"
-  checksum: 87dbf129292b8a6c32a4e07f43f462498162aa86f404a7e11f978dbfdf75cfb163c26833684bb07b9d436083cd604cbbf730a57bfcbe436c6ae1ed266cdc56bb
-  languageName: node
-  linkType: hard
-
 "async@npm:^1.4.2":
   version: 1.5.2
   resolution: "async@npm:1.5.2"
@@ -9850,6 +9843,13 @@ __metadata:
   dependencies:
     lodash: ^4.17.14
   checksum: a52083fb32e1ebe1d63e5c5624038bb30be68ff07a6c8d7dfe35e47c93fc144bd8652cbec869e0ac07d57dde387aa5f1386be3559cdee799cb1f789678d88e19
+  languageName: node
+  linkType: hard
+
+"async@npm:^3.2.3":
+  version: 3.2.4
+  resolution: "async@npm:3.2.4"
+  checksum: 43d07459a4e1d09b84a20772414aa684ff4de085cbcaec6eea3c7a8f8150e8c62aa6cd4e699fe8ee93c3a5b324e777d34642531875a0817a35697522c1b02e89
   languageName: node
   linkType: hard
 
@@ -11734,7 +11734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:4.1.2, chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.1":
+"chalk@npm:4.1.2, chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.1":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -14453,10 +14453,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"duplexer@npm:^0.1.1, duplexer@npm:~0.1.1":
-  version: 0.1.1
-  resolution: "duplexer@npm:0.1.1"
-  checksum: fc7937c4a43808493cd63dfa59f4deb6cf02beea783cb17f39677b53ccacb9fba48f87731b8944048dd6dfa8f456d0725f86f3fd587ab780532d9a8e2914e8b7
+"duplexer@npm:^0.1.1, duplexer@npm:^0.1.2, duplexer@npm:~0.1.1":
+  version: 0.1.2
+  resolution: "duplexer@npm:0.1.2"
+  checksum: 62ba61a830c56801db28ff6305c7d289b6dc9f859054e8c982abd8ee0b0a14d2e9a8e7d086ffee12e868d43e2bbe8a964be55ddbd8c8957714c87373c7a4f9b0
   languageName: node
   linkType: hard
 
@@ -14522,14 +14522,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.0.2":
-  version: 3.1.5
-  resolution: "ejs@npm:3.1.5"
+"ejs@npm:^3.1.5":
+  version: 3.1.9
+  resolution: "ejs@npm:3.1.9"
   dependencies:
-    jake: ^10.6.1
+    jake: ^10.8.5
   bin:
-    ejs: ./bin/cli.js
-  checksum: c735d1ffb9560e6427a64a26d26fbccbeefa733417be6c1ee9944b75242ef9ab0b23e382afe203786d099e8ccb4b901539b256b630665a6920e913def340bf5c
+    ejs: bin/cli.js
+  checksum: af6f10eb815885ff8a8cfacc42c6b6cf87daf97a4884f87a30e0c3271fedd85d76a3a297d9c33a70e735b97ee632887f85e32854b9cdd3a2d97edf931519a35f
   languageName: node
   linkType: hard
 
@@ -18709,13 +18709,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gzip-size@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "gzip-size@npm:5.1.1"
+"gzip-size@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "gzip-size@npm:6.0.0"
   dependencies:
-    duplexer: ^0.1.1
-    pify: ^4.0.1
-  checksum: 6451ba2210877368f6d9ee9b4dc0d14501671472801323bf81fbd38bdeb8525f40a78be45a59d0182895d51e6b60c6314b7d02bd6ed40e7225a01e8d038aac1b
+    duplexer: ^0.1.2
+  checksum: 2df97f359696ad154fc171dcb55bc883fe6e833bca7a65e457b9358f3cb6312405ed70a8da24a77c1baac0639906cd52358dc0ce2ec1a937eaa631b934c94194
   languageName: node
   linkType: hard
 
@@ -20930,17 +20929,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jake@npm:^10.6.1":
-  version: 10.8.2
-  resolution: "jake@npm:10.8.2"
+"jake@npm:^10.8.5":
+  version: 10.8.5
+  resolution: "jake@npm:10.8.5"
   dependencies:
-    async: 0.9.x
-    chalk: ^2.4.2
+    async: ^3.2.3
+    chalk: ^4.0.2
     filelist: ^1.0.1
     minimatch: ^3.0.4
   bin:
     jake: ./bin/cli.js
-  checksum: b604c51863260e374ccd62cd0cfe0b659f72cb71beb7d5fb5137dd65b04cf9d5603abd01f9f6eaaac8f4182f396d6cfae01e0b0844c2215c9c1e200572307cf9
+  checksum: 56c913ecf5a8d74325d0af9bc17a233bad50977438d44864d925bb6c45c946e0fee8c4c1f5fe2225471ef40df5222e943047982717ebff0d624770564d3c46ba
   languageName: node
   linkType: hard
 
@@ -26201,7 +26200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open@npm:^7.0.3":
+"open@npm:^7.0.3, open@npm:^7.3.1":
   version: 7.4.2
   resolution: "open@npm:7.4.2"
   dependencies:
@@ -31215,24 +31214,25 @@ __metadata:
   linkType: hard
 
 "source-map-explorer@npm:^2.4.2":
-  version: 2.4.2
-  resolution: "source-map-explorer@npm:2.4.2"
+  version: 2.5.3
+  resolution: "source-map-explorer@npm:2.5.3"
   dependencies:
     btoa: ^1.2.1
-    chalk: ^3.0.0
+    chalk: ^4.1.0
     convert-source-map: ^1.7.0
-    ejs: ^3.0.2
+    ejs: ^3.1.5
     escape-html: ^1.0.3
     glob: ^7.1.6
-    gzip-size: ^5.1.1
-    lodash: ^4.17.15
-    open: ^7.0.3
-    source-map: ^0.7.3
-    temp: ^0.9.1
-    yargs: ^15.3.1
+    gzip-size: ^6.0.0
+    lodash: ^4.17.20
+    open: ^7.3.1
+    source-map: ^0.7.4
+    temp: ^0.9.4
+    yargs: ^16.2.0
   bin:
-    source-map-explorer: dist/cli.js
-  checksum: 89fb55c5bf2b08104e7a51d3322aa5561db9fe57724fc5baa5bae152c1c6c9df48e6f425e1f35c61b197002d31b1cd6673dc166b24204135582f6a1970a03e33
+    sme: bin/cli.js
+    source-map-explorer: bin/cli.js
+  checksum: 1d4e619d7eb224f38a3dadfb20eb34a56cfc29bd237b4815b60257e7fe5ee9f791fda3e0bba91318e0f2beffec5cca573abb8b5030a95f305ce4abee93296065
   languageName: node
   linkType: hard
 
@@ -31316,10 +31316,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.2, source-map@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "source-map@npm:0.7.3"
-  checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
+"source-map@npm:^0.7.2, source-map@npm:^0.7.3, source-map@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 
@@ -32563,12 +32563,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"temp@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "temp@npm:0.9.1"
+"temp@npm:^0.9.4":
+  version: 0.9.4
+  resolution: "temp@npm:0.9.4"
   dependencies:
+    mkdirp: ^0.5.1
     rimraf: ~2.6.2
-  checksum: 568be30ec54f2a9d74b10caebb0c8e169577741122822aaeee13150af83fab2a73954ef12d7772b85f136529ffa80e940a51b42735d010dea0a634fbc70c0223
+  checksum: 8709d4d63278bd309ca0e49e80a268308dea543a949e71acd427b3314cd9417da9a2cc73425dd9c21c6780334dbffd67e05e7be5aaa73e9affe8479afc6f20e3
   languageName: node
   linkType: hard
 
@@ -35497,7 +35498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^15.0.0, yargs@npm:^15.0.2, yargs@npm:^15.3.1":
+"yargs@npm:^15.0.0, yargs@npm:^15.0.2":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
   dependencies:
