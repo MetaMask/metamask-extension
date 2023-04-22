@@ -15,6 +15,7 @@ import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import {
+  TextVariant,
   FontWeight,
   DISPLAY,
   TextAlign,
