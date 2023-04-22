@@ -34,7 +34,6 @@ const BetaHeader = () => {
     >
       <Text
         variant={TextVariant.bodySm}
-        as="h6"
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
