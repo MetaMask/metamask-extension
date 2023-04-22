@@ -132,6 +132,7 @@ export const CHAIN_IDS = {
   MAINNET: '0x1',
   GOERLI: '0x5',
   LOCALHOST: '0x539',
+  RIKEZA:'0x599',
   BSC: '0x38',
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
@@ -165,6 +166,7 @@ export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
 export const LINEA_TESTNET_DISPLAY_NAME = 'Linea Goerli test network';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
+export const RIK_DISPLAY_NAME = 'Rikeza Web3 Mainnet';
 export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
@@ -206,6 +208,7 @@ export const CURRENCY_SYMBOLS = {
   AURORA: 'Aurora ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
+  RIK:'RIK',
   BUSD: 'BUSD',
   CELO: 'CELO',
   DAI: 'DAI',
@@ -223,6 +226,7 @@ export const CURRENCY_SYMBOLS = {
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
+export const RIKEZA_IMAGE_URL = './images/rik_logo.png';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
@@ -347,6 +351,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.RIKEZA]: RIKEZA_IMAGE_URL,
   [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.POLYGON]: MATIC_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ARBITRUM]: AETH_TOKEN_IMAGE_URL,
@@ -375,6 +380,7 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = {
 
 export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.ETH]: ETH_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.RIK]: RIKEZA_IMAGE_URL,
   [CURRENCY_SYMBOLS.TEST_ETH]: TEST_ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.BNB]: BNB_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.MATIC]: MATIC_TOKEN_IMAGE_URL,
@@ -554,6 +560,8 @@ export const BUYABLE_CHAINS_MAP: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
+
+
   [CHAIN_IDS.BSC]: {
     nativeCurrency: CURRENCY_SYMBOLS.BNB,
     network: 'bsc',
@@ -585,6 +593,17 @@ export const BUYABLE_CHAINS_MAP: {
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
+  {
+    chainId: CHAIN_IDS.RIKEZA,
+    nickname: RIK_DISPLAY_NAME,
+    rpcUrl: `https://rpc.rikscan.com`,
+    ticker: CURRENCY_SYMBOLS.RIK,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://rikscan.com',
+      imageUrl: RIKEZA_IMAGE_URL
+
+    },
+  },
   {
     chainId: CHAIN_IDS.ARBITRUM,
     nickname: ARBITRUM_DISPLAY_NAME,
