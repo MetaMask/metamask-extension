@@ -9,10 +9,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
-import { Text } from '../../component-library';
+  IconName,
+  IconSize,
+  Text
+} from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
