@@ -4,12 +4,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
 import Typography from '../typography';
-import { ButtonLink } from '../../component-library';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { ButtonLink, Icon, IconName, IconSize } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -86,7 +81,7 @@ export default function ReviewSpendingCap({
                         color={TextColor.errorDefault}
                       >
                         <Icon
-                          name={ICON_NAMES.WARNING}
+                          name={IconName.Warning}
                           style={{ verticalAlign: 'middle' }}
                         />
                         {t('beCareful')}
@@ -100,16 +95,16 @@ export default function ReviewSpendingCap({
               {valueIsGreaterThanBalance && (
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__warning-icon"
-                  name={ICON_NAMES.DANGER}
+                  name={IconName.Danger}
                   color={IconColor.errorDefault}
-                  size={ICON_SIZES.SM}
+                  size={IconSize.Sm}
                   style={{ 'vertical-align': 'middle' }}
                 />
               )}
               {Number(tokenValue) === 0 && (
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__question-icon"
-                  name={ICON_NAMES.QUESTION}
+                  name={IconName.Question}
                   color={IconColor.iconDefault}
                 />
               )}
