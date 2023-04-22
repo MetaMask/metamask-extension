@@ -31,7 +31,7 @@ const NetworkStatistics = () => {
     <div className="network-statistics">
       <Text
         color={TextColor.textAlternative}
-        fontWeight={FONT_WEIGHT.BOLD}
+        fontWeight={FontWeight.Bold}
         marginTop={3}
         marginBottom={3}
         variant={TextVariant.bodyXs}
