@@ -35,7 +35,7 @@ export default {
       control: 'boolean',
     },
     onSubmit: {
-      action: 'submit SelectQuotePopover',
+      action: 'onSubmit',
     },
   },
   args: {
