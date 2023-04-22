@@ -72,6 +72,7 @@ const scuttlingConfigBase = {
     Date: '',
     JSON: '',
     encodeURIComponent: '',
+    console: '',
     crypto: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
@@ -888,17 +889,6 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         { extensions },
       ],
-      // Transpile libraries that use ES2020 unsupported by Chrome v78
-      [
-        babelify,
-        {
-          only: [
-            './**/node_modules/@ethereumjs/util',
-            './**/node_modules/superstruct',
-          ],
-          global: true,
-        },
-      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
@@ -1138,8 +1128,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
     PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
-    PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
-    PUBNUB_SUB_KEY: config.PUBNUB_SUB_KEY || '',
     SEGMENT_HOST: config.SEGMENT_HOST,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
     SENTRY_DSN: config.SENTRY_DSN,

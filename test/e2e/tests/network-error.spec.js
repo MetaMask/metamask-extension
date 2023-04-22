@@ -8,6 +8,7 @@ describe('Gas API fallback', function () {
       .forGet(
         'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
       )
+      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,

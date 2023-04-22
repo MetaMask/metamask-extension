@@ -13,7 +13,7 @@ import { AvatarNetwork } from './avatar-network';
 describe('AvatarNetwork', () => {
   const args = {
     name: 'ethereum',
-    src: './images/eth_logo.svg',
+    src: './images/eth_logo.png',
     showHalo: false,
   };
 
@@ -122,5 +122,11 @@ describe('AvatarNetwork', () => {
     expect(getByTestId(BorderColor.errorDefault)).toHaveClass(
       `box--border-color-${BorderColor.errorDefault}`,
     );
+  });
+  it('should forward a ref to the root html element', () => {
+    const ref = React.createRef();
+    render(<AvatarNetwork ref={ref} />);
+    expect(ref.current).not.toBeNull();
+    expect(ref.current.nodeName).toBe('DIV');
   });
 });
