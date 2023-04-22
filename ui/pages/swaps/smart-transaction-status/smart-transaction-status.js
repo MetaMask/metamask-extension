@@ -3,7 +3,6 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
-
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -32,15 +31,14 @@ import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
-import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import UrlIcon from '../../../components/ui/url-icon';
 import {
   BLOCK_SIZES,
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   DISPLAY,
-  FONT_WEIGHT,
+  FontWeight,
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -60,6 +58,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { Text } from '../../../components/component-library';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -330,21 +329,23 @@ export default function SmartTransactionStatusPage() {
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H6}
+            variant={TextVariant.bodySm}
+            as="h6"
           >
             {`${fetchParams?.value && Number(fetchParams.value).toFixed(5)} `}
-          </Typography>
-          <Typography
+          </Text>
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="h6"
+            fontWeight={FontWeight.Bold}
             boxProps={{ marginLeft: 1, marginRight: 2 }}
           >
             {fetchParamsSourceTokenInfo.symbol ??
               latestSmartTransaction?.sourceTokenSymbol}
-          </Typography>
+          </Text>
           {fetchParamsSourceTokenInfo.iconUrl ? (
             <UrlIcon
               url={fetchParamsSourceTokenInfo.iconUrl}
@@ -370,22 +371,24 @@ export default function SmartTransactionStatusPage() {
               fallbackClassName="main-quote-summary__icon-fallback"
             />
           ) : null}
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H6}
+            variant={TextVariant.bodySm}
+            as="h6"
             boxProps={{ marginLeft: 2 }}
           >
             {`~${destinationValue && Number(destinationValue).toFixed(5)} `}
-          </Typography>
-          <Typography
+          </Text>
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="h6"
+            fontWeight={FontWeight.Bold}
             boxProps={{ marginLeft: 1 }}
           >
             {fetchParamsDestinationTokenInfo.symbol ??
               latestSmartTransaction?.destinationTokenSymbol}
-          </Typography>
+          </Text>
         </Box>
         <Box
           marginTop={3}
@@ -405,31 +408,34 @@ export default function SmartTransactionStatusPage() {
             alignItems={AlignItems.center}
           >
             <TimerIcon />
-            <Typography
+            <Text
               color={TextColor.textAlternative}
-              variant={TypographyVariant.H6}
+              variant={TextVariant.bodySm}
+              as="h6"
               boxProps={{ marginLeft: 1 }}
             >
               {`${t('stxSwapCompleteIn')} `}
-            </Typography>
-            <Typography
+            </Text>
+            <Text
               color={TextColor.textAlternative}
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
               boxProps={{ marginLeft: 1 }}
               className="smart-transaction-status__remaining-time"
             >
               {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
-            </Typography>
+            </Text>
           </Box>
         )}
-        <Typography
+        <Text
           color={TextColor.textDefault}
-          variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TextVariant.headingSm}
+          as="h4"
+          fontWeight={FontWeight.Bold}
         >
           {headerText}
-        </Typography>
+        </Text>
         {isSmartTransactionPending && (
           <div className="smart-transaction-status__loading-bar-container">
             <div
@@ -445,13 +451,14 @@ export default function SmartTransactionStatusPage() {
           </div>
         )}
         {description && (
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             boxProps={{ ...(blockExplorerUrl && { margin: [1, 0, 0] }) }}
             color={TextColor.textAlternative}
           >
             {description}
-          </Typography>
+          </Text>
         )}
         {blockExplorerUrl && (
           <ViewOnBlockExplorer
@@ -464,13 +471,14 @@ export default function SmartTransactionStatusPage() {
           className="smart-transaction-status__background-animation smart-transaction-status__background-animation--bottom"
         />
         {subDescription && (
-          <Typography
-            variant={TypographyVariant.H7}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             boxProps={{ marginTop: 8 }}
             color={TextColor.textAlternative}
           >
             {subDescription}
-          </Typography>
+          </Text>
         )}
       </Box>
       {showCancelSwapLink &&
