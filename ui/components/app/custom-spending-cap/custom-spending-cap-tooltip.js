@@ -7,12 +7,7 @@ import {
   DISPLAY,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
-import { Text } from '../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
