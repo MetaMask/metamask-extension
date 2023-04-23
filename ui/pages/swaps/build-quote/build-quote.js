@@ -22,12 +22,11 @@ import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
 import {
-  TypographyVariant,
+  TextVariant,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -112,6 +111,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
+import { Text } from '../../../components/component-library';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -593,7 +593,7 @@ export default function BuildQuote({
                   {t('enableSmartTransactions')}
                 </Button>
                 <Box marginTop={1}>
-                  <Typography variant={TypographyVariant.H6}>
+                  <Text variant={TextVariant.bodySm} as="h6">
                     <Button
                       type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
@@ -601,7 +601,7 @@ export default function BuildQuote({
                     >
                       {t('noThanksVariant2')}
                     </Button>
-                  </Typography>
+                  </Text>
                 </Box>
               </>
             }
@@ -627,44 +627,41 @@ export default function BuildQuote({
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TypographyVariant.H7} marginTop={0}>
+              <Text variant={TextVariant.bodySm} as="h6" marginTop={0}>
                 {t('stxDescription')}
-              </Typography>
-              <Typography
-                as="ul"
-                variant={TypographyVariant.H7}
-                fontWeight={FONT_WEIGHT.BOLD}
-                marginTop={3}
-              >
-                <li>{t('stxBenefit1')}</li>
-                <li>{t('stxBenefit2')}</li>
-                <li>{t('stxBenefit3')}</li>
-                <li>
-                  {t('stxBenefit4')}
-                  <Typography
-                    as="span"
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    variant={TypographyVariant.H7}
-                  >
-                    {' *'}
-                  </Typography>
-                </li>
-              </Typography>
-              <Typography
-                variant={TypographyVariant.H8}
+              </Text>
+              <Text as="ul" variant={TextVariant.bodySm} marginTop={3}>
+                <strong>
+                  <li>{t('stxBenefit1')}</li>
+                  <li>{t('stxBenefit2')}</li>
+                  <li>{t('stxBenefit3')}</li>
+                  <li>
+                    {t('stxBenefit4')}
+                    <Text
+                      as="span"
+                      fontWeight={FontWeight.Normal}
+                      variant={TextVariant.bodySm}
+                    >
+                      {' *'}
+                    </Text>
+                  </li>
+                </strong>
+              </Text>
+              <Text
+                variant={TextVariant.bodyXs}
+                as="h6"
                 color={TextColor.textAlternative}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
-                <Typography
+                <Text
                   as="span"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TypographyVariant.H8}
+                  variant={TextVariant.bodyXs}
                   color={TextColor.textAlternative}
                 >
-                  {t('stxYouCanOptOut')}&nbsp;
-                </Typography>
-              </Typography>
+                  <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
+                </Text>
+              </Text>
             </Box>
           </Popover>
         )}
