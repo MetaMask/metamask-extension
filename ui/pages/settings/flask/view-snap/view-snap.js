@@ -6,11 +6,10 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/rpc-methods';
 import Button from '../../../../components/ui/button';
-import Typography from '../../../../components/ui/typography';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  TypographyVariant,
-  TEXT_ALIGN,
+  TextVariant,
+  TextAlign,
   FRACTIONS,
   TextColor,
   BLOCK_SIZES,
@@ -38,6 +37,7 @@ import {
 } from '../../../../selectors';
 import { formatDate } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
+import { Text } from '../../../../components/component-library';
 
 function ViewSnap() {
   const t = useI18nContext();
@@ -114,13 +114,14 @@ function ViewSnap() {
     <div className="view-snap">
       <div className="settings-page__content-row">
         <div className="view-snap__subheader">
-          <Typography
+          <Text
             className="view-snap__title"
-            variant={TypographyVariant.H3}
-            boxProps={{ textAlign: TEXT_ALIGN.CENTER }}
+            variant={TextVariant.headingMd}
+            as="h3"
+            boxProps={{ textAlign: TextAlign.Center }}
           >
             {snap.manifest.proposedName}
-          </Typography>
+          </Text>
           <Box className="view-snap__pill-toggle-container">
             <Box className="view-snap__pill-container" paddingLeft={2}>
               <SnapAuthorship snapId={snap.id} />
@@ -144,43 +145,46 @@ function ViewSnap() {
           padding={2}
         >
           {firstInstall && (
-            <Typography variant={TypographyVariant.H8}>
+            <Text variant={TextVariant.bodyXs} as="h6">
               {t('snapAdded', [
                 formatDate(firstInstall.date, 'MMMM d, y'),
                 firstInstall.origin,
               ])}
-            </Typography>
+            </Text>
           )}
-          <Typography
+          <Text
             className="view-snap__version"
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
           >
             {t('shorthandVersion', [snap.version])}
-          </Typography>
+          </Text>
         </Box>
         <Box
           className="view-snap__content-container"
           width={FRACTIONS.SEVEN_TWELFTHS}
         >
           <div className="view-snap__section">
-            <Typography
-              variant={TypographyVariant.H6}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={TextColor.textAlternative}
               boxProps={{ marginTop: 5 }}
             >
               {snap.manifest.description}
-            </Typography>
+            </Text>
           </div>
           <div className="view-snap__section view-snap__permission-list">
-            <Typography variant={TypographyVariant.H4}>
+            <Text variant={TextVariant.headingSm} as="h4">
               {t('permissions')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H6}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={TextColor.textAlternative}
             >
               {t('snapAccess', [snap.manifest.proposedName])}
-            </Typography>
+            </Text>
             <Box width={BLOCK_SIZES.FULL}>
               <SnapPermissionsList
                 permissions={permissions ?? {}}
@@ -190,15 +194,16 @@ function ViewSnap() {
           </div>
           <div className="view-snap__section">
             <Box width="11/12">
-              <Typography variant={TypographyVariant.H4}>
+              <Text variant={TextVariant.headingSm} as="h4">
                 {t('connectedSites')}
-              </Typography>
-              <Typography
-                variant={TypographyVariant.H6}
+              </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
               >
                 {t('connectedSnapSites', [snap.manifest.proposedName])}
-              </Typography>
+              </Text>
               <ConnectedSitesList
                 connectedSubjects={connectedSubjects}
                 onDisconnect={(origin) => {
@@ -208,16 +213,17 @@ function ViewSnap() {
             </Box>
           </div>
           <div className="view-snap__section">
-            <Typography variant={TypographyVariant.H4}>
+            <Text variant={TextVariant.headingSm} as="h4">
               {t('removeSnap')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H6}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={TextColor.textAlternative}
               boxProps={{ paddingBottom: 3 }}
             >
               {t('removeSnapDescription')}
-            </Typography>
+            </Text>
             <Button
               className="view-snap__remove-button"
               type="danger"
