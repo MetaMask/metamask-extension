@@ -21,12 +21,10 @@ import {
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import {
   BLOCK_SIZES,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
   JustifyContent,
   DISPLAY,
   TextColor,
@@ -34,6 +32,7 @@ import {
 import SwapsFooter from '../swaps-footer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { Text } from '../../../components/component-library';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
@@ -94,57 +93,40 @@ export default function AwaitingSignatures() {
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
         </Box>
-        <Typography
+        <Text
           color={TextColor.textDefault}
-          variant={TypographyVariant.H3}
+          variant={TextVariant.headingMd}
+          as="h3"
         >
           {headerText}
-        </Typography>
+        </Text>
         {needsTwoConfirmations && (
           <>
-            <Typography
-              variant={TypographyVariant.paragraph}
-              boxProps={{ marginTop: 2 }}
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('swapToConfirmWithHwWallet')}
-            </Typography>
+            <Text variant={TextVariant.bodyMd} boxProps={{ marginTop: 2 }}>
+              <strong>{t('swapToConfirmWithHwWallet')}</strong>
+            </Text>
             <ul className="awaiting-signatures__steps">
               <li>
                 <SwapStepIcon stepNumber={1} />
                 {t('swapAllowSwappingOf', [
-                  <Typography
-                    as="span"
-                    fontWeight={FONT_WEIGHT.BOLD}
-                    key="allowToken"
-                  >
-                    {destinationTokenInfo?.symbol}
-                  </Typography>,
+                  <Text as="span" key="allowToken">
+                    <strong>{destinationTokenInfo?.symbol}</strong>
+                  </Text>,
                 ])}
               </li>
               <li>
                 <SwapStepIcon stepNumber={2} />
                 {t('swapFromTo', [
-                  <Typography
-                    as="span"
-                    fontWeight={FONT_WEIGHT.BOLD}
-                    key="tokenFrom"
-                  >
-                    {sourceTokenInfo?.symbol}
-                  </Typography>,
-                  <Typography
-                    as="span"
-                    fontWeight={FONT_WEIGHT.BOLD}
-                    key="tokenTo"
-                  >
-                    {destinationTokenInfo?.symbol}
-                  </Typography>,
+                  <Text as="span" key="tokenFrom">
+                    <strong>{sourceTokenInfo?.symbol}</strong>
+                  </Text>,
+                  <Text as="span" key="tokenTo">
+                    <strong>{destinationTokenInfo?.symbol}</strong>
+                  </Text>,
                 ])}
               </li>
             </ul>
-            <Typography variant={TypographyVariant.paragraph}>
-              {t('swapGasFeesSplit')}
-            </Typography>
+            <Text variant={TextVariant.bodyMd}>{t('swapGasFeesSplit')}</Text>
           </>
         )}
       </Box>
