@@ -62,3 +62,7 @@ export function getIsCustodianSupportedChain(state) {
       )
     : true;
 }
+
+export function getInteractiveReplacementToken(state) {
+  return state.metamask.interactiveReplacementToken || {};
+}
