@@ -20,7 +20,7 @@ const through = require('through2');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
-const Sqrl = require('squirrelly');
+const Eta = require('eta');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
@@ -1160,7 +1160,7 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, {
+  const htmlOutput = Eta.render(htmlTemplate, {
     jsBundles,
     applyLavaMoat,
     isMMI,
