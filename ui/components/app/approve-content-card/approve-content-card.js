@@ -10,9 +10,9 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -132,7 +132,7 @@ export default function ApproveContentCard({
                   >
                     <Text
                       variant={TextVariant.bodySm}
-                      fontWeight={FONT_WEIGHT.NORMAL}
+                      fontWeight={FontWeight.Normal}
                       color={TextColor.textMuted}
                       as="h6"
                     >
@@ -162,27 +162,28 @@ export default function ApproveContentCard({
                     display={DISPLAY.FLEX}
                     flexDirection={FLEX_DIRECTION.COLUMN}
                     alignItems={AlignItems.flexEnd}
-                    textAlign={TEXT_ALIGN.RIGHT}
+                    textAlign={TextAlign.Right}
                   >
                     {useCurrencyRateCheck && (
                       <Box>
                         <Text
                           variant={TextVariant.headingSm}
-                          fontWeight={FONT_WEIGHT.BOLD}
                           color={TextColor.TEXT_DEFAULT}
                           as="h4"
                         >
-                          {formatCurrency(
-                            fiatTransactionTotal,
-                            currentCurrency,
-                          )}
+                          <strong>
+                            {formatCurrency(
+                              fiatTransactionTotal,
+                              currentCurrency,
+                            )}
+                          </strong>
                         </Text>
                       </Box>
                     )}
                     <Box>
                       <Text
                         variant={TextVariant.bodySm}
-                        fontWeight={FONT_WEIGHT.NORMAL}
+                        fontWeight={FontWeight.Normal}
                         color={TextColor.textMuted}
                         as="h6"
                       >
