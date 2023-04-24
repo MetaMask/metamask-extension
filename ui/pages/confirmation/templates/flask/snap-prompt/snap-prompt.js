@@ -7,6 +7,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
     snapName,
     requestData: { content, placeholder },
   } = pendingApproval;
+  const elementKeyIndex = { value: 0 };
 
   return {
     content: [
@@ -26,7 +27,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
           },
           children: [
             // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
-            mapToTemplate(content),
+            mapToTemplate(content, elementKeyIndex),
             {
               element: 'div',
               key: 'snap-prompt-container',
