@@ -80,6 +80,8 @@ function runInChildProcess(
       },
     );
 
+    childProcess.on('error', (error) => logError(error));
+
     // forward logs to main process
     childProcess.stdout.on('data', (data) =>
     process.stdout.write(`${taskName}: ${data}`),
