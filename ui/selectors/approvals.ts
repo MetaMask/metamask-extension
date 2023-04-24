@@ -3,7 +3,10 @@ import { ApprovalType, Json } from '@metamask/controller-utils';
 
 type ApprovalsMetaMaskState = {
   metamask: {
-    pendingApprovals: ApprovalRequest<Record<string, Json> | null>[];
+    pendingApprovals: Record<
+      string,
+      ApprovalRequest<Record<string, Json> | null>
+    >;
   };
 };
 
