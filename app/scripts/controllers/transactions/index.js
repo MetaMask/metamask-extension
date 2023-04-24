@@ -802,8 +802,8 @@ export default class TransactionController extends EventEmitter {
         this.txStateManager.getTransactionWithActionId(actionId);
       if (existingTxMeta) {
         this.emit('newUnapprovedTx', existingTxMeta);
-        this._requestApproval(existingTxMeta);
         existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
+        this._requestApproval(existingTxMeta);
         return existingTxMeta;
       }
     }
@@ -875,9 +875,9 @@ export default class TransactionController extends EventEmitter {
 
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
-    this._requestApproval(txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
+    this._requestApproval(txMeta);
 
     return txMeta;
   }

@@ -13,32 +13,38 @@ import {
   AvatarAccountSize,
 } from './avatar-account.types';
 
-export const AvatarAccount = ({
-  size = AvatarAccountSize.Md,
-  address,
-  className,
-  variant = AvatarAccountVariant.Jazzicon,
-  ...props
-}) => (
-  <AvatarBase
-    size={size}
-    className={classnames('mm-avatar-account', className)}
-    {...props}
-  >
-    {variant === AvatarAccountVariant.Jazzicon ? (
-      <Jazzicon
-        className={classnames('mm-avatar-account__jazzicon')}
-        address={address}
-        diameter={AvatarAccountDiameter[size]}
-      />
-    ) : (
-      <BlockieIdenticon
-        address={address}
-        diameter={AvatarAccountDiameter[size]}
-        borderRadius="50%"
-      />
-    )}
-  </AvatarBase>
+export const AvatarAccount = React.forwardRef(
+  (
+    {
+      size = AvatarAccountSize.Md,
+      address,
+      className,
+      variant = AvatarAccountVariant.Jazzicon,
+      ...props
+    },
+    ref,
+  ) => (
+    <AvatarBase
+      ref={ref}
+      size={size}
+      className={classnames('mm-avatar-account', className)}
+      {...props}
+    >
+      {variant === AvatarAccountVariant.Jazzicon ? (
+        <Jazzicon
+          className={classnames('mm-avatar-account__jazzicon')}
+          address={address}
+          diameter={AvatarAccountDiameter[size]}
+        />
+      ) : (
+        <BlockieIdenticon
+          address={address}
+          diameter={AvatarAccountDiameter[size]}
+          borderRadius="50%"
+        />
+      )}
+    </AvatarBase>
+  ),
 );
 
 AvatarAccount.propTypes = {
@@ -66,3 +72,5 @@ AvatarAccount.propTypes = {
    */
   ...Box.propTypes,
 };
+
+AvatarAccount.displayName = 'AvatarAccount';
