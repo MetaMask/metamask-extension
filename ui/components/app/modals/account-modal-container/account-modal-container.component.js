@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import Identicon from '../../../ui/identicon';
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
@@ -8,10 +9,14 @@ import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  JustifyContent,
-  Size,
+  // JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import { AvatarAccount } from '../../../component-library';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  PopoverHeader,
+} from '../../../component-library';
 
 export default function AccountModalContainer(props, context) {
   const {
@@ -23,10 +28,11 @@ export default function AccountModalContainer(props, context) {
     isAccountDetailsModal,
     children,
   } = props;
+  const useBlockie = useSelector((state) => state.metamask.useBlockie);
 
   return process.env.MULTICHAIN && isAccountDetailsModal ? (
     <Popover
-      className="multichain-account-details__popover"
+      className="multichain-account-details"
       headerProps={{
         padding: 0,
         paddingRight: 4,
@@ -34,16 +40,34 @@ export default function AccountModalContainer(props, context) {
         paddingLeft: 4,
       }}
       title={
-        <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-        >
-          <AvatarAccount address={selectedIdentity.address} size={Size.LG} />
-        </Box>
+        // <Box
+        //   display={DISPLAY.FLEX}
+        //   justifyContent={JustifyContent.center}
+        //   marginLeft={6}
+        // >
+        //   <AvatarAccount
+        //     variant={
+        //       useBlockie
+        //         ? AvatarAccountVariant.Blockies
+        //         : AvatarAccountVariant.Jazzicon
+        //     }
+        //     address={selectedIdentity.address}
+        //     size={AvatarAccountSize.Lg}
+        //   />
+        // </Box>
+        <PopoverHeader onClose={hideModal}>
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            address={selectedIdentity.address}
+            size={AvatarAccountSize.Lg}
+          />
+        </PopoverHeader>
       }
-      onClose={hideModal}
+      // onClose={hideModal}
     >
       <Box
         paddingLeft={4}
@@ -51,7 +75,6 @@ export default function AccountModalContainer(props, context) {
         paddingBottom={4}
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         {children}

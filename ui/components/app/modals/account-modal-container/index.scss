@@ -51,3 +51,10 @@
     margin-bottom: -32px;
   }
 }
+
+.multichain-account-details {
+  & .mm-header-base__children {
+    display: flex;
+    justify-content: center;
+  }
+}
