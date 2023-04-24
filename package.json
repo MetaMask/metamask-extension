@@ -91,7 +91,7 @@
     "test-storybook": "test-storybook -c .storybook",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\"",
     "githooks:install": "husky install",
-    "fitness-functions": "node development/fitness-functions/index.js",
+    "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js"
   },
   "resolutions": {
@@ -255,7 +255,7 @@
     "@metamask/rpc-methods": "^0.32.2",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/slip44": "^2.1.0",
+    "@metamask/slip44": "^3.0.0",
     "@metamask/smart-transactions-controller": "^3.1.0",
     "@metamask/snaps-controllers": "^0.32.2",
     "@metamask/snaps-ui": "^0.32.2",

@@ -1,6 +1,4 @@
-const EXCLUDE_E2E_TESTS_REGEX = '^(?!test/e2e/).*.(js|ts|jsx)$';
-
-function filterDiffByFilePath(diff, regex) {
+function filterDiffByFilePath(diff: string, regex: string): string {
   // split by `diff --git` and remove the first element which is empty
   const diffBlocks = diff.split(`diff --git`).slice(1);
 
@@ -34,7 +32,7 @@ function filterDiffByFilePath(diff, regex) {
   return filteredDiff;
 }
 
-function filterDiffAdditions(diff) {
+function filterDiffLineAdditions(diff: string): string {
   const diffLines = diff.split('\n');
 
   const diffAdditionLines = diffLines.filter((line) => {
@@ -46,10 +44,36 @@ function filterDiffAdditions(diff) {
   return diffAdditionLines.join('/n');
 }
 
-function hasNumberOfCodeBlocksIncreased(diffFragment, codeBlocks) {
+function filterDiffFileCreations(diff: string): string {
+  // split by `diff --git` and remove the first element which is empty
+  const diffBlocks = diff.split(`diff --git`).slice(1);
+
+  const filteredDiff = diffBlocks
+    .map((block) => block.trim())
+    .filter((block) => {
+      const isFileCreationLine =
+        block
+          // get the second line of the block which has the file mode
+          .split('\n')[1]
+          .trim()
+          .substring(0, 13) === 'new file mode';
+
+      return isFileCreationLine;
+    })
+    // prepend `git --diff` to each block
+    .map((block) => `diff --git ${block}`)
+    .join('\n');
+
+  return filteredDiff;
+}
+
+function hasNumberOfCodeBlocksIncreased(
+  diffFragment: string,
+  codeBlocks: string[],
+): { [codeBlock: string]: boolean } {
   const diffLines = diffFragment.split('\n');
 
-  const codeBlockFound = {};
+  const codeBlockFound: { [codeBlock: string]: boolean } = {};
 
   for (const codeBlock of codeBlocks) {
     codeBlockFound[codeBlock] = false;
@@ -65,9 +89,9 @@ function hasNumberOfCodeBlocksIncreased(diffFragment, codeBlocks) {
   return codeBlockFound;
 }
 
-module.exports = {
-  EXCLUDE_E2E_TESTS_REGEX,
+export {
   filterDiffByFilePath,
-  filterDiffAdditions,
+  filterDiffLineAdditions,
+  filterDiffFileCreations,
   hasNumberOfCodeBlocksIncreased,
 };
