@@ -258,7 +258,7 @@
     "@metamask/rpc-methods": "^0.32.2",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/slip44": "^2.1.0",
+    "@metamask/slip44": "^3.0.0",
     "@metamask/smart-transactions-controller": "^3.1.0",
     "@metamask/snaps-controllers": "^0.32.2",
     "@metamask/snaps-ui": "^0.32.2",
