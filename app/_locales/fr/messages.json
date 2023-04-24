@@ -695,10 +695,6 @@
     "message": "$1 n’est connecté à aucun site.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Le snap $1 est connecté à ces sites. Ils ont accès aux autorisations énumérées ci-dessus.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Connexion…"
   },
@@ -1354,18 +1350,6 @@
   "fileImportFail": {
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Voir les détails",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Ajouté le",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "vous devriez désinstaller cette extension",
@@ -3224,10 +3208,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Aucun résultat correspondant trouvé."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Afficher"
   },
@@ -3301,14 +3281,6 @@
   "smartTransaction": {
     "message": "Transaction intelligente"
   },
-  "snapAccess": {
-    "message": "Le snap $1 peut accéder à :",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Ajouté le $1 à partir de $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Ce contenu provient de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3344,9 +3316,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Gérez vos Snaps"
-  },
-  "snapsStatus": {
-    "message": "L’état du Snap dépend de l’activité."
   },
   "snapsToggle": {
     "message": "Un snap ne s’exécute que s’il est activé"
