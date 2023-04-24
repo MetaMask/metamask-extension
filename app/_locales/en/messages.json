@@ -1066,6 +1066,10 @@
   "description": {
     "message": "Description"
   },
+  "descriptionFromSnap": {
+    "message": "Description from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
   },
@@ -1331,7 +1335,7 @@
     "message": "Enable smart transactions"
   },
   "enableSnap": {
-    "message": "Enable snap"
+    "message": "Enable"
   },
   "enableSnapDescription": {
     "message": "Your installed snap will only have access to its permissions and run if it’s enabled."
@@ -1850,6 +1854,13 @@
   },
   "install": {
     "message": "Install"
+  },
+  "installOrigin": {
+    "message": "Install origin"
+  },
+  "installedOn": {
+    "message": "Installed on $1",
+    "description": "$1 is the date when the snap has been installed"
   },
   "institutionalFeatures": {
     "message": "Institutional Features"
@@ -4736,6 +4747,9 @@
   "verifyThisUnconfirmedTokenOn": {
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "version": {
+    "message": "Version"
   },
   "view": {
     "message": "View"
