@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   BUTTON_TYPES,
+  BUTTON_SIZES,
   ButtonIcon,
   IconName,
 } from '../../../component-library';
@@ -79,7 +80,7 @@ const HoldToRevealModal = ({
             <Button
               key="hold-to-reveal-5"
               type={BUTTON_TYPES.LINK}
-              size={Size.auto}
+              size={BUTTON_SIZES.INHERIT}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"
               rel="noopener noreferrer"
