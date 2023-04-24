@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Export PrivateKey Modal should match snapshot 1`] = `
+<div>
+  <div
+    class="export-private-key-modal account-modal"
+    style="border-radius: 4px;"
+  >
+    <div
+      class="account-modal__container"
+    >
+      <div>
+        <div
+          class=""
+        >
+          <div
+            class="identicon"
+            style="height: 64px; width: 64px; border-radius: 32px;"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 64px; height: 64px; display: inline-block; background: rgb(250, 58, 0);"
+            >
+              <svg
+                height="64"
+                width="64"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#18CDF2"
+                  height="64"
+                  transform="translate(-2.09678700758788 -6.608568138920997) rotate(328.9 32 32)"
+                  width="64"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#035E56"
+                  height="64"
+                  transform="translate(-36.59692341766409 21.1849237434972) rotate(176.2 32 32)"
+                  width="64"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F26602"
+                  height="64"
+                  transform="translate(33.335684036447844 -28.410279445994163) rotate(468.9 32 32)"
+                  width="64"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="account-modal__close"
+      />
+      <span
+        class="export-private-key-modal__account-name"
+      >
+        Test Account
+      </span>
+      <div
+        class="ellip-address-wrapper"
+      >
+        0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc
+      </div>
+      <div
+        class="export-private-key-modal__divider"
+      />
+      <span
+        class="export-private-key-modal__body-title"
+      >
+        Show Private Keys
+      </span>
+      <div
+        class="export-private-key-modal__password"
+      >
+        <span
+          class="export-private-key-modal__password-label"
+        >
+          Type your MetaMask password
+        </span>
+        <input
+          class="export-private-key-modal__password-input"
+          data-testid="password-input"
+          type="password"
+        />
+      </div>
+      <div
+        class="export-private-key-modal__password--warning"
+      >
+        Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account.
+      </div>
+      <div
+        class="export-private-key-modal__buttons"
+      >
+        <button
+          class="button btn--rounded btn-secondary btn--large export-private-key-modal__button export-private-key-modal__button--cancel"
+          role="button"
+          tabindex="0"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary btn--large export-private-key-modal__button"
+          disabled=""
+          role="button"
+          tabindex="0"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
