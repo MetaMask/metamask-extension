@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import { getCurrentChainId, getDetectedTokensInCurrentNetwork } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -26,6 +26,8 @@ export const DetectedTokensBanner = ({
     ({ address, symbol }) => `${symbol} - ${address}`,
   );
 
+  const chainId = useSelector(getCurrentChainId);
+
   const handleOnClick = () => {
     actionButtonOnClick();
     trackEvent({
@@ -34,6 +36,7 @@ export const DetectedTokensBanner = ({
       properties: {
         source: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
+        chain_id: chainId,
       },
     });
   };
