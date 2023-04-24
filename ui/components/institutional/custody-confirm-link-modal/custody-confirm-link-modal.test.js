@@ -3,15 +3,23 @@ import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
+import { hideModal } from '../../../store/actions';
 import CustodyConfirmLink from '.';
 
+const mockedSetWaitForConfirmDeepLinkDialog = jest
+  .fn()
+  .mockReturnValue({ type: 'TYPE' });
 jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
-    setWaitForConfirmDeepLinkDialog: jest
-      .fn()
-      .mockReturnValue({ type: 'TYPE' }),
+    setWaitForConfirmDeepLinkDialog: mockedSetWaitForConfirmDeepLinkDialog,
   }),
 }));
+
+jest.mock('../../../store/actions', () => ({
+  hideModal: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+const mockedCustodianName = 'saturn-dev';
 
 describe('Custody Confirm Link', () => {
   const mockStore = {
@@ -59,7 +67,7 @@ describe('Custody Confirm Link', () => {
           address: '0xAddress',
           details: 'details',
           custodyType: 'testCustody - Saturn',
-          custodianName: 'saturn-dev',
+          custodianName: mockedCustodianName,
         },
       },
       provider: {
@@ -69,7 +77,7 @@ describe('Custody Confirm Link', () => {
     },
   };
 
-  const store = configureStore()(mockStore);
+  let store = configureStore()(mockStore);
 
   it('tries to open new tab with deeplink URL', () => {
     global.platform = { openTab: jest.fn() };
@@ -78,11 +86,107 @@ describe('Custody Confirm Link', () => {
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'test-url',
     });
+    expect(mockedSetWaitForConfirmDeepLinkDialog).toHaveBeenCalledWith(false);
+    expect(hideModal).toHaveBeenCalledTimes(1);
   });
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(<CustodyConfirmLink />, store);
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('shows custodian name when iconUrl is undefined', () => {
+    const customMockStore = {
+      ...mockStore,
+      metamask: {
+        ...testData.metamask,
+        ...mockStore.metamask,
+        mmiConfiguration: {
+          custodians: [
+            {
+              refreshTokenUrl:
+                'https://saturn-custody.dev.metamask-institutional.io/oauth/token',
+              name: 'saturn-dev',
+              displayName: 'Saturn Custody',
+              enabled: true,
+              mmiApiUrl: 'https://api.dev.metamask-institutional.io/v1',
+              websocketApiUrl:
+                'wss://websocket.dev.metamask-institutional.io/v1/ws',
+              apiBaseUrl:
+                'https://saturn-custody.dev.metamask-institutional.io/eth',
+              iconUrl: null,
+              isNoteToTraderSupported: true,
+            },
+          ],
+        },
+      },
+    };
+
+    store = configureStore()(customMockStore);
+
+    const { getByText } = renderWithProvider(<CustodyConfirmLink />, store);
+
+    expect(getByText(mockedCustodianName)).toBeVisible();
+  });
+
+  it('shows text that comes from modal state if defined', () => {
+    const mockModalStateText = 'test modal state text';
+    const customMockStore = {
+      ...mockStore,
+      appState: {
+        ...testData.appState,
+        modal: {
+          modalState: {
+            props: {
+              link: {
+                url: 'test-url',
+                ethereum: {
+                  accounts: [{}],
+                },
+                text: mockModalStateText,
+                action: '',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    store = configureStore()(customMockStore);
+
+    const { getByText } = renderWithProvider(<CustodyConfirmLink />, store);
+
+    expect(getByText(mockModalStateText)).toBeVisible();
+  });
+
+  it.only('shows action text that comes from modal state if defined', () => {
+    const mockModalStateActionText = 'test modal state action text';
+    const customMockStore = {
+      ...mockStore,
+      appState: {
+        ...testData.appState,
+        modal: {
+          modalState: {
+            props: {
+              link: {
+                url: 'test-url',
+                ethereum: {
+                  accounts: [{}],
+                },
+                text: '',
+                action: mockModalStateActionText,
+              },
+            },
+          },
+        },
+      },
+    };
+
+    store = configureStore()(customMockStore);
+
+    const { getByText } = renderWithProvider(<CustodyConfirmLink />, store);
+
+    expect(getByText(mockModalStateActionText)).toBeVisible();
   });
 });
