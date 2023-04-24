@@ -1,0 +1,147 @@
+diff --git a/src/size.js b/src/size.js
+index ac4692fdf568592835deff330dd5f56cbe22b991..1134547f22ff0975cfc851e1dfd108a9c90254cb 100644
+--- a/src/size.js
++++ b/src/size.js
+@@ -1,80 +1,100 @@
+-const pump = require('pump')
+-const { createForEachStream, ModuleGroup } = require('./util')
++const pump = require("pump");
++const { createForEachStream, ModuleGroup } = require("./util");
+ 
+-module.exports = { groupBySize }
++module.exports = { groupBySize };
+ 
+ // split each module group into as many module groups as it
+ // requires to stay under the sizeLimit
+-function groupBySize ({ sizeLimit = 200e3, groupingMap = new Map() } = {}) {
++function groupBySize({ sizeLimit = 200e3, groupingMap = new Map() } = {}) {
+   const streamOfModuleGroups = createForEachStream({
+     onEach: (moduleGroup) => {
+-      handleModuleGroup(moduleGroup, sizeLimit, streamOfModuleGroups, groupingMap)
+-    }
+-  })
+-  return streamOfModuleGroups
++      handleModuleGroup(
++        moduleGroup,
++        sizeLimit,
++        streamOfModuleGroups,
++        groupingMap
++      );
++    },
++  });
++  return streamOfModuleGroups;
+ }
+ 
+-function handleModuleGroup (parentGroup, sizeLimit, streamOfModuleGroups, groupingMap) {
+-  let subgroupIndex = 0
+-  let currentSubgroup = createModuleGroup()
+-  let currentSize = 0
+-  const entryModules = []
++function handleModuleGroup(
++  parentGroup,
++  sizeLimit,
++  streamOfModuleGroups,
++  groupingMap
++) {
++  let subgroupIndex = 0;
++  let openSubgroups = [{ group: createModuleGroup(), size: 0 }];
++  const entryModules = [];
+ 
+   pump(
+     parentGroup.stream,
+     createForEachStream({
+       onEach: (moduleData) => addNextModule(moduleData),
+-      onEnd: flushEntryModules
++      onEnd: flushEntryModules,
+     })
+-  )
++  );
++
++  function calculateModuleSize(moduleData) {
++    const source = moduleData.source;
++    // Heuristic, we assume minification at least halves the module size.
++    return Math.floor(source.length / 2);
++  }
+ 
+-  function addNextModule (moduleData, allowEntry = false) {
++  function addNextModule(moduleData, allowEntry = false) {
+     // entry modules must appear in the last group to ensure their deps are defined first
+     if (moduleData.entry && !allowEntry) {
+-      entryModules.push(moduleData)
+-      return
++      entryModules.push(moduleData);
++      return;
+     }
++    const moduleSize = calculateModuleSize(moduleData);
+     // if too big for current subgroup, prepare next subgroup
+     // if too big but current group is empty, dont go to next subgroup yet
+-    if (currentSize !== 0 && (currentSize + moduleData.source.length) >= sizeLimit) {
+-      nextSubgroup()
++    const potentialSubgroup = openSubgroups.find(
++      (g) => g.size + moduleSize < sizeLimit
++    );
++    let subgroup = potentialSubgroup;
++    if (!potentialSubgroup) {
++      subgroup = nextSubgroup();
+     }
+     // add to current subgroup
+-    currentSize += moduleData.source.length
+-    currentSubgroup.stream.push(moduleData)
++    subgroup.size += moduleSize;
++    subgroup.group.stream.push(moduleData);
+   }
+ 
+-  function createModuleGroup () {
+-    const label = `${parentGroup.label}-${subgroupIndex}`
++  function createModuleGroup() {
++    const label = `${parentGroup.label}-${subgroupIndex}`;
+     if (groupingMap.has(parentGroup.label)) {
+-      groupingMap.get(parentGroup.label).add(label)
++      groupingMap.get(parentGroup.label).add(label);
+     } else {
+-      groupingMap.set(parentGroup.label, new Set([label]))
++      groupingMap.set(parentGroup.label, new Set([label]));
+     }
+-    const moduleGroup = new ModuleGroup({ label, parentGroup })
+-    subgroupIndex++
++    const moduleGroup = new ModuleGroup({ label, parentGroup });
++    subgroupIndex++;
+     // add module group to stream output
+-    streamOfModuleGroups.push(moduleGroup)
+-    return moduleGroup
++    streamOfModuleGroups.push(moduleGroup);
++    return moduleGroup;
+   }
+ 
+-  function nextSubgroup () {
+-    // mark the subgroup as complete
+-    endCurrentSubgroup()
+-    // set the next subgroup
+-    currentSubgroup = createModuleGroup()
+-    currentSize = 0
++  function nextSubgroup() {
++    const subgroup = { group: createModuleGroup(), size: 0 };
++    openSubgroups.push(subgroup);
++    return subgroup;
+   }
+ 
+-  function flushEntryModules () {
++  function flushEntryModules() {
+     for (const moduleData of entryModules) {
+-      addNextModule(moduleData, true)
++      addNextModule(moduleData, true);
+     }
+-    endCurrentSubgroup()
++    endOpenSubgroups();
+   }
+ 
+-  function endCurrentSubgroup () {
+-    // mark the subgroup as complete
+-    currentSubgroup.stream.end()
++  function endOpenSubgroups() {
++    for (subgroup of openSubgroups) {
++      // mark the subgroup as complete
++      subgroup.group.stream.end();
++    }
+   }
+ }
