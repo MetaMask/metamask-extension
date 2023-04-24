@@ -4,24 +4,25 @@ import { hasPendingApprovalsSelector } from './approvals';
 describe('approval selectors', () => {
   const mockedState = {
     metamask: {
-      pendingApprovals: [
-        {
+      pendingApprovalCount: 2,
+      pendingApprovals: {
+        '1': {
           id: '1',
           origin: 'origin',
           time: Date.now(),
           type: ApprovalType.WatchAsset,
-          requestData: null,
+          requestData: {},
           requestState: null,
         },
-        {
+        '2': {
           id: '2',
           origin: 'origin',
           time: Date.now(),
           type: ApprovalType.EthSignTypedData,
-          requestData: null,
+          requestData: {},
           requestState: null,
         },
-      ],
+      },
     },
   };
 
