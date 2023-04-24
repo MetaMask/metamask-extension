@@ -7,11 +7,11 @@ import ActionableMessage from '../../../ui/actionable-message/actionable-message
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import Typography from '../../../ui/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
+import { Text } from '../../../component-library';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -214,7 +214,7 @@ export default class ConfirmPageContainerContent extends Component {
               className="actionable-message--warning"
               message={
                 isBuyableChain ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text variant={TextVariant.bodySm} as="h6" align="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
@@ -232,14 +232,14 @@ export default class ConfirmPageContainerContent extends Component {
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
                     ])}
-                  </Typography>
+                  </Text>
                 ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text variant={TextVariant.bodySm} as="h6" align="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
                     ])}
-                  </Typography>
+                  </Text>
                 )
               }
               useIcon
