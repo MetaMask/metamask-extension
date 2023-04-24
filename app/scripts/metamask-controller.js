@@ -342,6 +342,14 @@ export default class MetamaskController extends EventEmitter {
         }),
       config: { provider: this.provider },
       state: initState.TokensController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'TokensController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -700,10 +708,6 @@ export default class MetamaskController extends EventEmitter {
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
       initState: initState.CachedBalancesController,
-    });
-
-    this.tokensController.hub.on('pendingSuggestedAsset', async () => {
-      await opts.openPopup();
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -2061,6 +2065,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
+      setShowProductTour:
+        appStateController.setShowProductTour.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
