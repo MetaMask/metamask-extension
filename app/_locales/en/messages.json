@@ -1642,6 +1642,12 @@
   "general": {
     "message": "General"
   },
+  "globalTitle": {
+    "message": "Global menu"
+  },
+  "globalTourDescription": {
+    "message": "See your portfolio, connected sites, settings, and more"
+  },
   "goBack": {
     "message": "Go back"
   },
@@ -2402,6 +2408,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noReport": {
+    "message": "No Report"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -2816,6 +2825,9 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
+  "operationFailed": {
+    "message": "Operation Failed"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -3055,6 +3067,12 @@
   "permissions": {
     "message": "Permissions"
   },
+  "permissionsTitle": {
+    "message": "Permissions"
+  },
+  "permissionsTourDescription": {
+    "message": "Find your connected accounts and manage permissions here"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -3236,6 +3254,12 @@
   "replace": {
     "message": "replace"
   },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
+  },
   "requestFailed": {
     "message": "Request failed"
   },
@@ -3365,8 +3389,17 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "riskRating": {
+    "message": "Risk rating"
+  },
+  "riskRatingTooltip": {
+    "message": "The risk rating of the address you are interacting with based on your risk settings"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "runReport": {
+    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3582,6 +3615,9 @@
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
+  "showReport": {
+    "message": "Show report"
+  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -3652,7 +3688,7 @@
     "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below align with your intended actions. Only proceed with authors you trust."
+    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
   },
   "snapInstallWarningCheckPlural": {
     "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
@@ -4282,6 +4318,12 @@
   "switchedTo": {
     "message": "You have switched to"
   },
+  "switcherTitle": {
+    "message": "Network switcher"
+  },
+  "switcherTourDescription": {
+    "message": "Click the icon to switch networks or add a new network"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -4484,6 +4526,10 @@
   "transactionErrored": {
     "message": "Transaction encountered an error."
   },
+  "transactionFailed": {
+    "message": "Transaction Failed"
+  },
+
   "transactionFee": {
     "message": "Transaction fee"
   },

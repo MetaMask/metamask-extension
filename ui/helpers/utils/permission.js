@@ -367,7 +367,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: t('permission_ethereumProvider'),
     description: t('permission_ethereumProviderDescription'),
     leftIcon: ICON_NAMES.ETHEREUM,
-    weight: 1,
+    weight: 2,
     id: 'ethereum-provider-access',
     message: t('ethereumProviderAccess', [targetSubjectMetadata?.origin]),
   }),
