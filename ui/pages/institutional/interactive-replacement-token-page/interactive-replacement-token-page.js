@@ -22,9 +22,9 @@ import {
   Text,
   Label,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
   ButtonLink,
+  IconName,
+  IconSize,
 } from '../../../components/component-library';
 import {
   Color,
@@ -266,8 +266,8 @@ export default function InteractiveReplacementTokenPage({ history }) {
                         >
                           {shortenAddress(account.address)}
                           <Icon
-                            name={ICON_NAMES.EXPORT}
-                            size={ICON_SIZES.SM}
+                            name={IconName.Export}
+                            size={IconSize.Sm}
                             color={Color.primaryDefault}
                             marginLeft={1}
                           />
@@ -285,8 +285,8 @@ export default function InteractiveReplacementTokenPage({ history }) {
                             onClick={() => handleCopy(account.address)}
                           >
                             <Icon
-                              name={ICON_NAMES.COPY}
-                              size={ICON_SIZES.XS}
+                              name={IconName.Copy}
+                              size={IconSize.Xs}
                               color={Color.iconMuted}
                             />
                           </button>

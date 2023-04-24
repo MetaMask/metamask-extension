@@ -32,9 +32,6 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
