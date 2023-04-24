@@ -97,7 +97,7 @@ export const NetworkListMenu = ({ onClose }) => {
         </Box>
         <Box padding={4}>
           <Button
-            type={BUTTON_VARIANTS.SECONDARY}
+            variant={BUTTON_VARIANTS.SECONDARY}
             block
             onClick={() => {
               isFullScreen
