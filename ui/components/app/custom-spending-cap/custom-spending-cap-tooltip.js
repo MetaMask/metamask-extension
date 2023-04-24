@@ -33,7 +33,7 @@ export const CustomSpendingCapTooltip = ({
         <Icon
           name={IconName.Danger}
           className="form-field__heading-title__tooltip__warning-icon"
-          size={IconSize.Auto}
+          size={IconSize.Inherit}
           style={{ 'vertical-align': 'bottom' }}
         />
       ) : (

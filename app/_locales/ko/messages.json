@@ -695,10 +695,6 @@
     "message": "$1 계정은 어떤 사이트에도 연결되어 있지 않습니다.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 스냅이 이 사이트에 연결되어 있습니다. 이 사이트는 위에 나열된 접근 권한이 있습니다.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "연결 중..."
   },
@@ -1354,18 +1350,6 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "세부 정보 보기",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "추가하기",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "발신",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
@@ -3230,10 +3214,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "검색 결과가 없습니다."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "보기"
   },
@@ -3307,14 +3287,6 @@
   "smartTransaction": {
     "message": "스마트 트랜잭션"
   },
-  "snapAccess": {
-    "message": "$1 스냅이 접근할 수 있는 대상:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$1에 $2에서 추가됨",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "콘텐츠 출처: $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3350,9 +3322,6 @@
   },
   "snapsSettingsDescription": {
     "message": "스냅 관리"
-  },
-  "snapsStatus": {
-    "message": "스냅 상태는 활동에 따라 달라집니다."
   },
   "snapsToggle": {
     "message": "스냅은 활성화된 상태에서만 작동합니다."
