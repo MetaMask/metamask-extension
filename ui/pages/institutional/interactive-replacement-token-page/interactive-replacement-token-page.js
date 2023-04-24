@@ -5,7 +5,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
-// import CustodyLabels from '../../../../components/institutional/custody-labels';
+import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
@@ -297,13 +297,13 @@ export default function InteractiveReplacementTokenPage({ history }) {
                       display={DISPLAY.FLEX}
                       justifyContent={JustifyContent.spaceBetween}
                     >
-                      {/* {account.labels && (
+                      {account.labels && (
                         <CustodyLabels
                           labels={account.labels}
                           index={idx.toString()}
                           hideNetwork
                         />
-                      )} */}
+                      )}
                     </Box>
                   </Box>
                 </Box>
