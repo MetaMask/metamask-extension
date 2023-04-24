@@ -10,7 +10,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   Text,
   BUTTON_SIZES,
-  BUTTON_TYPES,
+  BUTTON_VARIANTS,
 } from '../../../components/component-library';
 import {
   TextColor,
@@ -181,7 +181,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
           <Box display={DISPLAY.FLEX} gap={4}>
             <Button
               block
-              type={BUTTON_TYPES.SECONDARY}
+              type={BUTTON_VARIANTS.SECONDARY}
               size={BUTTON_SIZES.LG}
               onClick={() => {
                 removeConnectInstitutionalFeature({

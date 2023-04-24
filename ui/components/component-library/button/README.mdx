@@ -25,26 +25,26 @@ The `Button` accepts all [ButtonPrimary](/docs/components-componentlibrary-butto
 
 <ArgsTable of={ButtonLink} />
 
-### Type
+### Variant
 
-Use the `type` prop and the `BUTTON_TYPES` object from `./button.constants.js` to change the `Button` type.
+Use the `variant` prop and the `BUTTON_VARIANTS` object from `./button.constants.js` to change the `Button` variant.
 
-Possible types include:
+Possible variants include:
 
-- `BUTTON_TYPES.PRIMARY`
-- `BUTTON_TYPES.SECONDARY`
-- `BUTTON_TYPES.LINK`
+- `BUTTON_VARIANTS.PRIMARY`
+- `BUTTON_VARIANTS.SECONDARY`
+- `BUTTON_VARIANTS.LINK`
 
 <Canvas>
-  <Story id="components-componentlibrary-button--type" />
+  <Story id="components-componentlibrary-button--variant" />
 </Canvas>
 
 ```jsx
-import { Button, BUTTON_TYPES } from '../ui/component-library/button';
+import { Button, BUTTON_VARIANTS } from '../ui/component-library/button';
 
-<Button type={BUTTON_TYPES.PRIMARY}>Button Primary</Button>
-<Button type={BUTTON_TYPES.SECONDARY}>Button Secondary</Button>
-<Button type={BUTTON_TYPES.LINK}>Button Link</Button>
+<Button variant={BUTTON_VARIANTS.PRIMARY}>Button Primary</Button>
+<Button variant={BUTTON_VARIANTS.SECONDARY}>Button Secondary</Button>
+<Button variant={BUTTON_VARIANTS.LINK}>Button Link</Button>
 ```
 
 ### Size

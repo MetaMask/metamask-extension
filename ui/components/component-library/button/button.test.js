@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconName } from '..';
-import { BUTTON_SIZES, BUTTON_TYPES } from './button.constants';
+import { BUTTON_SIZES, BUTTON_VARIANTS } from './button.constants';
 import { Button } from './button';
 
 describe('Button', () => {
@@ -46,28 +46,28 @@ describe('Button', () => {
   it('should render with different button types', () => {
     const { getByTestId, container } = render(
       <>
-        <Button type={BUTTON_TYPES.PRIMARY} data-testid={BUTTON_TYPES.PRIMARY}>
+        <Button variant={BUTTON_VARIANTS.PRIMARY} data-testid={BUTTON_VARIANTS.PRIMARY}>
           Button
         </Button>
         <Button
-          type={BUTTON_TYPES.SECONDARY}
-          data-testid={BUTTON_TYPES.SECONDARY}
+          variant={BUTTON_VARIANTS.SECONDARY}
+          data-testid={BUTTON_VARIANTS.SECONDARY}
         >
           Button
         </Button>
-        <Button type={BUTTON_TYPES.LINK} data-testid={BUTTON_TYPES.LINK}>
+        <Button variant={BUTTON_VARIANTS.LINK} data-testid={BUTTON_VARIANTS.LINK}>
           Button
         </Button>
       </>,
     );
-    expect(getByTestId(BUTTON_TYPES.PRIMARY)).toHaveClass(
-      `mm-button-${BUTTON_TYPES.PRIMARY}`,
+    expect(getByTestId(BUTTON_VARIANTS.PRIMARY)).toHaveClass(
+      `mm-button-${BUTTON_VARIANTS.PRIMARY}`,
     );
-    expect(getByTestId(BUTTON_TYPES.SECONDARY)).toHaveClass(
-      `mm-button-${BUTTON_TYPES.SECONDARY}`,
+    expect(getByTestId(BUTTON_VARIANTS.SECONDARY)).toHaveClass(
+      `mm-button-${BUTTON_VARIANTS.SECONDARY}`,
     );
-    expect(getByTestId(BUTTON_TYPES.LINK)).toHaveClass(
-      `mm-button-${BUTTON_TYPES.LINK}`,
+    expect(getByTestId(BUTTON_VARIANTS.LINK)).toHaveClass(
+      `mm-button-${BUTTON_VARIANTS.LINK}`,
     );
     expect(container).toMatchSnapshot();
   });
@@ -77,7 +77,7 @@ describe('Button', () => {
       <>
         <Button
           size={BUTTON_SIZES.INHERIT}
-          type={BUTTON_TYPES.LINK}
+          variant={BUTTON_VARIANTS.LINK}
           data-testid={BUTTON_SIZES.INHERIT}
         >
           Button {BUTTON_SIZES.INHERIT}
