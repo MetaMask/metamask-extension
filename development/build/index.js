@@ -24,7 +24,7 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { getBrowserVersionMap, getEnvironment } = require('./utils');
+const { getBrowserVersionMap, getEnvironment, logError } = require('./utils');
 const { getConfig, getProductionConfig } = require('./config');
 const { BUILD_TARGETS } = require('./constants');
 
@@ -55,7 +55,7 @@ require('eslint-plugin-react-hooks');
 require('eslint-plugin-jest');
 
 defineAndRunBuildTasks().catch((error) => {
-  console.error(error.stack || error);
+  logError(error.stack || error);
   process.exitCode = 1;
 });
 

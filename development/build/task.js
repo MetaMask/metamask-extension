@@ -28,7 +28,7 @@ async function runTask(taskName, { skipStats } = {}) {
   try {
     await tasks[taskName]();
   } catch (err) {
-    console.error(
+    console.log(
       `MetaMask build: Encountered an error while running task "${taskName}".`,
     );
     logError(err);
