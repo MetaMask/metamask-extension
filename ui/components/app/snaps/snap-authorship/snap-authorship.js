@@ -59,7 +59,7 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
   }
 
   // Expanded data
-  const versionHistory = snap.versionHistory ?? [];
+  const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length
     ? versionHistory[versionHistory.length - 1]
     : undefined;
@@ -97,7 +97,7 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
           <SnapAvatar snapId={snapId} />
         </Box>
         <Box
-          marginLeft={4}
+          marginLeft={2}
           marginRight={expanded ? 0 : 2}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
