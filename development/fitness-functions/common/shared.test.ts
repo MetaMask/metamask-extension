@@ -1,46 +1,48 @@
-const {
-  EXCLUDE_E2E_TESTS_REGEX,
-  filterDiffAdditions,
+import {
+  filterDiffLineAdditions,
   hasNumberOfCodeBlocksIncreased,
   filterDiffByFilePath,
-} = require('./shared');
+  filterDiffFileCreations,
+} from './shared';
+import { generateCreateFileDiff, generateModifyFilesDiff } from './test-data';
 
-const generateCreateFileDiff = (filePath, content) => `
-diff --git a/${filePath} b/${filePath}
-new file mode 100644
-index 000000000..30d74d258
---- /dev/null
-+++ b/${filePath}
-@@ -0,0 +1 @@
-+${content}
-`;
-
-const generateModifyFilesDiff = (filePath, addition, removal) => `
-diff --git a/${filePath} b/${filePath}
-index 57d5de75c..808d8ba37 100644
---- a/${filePath}
-+++ b/${filePath}
-@@ -1,3 +1,8 @@
-+${addition}
-@@ -34,33 +39,4 @@
--${removal}
-`;
-
-describe('filterDiffAdditions()', () => {
-  it('should return code additions in the diff', () => {
+describe('filterDiffLineAdditions()', (): void => {
+  it('should return code additions in the diff', (): void => {
     const testFilePath = 'new-file.js';
     const testAddition = 'foo';
     const testFileDiff = generateCreateFileDiff(testFilePath, testAddition);
 
-    const actualResult = filterDiffAdditions(testFileDiff);
+    const actualResult = filterDiffLineAdditions(testFileDiff);
     const expectedResult = `+${testAddition}`;
 
     expect(actualResult).toStrictEqual(expectedResult);
   });
 });
 
-describe('hasNumberOfCodeBlocksIncreased()', () => {
-  it('should show which code blocks have increased', () => {
+describe('filterDiffFileCreations()', (): void => {
+  it('should return code additions in the diff', (): void => {
+    const testFileDiff = [
+      generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
+      generateCreateFileDiff('old-file.js', 'ping'),
+      generateModifyFilesDiff('old-file.jsx', 'yin', 'yang'),
+    ].join('');
+
+    const actualResult = filterDiffFileCreations(testFileDiff);
+
+    expect(actualResult).toMatchInlineSnapshot(`
+      "diff --git a/old-file.js b/old-file.js
+      new file mode 100644
+      index 000000000..30d74d258
+      --- /dev/null
+      +++ b/old-file.js
+      @@ -0,0 +1 @@
+      +ping"
+    `);
+  });
+});
+
+describe('hasNumberOfCodeBlocksIncreased()', (): void => {
+  it('should show which code blocks have increased', (): void => {
     const testDiffFragment = `
     +foo
     +bar
@@ -57,14 +59,14 @@ describe('hasNumberOfCodeBlocksIncreased()', () => {
   });
 });
 
-describe('filterDiffByFilePath()', () => {
+describe('filterDiffByFilePath()', (): void => {
   const testFileDiff = [
     generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
     generateModifyFilesDiff('old-file.js', 'ping', 'pong'),
     generateModifyFilesDiff('old-file.jsx', 'yin', 'yang'),
   ].join('');
 
-  it('should return the right diff for a generic matcher', () => {
+  it('should return the right diff for a generic matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
       '.*/.*.(js|ts)$|.*.(js|ts)$',
@@ -90,7 +92,7 @@ describe('filterDiffByFilePath()', () => {
     `);
   });
 
-  it('should return the right diff for a specific file in any dir matcher', () => {
+  it('should return the right diff for a specific file in any dir matcher', (): void => {
     const actualResult = filterDiffByFilePath(testFileDiff, '.*old-file.js$');
 
     expect(actualResult).toMatchInlineSnapshot(`
@@ -105,7 +107,7 @@ describe('filterDiffByFilePath()', () => {
     `);
   });
 
-  it('should return the right diff for a multiple file extension (OR) matcher', () => {
+  it('should return the right diff for a multiple file extension (OR) matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
       '^(./)*old-file.(js|ts|jsx)$',
@@ -131,7 +133,7 @@ describe('filterDiffByFilePath()', () => {
     `);
   });
 
-  it('should return the right diff for a file name negation matcher', () => {
+  it('should return the right diff for a file name negation matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
       '^(?!.*old-file.js$).*.[a-zA-Z]+$',
@@ -155,53 +157,5 @@ describe('filterDiffByFilePath()', () => {
       @@ -34,33 +39,4 @@
       -yang"
     `);
-  });
-});
-
-describe(`EXCLUDE_E2E_TESTS_REGEX "${EXCLUDE_E2E_TESTS_REGEX}"`, () => {
-  const PATHS_IT_SHOULD_MATCH = [
-    'file.js',
-    'path/file.js',
-    'much/longer/path/file.js',
-    'file.ts',
-    'path/file.ts',
-    'much/longer/path/file.ts',
-    'file.jsx',
-    'path/file.jsx',
-    'much/longer/path/file.jsx',
-  ];
-
-  const PATHS_IT_SHOULD_NOT_MATCH = [
-    'test/e2e/file',
-    'test/e2e/file.extension',
-    'test/e2e/path/file.extension',
-    'test/e2e/much/longer/path/file.extension',
-    'test/e2e/file.js',
-    'test/e2e/path/file.ts',
-    'test/e2e/much/longer/path/file.jsx',
-    'file',
-    'file.extension',
-    'path/file.extension',
-    'much/longer/path/file.extension',
-  ];
-
-  describe('included paths', () => {
-    PATHS_IT_SHOULD_MATCH.forEach((path) => {
-      it(`should match "${path}"`, () => {
-        const result = new RegExp(EXCLUDE_E2E_TESTS_REGEX, 'u').test(path);
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-  });
-
-  describe('excluded paths', () => {
-    PATHS_IT_SHOULD_NOT_MATCH.forEach((path) => {
-      it(`should not match "${path}"`, () => {
-        const result = new RegExp(EXCLUDE_E2E_TESTS_REGEX, 'u').test(path);
-
-        expect(result).toStrictEqual(false);
-      });
-    });
   });
 });

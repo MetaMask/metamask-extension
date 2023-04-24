@@ -55,6 +55,10 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapIdPrefix,
+  getSnapName,
+  ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
@@ -1041,6 +1045,9 @@ export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
 
+export function getShowProductTour(state) {
+  return state.metamask.showProductTour;
+}
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1431,6 +1438,10 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getOnboardedInThisUISession(state) {
+  return state.appState.onboardedInThisUISession;
+}
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *
@@ -1450,5 +1461,27 @@ export function getUseCurrencyRateCheck(state) {
  */
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * To get all installed snaps with proper metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getSnapsList(state) {
+  const snaps = getSnaps(state);
+  return Object.entries(snaps).map(([key, snap]) => {
+    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+
+    return {
+      key,
+      id: snap.id,
+      packageName: removeSnapIdPrefix(snap.id),
+      name: getSnapName(snap.id, targetSubjectMetadata),
+    };
+  });
 }
 ///: END:ONLY_INCLUDE_IN

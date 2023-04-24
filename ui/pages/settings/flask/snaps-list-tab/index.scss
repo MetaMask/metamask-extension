@@ -3,20 +3,13 @@
   height: 100%;
 
   &__wrapper {
-    width: auto;
+    max-width: 475px;
   }
 
   &__body {
-    padding: 12px 18px;
-
     @include screen-sm-min {
       padding: 12px;
     }
-  }
-
-  .snap-settings-card {
-    margin: 8px 0;
-    max-width: 344px;
   }
 
   .snap-list-tab__container--no-snaps_inner {
