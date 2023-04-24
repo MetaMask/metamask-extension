@@ -129,6 +129,7 @@ const ExportPrivateKeyModal = ({
     return (
       <Box
         className="export-private-key-modal__private-key-display"
+        width={BLOCK_SIZES.FULL}
         borderStyle={BorderStyle.solid}
         borderColor={BorderColor.borderDefault}
         borderRadius={BorderRadius.XS}
