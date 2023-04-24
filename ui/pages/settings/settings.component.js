@@ -280,7 +280,7 @@ class SettingsPage extends PureComponent {
       {
         content: t('snaps'),
         icon: (
-          <i className="fa fa-flask" title={t('snapsSettingsDescription')} />
+          <Icon name={ICON_NAMES.SNAPS} title={t('snapsSettingsDescription')} />
         ),
         key: SNAPS_LIST_ROUTE,
       },

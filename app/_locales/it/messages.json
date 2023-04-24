@@ -538,10 +538,6 @@
     "message": "$1 non è connesso ad alcun sito.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 snap è collegato a questi siti. Hanno accesso alle autorizzazioni sopra elencate.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Connessione..."
   },
