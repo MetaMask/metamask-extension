@@ -43,13 +43,13 @@ aliases:
       # Clone remote and check the commit ID of the checked out code (sh version of bash `elif [[ "$CIRCLE_BRANCH" =~ ^pull\/* ]]`)
       if [ -n "${CIRCLE_TAG-}" ]; then
         # tag
-        git clone --depth 1 $CIRCLE_REPOSITORY_URL .
+        git clone --depth 1 "$CIRCLE_REPOSITORY_URL" .
         git fetch --depth 1 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
         git reset --hard "$CIRCLE_SHA1"
         git checkout -q "$CIRCLE_TAG"
       elif [[ $(echo $CIRCLE_BRANCH | grep -E ^pull\/[0-9]+$) ]]; then
         # pull request
-        git clone --depth 1 $CIRCLE_REPOSITORY_URL .
+        git clone --depth 1 "$CIRCLE_REPOSITORY_URL" .
         git fetch --depth 1 --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
         git reset --hard "$CIRCLE_SHA1"
         git checkout -q -B "$CIRCLE_BRANCH"
