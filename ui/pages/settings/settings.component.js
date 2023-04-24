@@ -276,7 +276,7 @@ class SettingsPage extends PureComponent {
       {
         content: t('snaps'),
         icon: (
-          <Icon name={ICON_NAMES.SNAPS} title={t('snapsSettingsDescription')} />
+          <Icon name={IconName.Snaps} title={t('snapsSettingsDescription')} />
         ),
         key: SNAPS_LIST_ROUTE,
       },
