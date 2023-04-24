@@ -56,7 +56,7 @@ require('eslint-plugin-jest');
 
 defineAndRunBuildTasks().catch((error) => {
   logError(error.stack || error);
-  process.exitCode = 1;
+  process.exit(1);
 });
 
 async function defineAndRunBuildTasks() {

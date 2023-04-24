@@ -76,6 +76,7 @@ function runInChildProcess(
       ],
       {
         env: process.env,
+        encoding: 'utf8'
       },
     );
 
