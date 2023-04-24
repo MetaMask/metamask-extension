@@ -10478,11 +10478,11 @@ __metadata:
 
 "bify-module-groups@patch:bify-module-groups@npm%3A2.0.0#./.yarn/patches/bify-module-groups-npm-2.0.0-0fa5a34730.patch::locator=metamask-crx%40workspace%3A.":
   version: 2.0.0
-  resolution: "bify-module-groups@patch:bify-module-groups@npm%3A2.0.0#./.yarn/patches/bify-module-groups-npm-2.0.0-0fa5a34730.patch::version=2.0.0&hash=dae94c&locator=metamask-crx%40workspace%3A."
+  resolution: "bify-module-groups@patch:bify-module-groups@npm%3A2.0.0#./.yarn/patches/bify-module-groups-npm-2.0.0-0fa5a34730.patch::version=2.0.0&hash=95c902&locator=metamask-crx%40workspace%3A."
   dependencies:
     pump: ^3.0.0
     through2: ^3.0.1
-  checksum: 1c980eb772f7191ff04c5b576bcc559ed31bacddd1b2acc10416ddecbf28815c72769ba98da4e1bb48c73577995a18bec761baaf2a5a98ffda550b91b0ddc0b9
+  checksum: a6dfe37faeeddf2fe37dd5d575576655141ffdf1ca1aad74e4fac6fc19e9163834d734f35ea8ff3023873fb35c58081b2011d9362041106298161a0a1de87f78
   languageName: node
   linkType: hard
 

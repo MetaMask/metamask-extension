@@ -1,5 +1,5 @@
 diff --git a/src/size.js b/src/size.js
-index ac4692fdf568592835deff330dd5f56cbe22b991..1134547f22ff0975cfc851e1dfd108a9c90254cb 100644
+index ac4692fdf568592835deff330dd5f56cbe22b991..9ded7bd9d6954491c59ee6f705288ddd09f0af63 100644
 --- a/src/size.js
 +++ b/src/size.js
 @@ -1,80 +1,100 @@
@@ -44,7 +44,7 @@ index ac4692fdf568592835deff330dd5f56cbe22b991..1134547f22ff0975cfc851e1dfd108a9
 +  groupingMap
 +) {
 +  let subgroupIndex = 0;
-+  let openSubgroups = [{ group: createModuleGroup(), size: 0 }];
++  let openSubgroups = [];
 +  const entryModules = [];
  
    pump(
@@ -139,7 +139,7 @@ index ac4692fdf568592835deff330dd5f56cbe22b991..1134547f22ff0975cfc851e1dfd108a9
 -    // mark the subgroup as complete
 -    currentSubgroup.stream.end()
 +  function endOpenSubgroups() {
-+    for (subgroup of openSubgroups) {
++    for (const subgroup of openSubgroups) {
 +      // mark the subgroup as complete
 +      subgroup.group.stream.end();
 +    }
