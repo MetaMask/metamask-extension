@@ -11,9 +11,9 @@ export function hasPendingApprovalsSelector(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
 ) {
-  const pendingApprovalRequests = Object.values(state.metamask.pendingApprovals)
-    .filter(({ type }) => type === approvalType)
-    .map(({ requestData }) => requestData);
+  const pendingApprovalRequests = Object.values(
+    state.metamask.pendingApprovals,
+  ).filter(({ type }) => type === approvalType);
 
   return pendingApprovalRequests.length > 0;
 }
