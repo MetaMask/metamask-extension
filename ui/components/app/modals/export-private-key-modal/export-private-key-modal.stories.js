@@ -1,8 +1,8 @@
 import React from 'react';
-import ExportPrivateKeyModal from './export-private-key-modal.component';
 import { Provider } from 'react-redux';
 import testData from '../../../../../.storybook/test-data';
 import configureStore from '../../../../store/store';
+import ExportPrivateKeyModal from './export-private-key-modal.component';
 
 // Using Test Data For Redux
 const store = configureStore(testData);
@@ -25,9 +25,6 @@ export const DefaultStory = () => {
       selectedIdentity={
         testData.metamask.identities[testData.metamask.selectedAddress]
       }
-      hideModal={() => {}}
-      hideWarning={() => {}}
-      clearAccountDetails={() => {}}
     />
   );
 };
