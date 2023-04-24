@@ -52,8 +52,6 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
     getTargetSubjectMetadata(state, snapId),
   );
 
-  console.log(subjectMetadata);
-
   const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   if (expanded && !snap) {
@@ -112,7 +110,9 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
           </Text>
         </Box>
         {!expanded && (
-          <SnapVersion version={subjectMetadata?.version} url={url} />
+          <Box marginLeft="auto">
+            <SnapVersion version={subjectMetadata?.version} url={url} />
+          </Box>
         )}
       </Box>
       {expanded && (

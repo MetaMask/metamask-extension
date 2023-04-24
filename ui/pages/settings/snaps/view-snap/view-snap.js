@@ -10,6 +10,7 @@ import Button from '../../../../components/ui/button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Color,
+  FLEX_WRAP,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -110,21 +111,23 @@ function ViewSnap() {
 
   const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
+  const shouldDisplayMoreButton = isOverflowing && !isDescriptionOpen;
   const handleMoreClick = () => {
     setIsDescriptionOpen(true);
   };
+
+  console.log('isOverflowing: ', isOverflowing);
 
   return (
     <Box
       className="view-snap"
       paddingBottom={8}
+      paddingTop={8}
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box className="view-snap__header" paddingTop={8}>
-        <SnapAuthorship snapId={snap.id} snap={snap} expanded />
-      </Box>
-      <Box className="view-snap__description" marginTop={4}>
+      <SnapAuthorship snapId={snap.id} snap={snap} expanded />
+      <Box className="view-snap__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <Box
             className={classnames('view-snap__description__wrapper', {
@@ -132,14 +135,14 @@ function ViewSnap() {
             })}
             ref={descriptionRef}
           >
-            <Text>{snap.manifest.description.substring(0, 175)}</Text>
-            {isOverflowing && (
+            <Text>{snap.manifest.description}</Text>
+            {shouldDisplayMoreButton && (
               <Button
                 className="view-snap__description__more-button"
                 type={BUTTON_TYPES.LINK}
                 onClick={handleMoreClick}
               >
-                <Text color={Color.infoDefault}>more</Text>
+                <Text color={Color.infoDefault}>{t('more')}</Text>
               </Button>
             )}
           </Box>
@@ -176,7 +179,13 @@ function ViewSnap() {
             type="danger"
             onClick={() => setIsShowingRemoveWarning(true)}
           >
-            <Text variant={TextVariant.bodyMd} color={TextColor.errorDefault}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.errorDefault}
+              flexWrap={FLEX_WRAP.NO_WRAP}
+              ellipsis
+              style={{ overflow: 'hidden' }}
+            >
               {`${t('remove')} ${snapName}`}
             </Text>
           </Button>

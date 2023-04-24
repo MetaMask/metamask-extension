@@ -17,40 +17,46 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
+import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const SnapVersion = ({ version, url }) => (
-  <Button
-    type={BUTTON_TYPES.LINK}
-    href={url}
-    target="_blank"
-    className="snap-version"
-  >
-    <Box
-      className="snap-version__wrapper"
-      flexDirection={FLEX_DIRECTION.ROW}
-      alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.pill}
-      paddingTop={1}
-      paddingBottom={1}
-      paddingLeft={2}
-      paddingRight={2}
+const SnapVersion = ({ version, url }) => {
+  const t = useI18nContext();
+  return (
+    <Button
+      type={BUTTON_TYPES.LINK}
+      href={url}
+      target="_blank"
+      className="snap-version"
     >
-      <Text
-        color={Color.textAlternative}
-        variant={TextVariant.bodyMd}
-        paddingRight={1}
+      <Box
+        className="snap-version__wrapper"
+        flexDirection={FLEX_DIRECTION.ROW}
+        alignItems={AlignItems.center}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderRadius={BorderRadius.pill}
+        paddingTop={1}
+        paddingBottom={1}
+        paddingLeft={2}
+        paddingRight={2}
       >
-        {`v${version}`}
-      </Text>
-      <Icon
-        name={IconName.Export}
-        color={Color.textAlternative}
-        size={IconSize.Sm}
-      />
-    </Box>
-  </Button>
-);
+        {version ? (
+          <Text color={Color.textAlternative} variant={TextVariant.bodyMd}>
+            {t('shortVersion', [version])}
+          </Text>
+        ) : (
+          <Preloader size={14} />
+        )}
+        <Icon
+          name={IconName.Export}
+          color={Color.textAlternative}
+          size={IconSize.Sm}
+          marginLeft={1}
+        />
+      </Box>
+    </Button>
+  );
+};
 
 SnapVersion.propTypes = {
   /**

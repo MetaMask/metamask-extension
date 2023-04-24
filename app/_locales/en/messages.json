@@ -2203,6 +2203,9 @@
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
   },
+  "more": {
+    "message": "more"
+  },
   "moreComingSoon": {
     "message": "More coming soon..."
   },
@@ -3586,6 +3589,10 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "shortVersion": {
+    "message": "v$1",
+    "description": "$1 is the version number to show"
   },
   "show": {
     "message": "Show"
