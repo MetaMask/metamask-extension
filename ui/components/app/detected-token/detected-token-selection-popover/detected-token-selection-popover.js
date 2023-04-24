@@ -9,7 +9,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
+import { getCurrentChainId, getDetectedTokensInCurrentNetwork } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
@@ -26,6 +26,8 @@ const DetectedTokenSelectionPopover = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const chainId = useSelector(getCurrentChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { selected: selectedTokens = [] } =
@@ -45,6 +47,7 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source: MetaMetricsTokenEventSource.Detected,
+        chain_id: chainId,
         tokens: eventTokensDetails,
       },
     });
