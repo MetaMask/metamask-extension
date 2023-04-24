@@ -59,7 +59,10 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
   }
 
   // Expanded data
-  const installInfo = snap?.versionHistory?.[snap.versionHistory.length - 1];
+  const versionHistory = snap.versionHistory ?? [];
+  const installInfo = versionHistory.length
+    ? versionHistory[versionHistory.length - 1]
+    : undefined;
   const installOrigin = useOriginMetadata(installInfo?.origin);
 
   const onToggle = () => {
