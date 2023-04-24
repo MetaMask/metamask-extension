@@ -1,5 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { hasPendingApprovals } from './approvals';
+import { hasPendingApprovalsSelector } from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
@@ -25,15 +25,21 @@ describe('approval selectors', () => {
     },
   };
 
-  describe('hasPendingApprovals', () => {
+  describe('hasPendingApprovalsSelector', () => {
     it('should return true if there is a pending approval request', () => {
-      const result = hasPendingApprovals(mockedState, ApprovalType.WatchAsset);
+      const result = hasPendingApprovalsSelector(
+        mockedState,
+        ApprovalType.WatchAsset,
+      );
 
       expect(result).toBe(true);
     });
 
     it('should return false if there is no pending approval request', () => {
-      const result = hasPendingApprovals(mockedState, ApprovalType.Transaction);
+      const result = hasPendingApprovalsSelector(
+        mockedState,
+        ApprovalType.Transaction,
+      );
 
       expect(result).toBe(false);
     });

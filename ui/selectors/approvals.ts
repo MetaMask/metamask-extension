@@ -7,7 +7,7 @@ type ApprovalsMetaMaskState = {
   };
 };
 
-export function hasPendingApprovals(
+export function hasPendingApprovalsSelector(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
 ) {

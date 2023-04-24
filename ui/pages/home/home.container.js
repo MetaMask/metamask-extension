@@ -27,7 +27,7 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  hasPendingApprovals,
+  hasPendingApprovalsSelector,
 } from '../../selectors';
 
 import {
@@ -109,14 +109,14 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasSuggestedAssetPendingApprovals = hasPendingApprovals(
+  const hasWatchAssetPendingApprovals = hasPendingApprovalsSelector(
     state,
     ApprovalType.WatchAsset,
   );
 
   return {
     forgottenPassword,
-    hasSuggestedAssetPendingApprovals,
+    hasWatchAssetPendingApprovals,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
