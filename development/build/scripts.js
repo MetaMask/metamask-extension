@@ -930,7 +930,7 @@ function setupBundlerDefaults(
     }
 
     // Setup source maps
-    setupSourcemaps(buildConfiguration, { buildTarget });
+    //setupSourcemaps(buildConfiguration, { buildTarget });
     // Setup wrapping of code against scuttling (before sourcemaps generation)
     setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
   }
