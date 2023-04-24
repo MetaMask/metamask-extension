@@ -24,6 +24,40 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
+aliases:
+  # Shallow Git Clone
+  - &shallow-git-clone
+    name: Shallow Git Clone
+    command: |
+      #!/bin/bash
+      set -e
+      set -u
+      set -o pipefail
+
+      # Set up SSH access
+      # This SSH key is the current github.com SSH key as of April 2023, but it will need to be changed whenever github changes their key (probably every few years)
+      GITHUB_SSH_KEY="AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
+      mkdir -p ~/.ssh
+      echo github.com ssh-ed25519 $GITHUB_SSH_KEY >> ~/.ssh/known_hosts
+
+      # Clone remote and check the commit ID of the checked out code (sh version of bash `elif [[ "$CIRCLE_BRANCH" =~ ^pull\/* ]]`)
+      if [ -n "${CIRCLE_TAG-}" ]; then
+        # tag
+        git clone --depth 1 $CIRCLE_REPOSITORY_URL .
+        git fetch --depth 1 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
+        git reset --hard "$CIRCLE_SHA1"
+        git checkout -q "$CIRCLE_TAG"
+      elif [[ $(echo $CIRCLE_BRANCH | grep -E ^pull\/[0-9]+$) ]]; then
+        # pull request
+        git clone --depth 1 $CIRCLE_REPOSITORY_URL .
+        git fetch --depth 1 --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
+        git reset --hard "$CIRCLE_SHA1"
+        git checkout -q -B "$CIRCLE_BRANCH"
+      else
+        # others
+        git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      fi
+
 workflows:
   test_and_release:
     jobs:
@@ -234,7 +268,7 @@ jobs:
   trigger-beta-build:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - when:
@@ -263,7 +297,7 @@ jobs:
   create_release_pull_request:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -282,7 +316,7 @@ jobs:
   prep-deps:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
@@ -332,7 +366,7 @@ jobs:
   validate-lavamoat-config:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -347,7 +381,7 @@ jobs:
   prep-build:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - when:
@@ -381,7 +415,7 @@ jobs:
   prep-build-desktop:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -405,7 +439,7 @@ jobs:
   prep-build-flask:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - when:
@@ -445,7 +479,7 @@ jobs:
   prep-build-test-flask:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -466,7 +500,7 @@ jobs:
   prep-build-test-mv3:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -487,7 +521,7 @@ jobs:
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -508,7 +542,7 @@ jobs:
   prep-build-storybook:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -522,7 +556,7 @@ jobs:
   prep-build-ts-migration-dashboard:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -536,7 +570,7 @@ jobs:
   test-yarn-dedupe:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -546,7 +580,7 @@ jobs:
   test-lint:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -559,7 +593,7 @@ jobs:
   test-storybook:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -581,7 +615,7 @@ jobs:
   test-lint-lockfile:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -591,7 +625,7 @@ jobs:
   test-lint-changelog:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - when:
@@ -617,7 +651,7 @@ jobs:
   test-deps-audit:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -627,7 +661,7 @@ jobs:
   test-deps-depcheck:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -638,7 +672,7 @@ jobs:
     executor: node-browsers
     parallelism: 8
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -675,7 +709,7 @@ jobs:
     executor: node-browsers
     parallelism: 8
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -703,7 +737,7 @@ jobs:
     executor: node-browsers
     parallelism: 4
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -740,7 +774,7 @@ jobs:
     executor: node-browsers
     parallelism: 4
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -777,7 +811,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 8
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -813,7 +847,7 @@ jobs:
   benchmark:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -839,7 +873,7 @@ jobs:
   user-actions-benchmark:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -865,7 +899,7 @@ jobs:
   stats-module-load-init:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
@@ -962,7 +996,7 @@ jobs:
   job-publish-release:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -982,7 +1016,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -997,7 +1031,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1011,7 +1045,7 @@ jobs:
   test-unit-mocha:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1026,7 +1060,7 @@ jobs:
   test-unit-jest-development:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1043,7 +1077,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 12
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1059,7 +1093,7 @@ jobs:
   upload-and-validate-coverage:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - codecov/upload
@@ -1074,7 +1108,7 @@ jobs:
   test-unit-global:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1084,7 +1118,7 @@ jobs:
   validate-source-maps:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1094,7 +1128,7 @@ jobs:
   validate-source-maps-beta:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1105,7 +1139,7 @@ jobs:
   validate-source-maps-desktop:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1121,7 +1155,7 @@ jobs:
   validate-source-maps-flask:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1137,7 +1171,7 @@ jobs:
   test-mozilla-lint:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1147,7 +1181,7 @@ jobs:
   test-mozilla-lint-beta:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1158,7 +1192,7 @@ jobs:
   test-mozilla-lint-desktop:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -1174,7 +1208,7 @@ jobs:
   test-mozilla-lint-flask:
     executor: node-browsers
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
