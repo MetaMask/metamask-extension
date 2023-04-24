@@ -244,7 +244,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       }
     }
 
-    return signFn(opts);
+    return sign(opts);
   };
   ///: END:ONLY_INCLUDE_IN
 
@@ -254,7 +254,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     fromAccount,
     txData,
     cancel,
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
     sign,
+    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
     // eslint-disable-next-line no-dupe-keys
     sign: signFn,
