@@ -1215,6 +1215,7 @@
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "@typescript-eslint/utils": true,
         "eslint": true,
+        "eslint-plugin-mocha>eslint-utils": true,
         "eslint>eslint-utils": true,
         "webpack>eslint-scope": true
       }
@@ -2596,6 +2597,7 @@
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
+        "eslint-plugin-mocha>eslint-utils": true,
         "eslint>eslint-scope": true,
         "eslint>eslint-utils": true,
         "webpack>eslint-scope": true
@@ -2651,6 +2653,11 @@
       "packages": {
         "eslint-plugin-jsdoc>spdx-expression-parse>spdx-exceptions": true,
         "eslint-plugin-jsdoc>spdx-expression-parse>spdx-license-ids": true
+      }
+    },
+    "eslint-plugin-mocha>eslint-utils": {
+      "packages": {
+        "eslint-plugin-mocha>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint-plugin-node": {
