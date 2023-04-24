@@ -229,7 +229,7 @@
     "@metamask/assets-controllers": "^6.0.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/contract-metadata": "^2.3.1",
-    "@metamask/controller-utils": "^3.2.0",
+    "@metamask/controller-utils": "^3.3.0",
     "@metamask/design-tokens": "^1.9.0",
     "@metamask/desktop": "^0.3.0",
     "@metamask/eth-json-rpc-infura": "^8.0.0",
