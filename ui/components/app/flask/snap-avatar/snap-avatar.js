@@ -17,11 +17,9 @@ import {
   BadgeWrapperPosition,
   AvatarIcon,
   AvatarBase,
+  IconName,
+  IconSize,
 } from '../../../component-library';
-import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../component-library/icon/deprecated';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
 const SnapAvatar = ({ snapId, className }) => {
@@ -40,11 +38,11 @@ const SnapAvatar = ({ snapId, className }) => {
       className={classnames('snap-avatar', className)}
       badge={
         <AvatarIcon
-          iconName={ICON_NAMES.SNAPS}
-          size={ICON_SIZES.XS}
+          iconName={IconName.Snaps}
+          size={IconSize.Xs}
           backgroundColor={IconColor.infoDefault}
           iconProps={{
-            size: ICON_SIZES.XS,
+            size: IconSize.Xs,
             color: IconColor.infoInverse,
           }}
         />
@@ -52,7 +50,7 @@ const SnapAvatar = ({ snapId, className }) => {
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={Size.LG} src={iconUrl} />
+        <AvatarFavicon size={Size.LG} src={iconUrl} name={friendlyName} />
       ) : (
         <AvatarBase
           size={Size.LG}

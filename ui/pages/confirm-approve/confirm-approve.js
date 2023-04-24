@@ -144,6 +144,7 @@ export default function ConfirmApprove({
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
+  // Code below may need a additional look as ERC1155 tokens do not have a name
   let tokensText;
   if (
     assetStandard === TokenStandard.ERC721 ||
@@ -199,6 +200,7 @@ export default function ConfirmApprove({
             toAddress={toAddress}
             tokenSymbol={tokenSymbol}
             decimals={decimals}
+            fromAddressIsLedger={fromAddressIsLedger}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover

@@ -695,10 +695,6 @@
     "message": "$1 no está conectado a ningún sitio.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "El complemento de $1 está conectado a estos sitios. Tienen acceso a los permisos enumerados anteriormente.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Estableciendo conexión…"
   },
@@ -1355,18 +1351,6 @@
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Ver detalles",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Añadido el",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -2020,9 +2004,6 @@
   },
   "missingToken": {
     "message": "¿No ve su token?"
-  },
-  "mobileSyncWarning": {
-    "message": "La función 'Sincronizar con la extensión' está temporalmente desactivada. Si desea utilizar su cartera de extensión en MetaMask móvil, haga lo siguiente en la aplicación móvil: vuelva a las opciones de configuración de la cartera y seleccione la opción 'Importar con frase secreta de recuperación'. Use la frase secreta de su cartera de extensión para importar su cartera al móvil."
   },
   "moreComingSoon": {
     "message": "Más próximamente..."
@@ -3233,10 +3214,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "No se encontraron resultados coincidentes."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Mostrar"
   },
@@ -3310,14 +3287,6 @@
   "smartTransaction": {
     "message": "Transacción inteligente"
   },
-  "snapAccess": {
-    "message": "El complemento de $1 tiene acceso a:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Se agregó en $1 de $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Este contenido proviene de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3353,9 +3322,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Administre sus complementos"
-  },
-  "snapsStatus": {
-    "message": "El estado del complemento depende de la actividad."
   },
   "snapsToggle": {
     "message": "Un complemento solo se ejecutará si está habilitado"
@@ -3935,33 +3901,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "El símbolo debe tener 11 caracteres o menos."
-  },
-  "syncFailed": {
-    "message": "Error al sincronizar"
-  },
-  "syncInProgress": {
-    "message": "Sincronización en progreso"
-  },
-  "syncWithMobile": {
-    "message": "Sincronizar con dispositivo móvil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Asegúrese de que nadie vea su pantalla cuando escanee este código"
-  },
-  "syncWithMobileComplete": {
-    "message": "Los datos se sincronizaron correctamente. ¡Disfrute de la aplicación móvil de MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Puede sincronizar sus cuentas y su información con el dispositivo móvil. Abra la aplicación móvil de MetaMask, vaya a \"Configuración\" y presione \"Sincronizar desde la extensión del explorador\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Si acaba de abrir la aplicación móvil de MetaMask por primera vez, siga los pasos que aparecen en el teléfono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escanear este código con la aplicación móvil de MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizar con dispositivo móvil"
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"
