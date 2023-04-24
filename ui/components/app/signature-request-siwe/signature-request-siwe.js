@@ -113,7 +113,7 @@ export default function SignatureRequestSIWE({
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
-      ) : null}
+      )}
       {isHdWallet ? (
         <div className="signature-request-siwe__actionable-message">
           <HardwareWalletState
