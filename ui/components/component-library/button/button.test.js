@@ -46,7 +46,10 @@ describe('Button', () => {
   it('should render with different button types', () => {
     const { getByTestId, container } = render(
       <>
-        <Button variant={BUTTON_VARIANTS.PRIMARY} data-testid={BUTTON_VARIANTS.PRIMARY}>
+        <Button
+          variant={BUTTON_VARIANTS.PRIMARY}
+          data-testid={BUTTON_VARIANTS.PRIMARY}
+        >
           Button
         </Button>
         <Button
@@ -55,7 +58,10 @@ describe('Button', () => {
         >
           Button
         </Button>
-        <Button variant={BUTTON_VARIANTS.LINK} data-testid={BUTTON_VARIANTS.LINK}>
+        <Button
+          variant={BUTTON_VARIANTS.LINK}
+          data-testid={BUTTON_VARIANTS.LINK}
+        >
           Button
         </Button>
       </>,
