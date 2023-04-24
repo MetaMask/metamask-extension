@@ -930,7 +930,7 @@ function setupBundlerDefaults(
     }
 
     // Setup source maps
-    //setupSourcemaps(buildConfiguration, { buildTarget });
+    setupSourcemaps(buildConfiguration, { buildTarget });
     // Setup wrapping of code against scuttling (before sourcemaps generation)
     setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
   }
@@ -1014,7 +1014,7 @@ function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
-    pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
+    pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true, largeFile: true }));
     pipeline
       .get('sourcemaps:write')
       // Use inline source maps for development due to Chrome DevTools bug
