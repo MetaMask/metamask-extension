@@ -55,7 +55,7 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   removeSnapIdPrefix,
   getSnapName,
   ///: END:ONLY_INCLUDE_IN
@@ -1464,7 +1464,7 @@ export function getIsDesktopEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IN
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * To get all installed snaps with proper metadata
  *
