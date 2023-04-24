@@ -39,7 +39,7 @@ const SnapListTab = () => {
     handleSettingsRefs(t, t('snaps'), settingsRef);
   }, [settingsRef, t]);
 
-  const snapsList = useSelector((state) => getSnapsList(state, onClick));
+  const snapsList = useSelector((state) => getSnapsList(state));
 
   return (
     <div className="snap-list-tab" ref={settingsRef}>

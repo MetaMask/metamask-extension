@@ -1467,10 +1467,9 @@ export function getIsDesktopEnabled(state) {
  * To get all installed snaps with proper metadata
  *
  * @param {*} state
- * @param {*} onClick - Callback function for handling snap info route on click.
  * @returns Boolean
  */
-export function getSnapsList(state, onClick) {
+export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps).map(([key, snap]) => {
     const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
@@ -1480,9 +1479,6 @@ export function getSnapsList(state, onClick) {
       id: snap.id,
       packageName: removeSnapIdPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
-      onClick: () => {
-        onClick(snap);
-      },
     };
   });
 }
