@@ -9,8 +9,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { showAccountDetail } from '../../../store/institutional/institution-actions';
-import { hideModal } from '../../../store/actions';
+import { hideModal, setSelectedAddress } from '../../../store/actions';
 import { getMetaMaskAccountsRaw } from '../../../selectors';
 import {
   getMMIAddressFromModalOrAddress,
@@ -58,7 +57,7 @@ const CustodyConfirmLink = () => {
         ethereum.accounts.includes(account.toLowerCase()),
       );
 
-      ethAccount && dispatch(showAccountDetail(ethAccount.toLowerCase()));
+      ethAccount && dispatch(setSelectedAddress(ethAccount.toLowerCase()));
     }
 
     trackEvent({
