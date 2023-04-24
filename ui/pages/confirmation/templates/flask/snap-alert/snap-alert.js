@@ -6,6 +6,7 @@ function getValues(pendingApproval, t, actions) {
     snapName,
     requestData: { content },
   } = pendingApproval;
+  const elementKeyIndex = { value: 0 };
 
   return {
     content: [
@@ -24,7 +25,7 @@ function getValues(pendingApproval, t, actions) {
             snapName,
           },
           // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
-          children: mapToTemplate(content),
+          children: mapToTemplate(content, elementKeyIndex),
         },
       },
     ],
