@@ -29,7 +29,7 @@ export default {
         key: 'contacts',
       },
       {
-        icon: <Icon name={ICON_NAMES.SNAPS} />,
+        icon: <Icon name={IconName.Snaps} />,
         content: 'Snaps',
         key: 'snaps',
       },
