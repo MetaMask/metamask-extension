@@ -15,6 +15,7 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  PopoverHeader,
 } from '../../../component-library';
 
 export default function AccountModalContainer(props, context) {
@@ -39,10 +40,12 @@ export default function AccountModalContainer(props, context) {
         paddingLeft: 4,
       }}
       title={
-        <Box
-          display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.center}
-          marginLeft={6}
+        <PopoverHeader
+          onClose={hideModal}
+          childrenWrapperProps={{
+            display: DISPLAY.FLEX,
+            justifyContent: JustifyContent.center,
+          }}
         >
           <AvatarAccount
             variant={
@@ -53,9 +56,8 @@ export default function AccountModalContainer(props, context) {
             address={selectedIdentity.address}
             size={AvatarAccountSize.Lg}
           />
-        </Box>
+        </PopoverHeader>
       }
-      onClose={hideModal}
     >
       <Box
         paddingLeft={4}
