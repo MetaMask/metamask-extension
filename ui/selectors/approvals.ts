@@ -1,12 +1,9 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType, Json } from '@metamask/controller-utils';
+import { ApprovalControllerState } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 
 type ApprovalsMetaMaskState = {
   metamask: {
-    pendingApprovals: Record<
-      string,
-      ApprovalRequest<Record<string, Json> | null>
-    >;
+    pendingApprovals: ApprovalControllerState['pendingApprovals'];
   };
 };
 
