@@ -1,7 +1,6 @@
 import log from 'loglevel';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { SHOW_ACCOUNT_DETAIL } from '../actionConstants';
 import {
   closeCurrentNotificationWindow,
   hideModal,
