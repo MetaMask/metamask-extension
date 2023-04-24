@@ -9,13 +9,12 @@ import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  // JustifyContent,
+  JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
-  PopoverHeader,
 } from '../../../component-library';
 
 export default function AccountModalContainer(props, context) {
@@ -40,22 +39,11 @@ export default function AccountModalContainer(props, context) {
         paddingLeft: 4,
       }}
       title={
-        // <Box
-        //   display={DISPLAY.FLEX}
-        //   justifyContent={JustifyContent.center}
-        //   marginLeft={6}
-        // >
-        //   <AvatarAccount
-        //     variant={
-        //       useBlockie
-        //         ? AvatarAccountVariant.Blockies
-        //         : AvatarAccountVariant.Jazzicon
-        //     }
-        //     address={selectedIdentity.address}
-        //     size={AvatarAccountSize.Lg}
-        //   />
-        // </Box>
-        <PopoverHeader onClose={hideModal}>
+        <Box
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.center}
+          marginLeft={6}
+        >
           <AvatarAccount
             variant={
               useBlockie
@@ -65,9 +53,9 @@ export default function AccountModalContainer(props, context) {
             address={selectedIdentity.address}
             size={AvatarAccountSize.Lg}
           />
-        </PopoverHeader>
+        </Box>
       }
-      // onClose={hideModal}
+      onClose={hideModal}
     >
       <Box
         paddingLeft={4}
