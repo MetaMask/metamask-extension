@@ -124,7 +124,8 @@ function getEnvironment({ buildTarget }) {
  * @param {Error} error - The error to print
  */
 function logError(error) {
-  console.error(error.stack || error);
+  // For some reason stderr doesn't work, so we use stdout
+  console.log(error.stack || error);
 }
 
 /**

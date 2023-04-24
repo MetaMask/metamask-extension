@@ -1070,7 +1070,8 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     const bundleStream = bundler.bundle();
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
-        console.error('Bundling failed! See details below.');
+        // For some reason stderr doesn't work, so we use stdout
+        console.log('Bundling failed! See details below.');
         logError(error);
         process.exit(1);
       });
