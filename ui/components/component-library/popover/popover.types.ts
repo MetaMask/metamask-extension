@@ -2,8 +2,6 @@ import type { BoxProps } from '../../ui/box/box.d';
 
 export enum PopoverPosition {
   Auto = 'auto',
-  AutoStart = 'auto-start',
-  AutoEnd = 'auto-end',
   Top = 'top',
   TopStart = 'top-start',
   TopEnd = 'top-end',

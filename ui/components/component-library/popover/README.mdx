@@ -17,72 +17,93 @@ The `Popover` accepts all props below as well as all [Box](/docs/ui-components-u
 
 ### Reference Element
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--reference-element" />
-</Canvas>
+The `referenceElement` prop is required and used to position the popover relative to the reference element.
 
-{/* ### Children
+```jsx
+import { useState } from 'react';
+import { Popover } from '../../ui/component-library';
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--children" />
-</Canvas> */}
+const [referenceElement, setReferenceElement] = useState();
 
-{/* ### Title
+const setBoxRef = (ref) => {
+setReferenceElement(ref);
+};
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--title" />
-</Canvas> */}
+<Box ref={setBoxRef}></Box>
+<Popover referenceElement={referenceElement}>Reference Element</Popover>
+```
 
-{/* ### On Back
+### Children
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--on-back" />
-</Canvas> */}
+Popover accepts any children and has a default padding of `4` (16px).
 
-{/* ### On Close
+```jsx
+import {
+  Popover,
+  Text,
+  Icon,
+  IconSize,
+  IconName,
+} from '../../ui/component-library';
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--on-close" />
-</Canvas> */}
+<Popover>
+  <Text>
+    Demo of popover with children.
+    <Icon size={IconSize.Inherit} name={IconName.Info} />
+  </Text>
+</Popover>;
+```
 
-{/* ### Position
+### Position
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--position" />
-</Canvas> */}
+Use the `position` prop with the `PopoverPosition` enum to set the position of the popover relative to the reference element.
 
-{/* ### Has Arrow
+Default is `PopoverPosition.Auto`
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--has-arrow" />
-</Canvas> */}
+```jsx
+import { Popover, PopoverPosition } from '../../ui/component-library';
 
-{/* ### Is Open
+<Popover position={PopoverPosition.Auto}>Auto<Popover>
+<Popover position={PopoverPosition.AutoStart}>AutoStart<Popover>
+<Popover position={PopoverPosition.AutoEnd}>AutoEnd<Popover>
+<Popover position={PopoverPosition.Top}>Top<Popover>
+<Popover position={PopoverPosition.TopStart}>TopStart<Popover>
+<Popover position={PopoverPosition.TopEnd}>TopEnd<Popover>
+<Popover position={PopoverPosition.Right}>Right<Popover>
+<Popover position={PopoverPosition.RightStart}>RightStart<Popover>
+<Popover position={PopoverPosition.RightEnd}>RightEnd<Popover>
+<Popover position={PopoverPosition.Bottom}>Bottom<Popover>
+<Popover position={PopoverPosition.BottomStart}>BottomStart<Popover>
+<Popover position={PopoverPosition.BottomEnd}>BottomEnd<Popover>
+<Popover position={PopoverPosition.Left}>Left<Popover>
+<Popover position={PopoverPosition.LeftStart}>LeftStart<Popover>
+<Popover position={PopoverPosition.LeftEnd}>LeftEnd<Popover>
+```
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--is-open" />
-</Canvas> */}
+### Has Arrow
 
-{/* ### Flip
+Use the hasArrow boolean to add an arrow to the popover.
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--flip" />
-</Canvas> */}
+```jsx
+import { Popover } from '../../ui/component-library';
 
-{/* ### Prevent Overflow
+<Popover hasArrow>Popover with arrow</Popover>;
+```
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--prevent-overflow" />
-</Canvas> */}
+### Is Open
 
-{/* ### Reference Hidden
+Use the `isOpen` boolean to control the visibility of the popover.
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--reference-hidden" />
-</Canvas> */}
+```jsx
+import { Popover } from '../../ui/component-library';
 
-{/* ### Match Width
+<Popover isOpen={true}>Popover with arrow</Popover>;
+```
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--match-width" />
-</Canvas> */}
+### Flip
+
+### Prevent Overflow
+
+### Reference Hidden
+
+### Match Width

@@ -76,22 +76,6 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
-          data-testid={PopoverPosition.AutoStart}
-          position={PopoverPosition.AutoStart}
-        >
-          {PopoverPosition.AutoStart}
-        </Popover>
-
-        <Popover
-          isOpen={true}
-          data-testid={PopoverPosition.AutoEnd}
-          position={PopoverPosition.AutoEnd}
-        >
-          {PopoverPosition.AutoEnd}
-        </Popover>
-
-        <Popover
-          isOpen={true}
           data-testid={PopoverPosition.Top}
           position={PopoverPosition.Top}
         >

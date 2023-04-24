@@ -32,7 +32,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       referenceElement,
       isOpen,
       title,
-      isPortal = false,
+      isPortal = true,
       arrowProps,
       ...props
     }: PopoverProps,
@@ -122,9 +122,9 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
 
     return (
       <>
-        {isOpen && isPortal
-          ? createPortal(PopoverContent, document.body)
-          : PopoverContent}
+        {isPortal
+          ? isOpen && createPortal(PopoverContent, document.body)
+          : isOpen && PopoverContent}
       </>
     );
   },

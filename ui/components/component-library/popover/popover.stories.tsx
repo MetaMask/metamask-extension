@@ -8,7 +8,6 @@ import {
   Color,
   DISPLAY,
   JustifyContent,
-  TextVariant,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize, PopoverHeader, Text } from '..';
@@ -84,7 +83,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   }, [isOpen]);
 
   // Example of how to use ref to open popover
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
@@ -95,7 +94,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
       alignItems={AlignItems.center}
     >
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         onClick={handleClick}
         // onMouseEnter={handleMouseEnter}
         // onMouseLeave={handleMouseLeave}
@@ -113,6 +112,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
           position={PopoverPosition.BottomStart}
           referenceElement={referenceElement}
           isOpen={isOpen}
+          isPortal={false}
           hasArrow
           // matchWidth
           {...args}
@@ -130,14 +130,14 @@ DefaultStory.storyName = 'Default';
 export const ReferenceElement = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
   return (
     <>
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
       ></Box>
@@ -157,14 +157,14 @@ export const ReferenceElement = ({ args }) => {
 export const Children = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
   return (
     <>
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
       ></Box>
@@ -178,7 +178,6 @@ export const Children = ({ args }) => {
           Demo of popover with children.{' '}
           <Icon size={IconSize.Inherit} name={IconName.Info} />
         </Text>
-        <Text variant={TextVariant.bodySm}>Control the content</Text>
       </Popover>
     </>
   );
@@ -188,7 +187,7 @@ export const Position = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
   const [referenceAutoElement, setReferenceAutoElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
@@ -212,7 +211,7 @@ export const Position = ({ args }) => {
         marginBottom={4}
       >
         <Box
-          ref={setButtonRef}
+          ref={setBoxRef}
           backgroundColor={BackgroundColor.primaryMuted}
           style={{ width: 400, height: 200 }}
           display={DISPLAY.FLEX}
@@ -379,14 +378,14 @@ export const Position = ({ args }) => {
 export const HasArrow = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
   return (
     <>
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
       ></Box>
@@ -415,7 +414,7 @@ export const IsOpen = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
@@ -426,7 +425,7 @@ export const IsOpen = ({ args }) => {
   return (
     <>
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
         onClick={handleClick}
@@ -452,6 +451,7 @@ export const IsOpen = ({ args }) => {
           referenceElement={referenceElement}
           hasArrow
           isOpen={isOpen}
+          isPortal={false}
           {...args}
         >
           <Text>isOpen tied to boolean</Text>
@@ -464,7 +464,7 @@ export const IsOpen = ({ args }) => {
 export const Flip = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
@@ -476,7 +476,7 @@ export const Flip = ({ args }) => {
       alignItems={AlignItems.center}
     >
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
         display={DISPLAY.FLEX}
@@ -511,7 +511,7 @@ export const Flip = ({ args }) => {
 export const PreventOverflow = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
@@ -523,7 +523,7 @@ export const PreventOverflow = ({ args }) => {
       alignItems={AlignItems.center}
     >
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
         display={DISPLAY.FLEX}
@@ -559,7 +559,7 @@ export const PreventOverflow = ({ args }) => {
 export const ReferenceHidden = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
@@ -570,7 +570,7 @@ export const ReferenceHidden = ({ args }) => {
       justifyContent={JustifyContent.center}
     >
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
         display={DISPLAY.FLEX}
@@ -606,14 +606,14 @@ export const ReferenceHidden = ({ args }) => {
 export const MatchWidth = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
-  const setButtonRef = (ref) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
 
   return (
     <>
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
       ></Box>
@@ -635,32 +635,36 @@ export const MatchWidth = ({ args }) => {
 
 export const WithPopoverHeader = ({ args }) => {
   const [refTitleElement, setRefTitleElement] = useState();
+  const [isOpen, setIsOpen] = useState(true);
 
-  const setButtonRef = (ref) => {
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const setBoxRef = (ref) => {
     setRefTitleElement(ref);
   };
 
   return (
     <>
       <Box
-        ref={setButtonRef}
+        ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
+        onClick={handleClick}
       ></Box>
       <Popover
         referenceElement={refTitleElement}
-        // backgroundColor={BackgroundColor.primaryDefault}
-        // color={Color.primaryInverse}
-        // borderColor={BorderColor.primaryDefault}
-        // arrowProps={{ borderColor: BorderColor.primaryDefault }}
-        isOpen={true}
+        isOpen={isOpen}
+        isPortal={false}
         hasArrow
         {...args}
       >
         <PopoverHeader
-          onClose={() => console.log('close')}
+          onClose={handleClick}
           onBack={() => console.log('back')}
           color={Color.inherit}
+          marginBottom={4}
         >
           Popover Title
         </PopoverHeader>
@@ -668,5 +672,50 @@ export const WithPopoverHeader = ({ args }) => {
         period.
       </Popover>
     </>
+  );
+};
+
+export const Offset = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <Box
+      style={{ height: '200vh', width: '100vw' }}
+      display={DISPLAY.FLEX}
+      justifyContent={JustifyContent.center}
+    >
+      <Box
+        ref={setBoxRef}
+        backgroundColor={BackgroundColor.primaryMuted}
+        style={{ width: 200, height: 200 }}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        textAlign={TEXT_ALIGN.CENTER}
+      >
+        Offset Demo
+      </Box>
+      <Popover
+        position={PopoverPosition.Left}
+        referenceElement={referenceElement}
+        isOpen={true}
+        {...args}
+      >
+        <Text>offset default</Text>
+      </Popover>
+      <Popover
+        position={PopoverPosition.Right}
+        referenceElement={referenceElement}
+        isOpen={true}
+        offset={[0, 32]}
+        {...args}
+      >
+        <Text>offset override to [0,32]</Text>
+      </Popover>
+    </Box>
   );
 };
