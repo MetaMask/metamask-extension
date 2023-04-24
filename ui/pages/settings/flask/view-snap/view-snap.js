@@ -54,9 +54,6 @@ function ViewSnap() {
     .map(([_, snapState]) => snapState)
     .find((snapState) => snapState.id === decodedSnapId);
 
-  console.log('==================');
-  console.log(snap);
-
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
 
   useEffect(() => {
