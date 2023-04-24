@@ -1075,6 +1075,12 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
         logError(error);
         process.exit(1);
       });
+      pipeline.on('error', (error) => {
+        // For some reason stderr doesn't work, so we use stdout
+        console.log('Pipeline failed! See details below.');
+        logError(error);
+        process.exit(1);
+      });
     }
     // trigger build pipeline instrumentations
     events.emit('configurePipeline', { pipeline, bundleStream });
