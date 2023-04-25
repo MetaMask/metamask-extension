@@ -79,7 +79,7 @@ const ConfirmAddCustodianToken = () => {
                 setShowMore(true);
               }}
             >
-              {t('ShowMore')}
+              {t('showMore')}
             </ButtonLink>
           </Box>
         )}
