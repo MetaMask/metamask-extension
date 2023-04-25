@@ -10,6 +10,9 @@ import {
   getCurrentCurrency,
   getPreferences,
   conversionRateSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -55,6 +58,9 @@ function mapStateToProps(state, ownProps) {
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    selectedAccount: getSelectedAccount(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

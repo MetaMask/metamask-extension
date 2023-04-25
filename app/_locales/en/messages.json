@@ -1970,6 +1970,9 @@
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
   },
+  "learnMoreKeystone": {
+    "message": "Learn More"
+  },
   "learnMoreUpperCase": {
     "message": "Learn more"
   },
@@ -2141,6 +2144,9 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "mismatchAccount": {
+    "message": "Your selected account ($1) is different than the account trying to sign ($2)"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
