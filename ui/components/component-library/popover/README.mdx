@@ -1,0 +1,166 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Popover } from './popover';
+
+# Popover
+
+Popover is an overlay that appears by the trigger used for menus, additional contents, and contains at least one focusable element.
+
+<Canvas>
+  <Story id="components-componentlibrary-popover--default-story" />
+</Canvas>
+
+## Props
+
+The `Popover` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={Popover} />
+
+### Reference Element
+
+The `referenceElement` prop is required and used to position the popover relative to the reference element.
+
+```jsx
+import { useState } from 'react';
+import { Popover } from '../../ui/component-library';
+
+const [referenceElement, setReferenceElement] = useState();
+
+const setBoxRef = (ref) => {
+setReferenceElement(ref);
+};
+
+<Box ref={setBoxRef}></Box>
+<Popover referenceElement={referenceElement}>Reference Element</Popover>
+```
+
+### Children
+
+Popover accepts any children and has a default padding of `4` (16px).
+
+```jsx
+import {
+  Popover,
+  Text,
+  Icon,
+  IconSize,
+  IconName,
+} from '../../ui/component-library';
+
+<Popover>
+  <Text>
+    Demo of popover with children.
+    <Icon size={IconSize.Inherit} name={IconName.Info} />
+  </Text>
+</Popover>;
+```
+
+### Position
+
+Use the `position` prop with the `PopoverPosition` enum to set the position of the popover relative to the reference element.
+
+Default is `PopoverPosition.Auto`
+
+```jsx
+import { Popover, PopoverPosition } from '../../ui/component-library';
+
+<Popover position={PopoverPosition.Auto}>Auto</Popover>
+<Popover position={PopoverPosition.AutoStart}>AutoStart</Popover>
+<Popover position={PopoverPosition.AutoEnd}>AutoEnd</Popover>
+<Popover position={PopoverPosition.Top}>Top</Popover>
+<Popover position={PopoverPosition.TopStart}>TopStart</Popover>
+<Popover position={PopoverPosition.TopEnd}>TopEnd</Popover>
+<Popover position={PopoverPosition.Right}>Right</Popover>
+<Popover position={PopoverPosition.RightStart}>RightStart</Popover>
+<Popover position={PopoverPosition.RightEnd}>RightEnd</Popover>
+<Popover position={PopoverPosition.Bottom}>Bottom</Popover>
+<Popover position={PopoverPosition.BottomStart}>BottomStart</Popover>
+<Popover position={PopoverPosition.BottomEnd}>BottomEnd</Popover>
+<Popover position={PopoverPosition.Left}>Left</Popover>
+<Popover position={PopoverPosition.LeftStart}>LeftStart</Popover>
+<Popover position={PopoverPosition.LeftEnd}>LeftEnd</Popover>
+```
+
+### Is Portal
+
+The `isPortal` prop is a boolean that when set to true, causes the Popover to be rendered as a separate DOM element at the end of the document body.
+Default `true`
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover hasArrow>Popover with arrow</Popover>;
+```
+
+### Has Arrow
+
+Use the hasArrow boolean to add an arrow to the popover.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover hasArrow>Popover with arrow</Popover>;
+```
+
+### Is Open
+
+Use the `isOpen` boolean to control the visibility of the popover.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover isOpen={true}>Popover with arrow</Popover>;
+```
+
+### Flip
+
+Use the `flip` boolean to flip the popover to the opposite side of the reference element if there is not enough space.
+For `PopoverPosition.Auto` this will become true.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover flip={true}>Flip demo</Popover>;
+```
+
+### Prevent Overflow
+
+Use the `preventOverflow` boolean to prevent the popover from overflowing the viewport.
+For `PopoverPosition.Auto` this will become true.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover preventOverflow={true}>Prevent overflow demo</Popover>;
+```
+
+### Reference Hidden
+
+Use the `referenceHidden` boolean to hide the Popover when the reference element is no longer visible in the viewport.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover referenceHidden={true}>Reference hidden demo</Popover>;
+```
+
+### Match Width
+
+Use the `matchWidth` boolean to match the width of the popover to the reference element.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover matchWidth={true}>Match width demo</Popover>;
+```
+
+### Offset
+
+Use the `offset` prop to pass an array of two numbers to offset the popover from the reference element.
+Default is `[0, 8]`
+First number controls the skidding offset and the second number controls the distance offset.
+
+```jsx
+import { Popover } from '../../ui/component-library';
+
+<Popover offset={[0, 32]}>offset override to [0,32]</Popover>;
+```

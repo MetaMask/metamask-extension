@@ -10,7 +10,7 @@ exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
       class="box mm-header-base__children box--flex-direction-row box--width-full"
     >
       <h4
-        class="box mm-text mm-text--heading-sm mm-text--text-align-center box--flex-direction-row box--color-text-default"
+        class="box mm-text mm-text--heading-sm mm-text--text-align-center box--flex-direction-row box--color-inherit"
       >
         Popover Header
       </h4>
