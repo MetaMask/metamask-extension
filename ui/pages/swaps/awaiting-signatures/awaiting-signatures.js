@@ -102,26 +102,38 @@ export default function AwaitingSignatures() {
         </Text>
         {needsTwoConfirmations && (
           <>
-            <Text variant={TextVariant.bodyMd} boxProps={{ marginTop: 2 }}>
-              <strong>{t('swapToConfirmWithHwWallet')}</strong>
+            <Text variant={TextVariant.bodyMdBold} boxProps={{ marginTop: 2 }}>
+              {t('swapToConfirmWithHwWallet')}
             </Text>
             <ul className="awaiting-signatures__steps">
               <li>
                 <SwapStepIcon stepNumber={1} />
                 {t('swapAllowSwappingOf', [
-                  <Text as="span" key="allowToken">
-                    <strong>{destinationTokenInfo?.symbol}</strong>
+                  <Text
+                    as="span"
+                    variant={TextVariant.bodyMdBold}
+                    key="allowToken"
+                  >
+                    {destinationTokenInfo?.symbol}
                   </Text>,
                 ])}
               </li>
               <li>
                 <SwapStepIcon stepNumber={2} />
                 {t('swapFromTo', [
-                  <Text as="span" key="tokenFrom">
-                    <strong>{sourceTokenInfo?.symbol}</strong>
+                  <Text
+                    as="span"
+                    variant={TextVariant.bodyMdBold}
+                    key="tokenFrom"
+                  >
+                    {sourceTokenInfo?.symbol}
                   </Text>,
-                  <Text as="span" key="tokenTo">
-                    <strong>{destinationTokenInfo?.symbol}</strong>
+                  <Text
+                    as="span"
+                    variation={TextVariant.bodyMdBold}
+                    key="tokenTo"
+                  >
+                    {destinationTokenInfo?.symbol}
                   </Text>,
                 ])}
               </li>
