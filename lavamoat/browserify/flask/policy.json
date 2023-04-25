@@ -750,6 +750,7 @@
     },
     "@metamask/controller-utils": {
       "globals": {
+        "URL": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
