@@ -1970,6 +1970,9 @@
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
   },
+   "learnMoreKeystone": {
+    "message": "Learn More"
+  },
   "learnMoreUpperCase": {
     "message": "Learn more"
   },
