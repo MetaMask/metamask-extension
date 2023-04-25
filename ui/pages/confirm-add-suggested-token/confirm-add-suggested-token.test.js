@@ -1,6 +1,11 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { acceptWatchAsset, rejectWatchAsset } from '../../store/actions';
+import {
+  acceptWatchAsset,
+  rejectWatchAsset,
+  resolvePendingApproval,
+  rejectPendingApproval,
+} from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
 import ConfirmAddSuggestedToken from '.';
@@ -35,8 +40,10 @@ const MOCK_TOKEN = {
 };
 
 jest.mock('../../store/actions', () => ({
-  acceptWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
-  rejectWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
+  acceptWatchAsset: jest.fn().mockReturnValue(Promise.resolve()),
+  rejectWatchAsset: jest.fn().mockReturnValue(Promise.resolve()),
+  resolvePendingApproval: jest.fn().mockReturnValue(Promise.resolver()),
+  rejectPendingApproval: jest.fn().mockReturnValue(Promise.resolve()),
 }));
 
 const renderComponent = (tokens = []) => {
@@ -86,6 +93,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
 
     fireEvent.click(addTokenBtn);
     expect(acceptWatchAsset).toHaveBeenCalled();
+    expect(resolvePendingApproval).toHaveBeenCalled();
   });
 
   it('should dispatch rejectWatchAsset when clicking the "Cancel" button', () => {
@@ -93,8 +101,14 @@ describe('ConfirmAddSuggestedToken Component', () => {
     const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
 
     expect(rejectWatchAsset).toHaveBeenCalledTimes(0);
+    expect(rejectPendingApproval).toHaveBeenCalledTimes(0);
+
     fireEvent.click(cancelBtn);
+
     expect(rejectWatchAsset).toHaveBeenCalledTimes(
+      MOCK_SUGGESTED_ASSETS.length,
+    );
+    expect(rejectPendingApproval).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
   });
