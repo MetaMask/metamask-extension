@@ -1,7 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
@@ -9,21 +9,21 @@ import { isNonEmptyArray } from '@metamask/controller-utils';
 import classnames from 'classnames';
 import {
   RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   EndowmentPermissions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Text,
   Icon,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,
 } from '../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import {
   Color,
   FONT_WEIGHT,
@@ -39,7 +39,7 @@ import {
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 const RIGHT_INFO_ICON = (
   <Icon name={IconName.Info} size={IconSize.Sm} color={IconColor.iconMuted} />
 );
@@ -64,7 +64,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 2,
   }),
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   [RestrictedMethods.snap_dialog]: ({ t }) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription'),
