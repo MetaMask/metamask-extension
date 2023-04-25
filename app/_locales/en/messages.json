@@ -466,6 +466,9 @@
   "average": {
     "message": "Average"
   },
+  "awaitingApproval": {
+    "message": "Awaiting approval..."
+  },
   "back": {
     "message": "Back"
   },
@@ -931,6 +934,9 @@
   },
   "custodianAccount": {
     "message": "Custodian account"
+  },
+  "custodyDeeplinkDescription": {
+    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
   },
   "custodyRefreshTokenModalDescription": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
@@ -1969,6 +1975,9 @@
   "learnMoreAboutGas": {
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
+  },
+  "learnMoreKeystone": {
+    "message": "Learn More"
   },
   "learnMoreUpperCase": {
     "message": "Learn more"
