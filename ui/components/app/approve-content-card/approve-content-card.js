@@ -168,15 +168,14 @@ export default function ApproveContentCard({
                       <Box>
                         <Text
                           variant={TextVariant.headingSm}
+                          fontWeight={FontWeight.Bold}
                           color={TextColor.TEXT_DEFAULT}
                           as="h4"
                         >
-                          <strong>
-                            {formatCurrency(
-                              fiatTransactionTotal,
-                              currentCurrency,
-                            )}
-                          </strong>
+                          {formatCurrency(
+                            fiatTransactionTotal,
+                            currentCurrency,
+                          )}
                         </Text>
                       </Box>
                     )}

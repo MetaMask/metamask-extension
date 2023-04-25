@@ -630,22 +630,25 @@ export default function BuildQuote({
               <Text variant={TextVariant.bodySm} as="h6" marginTop={0}>
                 {t('stxDescription')}
               </Text>
-              <Text as="ul" variant={TextVariant.bodySm} marginTop={3}>
-                <strong>
-                  <li>{t('stxBenefit1')}</li>
-                  <li>{t('stxBenefit2')}</li>
-                  <li>{t('stxBenefit3')}</li>
-                  <li>
-                    {t('stxBenefit4')}
-                    <Text
-                      as="span"
-                      fontWeight={FontWeight.Normal}
-                      variant={TextVariant.bodySm}
-                    >
-                      {' *'}
-                    </Text>
-                  </li>
-                </strong>
+              <Text
+                as="ul"
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Bold}
+                marginTop={3}
+              >
+                <li>{t('stxBenefit1')}</li>
+                <li>{t('stxBenefit2')}</li>
+                <li>{t('stxBenefit3')}</li>
+                <li>
+                  {t('stxBenefit4')}
+                  <Text
+                    as="span"
+                    fontWeight={FontWeight.Normal}
+                    variant={TextVariant.bodySm}
+                  >
+                    {' *'}
+                  </Text>
+                </li>
               </Text>
               <Text
                 variant={TextVariant.bodyXs}
@@ -654,13 +657,7 @@ export default function BuildQuote({
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
-                <Text
-                  as="span"
-                  variant={TextVariant.bodyXs}
-                  color={TextColor.textAlternative}
-                >
-                  <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
-                </Text>
+                <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
               </Text>
             </Box>
           </Popover>
