@@ -87,8 +87,8 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
 
     const PopoverContent = (
       <Box
-        borderColor={BorderColor.borderDefault}
-        borderRadius={BorderRadius.XL}
+        borderColor={BorderColor.borderMuted}
+        borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         role={role}
@@ -108,7 +108,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
         {children}
         {hasArrow && (
           <Box
-            borderColor={BorderColor.borderDefault}
+            borderColor={BorderColor.borderMuted}
             className={classnames('mm-popover__arrow')}
             ref={setArrowElement}
             display={DISPLAY.FLEX}

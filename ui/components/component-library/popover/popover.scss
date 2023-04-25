@@ -1,22 +1,6 @@
 
 .mm-popover {
-  // TODO: remove when using HeaderBase
-
-  &__header {
-    position: relative;
-
-    &-button-back {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    &-button-close {
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-  }
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 
   /* Hide the popper when the reference is hidden */
   &--reference-hidden[data-popper-reference-hidden="true"] {
