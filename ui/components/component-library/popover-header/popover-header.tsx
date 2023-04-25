@@ -25,7 +25,6 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
   return (
     <HeaderBase
       className={classnames('mm-popover-header', className)}
-      marginBottom={4}
       startAccessory={
         startAccessory ||
         (onBack && (

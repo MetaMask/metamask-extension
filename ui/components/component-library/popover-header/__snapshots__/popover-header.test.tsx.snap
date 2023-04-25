@@ -3,7 +3,7 @@
 exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
 <div>
   <div
-    class="box mm-header-base mm-popover-header box--margin-bottom-4 box--display-flex box--flex-direction-row box--justify-content-space-between"
+    class="box mm-header-base mm-popover-header box--display-flex box--flex-direction-row box--justify-content-space-between"
     data-testid="popover-header"
   >
     <div
