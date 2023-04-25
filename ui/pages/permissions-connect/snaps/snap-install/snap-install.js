@@ -84,13 +84,13 @@ export default function SnapInstall({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <Box
-        className="headers"
+        className="header"
         alignItems={AlignItems.center}
+        paddingLeft={4}
+        paddingRight={4}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Box paddingLeft={4} paddingRight={4}>
-          <SnapAuthorship snapId={targetSubjectMetadata.origin} />
-        </Box>
+        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!hasError && (
           <Text
             variant={TextVariant.headingLg}
@@ -100,6 +100,8 @@ export default function SnapInstall({
             {t('snapInstall')}
           </Text>
         )}
+      </Box>
+      <Box className="content">
         {isLoading && (
           <Box
             className="loader-container"
@@ -116,7 +118,7 @@ export default function SnapInstall({
         {hasPermissions && (
           <>
             <Text
-              className="headers__permission-description"
+              className="content__permission-description"
               paddingBottom={4}
               paddingLeft={4}
               paddingRight={4}

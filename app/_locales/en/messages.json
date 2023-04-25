@@ -1066,6 +1066,10 @@
   "description": {
     "message": "Description"
   },
+  "descriptionFromSnap": {
+    "message": "Description from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
   },
@@ -1331,10 +1335,7 @@
     "message": "Enable smart transactions"
   },
   "enableSnap": {
-    "message": "Enable snap"
-  },
-  "enableSnapDescription": {
-    "message": "Your installed snap will only have access to its permissions and run if it’s enabled."
+    "message": "Enable"
   },
   "enableToken": {
     "message": "enable $1",
@@ -1851,6 +1852,13 @@
   "install": {
     "message": "Install"
   },
+  "installOrigin": {
+    "message": "Install origin"
+  },
+  "installedOn": {
+    "message": "Installed on $1",
+    "description": "$1 is the date when the snap has been installed"
+  },
   "institutionalFeatures": {
     "message": "Institutional Features"
   },
@@ -2191,6 +2199,9 @@
   },
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
+  },
+  "more": {
+    "message": "more"
   },
   "moreComingSoon": {
     "message": "More coming soon..."
@@ -3576,6 +3587,10 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
+  "shortVersion": {
+    "message": "v$1",
+    "description": "$1 is the version number to show"
+  },
   "show": {
     "message": "Show"
   },
@@ -4510,7 +4525,6 @@
   "transactionFailed": {
     "message": "Transaction Failed"
   },
-
   "transactionFee": {
     "message": "Transaction fee"
   },
@@ -4737,6 +4751,9 @@
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "version": {
+    "message": "Version"
+  },
   "view": {
     "message": "View"
   },
@@ -4869,10 +4886,6 @@
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
     "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
-  },
-  "youInstalled": {
-    "message": "You installed",
-    "description": "Part of version description for installed snap"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
