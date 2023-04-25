@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Aktivieren Sie \"Smart Contract Data\" oder \"blind signing\" auf Ihrem Ledger Gerät"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Nutzen Sie Ledger Live unter Einstellungen > Erweitert"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Schließen Sie Ihr Ledger Gerät an und wählen Sie die Ethereum App aus"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Live App öffnen und entsperren"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Passen Sie an, wie Sie Ihren Ledger mit MetaMask verbinden. $1 wird empfohlen, aber andere Optionen sind verfügbar. Erfahren Sie hier mehr: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live braucht zu lange für eine Reaktion oder um eine Verbindung herzustellen. Stellen Sie sicher, dass die Ledger Live-App geöffnet und Ihr Gerät entsperrt ist."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Wenn Ihre Ledger Live-App geöffnet ist, trennen Sie bitte eine offene Ledger Live-Verbindung und schließen Sie die Ledger Live-App."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Das Gerät wurde nicht verbunden. Wenn Sie Ihren Ledger verbinden möchten, klicken Sie bitte erneut auf 'Weiter' und genehmigen Sie die HID-Verbindung",

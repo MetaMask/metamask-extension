@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Aktifkan \"data kontrak pintar\" atau \"penandatanganan buta\" pada perangkat Ledger Anda"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Aktifkan Gunakan Ledger Live di bawah Pengaturan > Lanjutan"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Sambungkan perangkat Ledger Anda dan pilih aplikasi Ethereum"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Buka dan buka Aplikasi Ledger Live"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Sesuaikan cara Anda menghubungkan Ledger ke MetaMask. Kami merekomendasikan $1, tetapi opsi lain tersedia. Baca selengkapnya di sini: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Respons Ledger Live terlalu lama atau waktu koneksi habis. Pastikan aplikasi Ledger Live terbuka dan perangkat Anda tidak terkunci."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Jika aplikasi Ledger Live Anda terbuka, putuskan koneksi Ledger Live yang terbuka dan tutup aplikasi Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Perangkat ledger tidak terhubung. Jika ingin menghubungkan Ledger Anda, klik 'Lanjutkan' lagi dan setujui koneksi HID",

@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Bật \"dữ liệu hợp đồng thông minh\" hoặc \"ký mù\" trên thiết bị Ledger của bạn"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Bật Sử Dụng Ledger Live trong Cài Đặt > Nâng Cao"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Cắm thiết bị Ledger và chọn ứng dụng Ethereum"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Mở và mở khóa Ứng Dụng Ledger Live"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Tùy chỉnh cách thức kết nối Ledger với MetaMask. Nên dùng $1, nhưng cũng có sẵn các tùy chọn khác. Đọc thêm tại đây: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Nếu ứng dụng Ledger Live của bạn đang mở, vui lòng ngắt mọi kết nối Ledger Live đang mở và đóng ứng dụng Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấn lại vào \"Tiếp tục\" và chấp thuận kết nối HID",

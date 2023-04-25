@@ -9,14 +9,12 @@ import {
   setShowTestNetworks,
   setAutoLockTimeLimit,
   setUseNonceField,
-  setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
   setDisabledRpcMethodPreference,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
-import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -28,19 +26,13 @@ export const mapStateToProps = (state) => {
     featureFlags: { sendHexData } = {},
     disabledRpcMethodPreferences,
     useNonceField,
-    ledgerTransportType,
     dismissSeedBackUpReminder,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    desktopEnabled,
-    ///: END:ONLY_INCLUDE_IN
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit = 0,
   } = getPreferences(state);
-
-  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
   return {
     warning,
@@ -49,13 +41,8 @@ export const mapStateToProps = (state) => {
     showTestNetworks,
     autoLockTimeLimit,
     useNonceField,
-    ledgerTransportType,
     dismissSeedBackUpReminder,
-    userHasALedgerAccount,
     disabledRpcMethodPreferences,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    desktopEnabled,
-    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -77,9 +64,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
-    },
-    setLedgerTransportPreference: (value) => {
-      return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));

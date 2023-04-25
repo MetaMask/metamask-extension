@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ledgerデバイスで「スマートコントラクトデータ」または「ブラインド署名」を有効にしてください"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "[設定] > [高度な設定] でLedger Liveを有効にしてください"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledgerデバイスを接続し、Ethereumアプリを選択してください"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Liveアプリを開いてロックを解除してください"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "LedgerをMetaMaskに接続する方法をカスタマイズします。$1が推奨されますが、他のオプションも利用できます。詳細はこちらをご覧ください: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Liveが応答に時間がかかりすぎているか、接続がタイムアウトしました。Ledger Liveのアプリが開かれていて、デバイスのロックが解除されていることを確認してください。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Ledger Liveアプリが開いている場合は、開いているLedger Live接続をすべて切断し、Ledger Liveアプリを閉じてください。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",

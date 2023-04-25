@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Включите «данные смарт-контракта» или «слепую подпись» на своем леджере"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Включите «Использовать Ledger Live» в разделе «Настройки» > «Дополнительно»"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Подключите леджер и выберите приложение Ethereum"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Откройте и разблокируйте приложение Ledger Live"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Настройте подключение леджера к MetaMask. Рекомендуется $1, но возможны и другие варианты. См. подробнее здесь: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Если приложение Ledger Live открыто, отключите любое открытое соединение с Ledger Live и закройте это приложение."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Леджер не подключен. Если хотите подключить леджер, нажмите «Продолжить» еще раз и подтвердите HID-подключение",

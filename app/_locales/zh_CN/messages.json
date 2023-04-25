@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "在您的 Ledger 设备上启用“智能合约数据”或“盲签”"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "在“设置 > 高级”下启用使用 Ledger Live"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "在您的 Ledger 设备中插入并选择 Ethereum 应用程序"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "打开和解锁 Ledger Live 应用程序"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "自定义连接您的 Ledger 到 Metamask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "如果您的 Ledger Live 应用程序已打开，请断开任何打开的 Ledger Live 的连接并关闭 Ledger Live 应用程序。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 设备未连接。如果您想要连接您的 Ledger，请再次点击“继续”并批准 HID 连接",

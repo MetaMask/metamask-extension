@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ενεργοποιήστε τα \"έξυπνα δεδομένα συμβολαίου\" ή \"τυφλή υπογραφή\" στη συσκευή σας Ledger"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ενεργοποίηση χρήσης Ledger Live κάτω από τις Ρυθμίσεις > Για προχωρημένους"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Συνδέστε τη συσκευή Ledger και επιλέξτε την εφαρμογή Ethereum"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Άνοιγμα και ξεκλείδωμα εφαρμογής Ledger Live"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Προσαρμόστε το πώς μπορείτε να συνδέσετε Ledger σας με το MetaMask. Το $1 συνιστάται, αλλά και άλλες επιλογές είναι διαθέσιμες. Διαβάστε περισσότερα εδώ: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Το Ledger Live καθυστερεί πάρα πολύ για να ανταποκριθεί ή τελείωσε το χρονικό όριο σύνδεσης. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοικτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Αν η εφαρμογή σας Ledger Live είναι ανοιχτή, παρακαλούμε αποσυνδέστε οποιαδήποτε ανοιχτή σύνδεση στο Ledger Live και κλείστε την εφαρμογή Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Η συσκευή ledger δεν συνδέθηκε. Αν θέλετε να συνδέσετε το Ledger, παρακαλώ κάντε κλικ στο 'Συνέχεια' ξανά και εγκρίνετε τη σύνδεση HID",

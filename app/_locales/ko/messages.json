@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ledger 장치에서 \"스마트 계약 데이터\" 또는 \"블라인드 서명\"을 활성화하세요"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "설정 > 고급에서 Ledger Live 사용을 활성화하세요."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger 장치를 연결하고 이더리움 앱을 선택하세요."
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Live 앱 열기 및 잠금 해제"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Ledger를 메타마스크에 연결하는 방법을 지정하세요. $1 방법을 추천하지만 다른 옵션도 사용할 수 있습니다. 여기에서 더 알아보세요: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Ledger Live 앱이 열려 있으면 열려 있는 Ledger Live 연결을 끊고 Ledger Live 앱을 닫으세요."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 장치가 연결되지 않았습니다. Ledger을 연결하려면 '계속'을 다시 클릭하고 HID 연결을 승인하세요.",

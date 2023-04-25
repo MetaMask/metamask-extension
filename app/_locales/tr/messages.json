@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Kayıt Defteri cihazınızda \"akıllı sözleşme verileri\" ya da \"kör imzalama\" özelliğini etkinleştirin"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ayarlar > Gelişmiş kısmının altında Ledger Live'i Kullan seçeneğini etkinleştirin"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Kayıt Defteri cihazınızı bağlayın ve Ethereum uygulamasını seçin"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Live Uygulamasını açın ve kilidini açın"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Kayıt Defterinizi MetaMask'a nasıl bağladığınızı özelleştirin. $1 önerilir ancak başka seçenekler de mevcuttur. Buradan daha fazlasını okuyun: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Ledger Live uygulamanız açıksa lütfen her türlü açık Ledger Live bağlantısını kesin ve Ledger Live uygulamasını kapatın."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Kayıt defteri cihazı bağlı değil. Kayıt Defterinizi bağlamak istiyorsanız lütfen \"Devam Et\" düğmesine yeniden tıklayın ve HID bağlantısını onaylayın",

@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "अपने लेजर डिवाइस पर \"स्मार्ट कॉन्ट्रैक्ट डेटा\" या \"ब्लाइंड साइनिंग\" इनेबल करें"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "सेटिंग्स> एडवांस के तहत उपयोग लेजर लाइव इनेबल करें"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने लेजर डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "लेजर लाइव ऐप खोलें और अनलॉक करें"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "अपने लेजर को MetaMask से कैसे कनेक्ट करना है, यह अनुकूलित करें। $1 की अनुशंसा की जाती है, लेकिन अन्य विकल्प उपलब्ध हैं। यहां और पढ़ें: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन समयबाह्य हो गया है। सुनिश्चित करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "यदि आपका लेजर लाइव ऐप खुला है, तो कृपया किसी भी खुले लेजर लाइव कनेक्शन को डिस्कनेक्ट करें और लेजर लाइव ऐप को बंद करें।"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "लेजर डिवाइस कनेक्ट नहीं था। यदि आप अपना लेजर कनेक्ट करना चाहते हैं, तो कृपया 'जारी रखें' पर फिर से क्लिक करें और HID कनेक्शन को स्वीकृत करें",

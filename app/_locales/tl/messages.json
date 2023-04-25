@@ -1825,14 +1825,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Paganahin ang \"smart contract data\" o \"may takip na pagpirma\" sa iyong Ledger device"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Paganahin ang Gamitin ang Ledger Live sa ilalim ng Settings > Advanced"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "I-plug in ang iyong Ledger device at piliin ang Ethereum app"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Buksan at i-unlock ang Ledger Live App"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "I-customize kung paano ka kokonekta sa iyong Ledger sa MetaMask. Ang $1 ay nirerekomenda, pero ang ibang mga opsyon ay available. Magbasa pa dito: $2",
@@ -1853,9 +1847,6 @@
   },
   "ledgerTimeout": {
     "message": "Masyadong natatagalan ang Ledger Live upang tumugon o mag-timeout ng koneksyon. Tiyaking nakabukas ang Ledger Live app at naka-unlock ang iyong device."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Kung bukas ang iyong Ledger Live app, mangyaring idiskonekta ang anumang bukas na koneksyon sa Ledger Live at isara ang Ledger Live app."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Hindi nakakonekta ang ledger device. Kung nais mong ikonekta ang iyong Ledger, mangyaring i-click muli ang 'Magpatuloy' at aprubahan ang HID na koneksyon",

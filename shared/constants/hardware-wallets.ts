@@ -53,7 +53,6 @@ export enum HardwareAffiliateTutorialLinks {
  * Used for setting the users preference for ledger transport type
  */
 export enum LedgerTransportTypes {
-  live = 'ledgerLive',
   webhid = 'webhid',
   u2f = 'u2f',
 }

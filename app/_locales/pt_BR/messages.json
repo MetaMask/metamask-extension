@@ -1221,14 +1221,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ative \"dados de contrato inteligente\" ou \"assinatura cega\" no seu dispositivo Ledger"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ative Utilizar Ledger Live em Configurações > Avançado"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Conecte o seu dispositivo Ledger e selecione o app Ethereum"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Abra e desbloqueie o app Ledger Live"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Personalize como conectar sua Ledger à MetaMask. Recomenda-se utilizar $1, mas há outras opções. Leia mais aqui: $2",
@@ -1249,9 +1243,6 @@
   },
   "ledgerTimeout": {
     "message": "O Ledger Live está demorando muito para responder ou a conexão expirou. Certifique-se de que o aplicativo do Ledger Live esteja aberto e que seu dispositivo esteja desbloqueado."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Se o seu aplicativo do Ledger Live estiver aberto, desconecte qualquer conexão aberta com o Ledger Live e feche o aplicativo do Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "O dispositivo ledger não foi conectado. Se deseja conectar seu Ledger, clique em \"Continuar\" novamente e aprove a conexão HID",

@@ -7,10 +7,7 @@ import {
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import {
-  PLATFORM_FIREFOX,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 
 import {
   setLedgerWebHidConnectedStatus,
@@ -26,10 +23,7 @@ import {
   TEXT_ALIGN,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import {
-  getPlatform,
-  getEnvironmentType,
-} from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 
@@ -121,10 +115,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
     };
   }, [dispatch]);
 
-  const usingLedgerLive = ledgerTransportType === LedgerTransportTypes.live;
   const usingWebHID = ledgerTransportType === LedgerTransportTypes.webhid;
-
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
   return (
     <div>
@@ -132,14 +123,6 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         <BannerAlert severity={SEVERITIES.INFO}>
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepOne')}`,
-              !isFirefox && usingLedgerLive,
-            )}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepTwo')}`,
-              !isFirefox && usingLedgerLive,
-            )}
             {renderInstructionStep(
               `• ${t('ledgerConnectionInstructionStepThree')}`,
             )}

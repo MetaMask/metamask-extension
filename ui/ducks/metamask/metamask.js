@@ -398,7 +398,7 @@ export function findKeyringForAddress(state, address) {
  * Given the redux state object, returns the users preferred ledger transport type
  *
  * @param {object} state - the redux state object
- * @returns {string} The users preferred ledger transport type. One of'ledgerLive', 'webhid' or 'u2f'
+ * @returns {string} The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
  */
 export function getLedgerTransportType(state) {
   return state.metamask.ledgerTransportType;
