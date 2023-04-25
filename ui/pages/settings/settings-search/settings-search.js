@@ -9,10 +9,7 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../../components/component-library/icon/deprecated';
+import { Icon, IconName } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapsRouteObjects } from '../../../selectors';
@@ -88,7 +85,7 @@ export default function SettingsSearch({
             onClick={() => handleSearch('')}
             style={{ cursor: 'pointer' }}
           >
-            <Icon name={ICON_NAMES.CLOSE} color={IconColor.iconDefault} />
+            <Icon name={IconName.Close} color={IconColor.iconDefault} />
           </InputAdornment>
         )}
       </>
