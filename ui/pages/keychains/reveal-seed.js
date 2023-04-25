@@ -28,7 +28,7 @@ import {
   Button,
   TextField,
   HelpText,
-  BUTTON_VARIANTS,
+  BUTTON_VARIANT,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
@@ -202,7 +202,7 @@ const RevealSeedPage = () => {
         <Button
           width={BLOCK_SIZES.FULL}
           size={Size.LG}
-          variant={BUTTON_VARIANTS.SECONDARY}
+          variant={BUTTON_VARIANT.SECONDARY}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
@@ -241,7 +241,7 @@ const RevealSeedPage = () => {
     return (
       <Box marginTop="auto">
         <Button
-          variant={BUTTON_VARIANTS.SECONDARY}
+          variant={BUTTON_VARIANT.SECONDARY}
           width={BLOCK_SIZES.FULL}
           size={Size.LG}
           onClick={() => history.push(mostRecentOverviewPage)}
@@ -278,7 +278,7 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription1', [
           <Button
             key="srp-learn-srp"
-            variant={BUTTON_VARIANTS.LINK}
+            variant={BUTTON_VARIANT.LINK}
             size={BUTTON_SIZES.INHERIT}
             as="a"
             href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
@@ -300,7 +300,7 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription2', [
           <Button
             key="srp-learn-more-non-custodial"
-            variant={BUTTON_VARIANTS.LINK}
+            variant={BUTTON_VARIANT.LINK}
             size={BUTTON_SIZES.INHERIT}
             as="a"
             href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}

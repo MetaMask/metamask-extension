@@ -14,7 +14,7 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { AvatarBase } from './avatar-base';
-export { Button, BUTTON_VARIANTS, BUTTON_SIZES } from './button';
+export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';

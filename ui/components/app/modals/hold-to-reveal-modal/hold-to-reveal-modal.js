@@ -5,7 +5,7 @@ import Box from '../../../ui/box';
 import {
   Text,
   Button,
-  BUTTON_VARIANTS,
+  BUTTON_VARIANT,
   ButtonIcon,
   IconName,
 } from '../../../component-library';
@@ -86,7 +86,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
             </Text>,
             <Button
               key="hold-to-reveal-5"
-              variant={BUTTON_VARIANTS.LINK}
+              variant={BUTTON_VARIANT.LINK}
               size={Size.auto}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"

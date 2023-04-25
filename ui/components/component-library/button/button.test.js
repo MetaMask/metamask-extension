@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconName } from '..';
-import { BUTTON_SIZES, BUTTON_VARIANTS } from './button.constants';
+import { BUTTON_SIZES, BUTTON_VARIANT } from './button.constants';
 import { Button } from './button';
 
 describe('Button', () => {
@@ -47,33 +47,33 @@ describe('Button', () => {
     const { getByTestId, container } = render(
       <>
         <Button
-          variant={BUTTON_VARIANTS.PRIMARY}
-          data-testid={BUTTON_VARIANTS.PRIMARY}
+          variant={BUTTON_VARIANT.PRIMARY}
+          data-testid={BUTTON_VARIANT.PRIMARY}
         >
           Button
         </Button>
         <Button
-          variant={BUTTON_VARIANTS.SECONDARY}
-          data-testid={BUTTON_VARIANTS.SECONDARY}
+          variant={BUTTON_VARIANT.SECONDARY}
+          data-testid={BUTTON_VARIANT.SECONDARY}
         >
           Button
         </Button>
         <Button
-          variant={BUTTON_VARIANTS.LINK}
-          data-testid={BUTTON_VARIANTS.LINK}
+          variant={BUTTON_VARIANT.LINK}
+          data-testid={BUTTON_VARIANT.LINK}
         >
           Button
         </Button>
       </>,
     );
-    expect(getByTestId(BUTTON_VARIANTS.PRIMARY)).toHaveClass(
-      `mm-button-${BUTTON_VARIANTS.PRIMARY}`,
+    expect(getByTestId(BUTTON_VARIANT.PRIMARY)).toHaveClass(
+      `mm-button-${BUTTON_VARIANT.PRIMARY}`,
     );
-    expect(getByTestId(BUTTON_VARIANTS.SECONDARY)).toHaveClass(
-      `mm-button-${BUTTON_VARIANTS.SECONDARY}`,
+    expect(getByTestId(BUTTON_VARIANT.SECONDARY)).toHaveClass(
+      `mm-button-${BUTTON_VARIANT.SECONDARY}`,
     );
-    expect(getByTestId(BUTTON_VARIANTS.LINK)).toHaveClass(
-      `mm-button-${BUTTON_VARIANTS.LINK}`,
+    expect(getByTestId(BUTTON_VARIANT.LINK)).toHaveClass(
+      `mm-button-${BUTTON_VARIANT.LINK}`,
     );
     expect(container).toMatchSnapshot();
   });
@@ -83,7 +83,7 @@ describe('Button', () => {
       <>
         <Button
           size={BUTTON_SIZES.INHERIT}
-          variant={BUTTON_VARIANTS.LINK}
+          variant={BUTTON_VARIANT.LINK}
           data-testid={BUTTON_SIZES.INHERIT}
         >
           Button {BUTTON_SIZES.INHERIT}

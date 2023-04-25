@@ -11,7 +11,7 @@ import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import README from './README.mdx';
-import { Button, BUTTON_VARIANTS } from '.';
+import { Button, BUTTON_VARIANT } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -86,7 +86,7 @@ export default {
       options: Object.values(BUTTON_LINK_SIZES),
     },
     variant: {
-      options: Object.values(BUTTON_VARIANTS),
+      options: Object.values(BUTTON_VARIANT),
       control: 'select',
     },
     marginTop: {
@@ -121,13 +121,13 @@ DefaultStory.storyName = 'Default';
 
 export const Variant = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <Button variant={BUTTON_VARIANTS.PRIMARY} {...args}>
+    <Button variant={BUTTON_VARIANT.PRIMARY} {...args}>
       Button Primary
     </Button>
-    <Button variant={BUTTON_VARIANTS.SECONDARY} {...args}>
+    <Button variant={BUTTON_VARIANT.SECONDARY} {...args}>
       Button Secondary
     </Button>
-    <Button variant={BUTTON_VARIANTS.LINK} {...args}>
+    <Button variant={BUTTON_VARIANT.LINK} {...args}>
       Button Link
     </Button>
   </Box>
@@ -150,12 +150,12 @@ export const SizeStory = (args) => (
       <Button {...args} size={Size.LG}>
         Large Button
       </Button>
-      <Button {...args} variant={BUTTON_VARIANTS.LINK}>
+      <Button {...args} variant={BUTTON_VARIANT.LINK}>
         Auto ButtonLink
       </Button>
     </Box>
     <Text variant={TextVariant.bodySm}>
-      <Button {...args} variant={BUTTON_VARIANTS.LINK} size={Size.inherit}>
+      <Button {...args} variant={BUTTON_VARIANT.LINK} size={Size.inherit}>
         Button Inherit
       </Button>{' '}
       inherits the font-size of the parent element. Inherit size only used for

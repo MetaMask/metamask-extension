@@ -27,24 +27,24 @@ The `Button` accepts all [ButtonPrimary](/docs/components-componentlibrary-butto
 
 ### Variant
 
-Use the `variant` prop and the `BUTTON_VARIANTS` object from `./button.constants.js` to change the `Button` variant.
+Use the `variant` prop and the `BUTTON_VARIANT` object from `./button.constants.js` to change the `Button` variant.
 
 Possible variants include:
 
-- `BUTTON_VARIANTS.PRIMARY`
-- `BUTTON_VARIANTS.SECONDARY`
-- `BUTTON_VARIANTS.LINK`
+- `BUTTON_VARIANT.PRIMARY`
+- `BUTTON_VARIANT.SECONDARY`
+- `BUTTON_VARIANT.LINK`
 
 <Canvas>
   <Story id="components-componentlibrary-button--variant" />
 </Canvas>
 
 ```jsx
-import { Button, BUTTON_VARIANTS } from '../ui/component-library/button';
+import { Button, BUTTON_VARIANT } from '../ui/component-library/button';
 
-<Button variant={BUTTON_VARIANTS.PRIMARY}>Button Primary</Button>
-<Button variant={BUTTON_VARIANTS.SECONDARY}>Button Secondary</Button>
-<Button variant={BUTTON_VARIANTS.LINK}>Button Link</Button>
+<Button variant={BUTTON_VARIANT.PRIMARY}>Button Primary</Button>
+<Button variant={BUTTON_VARIANT.SECONDARY}>Button Secondary</Button>
+<Button variant={BUTTON_VARIANT.LINK}>Button Link</Button>
 ```
 
 ### Size

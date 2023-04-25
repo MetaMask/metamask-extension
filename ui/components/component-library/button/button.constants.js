@@ -8,7 +8,7 @@ export const BUTTON_SIZES = {
   AUTO: Size.auto,
 };
 
-export const BUTTON_VARIANTS = {
+export const BUTTON_VARIANT = {
   PRIMARY: 'primary',
   SECONDARY: 'secondary',
   LINK: 'link',

@@ -24,7 +24,7 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Button, BUTTON_VARIANTS, Text } from '../../component-library';
+import { Button, BUTTON_VARIANT, Text } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -97,7 +97,7 @@ export const NetworkListMenu = ({ onClose }) => {
         </Box>
         <Box padding={4}>
           <Button
-            variant={BUTTON_VARIANTS.SECONDARY}
+            variant={BUTTON_VARIANT.SECONDARY}
             block
             onClick={() => {
               isFullScreen
