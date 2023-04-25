@@ -1,29 +1,16 @@
-import log from 'loglevel';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import {
   closeCurrentNotificationWindow,
   hideModal,
   showModal,
-  showLoadingIndication,
-  hideLoadingIndication,
-  setUnconnectedAccountAlertShown,
-  displayWarning,
-  forceUpdateMetamaskState,
-  _setSelectedAddress,
 } from '../actions';
 import {
   CombinedBackgroundAndReduxState,
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from '../store';
-import { getUnconnectedAccountAlertEnabledness } from '../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
-  getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
-} from '../../selectors';
-import { switchedToUnconnectedAccount } from '../../ducks/alerts/unconnected-account';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,

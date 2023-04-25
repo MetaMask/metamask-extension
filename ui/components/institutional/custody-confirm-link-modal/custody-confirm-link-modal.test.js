@@ -160,7 +160,7 @@ describe('Custody Confirm Link', () => {
     expect(getByText(mockModalStateText)).toBeVisible();
   });
 
-  it.only('shows action text that comes from modal state if defined', () => {
+  it('shows action text that comes from modal state if defined', () => {
     const mockModalStateActionText = 'test modal state action text';
     const customMockStore = {
       ...mockStore,
