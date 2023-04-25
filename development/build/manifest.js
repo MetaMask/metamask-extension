@@ -3,9 +3,9 @@ const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep, capitalize } = require('lodash');
 
-const mv3BaseManifest = require('../../app/manifest/v3/_base.json');
-const mv2BaseManifest = require('../../app/manifest/v2/_base.json');
-
+const baseManifest = process.env.ENABLE_MV3
+  ? require('../../app/manifest/v3/_base.json')
+  : require('../../app/manifest/v2/_base.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
@@ -22,11 +22,6 @@ function createManifestTasks({
   shouldIncludeSnow,
   entryTask,
 }) {
-  // TODO: remove this filter for firefox once MV3 is supported in it
-  const mv3BrowserPlatforms = browserPlatforms.filter(
-    (platform) => platform !== 'firefox',
-  );
-
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     return Promise.all(
@@ -41,10 +36,6 @@ function createManifestTasks({
             `${platform}.json`,
           ),
         );
-        const baseManifest =
-          process.env.ENABLE_MV3 && mv3BrowserPlatforms.includes(platform)
-            ? mv3BaseManifest
-            : mv2BaseManifest;
         const result = mergeWith(
           cloneDeep(baseManifest),
           platformModifications,
