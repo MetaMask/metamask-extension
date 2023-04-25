@@ -116,8 +116,6 @@ function ViewSnap() {
     setIsDescriptionOpen(true);
   };
 
-  console.log('isOverflowing: ', isOverflowing);
-
   return (
     <Box
       className="view-snap"
@@ -135,7 +133,7 @@ function ViewSnap() {
             })}
             ref={descriptionRef}
           >
-            <Text>{snap.manifest.description}</Text>
+            <Text>{snap?.manifest.description}</Text>
             {shouldDisplayMoreButton && (
               <Button
                 className="view-snap__description__more-button"

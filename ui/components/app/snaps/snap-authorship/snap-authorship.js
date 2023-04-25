@@ -16,6 +16,7 @@ import {
   JustifyContent,
   BorderStyle,
   Color,
+  BorderRadius,
 } from '../../../../helpers/constants/design-system';
 import {
   formatDate,
@@ -54,10 +55,6 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
 
   const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
-  if (expanded && !snap) {
-    throw new Error("Can't expand SnapAuthorship, the snap object is missing.");
-  }
-
   // Expanded data
   const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length
@@ -66,10 +63,10 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
   const installOrigin = useOriginMetadata(installInfo?.origin);
 
   const onToggle = () => {
-    if (snap.enabled) {
-      dispatch(disableSnap(snap.id));
+    if (snap?.enabled) {
+      dispatch(disableSnap(snap?.id));
     } else {
-      dispatch(enableSnap(snap.id));
+      dispatch(enableSnap(snap?.id));
     }
   };
 
@@ -80,9 +77,8 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
       width={BLOCK_SIZES.FULL}
-      style={{
-        borderRadius: expanded ? `24px 24px 8px 8px` : '999px',
-      }}
+      borderRadius={expanded ? BorderRadius.LG : BorderRadius.pill}
+      onClick={expanded}
     >
       <Box
         alignItems={AlignItems.center}
@@ -136,7 +132,7 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
             <Text variant={TextVariant.bodyMdBold}>{t('enableSnap')}</Text>
             <Box style={{ maxWidth: '52px' }}>
               <Tooltip interactive position="left" html={t('snapsToggle')}>
-                <ToggleButton value={snap.enabled} onToggle={onToggle} />
+                <ToggleButton value={snap?.enabled} onToggle={onToggle} />
               </Tooltip>
             </Box>
           </Box>
