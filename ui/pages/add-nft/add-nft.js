@@ -37,10 +37,10 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
+  ButtonIcon,
+  IconName,
+  ButtonIconSize,
+} from '../../components/component-library';
 
 export default function AddNft() {
   const t = useI18nContext();
@@ -163,8 +163,8 @@ export default function AddNft() {
                     </Typography>
                     <ButtonIcon
                       className="add-nft__close"
-                      iconName={ICON_NAMES.CLOSE}
-                      size={ICON_SIZES.SM}
+                      iconName={IconName.Close}
+                      size={ButtonIconSize.Sm}
                       ariaLabel={t('close')}
                       data-testid="add-nft-error-close"
                       onClick={() => setNftAddFailed(false)}
