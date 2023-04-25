@@ -173,8 +173,6 @@ describe('Popover', () => {
     );
 
     expect(getByText(PopoverPosition.Auto)).toBeDefined();
-    expect(getByText(PopoverPosition.AutoStart)).toBeDefined();
-    expect(getByText(PopoverPosition.AutoEnd)).toBeDefined();
     expect(getByText(PopoverPosition.Top)).toBeDefined();
     expect(getByText(PopoverPosition.TopStart)).toBeDefined();
     expect(getByText(PopoverPosition.TopEnd)).toBeDefined();

@@ -622,6 +622,7 @@ export const ReferenceHidden = ({ args }) => {
         position={PopoverPosition.BottomStart}
         referenceElement={referenceElement}
         isOpen={true}
+        referenceHidden={false}
         hasArrow
         {...args}
       >
@@ -631,7 +632,6 @@ export const ReferenceHidden = ({ args }) => {
         position={PopoverPosition.BottomEnd}
         referenceElement={referenceElement}
         hasArrow
-        referenceHidden
         isOpen={true}
         {...args}
       >
