@@ -312,7 +312,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:webassembly']]: ({ t }) => ({
     label: t('permission_webAssembly'),
     description: t('permission_webAssemblyDescription'),
-    leftIcon: 'fas fa-microchip',
+    leftIcon: ICON_NAMES.DOCUMENT_CODE,
     rightIcon: null,
     weight: 2,
   }),
