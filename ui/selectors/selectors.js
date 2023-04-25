@@ -55,6 +55,10 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapIdPrefix,
+  getSnapName,
+  ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
@@ -1453,5 +1457,27 @@ export function getUseCurrencyRateCheck(state) {
  */
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * To get all installed snaps with proper metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getSnapsList(state) {
+  const snaps = getSnaps(state);
+  return Object.entries(snaps).map(([key, snap]) => {
+    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+
+    return {
+      key,
+      id: snap.id,
+      packageName: removeSnapIdPrefix(snap.id),
+      name: getSnapName(snap.id, targetSubjectMetadata),
+    };
+  });
 }
 ///: END:ONLY_INCLUDE_IN

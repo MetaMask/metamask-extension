@@ -28,10 +28,11 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
-  ICON_NAMES,
+  ButtonIcon,
   Icon,
-} from '../../../components/component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../../components/component-library';
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -272,7 +273,7 @@ export default class ConfirmApproveContent extends Component {
               onClick={() => copyToClipboard(toAddress)}
               color={IconColor.iconDefault}
               iconName={
-                this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                this.state.copied ? IconName.CopySuccess : IconName.Copy
               }
               title={
                 this.state.copied
@@ -664,7 +665,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
           )}
           {this.renderApproveContentCard({
-            symbol: <Icon name={ICON_NAMES.TAG} />,
+            symbol: <Icon name={IconName.Tag} />,
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,

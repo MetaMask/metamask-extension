@@ -695,10 +695,6 @@
     "message": "$1 tidak terhubung ke situs mana pun.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Snap $1 terhubung ke situs-situs ini. Token ini memiliki akses ke izin yang tercantum di atas. \t",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Menghubungkan..."
   },
@@ -1354,18 +1350,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Lihat detailnya",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Ditambahkan di",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "dari",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -3227,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Tidak menemukan hasil yang cocok."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Tampil"
   },
@@ -3304,14 +3284,6 @@
   "smartTransaction": {
     "message": "Transaksi pintar"
   },
-  "snapAccess": {
-    "message": "Snap $1 memiliki akses ke:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Ditambahkan pada $1 dari $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Konten ini berasal dari $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3347,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Kelola Snap Anda"
-  },
-  "snapsStatus": {
-    "message": "Status snap tergantung pada aktivitas."
   },
   "snapsToggle": {
     "message": "Snap hanya akan beroperasi jika diaktifkan"
