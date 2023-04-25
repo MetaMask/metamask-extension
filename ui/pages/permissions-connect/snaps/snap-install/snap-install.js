@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
+import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
@@ -15,12 +15,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
+import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
-import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
+import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 
 export default function SnapInstall({
   request,

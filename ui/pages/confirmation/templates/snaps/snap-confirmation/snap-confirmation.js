@@ -1,4 +1,4 @@
-import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
+import { mapToTemplate } from '../../../../../components/app/snaps/snap-ui-renderer';
 import { DelineatorType } from '../../../../../helpers/constants/flask';
 
 function getValues(pendingApproval, t, actions) {
@@ -29,13 +29,15 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    submitText: t('ok'),
-    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, null),
+    cancelText: t('reject'),
+    submitText: t('approveButtonText'),
+    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
+    onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
   };
 }
 
-const snapAlert = {
+const snapConfirmation = {
   getValues,
 };
 
-export default snapAlert;
+export default snapConfirmation;

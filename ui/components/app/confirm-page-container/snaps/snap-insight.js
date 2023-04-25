@@ -13,13 +13,13 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
+import { useTransactionInsightSnap } from '../../../../hooks/snaps/useTransactionInsightSnap';
 import Box from '../../../ui/box/box';
-import { SnapUIRenderer } from '../../flask/snap-ui-renderer';
-import { SnapDelineator } from '../../flask/snap-delineator';
+import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
+import { SnapDelineator } from '../../snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/flask';
 import { getSnapName } from '../../../../helpers/utils/util';
-import { Copyable } from '../../flask/copyable';
+import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
 export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
