@@ -2125,6 +2125,9 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mismatchAccount": {
+    "message": "Your selected account ($1) is different than the account trying to sign ($2)"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
