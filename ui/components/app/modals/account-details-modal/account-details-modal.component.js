@@ -15,6 +15,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { Text } from '../../../component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
@@ -133,9 +138,16 @@ export default class AccountDetailsModal extends Component {
               showExportPrivateKeyModal();
             }}
           >
-            {process.env.MULTICHAIN
-              ? this.context.t('showPrivateKey')
-              : this.context.t('exportPrivateKey')}
+            {process.env.MULTICHAIN ? (
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.primaryDefault}
+              >
+                {this.context.t('showPrivateKey')}
+              </Text>
+            ) : (
+              this.context.t('exportPrivateKey')
+            )}
           </Button>
         )}
       </AccountModalContainer>
