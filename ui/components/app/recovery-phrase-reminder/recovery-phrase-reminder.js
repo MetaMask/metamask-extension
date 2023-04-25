@@ -13,7 +13,7 @@ import {
   TEXT_ALIGN,
   TextVariant,
   BLOCK_SIZES,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -48,7 +48,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
             <Text
               as="li"
               color={TextColor.textDefault}
-              fontWeight={FONT_WEIGHT.BOLD}
+              fontWeight={FontWeight.Bold}
             >
               {t('recoveryPhraseReminderItemOne')}
             </Text>
