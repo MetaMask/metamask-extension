@@ -13,7 +13,12 @@ import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
-import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
+import {
+  rejectWatchAsset,
+  acceptWatchAsset,
+  resolvePendingApproval,
+  rejectPendingApproval,
+} from '../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -119,6 +124,7 @@ const ConfirmAddSuggestedToken = () => {
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
       suggestedAssets.map(async ({ asset, id }) => {
+        await dispatch(resolvePendingApproval(id), null);
         await dispatch(acceptWatchAsset(id));
 
         trackEvent({
@@ -203,7 +209,12 @@ const ConfirmAddSuggestedToken = () => {
         submitText={t('addToken')}
         onCancel={async () => {
           await Promise.all(
-            suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
+            suggestedAssets.map(({ id }) => {
+              return Promise.all([
+                dispatch(rejectWatchAsset(id)),
+                dispatch(resolvePendingApproval(id), null),
+              ]);
+            }),
           );
           history.push(mostRecentOverviewPage);
         }}
