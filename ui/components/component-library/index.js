@@ -40,4 +40,4 @@ export { BannerBase } from './banner-base';
 export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
-export { Popover, PopoverPosition } from './popover';
+export { Popover, PopoverPosition, PopoverRole } from './popover';

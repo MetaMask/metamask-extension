@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize, PopoverHeader, Text } from '..';
 import README from './README.mdx';
-import { Popover, PopoverPosition } from '.';
+import { Popover, PopoverPosition, PopoverRole } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/Popover',
@@ -28,6 +28,10 @@ export default {
     },
     position: {
       options: PopoverPosition,
+      control: 'select',
+    },
+    role: {
+      options: PopoverRole,
       control: 'select',
     },
     className: {
@@ -667,6 +671,52 @@ export const MatchWidth = ({ args }) => {
         </Text>
       </Popover>
     </>
+  );
+};
+
+export const Role = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <Box
+      style={{ height: '100vh', width: '100vw' }}
+      display={DISPLAY.FLEX}
+      justifyContent={JustifyContent.center}
+    >
+      <Box
+        ref={setBoxRef}
+        backgroundColor={BackgroundColor.primaryMuted}
+        style={{ width: 200, height: 200 }}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        textAlign={TEXT_ALIGN.CENTER}
+      >
+        Inspect to view role
+      </Box>
+      <Popover
+        position={PopoverPosition.Left}
+        role={PopoverRole.Dialog}
+        referenceElement={referenceElement}
+        isOpen={true}
+        {...args}
+      >
+        <Text>{PopoverRole.Dialog}</Text>
+      </Popover>
+      <Popover
+        position={PopoverPosition.Right}
+        role={PopoverRole.Tooltip}
+        referenceElement={referenceElement}
+        isOpen={true}
+        {...args}
+      >
+        <Text>{PopoverRole.Tooltip}</Text>
+      </Popover>
+    </Box>
   );
 };
 

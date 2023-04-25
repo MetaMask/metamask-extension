@@ -16,6 +16,11 @@ export enum PopoverPosition {
   LeftEnd = 'left-end',
 }
 
+export enum PopoverRole {
+  Tooltip = 'tooltip',
+  Dialog = 'dialog',
+}
+
 export interface PopoverProps extends BoxProps {
   /**
    * The contents within the Popover
@@ -29,6 +34,10 @@ export interface PopoverProps extends BoxProps {
    * The position of the Popover. Possible values could be  PopoverPosition.Auto, PopoverPosition.AutoStart, PopoverPosition.AutoEnd, PopoverPosition.Top, PopoverPosition.TopStart, PopoverPosition.TopEnd, PopoverPosition.Right, PopoverPosition.RightStart, PopoverPosition.RightEnd, PopoverPosition.Bottom, PopoverPosition.BottomStart, PopoverPosition.BottomEnd, PopoverPosition.Left, PopoverPosition.LeftStart, PopoverPosition.LeftEnd
    */
   position?: PopoverPosition;
+  /**
+   * Use `PopoverRole.Dialog` if the content is interactive, or `PopoverRole.Tooltip` for purely informational popovers.
+   */
+  role?: PopoverRole;
   /**
    * Boolean to show or hide the Popover arrow pointing to the reference element
    * Default: false

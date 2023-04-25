@@ -11,7 +11,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { PopoverPosition, PopoverProps } from '.';
+import { PopoverPosition, PopoverProps, PopoverRole } from '.';
 
 interface PopoverRef {
   closePopover: () => void;
@@ -23,6 +23,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       children,
       className = '',
       position = PopoverPosition.Auto,
+      role = PopoverRole.Tooltip,
       hasArrow = false,
       matchWidth,
       preventOverflow = false,
@@ -90,6 +91,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
         borderRadius={BorderRadius.XL}
         backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
+        role={role}
         className={classnames(
           'mm-popover',
           {
