@@ -9,8 +9,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getSnapInstallOrUpdateRequests,
   getRequestState,
-  getRequestType,
   ///: END:ONLY_INCLUDE_IN
+  getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
