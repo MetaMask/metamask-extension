@@ -107,19 +107,16 @@ const Template: ComponentStory<typeof Popover> = (args) => {
       >
         Click to toggle popover
       </Box>
-      {isOpen && (
-        <Popover
-          position={PopoverPosition.BottomStart}
-          referenceElement={referenceElement}
-          isOpen={isOpen}
-          isPortal={false}
-          hasArrow
-          // matchWidth
-          {...args}
-        >
-          write a description here about a popover
-        </Popover>
-      )}
+      <Popover
+        position={PopoverPosition.BottomStart}
+        referenceElement={referenceElement}
+        isOpen={isOpen}
+        isPortal={false}
+        hasArrow
+        {...args}
+      >
+        Popover demo without PopoverHeader
+      </Popover>
     </Box>
   );
 };
