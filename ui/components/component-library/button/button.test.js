@@ -58,10 +58,7 @@ describe('Button', () => {
         >
           Button
         </Button>
-        <Button
-          variant={BUTTON_VARIANT.LINK}
-          data-testid={BUTTON_VARIANT.LINK}
-        >
+        <Button variant={BUTTON_VARIANT.LINK} data-testid={BUTTON_VARIANT.LINK}>
           Button
         </Button>
       </>,
