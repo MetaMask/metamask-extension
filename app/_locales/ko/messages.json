@@ -1828,16 +1828,8 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger 장치를 연결하고 이더리움 앱을 선택하세요."
   },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Ledger를 메타마스크에 연결하는 방법을 지정하세요. $1 방법을 추천하지만 다른 옵션도 사용할 수 있습니다. 여기에서 더 알아보세요: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 장치를 열지 못했습니다. Ledger가 다른 소프트웨어에 연결되어 있을 수 있습니다. Ledger Live 또는 Ledger 장치에 연결된 다른 응용 프로그램을 닫고 다시 연결하세요."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 앱"

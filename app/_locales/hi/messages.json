@@ -1828,16 +1828,8 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने लेजर डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
   },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "अपने लेजर को MetaMask से कैसे कनेक्ट करना है, यह अनुकूलित करें। $1 की अनुशंसा की जाती है, लेकिन अन्य विकल्प उपलब्ध हैं। यहां और पढ़ें: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "लेजर डिवाइस खोलने में विफल रहा। आपका लेजर अन्य सॉफ्टवेयर से कनेक्ट हो सकता है। कृपया लेजर लाइव या अपने लेजर डिवाइस से जुड़े अन्य ऐप्लिकेशन को बंद करें, और फिर से कनेक्ट करने का प्रयास करें।"
-  },
-  "ledgerLive": {
-    "message": "लेजर लाइव",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"

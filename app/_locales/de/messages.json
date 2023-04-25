@@ -1828,16 +1828,8 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Schließen Sie Ihr Ledger Gerät an und wählen Sie die Ethereum App aus"
   },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Passen Sie an, wie Sie Ihren Ledger mit MetaMask verbinden. $1 wird empfohlen, aber andere Optionen sind verfügbar. Erfahren Sie hier mehr: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Das Ledger-Gerät konnte nicht geöffnet werden. Ihr Ledger könnte mit anderer Software verbunden sein. Bitte schließen Sie Ledger Live oder andere Anwendungen, die mit Ihrem Ledger Gerät verbunden sind, und versuchen Sie es erneut."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live-App"
