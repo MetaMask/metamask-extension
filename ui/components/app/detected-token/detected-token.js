@@ -73,7 +73,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: MetaMetricsTokenEventSource.Detected,
+          source_connection_method: MetaMetricsTokenEventSource.Detected,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',

@@ -34,7 +34,7 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
       event: MetaMetricsEventName.TokenImportClicked,
       category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: MetaMetricsTokenEventSource.Detected,
+        source_connection_method: MetaMetricsTokenEventSource.Detected,
         chain_id: chainId,
         tokens: detectedTokensDetails,
       },

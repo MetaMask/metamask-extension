@@ -49,7 +49,7 @@ const DetectedTokenSelectionPopover = ({
       event: MetaMetricsEventName.TokenImportCanceled,
       category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: MetaMetricsTokenEventSource.Detected,
+        source_connection_method: MetaMetricsTokenEventSource.Detected,
         chain_id: chainId,
         tokens: eventTokensDetails,
       },

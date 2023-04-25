@@ -37,7 +37,7 @@ export const DetectedTokensBanner = ({
       event: MetaMetricsEventName.TokenImportClicked,
       category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: MetaMetricsTokenEventSource.Detected,
+        source_connection_method: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
         chain_id: chainId,
       },

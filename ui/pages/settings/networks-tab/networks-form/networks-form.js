@@ -563,7 +563,8 @@ const NetworksForm = ({
             block_explorer_url: blockExplorerUrl,
             chain_id: prefixedChainId,
             network_name: networkName,
-            source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+            source_connection_method:
+              MetaMetricsNetworkEventSource.CustomNetworkForm,
             token_symbol: ticker,
           },
         });
