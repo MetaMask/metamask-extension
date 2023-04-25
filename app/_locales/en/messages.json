@@ -1337,9 +1337,6 @@
   "enableSnap": {
     "message": "Enable"
   },
-  "enableSnapDescription": {
-    "message": "Your installed snap will only have access to its permissions and run if it’s enabled."
-  },
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4528,7 +4525,6 @@
   "transactionFailed": {
     "message": "Transaction Failed"
   },
-
   "transactionFee": {
     "message": "Transaction fee"
   },
@@ -4890,10 +4886,6 @@
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
     "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
-  },
-  "youInstalled": {
-    "message": "You installed",
-    "description": "Part of version description for installed snap"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

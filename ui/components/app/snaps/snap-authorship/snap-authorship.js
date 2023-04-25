@@ -88,10 +88,10 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
         alignItems={AlignItems.center}
         display={DISPLAY.FLEX}
         width={BLOCK_SIZES.FULL}
-        paddingLeft={2}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingRight={2}
+        paddingLeft={expanded ? 4 : 2}
+        paddingRight={expanded ? 4 : 2}
+        paddingTop={expanded ? 3 : 1}
+        paddingBottom={expanded ? 3 : 1}
       >
         <Box>
           <SnapAvatar snapId={snapId} />

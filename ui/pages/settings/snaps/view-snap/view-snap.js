@@ -121,8 +121,8 @@ function ViewSnap() {
   return (
     <Box
       className="view-snap"
-      paddingBottom={8}
-      paddingTop={8}
+      paddingBottom={[4, 8]}
+      paddingTop={[4, 8]}
       paddingLeft={4}
       paddingRight={4}
     >
