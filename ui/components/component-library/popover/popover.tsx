@@ -28,7 +28,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       preventOverflow = false,
       offset = [0, 8],
       flip = false,
-      referenceHidden = false,
+      referenceHidden = true,
       referenceElement,
       isOpen,
       title,

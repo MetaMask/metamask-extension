@@ -375,6 +375,46 @@ export const Position = ({ args }) => {
   );
 };
 
+export const IsPortal = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        backgroundColor={BackgroundColor.primaryDefault}
+        style={{ width: 200, height: 200 }}
+        display={DISPLAY.FLEX}
+        color={Color.primaryInverse}
+        padding={4}
+      >
+        Inspect elements to see the difference
+      </Box>
+      <Popover
+        position={PopoverPosition.RightStart}
+        referenceElement={referenceElement}
+        isOpen={true}
+        {...args}
+      >
+        <Text>isPortal true</Text>
+      </Popover>
+      <Popover
+        position={PopoverPosition.RightEnd}
+        referenceElement={referenceElement}
+        isOpen={true}
+        isPortal={false}
+        {...args}
+      >
+        <Text>isPortal false</Text>
+      </Popover>
+    </>
+  );
+};
+
 export const HasArrow = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
@@ -445,18 +485,16 @@ export const IsOpen = ({ args }) => {
       >
         <Text>isOpen always true</Text>
       </Popover>
-      {isOpen && (
-        <Popover
-          position={PopoverPosition.RightEnd}
-          referenceElement={referenceElement}
-          hasArrow
-          isOpen={isOpen}
-          isPortal={false}
-          {...args}
-        >
-          <Text>isOpen tied to boolean</Text>
-        </Popover>
-      )}
+
+      <Popover
+        position={PopoverPosition.RightEnd}
+        referenceElement={referenceElement}
+        hasArrow
+        isOpen={isOpen}
+        {...args}
+      >
+        <Text>isOpen tied to boolean</Text>
+      </Popover>
     </>
   );
 };
@@ -656,7 +694,6 @@ export const WithPopoverHeader = ({ args }) => {
       <Popover
         referenceElement={refTitleElement}
         isOpen={isOpen}
-        isPortal={false}
         hasArrow
         {...args}
       >
