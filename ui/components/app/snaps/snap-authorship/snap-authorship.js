@@ -172,7 +172,7 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
               marginTop={4}
             >
               <Text variant={TextVariant.bodyMdBold}>{t('version')}</Text>
-              <SnapVersion version={subjectMetadata?.version} url={url} />
+              <SnapVersion version={snap?.version} url={url} />
             </Box>
           </Box>
         </Box>
