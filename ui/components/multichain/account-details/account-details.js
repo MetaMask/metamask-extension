@@ -9,10 +9,13 @@ import {
 } from '../../../store/actions';
 import {
   AvatarAccount,
+  AvatarAccountSize,
   AvatarAccountVariant,
-  ButtonSecondary,
+  BUTTON_SECONDARY_SIZES,
+  Button,
+  PopoverHeader,
+  Text,
 } from '../../component-library';
-import { Size } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import EditableLabel from '../../ui/editable-label/editable-label';
 import {
@@ -28,6 +31,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AlignItems,
+  DISPLAY,
+  FLEX_DIRECTION,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
@@ -46,20 +57,39 @@ export const AccountDetails = ({ address }) => {
 
   return (
     <Popover
+      headerProps={{
+        paddingBottom: 1,
+      }}
+      contentProps={{
+        paddingLeft: 4,
+        paddingRight: 4,
+        paddingBottom: 4,
+      }}
       title={
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={address}
-          size={Size.XL}
-        />
+        <PopoverHeader
+          onClose={onClose}
+          childrenWrapperProps={{
+            display: DISPLAY.FLEX,
+            justifyContent: JustifyContent.center,
+          }}
+        >
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            address={address}
+            size={AvatarAccountSize.Lg}
+          />
+        </PopoverHeader>
       }
-      onClose={onClose}
     >
-      <Box>
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
         <EditableLabel
           defaultValue={name}
           onSubmit={(label) => dispatch(setAccountLabel(address, label))}
@@ -67,7 +97,10 @@ export const AccountDetails = ({ address }) => {
         />
         <QrView Qr={{ data: address }} />
         {exportPrivateKeyFeatureEnabled ? (
-          <ButtonSecondary
+          <Button
+            block
+            size={BUTTON_SECONDARY_SIZES.LG}
+            type="secondary"
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
@@ -81,8 +114,10 @@ export const AccountDetails = ({ address }) => {
               onClose();
             }}
           >
-            {t('exportPrivateKey')}
-          </ButtonSecondary>
+            <Text variant={TextVariant.bodyMd} color={TextColor.primaryDefault}>
+              {t('showPrivateKey')}
+            </Text>
+          </Button>
         ) : null}
       </Box>
     </Popover>
