@@ -2,13 +2,13 @@ import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
 import type { HeaderBaseProps } from '../header-base';
 
-export interface PopoverHeaderProps extends HeaderBaseProps {
+export interface ModalHeaderProps extends HeaderBaseProps {
   /**
-   * The contents within the PopoverHeader positioned middle (popular for title use case)
+   * The contents within the ModalHeader positioned middle (popular for title use case)
    */
   children?: React.ReactNode;
   /**
-   * Additional classNames to be added to the PopoverHeader component
+   * Additional classNames to be added to the ModalHeader component
    */
   className?: string;
   /**
@@ -21,7 +21,7 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
    */
   backButtonProps?: ButtonIconProps;
   /**
-   * The start (left) content area of PopoverHeader
+   * The start (left) content area of ModalHeader
    * Default to have the back `ButtonIcon` when `onBack` is passed, but passing a  `startAccessory` will override this
    */
   startAccessory?: React.ReactNode;
@@ -35,7 +35,7 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
    */
   closeButtonProps?: ButtonIconProps;
   /**
-   * The end (right) content area of PopoverHeader
+   * The end (right) content area of ModalHeader
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this
    */
   endAccessory?: React.ReactNode;
