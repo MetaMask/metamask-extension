@@ -3725,7 +3725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0, @metamask/controller-utils@npm:^3.2.0":
+"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0, @metamask/controller-utils@npm:^3.2.0, @metamask/controller-utils@npm:^3.3.0":
   version: 3.3.0
   resolution: "@metamask/controller-utils@npm:3.3.0"
   dependencies:
@@ -24063,7 +24063,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^2.0.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^3.2.0
+    "@metamask/controller-utils": ^3.3.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
