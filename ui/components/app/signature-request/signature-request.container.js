@@ -20,10 +20,10 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { cancelMsgs, showModal } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request.component';
 
 function mapStateToProps(state, ownProps) {

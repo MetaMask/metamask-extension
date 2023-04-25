@@ -16,8 +16,8 @@ import {
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
 } from '../../helpers/constants/routes';
-import { TransactionType } from '../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { TransactionType } from '../../../shared/constants/transaction';
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {

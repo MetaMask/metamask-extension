@@ -38,6 +38,7 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -88,7 +89,6 @@ import {
 } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 

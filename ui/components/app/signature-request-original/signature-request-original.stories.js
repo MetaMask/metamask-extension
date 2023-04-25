@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import testData from '../../../../.storybook/test-data';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequestOriginal from './signature-request-original.component';
 
