@@ -90,7 +90,7 @@ export default function SnapUpdate({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <Box
-        className="headers"
+        className="header"
         paddingLeft={4}
         paddingRight={4}
         alignItems={AlignItems.center}
@@ -106,6 +106,8 @@ export default function SnapUpdate({
             {t('snapUpdate')}
           </Text>
         )}
+      </Box>
+      <Box className="content">
         {isLoading && (
           <Box
             className="loader-container"
@@ -122,8 +124,10 @@ export default function SnapUpdate({
         {hasPermissions && (
           <>
             <Text
-              className="headers__permission-description"
+              className="content__permission-description"
               paddingBottom={4}
+              paddingLeft={4}
+              paddingRight={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapUpdateRequestsPermission', [
