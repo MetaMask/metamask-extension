@@ -13,10 +13,7 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../components/component-library/icon/deprecated';
+import { Icon, IconName } from '../../components/component-library';
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
@@ -259,7 +256,7 @@ export default class ConfirmDecryptMessage extends Component {
                 {t('decryptCopy')}
               </div>
               <Icon
-                name={hasCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                name={hasCopied ? IconName.CopySuccess : IconName.Copy}
                 color={IconColor.primaryDefault}
               />
             </Tooltip>
