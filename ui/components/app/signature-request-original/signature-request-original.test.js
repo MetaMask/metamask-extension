@@ -51,6 +51,9 @@ const props = {
     },
     type: MESSAGE_TYPE.ETH_SIGN,
   },
+  selectedAccount: {
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  },
 };
 
 const render = (txData = props.txData) => {
