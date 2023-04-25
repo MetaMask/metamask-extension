@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId, getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

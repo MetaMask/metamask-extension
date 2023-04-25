@@ -9,7 +9,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { getCurrentChainId, getDetectedTokensInCurrentNetwork } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';

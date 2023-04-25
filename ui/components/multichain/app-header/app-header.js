@@ -204,10 +204,15 @@ export const AppHeader = ({ onClick }) => {
                 justifyContent={JustifyContent.spaceBetween}
               >
                 {showStatus ? (
-<<<<<<< HEAD
                   <Box ref={menuRef}>
                     <ConnectedStatusIndicator
-                      onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
+                      onClick={() => {
+                        history.push(CONNECTED_ACCOUNTS_ROUTE);
+                        trackEvent({
+                          event: MetaMetricsEventName.NavConnectedSitesOpened,
+                          category: MetaMetricsEventCategory.Navigation,
+                        });
+                      }}
                     />
                   </Box>
                 ) : null}{' '}
@@ -233,16 +238,6 @@ export const AppHeader = ({ onClick }) => {
                     }
                     positionObj={productTourDirection === 'rtl' ? '74%' : '12%'}
                     productTourDirection={productTourDirection}
-=======
-                  <ConnectedStatusIndicator
-                    onClick={() => {
-                      history.push(CONNECTED_ACCOUNTS_ROUTE);
-                      trackEvent({
-                        event: MetaMetricsEventName.NavConnectedSitesOpened,
-                        category: MetaMetricsEventCategory.Navigation,
-                      });
-                    }}
->>>>>>> 4a956fa96 (Connected Sites - Connected Sites Opened)
                   />
                 ) : null}
                 <Box
