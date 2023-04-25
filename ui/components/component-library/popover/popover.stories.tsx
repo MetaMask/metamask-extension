@@ -26,7 +26,6 @@ export default {
     children: {
       control: 'text',
     },
-
     position: {
       options: PopoverPosition,
       control: 'select',
@@ -92,6 +91,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
       display={DISPLAY.FLEX}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
+      style={{ width: '200vw', height: '200vh' }}
     >
       <Box
         ref={setBoxRef}
@@ -108,21 +108,23 @@ const Template: ComponentStory<typeof Popover> = (args) => {
         Click to toggle popover
       </Box>
       <Popover
-        position={PopoverPosition.BottomStart}
         referenceElement={referenceElement}
         isOpen={isOpen}
-        isPortal={false}
-        hasArrow
         {...args}
-      >
-        Popover demo without PopoverHeader
-      </Popover>
+      ></Popover>
     </Box>
   );
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  position: PopoverPosition.BottomStart,
+  children: 'Popover demo without PopoverHeader',
+  isPortal: false,
+  hasArrow: true,
+};
 
 export const ReferenceElement = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
@@ -668,47 +670,6 @@ export const MatchWidth = ({ args }) => {
   );
 };
 
-export const WithPopoverHeader = ({ args }) => {
-  const [refTitleElement, setRefTitleElement] = useState();
-  const [isOpen, setIsOpen] = useState(true);
-
-  const handleClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const setBoxRef = (ref) => {
-    setRefTitleElement(ref);
-  };
-
-  return (
-    <>
-      <Box
-        ref={setBoxRef}
-        backgroundColor={BackgroundColor.primaryDefault}
-        style={{ width: 200, height: 200 }}
-        onClick={handleClick}
-      ></Box>
-      <Popover
-        referenceElement={refTitleElement}
-        isOpen={isOpen}
-        hasArrow
-        {...args}
-      >
-        <PopoverHeader
-          onClose={handleClick}
-          onBack={() => console.log('back')}
-          color={Color.inherit}
-          marginBottom={4}
-        >
-          Popover Title
-        </PopoverHeader>
-        Title should be short and concise. It should be sentence case and no
-        period.
-      </Popover>
-    </>
-  );
-};
-
 export const Offset = ({ args }) => {
   const [referenceElement, setReferenceElement] = useState();
 
@@ -751,5 +712,46 @@ export const Offset = ({ args }) => {
         <Text>offset override to [0,32]</Text>
       </Popover>
     </Box>
+  );
+};
+
+export const WithPopoverHeader = ({ args }) => {
+  const [refTitleElement, setRefTitleElement] = useState();
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const setBoxRef = (ref) => {
+    setRefTitleElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        backgroundColor={BackgroundColor.primaryDefault}
+        style={{ width: 200, height: 200 }}
+        onClick={handleClick}
+      ></Box>
+      <Popover
+        referenceElement={refTitleElement}
+        isOpen={isOpen}
+        hasArrow
+        {...args}
+      >
+        <PopoverHeader
+          onClose={handleClick}
+          onBack={() => console.log('back')}
+          color={Color.inherit}
+          marginBottom={4}
+        >
+          Popover Title
+        </PopoverHeader>
+        Title should be short and concise. It should be sentence case and no
+        period.
+      </Popover>
+    </>
   );
 };
