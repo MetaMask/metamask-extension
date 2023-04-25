@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import nanoid from 'nanoid';
 import { isComponent } from '@metamask/snaps-ui';
 import { useSelector } from 'react-redux';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
@@ -22,10 +21,12 @@ import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/flask';
 
 export const UI_MAPPING = {
-  panel: (props) => ({
+  panel: (props, elementKey) => ({
     element: 'Box',
-    // eslint-disable-next-line no-use-before-define
-    children: props.children.map(mapToTemplate),
+    children: props.children.map((element) =>
+      // eslint-disable-next-line no-use-before-define
+      mapToTemplate(element, elementKey),
+    ),
     props: {
       display: DISPLAY.FLEX,
       flexDirection: FLEX_DIRECTION.COLUMN,
@@ -66,11 +67,12 @@ export const UI_MAPPING = {
 };
 
 // TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.
-export const mapToTemplate = (data) => {
+export const mapToTemplate = (data, elementKeyIndex) => {
   const { type } = data;
-  const mapped = UI_MAPPING[type](data);
-  // TODO: We may want to have deterministic keys at some point
-  return { ...mapped, key: nanoid() };
+  elementKeyIndex.value += 1;
+  const indexKey = `snap_ui_element_${type}__${elementKeyIndex.value}`;
+  const mapped = UI_MAPPING[type](data, elementKeyIndex);
+  return { ...mapped, key: indexKey };
 };
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -97,7 +99,8 @@ export const SnapUIRenderer = ({
     );
   }
 
-  const sections = mapToTemplate(data);
+  const elementKeyIndex = { value: 0 };
+  const sections = mapToTemplate(data, elementKeyIndex);
 
   return (
     <SnapDelineator snapName={snapName} type={delineatorType}>
