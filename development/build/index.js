@@ -73,61 +73,65 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
-  // scuttle on production/tests environment only
-  const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
+  const isRootTask = ['dist', 'prod', 'test', 'dev'].includes(entryTask);
 
-  console.log(
-    `Building lavamoat runtime file`,
-    `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
-  );
+  if (isRootTask) {
+    // scuttle on production/tests environment only
+    const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
 
-  // build lavamoat runtime file
-  await lavapack.buildRuntime({
-    scuttleGlobalThis: applyLavaMoat && shouldScuttle,
-    scuttleGlobalThisExceptions: [
-      // globals used by different mm deps outside of lm compartment
-      'toString',
-      'getComputedStyle',
-      'addEventListener',
-      'removeEventListener',
-      'ShadowRoot',
-      'HTMLElement',
-      'Element',
-      'pageXOffset',
-      'pageYOffset',
-      'visualViewport',
-      'Reflect',
-      'Set',
-      'Object',
-      'navigator',
-      'harden',
-      'console',
-      'Image', // Used by browser to generate notifications
-      // globals chrome driver needs to function (test env)
-      /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-      'performance',
-      'parseFloat',
-      'innerWidth',
-      'innerHeight',
-      'Symbol',
-      'Math',
-      'DOMRect',
-      'Number',
-      'Array',
-      'crypto',
-      'Function',
-      'Uint8Array',
-      'String',
-      'Promise',
-      // globals sentry needs to function
-      '__SENTRY__',
-      'appState',
-      'extra',
-      'stateHooks',
-      'sentryHooks',
-      'sentry',
-    ],
-  });
+    console.log(
+      `Building lavamoat runtime file`,
+      `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
+    );
+
+    // build lavamoat runtime file
+    await lavapack.buildRuntime({
+      scuttleGlobalThis: applyLavaMoat && shouldScuttle,
+      scuttleGlobalThisExceptions: [
+        // globals used by different mm deps outside of lm compartment
+        'toString',
+        'getComputedStyle',
+        'addEventListener',
+        'removeEventListener',
+        'ShadowRoot',
+        'HTMLElement',
+        'Element',
+        'pageXOffset',
+        'pageYOffset',
+        'visualViewport',
+        'Reflect',
+        'Set',
+        'Object',
+        'navigator',
+        'harden',
+        'console',
+        'Image', // Used by browser to generate notifications
+        // globals chrome driver needs to function (test env)
+        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+        'performance',
+        'parseFloat',
+        'innerWidth',
+        'innerHeight',
+        'Symbol',
+        'Math',
+        'DOMRect',
+        'Number',
+        'Array',
+        'crypto',
+        'Function',
+        'Uint8Array',
+        'String',
+        'Promise',
+        // globals sentry needs to function
+        '__SENTRY__',
+        'appState',
+        'extra',
+        'stateHooks',
+        'sentryHooks',
+        'sentry',
+      ],
+    });
+  }
 
   const browserPlatforms = ['firefox', 'chrome'];
 
