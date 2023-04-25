@@ -102,8 +102,8 @@ export default function AwaitingSignatures() {
         </Text>
         {needsTwoConfirmations && (
           <>
-            <Text variant={TextVariant.bodyMd} boxProps={{ marginTop: 2 }}>
-              <strong>{t('swapToConfirmWithHwWallet')}</strong>
+            <Text variant={TextVariant.bodyMdBold} boxProps={{ marginTop: 2 }}>
+              {t('swapToConfirmWithHwWallet')}
             </Text>
             <ul className="awaiting-signatures__steps">
               <li>
