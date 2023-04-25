@@ -1,4 +1,5 @@
 import React, { useContext, useState, useRef } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
@@ -59,6 +60,7 @@ export const AppHeader = ({ onClick }) => {
   const history = useHistory();
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
+
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
   const dispatch = useDispatch();
@@ -105,9 +107,9 @@ export const AppHeader = ({ onClick }) => {
       ) : null}
       <Box
         display={DISPLAY.FLEX}
-        className={`multichain-app-header ${
-          !isUnlocked || popupStatus ? 'multichain-app-header-shadow' : ''
-        }`}
+        className={classnames('multichain-app-header', {
+          'multichain-app-header-shadow': !isUnlocked || popupStatus,
+        })}
         alignItems={AlignItems.center}
         width={BLOCK_SIZES.FULL}
         backgroundColor={
@@ -119,9 +121,9 @@ export const AppHeader = ({ onClick }) => {
         <>
           {isUnlocked ? (
             <Box
-              className={`multichain-app-header__contents ${
-                isUnlocked && !popupStatus ? 'multichain-app-header-shadow' : ''
-              }`}
+              className={classnames('multichain-app-header__contents', {
+                'multichain-app-header-shadow': isUnlocked && !popupStatus,
+              })}
               alignItems={AlignItems.center}
               width={BLOCK_SIZES.FULL}
               backgroundColor={BackgroundColor.backgroundDefault}
@@ -216,7 +218,7 @@ export const AppHeader = ({ onClick }) => {
                   <ButtonIcon
                     iconName={IconName.MoreVertical}
                     data-testid="account-options-menu-button"
-                    ariaLabel="NEEDS NEW TRANSLATED LABEL" // TODO: Update the label
+                    ariaLabel={t('accountOptions')}
                     onClick={() => {
                       trackEvent({
                         event: MetaMetricsEventName.NavAccountMenuOpened,
@@ -262,9 +264,9 @@ export const AppHeader = ({ onClick }) => {
           ) : (
             <Box
               display={DISPLAY.FLEX}
-              className={`multichain-app-header__lock-contents ${
-                isUnlocked && !popupStatus ? 'multichain-app-header-shadow' : ''
-              }`}
+              className={classnames('multichain-app-header__lock-contents', {
+                'multichain-app-header-shadow': isUnlocked && !popupStatus,
+              })}
               alignItems={AlignItems.center}
               width={BLOCK_SIZES.FULL}
               justifyContent={JustifyContent.spaceBetween}
