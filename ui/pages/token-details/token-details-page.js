@@ -22,7 +22,6 @@ import {
   OverflowWrap,
   TextColor,
   IconColor,
-  TextVariant,
 } from '../../helpers/constants/design-system';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
