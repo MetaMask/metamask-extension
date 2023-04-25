@@ -3,8 +3,9 @@
 exports[`Popover should render popover element correctly 1`] = `
 <div>
   <div
-    class="box mm-popover mm-popover--open mm-popover--reference-hidden box--padding-4 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-default box--border-style-solid box--border-width-1"
+    class="box mm-popover mm-popover--open mm-popover--reference-hidden box--padding-4 box--flex-direction-row box--background-color-background-default box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
     data-testid="popover"
+    role="tooltip"
     style="position: absolute; left: 0px; top: 0px; width: auto;"
   >
     Popover
