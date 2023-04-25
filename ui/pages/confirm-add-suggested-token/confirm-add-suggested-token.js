@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
@@ -123,10 +124,9 @@ const ConfirmAddSuggestedToken = () => {
 
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
-      suggestedAssets.map(async ({ asset, id }) => {
-        await dispatch(resolvePendingApproval(id), null);
-        await dispatch(acceptWatchAsset(id));
-
+      suggestedAssets.flatMap(({ asset, id }) => [
+        dispatch(resolvePendingApproval(id, null)),
+        dispatch(acceptWatchAsset(id)),
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
           category: MetaMetricsEventCategory.Wallet,
@@ -139,12 +139,26 @@ const ConfirmAddSuggestedToken = () => {
             token_standard: TokenStandard.ERC20,
             asset_type: AssetType.token,
           },
-        });
-      }),
+        }),
+      ]),
     );
-
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
+
+  const handleCancelAddTokens = useCallback(async () => {
+    await Promise.all(
+      suggestedAssets.flatMap(({ id }) => [
+        dispatch(
+          rejectPendingApproval(
+            id,
+            serializeError(ethErrors.provider.userRejectedRequest()),
+          ),
+        ),
+        dispatch(rejectWatchAsset(id)),
+      ]),
+    );
+    history.push(mostRecentOverviewPage);
+  }, [dispatch, history, mostRecentOverviewPage, suggestedAssets]);
 
   const goBackIfNoSuggestedAssetsOnFirstRender = () => {
     if (!suggestedAssets.length) {
@@ -168,6 +182,7 @@ const ConfirmAddSuggestedToken = () => {
         {reusedTokenNameActionableMessage}
       </div>
       <div className="page-container__content">
+        flatMap
         <div className="confirm-add-suggested-token">
           <div className="confirm-add-suggested-token__header">
             <div className="confirm-add-suggested-token__token">
@@ -207,17 +222,7 @@ const ConfirmAddSuggestedToken = () => {
       <PageContainerFooter
         cancelText={t('cancel')}
         submitText={t('addToken')}
-        onCancel={async () => {
-          await Promise.all(
-            suggestedAssets.map(({ id }) => {
-              return Promise.all([
-                dispatch(rejectWatchAsset(id)),
-                dispatch(resolvePendingApproval(id), null),
-              ]);
-            }),
-          );
-          history.push(mostRecentOverviewPage);
-        }}
+        onCancel={handleCancelAddTokens}
         onSubmit={handleAddTokensClick}
         disabled={suggestedAssets.length === 0}
       />
