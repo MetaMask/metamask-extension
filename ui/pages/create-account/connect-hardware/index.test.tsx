@@ -18,25 +18,32 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../selectors', () => ({
-  getCurrentChainId: () => jest.fn().mockResolvedValue('0x1'),
-  getRpcPrefsForCurrentProvider: () => jest.fn().mockResolvedValue({}),
-  getMetaMaskAccountsConnected: () => jest.fn().mockResolvedValue([]),
-  getMetaMaskAccounts: () => jest.fn().mockResolvedValue([]),
+  getCurrentChainId: () => '0x1',
+  getRpcPrefsForCurrentProvider: () => {
+    return {};
+  },
+  getMetaMaskAccountsConnected: () => [],
+  getMetaMaskAccounts: () => {
+    return {};
+  },
 }));
 
 jest.mock('../../../ducks/history/history', () => ({
-  getMostRecentOverviewPage: () => jest.fn().mockResolvedValue('/'),
+  getMostRecentOverviewPage: () => '',
 }));
 
+const mockTrackEvent = jest.fn();
+
 const mockProps = {
-  forgetDevice: jest.fn(),
-  showAlert: jest.fn(),
-  hideAlert: jest.fn(),
-  unlockHardwareWalletAccount: jest.fn(),
-  setHardwareWalletDefaultHdPath: jest.fn(),
+  forgetDevice: () => jest.fn(),
+  showAlert: () => jest.fn(),
+  hideAlert: () => jest.fn(),
+  unlockHardwareWalletAccount: () => jest.fn(),
+  setHardwareWalletDefaultHdPath: () => jest.fn(),
   history: {},
   defaultHdPath: "m/44'/60'/0'/0",
   mostRecentOverviewPage: '',
+  trackEvent: () => mockTrackEvent,
 };
 
 const mockState = {
@@ -145,6 +152,26 @@ describe('ConnectHardwareForm', () => {
             { exact: false },
           ),
         ).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('QR Hardware Wallet Steps', () => {
+    it('should render the QR hardware wallet steps', async () => {
+      const { getByText, getByLabelText } = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        mockStore,
+      );
+
+      const qrButton = getByLabelText('QRCode');
+
+      fireEvent.click(qrButton);
+
+      await waitFor(() => {
+        expect(getByText('Keystone')).toBeInTheDocument();
+        expect(getByText('AirGap Vault')).toBeInTheDocument();
+        expect(getByText('CoolWallet')).toBeInTheDocument();
+        expect(getByText("D'Cent")).toBeInTheDocument();
       });
     });
   });
