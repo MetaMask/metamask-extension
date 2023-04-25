@@ -538,7 +538,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
   ServiceWorkerRestarted = 'Service Worker Restarted',
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   UserClickedDeepLink = 'User clicked deeplink',
   ///: END:ONLY_INCLUDE_IN
 }
