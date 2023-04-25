@@ -31,6 +31,7 @@ import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
+import { Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 import UrlIcon from '../../../components/ui/url-icon';
 import {
