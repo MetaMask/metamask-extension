@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   CONNECTED_ROUTE,
   SETTINGS_ROUTE,
@@ -21,12 +21,15 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { getMetaMetricsId } from '../../../selectors';
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
@@ -49,9 +52,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <MenuItem
         iconName={IconName.Diagram}
         onClick={() => {
-          const portfolioUrl = process.env.PORTFOLIO_URL;
+          const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
           global.platform.openTab({
-            url: `${portfolioUrl}?metamaskEntry=ext`,
+            url: portfolioUrl,
           });
           trackEvent(
             {

@@ -21,6 +21,7 @@ import {
   getIsBuyableChain,
   getIsBridgeToken,
   getCurrentChainId,
+  getMetaMetricsId,
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -40,6 +41,7 @@ import { ButtonIcon, Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 import { BUTTON_ICON_SIZES } from '../../component-library/button-icon/deprecated';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -61,6 +63,7 @@ const TokenOverview = ({ className, token }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeToken = useSelector(getIsBridgeToken(token.address));
   const isBuyableChain = useSelector(getIsBuyableChain);
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -94,9 +97,9 @@ const TokenOverview = ({ className, token }) => {
               ariaLabel={t('portfolio')}
               size={BUTTON_ICON_SIZES.LG}
               onClick={() => {
-                const portfolioUrl = process.env.PORTFOLIO_URL;
+                const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
                 global.platform.openTab({
-                  url: `${portfolioUrl}?metamaskEntry=ext`,
+                  url: portfolioUrl,
                 });
                 trackEvent(
                   {
@@ -231,11 +234,13 @@ const TokenOverview = ({ className, token }) => {
               }
               label={t('bridge')}
               onClick={() => {
-                const portfolioUrl = process.env.PORTFOLIO_URL;
-
-                const bridgeUrl = `${portfolioUrl}/bridge`;
+                const portfolioUrl = getPortfolioUrl(
+                  'bridge',
+                  'ext_bridge_button',
+                  metaMetricsId,
+                );
                 global.platform.openTab({
-                  url: `${bridgeUrl}?metamaskEntry=ext_bridge_button&token=${token.address}`,
+                  url: `${portfolioUrl}&token=${token.address}`,
                 });
                 trackEvent({
                   category: MetaMetricsEventCategory.Navigation,

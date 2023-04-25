@@ -31,6 +31,7 @@ import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
+  getMetaMetricsId,
 } from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
@@ -53,6 +54,7 @@ import {
 } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -72,6 +74,7 @@ const EthOverview = ({ className }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -168,9 +171,13 @@ const EthOverview = ({ className }) => {
                     ariaLabel={t('portfolio')}
                     size={ButtonIconSize.Lg}
                     onClick={() => {
-                      const portfolioUrl = process.env.PORTFOLIO_URL;
+                      const portfolioUrl = getPortfolioUrl(
+                        '',
+                        'ext',
+                        metaMetricsId,
+                      );
                       global.platform.openTab({
-                        url: `${portfolioUrl}?metamaskEntry=ext`,
+                        url: portfolioUrl,
                       });
                       trackEvent(
                         {
@@ -326,10 +333,13 @@ const EthOverview = ({ className }) => {
               label={t('bridge')}
               onClick={() => {
                 if (isBridgeChain) {
-                  const portfolioUrl = process.env.PORTFOLIO_URL;
-                  const bridgeUrl = `${portfolioUrl}/bridge`;
+                  const portfolioUrl = getPortfolioUrl(
+                    'bridge',
+                    'ext_bridge_button',
+                    metaMetricsId,
+                  );
                   global.platform.openTab({
-                    url: `${bridgeUrl}?metamaskEntry=ext_bridge_button${
+                    url: `${portfolioUrl}${
                       location.pathname.includes('asset') ? '&token=native' : ''
                     }`,
                   });

@@ -119,6 +119,11 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function getMetaMetricsId(state) {
+  const { metaMetricsId } = state.metamask;
+  return metaMetricsId;
+}
+
 export function isCurrentProviderCustom(state) {
   const provider = getProvider(state);
   return (
