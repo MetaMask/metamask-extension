@@ -974,6 +974,7 @@ function getAllowedAnnouncementIds(state) {
     18: true,
     19: true,
     20: currentKeyringIsLedger && isFirefox,
+    21: currentKeyringIsLedger && !isFirefox,
   };
 }
 

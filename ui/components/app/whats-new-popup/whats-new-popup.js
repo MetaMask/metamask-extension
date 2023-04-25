@@ -79,6 +79,9 @@ function getActionFunctionById(id, history) {
         url: ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE,
       });
     },
+    21: () => {
+      updateViewedNotifications({ 21: true });
+    },
   };
 
   return actionFunctions[id];

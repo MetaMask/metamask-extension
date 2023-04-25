@@ -2539,6 +2539,14 @@
     "message": "Ledger and Firefox Users Experiencing Connection Issues",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
+  "notifications21Description": {
+    "message": "U2F and Ledger Live connection methods on chrome are now deprecated and can no longer be used. Webhid is now the only method for Ledger devices on chrome.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
+  },
+  "notifications21Title": {
+    "message": "U2F and Ledger Live Deprecation Notice",
+    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
