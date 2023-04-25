@@ -40,10 +40,10 @@ const MOCK_TOKEN = {
 };
 
 jest.mock('../../store/actions', () => ({
-  acceptWatchAsset: jest.fn().mockReturnValue(Promise.resolve()),
-  rejectWatchAsset: jest.fn().mockReturnValue(Promise.resolve()),
-  resolvePendingApproval: jest.fn().mockReturnValue(Promise.resolver()),
-  rejectPendingApproval: jest.fn().mockReturnValue(Promise.resolve()),
+  acceptWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
+  rejectWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
+  resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
+  rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
 }));
 
 const renderComponent = (tokens = []) => {
