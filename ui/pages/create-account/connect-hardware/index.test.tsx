@@ -158,7 +158,7 @@ describe('ConnectHardwareForm', () => {
 
   describe('QR Hardware Wallet Steps', () => {
     it('should render the QR hardware wallet steps', async () => {
-      const { queryAllByText, getByText, getByLabelText } = renderWithProvider(
+      const { getByText, getByLabelText } = renderWithProvider(
         <ConnectHardwareForm {...mockProps} />,
         mockStore,
       );
