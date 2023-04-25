@@ -13,9 +13,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
+import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
 import Box from '../../../../components/ui/box';
-import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
+import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
 import Tooltip from '../../../../components/ui/tooltip';
@@ -40,7 +40,7 @@ import {
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
 import { ButtonLink, Text } from '../../../../components/component-library';
-import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
+import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 
 function ViewSnap() {
   const t = useI18nContext();
