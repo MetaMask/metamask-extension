@@ -14,7 +14,7 @@ import {
 import Box from '../../../ui/box';
 import {
   DISPLAY,
-  FONT_WEIGHT,
+  FontWeight,
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
@@ -40,7 +40,7 @@ function SignatureRequestData({ data }) {
             color={TextColor.textDefault}
             marginLeft={4}
             fontWeight={
-              typeof value === 'object' ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL
+              typeof value === 'object' ? FontWeight.Bold : FontWeight.Normal
             }
           >
             {sanitizeString(label.charAt(0).toUpperCase() + label.slice(1))}:{' '}
