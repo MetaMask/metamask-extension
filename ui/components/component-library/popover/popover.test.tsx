@@ -8,7 +8,7 @@ import { PopoverPosition } from './popover.types';
 describe('Popover', () => {
   it('should render popover element correctly', () => {
     const { getByTestId, getByText, container } = render(
-      <Popover data-testid="popover" isOpen={true}>
+      <Popover data-testid="popover" isOpen={true} isPortal={false}>
         Popover
       </Popover>,
     );
