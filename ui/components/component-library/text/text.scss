@@ -59,6 +59,10 @@ $text-variants: (
       @else {
         font-weight: $weight;
       }
+
+      strong {
+        font-weight: var(--font-weight-bold);
+      }
     }
   }
 
