@@ -30,9 +30,9 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header/netwo
 import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
   getAddressBookEntry,
@@ -140,7 +140,7 @@ const ConfirmPageContainer = (props) => {
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   const insightComponent = useTransactionInsights({
@@ -206,7 +206,7 @@ const ConfirmPageContainer = (props) => {
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             insightComponent={insightComponent}
             ///: END:ONLY_INCLUDE_IN
             errorMessage={errorMessage}
