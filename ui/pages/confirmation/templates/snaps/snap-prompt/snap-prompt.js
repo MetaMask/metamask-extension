@@ -1,4 +1,4 @@
-import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
+import { mapToTemplate } from '../../../../../components/app/snaps/snap-ui-renderer';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { DelineatorType } from '../../../../../helpers/constants/flask';
 

@@ -16,8 +16,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
+import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
 import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapResult({
