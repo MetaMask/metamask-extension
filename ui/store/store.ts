@@ -23,7 +23,7 @@ export interface TemporaryMessageDataType {
     metamaskId: number;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   custodyId?: string;
   status?: string;
   ///: END:ONLY_INCLUDE_IN
@@ -74,7 +74,7 @@ interface TemporaryBackgroundState {
   };
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IN
 }

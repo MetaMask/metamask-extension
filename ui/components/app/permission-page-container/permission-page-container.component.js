@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { isEqual } from 'lodash';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { isObject } from '@metamask/utils';
 import {
   SnapCaveatType,
@@ -11,7 +11,7 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 ///: END:ONLY_INCLUDE_IN
 import { PermissionPageContainerContent } from '.';
@@ -22,7 +22,7 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     currentPermissions: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
     request: PropTypes.object,
@@ -41,7 +41,7 @@ export default class PermissionPageContainer extends Component {
     requestMetadata: {},
     selectedIdentities: [],
     allIdentitiesSelected: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     currentPermissions: {},
     ///: END:ONLY_INCLUDE_IN
   };
@@ -70,7 +70,7 @@ export default class PermissionPageContainer extends Component {
 
   getRequestedMethodState(methodNames) {
     return methodNames.reduce((acc, methodName) => {
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       if (methodName === RestrictedMethods.wallet_snap) {
         acc[methodName] = this.getDedupedSnapPermissions();
         return acc;
@@ -81,7 +81,7 @@ export default class PermissionPageContainer extends Component {
     }, {});
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getDedupedSnapPermissions() {
     const permission =
       this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY];
