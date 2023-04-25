@@ -175,23 +175,20 @@ export default class PermissionConnect extends Component {
   selectAccounts = (addresses) => {
     const {
       confirmPermissionPath,
+      requestType,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
-      requestType,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     this.setState(
       {
         selectedAccountAddresses: addresses,
       },
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta)
-      () => this.props.history.push(confirmPermissionPath),
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       () => {
         switch (requestType) {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           case 'wallet_installSnap':
             this.props.history.push(snapInstallPath);
             break;
@@ -201,11 +198,11 @@ export default class PermissionConnect extends Component {
           case 'wallet_installSnapResult':
             this.props.history.push(snapResultPath);
             break;
+          ///: END:ONLY_INCLUDE_IN
           default:
             this.props.history.push(confirmPermissionPath);
         }
       },
-      ///: END:ONLY_INCLUDE_IN
     );
   };
 
@@ -217,39 +214,26 @@ export default class PermissionConnect extends Component {
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
+    let shouldRedirect = true;
+
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const isRequestingSnap =
       permissionsRequest?.permissions &&
       Object.keys(permissionsRequest.permissions).includes('wallet_snap');
 
-    const shouldRedirect = !isRequestingSnap;
+    shouldRedirect = !isRequestingSnap;
+    ///: END:ONLY_INCLUDE_IN
 
     this.setState({
       redirecting: shouldRedirect,
       permissionsApproved: approved,
     });
-    ///: END:ONLY_INCLUDE_IN
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta)
-    this.setState({
-      redirecting: true,
-      permissionsApproved: approved,
-    });
-    ///: END:ONLY_INCLUDE_IN
     this.removeBeforeUnload();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     if (shouldRedirect && approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
       return;
     }
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
-    if (approved) {
-      setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IN
     history.push(DEFAULT_ROUTE);
   }
 
