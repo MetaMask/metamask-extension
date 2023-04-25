@@ -2,7 +2,7 @@ import React from 'react';
 import SnapVersion from '.';
 
 export default {
-  title: 'Components/App/SnapVersion',
+  title: 'Components/App/Snaps/SnapVersion',
   component: SnapVersion,
 };
 export const DefaultStory = (args) => <SnapVersion {...args} />;
