@@ -13,7 +13,7 @@ import {
   getTotalUnapprovedMessagesCount,
   getPreferences,
   getCurrentCurrency,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -56,7 +56,7 @@ function mapStateToProps(state, ownProps) {
     messagesList,
     messagesCount,
     provider,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: getSelectedAccount(state),
     ///: END:ONLY_INCLUDE_IN
   };
