@@ -580,7 +580,7 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Desktop = 'Desktop',
   ServiceWorkers = 'service_workers',
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
 }
