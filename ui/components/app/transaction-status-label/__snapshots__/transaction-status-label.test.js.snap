@@ -1,5 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`TransactionStatusLabel Component should display correctly the error message when there is an error and custodyStatus is aborted 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--queued transaction-status-label--queued"
+  >
+    <div
+      aria-describedby="tippy-tooltip-4"
+      class=""
+      data-original-title="An error occurred"
+      data-tooltipped=""
+      style="display: inline;"
+      tabindex="0"
+    >
+      Test
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionStatusLabel Component should display the correct status text and tooltip 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--queued transaction-status-label--queued"
+  >
+    <div
+      aria-describedby="tippy-tooltip-2"
+      class=""
+      data-original-title="Long Text Test"
+      data-tooltipped=""
+      style="display: inline;"
+      tabindex="0"
+    >
+      Short Text Test
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionStatusLabel Component should display the error message when there is an error 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--queued transaction-status-label--queued"
+  >
+    <div
+      aria-describedby="tippy-tooltip-3"
+      class=""
+      data-original-title="An error occurred"
+      data-tooltipped=""
+      style="display: inline;"
+      tabindex="0"
+    >
+      Error
+    </div>
+  </div>
+</div>
+`;
+
 exports[`TransactionStatusLabel Component should render CONFIRMED properly 1`] = `
 <div>
   <div

@@ -83,28 +83,31 @@ export default function TransactionStatusLabel({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  // FIXME this should be made a bit more readable
-  const txStatusMap = useSelector(getTransactionStatusMap);
-  const keyring = useSelector(getCurrentKeyring);
-  const custody = keyring?.type.split(' - ')[1]?.toLowerCase();
+  const transactionStatusMap = useSelector(getTransactionStatusMap);
+  const currentKeyring = useSelector(getCurrentKeyring);
+  const custodyType = currentKeyring?.type.split(' - ')[1]?.toLowerCase();
 
-  if (custodyStatus && txStatusMap && txStatusMap[custody]) {
-    statusKey = txStatusMap[custody][custodyStatus]
-      ? txStatusMap[custody][custodyStatus]?.shortText
-      : custodyStatus;
+  if (
+    custodyStatus &&
+    transactionStatusMap &&
+    transactionStatusMap[custodyType]
+  ) {
+    const custodyStatusInfo = transactionStatusMap[custodyType][custodyStatus];
+    const shortText = custodyStatusInfo?.shortText || custodyStatus;
+    const longText = custodyStatusInfo?.longText;
 
-    // eslint-disable-next-line no-nested-ternary
-    tooltipText = error
-      ? error.message
-      : txStatusMap[custody][custodyStatus]
-      ? custodyStatusDisplayText || txStatusMap[custody][custodyStatus].longText
-      : custodyStatus;
-
-    statusText =
-      error && custodyStatus !== 'aborted'
-        ? 'Error'
-        : custodyStatusDisplayText || statusKey;
+    if (error) {
+      tooltipText = error.message;
+      statusText =
+        custodyStatus === 'aborted'
+          ? custodyStatusDisplayText
+          : t('snapResultError');
+    } else {
+      tooltipText = custodyStatusDisplayText || longText || custodyStatus;
+      statusText = custodyStatusDisplayText || shortText;
+    }
   }
+
   ///: END:ONLY_INCLUDE_IN
 
   return (
