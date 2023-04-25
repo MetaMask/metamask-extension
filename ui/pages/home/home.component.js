@@ -35,11 +35,11 @@ import {
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
-import { Text } from '../../components/component-library';
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -354,8 +354,8 @@ export default class Home extends PureComponent {
                   {t('newNftAddedMessage')}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -377,8 +377,8 @@ export default class Home extends PureComponent {
                   {t('removeNftMessage')}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -397,8 +397,8 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAddedName])}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => clearNewNetworkAdded()}
                   className="home__new-network-notification-close"
@@ -432,8 +432,8 @@ export default class Home extends PureComponent {
                 </Box>
 
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
                   className="home__new-tokens-imported-notification-close"

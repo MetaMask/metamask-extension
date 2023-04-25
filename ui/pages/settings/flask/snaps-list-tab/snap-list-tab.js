@@ -6,6 +6,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   JustifyContent,
   AlignItems,
+  IconColor,
   Color,
   TEXT_ALIGN,
   FLEX_DIRECTION,
@@ -16,14 +17,12 @@ import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import { getSnapsList } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../../components/component-library/icon/deprecated';
-import {
   BannerTip,
   BannerTipLogoType,
   ButtonLink,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 
@@ -79,10 +78,10 @@ const SnapListTab = () => {
             alignItems={AlignItems.center}
           >
             <Icon
-              name={ICON_NAMES.SNAPS}
-              color={Color.iconMuted}
+              name={IconName.Snaps}
+              color={IconColor.iconMuted}
               className="snap-list-tab__no-snaps_icon"
-              size={ICON_SIZES.AUTO}
+              size={IconSize.Inherit}
             />
             <Text
               color={Color.textMuted}
