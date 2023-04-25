@@ -22,7 +22,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
@@ -71,6 +70,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { hasTransactionPendingApprovalsSelector } from '../../selectors/approvals';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -126,11 +126,14 @@ const mapStateToProps = (state) => {
     ApprovalType.WatchAsset,
   );
 
+  const hasTransactionPendingApprovals =
+    hasTransactionPendingApprovalsSelector(state);
+
   return {
     forgottenPassword,
     hasWatchAssetPendingApprovals,
     swapsEnabled,
-    unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
+    hasTransactionPendingApprovals,
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
