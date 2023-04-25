@@ -32,7 +32,7 @@ export default function AccountModalContainer(props, context) {
 
   return process.env.MULTICHAIN && isAccountDetailsModal ? (
     <Popover
-className={classnames(className, 'multichain-account-details')}
+      className={classnames(className, 'multichain-account-details')}
       headerProps={{
         padding: 0,
         paddingRight: 4,
