@@ -2,7 +2,13 @@ import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
+import {
+  sanitizeMessage,
+  getURLHostName,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  shortenAddress,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/utils/util';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
@@ -13,6 +19,13 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  IconColor,
+  DISPLAY,
+  BLOCK_SIZES,
+  TextVariant,
+  BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
@@ -23,6 +36,11 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { Icon, IconName, Text } from '../../component-library';
+import Box from '../../ui/box/box';
+///: END:ONLY_INCLUDE_IN
+
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -75,6 +93,11 @@ export default class SignatureRequest extends PureComponent {
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
+    selectedAccount: PropTypes.object,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -255,6 +278,38 @@ export default class SignatureRequest extends PureComponent {
               securityProviderResponse={txData.securityProviderResponse}
             />
           ) : null}
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            this.props.selectedAccount.address === address ? null : (
+              <Box
+                className="request-signature__mismatch-info"
+                display={DISPLAY.FLEX}
+                width={BLOCK_SIZES.FULL}
+                padding={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.primaryMuted}
+              >
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.infoDefault}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textDefault}
+                  as="h7"
+                >
+                  {this.context.t('mismatchAccount', [
+                    shortenAddress(this.props.selectedAccount.address),
+                    shortenAddress(address),
+                  ])}
+                </Text>
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
+
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}

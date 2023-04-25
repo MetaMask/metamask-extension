@@ -1926,10 +1926,10 @@
       "packages": {
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "chokidar>glob-parent": true,
         "chokidar>is-binary-path": true,
         "chokidar>normalize-path": true,
         "depcheck>readdirp": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "watchify>anymatch": true
       }
@@ -1958,15 +1958,6 @@
         "process.platform": true
       },
       "native": true
-    },
-    "chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
     },
     "chokidar>is-binary-path": {
       "builtin": {
@@ -3074,9 +3065,9 @@
         "process.cwd": true
       },
       "packages": {
+        "eslint>glob-parent": true,
         "fast-glob>@nodelib/fs.stat": true,
         "fast-glob>@nodelib/fs.walk": true,
-        "fast-glob>glob-parent": true,
         "globby>merge2": true,
         "stylelint>micromatch": true
       }
@@ -3129,15 +3120,6 @@
     "fast-glob>@nodelib/fs.walk>fastq": {
       "packages": {
         "fast-glob>@nodelib/fs.walk>fastq>reusify": true
-      }
-    },
-    "fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "fs-extra": {
@@ -4073,11 +4055,11 @@
         "setTimeout": true
       },
       "packages": {
+        "eslint>glob-parent": true,
         "gulp-watch>ansi-colors": true,
         "gulp-watch>anymatch": true,
         "gulp-watch>chokidar": true,
         "gulp-watch>fancy-log": true,
-        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
@@ -4221,15 +4203,7 @@
         "path.dirname": true
       },
       "packages": {
-        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": true,
-        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
-      }
-    },
-    "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "packages": {
+        "eslint>glob-parent": true,
         "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
       }
     },
@@ -4282,6 +4256,7 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>anymatch": true,
         "gulp-watch>chokidar>async-each": true,
@@ -4409,11 +4384,11 @@
       "packages": {
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base": true,
         "gulp-watch>chokidar>braces>snapdragon>base>class-utils": true,
+        "gulp-watch>chokidar>braces>snapdragon>base>component-emitter": true,
         "gulp-watch>chokidar>braces>snapdragon>base>define-property": true,
         "gulp-watch>chokidar>braces>snapdragon>base>mixin-deep": true,
         "gulp-watch>chokidar>braces>snapdragon>base>pascalcase": true,
-        "gulp>gulp-cli>isobject": true,
-        "pubnub>superagent>component-emitter": true
+        "gulp>gulp-cli>isobject": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base": {
@@ -4424,9 +4399,9 @@
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>to-object-path": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>union-value": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>unset-value": true,
+        "gulp-watch>chokidar>braces>snapdragon>base>component-emitter": true,
         "gulp>gulp-cli>array-sort>get-value": true,
-        "gulp>gulp-cli>isobject": true,
-        "pubnub>superagent>component-emitter": true
+        "gulp>gulp-cli>isobject": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>collection-visit": {
@@ -4885,30 +4860,6 @@
         "fancy-log>time-stamp": true
       }
     },
-    "gulp-watch>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>is-glob": true,
-        "gulp-watch>glob-parent>path-dirname": true
-      }
-    },
-    "gulp-watch>glob-parent>is-glob": {
-      "packages": {
-        "gulp-watch>glob-parent>is-glob>is-extglob": true
-      }
-    },
-    "gulp-watch>glob-parent>path-dirname": {
-      "builtin": {
-        "path": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "process.platform": true
-      }
-    },
     "gulp-watch>path-is-absolute": {
       "globals": {
         "process.platform": true
@@ -5206,9 +5157,9 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
-        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
@@ -5652,7 +5603,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "gulp-watch>glob-parent": true,
+        "eslint>glob-parent": true,
         "gulp>glob-watcher>is-negated-glob": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
         "gulp>vinyl-fs>glob-stream>pumpify": true,
@@ -7610,7 +7561,7 @@
     },
     "terser": {
       "globals": {
-        "Buffer.from": true,
+        "Buffer": true,
         "atob": true,
         "btoa": true,
         "console.log": true,

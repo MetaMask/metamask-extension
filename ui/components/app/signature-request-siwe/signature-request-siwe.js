@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
+import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -51,20 +52,18 @@ export default function SignatureRequestSIWE({
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
 
-  const checkSIWEDomain = () => {
-    let isSIWEDomainValid = false;
-
-    if (origin) {
-      const { host } = new URL(origin);
-      isSIWEDomainValid = parsedMessage.domain === host;
-    }
-    return isSIWEDomainValid;
-  };
-
-  const isSIWEDomainValid = checkSIWEDomain();
+  const isSIWEDomainValid = isValidSIWEOrigin(txData.msgParams);
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
-  const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
+  const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
+    useState(false);
+
+  const showSecurityProviderBanner =
+    (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+      txData?.securityProviderResponse?.flagAsDangerous !==
+        SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+    (txData?.securityProviderResponse &&
+      Object.keys(txData.securityProviderResponse).length === 0);
 
   const onSign = useCallback(
     async (event) => {
@@ -96,15 +95,13 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-      {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-        txData?.securityProviderResponse?.flagAsDangerous !==
-          SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-      (txData?.securityProviderResponse &&
-        Object.keys(txData.securityProviderResponse).length === 0) ? (
+
+      {showSecurityProviderBanner && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
-      ) : null}
+      )}
+
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <BannerAlert
@@ -165,16 +162,16 @@ export default function SignatureRequestSIWE({
               onSubmit={onSign}
               submitText={t('confirm')}
               submitButtonType="danger-primary"
-              disabled={!agreeToDomainWarning}
+              disabled={!hasAgreedToDomainWarning}
             />
           }
         >
           <div className="signature-request-siwe__warning-popover__checkbox-wrapper">
             <Checkbox
               id="signature-request-siwe_domain-checkbox"
-              checked={agreeToDomainWarning}
+              checked={hasAgreedToDomainWarning}
               className="signature-request-siwe__warning-popover__checkbox-wrapper__checkbox"
-              onClick={() => setAgreeToDomainWarning((checked) => !checked)}
+              onClick={() => setHasAgreedToDomainWarning((checked) => !checked)}
             />
             <label
               className="signature-request-siwe__warning-popover__checkbox-wrapper__label"
