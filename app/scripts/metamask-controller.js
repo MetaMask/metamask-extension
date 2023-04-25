@@ -210,10 +210,19 @@ export default class MetamaskController extends EventEmitter {
       MILLISECOND * 200,
     );
     this.opts = opts;
+    this.vault = opts.vault;
+    // emits `Vault::unlocked`, which has a complete set of plain text vault data? maybe keyed by controller
+    // within keyring controller constructor
+    // messenger.on('Vault::unlocked', ({ KeyringController: decryptedState })) => {
+    //   // insert steps already present in the "submitPassword"
+    //   this.keyrings = decryptedState.keyrings;
+    // })
+
     this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
+    // initState.vault
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
 

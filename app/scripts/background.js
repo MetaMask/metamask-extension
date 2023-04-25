@@ -413,6 +413,19 @@ export async function loadStateFromPersistence() {
   // write to disk
   localStore.set(versionedData.data);
 
+  // {
+  //   KeyringController: {
+  //     vault: 'encrypted string'
+  //     keyrings: [],
+  //   },
+  //   // other state
+  // }
+
+  // {
+  //   vault: "",
+  //   // other state
+  // }
+
   // return just the data
   return versionedData.data;
 }
@@ -478,6 +491,25 @@ export function setupController(
     createStreamSink(async (state) => {
       await localStore.set(state);
       statePersistenceEvents.emit('state-persisted', state);
+    }),
+    (error) => {
+      log.error('MetaMask - Persistence pipeline failed', error);
+    },
+  );
+
+  const vault = null;
+
+  // setup vault state persistence
+  pump(
+    storeAsStream(controller.vaultStore),
+    debounce(1000),
+    createStreamSink(async (key, keyedState) => {
+      await vault.set(key, keyedState);
+      const encryptedKeyedState = vault.get(key);
+      const existingEncryptedVault = null; // get existing vault somehow
+      await localStore.set({
+        vault: { ...existingEncryptedVault, [key]: encryptedKeyedState },
+      });
     }),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
