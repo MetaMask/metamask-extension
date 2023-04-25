@@ -1,8 +1,20 @@
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import TransactionStatusLabel from '.';
 
 describe('TransactionStatusLabel Component', () => {
+  const createMockStore = configureMockStore([thunk]);
+  const mockState = {
+    metamask: {
+      custodyStatusMaps: {},
+      identities: {},
+      selectedAddress: 'fakeAddress',
+    },
+  };
+
+  const store = createMockStore(mockState);
   it('should render CONFIRMED properly', () => {
     const confirmedProps = {
       status: 'confirmed',
@@ -11,6 +23,7 @@ describe('TransactionStatusLabel Component', () => {
 
     const { container } = renderWithProvider(
       <TransactionStatusLabel {...confirmedProps} />,
+      store,
     );
 
     expect(container).toMatchSnapshot();
@@ -25,6 +38,7 @@ describe('TransactionStatusLabel Component', () => {
 
     const { container } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
+      store,
     );
 
     expect(container).toMatchSnapshot();
@@ -39,6 +53,7 @@ describe('TransactionStatusLabel Component', () => {
 
     const { container } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
+      store,
     );
 
     expect(container).toMatchSnapshot();
@@ -51,6 +66,7 @@ describe('TransactionStatusLabel Component', () => {
 
     const { container } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
+      store,
     );
 
     expect(container).toMatchSnapshot();
@@ -63,8 +79,22 @@ describe('TransactionStatusLabel Component', () => {
 
     const { container } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
+      store,
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render statusText properly when is MMI', () => {
+    const props = {
+      custodyStatusDisplayText: 'test',
+    };
+
+    const { getByText } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+      store,
+    );
+
+    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
   });
 });
