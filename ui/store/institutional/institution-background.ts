@@ -27,7 +27,7 @@ export function showInteractiveReplacementTokenBanner({
         url,
         oldRefreshToken,
       ]);
-    } catch (err) {
+    } catch (err: any) {
       if (err) {
         dispatch(displayWarning(err.message));
         throw new Error(err.message);
