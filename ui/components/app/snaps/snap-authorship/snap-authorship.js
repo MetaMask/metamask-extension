@@ -78,7 +78,6 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
       borderWidth={1}
       width={BLOCK_SIZES.FULL}
       borderRadius={expanded ? BorderRadius.LG : BorderRadius.pill}
-      onClick={expanded}
     >
       <Box
         alignItems={AlignItems.center}
@@ -141,26 +140,30 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
             padding={4}
             width={BLOCK_SIZES.FULL}
           >
-            <Box
-              flexDirection={FLEX_DIRECTION.ROW}
-              justifyContent={JustifyContent.spaceBetween}
-              width={BLOCK_SIZES.FULL}
-            >
-              <Text variant={TextVariant.bodyMdBold}>{t('installOrigin')}</Text>
+            {installOrigin && installInfo && (
               <Box
-                flexDirection={FLEX_DIRECTION.COLUMN}
-                alignItems={AlignItems.flexEnd}
+                flexDirection={FLEX_DIRECTION.ROW}
+                justifyContent={JustifyContent.spaceBetween}
+                width={BLOCK_SIZES.FULL}
               >
-                <ButtonLink href={installOrigin.origin} target="_blank">
-                  {installOrigin.host}
-                </ButtonLink>
-                <Text color={Color.textMuted}>
-                  {t('installedOn', [
-                    formatDate(installInfo.date, 'dd MMM yyyy'),
-                  ])}
+                <Text variant={TextVariant.bodyMdBold}>
+                  {t('installOrigin')}
                 </Text>
+                <Box
+                  flexDirection={FLEX_DIRECTION.COLUMN}
+                  alignItems={AlignItems.flexEnd}
+                >
+                  <ButtonLink href={installOrigin.origin} target="_blank">
+                    {installOrigin.host}
+                  </ButtonLink>
+                  <Text color={Color.textMuted}>
+                    {t('installedOn', [
+                      formatDate(installInfo.date, 'dd MMM yyyy'),
+                    ])}
+                  </Text>
+                </Box>
               </Box>
-            </Box>
+            )}
             <Box
               flexDirection={FLEX_DIRECTION.ROW}
               justifyContent={JustifyContent.spaceBetween}

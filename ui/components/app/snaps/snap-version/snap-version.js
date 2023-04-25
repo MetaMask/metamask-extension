@@ -45,7 +45,7 @@ const SnapVersion = ({ version, url }) => {
             {t('shortVersion', [version])}
           </Text>
         ) : (
-          <Preloader size={14} />
+          <Preloader size={18} />
         )}
         <Icon
           name={IconName.Export}
