@@ -66,15 +66,22 @@ export const AccountListMenu = ({ onClose }) => {
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
       <Box className="multichain-account-menu">
         {/* Search box */}
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <TextFieldSearch
-            size={Size.SM}
-            width={BLOCK_SIZES.FULL}
-            placeholder={t('searchAccounts')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </Box>
+        {accounts.length > 1 ? (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+          >
+            <TextFieldSearch
+              size={Size.SM}
+              width={BLOCK_SIZES.FULL}
+              placeholder={t('searchAccounts')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Box>
+        ) : null}
         {/* Account list block */}
         <Box className="multichain-account-menu__list">
           {searchResults.length === 0 && searchQuery !== '' ? (
