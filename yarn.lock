@@ -32721,27 +32721,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trezor-connect@npm:8.2.6-extended":
-  version: 8.2.6-extended
-  resolution: "trezor-connect@npm:8.2.6-extended"
-  dependencies:
-    "@babel/runtime": ^7.15.4
-    "@trezor/blockchain-link": 1.1.0
-    "@trezor/connect-common": 0.0.4
-    "@trezor/rollout": ^1.2.1
-    "@trezor/transport": 1.0.1
-    "@trezor/utxo-lib": 1.0.0-beta.10
-    bignumber.js: ^9.0.1
-    bowser: ^2.11.0
-    cbor-web: ^7.0.6
-    cross-fetch: ^3.1.4
-    events: ^3.3.0
-    parse-uri: ^1.0.3
-    tiny-worker: ^2.3.0
-  checksum: d4149ad7f1722447e3b2ebc4f7d895e90a5afa69207cf99c00a50c38d95b379de3e8cc826cd443c14bf8154e3e2f582227d3282d1dcccf7ccb8a8e2bbdfdf48b
-  languageName: node
-  linkType: hard
-
 "trim-newlines@npm:^3.0.0":
   version: 3.0.1
   resolution: "trim-newlines@npm:3.0.1"
