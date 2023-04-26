@@ -120,6 +120,7 @@ const ExportPrivateKeyModal = ({
           type={TEXT_FIELD_TYPES.PASSWORD}
           className="export-private-key-modal__password-input"
           onChange={(event) => setPassword(event.target.value)}
+          data-testid="password-input"
         />
       );
     }

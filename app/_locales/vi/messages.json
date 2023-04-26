@@ -1416,9 +1416,6 @@
     "message": "Phí gas này đã được gợi ý bởi $1. Việc sửa đổi có thể khiến giao dịch của bạn gặp sự cố. Vui lòng liên hệ với $1 nếu bạn có câu hỏi.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Phí gas"
-  },
   "gasLimit": {
     "message": "Giới hạn gas"
   },

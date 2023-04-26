@@ -1416,9 +1416,6 @@
     "message": "Diese Gasgebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gasgebühr"
-  },
   "gasLimit": {
     "message": "Gaslimit"
   },
