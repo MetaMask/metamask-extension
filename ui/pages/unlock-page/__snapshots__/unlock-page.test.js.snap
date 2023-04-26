@@ -85,7 +85,7 @@ exports[`Unlock Page should match snapshot 1`] = `
            
           Need help? Contact 
           <a
-            href="https://metamask-flask.zendesk.com/hc"
+            href="https://support.metamask.io"
             rel="noopener noreferrer"
             target="_blank"
           >

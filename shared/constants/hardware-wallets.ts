@@ -33,7 +33,7 @@ export enum HardwareAffiliateLinks {
   ledger = 'https://shop.ledger.com/?r=17c4991a03fa',
   gridplus = 'https://gridplus.io/?afmc=7p',
   trezor = 'https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009',
-  keystone = 'https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9',
+  keystone = 'https://keyst.one/metamask?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9',
   airgap = 'https://airgap.it/',
   coolwallet = 'https://www.coolwallet.io/',
   dcent = 'https://dcentwallet.com/',
