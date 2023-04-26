@@ -382,9 +382,8 @@ export default function SmartTransactionStatusPage() {
           </Text>
           <Text
             color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodySmBold}
             as="h6"
-            fontWeight={FontWeight.Bold}
             boxProps={{ marginLeft: 1 }}
           >
             {fetchParamsDestinationTokenInfo.symbol ??
