@@ -631,19 +631,19 @@ export default function BuildQuote({
                 {t('stxDescription')}
               </Text>
               <Text as="ul" variant={TextVariant.bodySmBold} marginTop={3}>
-                  <li>{t('stxBenefit1')}</li>
-                  <li>{t('stxBenefit2')}</li>
-                  <li>{t('stxBenefit3')}</li>
-                  <li>
-                    {t('stxBenefit4')}
-                    <Text
-                      as="span"
-                      fontWeight={FontWeight.Normal}
-                      variant={TextVariant.bodySm}
-                    >
-                      {' *'}
-                    </Text>
-                  </li>
+                <li>{t('stxBenefit1')}</li>
+                <li>{t('stxBenefit2')}</li>
+                <li>{t('stxBenefit3')}</li>
+                <li>
+                  {t('stxBenefit4')}
+                  <Text
+                    as="span"
+                    fontWeight={FontWeight.Normal}
+                    variant={TextVariant.bodySm}
+                  >
+                    {' *'}
+                  </Text>
+                </li>
               </Text>
               <Text
                 variant={TextVariant.bodyXs}
@@ -652,13 +652,7 @@ export default function BuildQuote({
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
-                <Text
-                  as="span"
-                  variant={TextVariant.bodyXs}
-                  color={TextColor.textAlternative}
-                >
-                  <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
-                </Text>
+                <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
               </Text>
             </Box>
           </Popover>
