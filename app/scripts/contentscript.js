@@ -607,13 +607,23 @@ function notifyInpageOfStreamFailure() {
 
 /**
  * Redirects the current page to a phishing information page
+ *
+ * @param data
+ * @param {string} data.hostname -  The hostname that triggered the suspicion.
+ * @param {string} data.phishingProviderName - The name of the provider who's list blocked the hostname.
  */
-function redirectToPhishingWarning() {
+function redirectToPhishingWarning(data) {
   console.debug('MetaMask: Routing to Phishing Warning page.');
-  const { hostname, href } = window.location;
+  const { hostname, phishingProviderName } = data;
+
+  const { href } = window.location;
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
-  const querystring = new URLSearchParams({ hostname, href });
+  const querystring = new URLSearchParams({
+    hostname,
+    href,
+    phishingProviderName,
+  });
   window.location.href = `${baseUrl}#${querystring}`;
 }
 

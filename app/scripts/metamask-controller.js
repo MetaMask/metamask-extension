@@ -3667,7 +3667,10 @@ export default class MetamaskController extends EventEmitter {
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
-        this.sendPhishingWarning(connectionStream, hostname);
+        this.sendPhishingWarning(connectionStream, {
+          hostname,
+          phishingProviderName: phishingTestResponse.name,
+        });
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PhishingPageDisplayed,
           category: MetaMetricsEventCategory.Phishing,
@@ -3755,12 +3758,14 @@ export default class MetamaskController extends EventEmitter {
    * @private
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
-   * @param {string} hostname - The hostname that triggered the suspicion.
+   * @param data - paramaters to the phishing page setup.
+   * @param {string} data.hostname -  The hostname that triggered the suspicion.
+   * @param {string} data.phishingProviderName - The name of the provider who's list blocked the hostname.
    */
-  sendPhishingWarning(connectionStream, hostname) {
+  sendPhishingWarning(connectionStream, data) {
     const mux = setupMultiplex(connectionStream);
     const phishingStream = mux.createStream('phishing');
-    phishingStream.write({ hostname });
+    phishingStream.write(data);
   }
 
   /**
