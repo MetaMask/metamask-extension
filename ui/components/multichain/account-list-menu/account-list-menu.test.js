@@ -127,4 +127,10 @@ describe('AccountListMenu', () => {
     const searchBox = container.querySelector('input[type=search]');
     expect(searchBox).not.toBeInTheDocument();
   });
+
+  it('should render search bar when there is more than one account', () => {
+    render();
+    const searchBox = document.querySelector('input[type=search]');
+    expect(searchBox).toBeInTheDocument();
+  });
 });
