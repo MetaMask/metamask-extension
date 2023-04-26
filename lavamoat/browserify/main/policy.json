@@ -716,7 +716,7 @@
     "@metamask/assets-controllers>@metamask/abi-utils": {
       "packages": {
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "superstruct": true
       }
     },
     "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
@@ -725,10 +725,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -821,10 +821,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
@@ -869,10 +869,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-json-rpc-provider": {
@@ -1192,10 +1192,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/key-tree>@noble/ed25519": {
@@ -1317,7 +1317,7 @@
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "superstruct": true
       }
     },
     "@metamask/rpc-methods>@metamask/browser-passworder": {
@@ -1443,10 +1443,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/utils>@ethereumjs/tx>@chainsafe/ssz": {
@@ -2659,10 +2659,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "eth-ens-namehash": {
@@ -2780,7 +2780,6 @@
         "@ethersproject/abi": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "browserify>process": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": true,
         "eth-lattice-keyring>gridplus-sdk>bech32": true,

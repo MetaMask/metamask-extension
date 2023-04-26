@@ -1272,16 +1272,6 @@
         "typescript": true
       }
     },
-    "addons-linter>postcss>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
-      }
-    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -3269,9 +3259,9 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
-        "addons-linter>postcss>picocolors": true,
         "gulp-autoprefixer>autoprefixer>fraction.js": true,
         "gulp-autoprefixer>postcss": true,
+        "gulp-sass>picocolors": true,
         "stylelint>autoprefixer>normalize-range": true,
         "stylelint>postcss-value-parser": true,
         "webpack>browserslist": true,
@@ -3306,85 +3296,9 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "addons-linter>postcss>picocolors": true,
         "addons-linter>postcss>source-map-js": true,
-        "gulp-autoprefixer>postcss>nanoid": true
-      }
-    },
-    "gulp-dart-sass": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.stderr.write": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk": true,
-        "gulp-dart-sass>lodash.clonedeep": true,
-        "gulp-dart-sass>strip-ansi": true,
-        "gulp-dart-sass>through2": true,
-        "gulp-zip>plugin-error": true,
-        "sass": true,
-        "vinyl-sourcemaps-apply": true,
-        "vinyl>replace-ext": true
-      }
-    },
-    "gulp-dart-sass>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk>ansi-styles": true,
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
-        "gulp-dart-sass>chalk>supports-color": true
-      }
-    },
-    "gulp-dart-sass>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
-    "gulp-dart-sass>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk>supports-color>has-flag": true
-      }
-    },
-    "gulp-dart-sass>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "gulp-dart-sass>strip-ansi": {
-      "packages": {
-        "gulp-dart-sass>strip-ansi>ansi-regex": true
-      }
-    },
-    "gulp-dart-sass>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
+        "gulp-autoprefixer>postcss>nanoid": true,
+        "gulp-sass>picocolors": true
       }
     },
     "gulp-livereload": {
@@ -3406,8 +3320,8 @@
         "process.platform": true
       },
       "packages": {
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
         "gulp-livereload>chalk>ansi-styles": true,
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "gulp-livereload>chalk>supports-color": true
       }
     },
@@ -3680,7 +3594,7 @@
         "process.platform": true
       },
       "packages": {
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "gulp-rtlcss>rtlcss>chalk>ansi-styles": true,
         "gulp-rtlcss>rtlcss>chalk>supports-color": true
       }
@@ -3737,6 +3651,48 @@
       "packages": {
         "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sass": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.relative": true,
+        "stream.Transform": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.exit": true,
+        "process.stderr.write": true
+      },
+      "packages": {
+        "eslint>strip-ansi": true,
+        "gulp-sass>lodash.clonedeep": true,
+        "gulp-sass>picocolors": true,
+        "gulp-sass>replace-ext": true,
+        "gulp-zip>plugin-error": true,
+        "vinyl-sourcemaps-apply": true
+      }
+    },
+    "gulp-sass>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
+    "gulp-sass>replace-ext": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
       }
     },
     "gulp-sort": {
@@ -6017,7 +5973,7 @@
         "process.platform": true
       },
       "packages": {
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "lavamoat>@babel/highlight>chalk>ansi-styles": true,
         "lavamoat>@babel/highlight>chalk>supports-color": true
       }
