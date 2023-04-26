@@ -12,9 +12,8 @@ import {
   AvatarAccountSize,
   AvatarAccountVariant,
   BUTTON_SECONDARY_SIZES,
-  Button,
+  ButtonSecondary,
   PopoverHeader,
-  Text,
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import EditableLabel from '../../ui/editable-label/editable-label';
@@ -36,7 +35,6 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -97,10 +95,10 @@ export const AccountDetails = ({ address }) => {
         />
         <QrView Qr={{ data: address }} />
         {exportPrivateKeyFeatureEnabled ? (
-          <Button
+          <ButtonSecondary
             block
             size={BUTTON_SECONDARY_SIZES.LG}
-            type="secondary"
+            variant={TextVariant.bodyMd}
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
@@ -114,10 +112,8 @@ export const AccountDetails = ({ address }) => {
               onClose();
             }}
           >
-            <Text variant={TextVariant.bodyMd} color={TextColor.primaryDefault}>
-              {t('showPrivateKey')}
-            </Text>
-          </Button>
+            {t('showPrivateKey')}
+          </ButtonSecondary>
         ) : null}
       </Box>
     </Popover>
