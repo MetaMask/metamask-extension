@@ -59,7 +59,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { Text } from '../../../components/component-library';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
