@@ -92,7 +92,11 @@ export default function MultilayerFeeMessage({
   return (
     <div className="multi-layer-fee-message">
       <TransactionDetailItem
+<<<<<<< HEAD
         key="multi-layer-fee-message-total-item-gas-fee"
+=======
+        key="total-item-gas-fee"
+>>>>>>> 02b537c0c (Enable editing L2 gas on optimism (#18217))
         detailTitle={t('layer1Fees')}
         detailTotal={layer1Total}
         detailText={useCurrencyRateCheck && feeTotalInFiat}

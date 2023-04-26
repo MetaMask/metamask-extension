@@ -1,5 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+<<<<<<< HEAD
 exports[`Multi layer fee message when balance and token price checker is disabled should match screenshot 1`] = `
 <div>
   <div
@@ -76,6 +77,9 @@ exports[`Multi layer fee message when balance and token price checker is disable
 `;
 
 exports[`Multi layer fee message when balance and token price checker is enabled should match snapshot 1`] = `
+=======
+exports[`Multi layer fee message should match snapshot 1`] = `
+>>>>>>> 02b537c0c (Enable editing L2 gas on optimism (#18217))
 <div>
   <div
     class="multi-layer-fee-message"
