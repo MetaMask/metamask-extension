@@ -70,7 +70,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
     >
       {startAccessory && (
         <Box
-          className="mm-header-base__start-accessory"
           ref={startAccessoryRef}
           style={
             children
@@ -86,7 +85,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
       )}
       {children && (
         <Box
-          className="mm-header-base__children"
           width={BLOCK_SIZES.FULL}
           style={getTitleStyles}
           {...childrenWrapperProps}
@@ -98,7 +96,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
         <Box
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.flexEnd}
-          className="mm-header-base__end-accessory"
           ref={endAccessoryRef}
           style={
             children
