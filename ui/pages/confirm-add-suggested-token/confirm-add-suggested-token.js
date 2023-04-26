@@ -15,8 +15,6 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import {
-  rejectWatchAsset,
-  acceptWatchAsset,
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
@@ -126,7 +124,6 @@ const ConfirmAddSuggestedToken = () => {
     await Promise.all(
       suggestedAssets.flatMap(({ asset, id }) => [
         dispatch(resolvePendingApproval(id, null)),
-        dispatch(acceptWatchAsset(id)),
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
           category: MetaMetricsEventCategory.Wallet,
@@ -154,7 +151,6 @@ const ConfirmAddSuggestedToken = () => {
             serializeError(ethErrors.provider.userRejectedRequest()),
           ),
         ),
-        dispatch(rejectWatchAsset(id)),
       ]),
     );
     history.push(mostRecentOverviewPage);

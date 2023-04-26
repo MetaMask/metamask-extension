@@ -1,8 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import {
-  acceptWatchAsset,
-  rejectWatchAsset,
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
@@ -40,8 +38,6 @@ const MOCK_TOKEN = {
 };
 
 jest.mock('../../store/actions', () => ({
-  acceptWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
-  rejectWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
 }));
@@ -87,7 +83,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
     );
   });
 
-  it('should dispatch acceptWatchAsset when clicking the "Add token" button', () => {
+  it('should dispatch resolvePendingApproval when clicking the "Add token" button', () => {
     renderComponent();
     const addTokenBtn = screen.getByRole('button', { name: 'Add token' });
 
@@ -96,26 +92,19 @@ describe('ConfirmAddSuggestedToken Component', () => {
     expect(resolvePendingApproval).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
-    expect(acceptWatchAsset).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_ASSETS.length,
-    );
 
     MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
       expect(resolvePendingApproval).toHaveBeenCalledWith(id, null);
-      expect(acceptWatchAsset).toHaveBeenCalledWith(id);
     });
   });
 
-  it('should dispatch rejectWatchAsset when clicking the "Cancel" button', () => {
+  it('should dispatch rejectPendingApproval when clicking the "Cancel" button', () => {
     renderComponent();
     const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
 
     fireEvent.click(cancelBtn);
 
     expect(rejectPendingApproval).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_ASSETS.length,
-    );
-    expect(rejectWatchAsset).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
 
@@ -128,7 +117,6 @@ describe('ConfirmAddSuggestedToken Component', () => {
           stack: expect.any(String),
         }),
       );
-      expect(rejectWatchAsset).toHaveBeenCalledWith(id);
     });
   });
 
