@@ -480,10 +480,6 @@ describe('Actions', () => {
   });
 
   describe('#isDeviceAccessible', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
     it('calls isDeviceAccessible in background', async () => {
       const isDeviceAccessible = background.isDeviceAccessible.callsFake(
         (_, __, cb) => {

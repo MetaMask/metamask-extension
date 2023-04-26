@@ -705,21 +705,20 @@ describe('MetaMaskController', function () {
     let mockKeyrings = [];
 
     beforeEach(async function () {
-      unlock = sinon.stub();
+      unlock = jest.fn();
       mockKeyrings = [
         {
           type: HardwareKeyringType.ledger,
           unlock,
         },
       ];
-      sinon
-        .stub(metamaskController.keyringController, 'getKeyringsByType')
-        .callsFake(() => mockKeyrings);
+      jest
+        .spyOn(metamaskController.keyringController, 'getKeyringsByType')
+        .mockImplementation(() => mockKeyrings);
     });
 
     afterEach(function () {
-      metamaskController.keyringController.getKeyringsByType.restore();
-      unlock.resetHistory();
+      jest.clearAllMocks();
     });
 
     it('should call underlying keyring for ledger device and return false if inaccessible', async function () {
@@ -731,7 +730,7 @@ describe('MetaMaskController', function () {
       );
 
       // unlock should have been called on the mock device
-      assert(unlock.calledOnce);
+      assert.equal(unlock.mock.calls, 1);
       assert.equal(status, false);
     });
 
@@ -744,7 +743,7 @@ describe('MetaMaskController', function () {
         HardwareDeviceNames.ledger,
         `m/44/0'/0'`,
       );
-      assert(unlock.calledOnce);
+      assert.equal(unlock.mock.calls, 1);
       assert.equal(status, true);
     });
 
@@ -761,7 +760,7 @@ describe('MetaMaskController', function () {
         HardwareDeviceNames.trezor,
         `m/44'/1'/0'/0`,
       );
-      assert.equal(unlock.called, false);
+      assert.equal(unlock.mock.calls, 0);
       assert.equal(status, false);
     });
   });
