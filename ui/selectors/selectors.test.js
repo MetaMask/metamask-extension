@@ -3,7 +3,6 @@ import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
@@ -109,31 +108,6 @@ describe('Selectors', () => {
   });
 
   describe('#getAllNetworks', () => {
-    it('returns an array even if there are no custom networks', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: false,
-          },
-        },
-      });
-      expect(networks instanceof Array).toBe(true);
-      // The only returning item should be Ethereum Mainnet
-      expect(networks).toHaveLength(1);
-      expect(networks[0].nickname).toStrictEqual(MAINNET_DISPLAY_NAME);
-    });
-
-    it('returns more test networks with showTestNetworks on', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-        },
-      });
-      expect(networks.length).toBeGreaterThan(1);
-    });
-
     it('sorts Localhost to the bottom of the test lists', () => {
       const networks = selectors.getAllNetworks({
         metamask: {
@@ -150,6 +124,30 @@ describe('Selectors', () => {
       });
       const lastItem = networks.pop();
       expect(lastItem.nickname.toLowerCase()).toContain('localhost');
+    });
+  });
+
+  describe('#getAllEnabledNetworks', () => {
+    it('returns only MainNet with showTestNetworks off', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: false,
+          },
+        },
+      });
+      expect(networks).toHaveLength(1);
+    });
+
+    it('returns networks with showTestNetworks on', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+        },
+      });
+      expect(networks.length).toBeGreaterThan(1);
     });
   });
 
