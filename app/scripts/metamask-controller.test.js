@@ -723,7 +723,7 @@ describe('MetaMaskController', function () {
 
     afterEach(function () {
       metamaskController.keyringController.getKeyringsByType.restore();
-      unlock.resetHistory();      
+      unlock.resetHistory();
       // jest.clearAllMocks();
     });
 
@@ -737,7 +737,7 @@ describe('MetaMaskController', function () {
 
       // unlock should have been called on the mock device
       assert(unlock.calledOnce);
-      assert.equal(status, false)
+      assert.equal(status, false);
       // expect(unlock.mock.calls).toStrictEqual(1);
       // expect(status).toStrictEqual(false);
     });
@@ -752,7 +752,7 @@ describe('MetaMaskController', function () {
         `m/44/0'/0'`,
       );
       assert(unlock.calledOnce);
-      assert.equal(status, true)
+      assert.equal(status, true);
       // expect(unlock.mock.calls).toStrictEqual(1);
       // expect(status).toStrictEqual(true);
     });
