@@ -12,12 +12,12 @@ import {
 
 import { AvatarAccount, BUTTON_SIZES, Button, Text } from '..';
 
-import { PopoverHeader } from './popover-header';
+import { ModalHeader } from './modal-header';
 import README from './README.mdx';
 
 export default {
-  title: 'Components/ComponentLibrary/PopoverHeader',
-  component: PopoverHeader,
+  title: 'Components/ComponentLibrary/ModalHeader',
+  component: ModalHeader,
   parameters: {
     docs: {
       page: README,
@@ -30,23 +30,23 @@ export default {
     onClose: { action: 'onClose' },
   },
   args: {
-    children: 'PopoverHeader',
+    children: 'ModalHeader',
   },
-} as ComponentMeta<typeof PopoverHeader>;
+} as ComponentMeta<typeof ModalHeader>;
 
-const Template: ComponentStory<typeof PopoverHeader> = (args) => {
-  return <PopoverHeader {...args} />;
+const Template: ComponentStory<typeof ModalHeader> = (args) => {
+  return <ModalHeader {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Children: ComponentStory<typeof PopoverHeader> = (args) => (
+export const Children: ComponentStory<typeof ModalHeader> = (args) => (
   <>
-    <PopoverHeader {...args} marginBottom={4}>
+    <ModalHeader {...args} marginBottom={4}>
       Children as string
-    </PopoverHeader>
-    <PopoverHeader
+    </ModalHeader>
+    <ModalHeader
       {...args}
       childrenWrapperProps={{
         display: DISPLAY.FLEX,
@@ -59,7 +59,7 @@ export const Children: ComponentStory<typeof PopoverHeader> = (args) => (
       <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Custom header using multiple components
       </Text>
-    </PopoverHeader>
+    </ModalHeader>
   </>
 );
 

@@ -1416,9 +1416,6 @@
     "message": "$1에서 이 가스 요금을 제안했습니다. 이를 무시하면 거래에 문제가 발생할 수 있습니다. 질문이 있는 경우 $1에 문의하세요.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "가스 수수료"
-  },
   "gasLimit": {
     "message": "가스 한도"
   },
