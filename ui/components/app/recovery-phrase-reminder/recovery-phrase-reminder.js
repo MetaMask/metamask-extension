@@ -6,18 +6,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography';
 // Helpers
 import {
   DISPLAY,
-  TEXT_ALIGN,
-  TypographyVariant,
+  TextAlign,
+  TextVariant,
   BLOCK_SIZES,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { Text } from '../../component-library';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
@@ -35,24 +35,24 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
         paddingLeft={4}
         className="recovery-phrase-reminder"
       >
-        <Typography
+        <Text
           color={TextColor.textDefault}
-          align={TEXT_ALIGN.CENTER}
-          variant={TypographyVariant.paragraph}
+          align={TextAlign.Center}
+          variant={TextVariant.bodyMd}
           boxProps={{ marginTop: 0, marginBottom: 4 }}
         >
           {t('recoveryPhraseReminderSubText')}
-        </Typography>
+        </Text>
         <Box marginTop={4} marginBottom={8}>
           <ul className="recovery-phrase-reminder__list">
             <li>
-              <Typography
+              <Text
                 as="span"
                 color={TextColor.textDefault}
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Bold}
               >
                 {t('recoveryPhraseReminderItemOne')}
-              </Typography>
+              </Text>
             </li>
             <li>{t('recoveryPhraseReminderItemTwo')}</li>
             <li>
