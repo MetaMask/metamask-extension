@@ -2,7 +2,7 @@
   opacity: 0.8;
 
   &__item {
-    border-bottom: 1px solid #d2d8dd;
+    border-bottom: 1px solid --color-border-default;
 
     &-clipboard {
       background-color: transparent;

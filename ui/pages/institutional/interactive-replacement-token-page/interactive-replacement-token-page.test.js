@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, act } from '@testing-library/react';
+import { screen, act, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -17,7 +17,7 @@ const custodianAccounts = [
     labels: [
       {
         key: 'service',
-        value: 'test',
+        value: 'Label test 1',
       },
     ],
   },
@@ -28,11 +28,13 @@ const custodianAccounts = [
     labels: [
       {
         key: 'service',
-        value: 'test',
+        value: 'Label test 2',
       },
     ],
   },
 ];
+
+const mockedShowInteractiveReplacementTokenBanner = jest.fn();
 
 const mockedRemoveAddTokenConnectRequest = jest
   .fn()
@@ -40,9 +42,9 @@ const mockedRemoveAddTokenConnectRequest = jest
 const mockedSetCustodianNewRefreshToken = jest
   .fn()
   .mockReturnValue({ type: 'TYPE' });
-const mockedGetCustodianConnectRequest = jest
+let mockedGetCustodianConnectRequest = jest
   .fn()
-  .mockReturnValue(async () => custodianAccounts);
+  .mockReturnValue(async () => await custodianAccounts);
 
 jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
@@ -50,9 +52,8 @@ jest.mock('../../../store/institutional/institution-background', () => ({
     setCustodianNewRefreshToken: mockedSetCustodianNewRefreshToken,
     getCustodianAccounts: mockedGetCustodianConnectRequest,
   }),
-  showInteractiveReplacementTokenBanner: jest
-    .fn()
-    .mockReturnValue({ type: 'TYPE' }),
+  showInteractiveReplacementTokenBanner: () =>
+    mockedShowInteractiveReplacementTokenBanner,
 }));
 
 const address = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -68,6 +69,7 @@ const connectRequests = [
   {
     labels,
     origin: 'origin',
+    apiUrl: 'apiUrl',
     token: {
       projectName: 'projectName',
       projectId: 'projectId',
@@ -144,7 +146,9 @@ describe('Interactive Replacement Token Page', function () {
     expect(
       screen.getByText(shortenAddress(custodianAddress)),
     ).toBeInTheDocument();
-    // expect(screen.getByText(labels[0].value)).toBeInTheDocument(); Add later
+    expect(
+      screen.getByText(custodianAccounts[1].labels[0].value),
+    ).toBeInTheDocument();
   });
 
   it('should not render if connectRequests is empty', async () => {
@@ -159,5 +163,63 @@ describe('Interactive Replacement Token Page', function () {
     expect(
       queryByTestId('interactive-replacement-token'),
     ).not.toBeInTheDocument();
+  });
+
+  it('should call onRemoveAddTokenConnectRequest and navigate to mostRecentOverviewPage when handleReject is called', () => {
+    const mostRecentOverviewPage = '/mostRecentOverviewPage';
+
+    const { getByText } = render();
+
+    fireEvent.click(getByText('Reject'));
+
+    expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalled();
+    expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
+      origin: connectRequests[0].origin,
+      apiUrl: connectRequests[0].apiUrl,
+      token: connectRequests[0].token,
+    });
+    expect(props.history.push).toHaveBeenCalled();
+    expect(props.history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
+  });
+
+  it('should call onRemoveAddTokenConnectRequest, setCustodianNewRefreshToken, and dispatch showInteractiveReplacementTokenBanner when handleApprove is called', async () => {
+    const mostRecentOverviewPage = {
+      pathname: '/institutional-features/done',
+      state: {
+        description:
+          'You can now use your custodian accounts in MetaMask Institutional.',
+        imgSrc: 'iconUrl',
+        title: 'Your custodian token has been refreshed',
+      },
+    };
+
+    await act(async () => {
+      const { getByText } = await render();
+      fireEvent.click(getByText('Approve'));
+    });
+
+    expect(mockedShowInteractiveReplacementTokenBanner).toHaveBeenCalled();
+    expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalled();
+    expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
+      origin: connectRequests[0].origin,
+      apiUrl: connectRequests[0].apiUrl,
+      token: connectRequests[0].token,
+    });
+    expect(props.history.push).toHaveBeenCalled();
+    expect(props.history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
+  });
+
+  it('should reject if there are errors', async () => {
+    mockedGetCustodianConnectRequest = jest.fn().mockReturnValue(async () => {
+      throw new Error();
+    });
+
+    await act(async () => {
+      const { getByText, container } = await render();
+      fireEvent.click(getByText('Approve'));
+      await waitFor(() => {
+        expect(container).toMatchSnapshot();
+      });
+    });
   });
 });

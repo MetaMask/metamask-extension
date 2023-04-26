@@ -27,13 +27,13 @@ import {
   IconSize,
 } from '../../../components/component-library';
 import {
-  Color,
   OVERFLOW_WRAP,
   TextColor,
   JustifyContent,
   BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
@@ -116,7 +116,6 @@ export default function InteractiveReplacementTokenPage({ history }) {
           setIsLoading(false);
         }
       } catch (e) {
-        console.log(e);
         setError(true);
         setIsLoading(false);
       }
@@ -268,7 +267,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
                           <Icon
                             name={IconName.Export}
                             size={IconSize.Sm}
-                            color={Color.primaryDefault}
+                            color={IconColor.primaryDefault}
                             marginLeft={1}
                           />
                         </ButtonLink>
@@ -287,7 +286,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
                             <Icon
                               name={IconName.Copy}
                               size={IconSize.Xs}
-                              color={Color.iconMuted}
+                              color={IconColor.iconMuted}
                             />
                           </button>
                         </Tooltip>
