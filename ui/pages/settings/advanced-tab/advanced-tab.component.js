@@ -40,6 +40,7 @@ export default class AdvancedTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
+    showEthSignModal: PropTypes.func,
     warning: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
@@ -542,7 +543,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
       this.props;
-
+    const { showEthSignModal } = this.props;
     return (
       <div
         ref={this.settingsRefs[10]}
@@ -559,9 +560,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={disabledRpcMethodPreferences?.eth_sign || false}
-              onToggle={(value) =>
-                setDisabledRpcMethodPreference('eth_sign', !value)
-              }
+              onToggle={() => showEthSignModal()}
               offLabel={t('off')}
               onLabel={t('on')}
             />

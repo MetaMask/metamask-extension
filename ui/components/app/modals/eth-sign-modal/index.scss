@@ -1,0 +1,19 @@
+.eth-sign-modal {
+  position: relative;
+
+  &__close {
+    position: absolute;
+    right: 16px;
+  }
+
+  &__footer-button {
+  @extend %row-nowrap;
+
+  padding: 1rem;
+
+  button + button {
+    margin-left: 1rem;
+  }
+}
+
+}
