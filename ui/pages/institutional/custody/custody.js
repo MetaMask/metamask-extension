@@ -75,9 +75,8 @@ const CustodyPage = () => {
   const [chainId, setChainId] = useState(0);
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
-  const [custodianButtons, setCustodianButtons] = useState(null);
 
-  useMemo(() => {
+  const custodianButtons = useMemo(() => {
     const custodianItems = [];
     custodians.forEach((custodian) => {
       if (
@@ -144,7 +143,7 @@ const CustodyPage = () => {
       );
     });
 
-    setCustodianButtons(custodianItems);
+    return custodianItems;
   }, [connectRequest, custodians, dispatch, selectedCustodianName]);
 
   const handleConnectError = useCallback(
