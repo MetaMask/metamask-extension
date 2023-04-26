@@ -207,8 +207,7 @@
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/message-manager@^3.1.0": "patch:@metamask/message-manager@npm%3A3.1.0#./.yarn/patches/@metamask-message-manager-npm-3.1.0-64952d0622.patch"
+    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
@@ -247,7 +246,7 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/logo": "^3.1.1",
-    "@metamask/message-manager": "^3.1.0",
+    "@metamask/message-manager": "^3.1.1",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/notification-controller": "^2.0.0",
     "@metamask/obs-store": "^8.1.0",
