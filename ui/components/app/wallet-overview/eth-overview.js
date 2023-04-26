@@ -27,7 +27,6 @@ import {
   getSwapsDefaultToken,
   getIsSwapsChain,
   getIsBridgeChain,
-  getIsBuyableChain,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
@@ -70,7 +69,6 @@ const EthOverview = ({ className }) => {
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
@@ -126,7 +124,7 @@ const EthOverview = ({ className }) => {
   };
   ///: END:ONLY_INCLUDE_IN
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { openBuyCryptoInPdapp, isNativeTokenBuyableChain } = useRamps();
 
   return (
     <WalletOverview
@@ -224,7 +222,7 @@ const EthOverview = ({ className }) => {
               Icon={
                 <Icon name={IconName.Add} color={IconColor.primaryInverse} />
               }
-              disabled={!isBuyableChain}
+              disabled={!isNativeTokenBuyableChain}
               data-testid="eth-overview-buy"
               label={t('buy')}
               onClick={() => {

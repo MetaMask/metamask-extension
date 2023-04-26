@@ -18,7 +18,6 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
   getIsSwapsChain,
-  getIsBuyableChain,
   getIsBridgeToken,
   getCurrentChainId,
   getMetaMetricsId,
@@ -62,10 +61,9 @@ const TokenOverview = ({ className, token }) => {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeToken = useSelector(getIsBridgeToken(token.address));
-  const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
 
   useEffect(() => {
     if (token.isERC721) {

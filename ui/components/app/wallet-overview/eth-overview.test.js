@@ -7,23 +7,18 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import EthOverview from './eth-overview';
 
-// Mock BUYABLE_CHAINS_MAP
-jest.mock('../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../shared/constants/network'),
-  BUYABLE_CHAINS_MAP: {
-    // MAINNET
-    '0x1': {
-      nativeCurrency: 'ETH',
-      network: 'ethereum',
-    },
-    // POLYGON
-    '0x89': {
-      nativeCurrency: 'MATIC',
-      network: 'polygon',
-    },
-  },
-}));
 let openTabSpy;
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
+
+let mockedUseRampsValues = {
+  isNativeTokenBuyableChain: true,
+  openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+};
+
+jest.mock('../../../hooks/experiences/useRamps', () =>
+  jest.fn(() => mockedUseRampsValues),
+);
 
 describe('EthOverview', () => {
   const mockStore = {
@@ -92,6 +87,11 @@ describe('EthOverview', () => {
 
     beforeEach(() => {
       openTabSpy.mockClear();
+
+      mockedUseRampsValues = {
+        isNativeTokenBuyableChain: true,
+        openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+      };
     });
 
     it('should show the primary balance', async () => {
@@ -248,6 +248,12 @@ describe('EthOverview', () => {
           provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
+
+      mockedUseRampsValues = {
+        ...mockedUseRampsValues,
+        isNativeTokenBuyableChain: false,
+      };
+
       const mockedStore = configureMockStore([thunk])(
         mockedStoreWithUnbuyableChainId,
       );
@@ -302,13 +308,7 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
-        }),
-      );
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
     });
   });
 });

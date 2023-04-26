@@ -16,7 +16,6 @@ import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
-  BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
@@ -769,10 +768,6 @@ export const getIsBridgeToken = (tokenAddress) => (state) => {
   );
 };
 
-export function getIsBuyableChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
-}
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];

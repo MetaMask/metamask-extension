@@ -12,7 +12,6 @@ import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
-import { getPortfolioUrl } from '../../../../helpers/utils/portfolio';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -54,8 +53,9 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    openBuyCryptoInPdapp: PropTypes.func,
     txData: PropTypes.object,
-    metaMetricsId: PropTypes.string,
+    // metaMetricsId: PropTypes.string,
   };
 
   renderContent() {
@@ -160,8 +160,9 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      openBuyCryptoInPdapp,
       txData,
-      metaMetricsId,
+      // metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
@@ -224,15 +225,7 @@ export default class ConfirmPageContainerContent extends Component {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() => {
-                          global.platform.openTab({
-                            url: getPortfolioUrl(
-                              'buy',
-                              'ext_buy_button',
-                              metaMetricsId,
-                            ),
-                          });
-                        }}
+                        onClick={openBuyCryptoInPdapp}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}

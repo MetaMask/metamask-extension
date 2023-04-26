@@ -23,7 +23,6 @@ import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import {
   getPreferences,
-  getIsBuyableChain,
   transactionFeeSelector,
   getIsTestnet,
   getUseCurrencyRateCheck,
@@ -53,11 +52,10 @@ export default function GasDisplay({ gasError }) {
   const { estimateUsed } = useGasFeeContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
 
   const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
-  const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =

@@ -36,7 +36,6 @@ import useTransactionInsights from '../../../hooks/useTransactionInsights';
 import {
   getAccountName,
   getAddressBookEntry,
-  getIsBuyableChain,
   getMetadataContractName,
   getMetaMaskIdentities,
   getMetaMetricsId,
@@ -104,7 +103,6 @@ const ConfirmPageContainer = (props) => {
 
   const [collectionBalance, setCollectionBalance] = useState(0);
 
-  const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
@@ -123,7 +121,7 @@ const ConfirmPageContainer = (props) => {
   // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
   // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
   // component once it is converted to a functional component
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
 
   const isSetApproveForAll =
     currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
@@ -235,6 +233,7 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
           />
         )}

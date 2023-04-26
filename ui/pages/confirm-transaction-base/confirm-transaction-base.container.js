@@ -33,7 +33,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
@@ -66,6 +65,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
+import { withUseRamps } from '../../hooks/experiences/useRamps';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -96,7 +96,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-  const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
   const {
     conversionRate,
@@ -244,7 +243,6 @@ const mapStateToProps = (state, ownProps) => {
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
-    isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };
@@ -317,5 +315,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
 export default compose(
   withRouter,
+  withUseRamps,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(ConfirmTransactionBase);
