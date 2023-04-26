@@ -19,7 +19,7 @@ import {
   IconName,
   IconSize,
   BUTTON_SIZES,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -422,7 +422,7 @@ const CustodyPage = () => {
               padding={[4, 0]}
             >
               <Button
-                type={BUTTON_TYPES.SECONDARY}
+                type={BUTTON_VARIANT.SECONDARY}
                 marginRight={4}
                 onClick={() => {
                   cancelConnectCustodianToken();
@@ -579,7 +579,7 @@ const CustodyPage = () => {
           <Box padding={[5, 7]} className="custody-accounts-empty__footer">
             <Button
               size={BUTTON_SIZES.LG}
-              type={BUTTON_TYPES.SECONDARY}
+              type={BUTTON_VARIANT.SECONDARY}
               onClick={() => history.push(DEFAULT_ROUTE)}
             >
               {t('close')}
