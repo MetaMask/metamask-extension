@@ -1552,9 +1552,6 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gas fee"
-  },
   "gasLimit": {
     "message": "Gas limit"
   },
@@ -1959,6 +1956,9 @@
   },
   "lastSold": {
     "message": "Last sold"
+  },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",

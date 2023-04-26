@@ -1432,9 +1432,6 @@
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "燃料费"
-  },
   "gasLimit": {
     "message": "燃料上限"
   },
