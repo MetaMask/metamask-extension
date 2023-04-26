@@ -9,7 +9,7 @@ module.exports = {
     lines: 69.3,
     branches: 57,
     statements: 68.5,
-    functions: 61.5,
+    functions: 62,
   },
   transforms: {
     branches: 100,
