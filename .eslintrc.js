@@ -235,9 +235,6 @@ module.exports = {
         'test/lib/wait-until-called.js',
         'test/e2e/**/*.spec.js',
       ],
-      env: {
-        jest: true
-      },
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/network/**/*.test.js',
