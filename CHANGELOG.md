@@ -8,12 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.30.0]
 ### Added
-- [MMI] Interactive replacement token modal ([#18523](https://github.com/MetaMask/metamask-extension/pull/18523))
+- Updating Terms of Use, Adding popover and onboarding flow check ([#18221](https://github.com/MetaMask/metamask-extension/pull/18221))
 
 ### Changed
 - Update ethereum logo icon ([#18528](https://github.com/MetaMask/metamask-extension/pull/18528))
 - Update send icon ([#18411](https://github.com/MetaMask/metamask-extension/pull/18411))
-- Updating Terms of Use, Adding popover and onboarding flow check ([#18221](https://github.com/MetaMask/metamask-extension/pull/18221))
 - Disabling network and account changes after the send flow is initiated ([#18086](https://github.com/MetaMask/metamask-extension/pull/18086))
 - [FLASK] Redesign `dropdown-tab` ([#18546](https://github.com/MetaMask/metamask-extension/pull/18546))
 - New reusable gas-display component ([#17976](https://github.com/MetaMask/metamask-extension/pull/17976))
