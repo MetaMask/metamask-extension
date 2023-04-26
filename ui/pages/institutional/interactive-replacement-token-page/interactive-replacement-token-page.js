@@ -122,6 +122,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
     };
 
     getTokenAccounts();
+    // We just want to get the accounts in the render of the component
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
