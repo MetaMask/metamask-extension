@@ -730,8 +730,8 @@ describe('MetaMaskController', function () {
       );
 
       // unlock should have been called on the mock device
-      assert.equal(unlock.mock.calls, 1);
-      assert.equal(status, false);
+      expect(unlock.mock.calls).toStrictEqual(1);
+      expect(status).toStrictEqual(false);
     });
 
     it('should call underlying keyring for ledger device and return true if accessible', async function () {
@@ -743,8 +743,8 @@ describe('MetaMaskController', function () {
         HardwareDeviceNames.ledger,
         `m/44/0'/0'`,
       );
-      assert.equal(unlock.mock.calls, 1);
-      assert.equal(status, true);
+      expect(unlock.mock.calls).toStrictEqual(1);
+      expect(status).toStrictEqual(true);
     });
 
     it('should not call underlying device for other devices', async function () {
@@ -760,8 +760,8 @@ describe('MetaMaskController', function () {
         HardwareDeviceNames.trezor,
         `m/44'/1'/0'/0`,
       );
-      assert.equal(unlock.mock.calls, 0);
-      assert.equal(status, false);
+      expect(unlock.mock.calls).toStrictEqual(0);
+      expect(status).toStrictEqual(false);
     });
   });
 
