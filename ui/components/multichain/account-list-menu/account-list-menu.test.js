@@ -101,7 +101,7 @@ describe('AccountListMenu', () => {
     ).toBeInTheDocument();
   });
 
-  it('should not render search bar when there is only one account', async () => {
+  it('should not render search bar when there is only one account', () => {
     const mockStore = configureStore({
       activeTab: {
         title: 'Eth Sign Tests',
