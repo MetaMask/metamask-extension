@@ -110,10 +110,18 @@ const standardScuttlingConfig = {
  * @returns {string} The Infura project ID.
  */
 function getInfuraProjectId({ buildType, variables, environment, testing }) {
+  const EMPTY_PROJECT_ID = '00000000000000000000000000000000';
   if (testing) {
-    return '00000000000000000000000000000000';
+    return EMPTY_PROJECT_ID;
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks.
+    // For forks, return empty project ID if we don't have one.
+    if (
+      !variables.isDefined('INFURA_PROJECT_ID') &&
+      environment === ENVIRONMENT.PULL_REQUEST
+    ) {
+      return EMPTY_PROJECT_ID;
+    }
     return variables.get('INFURA_PROJECT_ID');
   }
   /** @type {string|undefined} */
@@ -1107,6 +1115,11 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
+        logError(error);
+        process.exit(1);
+      });
+      pipeline.on('error', (error) => {
+        console.error('Pipeline failed! See details below.');
         logError(error);
         process.exit(1);
       });
