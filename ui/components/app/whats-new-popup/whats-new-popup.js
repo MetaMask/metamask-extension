@@ -293,7 +293,6 @@ export default function WhatsNewPopup({ onClose }) {
           properties: {
             number_viewed: Object.keys(seenNotifications).pop(),
             completed_all: true,
-            clicked_link: true, // TODO: What does this represent?
           },
         });
         onClose();
