@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import type { SupportedCurve } from '@metamask/key-tree';
 
 type SnapsMetadata = {

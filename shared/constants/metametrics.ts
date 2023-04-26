@@ -552,6 +552,9 @@ export enum MetaMetricsEventName {
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  UserClickedDeepLink = 'User clicked deeplink',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventAccountType {
@@ -591,6 +594,9 @@ export enum MetaMetricsEventCategory {
   Swaps = 'Swaps',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI = 'Institutional',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventLinkType {

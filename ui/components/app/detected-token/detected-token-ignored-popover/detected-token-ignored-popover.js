@@ -5,8 +5,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import Typography from '../../../ui/typography/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
+import { Text } from '../../../component-library';
 
 const DetectedTokenIgnoredPopover = ({
   partiallyIgnoreDetectedTokens,
@@ -48,9 +48,10 @@ const DetectedTokenIgnoredPopover = ({
       })}
       footer={footer}
     >
-      <Typography
-        variant={TypographyVariant.H6}
-        tag={TypographyVariant.H6}
+      <Text
+        variant={TextVariant.bodySm}
+        as="h6"
+        tag={TextVariant.bodySm}
         marginTop={0}
         marginRight={5}
         marginBottom={7}
@@ -59,7 +60,7 @@ const DetectedTokenIgnoredPopover = ({
         {partiallyIgnoreDetectedTokens
           ? t('importSelectedTokensDescription')
           : t('ignoreTokenWarning')}
-      </Typography>
+      </Text>
     </Popover>
   );
 };

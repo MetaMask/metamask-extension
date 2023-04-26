@@ -10,8 +10,10 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
+const difference = require('lodash/difference');
+const { intersection } = require('lodash');
 const { getVersion } = require('../lib/get-version');
-const { BuildType, BuildTypeInheritance } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');
 const {
   createTask,
@@ -73,61 +75,65 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
-  // scuttle on production/tests environment only
-  const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
+  const isRootTask = ['dist', 'prod', 'test', 'dev'].includes(entryTask);
 
-  console.log(
-    `Building lavamoat runtime file`,
-    `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
-  );
+  if (isRootTask) {
+    // scuttle on production/tests environment only
+    const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
 
-  // build lavamoat runtime file
-  await lavapack.buildRuntime({
-    scuttleGlobalThis: applyLavaMoat && shouldScuttle,
-    scuttleGlobalThisExceptions: [
-      // globals used by different mm deps outside of lm compartment
-      'toString',
-      'getComputedStyle',
-      'addEventListener',
-      'removeEventListener',
-      'ShadowRoot',
-      'HTMLElement',
-      'Element',
-      'pageXOffset',
-      'pageYOffset',
-      'visualViewport',
-      'Reflect',
-      'Set',
-      'Object',
-      'navigator',
-      'harden',
-      'console',
-      'Image', // Used by browser to generate notifications
-      // globals chrome driver needs to function (test env)
-      /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-      'performance',
-      'parseFloat',
-      'innerWidth',
-      'innerHeight',
-      'Symbol',
-      'Math',
-      'DOMRect',
-      'Number',
-      'Array',
-      'crypto',
-      'Function',
-      'Uint8Array',
-      'String',
-      'Promise',
-      // globals sentry needs to function
-      '__SENTRY__',
-      'appState',
-      'extra',
-      'stateHooks',
-      'sentryHooks',
-      'sentry',
-    ],
-  });
+    console.log(
+      `Building lavamoat runtime file`,
+      `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
+    );
+
+    // build lavamoat runtime file
+    await lavapack.buildRuntime({
+      scuttleGlobalThis: applyLavaMoat && shouldScuttle,
+      scuttleGlobalThisExceptions: [
+        // globals used by different mm deps outside of lm compartment
+        'toString',
+        'getComputedStyle',
+        'addEventListener',
+        'removeEventListener',
+        'ShadowRoot',
+        'HTMLElement',
+        'Element',
+        'pageXOffset',
+        'pageYOffset',
+        'visualViewport',
+        'Reflect',
+        'Set',
+        'Object',
+        'navigator',
+        'harden',
+        'console',
+        'Image', // Used by browser to generate notifications
+        // globals chrome driver needs to function (test env)
+        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+        'performance',
+        'parseFloat',
+        'innerWidth',
+        'innerHeight',
+        'Symbol',
+        'Math',
+        'DOMRect',
+        'Number',
+        'Array',
+        'crypto',
+        'Function',
+        'Uint8Array',
+        'String',
+        'Promise',
+        // globals sentry needs to function
+        '__SENTRY__',
+        'appState',
+        'extra',
+        'stateHooks',
+        'sentryHooks',
+        'sentry',
+      ],
+    });
+  }
 
   const browserPlatforms = ['firefox', 'chrome'];
 
@@ -271,9 +277,9 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           type: 'boolean',
         })
         .option('build-type', {
-          default: BuildType.main,
+          default: loadBuildTypesConfig().default,
           description: 'The type of build to create.',
-          choices: Object.keys(BuildType),
+          choices: Object.keys(loadBuildTypesConfig().buildTypes),
         })
         .option('build-version', {
           default: 0,
@@ -376,29 +382,36 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
  * build, or `null` if no files are to be ignored.
  */
 function getIgnoredFiles(currentBuildType) {
-  const inheritedBuildTypes = BuildTypeInheritance[currentBuildType] || [];
-  const excludedFiles = Object.values(BuildType)
-    // This filter removes "main" and the current build type. The files of any
-    // build types that remain in the array will be excluded. "main" is the
-    // default build type, and has no files that are excluded from other builds.
-    .filter(
-      (buildType) =>
-        buildType !== BuildType.main &&
-        buildType !== currentBuildType &&
-        !inheritedBuildTypes.includes(buildType),
-    )
-    // Compute globs targeting files for exclusion for each excluded build
-    // type.
-    .reduce((excludedGlobs, excludedBuildType) => {
-      return excludedGlobs.concat([
-        `../../app/**/${excludedBuildType}/**`,
-        `../../shared/**/${excludedBuildType}/**`,
-        `../../ui/**/${excludedBuildType}/**`,
-      ]);
-    }, [])
-    // This creates absolute paths of the form:
-    // PATH_TO_REPOSITORY_ROOT/app/**/${excludedBuildType}/**
-    .map((pathGlob) => path.resolve(__dirname, pathGlob));
+  const buildConfig = loadBuildTypesConfig();
+  const cwd = process.cwd();
 
-  return globby(excludedFiles);
+  const exclusiveAssetsForFeatures = (features) =>
+    globby(
+      features
+        .flatMap(
+          (feature) =>
+            buildConfig.features[feature].assets
+              ?.filter((asset) => 'exclusiveInclude' in asset)
+              .map((asset) => asset.exclusiveInclude) ?? [],
+        )
+        .map((pathGlob) => path.resolve(cwd, pathGlob)),
+    );
+
+  const allFeatures = Object.keys(buildConfig.features);
+  const activeFeatures =
+    buildConfig.buildTypes[currentBuildType].features ?? [];
+  const inactiveFeatures = difference(allFeatures, activeFeatures);
+
+  const ignoredPaths = exclusiveAssetsForFeatures(inactiveFeatures);
+  // We do a sanity check to verify that any inactive feature haven't excluded files
+  // that active features are trying to include
+  const activePaths = exclusiveAssetsForFeatures(activeFeatures);
+  const conflicts = intersection(activePaths, ignoredPaths);
+  if (conflicts.length !== 0) {
+    throw new Error(`Below paths are required exclusively by both active and inactive features resulting in a conflict:
+\t-> ${conflicts.join('\n\t-> ')}
+Please fix builds.yml`);
+  }
+
+  return ignoredPaths;
 }
