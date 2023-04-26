@@ -75,6 +75,77 @@ const CustodyPage = () => {
   const [chainId, setChainId] = useState(0);
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
+  const [custodianButtons, setCustodianButtons] = useState(null);
+
+  useEffect(() => {
+    const custodianItems = [];
+    custodians.forEach((custodian) => {
+      if (
+        (!custodian.production &&
+          process.env.METAMASK_ENVIRONMENT === 'production') ||
+        custodian.hidden ||
+        (connectRequest &&
+          Object.keys(connectRequest).length &&
+          custodian.name !== selectedCustodianName)
+      ) {
+        return;
+      }
+
+      custodianItems.push(
+        <Box
+          key={uuidv4()}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.ROW}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+          borderColor={BorderColor.borderDefault}
+          borderRadius={BorderRadius.SM}
+          padding={[3, 4]}
+          marginBottom={4}
+        >
+          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+            {custodian.iconUrl && (
+              <img
+                width={32}
+                height={32}
+                src={custodian.iconUrl}
+                alt={custodian.displayName}
+              />
+            )}
+            <Text marginLeft={2}>{custodian.displayName}</Text>
+          </Box>
+
+          <Button
+            size={BUTTON_SIZES.SM}
+            data-testid="custody-connect-button"
+            onClick={async (_) => {
+              const jwtListValue = await dispatch(
+                mmiActions.getCustodianJWTList(custodian.name),
+              );
+              setSelectedCustodianName(custodian.name);
+              setSelectedCustodianType(custodian.type);
+              setSelectedCustodianImage(custodian.iconUrl);
+              setSelectedCustodianDisplayName(custodian.displayName);
+              setApiUrl(custodian.apiUrl);
+              setCurrentJwt(jwtListValue[0] || '');
+              setJwtList(jwtListValue);
+              trackEvent({
+                category: 'MMI',
+                event: 'Custodian Selected',
+                properties: {
+                  custodian: custodian.name,
+                },
+              });
+            }}
+          >
+            {t('select')}
+          </Button>
+        </Box>,
+      );
+    });
+
+    setCustodianButtons(custodianItems);
+  }, [connectRequest, custodians, dispatch, selectedCustodianName]);
 
   const handleConnectError = useCallback(
     (e) => {
@@ -302,75 +373,21 @@ const CustodyPage = () => {
     }
   };
 
-  const renderCustodyContent = () => {
-    if (!accounts && !selectedCustodianType) {
-      const custodianButtons = [];
-      custodians.forEach((custodian) => {
-        if (
-          (!custodian.production &&
-            process.env.METAMASK_ENVIRONMENT === 'production') ||
-          custodian.hidden ||
-          (connectRequest &&
-            Object.keys(connectRequest).length &&
-            custodian.name !== selectedCustodianName)
-        ) {
-          return;
-        }
+  return (
+    <Box>
+      {connectError && (
+        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
+          {connectError}
+        </Text>
+      )}
 
-        custodianButtons.push(
-          <Box
-            key={uuidv4()}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.ROW}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            borderColor={BorderColor.borderDefault}
-            borderRadius={BorderRadius.SM}
-            padding={[3, 4]}
-            marginBottom={4}
-          >
-            <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              {custodian.iconUrl && (
-                <img
-                  width={32}
-                  height={32}
-                  src={custodian.iconUrl}
-                  alt={custodian.displayName}
-                />
-              )}
-              <Text marginLeft={2}>{custodian.displayName}</Text>
-            </Box>
+      {selectError && (
+        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
+          {selectError}
+        </Text>
+      )}
 
-            <Button
-              size={BUTTON_SIZES.SM}
-              data-testid="custody-connect-button"
-              onClick={async (_) => {
-                const jwtListValue = await dispatch(
-                  mmiActions.getCustodianJWTList(custodian.name),
-                );
-                setSelectedCustodianName(custodian.name);
-                setSelectedCustodianType(custodian.type);
-                setSelectedCustodianImage(custodian.iconUrl);
-                setSelectedCustodianDisplayName(custodian.displayName);
-                setApiUrl(custodian.apiUrl);
-                setCurrentJwt(jwtListValue[0] || '');
-                setJwtList(jwtListValue);
-                trackEvent({
-                  category: 'MMI',
-                  event: 'Custodian Selected',
-                  properties: {
-                    custodian: custodian.name,
-                  },
-                });
-              }}
-            >
-              {t('select')}
-            </Button>
-          </Box>,
-        );
-      });
-
-      return (
+      {!accounts && !selectedCustodianType ? (
         <Box
           padding={[0, 7, 2]}
           display={DISPLAY.FLEX}
@@ -404,11 +421,9 @@ const CustodyPage = () => {
             <ul width={BLOCK_SIZES.FULL}>{custodianButtons}</ul>
           </Box>
         </Box>
-      );
-    }
+      ) : null}
 
-    if (!accounts && selectedCustodianType) {
-      return (
+      {!accounts && selectedCustodianType && (
         <>
           <Box
             padding={[0, 7, 2]}
@@ -477,11 +492,9 @@ const CustodyPage = () => {
             </Box>
           </Box>
         </>
-      );
-    }
+      )}
 
-    if (accounts.length > 0) {
-      return (
+      {accounts && accounts.length > 0 && (
         <>
           <Box
             borderColor={BorderColor.borderDefault}
@@ -594,29 +607,9 @@ const CustodyPage = () => {
             }}
           />
         </>
-      );
-    }
-
-    return null;
-  };
-
-  return (
-    <Box>
-      {connectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
-          {connectError}
-        </Text>
       )}
 
-      {selectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
-          {selectError}
-        </Text>
-      )}
-
-      {renderCustodyContent()}
-
-      {accounts && accounts.length === 0 ? (
+      {accounts && accounts.length === 0 && (
         <Box
           data-testid="custody-accounts-empty"
           padding={[6, 7, 2]}
@@ -644,7 +637,7 @@ const CustodyPage = () => {
             </Button>
           </Box>
         </Box>
-      ) : null}
+      )}
     </Box>
   );
 };
