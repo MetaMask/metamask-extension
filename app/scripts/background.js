@@ -714,6 +714,7 @@ export function setupController(
   //
 
   updateBadge();
+  controller.txController.addInitialTransactionApprovals(updateBadge);
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,

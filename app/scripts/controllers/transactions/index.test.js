@@ -2992,4 +2992,37 @@ describe('Transaction Controller', function () {
       assert.equal(result.type, TransactionType.simpleSend);
     });
   });
+
+  describe('addInitialTransactionApprovals', function () {
+    it('adds unapprovedTxs as approvals', async function () {
+      const txId = '1';
+      txController.addTransaction(
+        {
+          id: txId,
+          origin: ORIGIN_METAMASK,
+          status: TransactionStatus.unapproved,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+        },
+        noop,
+      );
+      const callbackSpy = sinon.spy();
+      txController.addInitialTransactionApprovals(callbackSpy);
+
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: txId,
+          origin: ORIGIN_METAMASK,
+          requestData: { txId },
+          type: MESSAGE_TYPE.TRANSACTION,
+        },
+        false, // Show popup
+      ]);
+      assert.equal(callbackSpy.callCount, 1);
+    });
+  });
 });
