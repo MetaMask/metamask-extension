@@ -9151,13 +9151,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amdefine@npm:>=0.0.4":
-  version: 1.0.1
-  resolution: "amdefine@npm:1.0.1"
-  checksum: 9d4e15b94641643a9385b2841b4cb2bcf4e8e2f741ea4bd475c93ad7bab261ad4ed827a32e9c549b38b98759c4526c173ae4e6dde8caeb75ee5cebedc9863762
-  languageName: node
-  linkType: hard
-
 "ansi-align@npm:^2.0.0":
   version: 2.0.0
   resolution: "ansi-align@npm:2.0.0"
@@ -9877,7 +9870,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"atob@npm:^2.0.0, atob@npm:^2.1.2":
+"atob@npm:^2.1.2":
   version: 2.1.2
   resolution: "atob@npm:2.1.2"
   bin:
@@ -13257,14 +13250,14 @@ __metadata:
   linkType: hard
 
 "css@npm:^2.0.0":
-  version: 2.2.3
-  resolution: "css@npm:2.2.3"
+  version: 2.2.4
+  resolution: "css@npm:2.2.4"
   dependencies:
-    inherits: ^2.0.1
-    source-map: ^0.1.38
-    source-map-resolve: ^0.5.1
+    inherits: ^2.0.3
+    source-map: ^0.6.1
+    source-map-resolve: ^0.5.2
     urix: ^0.1.0
-  checksum: 7020de5171addf25e20119fdf3989c555a6c1e6275b7434d3cff044323eaa07f5a69d7ad70e447e7f5938c8b5048d8c12409fc04523569315385761fe7e71999
+  checksum: a35d483c5ccc04bcde3b1e7393d58ad3eee1dd6956df0f152de38e46a17c0ee193c30eec6b1e59831ad0e74599385732000e95987fcc9cb2b16c6d951bae49e1
   languageName: node
   linkType: hard
 
@@ -13554,9 +13547,9 @@ __metadata:
   linkType: hard
 
 "decode-uri-component@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "decode-uri-component@npm:0.2.0"
-  checksum: f3749344ab9305ffcfe4bfe300e2dbb61fc6359e2b736812100a3b1b6db0a5668cba31a05e4b45d4d63dbf1a18dfa354cd3ca5bb3ededddabb8cd293f4404f94
+  version: 0.2.2
+  resolution: "decode-uri-component@npm:0.2.2"
+  checksum: 95476a7d28f267292ce745eac3524a9079058bbb35767b76e3ee87d42e34cd0275d2eb19d9d08c3e167f97556e8a2872747f5e65cbebcac8b0c98d83e285f139
   languageName: node
   linkType: hard
 
@@ -20315,15 +20308,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-odd@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "is-odd@npm:2.0.0"
-  dependencies:
-    is-number: ^4.0.0
-  checksum: 89da9e6dba221361d8af5384f26a49575610e1910118538cfbcc2c0469aa2cf7b695a2e85fb4bcbe7521480bd727c234c9b5397f24554cd96cd5c1e7a7ae5143
-  languageName: node
-  linkType: hard
-
 "is-path-cwd@npm:^1.0.0":
   version: 1.0.0
   resolution: "is-path-cwd@npm:1.0.0"
@@ -25159,22 +25143,21 @@ __metadata:
   linkType: hard
 
 "nanomatch@npm:^1.2.9":
-  version: 1.2.9
-  resolution: "nanomatch@npm:1.2.9"
+  version: 1.2.13
+  resolution: "nanomatch@npm:1.2.13"
   dependencies:
     arr-diff: ^4.0.0
     array-unique: ^0.3.2
     define-property: ^2.0.2
     extend-shallow: ^3.0.2
     fragment-cache: ^0.2.1
-    is-odd: ^2.0.0
     is-windows: ^1.0.2
     kind-of: ^6.0.2
     object.pick: ^1.3.0
     regex-not: ^1.0.0
     snapdragon: ^0.8.1
     to-regex: ^3.0.1
-  checksum: adba960532e85020cd5c1cbdf60aebd0568b3be63b32d2e0f9b00dbb43c66ccfb52b4d5cd0dd2931f47a724c5a6bcb59a85fb1a66e1c7e47dbdf8e38579ce89f
+  checksum: 54d4166d6ef08db41252eb4e96d4109ebcb8029f0374f9db873bd91a1f896c32ec780d2a2ea65c0b2d7caf1f28d5e1ea33746a470f32146ac8bba821d80d38d8
   languageName: node
   linkType: hard
 
@@ -31125,16 +31108,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-resolve@npm:^0.5.0, source-map-resolve@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "source-map-resolve@npm:0.5.1"
+"source-map-resolve@npm:^0.5.0, source-map-resolve@npm:^0.5.2":
+  version: 0.5.3
+  resolution: "source-map-resolve@npm:0.5.3"
   dependencies:
-    atob: ^2.0.0
+    atob: ^2.1.2
     decode-uri-component: ^0.2.0
     resolve-url: ^0.2.1
     source-map-url: ^0.4.0
     urix: ^0.1.0
-  checksum: 97d6d665cc5c64d408cb97204a64fb508006926f2e7cc639cb3bf832f03a29ce59d14a281719e58b197ef1cd0837b24f3ceebfdf7e53abfd10b726eaaee0bc80
+  checksum: c73fa44ac00783f025f6ad9e038ab1a2e007cd6a6b86f47fe717c3d0765b4a08d264f6966f3bd7cd9dbcd69e4832783d5472e43247775b2a550d6f2155d24bae
   languageName: node
   linkType: hard
 
@@ -31169,9 +31152,9 @@ __metadata:
   linkType: hard
 
 "source-map-url@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "source-map-url@npm:0.4.0"
-  checksum: 63ed54045fcd7b4ec7ca17513f48fdc23b573eef679326ecf1a31333e1aaecc0a9c085adaa7d118283b160e65b71cc72da9e1385f2de4ac5ed68294e3920d719
+  version: 0.4.1
+  resolution: "source-map-url@npm:0.4.1"
+  checksum: 64c5c2c77aff815a6e61a4120c309ae4cac01298d9bcbb3deb1b46a4dd4c46d4a1eaeda79ec9f684766ae80e8dc86367b89326ce9dd2b89947bd9291fc1ac08c
   languageName: node
   linkType: hard
 
@@ -31179,15 +31162,6 @@ __metadata:
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: 59ce8640cf3f3124f64ac289012c2b8bd377c238e316fb323ea22fbfe83da07d81e000071d7242cad7a23cd91c7de98e4df8830ec3f133cb6133a5f6e9f67bc2
-  languageName: node
-  linkType: hard
-
-"source-map@npm:^0.1.38":
-  version: 0.1.43
-  resolution: "source-map@npm:0.1.43"
-  dependencies:
-    amdefine: ">=0.0.4"
-  checksum: 0a230f8cae8a8ea70bd36701c33d01fb0c437b798508a561c896a99b42f5af81a206176a250fc654c7c57a736b8081c4b4a6c9887455f7d2724f847451f1d7d9
   languageName: node
   linkType: hard
 
