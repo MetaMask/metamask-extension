@@ -15,7 +15,7 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
-  getAllNetworks,
+  getAllEnabledNetworks,
   getCurrentChainId,
 } from '../../../selectors';
 import Box from '../../ui/box/box';
@@ -24,7 +24,7 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Button, BUTTON_TYPES, Text } from '../../component-library';
+import { Button, BUTTON_VARIANT, Text } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -33,7 +33,7 @@ const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
-  const networks = useSelector(getAllNetworks);
+  const networks = useSelector(getAllEnabledNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
@@ -97,7 +97,7 @@ export const NetworkListMenu = ({ onClose }) => {
         </Box>
         <Box padding={4}>
           <Button
-            type={BUTTON_TYPES.SECONDARY}
+            variant={BUTTON_VARIANT.SECONDARY}
             block
             onClick={() => {
               isFullScreen

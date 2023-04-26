@@ -4,7 +4,7 @@ export const CaveatTypes = Object.freeze({
 
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   snap_dialog: 'snap_dialog',
   snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
@@ -16,7 +16,7 @@ export const RestrictedMethods = Object.freeze({
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * Exclude permissions by code fencing them to avoid any potential usage of excluded permissions at runtime. See: https://github.com/MetaMask/metamask-extension/pull/17321#pullrequestreview-1287014285.
  * This is a fix for https://github.com/MetaMask/snaps-monorepo/issues/1103 and https://github.com/MetaMask/snaps-monorepo/issues/990.

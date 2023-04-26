@@ -12,7 +12,7 @@ import {
 import {
   Text,
   Button,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   ButtonLink,
   Label,
 } from '../../component-library';
@@ -64,7 +64,7 @@ export default function TermsOfUsePopup({ onAccept }) {
       footer={
         <>
           <Button
-            type={BUTTON_TYPES.PRIMARY}
+            variant={BUTTON_VARIANT.PRIMARY}
             className="terms-of-use__button"
             onClick={onAccept}
             disabled={!isTermsOfUseChecked}
