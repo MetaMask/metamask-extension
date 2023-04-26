@@ -63,7 +63,7 @@ const ConfirmLegacyGasDisplay = () => {
             numberOfDecimals={18}
           />
         }
-        detailText={
+        detailText={useCurrencyRateCheck &&
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
             value={hexMinimumTransactionFee}

@@ -59,14 +59,14 @@ export default function MultilayerFeeMessage({
       .toDenomination(EtherDenomination.ETH)
       .toFixed(12)} ${nativeCurrency}`;
 
-    feeTotalInFiat = (
+    feeTotalInFiat = useCurrencyRateCheck ? (
       <UserPreferencedCurrencyDisplay
         type={SECONDARY}
         value={fetchedLayer1Total}
         showFiat
         hideLabel
       />
-    );
+    ) : null;
   }
 
   const totalInWeiHex = sumHexes(
@@ -80,14 +80,14 @@ export default function MultilayerFeeMessage({
     .toDenomination(EtherDenomination.ETH)
     .toFixed(12)} ${nativeCurrency}`;
 
-  const totalInFiat = (
+  const totalInFiat = useCurrencyRateCheck ? (
     <UserPreferencedCurrencyDisplay
       type={SECONDARY}
       value={totalInWeiHex}
       showFiat
       hideLabel
     />
-  );
+  ):null;
 
   return (
     <div className="multi-layer-fee-message">
@@ -103,7 +103,7 @@ export default function MultilayerFeeMessage({
         key="total-item-total"
         detailTitle={t('total')}
         detailTotal={totalInEth}
-        detailText={useCurrencyRateCheck && totalInFiat}
+        detailText={totalInFiat}
         subTitle={t('transactionDetailMultiLayerTotalSubtitle')}
         noBold={plainStyle}
         flexWidthValues={plainStyle}
