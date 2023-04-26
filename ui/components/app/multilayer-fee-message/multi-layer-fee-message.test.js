@@ -26,6 +26,30 @@ describe('Multi layer fee message', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot when balance and token price checker is disabled', () => {
+    const storeWithPriceCheckerDisabled = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useCurrencyRateCheck: false,
+      },
+    });
+
+    const { container } = renderWithProvider(
+      <MultilayerFeeMessage
+        transaction={{
+          txParams: {
+            value: '0x38d7ea4c68000',
+          },
+        }}
+        layer2fee="0x4e3b29200"
+        nativeCurrency="ETH"
+      />,
+      storeWithPriceCheckerDisabled,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('should containe fee values', () => {
     const { getByText } = renderWithProvider(
       <MultilayerFeeMessage
@@ -42,5 +66,29 @@ describe('Multi layer fee message', () => {
     expect(getByText('Layer 1 fees')).toBeInTheDocument();
     expect(getByText('Amount + fees')).toBeInTheDocument();
     expect(getByText('0.001000021000 ETH')).toBeInTheDocument();
+    expect(getByText('$0.56')).toBeInTheDocument();
+  });
+
+  it('should not contain a fiat value', () => {
+    const storeWithPriceCheckerDisabled = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useCurrencyRateCheck: false,
+      },
+    });
+    const { queryByText } = renderWithProvider(
+      <MultilayerFeeMessage
+        transaction={{
+          txParams: {
+            value: '0x38d7ea4c68000',
+          },
+        }}
+        layer2fee="0x4e3b29200"
+        nativeCurrency="ETH"
+      />,
+      storeWithPriceCheckerDisabled,
+    );
+    expect(queryByText('$0.56')).not.toBeInTheDocument();
   });
 });
