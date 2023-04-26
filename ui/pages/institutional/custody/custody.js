@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -232,25 +231,6 @@ const CustodyPage = () => {
     trackEvent,
   ]);
 
-  const getCustodianAccountsByAddress = useCallback(
-    async (token, address, custody) => {
-      try {
-        const accountsValue = await dispatch(
-          mmiActions.getCustodianAccountsByAddress(
-            token,
-            apiUrl,
-            address,
-            custody,
-          ),
-        );
-        setAccounts(accountsValue);
-      } catch (e) {
-        handleConnectError(e);
-      }
-    },
-    [apiUrl, dispatch, handleConnectError, mmiActions],
-  );
-
   useEffect(() => {
     const fetchConnectRequest = async () => {
       const connectRequestValue = await dispatch(
@@ -309,35 +289,6 @@ const CustodyPage = () => {
     currentChainId,
     chainId,
   ]);
-
-  const debouncedSearch = useMemo(() => {
-    debounce((input) => {
-      getCustodianAccountsByAddress(
-        currentJwt,
-        apiUrl,
-        input,
-        selectedCustodianType,
-        chainId,
-      );
-    }, 750);
-  }, [
-    getCustodianAccountsByAddress,
-    apiUrl,
-    chainId,
-    currentJwt,
-    selectedCustodianType,
-  ]);
-
-  const handleSearchDebounce = useCallback(
-    (e) => {
-      debouncedSearch(e.target.value);
-    },
-    [debouncedSearch],
-  );
-
-  const onSearchChange = (input) => {
-    handleSearchDebounce(input);
-  };
 
   const cancelConnectCustodianToken = () => {
     setSelectedCustodianName('');
@@ -580,7 +531,6 @@ const CustodyPage = () => {
                 setSelectError(e.message);
               }
             }}
-            onSearchChange={(input) => onSearchChange(input)}
             onCancel={() => {
               setAccounts(null);
               setSelectedCustodianName(null);
