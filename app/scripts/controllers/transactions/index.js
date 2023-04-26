@@ -1359,6 +1359,7 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(txId);
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
     if (txMeta.custodyStatus) {
       this.inProcessOfSigning.delete(txId);
       await this.signTransaction(txId);
