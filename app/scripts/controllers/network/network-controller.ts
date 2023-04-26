@@ -327,7 +327,7 @@ function buildDefaultProviderConfigState(): ProviderConfiguration {
     };
   } else if (
     process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENV === 'test'
+    process.env.METAMASK_ENVIRONMENT === 'test'
   ) {
     return {
       type: NETWORK_TYPES.GOERLI,
