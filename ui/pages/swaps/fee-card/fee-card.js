@@ -9,7 +9,6 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import {
   TextColor,
   TextVariant,
-  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -122,9 +121,8 @@ export default function FeeCard({
                   <>
                     <Text
                       as="span"
-                      fontWeight={FontWeight.Bold}
                       color={TextColor.textAlternative}
-                      variant={TextVariant.bodySm}
+                      variant={TextVariant.bodySmBold}
                     >
                       {t('maxFee')}
                     </Text>

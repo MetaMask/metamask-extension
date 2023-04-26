@@ -4,15 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
-import Typography from '../../ui/typography/typography';
 import NftsDetectionNotice from '../nfts-detection-notice';
 import NftsItems from '../nfts-items';
 import {
-  TypographyVariant,
-  TEXT_ALIGN,
+  TextVariant,
+  TextAlign,
   JustifyContent,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -25,6 +24,7 @@ import {
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { Text } from '../../component-library';
 
 export default function NftsTab({ onAddNFT }) {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -73,14 +73,15 @@ export default function NftsTab({ onAddNFT }) {
               flexDirection={FLEX_DIRECTION.COLUMN}
               className="nfts-tab__link"
             >
-              <Typography
+              <Text
                 color={TextColor.textMuted}
-                variant={TypographyVariant.H4}
-                align={TEXT_ALIGN.CENTER}
-                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TextVariant.headingSm}
+                as="h4"
+                align={TextAlign.Center}
+                fontWeight={FontWeight.Bold}
               >
                 {t('noNFTs')}
-              </Typography>
+              </Text>
               <Button
                 type="link"
                 target="_blank"
@@ -98,13 +99,14 @@ export default function NftsTab({ onAddNFT }) {
         justifyContent={JustifyContent.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Typography
+        <Text
           color={TextColor.textMuted}
-          variant={TypographyVariant.H5}
-          align={TEXT_ALIGN.CENTER}
+          variant={TextVariant.bodyMd}
+          as="h5"
+          align={TextAlign.Center}
         >
           {t('missingNFT')}
-        </Typography>
+        </Text>
         <Box
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
@@ -125,13 +127,14 @@ export default function NftsTab({ onAddNFT }) {
                   </Button>
                 )}
               </Box>
-              <Typography
+              <Text
                 color={TextColor.textMuted}
-                variant={TypographyVariant.H6}
-                align={TEXT_ALIGN.CENTER}
+                variant={TextVariant.bodySm}
+                as="h6"
+                align={TextAlign.Center}
               >
                 {t('or')}
-              </Typography>
+              </Text>
             </>
           )}
           <Box

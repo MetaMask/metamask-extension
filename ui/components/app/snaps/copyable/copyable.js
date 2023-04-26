@@ -1,20 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import {
   AlignItems,
   BorderRadius,
   JustifyContent,
-  OVERFLOW_WRAP,
+  OverflowWrap,
   FLEX_DIRECTION,
-  TypographyVariant,
+  TextVariant,
   BackgroundColor,
   TextColor,
   Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../../component-library';
 
 export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
@@ -30,14 +29,14 @@ export const Copyable = ({ text }) => {
       paddingTop={2}
       paddingBottom={2}
     >
-      <Typography
-        variant={TypographyVariant.H6}
+      <Text
+        variant={TextVariant.H6}
         color={TextColor.textAlternative}
         marginRight={2}
-        overflowWrap={OVERFLOW_WRAP.ANYWHERE}
+        overflowWrap={OverflowWrap.Anywhere}
       >
         {text}
-      </Typography>
+      </Text>
       <Box
         flexDirection={FLEX_DIRECTION.COLUMN}
         alignItems={AlignItems.center}

@@ -9,13 +9,10 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
-import Typography from '../../components/ui/typography';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import {
-  TextColor,
-  TypographyVariant,
-} from '../../helpers/constants/design-system';
+import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { Text } from '../../components/component-library';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -70,20 +67,17 @@ class RestoreVaultPage extends Component {
             >
               {`< ${t('back')}`}
             </a>
-            <Typography
-              variant={TypographyVariant.H1}
+            <Text
+              variant={TextVariant.displayMd}
+              as="h1"
               color={TextColor.textDefault}
             >
               {t('resetWallet')}
-            </Typography>
-            <Typography color={TextColor.textDefault}>
+            </Text>
+            <Text color={TextColor.textDefault}>
               {t('resetWalletSubHeader')}
-            </Typography>
-            <Typography
-              color={TextColor.textDefault}
-              marginTop={4}
-              marginBottom={4}
-            >
+            </Text>
+            <Text color={TextColor.textDefault} marginTop={4} marginBottom={4}>
               {t('resetWalletUsingSRP', [
                 <Button
                   type="link"
@@ -116,14 +110,10 @@ class RestoreVaultPage extends Component {
                   {t('reAdded')}
                 </Button>,
               ])}
-            </Typography>
-            <Typography
-              color={TextColor.textDefault}
-              margin={0}
-              marginBottom={4}
-            >
+            </Text>
+            <Text color={TextColor.textDefault} margin={0} marginBottom={4}>
               {t('resetWalletWarning')}
-            </Typography>
+            </Text>
             <CreateNewVault
               disabled={isLoading}
               onSubmit={this.handleImport}

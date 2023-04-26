@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Typography from '../../../ui/typography/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box/box';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
+import { Text } from '../../../component-library';
 
 export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
   const t = useI18nContext();
@@ -41,9 +41,9 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
       headerProps={{ padding: [6, 4, 0, 6] }}
     >
       <Box paddingRight={4} paddingBottom={4} paddingLeft={6}>
-        <Typography variant={TypographyVariant.H4}>
+        <Text variant={TextVariant.headingSm} as="h4">
           {t('removeSnapConfirmation', [snapName])}
-        </Typography>
+        </Text>
       </Box>
     </Popover>
   );
