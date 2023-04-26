@@ -58,7 +58,7 @@ $text-variants: (
 
       // Rule for strong tag inside Text component
       strong {
-        font-weight: bold;
+        font-weight: var(--font-weight-bold);
       }
     }
   }
