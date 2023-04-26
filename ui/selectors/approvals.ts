@@ -42,6 +42,13 @@ const hasUnapprovedTransactionsInCurrentNetwork = (
   return filteredUnapprovedTxInCurrentNetwork.length > 0;
 };
 
+// istanbul ignore next: this will be removed after merging https://github.com/MetaMask/metamask-extension/pull/18379
+const hasPendingDecryptApprovals = (state: ApprovalsMetaMaskState) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return state.metamask.unapprovedDecryptMsgCount > 0;
+};
+
 export function hasPendingApprovalsSelector(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
@@ -59,7 +66,8 @@ export function hasTransactionPendingApprovalsSelector(
 ) {
   return (
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
-    hasPendingApprovalsSelector(state, ApprovalType.EthDecrypt) ||
+    // istanbul ignore next: this will be removed after merging https://github.com/MetaMask/metamask-extension/pull/18379
+    hasPendingDecryptApprovals(state) ||
     hasPendingApprovalsSelector(
       state,
       ApprovalType.EthGetEncryptionPublicKey,

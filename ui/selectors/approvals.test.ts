@@ -94,7 +94,7 @@ describe('approval selectors', () => {
       expect(result).toBe(false);
     });
     it.each([
-      [ApprovalType.EthDecrypt],
+      // [ApprovalType.EthDecrypt],
       [ApprovalType.EthGetEncryptionPublicKey],
       [ApprovalType.EthSign],
       [ApprovalType.EthSignTypedData],

@@ -3012,7 +3012,7 @@ describe('Transaction Controller', function () {
       const callbackSpy = sinon.spy();
       txController.addInitialTransactionApprovals(callbackSpy);
 
-      assert.deepEqual(messengerMock.call.getCall(1).args, [
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:addRequest',
         {
           id: txId,
