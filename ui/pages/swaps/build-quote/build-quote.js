@@ -654,7 +654,7 @@ export default function BuildQuote({
                 variant={TextVariant.bodyXs}
                 as="h6"
                 color={TextColor.textAlternative}
-                boxProps={{ marginTop: 3 }}
+                marginTop={3}
               >
                 {t('stxSubDescription')}&nbsp;
                 <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
