@@ -110,11 +110,16 @@ const standardScuttlingConfig = {
  * @returns {string} The Infura project ID.
  */
 function getInfuraProjectId({ buildType, variables, environment, testing }) {
+  const EMPTY_PROJECT_ID = '00000000000000000000000000000000';
   if (testing) {
-    return '00000000000000000000000000000000';
+    return EMPTY_PROJECT_ID;
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks.
-    return variables.get('INFURA_PROJECT_ID');
+    // For forks, return empty project ID if we don't have one.
+    if (!variables.isDefined('INFURA_PROJECT_ID') && environment === ENVIRONMENT.PULL_REQUEST) {
+      return EMPTY_PROJECT_ID;
+    }
+    return variables.get('INFURA_PROJECT_ID');;
   }
   /** @type {string|undefined} */
   const infuraKeyReference = process.env.INFURA_ENV_KEY_REF;
@@ -173,7 +178,7 @@ function getPhishingWarningPageUrl({ variables, testing }) {
 
   assert(
     phishingWarningPageUrl === null ||
-      typeof phishingWarningPageUrl === 'string',
+    typeof phishingWarningPageUrl === 'string',
   );
   if (phishingWarningPageUrl === null) {
     phishingWarningPageUrl = testing
