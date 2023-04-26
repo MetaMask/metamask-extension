@@ -172,9 +172,9 @@ const state = {
       },
       '0x6b175474e89094c44da98b954eedeac495271d0f': {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        symbol: 'META',
+        symbol: 'ETH',
         decimals: 18,
-        image: 'metamark.svg',
+        image: './images/eth_logo.png',
         unlisted: false,
       },
       '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {

@@ -9,8 +9,6 @@ describe('ENS', function () {
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
 
   async function mockInfura(mockServer) {
-    await mockServer.reset();
-    await mockServer.forAnyRequest().thenPassThrough();
     await mockServer
       .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_blockNumber' })
@@ -103,7 +101,7 @@ describe('ENS', function () {
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        await driver.fill(
+        await driver.pasteIntoField(
           'input[placeholder="Search, public address (0x), or ENS"]',
           sampleEnsDomain,
         );
