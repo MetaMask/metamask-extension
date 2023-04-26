@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { CaveatTypes } from '../../shared/constants/permissions';
@@ -139,7 +139,7 @@ export function getSubjectsWithPermission(state, permissionName) {
   return connectedSubjects;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSubjectsWithSnapPermission(state, snapId) {
   const subjects = getPermissionSubjects(state);
 
@@ -323,7 +323,7 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(

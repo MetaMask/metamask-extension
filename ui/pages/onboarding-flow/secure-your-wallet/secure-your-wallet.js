@@ -3,12 +3,11 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
 import {
-  TEXT_ALIGN,
-  TypographyVariant,
+  TextAlign,
+  TextVariant,
   JustifyContent,
-  FONT_WEIGHT,
+  FontWeight,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import {
@@ -23,6 +22,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { Text } from '../../../components/component-library';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
@@ -85,23 +85,25 @@ export default function SecureYourWallet() {
       />
       <Box
         justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         marginBottom={4}
       >
-        <Typography
-          variant={TypographyVariant.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
+        <Text
+          variant={TextVariant.headingLg}
+          as="h2"
+          fontWeight={FontWeight.Bold}
         >
           {t('seedPhraseIntroTitle')}
-        </Typography>
+        </Text>
       </Box>
       <Box justifyContent={JustifyContent.center} marginBottom={6}>
-        <Typography
-          variant={TypographyVariant.H4}
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
           className="secure-your-wallet__details"
         >
           {t('seedPhraseIntroTitleCopy')}
-        </Typography>
+        </Text>
       </Box>
       <Box>
         <video
@@ -158,27 +160,27 @@ export default function SecureYourWallet() {
       </Box>
       <Box className="secure-your-wallet__desc">
         <Box marginBottom={4}>
-          <Typography
+          <Text
             as="p"
-            variant={TypographyVariant.H4}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Bold}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleOne')}
-          </Typography>
-          <Typography as="p" variant={TypographyVariant.H4}>
+          </Text>
+          <Text as="p" variant={TextVariant.headingSm}>
             {t('seedPhraseIntroSidebarCopyOne')}
-          </Typography>
+          </Text>
         </Box>
         <Box marginBottom={4}>
-          <Typography
+          <Text
             as="p"
-            variant={TypographyVariant.H4}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Bold}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleTwo')}
-          </Typography>
+          </Text>
           <ul className="secure-your-wallet__list">
             <li>{t('seedPhraseIntroSidebarBulletOne')}</li>
             <li>{t('seedPhraseIntroSidebarBulletThree')}</li>
@@ -186,22 +188,22 @@ export default function SecureYourWallet() {
           </ul>
         </Box>
         <Box marginBottom={6}>
-          <Typography
+          <Text
             as="p"
-            variant={TypographyVariant.H4}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Bold}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleThree')}
-          </Typography>
-          <Typography as="p" variant={TypographyVariant.H4}>
+          </Text>
+          <Text as="p" variant={TextVariant.headingSm}>
             {t('seedPhraseIntroSidebarCopyTwo')}
-          </Typography>
+          </Text>
         </Box>
         <Box className="secure-your-wallet__highlighted" marginBottom={2}>
-          <Typography as="p" variant={TypographyVariant.H4}>
+          <Text as="p" variant={TextVariant.headingSm}>
             {t('seedPhraseIntroSidebarCopyThree')}
-          </Typography>
+          </Text>
         </Box>
       </Box>
     </div>

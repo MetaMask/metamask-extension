@@ -1387,27 +1387,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "符號不得超過 11 個字元。"
   },
-  "syncWithMobile": {
-    "message": "和行動裝置同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "掃描代碼時確保沒有其他人在看你的螢幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "你的資料已成功同步。開始活用 MetaMask 行動應用程式！"
-  },
-  "syncWithMobileDesc": {
-    "message": "你可以用行動裝置同步帳戶與資訊。開啟 MetaMask 行動應用程式，至「設定」並點擊「自瀏覽器擴充功能同步」"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是第一次開啟 MetaMask 行動應用程式，只要跟著手機上的指示操作即可。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "用您的 MetaMask 行動應用程式 掃描此條碼"
-  },
-  "syncWithMobileTitle": {
-    "message": "和行動裝置同步"
-  },
   "terms": {
     "message": "使用條款"
   },

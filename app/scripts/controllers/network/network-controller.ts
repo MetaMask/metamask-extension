@@ -327,7 +327,7 @@ function buildDefaultProviderConfigState(): ProviderConfiguration {
     };
   } else if (
     process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENV === 'test'
+    process.env.METAMASK_ENVIRONMENT === 'test'
   ) {
     return {
       type: NETWORK_TYPES.GOERLI,
@@ -742,10 +742,10 @@ export class NetworkController extends EventEmitter {
     const network = BUILT_IN_INFURA_NETWORKS[type];
     await this.#setProviderConfig({
       type,
-      rpcUrl: '',
+      rpcUrl: undefined,
       chainId: network.chainId,
       ticker: 'ticker' in network ? network.ticker : 'ETH',
-      nickname: '',
+      nickname: undefined,
       rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
     });
   }

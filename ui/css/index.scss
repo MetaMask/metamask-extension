@@ -11,6 +11,9 @@
 @import '../components/component-library/component-library-components.scss';
 @import '../components/app/app-components';
 @import '../components/ui/ui-components';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+@import '../components/institutional/institutional-components';
+///: END:ONLY_INCLUDE_IN
 @import '../components/multichain/multichain-components.scss';
 @import '../pages/pages';
 @import './errors.scss';

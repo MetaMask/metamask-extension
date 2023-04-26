@@ -35,7 +35,7 @@ export default function KeyRingLabel({ keyring }) {
       label = null;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   if (type.startsWith('Custody') && /JSONRPC/u.test(type)) {
     label = type.split(' - ')[1];
     return null;
