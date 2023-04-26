@@ -695,10 +695,6 @@
     "message": "$1 किसी भी साइट से कनेक्ट नहीं है।",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 स्नैप इन साइटों से जुड़ा है। वे ऊपर सूचीबद्ध अनुमतियों को एक्सेस कर सकती हैं।",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है..."
   },
@@ -1355,18 +1351,6 @@
     "message": "फाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "विवरण देखें",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "जोड़ा गया",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "से",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "यह गैस शुल्क $1 द्वारा सुझाया गया है। इसे ओवरराइड करने से आपके लेन-देन में समस्या हो सकती है। यदि आपके पास कोई सवाल हैं तो कृपया $1 तक पहुंचें।",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "गैस शुल्क"
   },
   "gasLimit": {
     "message": "गैस की सीमा"
@@ -2020,9 +2001,6 @@
   },
   "missingToken": {
     "message": "क्या अपना टोकन नहीं देख रहे हैं?"
-  },
-  "mobileSyncWarning": {
-    "message": "'एक्सटेंशन के साथ सिंक' फीचर अस्थायी रूप से अक्षम है। यदि आप MetaMask मोबाइल पर अपने एक्सटेंशन वॉलेट का उपयोग करना चाहते हैं, तो अपने मोबाइल ऐप पर: वॉलेट सेटअप ऑप्शन पर वापस जाएं और 'सीक्रेट रिकवरी फ्रेज के साथ इम्पोर्ट करें' विकल्प चुनें। फिर अपने वॉलेट को मोबाइल में इम्पोर्ट करने के लिए अपने एक्सटेंशन वॉलेट के सीक्रेट फ्रेज का उपयोग करें।"
   },
   "moreComingSoon": {
     "message": "और अधिक जल्द ही आ रहा..."
@@ -3233,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "कोई मेल खाने वाला परिणाम नहीं मिला।"
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "दिखाएं"
   },
@@ -3310,14 +3284,6 @@
   "smartTransaction": {
     "message": "स्मार्ट लेनदेन"
   },
-  "snapAccess": {
-    "message": "$1 स्नैप को एक्सेस है:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$2 से $1 जोड़ा गया",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "यह सामग्री $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3353,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "अपने स्नैप्स प्रबंधित करें"
-  },
-  "snapsStatus": {
-    "message": "स्नैप स्टेटस एक्टिविटी पर निर्भर करता है।"
   },
   "snapsToggle": {
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
@@ -3935,33 +3898,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
-  },
-  "syncFailed": {
-    "message": "सिंक विफल"
-  },
-  "syncInProgress": {
-    "message": "सिंक प्रगति पर है"
-  },
-  "syncWithMobile": {
-    "message": "मोबाइल के साथ सिंक करें"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "सुनिश्चित करें कि जब आप इस कोड को स्कैन कर रहे हों, तो आपकी स्क्रीन को कोई और न देख रहा हो"
-  },
-  "syncWithMobileComplete": {
-    "message": "आपका डेटा सफलतापूर्वक सिंक कर लिया गया है। MetaMask मोबाइल ऐप का आनंद लें!"
-  },
-  "syncWithMobileDesc": {
-    "message": "आप अपने खाते और जानकारी को अपने मोबाइल डिवाइस के साथ सिंक कर सकते हैं। MetaMask मोबाइल ऐप खोलें, \"सेटिंग\" पर जाएं और \"ब्राउजर एक्सटेंशन से सिंक करें\" पर टैप करें"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "यदि आप पहली बार MetaMask मोबाइल ऐप खोलते हैं, तो बस अपने फोन में दिए गए चरणों का पालन करें।"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "इस कोड को अपने MetaMask मोबाइल ऐप से स्कैन करें"
-  },
-  "syncWithMobileTitle": {
-    "message": "मोबाइल के साथ सिंक करें"
   },
   "tenPercentIncreased": {
     "message": "10% बढ़ोत्तरी"
