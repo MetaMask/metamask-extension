@@ -87,7 +87,7 @@ export default function MultilayerFeeMessage({
       showFiat
       hideLabel
     />
-  ):null;
+  ) : null;
 
   return (
     <div className="multi-layer-fee-message">

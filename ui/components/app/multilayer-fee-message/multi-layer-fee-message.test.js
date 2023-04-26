@@ -35,7 +35,7 @@ describe('Multi layer fee message', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('should containe fee values', () => {
+    it('should contain fee values', () => {
       const { getByText } = renderWithProvider(
         <MultilayerFeeMessage
           transaction={{
