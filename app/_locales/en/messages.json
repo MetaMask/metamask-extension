@@ -466,6 +466,9 @@
   "average": {
     "message": "Average"
   },
+  "awaitingApproval": {
+    "message": "Awaiting approval..."
+  },
   "back": {
     "message": "Back"
   },
@@ -771,10 +774,6 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 snap is connected to these sites. They have access to the permissions listed above.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -951,6 +950,9 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Replace custodian token"
   },
+  "custodyDeeplinkDescription": {
+    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
+  },
   "custodyRefreshTokenModalDescription": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -1078,6 +1080,10 @@
   },
   "description": {
     "message": "Description"
+  },
+  "descriptionFromSnap": {
+    "message": "Description from $1",
+    "description": "$1 represents the name of the snap"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
@@ -1343,6 +1349,9 @@
   "enableSmartTransactions": {
     "message": "Enable smart transactions"
   },
+  "enableSnap": {
+    "message": "Enable"
+  },
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1493,18 +1502,6 @@
   "fileTooBig": {
     "message": "The dropped file is too big."
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "See details",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Added on",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "from",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1569,9 +1566,6 @@
   "gasDisplayDappWarning": {
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Gas fee"
   },
   "gasLimit": {
     "message": "Gas limit"
@@ -1650,6 +1644,12 @@
   },
   "general": {
     "message": "General"
+  },
+  "globalTitle": {
+    "message": "Global menu"
+  },
+  "globalTourDescription": {
+    "message": "See your portfolio, connected sites, settings, and more"
   },
   "goBack": {
     "message": "Go back"
@@ -1864,6 +1864,13 @@
   "install": {
     "message": "Install"
   },
+  "installOrigin": {
+    "message": "Install origin"
+  },
+  "installedOn": {
+    "message": "Installed on $1",
+    "description": "$1 is the date when the snap has been installed"
+  },
   "institutionalFeatures": {
     "message": "Institutional Features"
   },
@@ -1978,6 +1985,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
+  },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
@@ -1988,6 +1998,9 @@
   "learnMoreAboutGas": {
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
+  },
+  "learnMoreKeystone": {
+    "message": "Learn More"
   },
   "learnMoreUpperCase": {
     "message": "Learn more"
@@ -2161,6 +2174,9 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mismatchAccount": {
+    "message": "Your selected account ($1) is different than the account trying to sign ($2)"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2198,6 +2214,9 @@
   },
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
+  },
+  "more": {
+    "message": "more"
   },
   "moreComingSoon": {
     "message": "More coming soon..."
@@ -2410,6 +2429,9 @@
   },
   "noNFTs": {
     "message": "No NFTs yet"
+  },
+  "noReport": {
+    "message": "No Report"
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
@@ -2825,6 +2847,9 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
+  "operationFailed": {
+    "message": "Operation Failed"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -3064,6 +3089,12 @@
   "permissions": {
     "message": "Permissions"
   },
+  "permissionsTitle": {
+    "message": "Permissions"
+  },
+  "permissionsTourDescription": {
+    "message": "Find your connected accounts and manage permissions here"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -3245,6 +3276,12 @@
   "replace": {
     "message": "replace"
   },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
+  },
   "requestFailed": {
     "message": "Request failed"
   },
@@ -3374,8 +3411,17 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "riskRating": {
+    "message": "Risk rating"
+  },
+  "riskRatingTooltip": {
+    "message": "The risk rating of the address you are interacting with based on your risk settings"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "runReport": {
+    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3556,9 +3602,9 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "shorthandVersion": {
+  "shortVersion": {
     "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
+    "description": "$1 is the version number to show"
   },
   "show": {
     "message": "Show"
@@ -3590,6 +3636,9 @@
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
+  },
+  "showReport": {
+    "message": "Show report"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -3633,14 +3682,6 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
-  "snapAccess": {
-    "message": "$1 snap has access to:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Added on $1 from $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3661,7 +3702,7 @@
     "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below align with your intended actions. Only proceed with authors you trust."
+    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
   },
   "snapInstallWarningCheckPlural": {
     "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
@@ -3711,9 +3752,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
-  },
-  "snapsStatus": {
-    "message": "Snap status is dependent on activity."
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -3807,6 +3845,9 @@
   },
   "stableLowercase": {
     "message": "stable"
+  },
+  "stake": {
+    "message": "Stake"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -4288,6 +4329,12 @@
   "switchedTo": {
     "message": "You have switched to"
   },
+  "switcherTitle": {
+    "message": "Network switcher"
+  },
+  "switcherTourDescription": {
+    "message": "Click the icon to switch networks or add a new network"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -4489,6 +4536,9 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionFailed": {
+    "message": "Transaction Failed"
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -4715,6 +4765,9 @@
   "verifyThisUnconfirmedTokenOn": {
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "version": {
+    "message": "Version"
   },
   "view": {
     "message": "View"

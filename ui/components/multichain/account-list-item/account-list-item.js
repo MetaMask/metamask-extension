@@ -18,6 +18,7 @@ import {
   ButtonIcon,
   IconName,
   IconSize,
+  AvatarAccountVariant,
 } from '../../component-library';
 import {
   Color,
@@ -70,6 +71,8 @@ export const AccountListItem = ({
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const ref = useRef(false);
+  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
@@ -107,6 +110,11 @@ export const AccountListItem = ({
         borderColor={BorderColor.transparent}
         size={Size.SM}
         address={identity.address}
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
       ></AvatarAccount>
       <Box
         display={DISPLAY.FLEX}

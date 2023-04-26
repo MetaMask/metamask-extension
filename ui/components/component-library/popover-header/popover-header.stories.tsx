@@ -1,6 +1,17 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { BUTTON_SIZES, Button } from '..';
+
+import {
+  TextVariant,
+  TextAlign,
+  DISPLAY,
+  FLEX_DIRECTION,
+  AlignItems,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+
+import { AvatarAccount, BUTTON_SIZES, Button, Text } from '..';
+
 import { PopoverHeader } from './popover-header';
 import README from './README.mdx';
 
@@ -24,42 +35,52 @@ export default {
 } as ComponentMeta<typeof PopoverHeader>;
 
 const Template: ComponentStory<typeof PopoverHeader> = (args) => {
-  return <PopoverHeader {...args}>PopoverHeader</PopoverHeader>;
+  return <PopoverHeader {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const Children: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader {...args} />
+  <>
+    <PopoverHeader {...args} marginBottom={4}>
+      Children as string
+    </PopoverHeader>
+    <PopoverHeader
+      {...args}
+      childrenWrapperProps={{
+        display: DISPLAY.FLEX,
+        flexDirection: FLEX_DIRECTION.COLUMN,
+        alignItems: AlignItems.center,
+        justifyContent: JustifyContent.center,
+      }}
+    >
+      <AvatarAccount address="0x1234" />
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+        Custom header using multiple components
+      </Text>
+    </PopoverHeader>
+  </>
 );
 
-Children.args = {
-  children: 'PopoverHeader Title',
+export const OnBack = Template.bind({});
+OnBack.args = {
+  children: 'OnBack demo',
 };
 
-export const OnBack: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader {...args}>OnBack Demo</PopoverHeader>
-);
+export const OnClose = Template.bind({});
+OnClose.args = {
+  children: 'OnClose demo',
+};
 
-export const OnClose: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader {...args}>OnClose Demo</PopoverHeader>
-);
+export const StartAccessory = Template.bind({});
+StartAccessory.args = {
+  children: 'StartAccessory demo',
+  startAccessory: <Button size={BUTTON_SIZES.SM}>Demo</Button>,
+};
 
-export const StartAccessory: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader
-    startAccessory={<Button size={BUTTON_SIZES.SM}>Demo</Button>}
-    {...args}
-  >
-    StartAccessory
-  </PopoverHeader>
-);
-
-export const EndAccessory: ComponentStory<typeof PopoverHeader> = (args) => (
-  <PopoverHeader
-    endAccessory={<Button size={BUTTON_SIZES.SM}>Demo</Button>}
-    {...args}
-  >
-    EndAccessory
-  </PopoverHeader>
-);
+export const EndAccessory = Template.bind({});
+EndAccessory.args = {
+  children: 'EndAccessory demo',
+  endAccessory: <Button size={BUTTON_SIZES.SM}>Demo</Button>,
+};
