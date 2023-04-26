@@ -2538,7 +2538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gar/promisify@npm:^1.1.3":
+"@gar/promisify@npm:^1.0.1, @gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
   checksum: 4059f790e2d07bf3c3ff3e0fec0daa8144fe35c1f6e0111c9921bd32106adaa97a4ab096ad7dab1e28ee6a9060083c4d1a4ada42a7f5f3f7a96b8812e2b757c1
@@ -4584,6 +4584,16 @@ __metadata:
     "@nodelib/fs.scandir": 2.1.3
     fastq: ^1.6.0
   checksum: a971d1dcc1cf593e25651738e915be201053b63775c39c1ee221d2adee6316503ad6043136ceda0e099724875f2d72ea04b3b57c0e3a20b7f280bd3e951ae2e4
+  languageName: node
+  linkType: hard
+
+"@npmcli/fs@npm:^1.0.0":
+  version: 1.1.1
+  resolution: "@npmcli/fs@npm:1.1.1"
+  dependencies:
+    "@gar/promisify": ^1.0.1
+    semver: ^7.3.5
+  checksum: f5ad92f157ed222e4e31c352333d0901df02c7c04311e42a81d8eb555d4ec4276ea9c635011757de20cc476755af33e91622838de573b17e52e2e7703f0a9965
   languageName: node
   linkType: hard
 
@@ -11377,10 +11387,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cacache@npm:^15.0.4, cacache@npm:^15.0.5":
-  version: 15.0.5
-  resolution: "cacache@npm:15.0.5"
+"cacache@npm:^15.0.5":
+  version: 15.3.0
+  resolution: "cacache@npm:15.3.0"
   dependencies:
+    "@npmcli/fs": ^1.0.0
     "@npmcli/move-file": ^1.0.1
     chownr: ^2.0.0
     fs-minipass: ^2.0.0
@@ -11395,10 +11406,10 @@ __metadata:
     p-map: ^4.0.0
     promise-inflight: ^1.0.1
     rimraf: ^3.0.2
-    ssri: ^8.0.0
+    ssri: ^8.0.1
     tar: ^6.0.2
     unique-filename: ^1.1.1
-  checksum: 911436a9df4caf868c91b75d58c8ba7c958dd4a1882cf18daeac003f46e81d79c11196affe8d86dd9137194466cc2f45b61707b5fbe5fea3d9b8e9220f669e48
+  checksum: a07327c27a4152c04eb0a831c63c00390d90f94d51bb80624a66f4e14a6b6360bbf02a84421267bd4d00ca73ac9773287d8d7169e8d2eafe378d2ce140579db8
   languageName: node
   linkType: hard
 
@@ -12822,23 +12833,23 @@ __metadata:
   linkType: hard
 
 "copy-webpack-plugin@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "copy-webpack-plugin@npm:6.0.3"
+  version: 6.4.1
+  resolution: "copy-webpack-plugin@npm:6.4.1"
   dependencies:
-    cacache: ^15.0.4
+    cacache: ^15.0.5
     fast-glob: ^3.2.4
     find-cache-dir: ^3.3.1
     glob-parent: ^5.1.1
     globby: ^11.0.1
     loader-utils: ^2.0.0
     normalize-path: ^3.0.0
-    p-limit: ^3.0.1
-    schema-utils: ^2.7.0
-    serialize-javascript: ^4.0.0
+    p-limit: ^3.0.2
+    schema-utils: ^3.0.0
+    serialize-javascript: ^5.0.1
     webpack-sources: ^1.4.3
   peerDependencies:
     webpack: ^4.37.0 || ^5.0.0
-  checksum: 7867a1398cebf11b16662b6776e01603e8e2cfb31cf36a8fec9da390471898693f14d3a3f8cbe092d7ab1bec393d7a820097d9adcedd7ca96ff2e1f98ea9c0f6
+  checksum: b597938a6bb4a272ee94604e90088f1f9452309b5d41f377f81090ec69968e984c77764da76c9ad07c8692ec018abbe815fd685b9e74b57e2dd1f3180ada60ce
   languageName: node
   linkType: hard
 
@@ -26316,7 +26327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-limit@npm:^3.0.1, p-limit@npm:^3.0.2, p-limit@npm:^3.1.0":
+"p-limit@npm:^3.0.2, p-limit@npm:^3.1.0":
   version: 3.1.0
   resolution: "p-limit@npm:3.1.0"
   dependencies:
@@ -31385,12 +31396,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssri@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "ssri@npm:8.0.0"
+"ssri@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "ssri@npm:8.0.1"
   dependencies:
     minipass: ^3.1.1
-  checksum: 50085886f4f476f14ef40c063abca59b9855f773cb3962da4e873f2a010b4fc73b36b4b15f6439b816ee6bee36da30d1b6046cf5412a294fa316828de3ec8d9f
+  checksum: bc447f5af814fa9713aa201ec2522208ae0f4d8f3bda7a1f445a797c7b929a02720436ff7c478fb5edc4045adb02b1b88d2341b436a80798734e2494f1067b36
   languageName: node
   linkType: hard
 
