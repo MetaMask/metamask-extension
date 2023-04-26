@@ -50,10 +50,10 @@ const SnapAvatar = ({ snapId, className }) => {
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={Size.LG} src={iconUrl} name={friendlyName} />
+        <AvatarFavicon size={Size.MD} src={iconUrl} name={friendlyName} />
       ) : (
         <AvatarBase
-          size={Size.LG}
+          size={Size.MD}
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
