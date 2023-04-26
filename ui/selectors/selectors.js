@@ -1158,9 +1158,19 @@ export function getCurrentNetwork(state) {
   return allNetworks.find((network) => network.chainId === currentChainId);
 }
 
+export function getAllEnabledNetworks(state) {
+  const allNetworks = getAllNetworks(state);
+  const showTestnetNetworks = getShowTestNetworks(state);
+
+  return showTestnetNetworks
+    ? allNetworks
+    : allNetworks.filter(
+        (network) => TEST_CHAINS.includes(network.chainId) === false,
+      );
+}
+
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
-  const showTestnetNetworks = getShowTestNetworks(state);
   const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
 
   const networks = [];
@@ -1183,34 +1193,32 @@ export function getAllNetworks(state) {
       )
       .map(([, network]) => network),
   );
-  // Test networks if flag is on
-  if (showTestnetNetworks) {
-    networks.push(
-      ...[
-        {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-          providerType: NETWORK_TYPES.GOERLI,
-        },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          nickname: SEPOLIA_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-          providerType: NETWORK_TYPES.SEPOLIA,
-        },
-        {
-          chainId: CHAIN_IDS.LINEA_TESTNET,
-          nickname: LINEA_TESTNET_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-          provderType: NETWORK_TYPES.LINEA_TESTNET,
-        },
-      ], // Localhosts
-      ...Object.entries(networkConfigurations)
-        .filter(([, network]) => localhostFilter(network))
-        .map(([, network]) => network),
-    );
-  }
+  // Test networks
+  networks.push(
+    ...[
+      {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+        providerType: NETWORK_TYPES.GOERLI,
+      },
+      {
+        chainId: CHAIN_IDS.SEPOLIA,
+        nickname: SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+        providerType: NETWORK_TYPES.SEPOLIA,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_TESTNET,
+        nickname: LINEA_TESTNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+        provderType: NETWORK_TYPES.LINEA_TESTNET,
+      },
+    ], // Localhosts
+    ...Object.entries(networkConfigurations)
+      .filter(([, network]) => localhostFilter(network))
+      .map(([, network]) => network),
+  );
 
   return networks;
 }
