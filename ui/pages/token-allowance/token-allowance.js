@@ -351,7 +351,6 @@ export default function TokenAllowance({
           <Text
             variant={TextVariant.bodySm}
             as="h6"
-            fontWeight={FontWeight.Normal}
             color={TextColor.textAlternative}
             boxProps={{ marginLeft: 1, marginTop: 2 }}
           >
