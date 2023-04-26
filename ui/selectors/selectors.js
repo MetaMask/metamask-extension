@@ -1463,12 +1463,6 @@ export function getIsDesktopEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IN
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-export function getMmiConfiguration(state) {
-  return state.metamask.mmiConfiguration || [];
-}
-///: END:ONLY_INCLUDE_IN
-
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * To get all installed snaps with proper metadata
