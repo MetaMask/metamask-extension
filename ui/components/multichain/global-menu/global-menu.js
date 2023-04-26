@@ -143,8 +143,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);
           trackEvent({
-            category: MetaMetricsEventCategory.AppLocked,
-            event: MetaMetricsEventName.NavSettingsOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.AppLocked,
             properties: {
               location: 'Global Menu',
             },
