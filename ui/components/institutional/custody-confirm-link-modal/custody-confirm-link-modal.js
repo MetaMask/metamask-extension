@@ -27,7 +27,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text, Button,  BUTTON_VARIANT } from '../../component-library';
+import { Text, Button, BUTTON_VARIANT } from '../../component-library';
 
 const CustodyConfirmLink = () => {
   const t = useI18nContext();
