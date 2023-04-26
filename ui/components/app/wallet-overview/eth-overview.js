@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { useHistory, useLocation } from 'react-router-dom';
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
@@ -71,7 +71,7 @@ const EthOverview = ({ className }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
 
@@ -156,7 +156,7 @@ const EthOverview = ({ className }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                 process.env.MULTICHAIN ? null : (
                   <ButtonIcon
                     className="eth-overview__portfolio-button"
@@ -209,7 +209,7 @@ const EthOverview = ({ className }) => {
       buttons={
         <>
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               Icon={
@@ -234,7 +234,7 @@ const EthOverview = ({ className }) => {
           }
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             renderInstitutionalButtons()
             ///: END:ONLY_INCLUDE_IN
           }
@@ -309,7 +309,7 @@ const EthOverview = ({ className }) => {
             }
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               disabled={!isBridgeChain}

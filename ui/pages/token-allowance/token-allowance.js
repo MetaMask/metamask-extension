@@ -77,6 +77,7 @@ export default function TokenAllowance({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  hexMinimumTransactionFee,
   txData,
   isMultiLayerFeeNetwork,
   supportsEIP1559,
@@ -464,6 +465,7 @@ export default function TokenAllowance({
             userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             renderSimulationFailureWarning={renderSimulationFailureWarning}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
             fiatTransactionTotal={fiatTransactionTotal}
             currentCurrency={currentCurrency}
             useCurrencyRateCheck={useCurrencyRateCheck}
@@ -516,6 +518,7 @@ export default function TokenAllowance({
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
               useCurrencyRateCheck={useCurrencyRateCheck}
+              hexMinimumTransactionFee={hexMinimumTransactionFee}
             />
           </Box>
         </Box>
@@ -597,6 +600,10 @@ TokenAllowance.propTypes = {
    * Total sum of the transaction converted to hex value
    */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Minimum transaction fee converted to hex value
+   */
+  hexMinimumTransactionFee: PropTypes.string,
   /**
    * Current transaction
    */

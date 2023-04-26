@@ -695,10 +695,6 @@
     "message": "$1はどのサイトとも接続されていません。",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 スナップはこれらのサイトに接続されており、上記のパーミッションにアクセスできます。",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "接続中..."
   },
@@ -1355,18 +1351,6 @@
     "message": "ファイルのインポートが機能していない場合ここをクリックしてください!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "詳細を表示",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "追加日",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "元",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "このガス代は$1により提案されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1までお問い合わせください。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "ガス代"
   },
   "gasLimit": {
     "message": "ガスリミット"
@@ -3230,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "表示"
   },
@@ -3307,14 +3284,6 @@
   "smartTransaction": {
     "message": "スマートトランザクション"
   },
-  "snapAccess": {
-    "message": "$1 スナップは次にアクセス可能です:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$1 に $2 から追加",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "このコンテンツは $1 からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3350,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "スナップの管理"
-  },
-  "snapsStatus": {
-    "message": "スナップのステータスはアクティビティによります。"
   },
   "snapsToggle": {
     "message": "スナップは有効になっている場合にのみ実行されます"
