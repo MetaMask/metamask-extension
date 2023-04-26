@@ -630,8 +630,7 @@ export default function BuildQuote({
               <Text variant={TextVariant.bodySm} as="h6" marginTop={0}>
                 {t('stxDescription')}
               </Text>
-              <Text as="ul" variant={TextVariant.bodySm} marginTop={3}>
-                <strong>
+              <Text as="ul" variant={TextVariant.bodySmBold} marginTop={3}>
                   <li>{t('stxBenefit1')}</li>
                   <li>{t('stxBenefit2')}</li>
                   <li>{t('stxBenefit3')}</li>
@@ -645,7 +644,6 @@ export default function BuildQuote({
                       {' *'}
                     </Text>
                   </li>
-                </strong>
               </Text>
               <Text
                 variant={TextVariant.bodyXs}
