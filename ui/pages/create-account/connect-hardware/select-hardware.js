@@ -35,7 +35,7 @@ export default class SelectHardware extends Component {
   };
 
   shouldShowConnectButton() {
-    return !isManifestV3 || process.env.CONF?.HARDWARE_WALLETS_MV3;
+    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
   }
 
   connect = () => {
