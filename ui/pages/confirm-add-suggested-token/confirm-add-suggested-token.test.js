@@ -92,25 +92,44 @@ describe('ConfirmAddSuggestedToken Component', () => {
     const addTokenBtn = screen.getByRole('button', { name: 'Add token' });
 
     fireEvent.click(addTokenBtn);
-    expect(acceptWatchAsset).toHaveBeenCalled();
-    expect(resolvePendingApproval).toHaveBeenCalled();
+
+    expect(resolvePendingApproval).toHaveBeenCalledTimes(
+      MOCK_SUGGESTED_ASSETS.length,
+    );
+    expect(acceptWatchAsset).toHaveBeenCalledTimes(
+      MOCK_SUGGESTED_ASSETS.length,
+    );
+
+    MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
+      expect(resolvePendingApproval).toHaveBeenCalledWith(id, null);
+      expect(acceptWatchAsset).toHaveBeenCalledWith(id);
+    });
   });
 
   it('should dispatch rejectWatchAsset when clicking the "Cancel" button', () => {
     renderComponent();
     const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
 
-    expect(rejectWatchAsset).toHaveBeenCalledTimes(0);
-    expect(rejectPendingApproval).toHaveBeenCalledTimes(0);
-
     fireEvent.click(cancelBtn);
 
-    expect(rejectWatchAsset).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_ASSETS.length,
-    );
     expect(rejectPendingApproval).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
+    expect(rejectWatchAsset).toHaveBeenCalledTimes(
+      MOCK_SUGGESTED_ASSETS.length,
+    );
+
+    MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
+      expect(rejectPendingApproval).toHaveBeenCalledWith(
+        id,
+        expect.objectContaining({
+          code: 4001,
+          message: 'User rejected the request.',
+          stack: expect.any(String),
+        }),
+      );
+      expect(rejectWatchAsset).toHaveBeenCalledWith(id);
+    });
   });
 
   describe('when the suggested token address matches an existing token address', () => {
