@@ -65,7 +65,6 @@ export const AccountDetails = ({ address }) => {
       }}
       title={
         <PopoverHeader
-          onClose={onClose}
           childrenWrapperProps={{
             display: DISPLAY.FLEX,
             justifyContent: JustifyContent.center,
@@ -82,6 +81,7 @@ export const AccountDetails = ({ address }) => {
           />
         </PopoverHeader>
       }
+      onClose={onClose}
     >
       <Box
         display={DISPLAY.FLEX}
