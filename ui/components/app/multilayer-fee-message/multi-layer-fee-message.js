@@ -17,36 +17,17 @@ export default function MultilayerFeeMessage({
   plainStyle,
 }) {
   const t = useContext(I18nContext);
-
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
 
-  let layer1Total = 'unknown';
-  let layer1TotalBN;
-
-  if (fetchedLayer1Total !== null) {
-    layer1TotalBN = new Numeric(fetchedLayer1Total, 16, EtherDenomination.WEI);
-    layer1Total = `${layer1TotalBN
-      .toDenomination(EtherDenomination.ETH)
-      .toFixed(12)} ${nativeCurrency}`;
-  }
-
-  const feeTotal = sumHexes(layer2fee || '0x0', fetchedLayer1Total || '0x0');
-
-  const totalInWeiHex = sumHexes(
-    feeTotal || '0x0',
-    transaction.txParams.value || '0x0',
-  );
-
-  const totalBN = new Numeric(totalInWeiHex, 16, EtherDenomination.WEI);
-  const totalInEth = `${totalBN
-    .toDenomination(EtherDenomination.ETH)
-    .toFixed(12)} ${nativeCurrency}`;
   useEffect(() => {
+    if (!transaction?.txParams) {
+      return;
+    }
     const getEstimatedL1Fee = async () => {
       try {
         const result = await fetchEstimatedL1Fee(
-          transaction.chainId,
-          transaction.txParams,
+          transaction?.chainId,
+          transaction,
         );
         setLayer1Total(result);
       } catch (e) {
@@ -57,14 +38,43 @@ export default function MultilayerFeeMessage({
     getEstimatedL1Fee();
   }, [transaction]);
 
-  const feeTotalInFiat = (
-    <UserPreferencedCurrencyDisplay
-      type={SECONDARY}
-      value={feeTotal}
-      showFiat
-      hideLabel
-    />
+  if (!transaction?.txParams) {
+    return null;
+  }
+
+  let layer1Total = t('unknown');
+  let feeTotalInFiat = t('unknown');
+
+  if (fetchedLayer1Total !== null) {
+    const layer1TotalBN = new Numeric(
+      fetchedLayer1Total,
+      16,
+      EtherDenomination.WEI,
+    );
+    layer1Total = `${layer1TotalBN
+      .toDenomination(EtherDenomination.ETH)
+      .toFixed(12)} ${nativeCurrency}`;
+
+    feeTotalInFiat = (
+      <UserPreferencedCurrencyDisplay
+        type={SECONDARY}
+        value={fetchedLayer1Total}
+        showFiat
+        hideLabel
+      />
+    );
+  }
+
+  const totalInWeiHex = sumHexes(
+    layer2fee || '0x0',
+    fetchedLayer1Total || '0x0',
+    transaction?.txParams?.value || '0x0',
   );
+
+  const totalBN = new Numeric(totalInWeiHex, 16, EtherDenomination.WEI);
+  const totalInEth = `${totalBN
+    .toDenomination(EtherDenomination.ETH)
+    .toFixed(12)} ${nativeCurrency}`;
 
   const totalInFiat = (
     <UserPreferencedCurrencyDisplay
@@ -79,7 +89,7 @@ export default function MultilayerFeeMessage({
     <div className="multi-layer-fee-message">
       <TransactionDetailItem
         key="total-item-gas-fee"
-        detailTitle={t('gasFee')}
+        detailTitle={t('layer1Fees')}
         detailTotal={layer1Total}
         detailText={feeTotalInFiat}
         noBold={plainStyle}
