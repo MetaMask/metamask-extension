@@ -1272,16 +1272,6 @@
         "typescript": true
       }
     },
-    "addons-linter>postcss>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
-      }
-    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -1926,10 +1916,10 @@
       "packages": {
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "chokidar>glob-parent": true,
         "chokidar>is-binary-path": true,
         "chokidar>normalize-path": true,
         "depcheck>readdirp": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "watchify>anymatch": true
       }
@@ -1958,15 +1948,6 @@
         "process.platform": true
       },
       "native": true
-    },
-    "chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
     },
     "chokidar>is-binary-path": {
       "builtin": {
@@ -3074,9 +3055,9 @@
         "process.cwd": true
       },
       "packages": {
+        "eslint>glob-parent": true,
         "fast-glob>@nodelib/fs.stat": true,
         "fast-glob>@nodelib/fs.walk": true,
-        "fast-glob>glob-parent": true,
         "globby>merge2": true,
         "stylelint>micromatch": true
       }
@@ -3129,15 +3110,6 @@
     "fast-glob>@nodelib/fs.walk>fastq": {
       "packages": {
         "fast-glob>@nodelib/fs.walk>fastq>reusify": true
-      }
-    },
-    "fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "fs-extra": {
@@ -3287,9 +3259,9 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
-        "addons-linter>postcss>picocolors": true,
         "gulp-autoprefixer>autoprefixer>fraction.js": true,
         "gulp-autoprefixer>postcss": true,
+        "gulp-sass>picocolors": true,
         "stylelint>autoprefixer>normalize-range": true,
         "stylelint>postcss-value-parser": true,
         "webpack>browserslist": true,
@@ -3324,85 +3296,9 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "addons-linter>postcss>picocolors": true,
         "addons-linter>postcss>source-map-js": true,
-        "gulp-autoprefixer>postcss>nanoid": true
-      }
-    },
-    "gulp-dart-sass": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.stderr.write": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk": true,
-        "gulp-dart-sass>lodash.clonedeep": true,
-        "gulp-dart-sass>strip-ansi": true,
-        "gulp-dart-sass>through2": true,
-        "gulp-zip>plugin-error": true,
-        "sass": true,
-        "vinyl-sourcemaps-apply": true,
-        "vinyl>replace-ext": true
-      }
-    },
-    "gulp-dart-sass>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk>ansi-styles": true,
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
-        "gulp-dart-sass>chalk>supports-color": true
-      }
-    },
-    "gulp-dart-sass>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
-    "gulp-dart-sass>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk>supports-color>has-flag": true
-      }
-    },
-    "gulp-dart-sass>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "gulp-dart-sass>strip-ansi": {
-      "packages": {
-        "gulp-dart-sass>strip-ansi>ansi-regex": true
-      }
-    },
-    "gulp-dart-sass>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
+        "gulp-autoprefixer>postcss>nanoid": true,
+        "gulp-sass>picocolors": true
       }
     },
     "gulp-livereload": {
@@ -3424,8 +3320,8 @@
         "process.platform": true
       },
       "packages": {
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
         "gulp-livereload>chalk>ansi-styles": true,
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "gulp-livereload>chalk>supports-color": true
       }
     },
@@ -3698,7 +3594,7 @@
         "process.platform": true
       },
       "packages": {
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "gulp-rtlcss>rtlcss>chalk>ansi-styles": true,
         "gulp-rtlcss>rtlcss>chalk>supports-color": true
       }
@@ -3755,6 +3651,48 @@
       "packages": {
         "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sass": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.relative": true,
+        "stream.Transform": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.exit": true,
+        "process.stderr.write": true
+      },
+      "packages": {
+        "eslint>strip-ansi": true,
+        "gulp-sass>lodash.clonedeep": true,
+        "gulp-sass>picocolors": true,
+        "gulp-sass>replace-ext": true,
+        "gulp-zip>plugin-error": true,
+        "vinyl-sourcemaps-apply": true
+      }
+    },
+    "gulp-sass>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
+    "gulp-sass>replace-ext": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
       }
     },
     "gulp-sort": {
@@ -4073,11 +4011,11 @@
         "setTimeout": true
       },
       "packages": {
+        "eslint>glob-parent": true,
         "gulp-watch>ansi-colors": true,
         "gulp-watch>anymatch": true,
         "gulp-watch>chokidar": true,
         "gulp-watch>fancy-log": true,
-        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
@@ -4168,8 +4106,8 @@
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic": {
       "packages": {
         "@babel/register>clone-deep>kind-of": true,
-        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true,
-        "gulp>undertaker>bach>array-last>is-number": true
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>is-number": true,
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": {
@@ -4221,15 +4159,7 @@
         "path.dirname": true
       },
       "packages": {
-        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": true,
-        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
-      }
-    },
-    "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "packages": {
+        "eslint>glob-parent": true,
         "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
       }
     },
@@ -4282,6 +4212,7 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>anymatch": true,
         "gulp-watch>chokidar>async-each": true,
@@ -4457,18 +4388,8 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values": {
       "packages": {
-        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": true
-      }
-    },
-    "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number": {
-      "packages": {
-        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": true
-      }
-    },
-    "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": {
@@ -4885,30 +4806,6 @@
         "fancy-log>time-stamp": true
       }
     },
-    "gulp-watch>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>is-glob": true,
-        "gulp-watch>glob-parent>path-dirname": true
-      }
-    },
-    "gulp-watch>glob-parent>is-glob": {
-      "packages": {
-        "gulp-watch>glob-parent>is-glob>is-extglob": true
-      }
-    },
-    "gulp-watch>glob-parent>path-dirname": {
-      "builtin": {
-        "path": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "process.platform": true
-      }
-    },
     "gulp-watch>path-is-absolute": {
       "globals": {
         "process.platform": true
@@ -5206,9 +5103,9 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
-        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
@@ -5239,24 +5136,14 @@
       },
       "packages": {
         "gulp-watch>chokidar>braces>extend-shallow": true,
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
-    "gulp>glob-watcher>chokidar>braces>fill-range>is-number": {
-      "packages": {
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
     "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": {
       "packages": {
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
@@ -5406,7 +5293,6 @@
         "gulp>gulp-cli>matchdep>micromatch>fragment-cache": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch>define-property": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch>extend-shallow": true,
-        "gulp>gulp-cli>matchdep>micromatch>nanomatch>is-odd": true,
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true,
         "nyc>spawn-wrap>is-windows": true
       }
@@ -5426,11 +5312,6 @@
     "gulp>gulp-cli>matchdep>micromatch>nanomatch>extend-shallow>is-extendable": {
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true
-      }
-    },
-    "gulp>gulp-cli>matchdep>micromatch>nanomatch>is-odd": {
-      "packages": {
-        "gulp>undertaker>bach>array-last>is-number": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>regex-not": {
@@ -5522,7 +5403,7 @@
     },
     "gulp>undertaker>bach>array-initial": {
       "packages": {
-        "gulp>undertaker>bach>array-last>is-number": true,
+        "gulp>undertaker>bach>array-initial>is-number": true,
         "gulp>undertaker>object.defaults>array-slice": true
       }
     },
@@ -5652,7 +5533,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "gulp-watch>glob-parent": true,
+        "eslint>glob-parent": true,
         "gulp>glob-watcher>is-negated-glob": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
         "gulp>vinyl-fs>glob-stream>pumpify": true,
@@ -6066,7 +5947,7 @@
         "process.platform": true
       },
       "packages": {
-        "gulp-dart-sass>chalk>escape-string-regexp": true,
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "lavamoat>@babel/highlight>chalk>ansi-styles": true,
         "lavamoat>@babel/highlight>chalk>supports-color": true
       }
@@ -6688,6 +6569,7 @@
         "url.resolve": true
       },
       "globals": {
+        "TextDecoder": true,
         "setImmediate": true
       },
       "packages": {
@@ -7610,7 +7492,7 @@
     },
     "terser": {
       "globals": {
-        "Buffer.from": true,
+        "Buffer": true,
         "atob": true,
         "btoa": true,
         "console.log": true,

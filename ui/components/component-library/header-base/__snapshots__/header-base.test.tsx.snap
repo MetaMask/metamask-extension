@@ -8,7 +8,7 @@ exports[`HeaderBase should render HeaderBase element correctly 1`] = `
     title="HeaderBase test"
   >
     <div
-      class="box mm-header-base__children box--flex-direction-row box--width-full"
+      class="box box--flex-direction-row box--width-full"
     >
       should render HeaderBase element correctly
     </div>

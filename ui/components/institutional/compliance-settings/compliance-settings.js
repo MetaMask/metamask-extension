@@ -14,7 +14,7 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import {
   Text,
   Button,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   BUTTON_SIZES,
 } from '../../component-library';
 import Box from '../../ui/box';
@@ -30,7 +30,7 @@ const ComplianceSettings = () => {
 
   const linkButton = (
     <Button
-      type={BUTTON_TYPES.LINK}
+      variant={BUTTON_VARIANT.LINK}
       size={BUTTON_SIZES.LG}
       data-testid="start-compliance"
       onClick={() => {

@@ -15,8 +15,6 @@ const useRamps = (): IUseRamps => {
 
   const getBuyURI = useCallback((_chainId: ChainId) => {
     switch (_chainId) {
-      case CHAIN_IDS.GOERLI:
-        return 'https://goerli-faucet.slock.it/';
       case CHAIN_IDS.SEPOLIA:
         return 'https://faucet.sepolia.dev/';
       default:

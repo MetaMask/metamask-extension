@@ -17,7 +17,7 @@ import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import {
   PRIMARY,
-  ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
   SUPPORT_REQUEST_LINK,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/common';
@@ -27,7 +27,7 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
@@ -88,7 +88,7 @@ export default class AccountMenu extends Component {
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     unreadNotificationsCount: PropTypes.number,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -310,7 +310,7 @@ export default class AccountMenu extends Component {
       toggleAccountMenu,
       lockMetamask,
       history,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       unreadNotificationsCount,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -321,7 +321,7 @@ export default class AccountMenu extends Component {
 
     let supportText = t('support');
     let supportLink = SUPPORT_LINK;
-    ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
     supportText = t('needHelpSubmitTicket');
     supportLink = SUPPORT_REQUEST_LINK;
     ///: END:ONLY_INCLUDE_IN
@@ -415,7 +415,7 @@ export default class AccountMenu extends Component {
         />
         <div className="account-menu__divider" />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <>
             <AccountMenuItem
               onClick={() => {
