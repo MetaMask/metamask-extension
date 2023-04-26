@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },

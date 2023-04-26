@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Подтвердите секретную фразу для восстановления"
   },

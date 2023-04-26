@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "सीक्रेट रिकवरी फ्रेज की पुष्टि करें"
   },

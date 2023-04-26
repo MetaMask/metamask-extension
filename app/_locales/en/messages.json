@@ -3405,6 +3405,9 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"
   },

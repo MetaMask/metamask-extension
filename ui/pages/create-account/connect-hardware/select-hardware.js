@@ -558,6 +558,39 @@ export default class SelectHardware extends Component {
         ),
       },
       {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">{this.context.t('secux')}</p>
+            <Button
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked SecuX Buy Now',
+                });
+                openWindow(HardwareAffiliateLinks.secux);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked SecuX Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.secux);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
+      },
+      {
         message: this.context.t('QRHardwareWalletSteps2Description'),
       },
       {

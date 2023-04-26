@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Xác nhận Cụm Mật Khẩu Khôi Phục Bí Mật"
   },

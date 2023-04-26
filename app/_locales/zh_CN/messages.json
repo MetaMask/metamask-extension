@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "安全和隐私"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "确认助记词"
   },

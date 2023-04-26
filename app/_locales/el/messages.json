@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "Ασφάλεια και Απόρρητο"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Επιβεβαίωση Μυστικής Φράσης Ανάκτησης"
   },

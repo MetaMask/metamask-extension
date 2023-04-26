@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Kumpirmahin ang Secret Recovery Phrase"
   },

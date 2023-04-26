@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },

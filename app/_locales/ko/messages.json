@@ -3099,6 +3099,9 @@
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
   },
+  "secux":{
+    "message": "SecuX"
+  },
   "seedPhraseConfirm": {
     "message": "비밀 복구 구문 확인"
   },
