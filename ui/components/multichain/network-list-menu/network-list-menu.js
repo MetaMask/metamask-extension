@@ -15,7 +15,7 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
-  getAllNetworks,
+  getAllEnabledNetworks,
   getCurrentChainId,
 } from '../../../selectors';
 import Box from '../../ui/box/box';
@@ -33,7 +33,7 @@ const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
-  const networks = useSelector(getAllNetworks);
+  const networks = useSelector(getAllEnabledNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
