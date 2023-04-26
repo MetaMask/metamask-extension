@@ -27,7 +27,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text, Button } from '../../component-library';
+import { Text, Button,  BUTTON_VARIANT } from '../../component-library';
 
 const CustodyConfirmLink = () => {
   const t = useI18nContext();
@@ -122,7 +122,7 @@ const CustodyConfirmLink = () => {
         {text || t('custodyDeeplinkDescription', [displayName])}
       </Text>
       <Button
-        type="primary"
+        variant={BUTTON_VARIANT.PRIMARY}
         className="custody-confirm-link__btn"
         onClick={onClick}
       >
