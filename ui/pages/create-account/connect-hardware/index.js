@@ -22,7 +22,7 @@ import {
   LEDGER_LOCKED_ERROR_CODES,
 } from '../../../../shared/constants/hardware-wallets';
 import {
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   BUTTON_SIZES,
   Button,
   Text,
@@ -308,7 +308,7 @@ class ConnectHardwareForm extends Component {
               {this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
                 // eslint-disable-next-line react/jsx-key
                 <Button
-                  type={BUTTON_TYPES.LINK}
+                  variant={BUTTON_VARIANT.LINK}
                   href={ZENDESK_URLS.HARDWARE_CONNECTION}
                   size={BUTTON_SIZES.INHERIT}
                   key="u2f-error-1"
@@ -327,7 +327,7 @@ class ConnectHardwareForm extends Component {
                 [
                   // eslint-disable-next-line react/jsx-key
                   <Button
-                    type={BUTTON_TYPES.LINK}
+                    variant={BUTTON_VARIANT.LINK}
                     href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
                     size={BUTTON_SIZES.INHERIT}
                     key="u2f-error-1"
@@ -351,7 +351,7 @@ class ConnectHardwareForm extends Component {
             this.state.device,
             // eslint-disable-next-line react/jsx-key
             <Button
-              type={BUTTON_TYPES.LINK}
+              variant={BUTTON_VARIANT.LINK}
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="u2f-error-1"
             >
