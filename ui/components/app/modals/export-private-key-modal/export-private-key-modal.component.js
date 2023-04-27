@@ -1,6 +1,5 @@
 import log from 'loglevel';
 import React, { useContext, useEffect, useState } from 'react';
-import copyToClipboard from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
@@ -10,14 +9,9 @@ import {
   BannerAlert,
   Button,
   Text,
-  TextField,
-  TEXT_FIELD_TYPES,
 } from '../../../component-library';
 import AccountModalContainer from '../account-modal-container';
-import {
-  toChecksumHexAddress,
-  stripHexPrefix,
-} from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -27,10 +21,8 @@ import HoldToRevealModal from '../hold-to-reveal-modal/hold-to-reveal-modal';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  AlignItems,
   BLOCK_SIZES,
   BorderColor,
-  BorderRadius,
   BorderStyle,
   Color,
   DISPLAY,
@@ -39,6 +31,8 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import PrivateKeyDisplay from './private-key';
+import PasswordInput from './password-input';
 
 const ExportPrivateKeyModal = ({
   clearAccountDetails,
@@ -98,64 +92,81 @@ const ExportPrivateKeyModal = ({
     }
   };
 
-  const renderPasswordLabel = (privateKeyInput) => {
+  const { name, address } = selectedIdentity;
+
+  if (showHoldToReveal) {
     return (
+      <AccountModalContainer
+        className="export-private-key-modal"
+        selectedIdentity={selectedIdentity}
+        showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
+        backButtonAction={() => showAccountDetailModal()}
+      >
+        <HoldToRevealModal
+          onLongPressed={() => setShowHoldToReveal(false)}
+          willHide={false}
+          holdToRevealType="PrivateKey"
+        />
+      </AccountModalContainer>
+    );
+  }
+
+  return (
+    <AccountModalContainer
+      className="export-private-key-modal"
+      selectedIdentity={selectedIdentity}
+      showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
+      backButtonAction={() => showAccountDetailModal()}
+    >
       <Text
         as="span"
-        color={Color.textDefault}
-        marginBottom={2}
-        variant={TextVariant.bodySm}
+        marginTop={2}
+        variant={TextVariant.bodyLgMedium}
+        fontWeight={FONT_WEIGHT.NORMAL}
       >
-        {privateKeyInput ? t('copyPrivateKey') : t('typePassword')}
+        {name}
       </Text>
-    );
-  };
-
-  const renderPasswordInput = (privateKeyInput) => {
-    if (!privateKeyInput) {
-      return (
-        <TextField
-          width={BLOCK_SIZES.FULL}
-          placeholder={t('enterPassword')}
-          type={TEXT_FIELD_TYPES.PASSWORD}
-          className="export-private-key-modal__password-input"
-          onChange={(event) => setPassword(event.target.value)}
-          data-testid="password-input"
-        />
-      );
-    }
-
-    const plainKey = stripHexPrefix(privateKeyInput);
-
-    return (
       <Box
-        className="export-private-key-modal__private-key-display"
-        width={BLOCK_SIZES.FULL}
+        className="ellip-address-wrapper"
         borderStyle={BorderStyle.solid}
         borderColor={BorderColor.borderDefault}
-        borderRadius={BorderRadius.XS}
         borderWidth={1}
-        padding={[2, 3, 2]}
-        color={Color.errorDefault}
-        onClick={() => {
-          copyToClipboard(plainKey);
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.KeyExportCopied,
-            properties: {
-              key_type: MetaMetricsEventKeyType.Pkey,
-              copy_method: 'clipboard',
-            },
-          });
-        }}
+        marginTop={2}
+        padding={[1, 2, 1, 2]}
       >
-        {plainKey}
+        {toChecksumHexAddress(address)}
       </Box>
-    );
-  };
-
-  const renderButtons = (privateKeyInput, address, hideModalFunc) => {
-    return (
+      <Box
+        className="export-private-key-modal__divider"
+        width={BLOCK_SIZES.FULL}
+        margin={[5, 0, 3, 0]}
+      />
+      <Text
+        variant={TextVariant.bodyLgMedium}
+        margin={[4, 0, 4, 0]}
+        fontWeight={FONT_WEIGHT.NORMAL}
+      >
+        {t('showPrivateKeys')}
+      </Text>
+      {privateKey ? (
+        <PrivateKeyDisplay privateKey={privateKey} />
+      ) : (
+        <PasswordInput setPassword={setPassword} />
+      )}
+      {showWarning && (
+        <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
+          {warning}
+        </Text>
+      )}
+      <BannerAlert
+        padding={[1, 3, 0, 3]}
+        marginLeft={5}
+        marginRight={5}
+        marginTop={4}
+        severity="danger"
+      >
+        {t('privateKeyWarning')}
+      </BannerAlert>
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
@@ -164,7 +175,7 @@ const ExportPrivateKeyModal = ({
         marginTop={3}
         padding={[5, 0, 5, 0]}
       >
-        {!privateKeyInput && (
+        {!privateKey && (
           <Button
             type={BUTTON_VARIANT.SECONDARY}
             size={BUTTON_SIZES.LG}
@@ -190,7 +201,7 @@ const ExportPrivateKeyModal = ({
             size={BUTTON_SIZES.LG}
             width={BLOCK_SIZES.FULL}
             onClick={() => {
-              hideModalFunc();
+              hideModal();
             }}
           >
             {t('done')}
@@ -217,90 +228,6 @@ const ExportPrivateKeyModal = ({
           </Button>
         )}
       </Box>
-    );
-  };
-
-  const { name, address } = selectedIdentity;
-
-  const renderPrivateKey = () => {
-    return (
-      <>
-        <Text
-          as="span"
-          marginTop={2}
-          variant={TextVariant.bodyLgMedium}
-          fontWeight={FONT_WEIGHT.NORMAL}
-        >
-          {name}
-        </Text>
-        <Box
-          className="ellip-address-wrapper"
-          borderStyle={BorderStyle.solid}
-          borderColor={BorderColor.borderDefault}
-          borderWidth={1}
-          marginTop={2}
-          padding={[1, 2, 1, 2]}
-        >
-          {toChecksumHexAddress(address)}
-        </Box>
-        <Box
-          className="export-private-key-modal__divider"
-          width={BLOCK_SIZES.FULL}
-          margin={[5, 0, 3, 0]}
-        />
-        <Text
-          variant={TextVariant.bodyLgMedium}
-          margin={[4, 0, 4, 0]}
-          fontWeight={FONT_WEIGHT.NORMAL}
-        >
-          {t('showPrivateKeys')}
-        </Text>
-        <Box
-          width={BLOCK_SIZES.FULL}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.flexStart}
-          paddingLeft={5}
-          paddingRight={5}
-        >
-          {renderPasswordLabel(privateKey)}
-          {renderPasswordInput(privateKey)}
-          {showWarning && (
-            <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
-              {warning}
-            </Text>
-          )}
-        </Box>
-        <BannerAlert
-          padding={[1, 3, 0, 3]}
-          marginLeft={5}
-          marginRight={5}
-          marginTop={4}
-          severity="danger"
-        >
-          {t('privateKeyWarning')}
-        </BannerAlert>
-        {renderButtons(privateKey, address, hideModal)}
-      </>
-    );
-  };
-
-  return (
-    <AccountModalContainer
-      className="export-private-key-modal"
-      selectedIdentity={selectedIdentity}
-      showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
-      backButtonAction={() => showAccountDetailModal()}
-    >
-      {showHoldToReveal ? (
-        <HoldToRevealModal
-          onLongPressed={() => setShowHoldToReveal(false)}
-          willHide={false}
-          holdToRevealType="PrivateKey"
-        />
-      ) : (
-        renderPrivateKey(selectedIdentity)
-      )}
     </AccountModalContainer>
   );
 };
