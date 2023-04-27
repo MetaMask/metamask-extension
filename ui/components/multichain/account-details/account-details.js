@@ -95,7 +95,7 @@ export const AccountDetails = ({ address }) => {
               justifyContent: JustifyContent.center,
             }}
           >
-            {avatar}
+            <Box paddingLeft={6}>{avatar}</Box>
           </PopoverHeader>
         )
       }
