@@ -22230,15 +22230,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jszip@npm:^3.10.0":
-  version: 3.10.0
-  resolution: "jszip@npm:3.10.0"
+"jszip@npm:^3.10.1":
+  version: 3.10.1
+  resolution: "jszip@npm:3.10.1"
   dependencies:
     lie: ~3.3.0
     pako: ~1.0.2
     readable-stream: ~2.3.6
     setimmediate: ^1.0.5
-  checksum: 80cc8e0e466467e9e21447f604f9262509b29a9c65170a3fee415ac0a403beb370840973cdc17f75d2b92ab3e60685f94d267706510d46bed2dd14858a38e459
+  checksum: abc77bfbe33e691d4d1ac9c74c8851b5761fba6a6986630864f98d876f3fcc2d36817dfc183779f32c00157b5d53a016796677298272a714ae096dfe6b1c8b60
   languageName: node
   linkType: hard
 
@@ -24071,7 +24071,7 @@ __metadata:
     resolve-url-loader: ^3.1.5
     sass: ^1.32.4
     sass-loader: ^10.1.1
-    selenium-webdriver: ^4.3.1
+    selenium-webdriver: ^4.9.0
     semver: ^7.3.5
     serve-handler: ^6.1.2
     ses: ^0.18.4
@@ -30194,14 +30194,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "selenium-webdriver@npm:4.3.1"
+"selenium-webdriver@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "selenium-webdriver@npm:4.9.0"
   dependencies:
-    jszip: ^3.10.0
+    jszip: ^3.10.1
     tmp: ^0.2.1
-    ws: ">=8.7.0"
-  checksum: 3c7d7cafb18682fcb38cf1b3d08626f53b75dd346f36121937c7e442b517ed5fb851caf1c6bf8770df6f6015bb6aef0b20a391762851520c82418c0b61a7f776
+    ws: ">=8.13.0"
+  checksum: f8d00df07fa16f2f9382e8efe91ab02742f93b4fee197017f80ee92e4c5c13b85b14df2cd30d2780e68ad41c66d9f24c07fb6aed1f3f20fda8e53c147e40c7b5
   languageName: node
   linkType: hard
 
@@ -34781,7 +34781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:*, ws@npm:>=8.7.0, ws@npm:^8.2.3, ws@npm:^8.8.0":
+"ws@npm:*, ws@npm:^8.2.3, ws@npm:^8.8.0":
   version: 8.10.0
   resolution: "ws@npm:8.10.0"
   peerDependencies:
@@ -34817,6 +34817,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 3a990b32ed08c72070d5e8913e14dfcd831919205be52a3ff0b4cdd998c8d554f167c9df3841605cde8b11d607768cacab3e823c58c96a5c08c987e093eb767a
+  languageName: node
+  linkType: hard
+
+"ws@npm:>=8.13.0":
+  version: 8.13.0
+  resolution: "ws@npm:8.13.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
   languageName: node
   linkType: hard
 
