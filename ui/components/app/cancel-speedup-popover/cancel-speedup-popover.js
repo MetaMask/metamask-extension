@@ -104,7 +104,9 @@ const CancelSpeedupPopover = () => {
           className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
-            <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
+            <Text as="strong" key="cancelSpeedupCancel">
+              {t('replace')}
+            </Text>,
           ])}
           <InfoTooltip
             position="top"
