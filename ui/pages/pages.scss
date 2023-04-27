@@ -12,8 +12,9 @@
 @import 'connected-accounts/index';
 @import 'connected-sites/index';
 @import 'create-account/index';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import "create-account/institutional/connect-custody/index";
+@import "institutional/interactive-replacement-token-page/index";
 ///: END:ONLY_INCLUDE_IN
 @import 'error/index';
 @import 'send/gas-display/index';
@@ -29,6 +30,3 @@
 @import 'onboarding-flow/index';
 @import 'notifications/index';
 @import 'desktop-pairing/index';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-@import "institutional/interactive-replacement-token-page/index";
-///: END:ONLY_INCLUDE_IN
