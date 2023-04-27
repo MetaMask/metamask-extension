@@ -362,7 +362,6 @@ export default function TokenAllowance({
         <Text
           variant={TextVariant.headingMd}
           as="h3"
-          fontWeight={FontWeight.Bold}
           align={TextAlign.Center}
         >
           {isFirstPage ? (
