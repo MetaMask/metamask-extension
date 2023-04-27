@@ -79,7 +79,7 @@ const HoldToRevealModal = ({
             </Text>,
             <Button
               key="hold-to-reveal-5"
-              type={BUTTON_VARIANT.LINK}
+              variant={BUTTON_VARIANT.LINK}
               size={BUTTON_SIZES.INHERIT}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"
