@@ -4650,3 +4650,17 @@ export function requestUserApproval({
     }
   };
 }
+
+export async function getCurrentNetworkEIP1559Compatibility(): Promise<
+  boolean | undefined
+> {
+  let networkEIP1559Compatibility;
+  try {
+    networkEIP1559Compatibility = await submitRequestToBackground<boolean>(
+      'getCurrentNetworkEIP1559Compatibility',
+    );
+  } catch (error) {
+    console.error(error);
+  }
+  return networkEIP1559Compatibility;
+}
