@@ -121,12 +121,17 @@ export async function getErrorHtml(
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+export const MMD_DOWNLOAD_LINK =
+  'https://github.com/MetaMask/metamask-desktop/releases';
+
 function disableDesktop(backgroundConnection) {
   backgroundConnection.disableDesktopError();
 }
 
 export function downloadDesktopApp() {
-  global.platform.openTab({ url: 'https://metamask.io/' });
+  global.platform.openTab({
+    url: MMD_DOWNLOAD_LINK,
+  });
 }
 
 export function downloadExtension() {
@@ -139,7 +144,7 @@ export function restartExtension() {
 
 export function openOrDownloadMMD() {
   openCustomProtocol('metamask-desktop://pair').catch(() => {
-    window.open('https://metamask.io/download.html', '_blank').focus();
+    window.open(MMD_DOWNLOAD_LINK, '_blank').focus();
   });
 }
 

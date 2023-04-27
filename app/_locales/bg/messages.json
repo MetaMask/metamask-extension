@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Свързване с тестова мрежа на Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
   },
@@ -407,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
+  },
+  "lineatestnet": {
+    "message": "Тестова мрежа на Linea Goerli"
   },
   "links": {
     "message": "Връзки"
@@ -668,12 +674,6 @@
   "settings": {
     "message": "Настройки"
   },
-  "showAdvancedGasInline": {
-    "message": "Разширено управление на газа"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Изберете това, за да покажете цените на газа и ограничите контрола директно на екраните за изпращане и потвърждение."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показване на преобразуването на Testnets"
   },
@@ -736,27 +736,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символът трябва да е 11 символа или по-малко."
-  },
-  "syncWithMobile": {
-    "message": "Синхронизиране с мобилни устройства"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Уверете се, че никой друг не гледа екрана ви, когато сканирате този код"
-  },
-  "syncWithMobileComplete": {
-    "message": "Вашите данни са синхронизирани успешно. Насладете се на мобилното приложение MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Можете да синхронизирате вашите акаунти и информация с мобилното си устройство. Отворете мобилното приложение MetaMask, отидете на „Настройки“ и докоснете „Синхронизиране от разширението на браузъра“"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ако отворите приложението MetaMask Mobile за първи път, просто следвайте стъпките в телефона си."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Сканирайте този код с вашето мобилно приложение MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Синхронизиране с мобилни устройства"
   },
   "terms": {
     "message": "Условия за ползване"

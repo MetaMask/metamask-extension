@@ -32,6 +32,8 @@ Possible sizes include:
 
 Defaults to `md`
 
+The text styles of the `AvatarBase` is based on the `size` prop. To override this use the `Text` component's `variant` prop. `AvatarBase` also accepts all `Text` component props.
+
 <Canvas>
   <Story id="components-componentlibrary-avatarbase--size" />
 </Canvas>
@@ -57,7 +59,7 @@ The `AvatarBase` component can contain images, icons or text
 ```jsx
 import { AvatarBase } from '../../component-library';
 <AvatarBase>
-  <img src="./images/eth_logo.svg" />
+  <img src="./images/eth_logo.png" />
 </AvatarBase>
 <AvatarBase>
   <img width="100%" src="./images/arbitrum.svg" />

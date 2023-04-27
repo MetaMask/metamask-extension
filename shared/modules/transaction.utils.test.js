@@ -135,7 +135,7 @@ describe('Transaction.utils', function () {
       });
     });
 
-    it('should return a token transfer type when the recipient is a contract and data is for the respective method call', async function () {
+    it('should return a token transfer type when the recipient is a contract, there is no value passed, and data is for the respective method call', async function () {
       const _providerResultStub = {
         // 1 gwei
         eth_gasPrice: '0x0de0b6b3a7640000',
@@ -158,6 +158,48 @@ describe('Transaction.utils', function () {
         getCodeResponse: '0xab',
       });
     });
+
+    it(
+      'should NOT return a token transfer type and instead return contract interaction' +
+        ' when the recipient is a contract, the data matches the respective method call, but there is a value passed',
+      async function () {
+        const _providerResultStub = {
+          // 1 gwei
+          eth_gasPrice: '0x0de0b6b3a7640000',
+          // by default, all accounts are external accounts (not contracts)
+          eth_getCode: '0xab',
+        };
+        const _provider = createTestProviderTools({
+          scaffold: _providerResultStub,
+        }).provider;
+
+        const resultWithEmptyValue = await determineTransactionType(
+          {
+            value: '0x0',
+            to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+            data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+          },
+          new EthQuery(_provider),
+        );
+        expect(resultWithEmptyValue).toMatchObject({
+          type: TransactionType.tokenMethodTransfer,
+          getCodeResponse: '0xab',
+        });
+
+        const resultWithValue = await determineTransactionType(
+          {
+            value: '0x12345',
+            to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+            data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+          },
+          new EthQuery(_provider),
+        );
+        expect(resultWithValue).toMatchObject({
+          type: TransactionType.contractInteraction,
+          getCodeResponse: '0xab',
+        });
+      },
+    );
 
     it('should NOT return a token transfer type when the recipient is not a contract but the data matches the respective method call', async function () {
       const _providerResultStub = {

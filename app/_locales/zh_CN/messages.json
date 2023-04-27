@@ -348,6 +348,10 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
+  "appNameMmi": {
+    "message": "MetaMask Institutional",
+    "description": "The name of the application (MMI)"
+  },
   "approve": {
     "message": "批准消费限额"
   },
@@ -363,6 +367,10 @@
   },
   "approveButtonText": {
     "message": "批准"
+  },
+  "approveSpendingCap": {
+    "message": "批准 $1 支出上限",
+    "description": "The token symbol that is being approved"
   },
   "approveTokenDescription": {
     "message": "这允许第三方访问和转移以下 NFT，而无需另行通知，直到您撤销其访问权限。"
@@ -409,7 +417,7 @@
     "message": "自动检测代币"
   },
   "autoDetectTokensDescription": {
-    "message": "我们使用第三方API来检测和显示发送到您钱包的新代币。如果您不希望该应用程序从这些服务中提取数据，请将其关闭。$1",
+    "message": "我们使用第三方 API 来检测和显示发送到您钱包的新代币。如果您不希望该应用程序从这些服务中提取数据，请将其关闭。$1",
     "description": "$1 is a link to a support article"
   },
   "autoLockTimeLimit": {
@@ -585,6 +593,18 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
+  "clear": {
+    "message": "清除"
+  },
+  "clearActivity": {
+    "message": "清除活动和nonce数据"
+  },
+  "clearActivityButton": {
+    "message": "清除活动选项卡数据"
+  },
+  "clearActivityDescription": {
+    "message": "这将会重置账户的nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和传入的交易不会改变。"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "点击这里以通过 WebHID 连接您的 Ledger",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -594,6 +614,9 @@
   },
   "close": {
     "message": "关闭"
+  },
+  "coingecko": {
+    "message": "CoinGecko"
   },
   "confirm": {
     "message": "确认"
@@ -672,10 +695,6 @@
     "message": "$1 还没连接到任何网站。",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1的snap已连接到这些站点。它们有上述的访问权限。",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "连接中……"
   },
@@ -684,6 +703,9 @@
   },
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
+  },
+  "connectingToLineaTestnet": {
+    "message": "正在连接Linea测试网络"
   },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
@@ -750,7 +772,7 @@
     "message": "CoolWallet"
   },
   "copiedExclamation": {
-    "message": "已复制！"
+    "message": "已复制。"
   },
   "copyAddress": {
     "message": "复制地址到剪贴板"
@@ -779,8 +801,18 @@
   "createPassword": {
     "message": "创建密码"
   },
+  "cryptoCompare": {
+    "message": "CryptoCompare"
+  },
   "currencyConversion": {
     "message": "货币转换"
+  },
+  "currencyRateCheckToggle": {
+    "message": "显示余额和代币价格检查器"
+  },
+  "currencyRateCheckToggleDescription": {
+    "message": "我们使用$1和$2的API来显示您的余额和代币价格。$3",
+    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "货币符号"
@@ -924,6 +956,105 @@
   },
   "description": {
     "message": "描述"
+  },
+  "desktopConnectionCriticalErrorDescription": {
+    "message": "此错误可能是间歇性的，因此，请尝试重新启动此扩展程序或禁用MetaMask桌面应用程序。"
+  },
+  "desktopConnectionCriticalErrorTitle": {
+    "message": "MetaMask启动时出现问题"
+  },
+  "desktopConnectionLostErrorDescription": {
+    "message": "请确保您已启动并运行桌面应用程序，或禁用MetaMask桌面应用程序。"
+  },
+  "desktopConnectionLostErrorTitle": {
+    "message": "MetaMask桌面应用程序连接已断开"
+  },
+  "desktopDisableButton": {
+    "message": "禁用桌面应用程序"
+  },
+  "desktopDisableErrorCTA": {
+    "message": "禁用MetaMask桌面应用程序"
+  },
+  "desktopEnableButton": {
+    "message": "启用桌面应用程序"
+  },
+  "desktopEnableButtonDescription": {
+    "message": "点击以运行桌面应用程序中的所有后台进程。"
+  },
+  "desktopErrorNavigateSettingsCTA": {
+    "message": "返回设置页面"
+  },
+  "desktopErrorRestartMMCTA": {
+    "message": "重新启动MetaMask"
+  },
+  "desktopNotFoundErrorCTA": {
+    "message": "下载MetaMask桌面应用程序"
+  },
+  "desktopNotFoundErrorDescription1": {
+    "message": "请确保您已启动并运行桌面应用程序。"
+  },
+  "desktopNotFoundErrorDescription2": {
+    "message": "如果您没有安装桌面应用程序，请到MetaMask网站下载。"
+  },
+  "desktopNotFoundErrorTitle": {
+    "message": "找不到MetaMask桌面应用程序"
+  },
+  "desktopOpenOrDownloadCTA": {
+    "message": "打开MetaMask桌面应用程序"
+  },
+  "desktopOutdatedErrorCTA": {
+    "message": "更新MetaMask桌面应用程序"
+  },
+  "desktopOutdatedErrorDescription": {
+    "message": "您的MetaMask桌面应用程序需要升级。"
+  },
+  "desktopOutdatedErrorTitle": {
+    "message": "MetaMask桌面应用程序已过时"
+  },
+  "desktopOutdatedExtensionErrorCTA": {
+    "message": "更新MetaMask扩展程序"
+  },
+  "desktopOutdatedExtensionErrorDescription": {
+    "message": "您的MetaMask扩展程序需要升级。"
+  },
+  "desktopOutdatedExtensionErrorTitle": {
+    "message": "MetaMask扩展程序已过时"
+  },
+  "desktopPageDescription": {
+    "message": "如果配对成功，扩展程序将重新启动，您必须重新输入密码。"
+  },
+  "desktopPageSubTitle": {
+    "message": "请打开MetaMask桌面应用程序并输入此代码"
+  },
+  "desktopPageTitle": {
+    "message": "与桌面配对"
+  },
+  "desktopPairedWarningDeepLink": {
+    "message": "转到MetaMask桌面应用程序中的设置"
+  },
+  "desktopPairedWarningDescription": {
+    "message": "如果要开始新的配对，请移除当前连接。"
+  },
+  "desktopPairedWarningTitle": {
+    "message": "MM桌面应用程序已配对"
+  },
+  "desktopPairingExpireMessage": {
+    "message": "代码将在$1秒后过期"
+  },
+  "desktopRouteNotFoundErrorDescription": {
+    "message": "desktopRouteNotFoundErrorDescription"
+  },
+  "desktopRouteNotFoundErrorTitle": {
+    "message": "desktopRouteNotFoundErrorTitle"
+  },
+  "desktopUnexpectedErrorCTA": {
+    "message": "返回MetaMask主页"
+  },
+  "desktopUnexpectedErrorDescription": {
+    "message": "请检查MetaMask桌面应用程序以恢复连接"
+  },
+  "desktopUnexpectedErrorTitle": {
+    "message": "出错了......"
   },
   "details": {
     "message": "详细信息"
@@ -1182,9 +1313,6 @@
   "etherscanViewOn": {
     "message": "在 Etherscan 上查看"
   },
-  "expandExperience": {
-    "message": "扩展您的web3体验"
-  },
   "expandView": {
     "message": "展开视图"
   },
@@ -1222,18 +1350,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "查看详细信息",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "添加于",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "自",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -1299,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "燃料费"
   },
   "gasLimit": {
     "message": "燃料上限"
@@ -1457,6 +1570,32 @@
   "history": {
     "message": "历史记录"
   },
+  "holdToReveal": {
+    "message": "按住以显示 SRP"
+  },
+  "holdToRevealContent1": {
+    "message": "您的助记词提供 $1",
+    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
+  },
+  "holdToRevealContent2": {
+    "message": "对您的钱包和资金的完整访问权限。",
+    "description": "Is the bolded text in 'holdToRevealContent1'"
+  },
+  "holdToRevealContent3": {
+    "message": "请勿与任何人分享此信息。$1 $2",
+    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
+  },
+  "holdToRevealContent4": {
+    "message": "MetaMask 支持团队不会要求提供此项信息，",
+    "description": "Part of 'holdToRevealContent3'"
+  },
+  "holdToRevealContent5": {
+    "message": "但网络钓鱼者可能会。",
+    "description": "The text link in 'holdToRevealContent3'"
+  },
+  "holdToRevealTitle": {
+    "message": "确保 SRP 的安全"
+  },
   "ignoreAll": {
     "message": "忽略所有"
   },
@@ -1489,7 +1628,7 @@
     "message": "导入NFT页面"
   },
   "importNFTTokenIdToolTip": {
-    "message": "收藏品的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
+    "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
   "importNFTs": {
     "message": "添加收藏品"
@@ -1648,6 +1787,12 @@
   "lastConnected": {
     "message": "最后连接"
   },
+  "lastPriceSold": {
+    "message": "最后售价"
+  },
+  "lastSold": {
+    "message": "最后售出"
+  },
   "learnCancelSpeeedup": {
     "message": "学习如何 $1",
     "description": "$1 is link to cancel or speed up transactions"
@@ -1722,6 +1867,9 @@
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
   },
+  "lineatestnet": {
+    "message": "Linea测试网络"
+  },
   "link": {
     "message": "链接"
   },
@@ -1776,14 +1924,11 @@
     "message": "创建新的交换"
   },
   "makeSureNoOneWatching": {
-    "message": "请确保没有人在观看您的屏幕",
+    "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "malformedData": {
     "message": "格式错误的数据"
-  },
-  "manageSnaps": {
-    "message": "管理已安装的Snap"
   },
   "max": {
     "message": "最大"
@@ -1825,6 +1970,9 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
+  "metrics": {
+    "message": "指标"
+  },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1854,8 +2002,8 @@
   "missingToken": {
     "message": "没有看到您的代币？"
   },
-  "mobileSyncWarning": {
-    "message": "“与扩展程序同步”功能暂时被禁用。如果您想要在 MetaMask 移动设备上使用您的扩展程序钱包，那么在您的移动应用程序上：返回钱包设置选项并选择“使用账户助记词导入”选项。使用您的扩展程序钱包的助记词来将您的钱包导入移动设备。"
+  "moreComingSoon": {
+    "message": "更多即将到来……"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -1990,7 +2138,7 @@
     "message": "成功添加了 “$1”！"
   },
   "newNftAddedMessage": {
-    "message": "收藏品已成功添加！"
+    "message": "NFT已成功添加！"
   },
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
@@ -2012,15 +2160,18 @@
     "message": "Nonce 高于建议的 nouce 值 $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "非同质化代币(NFT)"
-  },
   "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
   },
   "nftAddressError": {
     "message": "此代币是NFT。另加上$1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
+  },
+  "nftDisclaimer": {
+    "message": "免责声明：MetaMask从源网址中提取媒体文件。这个网址有时会因铸造NFT的市场而改变。"
+  },
+  "nftOptions": {
+    "message": "NFT 期权"
   },
   "nftTokenIdPlaceholder": {
     "message": "输入代币ID"
@@ -2153,15 +2304,6 @@
   },
   "notifications15Title": {
     "message": "以太坊合并来了！"
-  },
-  "notifications17ActionText": {
-    "message": "显示安全和隐私设置"
-  },
-  "notifications17Description": {
-    "message": "本次更新提供更多选项，让您可以更好地管理自己的隐私。我们增加了数据收集方式的透明度，以及更清晰的分享选项。您可以通过安全和隐私设置更改您的首选项，或删除扩展使用数据。"
-  },
-  "notifications17Title": {
-    "message": "安全和隐私设置"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
@@ -2423,11 +2565,20 @@
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
   },
+  "openSea": {
+    "message": "OpenSea（测试版）"
+  },
+  "openSeaNew": {
+    "message": "OpenSea"
+  },
   "optional": {
     "message": "可选"
   },
   "optionalWithParanthesis": {
     "message": "（可选）"
+  },
+  "options": {
+    "message": "期权"
   },
   "or": {
     "message": "或"
@@ -2441,6 +2592,9 @@
   "otherSnaps": {
     "message": "其他 Snap",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "outdatedBrowserNotification": {
+    "message": "您的浏览器已过期。如果不更新浏览器，您将无法获取MetaMask的安全补丁和新功能。"
   },
   "padlock": {
     "message": "挂锁"
@@ -2505,21 +2659,21 @@
   "permissionRevoked": {
     "message": "在此更新中已撤销"
   },
+  "permission_accessNamedSnap": {
+    "message": "连接至$1。",
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
+  },
   "permission_accessNetwork": {
     "message": "访问互联网。",
     "description": "The description of the `endowment:network-access` permission."
   },
   "permission_accessSnap": {
-    "message": "连接$1的Snap。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "message": "连接到$1 Snap。",
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "在MetaMask中显示确认。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
@@ -2549,6 +2703,10 @@
     "message": "控制您的“$1”账户和资产。",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
+  "permission_manageNamedBip32Keys": {
+    "message": "控制您的$1账户和资产。",
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
+  },
   "permission_manageState": {
     "message": "在您的设备上存储和管理其数据。",
     "description": "The description for the `snap_manageState` permission"
@@ -2577,6 +2735,10 @@
     "message": "查看您的$1 ($2)公钥。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
+  "permission_viewNamedBip32PublicKeys": {
+    "message": "查看您的$1公钥。",
+    "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
+  },
   "permissions": {
     "message": "权限"
   },
@@ -2592,6 +2754,9 @@
   },
   "popularCustomNetworks": {
     "message": "流行自定义网络"
+  },
+  "portfolio": {
+    "message": "投资组合"
   },
   "preferredLedgerConnectionType": {
     "message": "首选 Ledger 连接类型",
@@ -2733,6 +2898,9 @@
   "removeNFT": {
     "message": "删除 NFT"
   },
+  "removeNftMessage": {
+    "message": "NFT已成功移除！"
+  },
   "removeSnap": {
     "message": "移除Snap"
   },
@@ -2745,6 +2913,24 @@
   },
   "replace": {
     "message": "替换"
+  },
+  "requestFlaggedAsMaliciousFallbackCopyReason": {
+    "message": "安全提供商没有分享其他详情"
+  },
+  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
+    "message": "请求被标记为恶意"
+  },
+  "requestMayNotBeSafe": {
+    "message": "请求可能不安全"
+  },
+  "requestMayNotBeSafeError": {
+    "message": "安全提供商没有检测到任何已知的恶意活动，但继续仍然可能是不安全的。"
+  },
+  "requestNotVerified": {
+    "message": "请求尚未验证"
+  },
+  "requestNotVerifiedError": {
+    "message": "由于出现错误，安全提供商没有验证此请求。请谨慎操作。"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "待确认的请求"
@@ -2794,9 +2980,36 @@
   "revealSeedWords": {
     "message": "显示助记词"
   },
+  "revealSeedWordsDescription1": {
+    "message": "$1 提供 $2",
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
+  },
+  "revealSeedWordsDescription2": {
+    "message": "MetaMask 是$1。这意味着您是自己的 SRP 的所有者。",
+    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
+  },
+  "revealSeedWordsDescription3": {
+    "message": "对您的钱包和资金的完整访问权限。"
+  },
+  "revealSeedWordsNonCustodialWallet": {
+    "message": "非托管钱包"
+  },
+  "revealSeedWordsQR": {
+    "message": "QR"
+  },
+  "revealSeedWordsSRPName": {
+    "message": "助记词（SRP）"
+  },
+  "revealSeedWordsText": {
+    "message": "文本"
+  },
   "revealSeedWordsWarning": {
-    "message": "这些账户助记词可以用来窃取您的所有账户。",
+    "message": "确保没有人在看您的屏幕。$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "revealSeedWordsWarning2": {
+    "message": "MetaMask 支持团队绝对不会要求提供此项信息。",
+    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealTheSeedPhrase": {
     "message": "显示助记词"
@@ -2805,11 +3018,11 @@
     "message": "检查您的支出上限"
   },
   "revokeAllTokensTitle": {
-    "message": "撤销访问您的所有$1的权限？",
+    "message": "撤销访问和转移您的所有 $1 的权限？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
   "revokeApproveForAllDescription": {
-    "message": "通过撤销权限，以下$1将无法再访问您的$2",
+    "message": "这将撤销第三方访问和转移您的所有 $1 的权限，而无需另行通知。",
     "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
@@ -2939,6 +3152,9 @@
   "selectPathHelp": {
     "message": "如果您没有看到您期望的账户，请尝试切换 HD 路径。"
   },
+  "selectProvider": {
+    "message": "选择提供程序："
+  },
   "selectType": {
     "message": "选择类型"
   },
@@ -2995,18 +3211,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "没有找到匹配的结果."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "显示"
-  },
-  "showAdvancedGasInline": {
-    "message": "高级燃料控制"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
   },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
@@ -3078,14 +3284,6 @@
   "smartTransaction": {
     "message": "智能交易"
   },
-  "snapAccess": {
-    "message": "$1的snap可以访问：",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "从 $2 添加到 $1",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3107,22 +3305,11 @@
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "此Snap正在请求以下权限："
-  },
   "snapUpdate": {
     "message": "更新Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1需要更新版本的snap。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
@@ -3133,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "管理您的Snap"
   },
-  "snapsStatus": {
-    "message": "Snap状态取决于活动。"
-  },
   "snapsToggle": {
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
@@ -3187,6 +3372,9 @@
   },
   "spendLimitTooLarge": {
     "message": "消费限额过大"
+  },
+  "spendingCap": {
+    "message": "支出上限"
   },
   "spendingCapError": {
     "message": "错误：仅输入数字"
@@ -3497,7 +3685,7 @@
     "message": "MetaMask 费用"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "我们每次都能从顶级流动性资源中找到最优惠的价格。$1% 的费用会自动计入此报价。",
+    "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 MetaMask 流动性提供商信息聚合软件的许可证。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -3711,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
   },
-  "syncFailed": {
-    "message": "同步失败"
-  },
-  "syncInProgress": {
-    "message": "同步进行中"
-  },
-  "syncWithMobile": {
-    "message": "与移动设备同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "扫描此代码时，请确保附近没有其他人在看您的屏幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 MetaMask 移动应用程序吧！"
-  },
-  "syncWithMobileDesc": {
-    "message": "您可以将您的账户和信息与您的移动设备同步。打开 MetaMask 移动应用程序，进入“设置”，点击“从浏览器扩展程序同步”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "使用 MetaMask 移动应用程序扫描此代码"
-  },
-  "syncWithMobileTitle": {
-    "message": "与移动设备同步"
-  },
   "tenPercentIncreased": {
     "message": "增加10%"
   },
@@ -3759,6 +3920,9 @@
   "thingsToKeep": {
     "message": "注意事项:"
   },
+  "thisIsBasedOn": {
+    "message": "所根据的信息是来自"
+  },
   "time": {
     "message": "时间"
   },
@@ -3772,6 +3936,12 @@
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleEthSignDescriptionField": {
+    "message": "启用此选项会允许dapps使用eth_sign请求您的签名。eth_sign是一种开放式签名方法，允许您对任意散列进行签名，因而使其成为危险的网络钓鱼风险。只有在您能够阅读所签内容并信任请求的来源时，才能对eth_sign请求进行签名。"
+  },
+  "toggleEthSignField": {
+    "message": "切换eth_sign请求"
+  },
   "toggleTestNetworks": {
     "message": "$1 测试网络",
     "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
@@ -3784,6 +3954,9 @@
   },
   "tokenAlreadyAdded": {
     "message": "代币已添加。"
+  },
+  "tokenAutoDetection": {
+    "message": "代币自动检测"
   },
   "tokenContractAddress": {
     "message": "代币合约地址"
@@ -3922,10 +4095,10 @@
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
   },
   "transactionSecurityCheck": {
-    "message": "交易安全检查"
+    "message": "启用交易安全提供程序"
   },
   "transactionSecurityCheckDescription": {
-    "message": "启用此选项可使第三方 (OpenSea) 检查您的所有交易和签名请求，并警告您已知的恶意请求。"
+    "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
   },
   "transactionSubmitted": {
     "message": "已在 $2 提交交易，燃料费预计为 $1。"
@@ -4026,7 +4199,7 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "当前不支持发送可收藏的 (ERC-721) 代币",
+    "message": "当前不支持发送NFT (ERC-721)代币",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
@@ -4054,19 +4227,22 @@
     "message": "我们会将账户分批并向 Infura 查询，以对应地显示您的余额。如果禁用此选项，将仅查询活动账户。必须连接钱包，否则有一些去中心化应用程序（dapp）将无法工作。"
   },
   "useNftDetection": {
-    "message": "自动检测 NFT"
+    "message": "自动检测NFT"
   },
   "useNftDetectionDescription": {
-    "message": "显示 NFT 媒体和数据可能会将您的 IP 地址暴露给集中式服务器。第三方 API（例如 OpenSea）用于在您的钱包中检测 NFT。这会通过这些服务暴露您的账户地址。如果您不希望该应用程序从这些服务中提取数据，请禁用此功能。"
+    "message": "我们使用第三方API在您的钱包中检测NFT，这意味着您的IP地址可能会暴露给集中式服务器。在启用此功能时，有几件事需要注意。"
   },
   "useNftDetectionDescriptionLine2": {
-    "message": "此外，请注意："
+    "message": "您的账户地址将对第三方API可见。"
   },
   "useNftDetectionDescriptionLine3": {
     "message": "NFT元数据可能包含欺诈或网络钓鱼网站的链接。"
   },
   "useNftDetectionDescriptionLine4": {
     "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
+  },
+  "useNftDetectionDescriptionLine5": {
+    "message": "如果您不希望应用程序从这些服务中提取数据，请关闭此功能。"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"

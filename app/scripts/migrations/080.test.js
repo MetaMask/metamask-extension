@@ -1,108 +1,171 @@
-import { migrate, version } from './080';
+import migration80 from './080';
 
 describe('migration #80', () => {
-  it('updates the version metadata', async () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
-        version: 79,
+        version: 80,
       },
-      data: {},
     };
 
-    const newStorage = await migrate(oldStorage);
-
+    const newStorage = await migration80.migrate(oldStorage);
     expect(newStorage.meta).toStrictEqual({
-      version,
+      version: 80,
     });
   });
 
-  it('does not change the state if the phishing controller state does not exist', async () => {
+  it('should remove the "showPortfolioToolip" property', async () => {
     const oldStorage = {
       meta: {
-        version: 79,
-      },
-      data: { test: '123' },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  const nonObjects = [undefined, null, 'test', 1, ['test']];
-
-  for (const invalidState of nonObjects) {
-    it(`does not change the state if the phishing controller state is ${invalidState}`, async () => {
-      const oldStorage = {
-        meta: {
-          version: 79,
-        },
-        data: { PhishingController: invalidState },
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
-  }
-
-  it('does not change the state if the phishing controller state does not include "phishing" or "lastFetched" properties', async () => {
-    const oldStorage = {
-      meta: {
-        version: 79,
-      },
-      data: { PhishingController: { test: '123' } },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('deletes the "phishing" property', async () => {
-    const oldStorage = {
-      meta: {
-        version: 79,
-      },
-      data: { PhishingController: { test: '123', phishing: [] } },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      PhishingController: { test: '123' },
-    });
-  });
-
-  it('deletes the "lastFetched" property', async () => {
-    const oldStorage = {
-      meta: {
-        version: 79,
-      },
-      data: { PhishingController: { test: '123', lastFetched: 100 } },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      PhishingController: { test: '123' },
-    });
-  });
-
-  it('deletes the "phishing" and "lastFetched" properties', async () => {
-    const oldStorage = {
-      meta: {
-        version: 79,
+        version: 80,
       },
       data: {
-        PhishingController: { test: '123', lastFetched: 100, phishing: [] },
+        metamask: {
+          isInitialized: true,
+          isUnlocked: true,
+          isAccountMenuOpen: false,
+          identities: {
+            '0x00000': {
+              address: '0x00000',
+              lastSelected: 1675966229118,
+              name: 'Account 1',
+            },
+            '0x00001': {
+              address: '0x00001',
+              name: 'Account 2',
+            },
+          },
+          unapprovedTxs: {},
+          frequentRpcList: [],
+          addressBook: {},
+          popupGasPollTokens: [],
+          notificationGasPollTokens: [],
+          fullScreenGasPollTokens: [],
+          recoveryPhraseReminderHasBeenShown: false,
+          recoveryPhraseReminderLastShown: 1675966206345,
+          outdatedBrowserWarningLastShown: 1675966206345,
+          showTestnetMessageInDropdown: true,
+          showPortfolioTooltip: false,
+          showBetaHeader: false,
+          trezorModel: null,
+          qrHardware: {},
+        },
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const newStorage = await migration80.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 80,
+      },
+      data: {
+        metamask: {
+          isInitialized: true,
+          isUnlocked: true,
+          isAccountMenuOpen: false,
+          identities: {
+            '0x00000': {
+              address: '0x00000',
+              lastSelected: 1675966229118,
+              name: 'Account 1',
+            },
+            '0x00001': {
+              address: '0x00001',
+              name: 'Account 2',
+            },
+          },
+          unapprovedTxs: {},
+          frequentRpcList: [],
+          addressBook: {},
+          popupGasPollTokens: [],
+          notificationGasPollTokens: [],
+          fullScreenGasPollTokens: [],
+          recoveryPhraseReminderHasBeenShown: false,
+          recoveryPhraseReminderLastShown: 1675966206345,
+          outdatedBrowserWarningLastShown: 1675966206345,
+          showTestnetMessageInDropdown: true,
+          showBetaHeader: false,
+          trezorModel: null,
+          qrHardware: {},
+        },
+      },
+    });
+  });
 
-    expect(newStorage.data).toStrictEqual({
-      PhishingController: { test: '123' },
+  it('should make no changes if "showPortfolioToolip" never existed', async () => {
+    const oldStorage = {
+      meta: {
+        version: 80,
+      },
+      data: {
+        metamask: {
+          isInitialized: true,
+          isUnlocked: true,
+          isAccountMenuOpen: false,
+          identities: {
+            '0x00000': {
+              address: '0x00000',
+              lastSelected: 1675966229118,
+              name: 'Account 1',
+            },
+            '0x00001': {
+              address: '0x00001',
+              name: 'Account 2',
+            },
+          },
+          unapprovedTxs: {},
+          frequentRpcList: [],
+          addressBook: {},
+          popupGasPollTokens: [],
+          notificationGasPollTokens: [],
+          fullScreenGasPollTokens: [],
+          recoveryPhraseReminderHasBeenShown: false,
+          recoveryPhraseReminderLastShown: 1675966206345,
+          outdatedBrowserWarningLastShown: 1675966206345,
+          showTestnetMessageInDropdown: true,
+          showBetaHeader: false,
+          trezorModel: null,
+          qrHardware: {},
+        },
+      },
+    };
+
+    const newStorage = await migration80.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 80,
+      },
+      data: {
+        metamask: {
+          isInitialized: true,
+          isUnlocked: true,
+          isAccountMenuOpen: false,
+          identities: {
+            '0x00000': {
+              address: '0x00000',
+              lastSelected: 1675966229118,
+              name: 'Account 1',
+            },
+            '0x00001': {
+              address: '0x00001',
+              name: 'Account 2',
+            },
+          },
+          unapprovedTxs: {},
+          frequentRpcList: [],
+          addressBook: {},
+          popupGasPollTokens: [],
+          notificationGasPollTokens: [],
+          fullScreenGasPollTokens: [],
+          recoveryPhraseReminderHasBeenShown: false,
+          recoveryPhraseReminderLastShown: 1675966206345,
+          outdatedBrowserWarningLastShown: 1675966206345,
+          showTestnetMessageInDropdown: true,
+          showBetaHeader: false,
+          trezorModel: null,
+          qrHardware: {},
+        },
+      },
     });
   });
 });

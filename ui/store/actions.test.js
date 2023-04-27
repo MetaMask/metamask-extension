@@ -6,6 +6,8 @@ import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
+import { ORIGIN_METAMASK } from '../../shared/constants/app';
+import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
 
@@ -43,6 +45,10 @@ describe('Actions', () => {
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
     });
+
+    background.signMessage = sinon.stub();
+    background.signPersonalMessage = sinon.stub();
+    background.signTypedMessage = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -350,9 +356,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.importNewAccount('Private Key', [
-          'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
-        ]),
+        actions.importNewAccount(
+          'Private Key',
+          ['c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'],
+          '',
+        ),
       );
       expect(importAccountWithStrategy.callCount).toStrictEqual(1);
     });
@@ -369,9 +377,8 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          payload: 'This may take a while, please be patient.',
+          payload: undefined,
         },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1198,30 +1205,38 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setRpcTarget', () => {
+  describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setRpcTarget', async () => {
+    it('calls setActiveNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) => cb());
+      const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setActiveNetwork: setCurrentNetworkStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setRpcTarget('http://localhost:8545'));
-      expect(background.setCustomRpc.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setActiveNetwork('networkConfigurationId'));
+      expect(
+        setCurrentNetworkStub.calledOnceWith('networkConfigurationId'),
+      ).toBe(true);
     });
 
-    it('displays warning when setRpcTarget throws', async () => {
+    it('displays warning when setActiveNetwork throws', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) =>
-        cb(new Error('error')),
-      );
+      const setCurrentNetworkStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setActiveNetwork: setCurrentNetworkStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         {
@@ -1230,8 +1245,284 @@ describe('Actions', () => {
         },
       ];
 
-      await store.dispatch(actions.setRpcTarget());
+      await store.dispatch(actions.setActiveNetwork());
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#editAndSetNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('removes then re-adds the given network configuration', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration(
+          {
+            ...networkConfiguration,
+            networkConfigurationId: 'networkConfigurationId',
+          },
+          { source: 'https://test-dapp.com' },
+        ),
+      );
+      expect(
+        removeNetworkConfigurationStub.calledOnceWith('networkConfigurationId'),
+      ).toBe(true);
+      expect(
+        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
+          setActive: true,
+          referrer: ORIGIN_METAMASK,
+          source: 'https://test-dapp.com',
+        }),
+      ).toBe(true);
+    });
+
+    it('displays warning when removeNetworkConfiguration throws', async () => {
+      const store = mockStore();
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
+      ];
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration(
+          {
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          },
+          { source: 'https://test-dapp.com' },
+        ),
+      );
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('throws when no options object is passed as a second argument', async () => {
+      const store = mockStore();
+      await expect(() =>
+        store.dispatch(
+          actions.editAndSetNetworkConfiguration({
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          }),
+        ),
+      ).toThrow(
+        "Cannot destructure property 'source' of 'undefined' as it is undefined.",
+      );
+    });
+  });
+
+  describe('#upsertNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls upsertNetworkConfiguration in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.upsertNetworkConfiguration(networkConfiguration, {
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+        }),
+      );
+
+      expect(
+        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
+          referrer: ORIGIN_METAMASK,
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+          setActive: undefined,
+        }),
+      ).toBe(true);
+    });
+
+    it('throws when no options object is passed as a second argument', async () => {
+      const store = mockStore();
+      await expect(() =>
+        store.dispatch(
+          actions.upsertNetworkConfiguration({
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          }),
+        ),
+      ).toThrow(
+        "Cannot destructure property 'setActive' of 'undefined' as it is undefined.",
+      );
+    });
+  });
+
+  describe('#requestUserApproval', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestUserApproval in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const requestUserApprovalStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        requestUserApproval: requestUserApprovalStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.requestUserApproval({
+          origin: ORIGIN_METAMASK,
+          type: 'test',
+          requestData: networkConfiguration,
+        }),
+      );
+
+      expect(
+        requestUserApprovalStub.calledOnceWith({
+          origin: ORIGIN_METAMASK,
+          type: 'test',
+          requestData: networkConfiguration,
+        }),
+      ).toBe(true);
+    });
+  });
+
+  describe('#removeNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeNetworkConfiguration in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.removeNetworkConfiguration('testNetworkConfigurationId'),
+      );
+
+      expect(
+        removeNetworkConfigurationStub.calledOnceWith(
+          'testNetworkConfigurationId',
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('#setSelectedNetworkConfigurationId', () => {
+    it('sets appState.networkConfigurationId to provided value', async () => {
+      const store = mockStore();
+
+      const networkConfigurationId = 'testNetworkConfigurationId';
+
+      store.dispatch(
+        actions.setSelectedNetworkConfigurationId(networkConfigurationId),
+      );
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_SELECTED_NETWORK_CONFIGURATION_ID',
+        payload: networkConfigurationId,
+      });
+    });
+  });
+
+  describe('#setNewNetworkAdded', () => {
+    it('sets appState.setNewNetworkAdded to provided value', async () => {
+      const store = mockStore();
+
+      const newNetworkAddedDetails = {
+        networkConfigurationId: 'testNetworkConfigurationId',
+        nickname: 'test-chain',
+      };
+
+      store.dispatch(actions.setNewNetworkAdded(newNetworkAddedDetails));
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_NEW_NETWORK_ADDED',
+        payload: newNetworkAddedDetails,
+      });
     });
   });
 
@@ -1823,7 +2114,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.cancelMsgs(msgsList));
       const resultantActions = store.getActions();
-      console.log(resultantActions);
+
       const expectedActions = resultantActions.filter(
         (action) => action.type === 'COMPLETED_TX',
       );

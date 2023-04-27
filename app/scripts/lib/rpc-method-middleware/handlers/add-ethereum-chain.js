@@ -5,24 +5,22 @@ import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
 } from '../../../../../shared/constants/app';
-import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
   hookNames: {
-    addCustomRpc: true,
+    upsertNetworkConfiguration: true,
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
-    findCustomRpcBy: true,
-    updateRpcTarget: true,
+    findNetworkConfigurationBy: true,
+    setActiveNetwork: true,
     requestUserApproval: true,
-    sendMetrics: true,
   },
 };
 export default addEthereumChain;
@@ -33,13 +31,12 @@ async function addEthereumChainHandler(
   _next,
   end,
   {
-    addCustomRpc,
+    upsertNetworkConfiguration,
     getCurrentChainId,
     getCurrentRpcUrl,
-    findCustomRpcBy,
-    updateRpcTarget,
+    findNetworkConfigurationBy,
+    setActiveNetwork,
     requestUserApproval,
-    sendMetrics,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -139,7 +136,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  const existingNetwork = findCustomRpcBy({ chainId: _chainId });
+  const existingNetwork = findNetworkConfigurationBy({ chainId: _chainId });
 
   // if the request is to add a network that is already added and configured
   // with the same RPC gateway we shouldn't try to add it again.
@@ -155,21 +152,22 @@ async function addEthereumChainHandler(
     if (currentChainId === _chainId && currentRpcUrl === firstValidRPCUrl) {
       return end();
     }
+
     // If this network is already added with but is not the currently selected network
     // Ask the user to switch the network
     try {
-      await updateRpcTarget(
-        await requestUserApproval({
-          origin,
-          type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
-          requestData: {
-            rpcUrl: existingNetwork.rpcUrl,
-            chainId: existingNetwork.chainId,
-            nickname: existingNetwork.nickname,
-            ticker: existingNetwork.ticker,
-          },
-        }),
-      );
+      await requestUserApproval({
+        origin,
+        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        requestData: {
+          rpcUrl: existingNetwork.rpcUrl,
+          chainId: existingNetwork.chainId,
+          nickname: existingNetwork.nickname,
+          ticker: existingNetwork.ticker,
+        },
+      });
+
+      await setActiveNetwork(existingNetwork.id);
       res.result = null;
     } catch (error) {
       // For the purposes of this method, it does not matter if the user
@@ -180,28 +178,6 @@ async function addEthereumChainHandler(
       }
     }
     return end();
-  }
-
-  let endpointChainId;
-
-  try {
-    endpointChainId = await jsonRpcRequest(firstValidRPCUrl, 'eth_chainId');
-  } catch (err) {
-    return end(
-      ethErrors.rpc.internal({
-        message: `Request for method 'eth_chainId on ${firstValidRPCUrl} failed`,
-        data: { networkErr: err },
-      }),
-    );
-  }
-
-  if (_chainId !== endpointChainId) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Chain ID returned by RPC URL ${firstValidRPCUrl} does not match ${_chainId}`,
-        data: { chainId: endpointChainId },
-      }),
-    );
   }
 
   if (typeof chainName !== 'string' || !chainName) {
@@ -264,34 +240,30 @@ async function addEthereumChainHandler(
       }),
     );
   }
-
+  let networkConfigurationId;
   try {
-    await addCustomRpc(
-      await requestUserApproval({
-        origin,
-        type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
-        requestData: {
-          chainId: _chainId,
-          blockExplorerUrl: firstValidBlockExplorerUrl,
-          chainName: _chainName,
-          rpcUrl: firstValidRPCUrl,
-          ticker,
-        },
-      }),
-    );
-
-    sendMetrics({
-      event: 'Custom Network Added',
-      category: EVENT.CATEGORIES.NETWORK,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        chain_id: _chainId,
-        symbol: ticker,
-        source: EVENT.SOURCE.TRANSACTION.DAPP,
+    await requestUserApproval({
+      origin,
+      type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+      requestData: {
+        chainId: _chainId,
+        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+        chainName: _chainName,
+        rpcUrl: firstValidRPCUrl,
+        ticker,
       },
     });
+
+    networkConfigurationId = await upsertNetworkConfiguration(
+      {
+        chainId: _chainId,
+        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+        nickname: _chainName,
+        rpcUrl: firstValidRPCUrl,
+        ticker,
+      },
+      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
+    );
 
     // Once the network has been added, the requested is considered successful
     res.result = null;
@@ -301,18 +273,18 @@ async function addEthereumChainHandler(
 
   // Ask the user to switch the network
   try {
-    await updateRpcTarget(
-      await requestUserApproval({
-        origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
-        requestData: {
-          rpcUrl: firstValidRPCUrl,
-          chainId: _chainId,
-          nickname: _chainName,
-          ticker,
-        },
-      }),
-    );
+    await requestUserApproval({
+      origin,
+      type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+      requestData: {
+        rpcUrl: firstValidRPCUrl,
+        chainId: _chainId,
+        nickname: _chainName,
+        ticker,
+        networkConfigurationId,
+      },
+    });
+    await setActiveNetwork(networkConfigurationId);
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate

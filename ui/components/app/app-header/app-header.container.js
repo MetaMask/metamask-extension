@@ -2,10 +2,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
   getShowBetaHeader,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -25,11 +25,11 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IN
   } = metamask;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = getUnreadNotificationsCount(state);
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
   const showBetaHeader = getShowBetaHeader(state);
   ///: END:ONLY_INCLUDE_IN
 
@@ -38,14 +38,14 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isUnlocked,
     isAccountMenuOpen,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     unreadNotificationsCount,
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(beta)
-    showBetaHeader,
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+    showBetaHeader,
     ///: END:ONLY_INCLUDE_IN
   };
 };

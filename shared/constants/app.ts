@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { DialogType } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { RestrictedMethods } from './permissions';
@@ -19,18 +19,6 @@ export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
-
-/**
- * The distribution this build is intended for.
- *
- * This should be kept in-sync with the `BuildType` map in `development/build/utils.js`.
- */
-export const BuildType = {
-  beta: 'beta',
-  desktop: 'desktop',
-  flask: 'flask',
-  main: 'main',
-} as const;
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
@@ -53,20 +41,29 @@ export const MESSAGE_TYPE = {
   PERSONAL_SIGN: 'personal_sign',
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
+  TRANSACTION: 'transaction',
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  ENABLE_DESKTOP: `metamask_enableDesktop`,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
+  MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
+  MMI_REFRESH_TOKEN: 'metamaskinstitutional_refresh_token',
+  MMI_SUPPORTED: 'metamaskinstitutional_supported',
+  MMI_PORTFOLIO: 'metamaskinstitutional_portfolio',
+  MMI_OPEN_SWAPS: 'metamaskinstitutional_open_swaps',
+  MMI_CHECK_IF_TOKEN_IS_PRESENT: 'metamaskinstitutional_checkIfTokenIsPresent',
+  MMI_SET_ACCOUNT_AND_NETWORK: 'metamaskinstitutional_setAccountAndNetwork',
+  MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
   ///: END:ONLY_INCLUDE_IN
 } as const;
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export const SNAP_DIALOG_TYPES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
@@ -95,10 +92,15 @@ export const METAMASK_BETA_CHROME_ID = 'pbbkamfgmaedccnfkmjcofcecjhfgldn';
 export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
 export const METAMASK_FLASK_CHROME_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
 
+export const METAMASK_MMI_BETA_CHROME_ID = 'kmbhbcbadohhhgdgihejcicbgcehoaeg';
+export const METAMASK_MMI_PROD_CHROME_ID = 'ikkihjamdhfiojpdbnfllpjigpneipbc';
+
 export const CHROME_BUILD_IDS = [
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
+  METAMASK_MMI_BETA_CHROME_ID,
+  METAMASK_MMI_PROD_CHROME_ID,
 ] as const;
 
 const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';

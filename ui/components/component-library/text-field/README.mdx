@@ -89,15 +89,16 @@ Use the `startAccessory` and `endAccessory` props to add components such as icon
 </Canvas>
 
 ```jsx
-import { COLORS, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
-import { ButtonIcon, Icon, ICON_NAMES, TextField } from '../../component-library';
+import { Color, IconColor, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
+import { TextField, Icon, IconName } from '../../component-library';
 
 <TextField
   placeholder="Search"
   startAccessory={
     <Icon
-      color={COLORS.ICON_ALTERNATIVE}
-      name={ICON_NAMES.SEARCH}
+      color={IconColor.iconAlternative}
+      name={IconName.Search}
     />
   }
 />
@@ -106,9 +107,9 @@ import { ButtonIcon, Icon, ICON_NAMES, TextField } from '../../component-library
   placeholder="Public address (0x), or ENS"
   endAccessory={
     <ButtonIcon
-      iconName={ICON_NAMES.SCAN_BARCODE}
+      iconName={IconName.ScanBarcode}
       ariaLabel="Scan QR code"
-      iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
+      iconProps={{ color: IconColor.primaryDefault }}
     />
   }
 />
@@ -128,8 +129,8 @@ import { ButtonIcon, Icon, ICON_NAMES, TextField } from '../../component-library
   endAccessory={
     isAddressValid && (
       <Icon
-        name={ICON_NAMES.CHECK}
-        color={COLORS.SUCCESS_DEFAULT}
+        name={IconName.Check}
+        color={IconColor.successDefault}
       />
     )
   }
@@ -205,7 +206,7 @@ To function fully the custom component should accept the following props:
 </Canvas>
 
 ```jsx
-import { TextField, Icon, ICON_NAMES } from '../../component-library';
+import { TextField, Icon, IconName } from '../../component-library';
 
 // should map the props to the custom input component
 const CustomInputComponent = () => <div>{/* Custom input component */}</div>;
@@ -215,7 +216,7 @@ const TextFieldCustomInput = (args) => (
     size={SIZES.LG}
     InputComponent={CustomInputComponent}
     startAccessory={
-      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET} />
+      <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
     }
   />
 );

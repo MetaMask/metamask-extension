@@ -6,7 +6,7 @@ import IdleTimer from 'react-idle-timer';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import browserAPI from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IN(desktop)
+///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -18,7 +18,6 @@ import Lock from '../lock';
 import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
-import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
@@ -31,24 +30,32 @@ import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import AppHeader from '../../components/app/app-header';
+import {
+  AppHeader as MultichainAppHeader,
+  AccountListMenu,
+  NetworkListMenu,
+} from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import ComplianceFeaturePage from '../mmi/institutional-features';
-import InstitutionalEntityDonePage from '../mmi/institutional-entity-done-page';
-import InteractiveReplacementTokenNotification from '../../components/app/mmi/interactive-replacement-token-notification';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
-///: END:ONLY_INCLUDE_IN(desktop)
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import ComplianceFeaturePage from '../institutional/compliance-feature-page';
+import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
+import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
+import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
+import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
+import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
+///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -58,7 +65,6 @@ import {
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
   LOCK_ROUTE,
-  MOBILE_SYNC_ROUTE,
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
@@ -73,7 +79,7 @@ import {
   ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   COMPLIANCE_FEATURE_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -81,7 +87,7 @@ import {
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -107,11 +113,6 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import ConfirmAddInstitutionalFeature from '../mmi/confirm-add-institutional-feature';
-import ConfirmAddCustodianToken from '../mmi/confirm-add-custodian-token';
-import InteractiveReplacementTokenPage from '../mmi/interactive-replacement-token-page';
-///: END:ONLY_INCLUDE_IN
 
 export default class Routes extends Component {
   static propTypes = {
@@ -147,6 +148,10 @@ export default class Routes extends Component {
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
+    toggleAccountMenu: PropTypes.func,
+    isNetworkMenuOpen: PropTypes.bool,
+    toggleNetworkMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -182,7 +187,7 @@ export default class Routes extends Component {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === ThemeType.OS) {
+      if (theme === ThemeType.os) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
@@ -243,14 +248,9 @@ export default class Routes extends Component {
           component={RevealSeedConfirmation}
           exact
         />
-        <Authenticated
-          path={MOBILE_SYNC_ROUTE}
-          component={MobileSyncPage}
-          exact
-        />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           ///: END:ONLY_INCLUDE_IN
         }
@@ -274,9 +274,7 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        {process.env.NFTS_V1 ? (
-          <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
-        ) : null}
+        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -292,7 +290,7 @@ export default class Routes extends Component {
           component={ConfirmationPage}
         />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         }
         <Authenticated
           path={CUSTODY_ACCOUNT_DONE_ROUTE}
@@ -381,7 +379,11 @@ export default class Routes extends Component {
   }
 
   onEditTransactionPage() {
-    return this.props.sendStage === SEND_STAGES.EDIT;
+    return (
+      this.props.sendStage === SEND_STAGES.EDIT ||
+      this.props.sendStage === SEND_STAGES.DRAFT ||
+      this.props.sendStage === SEND_STAGES.ADD_RECIPIENT
+    );
   }
 
   onSwapsPage() {
@@ -489,6 +491,10 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
       completedOnboarding,
+      isAccountMenuOpen,
+      toggleAccountMenu,
+      isNetworkMenuOpen,
+      toggleNetworkMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -531,26 +537,35 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && (
-          <AppHeader
-            hideNetworkIndicator={this.onInitializationUnlockPage()}
-            disableNetworkIndicator={this.onSwapsPage()}
-            onClick={this.onAppHeaderClick}
-            disabled={
-              this.onConfirmPage() ||
-              this.onEditTransactionPage() ||
-              (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
-            }
-          />
-        )}
+        {!this.hideAppHeader() &&
+          (process.env.MULTICHAIN ? (
+            <MultichainAppHeader />
+          ) : (
+            <AppHeader
+              hideNetworkIndicator={this.onInitializationUnlockPage()}
+              disableNetworkIndicator={this.onSwapsPage()}
+              onClick={this.onAppHeaderClick}
+              disabled={
+                this.onConfirmPage() ||
+                this.onEditTransactionPage() ||
+                (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
+              }
+            />
+          ))}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isUnlocked ? <InteractiveReplacementTokenNotification /> : null
           ///: END:ONLY_INCLUDE_IN
         }
-        <AccountMenu />
+        {process.env.MULTICHAIN ? null : <AccountMenu />}
+        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+          <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
+        {process.env.MULTICHAIN && isNetworkMenuOpen ? (
+          <NetworkListMenu onClose={() => toggleNetworkMenu()} />
+        ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
@@ -589,6 +604,8 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('connectingToLineaTestnet');
       default:
         return t('connectingTo', [providerId]);
     }

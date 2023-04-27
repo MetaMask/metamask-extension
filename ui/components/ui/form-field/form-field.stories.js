@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Typography from '../typography';
 import Tooltip from '../tooltip';
 
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import FormField from '.';
@@ -70,7 +70,7 @@ export const FormFieldWithTitleDetail = (args) => {
         Click Me
       </button>
     ),
-    checkmark: <Icon name={ICON_NAMES.CHECK} />,
+    checkmark: <Icon name={IconName.Check} />,
   };
 
   return <FormField {...args} titleDetail={detailOptions[args.titleDetail]} />;
@@ -108,7 +108,7 @@ export const CustomComponents = (args) => {
             position="top"
             html={<Typography>Custom tooltip</Typography>}
           >
-            <Icon name={ICON_NAMES.QUESTION} marginLeft={2} />
+            <Icon name={IconName.Question} marginLeft={2} />
           </Tooltip>
         }
         titleDetail={<Typography>TitleDetail</Typography>}

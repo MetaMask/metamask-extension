@@ -1,0 +1,18 @@
+.custody-confirm-link {
+  &__description {
+    border-bottom: 1px solid var(--brand-colors-grey-grey200);
+  }
+
+  &__img {
+    margin: 0 20px;
+    display: block;
+    padding: 20px 0;
+    width: 45px;
+    text-align: center;
+  }
+
+  &__btn {
+    width: 300px !important;
+    margin: 20px auto;
+  }
+}

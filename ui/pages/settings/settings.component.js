@@ -12,7 +12,7 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAPS_VIEW_ROUTE,
   SNAPS_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -27,13 +27,8 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
-import {
-  Icon,
-  ButtonIcon,
-  ICON_SIZES,
-  ICON_NAMES,
-} from '../../components/component-library';
-import { Color } from '../../helpers/constants/design-system';
+import { ButtonIcon, Icon, IconName } from '../../components/component-library';
+import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -42,9 +37,9 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapListTab from './flask/snaps-list-tab';
-import ViewSnap from './flask/view-snap';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapListTab from './snaps/snaps-list-tab';
+import ViewSnap from './snaps/view-snap';
 ///: END:ONLY_INCLUDE_IN
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
@@ -77,17 +72,6 @@ class SettingsPage extends PureComponent {
     searchResults: [],
     searchText: '',
   };
-
-  shouldRenderExperimentalTab() {
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    const desktopAvailable = true;
-    if (desktopAvailable) {
-      return true;
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    return process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
-  }
 
   componentDidMount() {
     this.handleConversionDate();
@@ -137,10 +121,11 @@ class SettingsPage extends PureComponent {
             {currentPath !== SETTINGS_ROUTE && (
               <ButtonIcon
                 ariaLabel={t('back')}
-                name={ICON_NAMES.ARROW_LEFT}
-                size={ICON_SIZES.XL}
+                iconName={IconName.ArrowLeft}
+                className="settings-page__back-button"
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
+                display={[DISPLAY.FLEX, DISPLAY.NONE]}
               />
             )}
 
@@ -274,7 +259,7 @@ class SettingsPage extends PureComponent {
     const tabs = [
       {
         content: t('general'),
-        icon: <Icon name={ICON_NAMES.SETTING} />,
+        icon: <Icon name={IconName.Setting} />,
         key: GENERAL_ROUTE,
       },
       {
@@ -284,14 +269,14 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('contacts'),
-        icon: <Icon name={ICON_NAMES.BOOK} />,
+        icon: <Icon name={IconName.Book} />,
         key: CONTACT_LIST_ROUTE,
       },
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       {
         content: t('snaps'),
         icon: (
-          <i className="fa fa-flask" title={t('snapsSettingsDescription')} />
+          <Icon name={IconName.Snaps} title={t('snapsSettingsDescription')} />
         ),
         key: SNAPS_LIST_ROUTE,
       },
@@ -303,7 +288,7 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('alerts'),
-        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
+        icon: <Icon name={IconName.Notification} />,
         key: ALERTS_ROUTE,
       },
       {
@@ -311,21 +296,17 @@ class SettingsPage extends PureComponent {
         icon: <i className="fa fa-plug" />,
         key: NETWORKS_ROUTE,
       },
-    ];
-
-    if (this.shouldRenderExperimentalTab()) {
-      tabs.push({
+      {
         content: t('experimental'),
         icon: <i className="fa fa-flask" />,
         key: EXPERIMENTAL_ROUTE,
-      });
-    }
-
-    tabs.push({
-      content: t('about'),
-      icon: <i className="fa fa-info-circle" />,
-      key: ABOUT_US_ROUTE,
-    });
+      },
+      {
+        content: t('about'),
+        icon: <i className="fa fa-info-circle" />,
+        key: ABOUT_US_ROUTE,
+      },
+    ];
 
     return (
       <TabBar
@@ -373,9 +354,7 @@ class SettingsPage extends PureComponent {
           render={() => <AddNetwork />}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        {this.shouldRenderExperimentalTab() ? (
-          <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
-        ) : null}
+        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
@@ -389,12 +368,12 @@ class SettingsPage extends PureComponent {
           component={ContactListTab}
         />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
           ///: END:ONLY_INCLUDE_IN
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />
           ///: END:ONLY_INCLUDE_IN
         }

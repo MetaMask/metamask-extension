@@ -40,7 +40,7 @@ describe('Test Snap Notification', function () {
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
+        const windowHandles = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
@@ -50,38 +50,39 @@ describe('Test Snap Notification', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
-        await driver.delay(2000);
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
-        // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.waitForSelector({ text: 'Approve & install' });
+
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectNotification',
+          text: 'Reconnect to Notification Snap',
+        });
+
         await driver.clickElement('#sendInAppNotification');
 
         // switch back to the extension page
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1500);
+        await driver.delay(1000);
 
         // check to see that there is one notification
         const notificationResult = await driver.findElement(
@@ -91,14 +92,14 @@ describe('Test Snap Notification', function () {
 
         // try to click on the account menu icon (via xpath)
         await driver.clickElement('.account-menu__icon');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
           text: 'Notifications',
           tag: 'div',
         });
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // look for the correct text in notifications (via xpath)
         const notificationResultMessage = await driver.findElement(
