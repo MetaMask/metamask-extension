@@ -12,6 +12,7 @@ import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
+import { getPortfolioUrl } from '../../../../helpers/utils/portfolio';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -54,6 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     txData: PropTypes.object,
+    metaMetricsId: PropTypes.string,
   };
 
   renderContent() {
@@ -159,6 +161,7 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
       txData,
+      metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
@@ -222,9 +225,12 @@ export default class ConfirmPageContainerContent extends Component {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          const portfolioUrl = process.env.PORTFOLIO_URL;
                           global.platform.openTab({
-                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                            url: getPortfolioUrl(
+                              'buy',
+                              'ext_buy_button',
+                              metaMetricsId,
+                            ),
                           });
                         }}
                         key={`${nativeCurrency}-buy-button`}
