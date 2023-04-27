@@ -23,6 +23,23 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
 });
 
+const mockTransaction = {
+  1: {
+    id: 1,
+    metamaskNetworkId: '5',
+    txParams: {
+      from: '0x0',
+      to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
+      value: '0x5af3107a4000',
+      gas: '0x5208',
+      maxFeePerGas: '0x59682f16',
+      maxPriorityFeePerGas: '0x59682f00',
+      type: '0x2',
+      data: 'data',
+    },
+  },
+};
+
 const baseStore = {
   send: {
     ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -35,22 +52,7 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: '/' },
   metamask: {
-    unapprovedTxs: {
-      1: {
-        id: 1,
-        metamaskNetworkId: '5',
-        txParams: {
-          from: '0x0',
-          to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
-          value: '0x5af3107a4000',
-          gas: '0x5208',
-          maxFeePerGas: '0x59682f16',
-          maxPriorityFeePerGas: '0x59682f00',
-          type: '0x2',
-          data: 'data',
-        },
-      },
-    },
+    unapprovedTxs: ,
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
