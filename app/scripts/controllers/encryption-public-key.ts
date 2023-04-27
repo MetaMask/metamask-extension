@@ -275,7 +275,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
    * @param msgId - The id of the message to cancel.
    */
   cancelEncryptionPublicKey(msgId: string) {
-    this._cancelAbstractMessage(this._encryptionPublicKeyManager, msgId);
+    return this._cancelAbstractMessage(this._encryptionPublicKeyManager, msgId);
   }
 
   /**

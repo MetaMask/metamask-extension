@@ -48,10 +48,12 @@ export default function NewAccountImportForm() {
           navigateToMostRecentOverviewPage();
         } else {
           dispatch(actions.displayWarning(t('importAccountError')));
-          trackImportEvent(strategy, false);
         }
       })
-      .catch((error) => translateWarning(error.message));
+      .catch((error) => {
+        trackImportEvent(strategy, error.message);
+        translateWarning(error.message);
+      });
   }
 
   function trackImportEvent(strategy, wasSuccessful) {
