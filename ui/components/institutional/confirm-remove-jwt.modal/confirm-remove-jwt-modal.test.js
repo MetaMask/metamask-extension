@@ -1,15 +1,23 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
+import { fireEvent, waitFor } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import ConfirmRemoveJwt from '.';
 
+const mockedRemoveAccount = jest.fn();
+const mockedHideModal = jest.fn();
+
+jest.mock('../../../store/actions', () => ({
+  removeAccount: () => mockedRemoveAccount,
+  hideModal: () => mockedHideModal,
+}));
+
 const address = '0xaD6D458402F60fD3Bd25163575031ACDce07538D';
 
 const props = {
-  hideModal: jest.fn(),
-  removeAccount: jest.fn(),
+  hideModal: mockedHideModal,
   token: { address },
   custodyAccountDetails: [
     {
@@ -27,7 +35,8 @@ const mockStore = {
   metamask: {},
 };
 
-const store = configureStore()(mockStore);
+const middleware = [thunk];
+const store = configureMockStore(middleware)(mockStore);
 
 const render = () => {
   return renderWithProvider(<ConfirmRemoveJwt {...props} />, store);
@@ -48,5 +57,15 @@ describe('Confirm Remove JWT', function () {
 
     const fullTokenAddress = getByText(address);
     expect(fullTokenAddress).toBeInTheDocument();
+  });
+
+  it('dispatches removeAccount action when user clicks remove button', async () => {
+    const { getByText } = render();
+
+    const removeButton = getByText('Remove');
+    fireEvent.click(removeButton);
+
+    await waitFor(() => expect(mockedRemoveAccount).toHaveBeenCalled());
+    expect(mockedHideModal).toHaveBeenCalled();
   });
 });

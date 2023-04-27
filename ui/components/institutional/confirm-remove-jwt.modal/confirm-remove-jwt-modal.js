@@ -28,39 +28,36 @@ const ConfirmRemoveJWT = ({
   const [tokenAccounts, setTokenAccounts] = useState([]);
 
   useEffect(() => {
-    const tokens = custodyAccountDetails
-      .filter((item) =>
-        accounts.find(
-          (acc) => acc.address.toLowerCase() === item.address.toLowerCase(),
-        ),
-      )
-      .map((item) => ({
-        address: item.address,
-        name: item.name,
-        labels: item.labels,
-        balance: accounts.find(
-          (acc) => acc.address.toLowerCase() === item.address.toLowerCase(),
-        )?.balance,
-        token:
-          item.authDetails?.token ??
-          item.authDetails?.jwt ??
-          item.authDetails?.refreshToken,
-      }))
-      .filter((acc) => acc.token.toLowerCase() === token.address.toLowerCase());
+    const filteredAccounts = custodyAccountDetails.filter((item) => {
+      const addressLower = item.address.toLowerCase();
+      return accounts.find((acc) => acc.address.toLowerCase() === addressLower);
+    });
+
+    const tokens = filteredAccounts
+      .map(({ address, name, labels, authDetails }) => {
+        const addressLower = address.toLowerCase();
+        const account = accounts.find(
+          ({ address: adressAcc }) => adressAcc.toLowerCase() === addressLower,
+        );
+        const balance = account && account.balance;
+        const getToken =
+          authDetails?.token ?? authDetails?.jwt ?? authDetails?.refreshToken;
+        return { address, name, labels, balance, token: getToken };
+      })
+      .filter(
+        ({ token: tokenAcc }) =>
+          tokenAcc.toLowerCase() === token.address.toLowerCase(),
+      );
 
     setTokenAccounts(tokens);
   }, [accounts, custodyAccountDetails, token]);
-
-  const handleCancel = () => {
-    hideModal();
-  };
 
   const handleRemove = async () => {
     try {
       for (const account of tokenAccounts) {
         await dispatch(removeAccount(account.address.toLowerCase()));
       }
-      handleCancel();
+      hideModal();
     } catch (error) {
       console.error(error);
     }
@@ -73,9 +70,9 @@ const ConfirmRemoveJWT = ({
   return (
     <Modal
       headerText={`${t('removeJWT')}?`}
-      onClose={handleCancel}
+      onClose={hideModal}
       onSubmit={handleRemove}
-      onCancel={handleCancel}
+      onCancel={hideModal}
       submitText={t('remove')}
       cancelText={t('nevermind')}
       submitType="primary"
