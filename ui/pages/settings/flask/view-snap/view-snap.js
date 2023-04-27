@@ -10,11 +10,8 @@ import Button from '../../../../components/ui/button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   TextVariant,
-  TextAlign,
-  FRACTIONS,
   Size,
   TextColor,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import Box from '../../../../components/ui/box';
@@ -44,7 +41,6 @@ import {
 } from '../../../../helpers/utils/util';
 import { ButtonLink, Text } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/flask/snap-permissions-list';
-import { Text } from '../../../../components/component-library';
 
 function ViewSnap() {
   const t = useI18nContext();
