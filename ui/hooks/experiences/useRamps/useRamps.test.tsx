@@ -247,4 +247,25 @@ describe('useRamps', () => {
       url: url.toString(),
     });
   });
+
+  it('should open the buy crypto URL with params for a supported network', async () => {
+    const url = new URL(`${portfolioUrl}${buyPath}`);
+    url.searchParams.set(entryParam, entryParamValue);
+    url.searchParams.set('customParam', 'customValue');
+
+    const openTabSpy = jest.spyOn(global.platform, 'openTab');
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useRamps(),
+      storeWithChainId(CHAIN_IDS.MAINNET),
+    );
+
+    await waitForNextUpdate();
+
+    result.current.openBuyCryptoInPdapp({ customParam: 'customValue' });
+
+    expect(openTabSpy).toHaveBeenCalledWith({
+      url: url.toString(),
+    });
+  });
 });

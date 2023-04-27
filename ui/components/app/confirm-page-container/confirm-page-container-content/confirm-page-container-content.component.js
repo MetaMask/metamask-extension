@@ -55,7 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     isBuyableChain: PropTypes.bool,
     openBuyCryptoInPdapp: PropTypes.func,
     txData: PropTypes.object,
-    // metaMetricsId: PropTypes.string,
+    metaMetricsId: PropTypes.string,
   };
 
   renderContent() {
@@ -162,7 +162,7 @@ export default class ConfirmPageContainerContent extends Component {
       isBuyableChain,
       openBuyCryptoInPdapp,
       txData,
-      // metaMetricsId,
+      metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
@@ -225,7 +225,11 @@ export default class ConfirmPageContainerContent extends Component {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={openBuyCryptoInPdapp}
+                        onClick={() =>
+                          openBuyCryptoInPdapp({
+                            metaMetricsId,
+                          })
+                        }
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}

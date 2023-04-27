@@ -42,7 +42,6 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
-import useRamps from '../../../hooks/experiences/useRamps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -96,6 +95,8 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    isBuyableChain,
+    openBuyCryptoInPdapp,
   } = props;
 
   const t = useI18nContext();
@@ -116,12 +117,6 @@ const ConfirmPageContainer = (props) => {
   );
 
   const metaMetricsId = useSelector(getMetaMetricsId);
-
-  // TODO: Move useRamps hook to the confirm-transaction-base parent component.
-  // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
-  // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
-  // component once it is converted to a functional component
-  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
 
   const isSetApproveForAll =
     currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
@@ -393,6 +388,9 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  // Buy Crypto
+  isBuyableChain: PropTypes.bool,
+  openBuyCryptoInPdapp: PropTypes.func,
 };
 
 export default ConfirmPageContainer;

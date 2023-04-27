@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withUseRamps } from '../../../hooks/experiences/useRamps';
 import {
   getAddressBookEntry,
   getNetworkIdentifier,
@@ -31,4 +33,7 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(ConfirmPageContainer);
+export default compose(
+  withUseRamps,
+  connect(mapStateToProps),
+)(ConfirmPageContainer);

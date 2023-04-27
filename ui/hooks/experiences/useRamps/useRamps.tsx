@@ -13,20 +13,28 @@ import {
   portfolioUrl,
 } from './useRamps.constants';
 
+interface BuyURLParams {
+  [key: string]: any;
+}
 interface IUseRamps {
-  openBuyCryptoInPdapp: VoidFunction;
+  openBuyCryptoInPdapp: (params?: BuyURLParams) => void;
   getBuyURI: (chainId: ChainId) => string;
   isBuyableChain: boolean;
   isNativeTokenBuyableChain: boolean;
 }
 
-const getBuyURI = (chainId: ChainId) => {
+const getBuyURI = (chainId: ChainId, params?: BuyURLParams) => {
   switch (chainId) {
     case CHAIN_IDS.SEPOLIA:
       return 'https://faucet.sepolia.dev/';
     default: {
       const url = new URL(`${portfolioUrl}${buyPath}`);
       url.searchParams.set(entryParam, entryParamValue);
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          url.searchParams.set(key, value);
+        });
+      }
       return url.toString();
     }
   }
@@ -52,12 +60,15 @@ const useRamps = (): IUseRamps => {
     })();
   }, [chainId]);
 
-  const openBuyCryptoInPdapp = useCallback(() => {
-    const buyUrl = getBuyURI(chainId);
-    global.platform.openTab({
-      url: buyUrl,
-    });
-  }, [chainId]);
+  const openBuyCryptoInPdapp = useCallback(
+    (params) => {
+      const buyUrl = getBuyURI(chainId, params);
+      global.platform.openTab({
+        url: buyUrl,
+      });
+    },
+    [chainId],
+  );
 
   const network = networks?.find(
     (n) => `0x${n.chainId.toString(16)}` === chainId,
