@@ -133,13 +133,12 @@ describe('TransactionStatusLabel Component', () => {
 
     store = createMockStore(customMockStore);
 
-    const { getByText, container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
       store,
     );
 
     expect(getByText(mockShortText)).toBeVisible();
-    expect(container).toMatchSnapshot();
   });
   it('should display the error message when there is an error', () => {
     const mockShortText = 'Short Text Test';
@@ -177,12 +176,12 @@ describe('TransactionStatusLabel Component', () => {
 
     store = createMockStore(customMockStore);
 
-    const { container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
       store,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByText('Error')).toBeVisible();
   });
 
   it('should display correctly the error message when there is an error and custodyStatus is aborted', () => {
@@ -222,11 +221,11 @@ describe('TransactionStatusLabel Component', () => {
 
     store = createMockStore(customMockStore);
 
-    const { container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TransactionStatusLabel {...props} />,
       store,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
   });
 });
