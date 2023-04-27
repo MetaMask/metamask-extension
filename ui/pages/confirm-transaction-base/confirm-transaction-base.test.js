@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { cloneDeep } from 'lodash';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
@@ -24,19 +25,42 @@ setBackgroundConnection({
 });
 
 const mockTransaction = {
-  1: {
-    id: 1,
-    metamaskNetworkId: '5',
-    txParams: {
-      from: '0x0',
-      to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
-      value: '0x5af3107a4000',
-      gas: '0x5208',
-      maxFeePerGas: '0x59682f16',
-      maxPriorityFeePerGas: '0x59682f00',
-      type: '0x2',
-      data: 'data',
-    },
+  id: 1,
+  metamaskNetworkId: '5',
+  txParams: {
+    from: '0x0',
+    to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
+    value: '0x5af3107a4000',
+    gas: '0x5208',
+    maxFeePerGas: '0x59682f16',
+    maxPriorityFeePerGas: '0x59682f00',
+    type: '0x2',
+    data: 'data',
+  },
+};
+
+const mockConfirmTxData = {
+  ...cloneDeep(mockTransaction),
+  id: 1,
+  time: 1675012496170,
+  status: TransactionStatus.unapproved,
+  metamaskNetworkId: '5',
+  originalGasEstimate: '0x5208',
+  userEditedGasLimit: false,
+  chainId: '0x5',
+  loadingDefaults: false,
+  dappSuggestedGasFees: null,
+  sendFlowHistory: [],
+  origin: 'metamask',
+  actionId: 1675012496153.2039,
+  type: 'simpleSend',
+  history: [],
+  userFeeLevel: 'medium',
+  defaultGasEstimates: {
+    estimateType: 'medium',
+    gas: '0x5208',
+    maxFeePerGas: '0x59682f16',
+    maxPriorityFeePerGas: '0x59682f00',
   },
 };
 
@@ -52,7 +76,9 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: '/' },
   metamask: {
-    unapprovedTxs: ,
+    unapprovedTxs: {
+      1: mockTransaction,
+    },
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -98,38 +124,7 @@ const baseStore = {
     snaps: {},
   },
   confirmTransaction: {
-    txData: {
-      id: 1,
-      time: 1675012496170,
-      status: TransactionStatus.unapproved,
-      metamaskNetworkId: '5',
-      originalGasEstimate: '0x5208',
-      userEditedGasLimit: false,
-      chainId: '0x5',
-      loadingDefaults: false,
-      dappSuggestedGasFees: null,
-      sendFlowHistory: [],
-      txParams: {
-        from: '0x0',
-        to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
-        value: '0x5af3107a4000',
-        gas: '0x5208',
-        maxFeePerGas: '0x59682f16',
-        maxPriorityFeePerGas: '0x59682f00',
-        type: '0x2',
-      },
-      origin: 'metamask',
-      actionId: 1675012496153.2039,
-      type: 'simpleSend',
-      history: [],
-      userFeeLevel: 'medium',
-      defaultGasEstimates: {
-        estimateType: 'medium',
-        gas: '0x5208',
-        maxFeePerGas: '0x59682f16',
-        maxPriorityFeePerGas: '0x59682f00',
-      },
-    },
+    txData: cloneDeep(mockConfirmTxData),
     tokenData: {},
     tokenProps: {},
     fiatTransactionAmount: '0.16',
@@ -148,9 +143,11 @@ const baseStore = {
   },
 };
 
+const mockedStore = jest.mocked(baseStore);
+
 describe('Confirm Transaction Base', () => {
   it('should match snapshot', () => {
-    const store = configureMockStore(middleware)(baseStore);
+    const store = configureMockStore(middleware)(mockedStore);
     const { container } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
@@ -159,9 +156,9 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
-    baseStore.metamask.provider.chainId = CHAIN_IDS.OPTIMISM;
-    baseStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
-    const store = configureMockStore(middleware)(baseStore);
+    mockedStore.metamask.provider.chainId = CHAIN_IDS.OPTIMISM;
+    mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+    const store = configureMockStore(middleware)(mockedStore);
     const { getByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
