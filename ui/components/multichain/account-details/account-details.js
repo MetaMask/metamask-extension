@@ -15,8 +15,10 @@ import {
   AvatarAccountVariant,
   BUTTON_SECONDARY_SIZES,
   BannerAlert,
+  ButtonIcon,
   ButtonPrimary,
   ButtonSecondary,
+  IconName,
   PopoverHeader,
   Text,
   TextField,
@@ -41,12 +43,16 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
   SEVERITIES,
+  FontWeight,
+  BorderRadius,
+  BorderColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import { AddressCopyButton } from '../address-copy-button';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
@@ -69,6 +75,7 @@ export const AccountDetails = ({ address }) => {
   const privateKey = useSelector(
     (state) => state.appState.accountDetail.privateKey,
   );
+  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
 
   const onClose = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
@@ -82,6 +89,18 @@ export const AccountDetails = ({ address }) => {
     });
   }, [dispatch, password, address]);
 
+  const avatar = (
+    <AvatarAccount
+      variant={
+        useBlockie
+          ? AvatarAccountVariant.Blockies
+          : AvatarAccountVariant.Jazzicon
+      }
+      address={address}
+      size={AvatarAccountSize.Lg}
+    />
+  );
+
   return (
     <Popover
       headerProps={{
@@ -93,22 +112,28 @@ export const AccountDetails = ({ address }) => {
         paddingBottom: 4,
       }}
       title={
-        <PopoverHeader
-          childrenWrapperProps={{
-            display: DISPLAY.FLEX,
-            justifyContent: JustifyContent.center,
-          }}
-        >
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
+        attemptingExport ? (
+          <PopoverHeader
+            startAccessory={
+              <ButtonIcon
+                onClick={() => setAttemptingExport(false)}
+                iconName={IconName.ArrowLeft}
+                size={Size.SM}
+              />
             }
-            address={address}
-            size={AvatarAccountSize.Lg}
-          />
-        </PopoverHeader>
+          >
+            {t('showPrivateKey')}
+          </PopoverHeader>
+        ) : (
+          <PopoverHeader
+            childrenWrapperProps={{
+              display: DISPLAY.FLEX,
+              justifyContent: JustifyContent.center,
+            }}
+          >
+            {avatar}
+          </PopoverHeader>
+        )
       }
       onClose={onClose}
     >
@@ -139,10 +164,6 @@ export const AccountDetails = ({ address }) => {
                       location: 'Account Details Modal',
                     },
                   });
-                  /*
-                  dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' }));
-                  onClose();
-                  */
                   setAttemptingExport(true);
                 }}
               >
@@ -154,21 +175,61 @@ export const AccountDetails = ({ address }) => {
       </Box>
       {attemptingExport ? (
         <>
-          <Text variant={TextVariant.headingMd}>{name}</Text>
-          <AddressCopyButton address={address} shorten />
-          <Text variant={TextVariant.headingMd}>{t('showPrivateKey')}</Text>
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+          >
+            {avatar}
+            <Text
+              marginTop={2}
+              marginBottom={2}
+              variant={TextVariant.headingSm}
+              fontWeight={FontWeight.Normal}
+            >
+              {name}
+            </Text>
+            <AddressCopyButton address={address} shorten />
+          </Box>
           {privateKey ? (
             <>
-              <Text>{t('copyPrivateKey')}</Text>
-              <AddressCopyButton address={privateKey} wrap />
-              <BannerAlert severity={SEVERITIES.DANGER}>
-                {t('privateKeyWarning')}
+              <Text marginTop={6}>{t('privateKeyCopyWarning', [name])}</Text>
+              <Box
+                display={DISPLAY.FLEX}
+                flexDirection={FLEX_DIRECTION.ROW}
+                borderRadius={BorderRadius.SM}
+                borderWidth={1}
+                borderColor={BorderColor.default}
+                padding={4}
+                gap={4}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  style={{ wordBreak: 'break-word' }}
+                >
+                  {privateKey}
+                </Text>
+                <ButtonIcon
+                  onClick={() => handlePrivateKeyCopy(privateKey)}
+                  iconName={
+                    privateKeyCopied ? IconName.CopySuccess : IconName.Copy
+                  }
+                />
+              </Box>
+              <BannerAlert severity={SEVERITIES.DANGER} marginTop={4}>
+                <Text variant={TextVariant.bodySm}>
+                  {t('privateKeyWarning')}
+                </Text>
               </BannerAlert>
-              <ButtonPrimary onClick={onClose}>{t('done')}</ButtonPrimary>
+              <ButtonPrimary marginTop={6} onClick={onClose}>
+                {t('done')}
+              </ButtonPrimary>
             </>
           ) : (
             <>
-              <Text>{t('typePassword')}</Text>
+              <Text marginTop={6} variant={TextVariant.bodySm}>
+                {t('enterPassword')}
+              </Text>
               <TextField
                 type="password"
                 onInput={(e) => setPassword(e.target.value)}
@@ -181,15 +242,31 @@ export const AccountDetails = ({ address }) => {
                 autoFocus
               />
               {warning ? (
-                <Text color={TextColor.errorDefault} size={Size.SM}>
+                <Text
+                  marginTop={1}
+                  color={TextColor.errorDefault}
+                  variant={TextVariant.bodySm}
+                >
                   {warning}
                 </Text>
               ) : null}
-              <BannerAlert severity={SEVERITIES.DANGER}>
-                {t('privateKeyWarning')}
+              <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
+                <Text variant={TextVariant.bodySm}>
+                  {t('privateKeyWarning')}
+                </Text>
               </BannerAlert>
-              <ButtonSecondary onClick={onClose}>{t('cancel')}</ButtonSecondary>
-              <ButtonPrimary onClick={onSubmit}>{t('submit')}</ButtonPrimary>
+              <Box display={DISPLAY.FLEX} marginTop={6} gap={2}>
+                <ButtonSecondary onClick={onClose} block>
+                  {t('cancel')}
+                </ButtonSecondary>
+                <ButtonPrimary
+                  onClick={onSubmit}
+                  disabled={password === ''}
+                  block
+                >
+                  {t('submit')}
+                </ButtonPrimary>
+              </Box>
             </>
           )}
         </>
