@@ -95,9 +95,6 @@
   "address": {
     "message": "位址"
   },
-  "addressBookIcon": {
-    "message": "位址簿圖示"
-  },
   "advanced": {
     "message": "進階"
   },
@@ -106,12 +103,6 @@
   },
   "advancedGasPriceTitle": {
     "message": "Gas 價格"
-  },
-  "advancedOptions": {
-    "message": "進階選項"
-  },
-  "affirmAgree": {
-    "message": "我同意"
   },
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
@@ -168,9 +159,6 @@
   },
   "approved": {
     "message": "已許可"
-  },
-  "approvedAmountWithColon": {
-    "message": "批准的數量："
   },
   "asset": {
     "message": "資產"
@@ -263,9 +251,6 @@
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
   },
-  "cancellationGasFee": {
-    "message": "取消交易的手續費"
-  },
   "cancelled": {
     "message": "已取消"
   },
@@ -278,9 +263,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包。"
   },
-  "clickToRevealSeed": {
-    "message": "點選顯示助憶詞"
-  },
   "close": {
     "message": "關閉"
   },
@@ -292,9 +274,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "確認助憶詞"
-  },
-  "confirmSecretBackupPhrase": {
-    "message": "確認您已經備份的助憶詞"
   },
   "confirmed": {
     "message": "已確認"
@@ -540,9 +519,6 @@
   "downloadGoogleChrome": {
     "message": "下載 Google Chrome 瀏覽器"
   },
-  "downloadSecretBackup": {
-    "message": "下載助憶詞文字檔案，並安全地保存在有加密功能的外接硬碟或其他儲存裝置。"
-  },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
   },
@@ -716,9 +692,6 @@
     "message": "此 gas 手續費為 $1 所建議。修改他可能導致您的交易發生潛在問題。若您有任何疑問，請聯繫 $1 。",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasEstimatesUnavailableWarning": {
-    "message": "我們暫時不提供低、中等、與高的交易收續費預估。"
-  },
   "gasLimit": {
     "message": "Gas 上限"
   },
@@ -793,9 +766,6 @@
   },
   "goerli": {
     "message": "Goerli 測試網路"
-  },
-  "happyToSeeYou": {
-    "message": "我們很高興看到你。"
   },
   "hardware": {
     "message": "硬體"
@@ -1096,9 +1066,6 @@
   "noAddressForName": {
     "message": "此 ENS 尚未指定位址。"
   },
-  "noAlreadyHaveSeed": {
-    "message": "不，我已經有助憶詞"
-  },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
   },
@@ -1288,9 +1255,6 @@
   "remember": {
     "message": "記住："
   },
-  "remindMeLater": {
-    "message": "稍後提醒我"
-  },
   "remove": {
     "message": "移除"
   },
@@ -1436,12 +1400,6 @@
   },
   "show": {
     "message": "顯示"
-  },
-  "showAdvancedGasInline": {
-    "message": "顯示進階 gas 控制選項"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "選擇此項會在傳送或確認畫面顯示可微調 gas 價格以及 gas 上限的功能"
   },
   "showFiatConversionInTestnets": {
     "message": "在測試網上顯示匯率"
@@ -1597,44 +1555,11 @@
   "symbolBetweenZeroTwelve": {
     "message": "符號不得超過 11 個字元。"
   },
-  "syncFailed": {
-    "message": "同步失敗"
-  },
-  "syncInProgress": {
-    "message": "正在同步"
-  },
-  "syncWithMobile": {
-    "message": "和行動裝置同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "掃描代碼時請確保沒有其他人在看你的螢幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "你的資料已成功同步。開始活用 MetaMask 行動應用程式！"
-  },
-  "syncWithMobileDesc": {
-    "message": "你可以用行動裝置同步帳戶與資訊。開啟 MetaMask 行動應用程式，至「設定」並點擊「自瀏覽器擴充功能同步」"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是第一次開啟 MetaMask 行動應用程式，只要跟著手機上的指示操作即可。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "用您的 MetaMask 行動應用程式 掃描此條碼"
-  },
-  "syncWithMobileTitle": {
-    "message": "和行動裝置同步"
-  },
   "terms": {
     "message": "使用條款"
   },
   "termsOfService": {
     "message": "服務條款"
-  },
-  "testFaucet": {
-    "message": "測試水龍頭"
-  },
-  "thisWillCreate": {
-    "message": "這將創建新的錢包與助憶詞"
   },
   "time": {
     "message": "時間"
@@ -1824,9 +1749,6 @@
   "verifyThisTokenOn": {
     "message": "在 $1 驗證這個代幣的資訊",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "檢視帳戶"
   },
   "viewAllDetails": {
     "message": "查看所有詳情"
