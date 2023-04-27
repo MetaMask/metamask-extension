@@ -6,7 +6,7 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import Box from '../../../ui/box';
 import {
   BUTTON_SIZES,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   BannerAlert,
   Button,
   Text,
@@ -166,7 +166,7 @@ const ExportPrivateKeyModal = ({
       >
         {!privateKeyInput && (
           <Button
-            type={BUTTON_TYPES.SECONDARY}
+            type={BUTTON_VARIANT.SECONDARY}
             size={BUTTON_SIZES.LG}
             width={BLOCK_SIZES.HALF}
             marginRight={4}
@@ -186,7 +186,7 @@ const ExportPrivateKeyModal = ({
         )}
         {privateKey ? (
           <Button
-            type={BUTTON_TYPES.PRIMARY}
+            type={BUTTON_VARIANT.PRIMARY}
             size={BUTTON_SIZES.LG}
             width={BLOCK_SIZES.FULL}
             onClick={() => {
@@ -197,7 +197,7 @@ const ExportPrivateKeyModal = ({
           </Button>
         ) : (
           <Button
-            type={BUTTON_TYPES.PRIMARY}
+            type={BUTTON_VARIANT.PRIMARY}
             size={BUTTON_SIZES.LG}
             width={BLOCK_SIZES.HALF}
             onClick={() => {
