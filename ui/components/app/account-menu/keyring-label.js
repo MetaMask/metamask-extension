@@ -2,14 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  HardwareKeyringNames,
-  HardwareKeyringTypes,
-} from '../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../../shared/constants/keyring';
 
 export default function KeyRingLabel({ keyring }) {
   const t = useI18nContext();
-
   let label = null;
 
   // Keyring value might take a while to get a value
@@ -19,23 +16,34 @@ export default function KeyRingLabel({ keyring }) {
   const { type } = keyring;
 
   switch (type) {
-    case HardwareKeyringTypes.qr:
+    case KeyringType.qr:
       label = HardwareKeyringNames.qr;
       break;
-    case HardwareKeyringTypes.imported:
+    case KeyringType.imported:
       label = t('imported');
       break;
-    case HardwareKeyringTypes.trezor:
+    case KeyringType.trezor:
       label = HardwareKeyringNames.trezor;
       break;
-    case HardwareKeyringTypes.ledger:
+    case KeyringType.ledger:
       label = HardwareKeyringNames.ledger;
       break;
-    case HardwareKeyringTypes.lattice:
+    case KeyringType.lattice:
       label = HardwareKeyringNames.lattice;
       break;
     default:
-      return null;
+      label = null;
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  if (type.startsWith('Custody') && /JSONRPC/u.test(type)) {
+    label = type.split(' - ')[1];
+    return null;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  if (label === null) {
+    return label;
   }
 
   return (

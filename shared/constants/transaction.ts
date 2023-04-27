@@ -308,6 +308,10 @@ interface DappSuggestedGasFees {
  * An object representing a transaction, in whatever state it is in.
  */
 export interface TransactionMeta {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  custodyStatus: string;
+  custodyId?: string;
+  ///: END:ONLY_INCLUDE_IN
   /**
    * The block number this transaction was included in. Currently only present
    * on incoming transactions!

@@ -5,10 +5,12 @@ import {
   TextColor,
   BackgroundColor,
   BorderColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
+import { Icon, IconName } from '..';
 import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
 import { AVATAR_BASE_SIZES } from './avatar-base.constants';
@@ -87,10 +89,11 @@ export default {
     color: TextColor.textDefault,
     backgroundColor: BackgroundColor.backgroundAlternative,
     borderColor: BorderColor.borderDefault,
+    children: 'B',
   },
 };
 
-export const DefaultStory = (args) => <AvatarBase {...args}>B</AvatarBase>;
+export const DefaultStory = (args) => <AvatarBase {...args} />;
 
 DefaultStory.storyName = 'Default';
 
@@ -107,7 +110,7 @@ export const Size = (args) => (
 export const Children = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarBase {...args}>
-      <img src="./images/eth_logo.svg" />
+      <img src="./images/eth_logo.png" />
     </AvatarBase>
     <AvatarBase {...args}>
       <img width="100%" src="./images/arbitrum.svg" />
@@ -121,10 +124,7 @@ export const Children = (args) => (
       backgroundColor={BackgroundColor.infoMuted}
       borderColor={BorderColor.infoMuted}
     >
-      <i
-        className="fa fa-user"
-        style={{ color: 'var(--color-info-default)' }}
-      />
+      <Icon name={IconName.User} color={Color.infoDefault} />
     </AvatarBase>
   </Box>
 );

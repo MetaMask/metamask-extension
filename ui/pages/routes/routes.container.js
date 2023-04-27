@@ -11,7 +11,6 @@ import {
   getIsTestnet,
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
-  getShowPortfolioTooltip,
   isCurrentProviderCustom,
 } from '../../selectors';
 import {
@@ -19,6 +18,8 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
+  toggleAccountMenu,
+  toggleNetworkMenu,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -53,10 +54,11 @@ function mapStateToProps(state) {
     isTestNet: getIsTestnet(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
-    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
+    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
+    isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
   };
 }
 
@@ -69,6 +71,8 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
+    toggleAccountMenu: () => dispatch(toggleAccountMenu()),
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 }
 

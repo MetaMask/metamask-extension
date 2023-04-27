@@ -28,6 +28,7 @@ import {
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
+  getPreferences,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
@@ -62,6 +63,7 @@ export default function ConfirmApprove({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  hexMinimumTransactionFee,
   isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
@@ -83,6 +85,7 @@ export default function ConfirmApprove({
     isAddressLedgerByFromAddress(userAddress),
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -144,6 +147,7 @@ export default function ConfirmApprove({
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
+  // Code below may need a additional look as ERC1155 tokens do not have a name
   let tokensText;
   if (
     assetStandard === TokenStandard.ERC721 ||
@@ -186,6 +190,7 @@ export default function ConfirmApprove({
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
             txData={transaction}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             supportsEIP1559={supportsEIP1559}
@@ -199,6 +204,7 @@ export default function ConfirmApprove({
             toAddress={toAddress}
             tokenSymbol={tokenSymbol}
             decimals={decimals}
+            fromAddressIsLedger={fromAddressIsLedger}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
@@ -251,6 +257,7 @@ export default function ConfirmApprove({
               ethTransactionTotal={ethTransactionTotal}
               fiatTransactionTotal={fiatTransactionTotal}
               hexTransactionTotal={hexTransactionTotal}
+              hexMinimumTransactionFee={hexMinimumTransactionFee}
               useNonceField={useNonceField}
               nextNonce={nextNonce}
               customNonceValue={customNonceValue}
@@ -290,6 +297,9 @@ export default function ConfirmApprove({
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
               supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
+              useNativeCurrencyAsPrimaryCurrency={
+                useNativeCurrencyAsPrimaryCurrency
+              }
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
@@ -337,5 +347,6 @@ ConfirmApprove.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexTransactionTotal: PropTypes.string,
+  hexMinimumTransactionFee: PropTypes.string,
   isSetApproveForAll: PropTypes.bool,
 };

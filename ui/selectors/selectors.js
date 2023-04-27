@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -7,7 +7,7 @@ import {
   defaultMemoize,
 } from 'reselect';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   memoize,
   ///: END:ONLY_INCLUDE_IN
   isEqual,
@@ -24,13 +24,18 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  NetworkStatus,
+  SEPOLIA_DISPLAY_NAME,
+  GOERLI_DISPLAY_NAME,
+  ETH_TOKEN_IMAGE_URL,
+  LINEA_TESTNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
-  HardwareKeyringTypes,
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
@@ -42,15 +47,24 @@ import {
 } from '../../shared/constants/swaps';
 
 import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_TOKEN_ADDRESSES,
+} from '../../shared/constants/bridge';
+
+import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  removeSnapIdPrefix,
+  getSnapName,
+  ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
+import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
   getConversionRate,
@@ -65,28 +79,24 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
 /**
- * One of the only remaining valid uses of selecting the network subkey of the
- * metamask state tree is to determine if the network is currently 'loading'.
+ * Returns true if the currently selected network is inaccessible or whether no
+ * provider has been set yet for the currently selected network.
  *
- * This will be used for all cases where this state key is accessed only for that
- * purpose.
- *
- * @param {object} state - redux state object
+ * @param {object} state - Redux state object.
  */
 export function isNetworkLoading(state) {
-  return state.metamask.network === 'loading';
+  return state.metamask.networkStatus !== NetworkStatus.Available;
 }
 
 export function getNetworkIdentifier(state) {
@@ -129,7 +139,7 @@ export function hasUnsignedQRHardwareTransaction(state) {
   }
   const { from } = txParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -147,7 +157,7 @@ export function hasUnsignedQRHardwareMessage(state) {
   }
   const { from } = msgParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -177,14 +187,6 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
-}
-
-export function isEIP1559Account() {
-  return true;
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -193,9 +195,7 @@ export function isEIP1559Account() {
  */
 export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkSupports1559 && accountSupports1559;
+  return networkSupports1559;
 }
 
 /**
@@ -206,9 +206,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkNotSupports1559 || accountSupports1559 === false;
+  return networkNotSupports1559;
 }
 
 /**
@@ -237,12 +235,18 @@ export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
   const type = currentKeyring && currentKeyring.type;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  if (type.startsWith('Custody')) {
+    return 'custody';
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   switch (type) {
-    case HardwareKeyringTypes.trezor:
-    case HardwareKeyringTypes.ledger:
-    case HardwareKeyringTypes.lattice:
+    case KeyringType.trezor:
+    case KeyringType.ledger:
+    case KeyringType.lattice:
       return 'hardware';
-    case HardwareKeyringTypes.imported:
+    case KeyringType.imported:
       return 'imported';
     default:
       return 'default';
@@ -260,7 +264,7 @@ export function getAccountType(state) {
  * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.network;
+  return state.metamask.networkId ?? 'loading';
 }
 
 export const getMetaMaskAccounts = createSelector(
@@ -398,7 +402,7 @@ export function getEnsResolutionByAddress(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
 
   return entry?.name || '';
@@ -407,7 +411,7 @@ export function getEnsResolutionByAddress(state, address) {
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
-    isEqualCaseInsensitive(contact.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(contact.address, address),
   );
   return entry;
 }
@@ -416,14 +420,14 @@ export function getAddressBookEntryOrAccountName(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
   return entry && entry.name !== '' ? entry.name : address;
 }
 
 export function getAccountName(identities, address) {
   const entry = Object.values(identities).find((identity) =>
-    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(identity.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -431,7 +435,7 @@ export function getAccountName(identities, address) {
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
   const entry = Object.values(tokenList).find((identity) =>
-    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(identity.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -493,25 +497,9 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const {
-    unapprovedMsgCount = 0,
-    unapprovedPersonalMsgCount = 0,
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
-    pendingApprovalCount = 0,
-  } = state.metamask;
+  const { pendingApprovalCount = 0 } = state.metamask;
 
-  return (
-    unapprovedMsgCount +
-    unapprovedPersonalMsgCount +
-    unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedTypedMessagesCount +
-    getUnapprovedTxCount(state) +
-    pendingApprovalCount +
-    getSuggestedAssetCount(state)
-  );
+  return pendingApprovalCount + getSuggestedAssetCount(state);
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -629,7 +617,7 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -642,7 +630,7 @@ const getEmbeddableSvg = memoize(
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
@@ -655,11 +643,7 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { frequentRpcListDetail, provider } = state.metamask;
-  const selectRpcInfo = frequentRpcListDetail.find(
-    (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  );
-  const { rpcPrefs = {} } = selectRpcInfo || {};
+  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
   return rpcPrefs;
 }
 
@@ -760,61 +744,24 @@ export function getIsSwapsChain(state) {
     : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
+export function getIsBridgeChain(state) {
+  const chainId = getCurrentChainId(state);
+  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+}
+
+export const getIsBridgeToken = (tokenAddress) => (state) => {
+  const chainId = getCurrentChainId(state);
+  const isBridgeChain = getIsBridgeChain(state);
+  return (
+    isBridgeChain &&
+    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
+  );
+};
+
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
-
-export function getIsBuyableTransakChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
-}
-
-export function getIsBuyableTransakToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies?.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonpayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  const _symbol = formatMoonpaySymbol(symbol, chainId);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay?.showOnlyCurrencies?.includes(
-      _symbol,
-    ),
-  );
-}
-
-export function getIsBuyableWyreToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.wyre?.currencies.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonPayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
-}
-
-export function getIsBuyableWyreChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
-}
-export function getIsBuyableCoinbasePayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
-}
-
-export function getIsBuyableCoinbasePayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
-  );
-}
-
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -844,9 +791,8 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
-    const checksumHexAddress = toChecksumHexAddress(address);
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, checksumHexAddress),
+      isEqualCaseInsensitive(identity.address, address),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },
@@ -892,7 +838,7 @@ export const getFullTxData = createDeepEqualSelector(
   (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
-      txData.simulationFails = transaction.simulationFails;
+      fullTxData.simulationFails = { ...transaction.simulationFails };
     }
     if (customTxParamsData) {
       fullTxData = {
@@ -907,7 +853,7 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
@@ -996,11 +942,11 @@ export const getUnreadNotificationsCount = createSelector(
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger =
-    currentKeyring?.type === HardwareKeyringTypes.ledger;
+  const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
+  const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
     1: false,
@@ -1018,8 +964,11 @@ function getAllowedAnnouncementIds(state) {
     13: false,
     14: false,
     15: false,
-    16: true,
-    17: true,
+    16: false,
+    17: false,
+    18: true,
+    19: true,
+    20: currentKeyringIsLedger && isFirefox,
   };
 }
 
@@ -1066,6 +1015,18 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
+export function getShowTermsOfUse(state) {
+  const { termsOfUseLastAgreed } = state.metamask;
+
+  if (!termsOfUseLastAgreed) {
+    return true;
+  }
+  return (
+    new Date(termsOfUseLastAgreed).getTime() <
+    new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
+  );
+}
+
 export function getShowOutdatedBrowserWarning(state) {
   const { outdatedBrowserWarningLastShown } = state.metamask;
   if (!outdatedBrowserWarningLastShown) {
@@ -1075,14 +1036,13 @@ export function getShowOutdatedBrowserWarning(state) {
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
-export function getShowPortfolioTooltip(state) {
-  return state.metamask.showPortfolioTooltip;
-}
-
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
 
+export function getShowProductTour(state) {
+  return state.metamask.showProductTour;
+}
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1156,12 +1116,12 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
-export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
+export function getNewNftAddedMessage(state) {
+  return state.appState.newNftAddedMessage;
 }
 
-export function getRemoveCollectibleMessage(state) {
-  return state.appState.removeCollectibleMessage;
+export function getRemoveNftMessage(state) {
+  return state.appState.removeNftMessage;
 }
 
 /**
@@ -1171,19 +1131,91 @@ export function getRemoveCollectibleMessage(state) {
  * @returns string
  */
 export function getNewNetworkAdded(state) {
-  return state.appState.newNetworkAdded;
+  return state.appState.newNetworkAddedName;
 }
 
-export function getNetworksTabSelectedRpcUrl(state) {
-  return state.appState.networksTabSelectedRpcUrl;
+export function getNetworksTabSelectedNetworkConfigurationId(state) {
+  return state.appState.selectedNetworkConfigurationId;
 }
 
 export function getProvider(state) {
   return state.metamask.provider;
 }
 
-export function getFrequentRpcListDetail(state) {
-  return state.metamask.frequentRpcListDetail;
+export function getNetworkConfigurations(state) {
+  return state.metamask.networkConfigurations;
+}
+
+export function getCurrentNetwork(state) {
+  const allNetworks = getAllNetworks(state);
+  const currentChainId = getCurrentChainId(state);
+
+  return allNetworks.find((network) => network.chainId === currentChainId);
+}
+
+export function getAllEnabledNetworks(state) {
+  const allNetworks = getAllNetworks(state);
+  const showTestnetNetworks = getShowTestNetworks(state);
+
+  return showTestnetNetworks
+    ? allNetworks
+    : allNetworks.filter(
+        (network) => TEST_CHAINS.includes(network.chainId) === false,
+      );
+}
+
+export function getAllNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+  const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
+
+  const networks = [];
+  // Mainnet always first
+  networks.push({
+    chainId: CHAIN_IDS.MAINNET,
+    nickname: MAINNET_DISPLAY_NAME,
+    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+    rpcPrefs: {
+      imageUrl: ETH_TOKEN_IMAGE_URL,
+    },
+    providerType: NETWORK_TYPES.MAINNET,
+  });
+  // Custom networks added
+  networks.push(
+    ...Object.entries(networkConfigurations)
+      .filter(
+        ([, network]) =>
+          !localhostFilter(network) && network.chainId !== CHAIN_IDS.MAINNET,
+      )
+      .map(([, network]) => network),
+  );
+  // Test networks
+  networks.push(
+    ...[
+      {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+        providerType: NETWORK_TYPES.GOERLI,
+      },
+      {
+        chainId: CHAIN_IDS.SEPOLIA,
+        nickname: SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+        providerType: NETWORK_TYPES.SEPOLIA,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_TESTNET,
+        nickname: LINEA_TESTNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+        provderType: NETWORK_TYPES.LINEA_TESTNET,
+      },
+    ], // Localhosts
+    ...Object.entries(networkConfigurations)
+      .filter(([, network]) => localhostFilter(network))
+      .map(([, network]) => network),
+  );
+
+  return networks;
 }
 
 export function getIsOptimism(state) {
@@ -1191,10 +1223,6 @@ export function getIsOptimism(state) {
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
   );
-}
-
-export function getNetworkSupportsSettingGasFees(state) {
-  return !getIsOptimism(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
@@ -1409,6 +1437,10 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getOnboardedInThisUISession(state) {
+  return state.appState.onboardedInThisUISession;
+}
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *
@@ -1418,3 +1450,37 @@ export function getCustomTokenAmount(state) {
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDesktopEnabled(state) {
+  return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * To get all installed snaps with proper metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getSnapsList(state) {
+  const snaps = getSnaps(state);
+  return Object.entries(snaps).map(([key, snap]) => {
+    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+
+    return {
+      key,
+      id: snap.id,
+      packageName: removeSnapIdPrefix(snap.id),
+      name: getSnapName(snap.id, targetSubjectMetadata),
+    };
+  });
+}
+///: END:ONLY_INCLUDE_IN

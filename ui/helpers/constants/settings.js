@@ -1,3 +1,4 @@
+import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -7,7 +8,7 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAPS_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from './routes';
@@ -18,21 +19,21 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyConversion'),
     descriptionMessage: (t) => t('currencyConversion'),
     route: `${GENERAL_ROUTE}#currency-conversion`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('primaryCurrencySetting'),
     descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
     route: `${GENERAL_ROUTE}#primary-currency`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currentLanguage'),
     descriptionMessage: (t) => t('currentLanguage'),
     route: `${GENERAL_ROUTE}#current-language`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
@@ -46,14 +47,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('hideZeroBalanceTokens'),
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('advanced'),
@@ -64,23 +65,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('syncWithMobile'),
-    descriptionMessage: (t) => t('syncWithMobile'),
-    route: `${ADVANCED_ROUTE}#sync-withmobile`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('resetAccount'),
-    descriptionMessage: (t) => t('resetAccountDescription'),
-    route: `${ADVANCED_ROUTE}#reset-account`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('showAdvancedGasInline'),
-    descriptionMessage: (t) => t('showAdvancedGasInlineDescription'),
-    route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
+    sectionMessage: (t) => t('clearActivity'),
+    descriptionMessage: (t) => t('clearActivityDescription'),
+    route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -133,13 +120,20 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('toggleEthSignField'),
+    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
+    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    icon: 'fa fa-address-book',
+    icon: ICON_NAMES.BOOK,
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
     tabMessage: (t) => t('snaps'),
     sectionMessage: (t) => t('snaps'),
@@ -216,7 +210,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    icon: 'fa fa-bell',
+    iconName: ICON_NAMES.NOTIFICATION,
   },
   {
     tabMessage: (t) => t('alerts'),
@@ -244,6 +238,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('sepolia'),
     descriptionMessage: (t) => t('sepolia'),
     route: `${NETWORKS_ROUTE}#networks-sepolia`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineatestnet'),
+    descriptionMessage: (t) => t('lineatestnet'),
+    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
     icon: 'fa fa-plug',
   },
   {
@@ -326,15 +327,13 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
     icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('useCollectibleDetection'),
-    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescription'),
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('advanced'),

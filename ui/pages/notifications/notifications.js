@@ -14,9 +14,14 @@ import {
   deleteExpiredNotifications,
   markNotificationsAsRead,
 } from '../../store/actions';
-import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../components/component-library';
+import { Color } from '../../helpers/constants/design-system';
 
 export function NotificationItem({ notification, snaps, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
@@ -85,10 +90,10 @@ export default function Notifications() {
     <div className="main-container notifications">
       <div className="notifications__header">
         <div className="notifications__header__title-container">
-          <IconCaretLeft
-            className="notifications__header__title-container__back-button"
-            color="var(--color-text-default)"
-            size={23}
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Lg}
+            color={Color.textDefault}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
           <div className="notifications__header__title-container__title">

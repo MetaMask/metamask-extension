@@ -3,58 +3,61 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
-import { AvatarBase } from '../avatar-base';
-import { Size } from '../../../helpers/constants/design-system';
+
 import Box from '../../ui/box/box';
 
+import { AvatarBase } from '../avatar-base';
 import {
-  AVATAR_ACCOUNT_DIAMETERS,
-  AVATAR_ACCOUNT_TYPES,
-  AVATAR_ACCOUNT_SIZES,
-} from './avatar-account.constants';
+  AvatarAccountDiameter,
+  AvatarAccountVariant,
+  AvatarAccountSize,
+} from './avatar-account.types';
 
-export const AvatarAccount = ({
-  size = Size.MD,
-  address,
-  className,
-  type,
-  ...props
-}) => {
-  return (
+export const AvatarAccount = React.forwardRef(
+  (
+    {
+      size = AvatarAccountSize.Md,
+      address,
+      className,
+      variant = AvatarAccountVariant.Jazzicon,
+      ...props
+    },
+    ref,
+  ) => (
     <AvatarBase
+      ref={ref}
       size={size}
       className={classnames('mm-avatar-account', className)}
       {...props}
     >
-      {type === 'Jazzicon' ? (
+      {variant === AvatarAccountVariant.Jazzicon ? (
         <Jazzicon
           className={classnames('mm-avatar-account__jazzicon')}
           address={address}
-          diameter={Number(AVATAR_ACCOUNT_DIAMETERS[size])}
+          diameter={AvatarAccountDiameter[size]}
         />
       ) : (
         <BlockieIdenticon
-          className={classnames('mm-avatar-account__blockie')}
           address={address}
-          diameter={Number(AVATAR_ACCOUNT_DIAMETERS[size])}
+          diameter={AvatarAccountDiameter[size]}
           borderRadius="50%"
         />
       )}
     </AvatarBase>
-  );
-};
+  ),
+);
 
 AvatarAccount.propTypes = {
   /**
    * The size of the AvatarAccount.
-   * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
-   * Defaults to SIZES.MD
+   * Possible values could be 'AvatarAccountSize.Xs', 'AvatarAccountSize.Sm', 'AvatarAccountSize.Md', 'AvatarAccountSize.Lg', 'AvatarAccountSize.Xl'
+   * Defaults to AvatarAccountSize.Md
    */
-  size: PropTypes.oneOf(Object.values(AVATAR_ACCOUNT_SIZES)),
+  size: PropTypes.oneOf(Object.values(AvatarAccountSize)),
   /**
-   * The type of the avatar to be rendered, it can render either a Jazzicon or a Blockie
+   * The variant of the avatar to be rendered, it can render either a AvatarAccountVariant.Jazzicon or a AvatarAccountVariant.Blockie
    */
-  type: PropTypes.oneOf(Object.values(AVATAR_ACCOUNT_TYPES)),
+  variant: PropTypes.oneOf(Object.values(AvatarAccountVariant)),
   /**
    * Address used for generating random image
    */
@@ -69,3 +72,5 @@ AvatarAccount.propTypes = {
    */
   ...Box.propTypes,
 };
+
+AvatarAccount.displayName = 'AvatarAccount';

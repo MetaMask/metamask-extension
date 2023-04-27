@@ -18,7 +18,6 @@ export default {
     onRestore: { action: 'onRestore' },
     onSubmit: { action: 'onSubmit' },
     forceUpdateMetamaskState: { action: 'forceUpdateMetamaskState' },
-    showOptInModal: { action: 'showOptInModal' },
   },
 };
 

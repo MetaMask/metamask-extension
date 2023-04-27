@@ -13,7 +13,6 @@ export default {
     mostRecentOverviewPage: { control: 'text' },
     sendErrors: { control: 'object' },
     history: { action: 'history' },
-    addToAddressBookIfNew: { action: 'addToAddressBookIfNew' },
     resetSendState: { action: 'resetSendState' },
   },
 };

@@ -7,7 +7,7 @@ import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import {
   AssetType,
   TokenStandard,
@@ -29,7 +29,7 @@ export default class SendAssetRow extends Component {
     updateSendAsset: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
     nativeCurrencyImage: PropTypes.string,
-    collectibles: PropTypes.arrayOf(
+    nfts: PropTypes.arrayOf(
       PropTypes.shape({
         address: PropTypes.string.isRequired,
         tokenId: PropTypes.string.isRequired,
@@ -62,17 +62,15 @@ export default class SendAssetRow extends Component {
   state = {
     isShowingDropdown: false,
     sendableTokens: [],
-    sendableCollectibles: [],
+    sendableNfts: [],
   };
 
   async componentDidMount() {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
-    const sendableCollectibles = this.props.collectibles.filter(
-      (collectible) =>
-        collectible.isCurrentlyOwned &&
-        collectible.standard === TokenStandard.ERC721,
+    const sendableNfts = this.props.nfts.filter(
+      (nft) => nft.isCurrentlyOwned && nft.standard === TokenStandard.ERC721,
     );
-    this.setState({ sendableTokens, sendableCollectibles });
+    this.setState({ sendableTokens, sendableNfts });
   }
 
   openDropdown = () => this.setState({ isShowingDropdown: true });
@@ -99,7 +97,7 @@ export default class SendAssetRow extends Component {
       },
       () => {
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           event: 'User clicks "Assets" dropdown',
           properties: {
             action: 'Send Screen',
@@ -127,8 +125,7 @@ export default class SendAssetRow extends Component {
           >
             {this.renderSendAsset()}
           </div>
-          {[...this.state.sendableTokens, ...this.state.sendableCollectibles]
-            .length > 0
+          {[...this.state.sendableTokens, ...this.state.sendableNfts].length > 0
             ? this.renderAssetDropdown()
             : null}
         </div>
@@ -140,7 +137,7 @@ export default class SendAssetRow extends Component {
     const {
       sendAsset: { details, type },
       tokens,
-      collectibles,
+      nfts,
     } = this.props;
 
     if (type === AssetType.token) {
@@ -150,14 +147,15 @@ export default class SendAssetRow extends Component {
       if (token) {
         return this.renderToken(token);
       }
+      return this.renderToken(details);
     } else if (type === AssetType.NFT) {
-      const collectible = collectibles.find(
+      const nft = nfts.find(
         ({ address, tokenId }) =>
           isEqualCaseInsensitive(address, details.address) &&
           tokenId === details.tokenId,
       );
-      if (collectible) {
-        return this.renderCollectible(collectible);
+      if (nft) {
+        return this.renderNft(nft);
       }
     }
     return this.renderNativeCurrency();
@@ -177,9 +175,7 @@ export default class SendAssetRow extends Component {
               clickHandler={(token) => this.selectToken(AssetType.token, token)}
             />
 
-            {this.state.sendableCollectibles.map((collectible) =>
-              this.renderCollectible(collectible, true),
-            )}
+            {this.state.sendableNfts.map((nft) => this.renderNft(nft, true))}
           </div>
         </div>
       )
@@ -191,13 +187,13 @@ export default class SendAssetRow extends Component {
     const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
       this.props;
 
-    const { sendableTokens, sendableCollectibles } = this.state;
+    const { sendableTokens, sendableNfts } = this.state;
 
     const balanceValue = accounts[selectedAddress]
       ? accounts[selectedAddress].balance
       : '';
 
-    const sendableAssets = [...sendableTokens, ...sendableCollectibles];
+    const sendableAssets = [...sendableTokens, ...sendableNfts];
     return (
       <div
         className={
@@ -264,24 +260,24 @@ export default class SendAssetRow extends Component {
     );
   }
 
-  renderCollectible(collectible, insideDropdown = false) {
-    const { address, name, image, tokenId } = collectible;
+  renderNft(nft, insideDropdown = false) {
+    const { address, name, image, tokenId } = nft;
     const { t } = this.context;
-    const collectibleCollection = this.props.collections.find(
+    const nftCollection = this.props.collections.find(
       (collection) => collection.address === address,
     );
     return (
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken(AssetType.NFT, collectible)}
+        onClick={() => this.selectToken(AssetType.NFT, nft)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon address={address} diameter={36} image={image} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">
-            {collectibleCollection.name || name}
+            {nftCollection.name || name}
           </div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">

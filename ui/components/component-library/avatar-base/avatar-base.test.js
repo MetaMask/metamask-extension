@@ -2,7 +2,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { Color } from '../../../helpers/constants/design-system';
+import { Color, TextColor } from '../../../helpers/constants/design-system';
 
 import { AvatarBase } from './avatar-base';
 
@@ -25,19 +25,19 @@ describe('AvatarBase', () => {
       </>,
     );
     expect(getByTestId('avatar-base-xs')).toHaveClass(
-      'mm-avatar-base--size-xs',
+      'mm-avatar-base--size-xs mm-text--body-xs',
     );
     expect(getByTestId('avatar-base-sm')).toHaveClass(
-      'mm-avatar-base--size-sm',
+      'mm-avatar-base--size-sm  mm-text--body-sm',
     );
     expect(getByTestId('avatar-base-md')).toHaveClass(
-      'mm-avatar-base--size-md',
+      'mm-avatar-base--size-md  mm-text--body-sm',
     );
     expect(getByTestId('avatar-base-lg')).toHaveClass(
-      'mm-avatar-base--size-lg',
+      'mm-avatar-base--size-lg mm-text--body-lg-medium',
     );
     expect(getByTestId('avatar-base-xl')).toHaveClass(
-      'mm-avatar-base--size-xl',
+      'mm-avatar-base--size-xl mm-text--body-lg-medium',
     );
   });
   // className
@@ -63,20 +63,20 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          color={Color.successDefault}
-          data-testid={Color.successDefault}
+          color={TextColor.successDefault}
+          data-testid={TextColor.successDefault}
         />
         <AvatarBase
-          color={Color.errorDefault}
-          data-testid={Color.errorDefault}
+          color={TextColor.errorDefault}
+          data-testid={TextColor.errorDefault}
         />
       </>,
     );
-    expect(getByTestId(Color.successDefault)).toHaveClass(
-      `box--color-${Color.successDefault}`,
+    expect(getByTestId(TextColor.successDefault)).toHaveClass(
+      `box--color-${TextColor.successDefault}`,
     );
-    expect(getByTestId(Color.errorDefault)).toHaveClass(
-      `box--color-${Color.errorDefault}`,
+    expect(getByTestId(TextColor.errorDefault)).toHaveClass(
+      `box--color-${TextColor.errorDefault}`,
     );
   });
   // background color
@@ -84,11 +84,11 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          backgroundColor={Color.successDefault}
+          backgroundColor={TextColor.successDefault}
           data-testid={Color.successDefault}
         />
         <AvatarBase
-          backgroundColor={Color.errorDefault}
+          backgroundColor={TextColor.errorDefault}
           data-testid={Color.errorDefault}
         />
       </>,
@@ -120,5 +120,11 @@ describe('AvatarBase', () => {
     expect(getByTestId(Color.errorDefault)).toHaveClass(
       `box--border-color-${Color.errorDefault}`,
     );
+  });
+  it('should forward a ref to the root html element', () => {
+    const ref = React.createRef();
+    render(<AvatarBase ref={ref}>A</AvatarBase>);
+    expect(ref.current).not.toBeNull();
+    expect(ref.current.nodeName).toBe('DIV');
   });
 });

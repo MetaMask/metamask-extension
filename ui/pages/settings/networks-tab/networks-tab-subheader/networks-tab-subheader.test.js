@@ -14,7 +14,7 @@ const mockState = {
       ticker: 'ETH',
       type: 'localhost',
     },
-    frequentRpcListDetail: [],
+    networkConfigurations: {},
   },
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',

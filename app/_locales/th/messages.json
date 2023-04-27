@@ -57,9 +57,6 @@
   "cancel": {
     "message": "ยกเลิก"
   },
-  "cancellationGasFee": {
-    "message": "ค่าธรรมเนียม Gas การยกเลิก"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
   },
@@ -74,9 +71,6 @@
   },
   "connectingToMainnet": {
     "message": "เชื่อมต่อกับเครือข่าย Ethereum หลัก"
-  },
-  "continueToWyre": {
-    "message": "ไปที่ Wyre"
   },
   "contractDeployment": {
     "message": "การติดตั้งสัญญา"
@@ -166,13 +160,6 @@
   },
   "general": {
     "message": "ทั่วไป"
-  },
-  "getEther": {
-    "message": "รับอีเธอร์"
-  },
-  "getEtherFromFaucet": {
-    "message": "รับอีเธอร์ที่ปล่อยจาก $1",
-    "description": "Displays network name for Ether faucet"
   },
   "here": {
     "message": "ที่นี่",
@@ -323,14 +310,12 @@
   "required": {
     "message": "จำเป็น"
   },
-  "resetAccount": {
-    "message": "รีเซ็ตบัญชี"
-  },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"
   },
   "revealSeedWordsWarning": {
-    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
+    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "บันทึก"
@@ -358,9 +343,6 @@
   },
   "settings": {
     "message": "การตั้งค่า"
-  },
-  "showAdvancedGasInline": {
-    "message": "การควบคุม Gas ขั้นสูง"
   },
   "showPrivateKeys": {
     "message": "แสดงคีย์ส่วนตัว"
@@ -395,14 +377,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
   },
-  "syncWithMobileComplete": {
-    "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
-  },
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"
-  },
-  "testFaucet": {
-    "message": "ตัวแจกจ่ายเพื่อการทดสอบ"
   },
   "to": {
     "message": "ถึง"
@@ -449,9 +425,6 @@
   },
   "usedByClients": {
     "message": "ถูกใช้งานโดยหลายไคลเอนท์"
-  },
-  "viewAccount": {
-    "message": "ดูบัญชี"
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"

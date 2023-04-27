@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 import { I18nContext } from '../../../contexts/i18n';
-import IconCaretRight from '../../../components/ui/icon/icon-caret-right';
+import { Icon, IconName } from '../../../components/component-library';
+import { Size } from '../../../helpers/constants/design-system';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
   const t = useContext(I18nContext);
@@ -13,7 +14,7 @@ export default function SettingsSearchList({ results, onClickSetting }) {
   return (
     <div className="settings-page__header__search__list">
       {results.slice(0, 5).map((result) => {
-        const { icon, tabMessage, sectionMessage, route } = result;
+        const { icon, iconName, tabMessage, sectionMessage, route } = result;
         return (
           Boolean(icon || tabMessage || sectionMessage) && (
             <div key={`settings_${route}`}>
@@ -21,13 +22,16 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                 className="settings-page__header__search__list__item"
                 onClick={() => onClickSetting(result)}
               >
-                <i
-                  className={classnames(
-                    'settings-page__header__search__list__item__icon',
-                    icon,
-                  )}
-                />
-
+                {iconName ? (
+                  <Icon name={iconName} />
+                ) : (
+                  <i
+                    className={classnames(
+                      'settings-page__header__search__list__item__icon',
+                      icon,
+                    )}
+                  />
+                )}
                 <span
                   id={`menu-tab_${route}`}
                   className={classnames(
@@ -40,8 +44,9 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                 >
                   {tabMessage(t)}
                 </span>
-                <IconCaretRight
-                  size={16}
+                <Icon
+                  name={IconName.ArrowRight}
+                  size={Size.SM}
                   className="settings-page__header__search__list__item__caret"
                 />
                 <span

@@ -23,13 +23,13 @@ export default class ConfirmResetAccount extends PureComponent {
       <Modal
         onSubmit={this.handleReset}
         onCancel={() => this.props.hideModal()}
-        submitText={t('reset')}
+        submitText={t('clear')}
         cancelText={t('nevermind')}
         submitType="danger-primary"
       >
         <ModalContent
-          title={`${t('resetAccount')}?`}
-          description={t('resetAccountDescription')}
+          title={`${t('clearActivity')}?`}
+          description={t('clearActivityDescription')}
         />
       </Modal>
     );

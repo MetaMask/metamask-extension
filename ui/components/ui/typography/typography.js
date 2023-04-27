@@ -23,6 +23,7 @@ export const ValidColors = [
   Color.errorDefault,
   Color.errorInverse,
   Color.successDefault,
+  Color.successInverse,
   Color.sepoliaInverse,
   Color.warningDefault,
   Color.warningInverse,
@@ -30,8 +31,10 @@ export const ValidColors = [
   Color.infoInverse,
   Color.goerli,
   Color.sepolia,
-  Color.goerli,
+  Color.goerliInverse,
   Color.sepoliaInverse,
+  Color.lineaTestnet,
+  Color.lineaTestnetInverse,
 ];
 
 export const ValidTags = [
@@ -52,6 +55,14 @@ export const ValidTags = [
   'ul',
   'label',
 ];
+
+/**
+ * @deprecated `<Typography />` has been deprecated in favour of the `<Text />` component in ./ui/components/component-library/text/text.js
+ *
+ * See storybook documentation for Text here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-text--default-story#text
+ *
+ * Help to replace `Typography` with `Text` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/17670
+ */
 
 export default function Typography({
   variant = TypographyVariant.paragraph,

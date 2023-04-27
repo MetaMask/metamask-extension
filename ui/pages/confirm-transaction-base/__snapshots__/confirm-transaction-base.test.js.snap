@@ -254,7 +254,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="confirm-page-container-summary__title"
         >
           <h3
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography confirm-page-container-summary__title-text typography--h3 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
             <div
               class="currency-display-component"
@@ -278,35 +278,41 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="tabs"
+        class="box tabs box--flex-direction-row"
       >
         <ul
-          class="tabs__list"
+          class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
         >
           <li
-            class="tab confirm-page-container-content__tab tab--active"
+            class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Details
             </button>
           </li>
           <li
-            class="tab confirm-page-container-content__tab"
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Data
             </button>
           </li>
           <li
-            class="tab confirm-page-container-content__tab"
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Hex
             </button>
           </li>
         </ul>
         <div
-          class="tabs__content"
+          class="box tabs__content box--flex-direction-row"
         >
           <div
             class="confirm-page-container-content__details"
@@ -368,9 +374,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
                       >
-                        <div
-                          class="confirm-page-container-content__currency-container"
-                        >
+                        <div>
                           <div
                             class="currency-display-component"
                             title="0.000021"
@@ -391,18 +395,14 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   <div
                     class="transaction-detail-item__row"
                   >
-                    <div>
-                      
-                    </div>
+                    <div />
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
                     >
                       <strong>
                         Max fee:
                       </strong>
-                      <div
-                        class="confirm-page-container-content__currency-container"
-                      >
+                      <div>
                         <div
                           class="currency-display-component"
                           title="0.000021"
@@ -503,8 +503,9 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         <div
           class="error-message"
         >
-          <i
-            class="fa fa-exclamation-circle error-message__icon"
+          <span
+            class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            style="mask-image: url('./images/icons/warning.svg');"
           />
           <div
             class="error-message__text"
@@ -518,7 +519,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
       >
         <footer>
           <button
-            class="button btn--rounded btn-secondary page-container__footer-button"
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
             data-testid="page-container-footer-cancel"
             role="button"
             tabindex="0"

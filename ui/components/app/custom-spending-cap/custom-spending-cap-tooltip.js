@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box';
-import Typography from '../../ui/typography';
 import Tooltip from '../../ui/tooltip';
 import {
   TextColor,
   DISPLAY,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
@@ -18,20 +19,28 @@ export const CustomSpendingCapTooltip = ({
       interactive
       position="top"
       html={
-        <Typography
-          variant={TypographyVariant.H7}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           margin={3}
           color={TextColor.textAlternative}
           className="form-field__heading-title__tooltip"
         >
           {tooltipContentText}
-        </Typography>
+        </Text>
       }
     >
       {tooltipIcon ? (
-        <i className="fa fa-exclamation-triangle form-field__heading-title__tooltip__warning-icon" />
+        <Icon
+          name={IconName.Danger}
+          className="form-field__heading-title__tooltip__warning-icon"
+          size={IconSize.Inherit}
+          style={{ 'vertical-align': 'bottom' }}
+        />
       ) : (
-        tooltipIcon !== '' && <i className="fa fa-question-circle" />
+        tooltipIcon !== '' && (
+          <Icon name={IconName.Question} size={IconSize.Inherit} />
+        )
       )}
     </Tooltip>
   </Box>

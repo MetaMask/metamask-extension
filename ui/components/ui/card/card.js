@@ -5,36 +5,27 @@ import Box from '../box';
 import {
   BackgroundColor,
   BorderColor,
+  BorderRadius,
   BorderStyle,
-  Size,
 } from '../../../helpers/constants/design-system';
 
 const Card = ({
   border = true,
-  padding = 4,
   backgroundColor = BackgroundColor.backgroundDefault,
   children,
   ...props
-}) => {
-  const defaultBorderProps = {
-    borderColor: border && BorderColor.borderMuted,
-    borderRadius: border && Size.MD,
-    borderStyle: border && BorderStyle.solid,
-  };
-
-  return (
-    <Box
-      {...{
-        padding,
-        backgroundColor,
-        ...defaultBorderProps,
-        ...props,
-      }}
-    >
-      {children}
-    </Box>
-  );
-};
+}) => (
+  <Box
+    borderColor={border ? BorderColor.borderMuted : null}
+    borderRadius={border ? BorderRadius.MD : null}
+    borderStyle={border ? BorderStyle.solid : null}
+    backgroundColor={backgroundColor}
+    padding={4}
+    {...props}
+  >
+    {children}
+  </Box>
+);
 
 Card.propTypes = {
   /**
@@ -43,15 +34,10 @@ Card.propTypes = {
    */
   border: PropTypes.bool,
   /**
-   * Padding of the Card component accepts number or an array of 2 numbers.
-   * Defaults to 4 (16px)
-   */
-  padding: Box.propTypes.padding,
-  /**
    * The background color of the card
-   * Defaults to COLORS.BACKGROUND_DEFAULT
+   * Defaults to Color.backgroundDefault
    */
-  backgroundColor: Box.propTypes.backgroundColor,
+  backgroundColor: PropTypes.oneOf(Object.values(BackgroundColor)),
   /**
    * The Card component accepts all Box component props
    */

@@ -7,10 +7,10 @@ import {
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import NetworkDisplay from '../../network-display';
 import Identicon from '../../../ui/identicon';
-import IconCaretLeft from '../../../ui/icon/icon-caret-left';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Icon, IconName } from '../../../component-library';
 
 export default function ConfirmPageContainerHeader({
   onEdit,
@@ -54,7 +54,7 @@ export default function ConfirmPageContainerHeader({
               visibility: showEdit ? 'initial' : 'hidden',
             }}
           >
-            <IconCaretLeft />
+            <Icon name={IconName.ArrowLeft} />
             <span
               data-testid="confirm-page-back-edit-button"
               className="confirm-page-container-header__back-button"

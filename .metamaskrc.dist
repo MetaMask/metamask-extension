@@ -1,16 +1,15 @@
 ; Extra environment variables
-PASSWORD=METAMASK PASSWORD
-INFURA_PROJECT_ID=00000000000
-SEGMENT_WRITE_KEY=
-SWAPS_USE_DEV_APIS=
-NFTS_V1=
-PUBNUB_PUB_KEY=
-PUBNUB_SUB_KEY=
-PORTFOLIO_URL=
-TRANSACTION_SECURITY_PROVIDER=
+; Defaults are set in builds.yml
 
-; Set this to '1' to enable support for Sign-In with Ethereum [EIP-4361](https://eips.ethereum.org/EIPS/eip-4361)
-SIWE_V1=
+; This variable is required
+INFURA_PROJECT_ID=00000000000
+
+;PASSWORD=METAMASK PASSWORD
+,SEGMENT_WRITE_KEY=
+;SWAPS_USE_DEV_APIS=
+;PORTFOLIO_URL=
+;TRANSACTION_SECURITY_PROVIDER=
+;MULTICHAIN=
 
 ; Set this to test changes to the phishing warning page.
-PHISHING_WARNING_PAGE_URL=
+;PHISHING_WARNING_PAGE_URL=

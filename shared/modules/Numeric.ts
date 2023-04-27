@@ -434,7 +434,7 @@ export class Numeric {
     numberOfDecimals?: number,
     roundingMode: number = BigNumber.ROUND_HALF_DOWN,
   ) {
-    if (numberOfDecimals) {
+    if (typeof numberOfDecimals === 'number') {
       return new Numeric(
         this.value.round(numberOfDecimals, roundingMode),
         this.base,

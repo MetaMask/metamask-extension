@@ -75,12 +75,6 @@
   "asset": {
     "message": "Imovina"
   },
-  "attemptToCancel": {
-    "message": "Pokušati otkazati?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Slanjem ovog pokušaja ne jamči se da će se vaša izvorna transakcija otkazati. Ako je pokušaj otkazivanja uspješan, naplaćuje vam se prethodno navedena naknada za prijenos."
-  },
   "attemptingConnect": {
     "message": "Pokušaj povezivanja na podatkovni blok."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
   },
-  "buyWithWyre": {
-    "message": "Kupi $1 Wyerom"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyreom vam se omogućava korištenje kreditnom karticom za polaganje $1 -a izravno na vaš račun za MetaMask."
-  },
   "bytes": {
     "message": "Bajtovi"
   },
   "cancel": {
     "message": "Odustani"
-  },
-  "cancellationGasFee": {
-    "message": "Otkazivanje naknade za gorivo"
   },
   "cancelled": {
     "message": "Otkazano"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Povezivanje na testnu mrežu Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezivanje na testnu mrežu Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Nastavi na uslugu Wyre"
   },
   "contractDeployment": {
     "message": "Primjena ugovora"
@@ -332,13 +317,6 @@
   "general": {
     "message": "Opće"
   },
-  "getEther": {
-    "message": "Dohvati Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Dohvati Ether iz svežnja za $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Testna mreža Goerli"
   },
@@ -432,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
+  },
+  "lineatestnet": {
+    "message": "Testna mreža Linea Goerli"
   },
   "links": {
     "message": "Poveznice"
@@ -632,35 +613,21 @@
   "reset": {
     "message": "Ponovno postavi"
   },
-  "resetAccount": {
-    "message": "Poništi račun"
-  },
-  "resetAccountDescription": {
-    "message": "Poništavanjem se računa uklanja vaša povijest transakcija."
-  },
   "restore": {
     "message": "Vrati"
   },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ako ikada promijenite preglednike ili računala, trebate ovu početnu rečenicu za pristupanje svojim računima. Spremite ih negdje na sigurno i tajno mjesto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE DIJELITE ovu rečenicu ni s kim!"
+    "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Novi URL RPC-a"
   },
   "save": {
     "message": "Spremi"
-  },
-  "saveAsCsvFile": {
-    "message": "Spremi kao datoteku CSV"
   },
   "scanInstructions": {
     "message": "Postavite kôd QR ispred kamere"
@@ -703,12 +670,6 @@
   },
   "settings": {
     "message": "Postavke"
-  },
-  "showAdvancedGasInline": {
-    "message": "Napredno upravljanje gorivom"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Odaberite ovu stavku za prikaz cijene goriva i izravno ograničite kontrole prilikom slanja i potvrđivanja zaslona."
   },
   "showFiatConversionInTestnets": {
     "message": "Prikaži konverziju na usluzi Testnets"
@@ -773,32 +734,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mora biti 11 znakova ili manje."
   },
-  "syncWithMobile": {
-    "message": "Sinkroniziraj s mobilnim telefonom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pazite da nitko ne gleda u vaš zaslon dok skenirate ovaj kôd"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaši su podatci uspješno sinkronizirani. Uživajte u mobilnoj aplikaciji MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Možete sinkronizirati svoje račune i informacije s vašim mobilnim telefonom. Otvorite mobilnu aplikaciju MetaMask, idite u stavku „Postavke” i dodirnite „Sinkroniziraj iz dodatka preglednika”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kad otvorite mobilnu aplikaciju MetaMask po prvi puta, pridržavajte se koraka koji se prikazuju na telefonu."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skenirajte ovaj kôd uporabom mobilne aplikacije MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinkroniziraj s mobilnim telefonom"
-  },
   "terms": {
     "message": "Odredbe uporabe"
-  },
-  "testFaucet": {
-    "message": "Testni snop"
   },
   "tips": {
     "message": "Napojnice"
@@ -915,9 +852,6 @@
   "userName": {
     "message": "Korisničko ime"
   },
-  "viewAccount": {
-    "message": "Prikaz računa"
-  },
   "viewContact": {
     "message": "Prikaži kontakt"
   },
@@ -926,9 +860,6 @@
   },
   "welcomeBack": {
     "message": "Dobro došli natrag!"
-  },
-  "yesLetsTry": {
-    "message": "Da, isprobajmo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."

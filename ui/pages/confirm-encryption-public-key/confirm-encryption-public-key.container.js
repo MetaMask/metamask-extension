@@ -12,6 +12,8 @@ import {
   conversionRateSelector,
   unconfirmedTransactionsListSelector,
   getTargetAccountWithSendEtherInfo,
+  getPreferences,
+  getCurrentCurrency,
 } from '../../selectors';
 
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -24,13 +26,16 @@ function mapStateToProps(state) {
     metamask: { subjectMetadata = {} },
   } = state;
 
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
   const txData = unconfirmedTransactions[0];
 
-  const { msgParams: from } = txData;
-
-  const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
+  const fromAccount = getTargetAccountWithSendEtherInfo(
+    state,
+    txData?.msgParams,
+  );
 
   return {
     txData,
@@ -38,9 +43,12 @@ function mapStateToProps(state) {
     fromAccount,
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
   };
 }
 

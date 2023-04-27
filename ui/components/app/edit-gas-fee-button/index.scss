@@ -7,7 +7,7 @@
     @include H7;
 
     display: flex;
-    align-items: baseline;
+    align-items: center;
     color: var(--color-primary-default);
     background: transparent;
     border: 0;
@@ -15,19 +15,14 @@
     white-space: pre;
   }
 
-  i {
-    color: var(--color-primary-default);
-    margin-right: 2px;
-  }
-
   &__icon {
     font-size: 16px;
-    margin-right: 4px;
+    margin-right: 2px;
   }
 
   &__label {
     font-size: 12px;
-    margin-right: 8px;
+    margin-right: 4px;
   }
 
   .info-tooltip {

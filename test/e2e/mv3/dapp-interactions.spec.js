@@ -12,6 +12,7 @@ describe('MV3 - Dapp interactions', function () {
         balance: convertToHexValue(25000000000000000000),
       },
     ],
+    concurrent: { port: 8546, chainId: 1338 },
   };
   it('should continue to support dapp interactions after service worker re-start', async function () {
     await withFixtures(

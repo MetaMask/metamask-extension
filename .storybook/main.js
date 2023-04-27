@@ -12,6 +12,7 @@ module.exports = {
   features: { buildStoriesJson: true },
   stories: [
     '../ui/**/*.stories.js',
+    '../ui/**/*.stories.tsx',
     '../ui/**/*.stories.mdx',
     './*.stories.mdx',
   ],
@@ -22,6 +23,7 @@ module.exports = {
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
+    '@whitespace/storybook-addon-html'
   ],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
@@ -40,7 +42,7 @@ module.exports = {
       __filename: true,
     };
     config.resolve.alias['webextension-polyfill'] = require.resolve(
-      './__mocks__/webextension-polyfill.js',
+      '../ui/__mocks__/webextension-polyfill.js',
     );
     config.resolve.fallback = {
       child_process: false,
@@ -52,7 +54,7 @@ module.exports = {
       os: false,
       path: false,
       stream: require.resolve('stream-browserify'),
-      _stream_transform: false,
+      _stream_transform: require.resolve('readable-stream/lib/_stream_transform.js'),
     };
     config.module.strictExportPresence = true;
     config.module.rules.push({

@@ -75,12 +75,6 @@
   "asset": {
     "message": "Rasilimali"
   },
-  "attemptToCancel": {
-    "message": "Unajaribu Kubatilisha?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kuwasilisha jaribio hili hakukuhakikishii muamala wako wa awali utabatilishwa. Ikiwa jaribio la kuffuta litafanikiwa, utatozwa ada ya muamala hapo juu."
-  },
   "attemptingConnect": {
     "message": "Inajaribu kuunganisha kwenye blockchain."
   },
@@ -127,17 +121,8 @@
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
-  "buyWithWyre": {
-    "message": "Nunua $1 kwa kutumia Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre inakuwezesha kutumia kadi ya benki kuweka $1 moja kwa moja kwenye akaunti yako ya MetaMask."
-  },
   "cancel": {
     "message": "Ghairi"
-  },
-  "cancellationGasFee": {
-    "message": "Ada ya Kubatilisha Gesi"
   },
   "cancelled": {
     "message": "Imebatilishwa"
@@ -172,11 +157,11 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Endelea kwenye Wyre"
   },
   "contractDeployment": {
     "message": "Kutoa Mkataba"
@@ -326,13 +311,6 @@
   "general": {
     "message": "Jumla"
   },
-  "getEther": {
-    "message": "Pata Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Pata Ether kutoka kwenye mfereji $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
   },
@@ -423,6 +401,9 @@
   },
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
+  },
+  "lineatestnet": {
+    "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
     "message": "Viungo"
@@ -617,35 +598,21 @@
   "reset": {
     "message": "Weka upya"
   },
-  "resetAccount": {
-    "message": "Futa Akaunti"
-  },
-  "resetAccountDescription": {
-    "message": "Kufuta Akaunti yako kutafuta histori ya akaunti yako."
-  },
   "restore": {
     "message": "Rejesha"
   },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ikiwa utabadilisha kisakuzi au kuhamisha kompyuta, utahitaji kirai hiki kianzio ili kufikia akaunti zako. Vihifadhi mahali fulani ambapo ni salamana pa siri."
-  },
   "revealSeedWordsWarning": {
-    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "USISHIRIKI kirai hiki na mtu yeyote!"
+    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"
   },
   "save": {
     "message": "Hifadhi"
-  },
-  "saveAsCsvFile": {
-    "message": "Hifadhi kama Faili la CSV"
   },
   "scanInstructions": {
     "message": "Weka msimbo wa QR mbele ya kamera yako"
@@ -688,12 +655,6 @@
   },
   "settings": {
     "message": "Mipangilio"
-  },
-  "showAdvancedGasInline": {
-    "message": "Udhibiti wa juu wa gesi"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Chagua hii ili uonyeshe bei ya gesi na punguza vidhibiti moja kwa moja kwenye skrini za tuma na thibitisha."
   },
   "showFiatConversionInTestnets": {
     "message": "Onyesha Ubadilishaji kwenye Testnets"
@@ -758,32 +719,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "Alama lazima iwe na herufi 11 au chache."
   },
-  "syncWithMobile": {
-    "message": "Oanisha na simu"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Hakikisha hakuna mtu mwingine anayeangalia kwenye skrini yako unapokuwa unakagua msimbo huu."
-  },
-  "syncWithMobileComplete": {
-    "message": "Umefanikiwa kuoanisha data yako. Furahia programu yako ya simu ya MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Unaweza kuoanisha akaunti zako na taarifa kwa kifaa chako cha simu ya mkononi. Fungua programu ya simu ya MetaMask, kisha nenda kwenye \"Mipangilio\" na bofya kwenye \"Oanisha kutoka kwenye Kiendelezi cha Kivinjari\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ikiwa ndio umefungua tu programu ya simu ya MetaMask kwa mara ya kwanza, fuata hatua kwenye simu yako."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Kagua msimbo huu kwa kutumia programu yako ya simu ya MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Oanisha na simu"
-  },
   "terms": {
     "message": "Masharti ya Matumizi"
-  },
-  "testFaucet": {
-    "message": "Mfereji wa Jaribio"
   },
   "tips": {
     "message": "Michango"
@@ -903,9 +840,6 @@
   "userName": {
     "message": "Jina la mtumiaji"
   },
-  "viewAccount": {
-    "message": "Angalia Akaunti"
-  },
   "viewContact": {
     "message": "Tazama Mawasiliano"
   },
@@ -914,9 +848,6 @@
   },
   "welcomeBack": {
     "message": "Karibu Tena!"
-  },
-  "yesLetsTry": {
-    "message": "Ndiyo, ngoja tujaribu"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."

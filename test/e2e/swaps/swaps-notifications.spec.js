@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 
 const { withFixtures } = require('../helpers');
 
-const { withFixturesOptions, loadSwaps, buildQuote } = require('./shared');
+const { withFixturesOptions, loadExtension, buildQuote } = require('./shared');
 
 describe('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
@@ -60,7 +60,7 @@ describe('Swaps - notifications', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await loadSwaps(driver);
+        await loadExtension(driver);
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'INUINU',
@@ -99,7 +99,7 @@ describe('Swaps - notifications', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await loadSwaps(driver);
+        await loadExtension(driver);
         await buildQuote(driver, {
           amount: 50,
           swapTo: 'USDC',
@@ -134,13 +134,13 @@ describe('Swaps - notifications', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await loadSwaps(driver);
+        await loadExtension(driver);
         await buildQuote(driver, {
           amount: 2,
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
         });
         await driver.waitForSelector({
-          css: '.popover-header__title',
+          css: '.popover-header',
           text: 'Import token?',
         });
         await driver.clickElement(

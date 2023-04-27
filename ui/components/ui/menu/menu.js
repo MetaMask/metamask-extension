@@ -8,6 +8,7 @@ const Menu = ({
   anchorElement,
   children,
   className,
+  'data-testid': dataTestId,
   onHide,
   popperOptions,
 }) => {
@@ -24,7 +25,11 @@ const Menu = ({
 
   return createPortal(
     <>
-      <div className="menu__background" onClick={onHide} />
+      <div
+        className="menu__background"
+        data-testid={dataTestId}
+        onClick={onHide}
+      />
       <div
         className={classnames('menu__container', className)}
         data-testid={className}
@@ -45,6 +50,7 @@ Menu.propTypes = {
   className: PropTypes.string,
   onHide: PropTypes.func.isRequired,
   popperOptions: PropTypes.object,
+  dataTestId: PropTypes.string,
 };
 
 Menu.defaultProps = {

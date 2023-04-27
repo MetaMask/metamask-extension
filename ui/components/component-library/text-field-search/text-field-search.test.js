@@ -31,20 +31,20 @@ describe('TextFieldSearch', () => {
     expect(getByRole('searchbox')).toHaveValue('test value');
     expect(getByRole('button', { name: /Clear/u })).toBeDefined();
   });
-  it('should still render with the rightAccessory if it exists', async () => {
+  it('should still render with the endAccessory if it exists', async () => {
     const fn = jest.fn();
     // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
     const { user, getByRole, getByText } = renderControlledInput(
       TextFieldSearch,
       {
         clearButtonOnClick: fn,
-        rightAccessory: <div>right-accessory</div>,
+        endAccessory: <div>end-accessory</div>,
       },
     );
     await user.type(getByRole('searchbox'), 'test value');
     expect(getByRole('searchbox')).toHaveValue('test value');
     expect(getByRole('button', { name: /Clear/u })).toBeDefined();
-    expect(getByText('right-accessory')).toBeDefined();
+    expect(getByText('end-accessory')).toBeDefined();
   });
   it('should fire onClick event when passed to clearButtonOnClick when clear button is clicked', async () => {
     // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput

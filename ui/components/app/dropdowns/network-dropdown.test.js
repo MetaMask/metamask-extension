@@ -6,13 +6,23 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { LOCALHOST_RPC_URL } from '../../../../shared/constants/network';
 import NetworkDropdown from './network-dropdown';
 
+// Mock linea test network feature toggle
+jest.mock('../../../../shared/constants/network', () => {
+  const constants = jest.requireActual('../../../../shared/constants/network');
+  return {
+    ...constants,
+    SHOULD_SHOW_LINEA_TESTNET_NETWORK: true,
+  };
+});
+
 describe('Network Dropdown', () => {
   const createMockStore = configureMockStore([thunk]);
 
   describe('NetworkDropdown in appState in false', () => {
     const mockState = {
       metamask: {
-        network: '1',
+        networkId: '1',
+        networkStatus: 'available',
         provider: {
           type: 'test',
         },
@@ -46,7 +56,8 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState is true and show test networks is true', () => {
     const mockState = {
       metamask: {
-        network: '1',
+        networkId: '1',
+        networkStatus: 'available',
         provider: {
           type: 'test',
         },
@@ -54,11 +65,17 @@ describe('Network Dropdown', () => {
         preferences: {
           showTestNetworks: true,
         },
-        frequentRpcListDetail: [
-          { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
-          { rpcUrl: 'http://localhost:7546' },
-          { rpcUrl: LOCALHOST_RPC_URL, nickname: 'localhost' },
-        ],
+        networkConfigurations: {
+          networkConfigurationId1: {
+            chainId: '0x1a',
+            rpcUrl: 'http://localhost:7545',
+          },
+          networkConfigurationId2: { rpcUrl: 'http://localhost:7546' },
+          networkConfigurationId3: {
+            rpcUrl: LOCALHOST_RPC_URL,
+            nickname: 'localhost',
+          },
+        },
       },
       appState: {
         networkDropdownOpen: true,
@@ -97,6 +114,13 @@ describe('Network Dropdown', () => {
       expect(localhostColorIndicator).toBeInTheDocument();
     });
 
+    it('checks background color for seventh ColorIndicator', () => {
+      const lineaColorIndicator = screen.queryByTestId(
+        'color-icon-lineatestnet',
+      );
+      expect(lineaColorIndicator).toBeInTheDocument();
+    });
+
     it('checks that Add Network button is rendered', () => {
       const addNetworkButton = screen.queryByText('Add network');
       expect(addNetworkButton).toBeInTheDocument();
@@ -104,15 +128,15 @@ describe('Network Dropdown', () => {
 
     it('shows test networks in the dropdown', () => {
       const networkItems = screen.queryAllByTestId(/network-item/u);
-
-      expect(networkItems).toHaveLength(6);
+      expect(networkItems).toHaveLength(7);
     });
   });
 
   describe('NetworkDropdown in appState is true and show test networks is false', () => {
     const mockState = {
       metamask: {
-        network: '1',
+        networkId: '1',
+        networkStatus: 'available',
         provider: {
           type: 'test',
         },
@@ -120,10 +144,13 @@ describe('Network Dropdown', () => {
         preferences: {
           showTestNetworks: false,
         },
-        frequentRpcListDetail: [
-          { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
-          { rpcUrl: 'http://localhost:7546' },
-        ],
+        networkConfigurations: {
+          networkConfigurationId1: {
+            chainId: '0x1a',
+            rpcUrl: 'http://localhost:7545',
+          },
+          networkConfigurationId2: { rpcUrl: 'http://localhost:7546' },
+        },
       },
       appState: {
         networkDropdownOpen: true,

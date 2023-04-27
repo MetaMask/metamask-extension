@@ -75,12 +75,6 @@
   "asset": {
     "message": "Aktiv"
   },
-  "attemptToCancel": {
-    "message": "Forsøg på Annullering?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Indsendelse af dette forsøg garanterer ikke, at din originale transaktion annulleres. Hvis annulleringsforsøget lykkes, vil du blive opkrævet ovenstående transaktionsgebyr."
-  },
   "attemptingConnect": {
     "message": "Forsøger at oprette forbindelse til blokkæden."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Din browser er ikke understøttet..."
   },
-  "buyWithWyre": {
-    "message": "Køb $1 med Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre lader dig bruge et kreditkort til at indbetale $1 på din MetaMask-konto."
-  },
   "bytes": {
     "message": "Byte"
   },
   "cancel": {
     "message": "Afbryd"
-  },
-  "cancellationGasFee": {
-    "message": "Gebyr for brændstofannullering"
   },
   "cancelled": {
     "message": "Annulleret"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
+  "connectingToLineaTestnet": {
+    "message": "Opretter forbindelse til Linea Goerli Testnetværk"
+  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
-  },
-  "continueToWyre": {
-    "message": "Fortsæt til Wyre"
   },
   "contractDeployment": {
     "message": "Kontraktanvendelse"
@@ -332,13 +317,6 @@
   "general": {
     "message": "Generelt"
   },
-  "getEther": {
-    "message": "Hent Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Hent Ether fra en hane til $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Goerli-testnetværk"
   },
@@ -429,6 +407,9 @@
   },
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
+  },
+  "lineatestnet": {
+    "message": "Linea-testnetværk"
   },
   "loadMore": {
     "message": "Indlæs Mere"
@@ -620,35 +601,21 @@
   "reset": {
     "message": "Nulstil"
   },
-  "resetAccount": {
-    "message": "Nulstil Konto"
-  },
-  "resetAccountDescription": {
-    "message": "Nulstilling af din konto vil rydde din transaktionshistorik."
-  },
   "restore": {
     "message": "Gendan"
   },
   "revealSeedWords": {
     "message": "Vis Seedord"
   },
-  "revealSeedWordsDescription": {
-    "message": "Hvis du nogensinde skifter browsere eller flytter computere, har du brug for denne backupsætning for at få adgang til dine konti. Gem den et sted sikkert og hemmeligt."
-  },
   "revealSeedWordsWarning": {
-    "message": "Disse ord kan bruges til at stjæle alle dine konti."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "DEL IKKE denne sætning med nogen!"
+    "message": "Disse ord kan bruges til at stjæle alle dine konti.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"
   },
   "save": {
     "message": "Gem"
-  },
-  "saveAsCsvFile": {
-    "message": "Gem som CSV-fil"
   },
   "scanInstructions": {
     "message": "Placer QR-koden foran dit kamera"
@@ -688,12 +655,6 @@
   },
   "settings": {
     "message": "Indstillinger "
-  },
-  "showAdvancedGasInline": {
-    "message": "Avanceret Gas-styring"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vælg dette for at vise brændstofprisen og begræns styringen direkte på afsendelses- og bekræftelseskærmene."
   },
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på testnet"
@@ -755,32 +716,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet skal være mindst 11 tegn."
   },
-  "syncWithMobile": {
-    "message": "Synkronisér med mobil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Sørg for at der ikke er nogen der kigger på din skærm, når du scanner denne kode"
-  },
-  "syncWithMobileComplete": {
-    "message": "Dine data er blevet synkroniseret korrekt. Nyd MetaMask-mobilappen!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Du kan synkronisere dine konti og informationer med din mobilenhed. Åbn MetaMask-mobilappen, gå til \"Indstillinger\" og tryk på \"Synkroniser fra browserudvidelse\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Hvis du netop har åbnet MetaMask-mobilappen for første gang, skal du blot følge trinnene på din telefon."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scan denne kode med din MetaMask-mobilapp"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkroniser med mobil"
-  },
   "terms": {
     "message": "Brugsbetingelser"
-  },
-  "testFaucet": {
-    "message": "Testhane"
   },
   "tips": {
     "message": "Donationer"
@@ -894,9 +831,6 @@
   "userName": {
     "message": "Brugernavn"
   },
-  "viewAccount": {
-    "message": "Vis konto"
-  },
   "viewContact": {
     "message": "Vis kontakt"
   },
@@ -905,9 +839,6 @@
   },
   "welcomeBack": {
     "message": "Velkommen tilbage!"
-  },
-  "yesLetsTry": {
-    "message": "Ja, lad os prøve"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."

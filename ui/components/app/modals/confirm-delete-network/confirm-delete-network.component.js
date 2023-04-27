@@ -5,7 +5,7 @@ import Modal, { ModalContent } from '../../modal';
 export default class ConfirmDeleteNetwork extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    delRpcTarget: PropTypes.func.isRequired,
+    removeNetworkConfiguration: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
     target: PropTypes.string.isRequired,
   };
@@ -15,7 +15,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   handleDelete = () => {
-    this.props.delRpcTarget(this.props.target).then(() => {
+    this.props.removeNetworkConfiguration(this.props.target).then(() => {
       this.props.onConfirm();
       this.props.hideModal();
     });

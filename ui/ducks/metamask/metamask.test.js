@@ -41,7 +41,8 @@ describe('MetaMask Reducers', () => {
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
         useCurrencyRateCheck: true,
-        network: '5',
+        networkId: '5',
+        networkStatus: 'available',
         provider: {
           type: 'testnet',
           chainId: '0x5',
@@ -156,6 +157,17 @@ describe('MetaMask Reducers', () => {
     expect(state.isAccountMenuOpen).toStrictEqual(true);
   });
 
+  it('toggles network menu', () => {
+    const state = reduceMetamask(
+      {},
+      {
+        type: actionConstants.TOGGLE_NETWORK_MENU,
+      },
+    );
+
+    expect(state.isNetworkMenuOpen).toStrictEqual(true);
+  });
+
   it('updates value of tx by id', () => {
     const oldState = {
       currentNetworkTxList: [
@@ -220,6 +232,17 @@ describe('MetaMask Reducers', () => {
     });
 
     expect(state.pendingTokens).toStrictEqual({});
+  });
+
+  it('disables desktop', () => {
+    const enabledMetaMaskState = {
+      desktopEnabled: true,
+    };
+    const enabledDesktopMetaMask = reduceMetamask(enabledMetaMaskState, {
+      type: actionConstants.FORCE_DISABLE_DESKTOP,
+    });
+
+    expect(enabledDesktopMetaMask.desktopEnabled).toStrictEqual(false);
   });
 
   describe('metamask state selectors', () => {

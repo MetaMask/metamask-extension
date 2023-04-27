@@ -19,6 +19,6 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   permissions: {
-    eth_accounts: true,
+    eth_accounts: {},
   },
 };

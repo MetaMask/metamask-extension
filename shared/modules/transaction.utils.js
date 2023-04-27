@@ -176,6 +176,8 @@ export async function determineTransactionType(txParams, query) {
     contractCode = resultCode;
 
     if (isContractAddress) {
+      const hasValue = txParams.value && txParams.value !== '0x0';
+
       const tokenMethodName = [
         TransactionType.tokenMethodApprove,
         TransactionType.tokenMethodSetApprovalForAll,
@@ -185,7 +187,7 @@ export async function determineTransactionType(txParams, query) {
       ].find((methodName) => isEqualCaseInsensitive(methodName, name));
 
       result =
-        data && tokenMethodName
+        data && tokenMethodName && !hasValue
           ? tokenMethodName
           : TransactionType.contractInteraction;
     } else {

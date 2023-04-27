@@ -1,8 +1,9 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../ui/button';
+import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../ui/box/box';
+import { Button } from '../../component-library';
+import Box from '../../ui/box';
 import {
   AlignItems,
   DISPLAY,
@@ -74,11 +75,10 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const renderPreCompleteContent = useCallback(() => {
     return (
       <Box
-        className={`hold-to-reveal-button__absolute-fill ${
-          isUnlocking ? 'hold-to-reveal-button__invisible' : null
-        } ${
-          hasTriggeredUnlock ? 'hold-to-reveal-button__main-icon-show' : null
-        }`}
+        className={classnames('hold-to-reveal-button__absolute-fill', {
+          'hold-to-reveal-button__absolute-fill': isUnlocking,
+          'hold-to-reveal-button__main-icon-show': hasTriggeredUnlock,
+        })}
       >
         <Box className="hold-to-reveal-button__absolute-fill">
           <svg className="hold-to-reveal-button__circle-svg">
@@ -120,9 +120,9 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const renderPostCompleteContent = useCallback(() => {
     return isUnlocking ? (
       <div
-        className={`hold-to-reveal-button__absolute-fill ${
-          hasTriggeredUnlock ? 'hold-to-reveal-button__unlock-icon-hide' : null
-        }`}
+        className={classnames('hold-to-reveal-button__absolute-fill', {
+          'hold-to-reveal-button__unlock-icon-hide': hasTriggeredUnlock,
+        })}
         onAnimationEnd={resetAnimationStates}
       >
         <div
@@ -169,15 +169,13 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
     <Button
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-      type="primary"
-      icon={
-        <Box marginRight={2} className="hold-to-reveal-button__icon-container">
-          {renderPreCompleteContent()}
-          {renderPostCompleteContent()}
-        </Box>
-      }
       className="hold-to-reveal-button__button-hold"
+      textProps={{ display: DISPLAY.FLEX, alignItems: AlignItems.center }}
     >
+      <Box className="hold-to-reveal-button__icon-container" marginRight={2}>
+        {renderPreCompleteContent()}
+        {renderPostCompleteContent()}
+      </Box>
       {buttonText}
     </Button>
   );

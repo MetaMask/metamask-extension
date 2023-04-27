@@ -66,12 +66,6 @@
   "approved": {
     "message": "Inaprubahan"
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Ang pagsusumite sa pagtangkang ito ay hindi makakagarantiya na nakansela ang iyong orihinal na transaksyon. Kung matagumpay ang pagtangkang magkansela, sisingilin sa iyo ang bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -115,17 +109,8 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "buyWithWyre": {
-    "message": "Bumili ng $1 gamit ang Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Binibigyang-daan ka ng Wyre na gumamit ng credit card para magdeposito ng $1 nang direkta sa iyong MetaMask account."
-  },
   "cancel": {
     "message": "Kanselahin"
-  },
-  "cancellationGasFee": {
-    "message": "Gas Fee sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -157,11 +142,11 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Kumokonekta sa Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "continueToWyre": {
-    "message": "Magpatuloy sa Wyre"
   },
   "contractDeployment": {
     "message": "Deployment ng Contract"
@@ -304,13 +289,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getEther": {
-    "message": "Kumuha ng Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Kumuha ng Ether mula sa isang faucet para sa $1",
-    "description": "Displays network name for Ether faucet"
   },
   "hardwareWalletConnected": {
     "message": "Nakakonekta ang hardware wallet"
@@ -566,35 +544,21 @@
   "reset": {
     "message": "I-reset"
   },
-  "resetAccount": {
-    "message": "I-reset ang Account"
-  },
-  "resetAccountDescription": {
-    "message": "Kapag na-reset ang iyong account, maki-clear ang iyong kasaysayan ng transaksyon."
-  },
   "restore": {
     "message": "Ipanumbalik"
   },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kung lilipat ka ng browser o magpapalit ka ng computer, kakailanganin mo ang seed phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang lugar na ligtas at lihim."
-  },
   "revealSeedWordsWarning": {
-    "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "HUWAG ibahagi ang pariralang ito sa kahit sino!"
+    "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"
   },
   "save": {
     "message": "I-save"
-  },
-  "saveAsCsvFile": {
-    "message": "I-save bilang CSV File"
   },
   "scanInstructions": {
     "message": "Ilagay ang QR code sa harap ng iyong camera"
@@ -637,12 +601,6 @@
   },
   "settings": {
     "message": "Mga Setting"
-  },
-  "showAdvancedGasInline": {
-    "message": "Mga advanced na kontrol sa gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Piliin ito para ipakita ang presyo ng gas at limitahan ang mga kontrol nang direkta sa screen ng pagpapadala at pagkumpirma."
   },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa mga Testnet"
@@ -700,27 +658,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Ang simbolo ay dapat na 11 character o mas kaunti."
-  },
-  "syncWithMobile": {
-    "message": "I-sync sa mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Tiyaking walang ibang taong tumitingin sa iyong screen kapag sina-scan mo ang code na ito"
-  },
-  "syncWithMobileComplete": {
-    "message": "Matagumpay na na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Maaari mong i-sync ang iyong mga account at impormasyon sa iyong mobile device. Buksan ang MetaMask mobile app, pumunta sa \"Settings\" at mag-tap sa \"Sync from Browser Extension\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kung bubuksan mo ang MetaMask Mobile app sa unang pagkakataon, sundin lang ang mga hakbang sa iyong telepono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "I-scan ang code na ito sa iyong MetaMask mobile app"
-  },
-  "syncWithMobileTitle": {
-    "message": "I-sync sa mobile"
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"
@@ -834,9 +771,6 @@
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang client"
   },
-  "viewAccount": {
-    "message": "Tingnan ang Account"
-  },
   "viewContact": {
     "message": "Tingnan ang Contact"
   },
@@ -845,9 +779,6 @@
   },
   "welcomeBack": {
     "message": "Welcome Ulit!"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang access sa camera para magamit ang feature na ito."

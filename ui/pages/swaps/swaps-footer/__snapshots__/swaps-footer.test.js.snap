@@ -13,7 +13,7 @@ exports[`SwapsFooter renders the component with initial props 1`] = `
       >
         <footer>
           <button
-            class="button btn--rounded btn-secondary page-container__footer-button swaps-footer__custom-page-container-footer-button-class"
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel swaps-footer__custom-page-container-footer-button-class"
             data-testid="page-container-footer-cancel"
             role="button"
             tabindex="0"

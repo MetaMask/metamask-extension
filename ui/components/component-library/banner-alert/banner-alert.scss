@@ -1,0 +1,16 @@
+.mm-banner-alert {
+  border-left: 4px solid var(--color-primary-default);
+
+  &--severity-danger {
+    border-left-color: var(--color-error-default);
+  }
+
+  &--severity-warning {
+    border-left-color: var(--color-warning-default);
+  }
+
+  &--severity-success {
+    border-left-color: var(--color-success-default);
+  }
+}
+
