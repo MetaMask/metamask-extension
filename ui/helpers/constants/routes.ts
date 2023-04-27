@@ -20,10 +20,6 @@ const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
-const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
@@ -32,6 +28,11 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
+const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
+const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
@@ -212,6 +213,7 @@ export {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CUSTODY_ACCOUNT_DONE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
