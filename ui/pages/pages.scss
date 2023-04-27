@@ -12,7 +12,7 @@
 @import 'connected-accounts/index';
 @import 'connected-sites/index';
 @import 'create-account/index';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import "institutional/connect-custody/index";
 @import "institutional/custody/index";
 @import "institutional/institutional-entity-done-page/index";
