@@ -43,6 +43,7 @@
 @import 'snaps/snap-settings-card/index';
 @import 'snaps/update-snap-permission-list/index';
 @import 'snaps/copyable/index';
+@import 'snaps/snap-version/index';
 @import 'gas-details-item/index';
 @import 'gas-details-item/gas-details-item-title/index';
 @import 'gas-timing/index';
@@ -104,7 +105,7 @@
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
 ///: END:ONLY_INCLUDE_IN

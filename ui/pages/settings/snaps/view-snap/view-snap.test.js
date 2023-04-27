@@ -48,12 +48,7 @@ describe('ViewSnap', () => {
     // Snap version info
     expect(getByText('v5.1.2')).toBeDefined();
     // Enable Snap
-    expect(getByText('Enable snap')).toBeDefined();
-    expect(
-      getByText(
-        'Your installed snap will only have access to its permissions and run if it’s enabled.',
-      ),
-    ).toBeDefined();
+    expect(getByText('Enable')).toBeDefined();
     expect(container.getElementsByClassName('toggle-button')?.length).toBe(1);
     // Permissions
     expect(getByText('Permissions')).toBeDefined();

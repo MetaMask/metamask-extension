@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/rpc-methods';
-import { getSnapPrefix } from '@metamask/snaps-utils';
+import classnames from 'classnames';
 import Button from '../../../../components/ui/button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  Size,
+  Color,
+  FLEX_WRAP,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
-import ToggleButton from '../../../../components/ui/toggle-button';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
-import Tooltip from '../../../../components/ui/tooltip';
+
 import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import {
-  disableSnap,
-  enableSnap,
   removeSnap,
   removePermissionsFor,
   updateCaveat,
@@ -34,18 +32,17 @@ import {
   getPermissionSubjects,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
-import {
-  formatDate,
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
-import { ButtonLink, Text } from '../../../../components/component-library';
+import { getSnapName } from '../../../../helpers/utils/util';
+import { Text, BUTTON_VARIANT } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
+import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
+import { DelineatorType } from '../../../../helpers/constants/flask';
 
 function ViewSnap() {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
+  const descriptionRef = useRef(null);
   const { pathname } = location;
   // The snap ID is in URI-encoded form in the last path segment of the URL.
   const decodedSnapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
@@ -55,12 +52,22 @@ function ViewSnap() {
     .find((snapState) => snapState.id === decodedSnapId);
 
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
 
   useEffect(() => {
     if (!snap) {
       history.push(SNAPS_LIST_ROUTE);
     }
   }, [history, snap]);
+
+  useEffect(() => {
+    setIsOverflowing(
+      descriptionRef.current &&
+        descriptionRef.current.offsetHeight <
+          descriptionRef.current.scrollHeight,
+    );
+  }, [descriptionRef]);
 
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithSnapPermission(state, snap?.id),
@@ -73,14 +80,6 @@ function ViewSnap() {
     getTargetSubjectMetadata(state, snap?.id),
   );
   const dispatch = useDispatch();
-
-  const onToggle = () => {
-    if (snap.enabled) {
-      dispatch(disableSnap(snap.id));
-    } else {
-      dispatch(enableSnap(snap.id));
-    }
-  };
 
   const onDisconnect = (connectedOrigin, snapId) => {
     const caveatValue =
@@ -110,121 +109,51 @@ function ViewSnap() {
     return null;
   }
 
-  const versionHistory = snap.versionHistory ?? [];
-  const installInfo = versionHistory.length
-    ? versionHistory[versionHistory.length - 1]
-    : undefined;
-  const packageName = snap.id && removeSnapIdPrefix(snap.id);
-  const snapPrefix = snap.id && getSnapPrefix(snap.id);
-  const isNPM = snapPrefix === 'npm:';
-  const url = isNPM
-    ? `https://www.npmjs.com/package/${packageName}`
-    : packageName;
   const snapName = getSnapName(snap.id, targetSubjectMetadata);
+
+  const shouldDisplayMoreButton = isOverflowing && !isDescriptionOpen;
+  const handleMoreClick = () => {
+    setIsDescriptionOpen(true);
+  };
 
   return (
     <Box
       className="view-snap"
-      paddingBottom={8}
-      paddingLeft={3}
-      paddingRight={3}
+      paddingBottom={[4, 8]}
+      paddingTop={[4, 8]}
+      paddingLeft={4}
+      paddingRight={4}
     >
-      <Box
-        className="view-snap__header"
-        paddingTop={8}
-        marginLeft={4}
-        marginRight={4}
-      >
-        <SnapAuthorship snapId={snap.id} />
-      </Box>
-      <Box
-        className="view-snap__description"
-        marginTop={4}
-        marginLeft={4}
-        marginRight={4}
-      >
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-          {snap.manifest.description}
-        </Text>
-      </Box>
-      <Box
-        className="view-snap__version_info"
-        marginTop={2}
-        marginLeft={4}
-        marginRight={4}
-      >
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-          {`${t('youInstalled')} `}
-          <span className="view-snap__version_info__version-number">
-            v{snap.version}
-          </span>
-          {` ${t('ofTextNofM')} `}
-          <ButtonLink
-            size={Size.auto}
-            href={url}
-            target="_blank"
-            className="view-snap__version_info__link"
+      <SnapAuthorship snapId={snap.id} snap={snap} expanded />
+      <Box className="view-snap__description" marginTop={[4, 7]}>
+        <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
+          <Box
+            className={classnames('view-snap__description__wrapper', {
+              open: isDescriptionOpen,
+            })}
+            ref={descriptionRef}
           >
-            {packageName}
-          </ButtonLink>
-          {installInfo && ` ${t('from').toLowerCase()} `}
-          {installInfo && (
-            <ButtonLink
-              size={Size.auto}
-              href={installInfo.origin}
-              target="_blank"
-              className="view-snap__version_info__link"
-            >
-              {installInfo.origin}
-            </ButtonLink>
-          )}
-          {installInfo &&
-            ` ${t('on').toLowerCase()} ${formatDate(
-              installInfo.date,
-              'dd MMM yyyy',
-            )}`}
-          .
-        </Text>
-      </Box>
-      <Box
-        className="view-snap__enable"
-        marginTop={12}
-        marginLeft={4}
-        marginRight={4}
-      >
-        <Text variant={TextVariant.bodyLgMedium}>{t('enableSnap')}</Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textDefault}
-          marginBottom={4}
-        >
-          {t('enableSnapDescription')}
-        </Text>
-        <Box className="view-snap__enable__tooltip_wrapper">
-          <Tooltip interactive position="left" html={t('snapsToggle')}>
-            <ToggleButton
-              value={snap.enabled}
-              onToggle={onToggle}
-              className="view-snap__toggle-button"
-            />
-          </Tooltip>
-        </Box>
+            <Text>{snap?.manifest.description}</Text>
+            {shouldDisplayMoreButton && (
+              <Button
+                className="view-snap__description__more-button"
+                type={BUTTON_VARIANT.LINK}
+                onClick={handleMoreClick}
+              >
+                <Text color={Color.infoDefault}>{t('more')}</Text>
+              </Button>
+            )}
+          </Box>
+        </SnapDelineator>
       </Box>
       <Box className="view-snap__permissions" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium} marginLeft={4} marginRight={4}>
-          {t('permissions')}
-        </Text>
+        <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
         <SnapPermissionsList
           permissions={permissions ?? {}}
           targetSubjectMetadata={targetSubjectMetadata}
         />
       </Box>
-      <Box
-        className="view-snap__connected-sites"
-        marginTop={12}
-        marginLeft={4}
-        marginRight={4}
-      >
+      <Box className="view-snap__connected-sites" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
           {t('connectedSites')}
         </Text>
@@ -235,12 +164,7 @@ function ViewSnap() {
           }}
         />
       </Box>
-      <Box
-        className="view-snap__remove"
-        marginTop={12}
-        marginLeft={4}
-        marginRight={4}
-      >
+      <Box className="view-snap__remove" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium} color={TextColor.textDefault}>
           {t('removeSnap')}
         </Text>
@@ -253,7 +177,13 @@ function ViewSnap() {
             type="danger"
             onClick={() => setIsShowingRemoveWarning(true)}
           >
-            <Text variant={TextVariant.bodyMd} color={TextColor.errorDefault}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.errorDefault}
+              flexWrap={FLEX_WRAP.NO_WRAP}
+              ellipsis
+              style={{ overflow: 'hidden' }}
+            >
               {`${t('remove')} ${snapName}`}
             </Text>
           </Button>
