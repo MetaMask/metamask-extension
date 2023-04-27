@@ -126,7 +126,7 @@ const PATH_NAME_MAP = {
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional features done',
+  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
   ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
@@ -161,6 +161,9 @@ const PATH_NAME_MAP = {
     'Decrypt Message Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
+  ///: END:ONLY_INCLUDE_IN
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',

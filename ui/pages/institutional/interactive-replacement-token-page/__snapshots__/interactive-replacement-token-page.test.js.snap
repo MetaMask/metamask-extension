@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Interactive Replacement Token Page should reject if there are errors 1`] = `
+<div>
+  <div
+    class="box page-container box--flex-direction-row"
+    data-testid="interactive-replacement-token"
+  >
+    <div
+      class="box page-container__header false box--flex-direction-row"
+    >
+      <div
+        class="box page-container__title box--flex-direction-row"
+      >
+        Replace custodian token
+         
+        
+      </div>
+      <div
+        class="box page-container__subtitle box--flex-direction-row"
+      >
+        This is will replace the custodian token for the following address:
+      </div>
+    </div>
+    <div
+      class="box page-container__content box--flex-direction-row"
+    >
+      <div
+        class="box interactive-replacement-token-page box--margin-right-7 box--margin-left-7 box--display-flex box--flex-direction-row box--color-text-alternative"
+        overflowwrap="break-word"
+      >
+        <div
+          class="box box--display-flex box--flex-direction-column box--width-full"
+          data-testid="interactive-replacement-token-page"
+        />
+      </div>
+    </div>
+    <div
+      class="box page-container__footer box--flex-direction-row"
+    >
+      <footer>
+        <div
+          class="pulse-loader"
+        >
+          <div
+            class="pulse-loader__loading-dot-one"
+          />
+          <div
+            class="pulse-loader__loading-dot-two"
+          />
+          <div
+            class="pulse-loader__loading-dot-three"
+          />
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Interactive Replacement Token Page should reject if there are errors 2`] = `
+<div>
+  <div
+    class="box page-container box--flex-direction-row"
+    data-testid="interactive-replacement-token"
+  >
+    <div
+      class="box page-container__header error box--flex-direction-row"
+    >
+      <div
+        class="box page-container__title box--flex-direction-row"
+      >
+        Replace custodian token
+         
+        failed
+      </div>
+    </div>
+    <div
+      class="box page-container__content box--flex-direction-row"
+    >
+      <div
+        class="box interactive-replacement-token-page box--margin-right-7 box--margin-left-7 box--display-flex box--flex-direction-row box--color-text-alternative"
+        overflowwrap="break-word"
+      >
+        <p
+          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          data-testid="connect-error-message"
+        >
+          Please go to displayName and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again.
+        </p>
+        <div
+          class="box box--display-flex box--flex-direction-column box--width-full"
+          data-testid="interactive-replacement-token-page"
+        />
+      </div>
+    </div>
+    <div
+      class="box page-container__footer box--flex-direction-row"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-default btn--large page-container__footer-button"
+          role="button"
+          tabindex="0"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary btn--large page-container__footer-button"
+          role="button"
+          tabindex="0"
+        >
+          displayName
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
