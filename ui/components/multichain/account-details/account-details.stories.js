@@ -17,8 +17,4 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <div>
-    <AccountDetails {...args} />
-  </div>
-);
+export const DefaultStory = (args) => <AccountDetails {...args} />;

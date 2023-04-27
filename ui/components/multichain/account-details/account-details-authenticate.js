@@ -37,7 +37,7 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
   return (
     <>
       <Text marginTop={6} variant={TextVariant.bodySm}>
-        {t('enterPassword')}
+        {t('enterYourPassword')}
       </Text>
       <TextField
         type="password"

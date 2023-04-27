@@ -11,9 +11,7 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
-  BannerAlert,
   ButtonIcon,
-  ButtonPrimary,
   IconName,
   PopoverHeader,
   Text,
@@ -27,16 +25,13 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
   TextVariant,
-  SEVERITIES,
   FontWeight,
-  BorderRadius,
-  BorderColor,
   Size,
 } from '../../../helpers/constants/design-system';
 import { AddressCopyButton } from '../address-copy-button';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
+import { AccountDetailsKey } from './account-details-key';
 
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
@@ -51,7 +46,6 @@ export const AccountDetails = ({ address }) => {
   const privateKey = useSelector(
     (state) => state.appState.accountDetail.privateKey,
   );
-  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
 
   const onClose = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
@@ -107,14 +101,6 @@ export const AccountDetails = ({ address }) => {
       }
       onClose={onClose}
     >
-      {attemptingExport === false ? (
-        <AccountDetailsDisplay
-          accounts={accounts}
-          accountName={name}
-          address={address}
-          onExportClick={() => setAttemptingExport(true)}
-        />
-      ) : null}
       {attemptingExport ? (
         <>
           <Box
@@ -134,45 +120,23 @@ export const AccountDetails = ({ address }) => {
             <AddressCopyButton address={address} shorten />
           </Box>
           {privateKey ? (
-            <>
-              <Text marginTop={6}>{t('privateKeyCopyWarning', [name])}</Text>
-              <Box
-                display={DISPLAY.FLEX}
-                flexDirection={FLEX_DIRECTION.ROW}
-                alignItems={AlignItems.center}
-                borderRadius={BorderRadius.SM}
-                borderWidth={1}
-                borderColor={BorderColor.default}
-                padding={4}
-                gap={4}
-              >
-                <Text
-                  variant={TextVariant.bodySm}
-                  style={{ wordBreak: 'break-word' }}
-                >
-                  {privateKey}
-                </Text>
-                <ButtonIcon
-                  onClick={() => handlePrivateKeyCopy(privateKey)}
-                  iconName={
-                    privateKeyCopied ? IconName.CopySuccess : IconName.Copy
-                  }
-                />
-              </Box>
-              <BannerAlert severity={SEVERITIES.DANGER} marginTop={4}>
-                <Text variant={TextVariant.bodySm}>
-                  {t('privateKeyWarning')}
-                </Text>
-              </BannerAlert>
-              <ButtonPrimary marginTop={6} onClick={onClose}>
-                {t('done')}
-              </ButtonPrimary>
-            </>
+            <AccountDetailsKey
+              accountName={name}
+              onClose={onClose}
+              privateKey={privateKey}
+            />
           ) : (
             <AccountDetailsAuthenticate address={address} onCancel={onClose} />
           )}
         </>
-      ) : null}
+      ) : (
+        <AccountDetailsDisplay
+          accounts={accounts}
+          accountName={name}
+          address={address}
+          onExportClick={() => setAttemptingExport(true)}
+        />
+      )}
     </Popover>
   );
 };
