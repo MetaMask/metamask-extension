@@ -6,7 +6,7 @@ import {
   BannerAlert,
   Button,
   ButtonIcon,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   FormTextField,
   Icon,
   IconName,
@@ -33,22 +33,13 @@ const EthSignModal = ({ hideModal }) => {
   const [isEthSignChecked, setIsEthSignChecked] = useState(false);
   const [showTextField, setShowTextField] = useState(false);
   const [inputKeyword, setInputKeyword] = useState('');
-  const [showEnable, setShowEnable] = useState(false);
-  const [showError, setShowError] = useState(false);
+
   const t = useI18nContext();
   const handleCancel = () => {
     hideModal();
   };
-  const handleKeyPress = (event) => {
-    if (inputKeyword !== '' && event.key === 'Enter') {
-      event.preventDefault();
-      if (inputKeyword === 'I only sign what I understand') {
-        setShowEnable(true);
-      } else {
-        setShowError(true);
-      }
-    }
-  };
+
+  const isValid = inputKeyword === 'I only sign what I understand';
   return (
     <Box
       className="eth-sign-modal"
@@ -94,13 +85,15 @@ const EthSignModal = ({ hideModal }) => {
         <FormTextField
           id="enter-eth-sign-text"
           label="Enter “I only sign what I understand” to continue"
-          error={showError}
-          helpText={showError ? `The text is incorrect. Try again.` : null}
+          error={inputKeyword.length > 0 && !isValid}
+          helpText={
+            inputKeyword.length > 0 &&
+            !isValid &&
+            `The text is incorrect. Try again.`
+          }
           onChange={(event) => setInputKeyword(event.target.value)}
           value={inputKeyword}
-          inputProps={{
-            onKeyPress: handleKeyPress,
-          }}
+          onPaste={(event) => event.preventDefault()}
         />
       ) : (
         <Box
@@ -133,7 +126,7 @@ const EthSignModal = ({ hideModal }) => {
         marginTop={6}
       >
         <Button
-          type={BUTTON_TYPES.SECONDARY}
+          type={BUTTON_VARIANT.SECONDARY}
           width={BLOCK_SIZES.FULL}
           onClick={handleCancel}
         >
@@ -141,17 +134,19 @@ const EthSignModal = ({ hideModal }) => {
         </Button>
         {showTextField ? (
           <Button
-            type={BUTTON_TYPES.PRIMARY}
+            type={BUTTON_VARIANT.PRIMARY}
             danger
             width={BLOCK_SIZES.FULL}
-            disabled={!showEnable}
-            onClick={() => setShowTextField(true)}
+            disabled={!isValid}
+            onClick={() => {
+              hideModal();
+            }}
           >
             Enable
           </Button>
         ) : (
           <Button
-            type={BUTTON_TYPES.PRIMARY}
+            type={BUTTON_VARIANT.PRIMARY}
             width={BLOCK_SIZES.FULL}
             disabled={!isEthSignChecked}
             onClick={() => setShowTextField(true)}
