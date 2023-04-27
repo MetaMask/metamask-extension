@@ -38,7 +38,7 @@ describe('AccountListItem', () => {
     fireEvent.click(getByTestId('global-menu-portfolio'));
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: `/?metamaskEntry=ext&metametricsId=`,
+        url: `${process.env.PORTFOLIO_URL}/?metamaskEntry=ext&metametricsId=`,
       });
     });
   });
