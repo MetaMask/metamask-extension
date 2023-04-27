@@ -5,6 +5,50 @@
         "regeneratorRuntime": "write"
       }
     },
+    "@consensys/on-ramp-sdk": {
+      "globals": {
+        "URL": true,
+        "URLSearchParams": true,
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@consensys/on-ramp-sdk>axios": true,
+        "@consensys/on-ramp-sdk>crypto-js": true,
+        "@consensys/on-ramp-sdk>uuid": true
+      }
+    },
+    "@consensys/on-ramp-sdk>axios": {
+      "globals": {
+        "FormData": true,
+        "URLSearchParams": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@consensys/on-ramp-sdk>crypto-js": {
+      "globals": {
+        "crypto": true,
+        "define": true,
+        "msCrypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@consensys/on-ramp-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@download/blockies": {
       "globals": {
         "document.createElement": true
