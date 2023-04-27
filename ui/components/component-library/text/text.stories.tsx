@@ -226,3 +226,14 @@ export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
     </Text>
   </Box>
 );
+
+export const Strong: ComponentStory<typeof Text> = (args) => (
+  <>
+    <Text {...args} as="strong">
+      This is an as="strong" demo.
+    </Text>
+    <Text {...args}>
+      This is a <strong>strong element</strong> demo.
+    </Text>
+  </>
+);
