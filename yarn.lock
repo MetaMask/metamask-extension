@@ -5,27 +5,6 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@agoric/babel-standalone@npm:^7.9.5":
-  version: 7.9.5
-  resolution: "@agoric/babel-standalone@npm:7.9.5"
-  checksum: 19c459bc5cb723b1fd0e18a2a39a1f5302554991de05ac28f261bb59314a07b6477768f58c64c8104121a0278596fc29fda2651dcefd2c6678adc811085511eb
-  languageName: node
-  linkType: hard
-
-"@agoric/make-hardener@npm:^0.1.2":
-  version: 0.1.3
-  resolution: "@agoric/make-hardener@npm:0.1.3"
-  checksum: d96ece30734558ad661bfc907b9b101f457df475e1ef83267d8068afe690acb2e12ce4d266124043dc22c61a7f8a3529f4a30d775981d18a6f0e012af5da3262
-  languageName: node
-  linkType: hard
-
-"@agoric/transform-module@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@agoric/transform-module@npm:0.4.1"
-  checksum: 36bf78c95d1f0f4bb64d3d8d32bb517591334dcc04f8428d493032275e5d070824fe23950345fe941641b2b1938bf175e78dbebd1f350ac157ec4e8787c1b4ec
-  languageName: node
-  linkType: hard
-
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.2.0
   resolution: "@ampproject/remapping@npm:2.2.0"
@@ -4473,10 +4452,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "@metamask/test-dapp@npm:5.6.0"
-  checksum: 352399ee03a9bee7a2a1045a102d4993a3b4b17a4c2c87b77265924dc6b04659b743f79a08f91bfbeeea3b7cbb9d1a88dc251ec32366877312e9eaa01ce0c82f
+"@metamask/test-dapp@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/test-dapp@npm:6.0.0"
+  checksum: eee793c8816d1205667002bd0ef60d248f3a35027937d66a51fd6a87e6eb7be70efd63052412d4dbabdd4329a5e729ab8293655dbdd8d3329bd732b1b1be45d1
   languageName: node
   linkType: hard
 
@@ -23997,7 +23976,7 @@ __metadata:
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/subject-metadata-controller": ^2.0.0
     "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/test-dapp": ^5.6.0
+    "@metamask/test-dapp": ^6.0.0
     "@metamask/utils": ^5.0.0
     "@ngraveio/bc-ur": ^1.1.6
     "@popperjs/core": ^2.4.0
@@ -24226,7 +24205,7 @@ __metadata:
     selenium-webdriver: ^4.3.1
     semver: ^7.3.5
     serve-handler: ^6.1.2
-    ses: ^0.12.4
+    ses: ^0.18.4
     single-call-balance-checker-abi: ^1.0.0
     sinon: ^9.0.0
     source-map: ^0.7.2
@@ -30586,21 +30565,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^0.12.4":
-  version: 0.12.4
-  resolution: "ses@npm:0.12.4"
-  dependencies:
-    "@agoric/babel-standalone": ^7.9.5
-    "@agoric/make-hardener": ^0.1.2
-    "@agoric/transform-module": ^0.4.1
-  checksum: 51482dfb7c7ee9ac6199cca1a93d990875eebceb32f9369375d4dcff4e3298ac0605e896cf345b07a8685fa52dd3d03b7fb0d8c89c01072f2b657ac5372b51a9
-  languageName: node
-  linkType: hard
-
-"ses@npm:^0.18.1":
-  version: 0.18.1
-  resolution: "ses@npm:0.18.1"
-  checksum: 70ad6918da240833d445434e324f7ec29b1b7efc44ce8c0d75c5521cc1629810397903aec8e9adfe65d1486a19ac715c5254501e25de8925ae58c9f7f582dd76
+"ses@npm:^0.18.1, ses@npm:^0.18.4":
+  version: 0.18.4
+  resolution: "ses@npm:0.18.4"
+  checksum: 9afd6edcf390a693926ef728ebb5a435994bbb0f915009ad524c6588cf62e2f66f6d4b4b2694f093b2af2e92c003947ad55404750d756ba75ce70c8636a7ba02
   languageName: node
   linkType: hard
 
