@@ -80,6 +80,7 @@ export const AccountDetails = ({ address }) => {
   const onClose = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
     dispatch(clearAccountDetails());
+    dispatch(hideWarning());
   }, [dispatch]);
 
   const onSubmit = useCallback(() => {
