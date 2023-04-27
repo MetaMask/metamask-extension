@@ -48,7 +48,7 @@ export enum HardwareAffiliateTutorialLinks {
   airgap = 'https://support.airgap.it/guides/metamask/',
   coolwallet = 'https://www.coolwallet.io/metamask-step-by-step-guides/',
   dcent = 'https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f',
-  secux = 'http://secuxtech.com/howitworks/metamask-qr',
+  secux = 'https://secuxtech.com/support/',
 }
 
 /**
