@@ -30,11 +30,6 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
-import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import ComplianceRow from '../swaps/mmi/compliance-row';
-import NoteToTrader from '../../components/institutional/note-to-trader/note-to-trader';
-///: END:ONLY_INCLUDE_IN
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -137,18 +132,6 @@ export default class ConfirmTransactionBase extends Component {
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    isNotification: PropTypes.bool,
-    accountType: PropTypes.string,
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    showTransactionsFailedModal: PropTypes.func,
-    complianceProjectId: PropTypes.string,
-    showComplianceDetailsModal: PropTypes.func,
-    generateComplianceReport: PropTypes.func,
-    fetchHistoricalReports: PropTypes.func,
-    showCustodianDeepLink: PropTypes.func,
-    isNoteToTraderSupported: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -159,10 +142,6 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    complianceReportInProgress: false,
-    noteText: '',
-    ///: END:ONLY_INCLUDE_IN
   };
 
   componentDidUpdate(prevProps) {
@@ -329,11 +308,6 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-      complianceProjectId,
-      toAddress,
-      showComplianceDetailsModal,
-      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -348,10 +322,6 @@ export default class ConfirmTransactionBase extends Component {
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
-
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    const { complianceReportInProgress } = this.state;
-    ///: END:ONLY_INCLUDE_IN
 
     const renderTotalMaxAmount = () => {
       if (
@@ -513,23 +483,6 @@ export default class ConfirmTransactionBase extends Component {
             showDataInstruction={Boolean(txData.txParams?.data)}
           />
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-          complianceProjectId && toAddress && (
-            <ComplianceRow
-              address={toAddress}
-              rowClick={() => {
-                showComplianceDetailsModal({
-                  reportAddress: toAddress,
-                  onGenerateComplianceReport: (address) =>
-                    this.onGenerateComplianceReport(address),
-                });
-              }}
-              inProgress={complianceReportInProgress}
-            />
-          )
-          ///: END:ONLY_INCLUDE_IN
-        }
       </div>
     );
   }
@@ -544,31 +497,6 @@ export default class ConfirmTransactionBase extends Component {
     }
     return <ConfirmData txData={txData} dataComponent={dataComponent} />;
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  renderNote() {
-    const { t } = this.context;
-    const { isNoteToTraderSupported } = this.props;
-
-    if (!isNoteToTraderSupported) {
-      return null;
-    }
-
-    return (
-      <div className="confirm-page-container-content__data">
-        <div className="confirm-page-container-content__data-note-input">
-          <NoteToTrader
-            maxLength="280"
-            placeholder={t('notePlaceholder')}
-            onChange={(value) => this.setState({ noteText: value })}
-            noteText={this.state.noteText}
-            labelText={t('transactionNote')}
-          />
-        </div>
-      </div>
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   renderDataHex() {
     const { txData, dataHexComponent } = this.props;
@@ -666,35 +594,9 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-      unapprovedTxCount,
-      accountType,
-      isNotification,
-      setWaitForConfirmDeepLinkDialog,
-      showTransactionsFailedModal,
-      fromAddress,
-      isNoteToTraderSupported,
-      ///: END:ONLY_INCLUDE_IN
     } = this.props;
-    const {
-      submitting,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-      noteText,
-      ///: END:ONLY_INCLUDE_IN
-    } = this.state;
+    const { submitting } = this.state;
     const { name } = methodData;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    if (accountType === 'custody') {
-      txData.custodyStatus = 'created';
-
-      if (isNoteToTraderSupported) {
-        txData.metadata = {
-          note: noteText,
-        };
-      }
-    }
-    ///: END:ONLY_INCLUDE_IN
 
     if (txData.type === TransactionType.simpleSend) {
       addToAddressBookIfNew(toAddress, toAccounts);
@@ -749,68 +651,31 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-        if (txData.custodyStatus) {
-          setWaitForConfirmDeepLinkDialog(true);
-        }
-        ///: END:ONLY_INCLUDE_IN
-
         sendTransaction(txData)
           .then(() => {
             if (!this._isMounted) {
               return;
             }
 
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-            if (txData.custodyStatus) {
-              this.props.showCustodianDeepLink({
-                fromAddress,
-                closeNotification: isNotification && unapprovedTxCount === 1,
-                txId: txData.id,
-                onDeepLinkFetched: () => {
-                  this.context.trackEvent({
-                    category: 'MMI',
-                    event: 'Show deeplink for transaction',
-                  });
-                },
-                onDeepLinkShown: () => {
-                  this.props.clearConfirmTransaction();
-                  this.setState({ submitting: false }, () => {
-                    history.push(mostRecentOverviewPage);
-                    updateCustomNonce('');
-                  });
-                },
-              });
-            } else {
-              ///: END:ONLY_INCLUDE_IN
-
-              this.setState(
-                {
-                  submitting: false,
-                },
-                () => {
-                  history.push(mostRecentOverviewPage);
-                  updateCustomNonce('');
-                },
-              );
-              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-            }
-            ///: END:ONLY_INCLUDE_IN
+            this.setState(
+              {
+                submitting: false,
+              },
+              () => {
+                history.push(mostRecentOverviewPage);
+                updateCustomNonce('');
+              },
+            );
           })
           .catch((error) => {
             if (!this._isMounted) {
               return;
             }
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-            showTransactionsFailedModal(error.message, isNotification);
-            ///: END:ONLY_INCLUDE_IN
+
             this.setState({
               submitting: false,
               submitError: error.message,
             });
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-            setWaitForConfirmDeepLinkDialog(true);
-            ///: END:ONLY_INCLUDE_IN
             updateCustomNonce('');
           });
       },
@@ -844,24 +709,6 @@ export default class ConfirmTransactionBase extends Component {
       />
     );
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  onGenerateComplianceReport(address) {
-    const { generateComplianceReport, fetchHistoricalReports } = this.props;
-    try {
-      // set report in progress flag to show loader before reportsInProgress array is updated
-      this.setState({ complianceReportInProgress: true });
-      generateComplianceReport(address);
-      fetchHistoricalReports(address);
-      // set report in progress flag to false to make loader dependent on actual report progress
-      setTimeout(() => {
-        this.setState({ complianceReportInProgress: false });
-      }, 3000);
-    } catch (e) {
-      this.setState({ complianceReportInProgress: false });
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
@@ -1053,9 +900,6 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-          noteComponent={this.renderNote()}
-          ///: END:ONLY_INCLUDE_IN
         />
       </TransactionModalContextProvider>
     );
