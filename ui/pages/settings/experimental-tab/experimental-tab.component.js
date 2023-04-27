@@ -12,7 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
 
@@ -240,7 +240,7 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   renderDesktopEnableButton() {
     const { t } = this.context;
 
@@ -269,7 +269,7 @@ export default class ExperimentalTab extends PureComponent {
         {this.renderTransactionSecurityCheckToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IN
         }

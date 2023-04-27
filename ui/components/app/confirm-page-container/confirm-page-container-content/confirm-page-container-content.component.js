@@ -24,7 +24,7 @@ export default class ConfirmPageContainerContent extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     insightComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
@@ -59,7 +59,7 @@ export default class ConfirmPageContainerContent extends Component {
   renderContent() {
     const { detailsComponent, dataComponent } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const { insightComponent } = this.props;
 
     if (insightComponent && (detailsComponent || dataComponent)) {
@@ -73,7 +73,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       detailsComponent ||
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent ||
       ///: END:ONLY_INCLUDE_IN
       dataComponent
@@ -86,7 +86,7 @@ export default class ConfirmPageContainerContent extends Component {
       detailsComponent,
       dataComponent,
       dataHexComponent,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -120,7 +120,7 @@ export default class ConfirmPageContainerContent extends Component {
         )}
 
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           insightComponent
           ///: END:ONLY_INCLUDE_IN
         }

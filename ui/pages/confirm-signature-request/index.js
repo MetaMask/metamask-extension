@@ -12,7 +12,7 @@ import Loading from '../../components/ui/loading-screen';
 import { useRouting } from '../../hooks/useRouting';
 import {
   getTotalUnapprovedSignatureRequestCount,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
@@ -74,7 +74,7 @@ const ConfirmTxScreen = ({ match }) => {
   } = useSelector((state) => state.metamask);
   const { txId: index } = useSelector((state) => state.appState);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
   ///: END:ONLY_INCLUDE_IN
 
@@ -222,7 +222,7 @@ const ConfirmTxScreen = ({ match }) => {
       cancelMessage={cancelMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
       cancelPersonalMessage={cancelMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
       cancelTypedMessage={cancelMessage(SIGN_MESSAGE_TYPE.TYPED)}
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       selectedAccount={selectedAccount}
       ///: END:ONLY_INCLUDE_IN
     />
