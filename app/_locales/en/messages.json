@@ -333,6 +333,12 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -724,6 +730,12 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
+  "connectCustodialAccountMsg": {
+    "message": "Please choose the custodian you want to connect in order to add or refresh a token."
+  },
+  "connectCustodialAccountTitle": {
+    "message": "Custodial Accounts"
+  },
   "connectHardwareWallet": {
     "message": "Connect hardware wallet"
   },
@@ -934,6 +946,24 @@
   },
   "custodianAccount": {
     "message": "Custodian account"
+  },
+  "custodianReplaceRefreshTokenChangedFailed": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodianReplaceRefreshTokenChangedSubtitle": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianReplaceRefreshTokenChangedTitle": {
+    "message": "Your custodian token has been refreshed"
+  },
+  "custodianReplaceRefreshTokenSubtitle": {
+    "message": "This is will replace the custodian token for the following address:"
+  },
+  "custodianReplaceRefreshTokenTitle": {
+    "message": "Replace custodian token"
+  },
+  "custodyApiUrl": {
+    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
@@ -1373,6 +1403,9 @@
   "enterANumber": {
     "message": "Enter a number"
   },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
+  },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
@@ -1551,9 +1584,6 @@
   "gasDisplayDappWarning": {
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Gas fee"
   },
   "gasLimit": {
     "message": "Gas limit"
@@ -1972,6 +2002,9 @@
   },
   "lastSold": {
     "message": "Last sold"
+  },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
@@ -2894,6 +2927,9 @@
   "passwordsDontMatch": {
     "message": "Passwords don't match"
   },
+  "pasteJWTToken": {
+    "message": "Paste or drop your token here:"
+  },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
@@ -3504,17 +3540,26 @@
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
+  "select": {
+    "message": "Select"
+  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
   },
+  "selectAllAccounts": {
+    "message": "Select all accounts"
+  },
   "selectAnAccount": {
     "message": "Select an account"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
+  },
+  "selectAnAccountHelp": {
+    "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
   "selectHdPath": {
     "message": "Select HD path"

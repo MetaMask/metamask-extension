@@ -497,14 +497,9 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { unapprovedDecryptMsgCount = 0, pendingApprovalCount = 0 } =
-    state.metamask;
+  const { pendingApprovalCount = 0 } = state.metamask;
 
-  return (
-    unapprovedDecryptMsgCount +
-    pendingApprovalCount +
-    getSuggestedAssetCount(state)
-  );
+  return pendingApprovalCount + getSuggestedAssetCount(state);
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -843,7 +838,7 @@ export const getFullTxData = createDeepEqualSelector(
   (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
-      txData.simulationFails = transaction.simulationFails;
+      fullTxData.simulationFails = { ...transaction.simulationFails };
     }
     if (customTxParamsData) {
       fullTxData = {
@@ -1158,9 +1153,19 @@ export function getCurrentNetwork(state) {
   return allNetworks.find((network) => network.chainId === currentChainId);
 }
 
+export function getAllEnabledNetworks(state) {
+  const allNetworks = getAllNetworks(state);
+  const showTestnetNetworks = getShowTestNetworks(state);
+
+  return showTestnetNetworks
+    ? allNetworks
+    : allNetworks.filter(
+        (network) => TEST_CHAINS.includes(network.chainId) === false,
+      );
+}
+
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
-  const showTestnetNetworks = getShowTestNetworks(state);
   const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
 
   const networks = [];
@@ -1183,34 +1188,32 @@ export function getAllNetworks(state) {
       )
       .map(([, network]) => network),
   );
-  // Test networks if flag is on
-  if (showTestnetNetworks) {
-    networks.push(
-      ...[
-        {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-          providerType: NETWORK_TYPES.GOERLI,
-        },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          nickname: SEPOLIA_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-          providerType: NETWORK_TYPES.SEPOLIA,
-        },
-        {
-          chainId: CHAIN_IDS.LINEA_TESTNET,
-          nickname: LINEA_TESTNET_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-          provderType: NETWORK_TYPES.LINEA_TESTNET,
-        },
-      ], // Localhosts
-      ...Object.entries(networkConfigurations)
-        .filter(([, network]) => localhostFilter(network))
-        .map(([, network]) => network),
-    );
-  }
+  // Test networks
+  networks.push(
+    ...[
+      {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+        providerType: NETWORK_TYPES.GOERLI,
+      },
+      {
+        chainId: CHAIN_IDS.SEPOLIA,
+        nickname: SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+        providerType: NETWORK_TYPES.SEPOLIA,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_TESTNET,
+        nickname: LINEA_TESTNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+        provderType: NETWORK_TYPES.LINEA_TESTNET,
+      },
+    ], // Localhosts
+    ...Object.entries(networkConfigurations)
+      .filter(([, network]) => localhostFilter(network))
+      .map(([, network]) => network),
+  );
 
   return networks;
 }
@@ -1220,10 +1223,6 @@ export function getIsOptimism(state) {
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
   );
-}
-
-export function getNetworkSupportsSettingGasFees(state) {
-  return !getIsOptimism(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
