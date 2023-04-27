@@ -198,6 +198,7 @@ export const AccountDetails = ({ address }) => {
               <Box
                 display={DISPLAY.FLEX}
                 flexDirection={FLEX_DIRECTION.ROW}
+                alignItems={AlignItems.center}
                 borderRadius={BorderRadius.SM}
                 borderWidth={1}
                 borderColor={BorderColor.default}
