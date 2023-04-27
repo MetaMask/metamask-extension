@@ -307,7 +307,7 @@ describe('TokenOverview', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
           ),
         }),
       );
