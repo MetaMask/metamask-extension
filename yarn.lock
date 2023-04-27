@@ -4435,10 +4435,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "@metamask/test-dapp@npm:5.6.0"
-  checksum: 352399ee03a9bee7a2a1045a102d4993a3b4b17a4c2c87b77265924dc6b04659b743f79a08f91bfbeeea3b7cbb9d1a88dc251ec32366877312e9eaa01ce0c82f
+"@metamask/test-dapp@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/test-dapp@npm:6.0.0"
+  checksum: eee793c8816d1205667002bd0ef60d248f3a35027937d66a51fd6a87e6eb7be70efd63052412d4dbabdd4329a5e729ab8293655dbdd8d3329bd732b1b1be45d1
   languageName: node
   linkType: hard
 
@@ -23866,7 +23866,7 @@ __metadata:
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/subject-metadata-controller": ^2.0.0
     "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/test-dapp": ^5.6.0
+    "@metamask/test-dapp": ^6.0.0
     "@metamask/utils": ^5.0.0
     "@ngraveio/bc-ur": ^1.1.6
     "@popperjs/core": ^2.4.0
