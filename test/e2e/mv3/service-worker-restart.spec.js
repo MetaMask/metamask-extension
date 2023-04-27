@@ -4,7 +4,10 @@ const FixtureBuilder = require('../fixture-builder');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../../shared/constants/test-flags');
-const { EVENT_NAMES, EVENT } = require('../../../shared/constants/metametrics');
+const {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} = require('../../../shared/constants/metametrics');
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
@@ -14,7 +17,7 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
 };
 
-const numberOfSegmentRequests = 1;
+const numberOfSegmentRequests = 2;
 
 async function mockSegment(mockServer) {
   return await mockServer
@@ -22,7 +25,7 @@ async function mockSegment(mockServer) {
     .withJsonBodyIncluding({
       batch: [
         {
-          event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+          event: MetaMetricsEventName.ServiceWorkerRestarted,
         },
       ],
     })
@@ -50,6 +53,7 @@ describe('MV3 - Service worker restart', function () {
   let windowHandles;
 
   it('should continue to add new a account when service worker can not restart immediately', async function () {
+    const driverOptions = { openDevToolsForTabs: true };
     await withFixtures(
       {
         dapp: true,
@@ -67,6 +71,7 @@ describe('MV3 - Service worker restart', function () {
         // because of segment
         failOnConsoleError: false,
         testSpecificMock: mockPostToSentryEnvelope,
+        driverOptions,
       },
       async ({ driver, mockServer }) => {
         const mockedSegmentEndpoints = await mockSegment(mockServer);
@@ -126,22 +131,23 @@ describe('MV3 - Service worker restart', function () {
         assert.equal(mockedRequests[0].body.json.batch.length, 1);
         assert.equal(
           mockedRequests[0].body.json.batch[0].event,
-          EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+          MetaMetricsEventName.ServiceWorkerRestarted,
         );
 
         assert.equal(
-          mockedRequests[0].body.json.batch[0].properties.service_worker_action_queue_methods.indexOf(
-            'addNewAccount',
-          ) !== '-1',
+          typeof mockedRequests[0].body.json.batch[0].properties
+            .service_worker_restarted_time,
+          'number',
+        );
+
+        assert.equal(
+          mockedRequests[0].body.json.batch[0].properties
+            .service_worker_restarted_time > 0,
           true,
         );
         assert.equal(
           mockedRequests[0].body.json.batch[0].properties.category,
-          EVENT.SOURCE.SERVICE_WORKERS,
-        );
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].properties.category,
-          EVENT.SOURCE.SERVICE_WORKERS,
+          MetaMetricsEventCategory.ServiceWorkers,
         );
         assert.equal(
           mockedRequests[0].body.json.batch[0].properties.chain_id,
@@ -159,24 +165,33 @@ describe('MV3 - Service worker restart', function () {
         assert.equal(mockedRequests[1].url, 'https://api.segment.io/v1/batch');
 
         assert.equal(mockedRequests[1].body.json.batch.length, 1);
+
         assert.equal(
-          mockedRequests[1].body.json.batch[1].event,
-          EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+          mockedRequests[1].body.json.batch[0].event,
+          MetaMetricsEventName.ServiceWorkerRestarted,
         );
 
-        const serviceWorkerRestartTimeRequestProperties =
-          mockedRequests[1].body.json.batch[1].properties;
         assert.equal(
-          serviceWorkerRestartTimeRequestProperties.category,
-          EVENT.SOURCE.SERVICE_WORKERS,
+          mockedRequests[1].body.json.batch[0].properties.service_worker_action_queue_methods.indexOf(
+            'addNewAccount',
+          ) !== '-1',
+          true,
         );
-        assert(
-          typeof serviceWorkerRestartTimeRequestProperties.service_worker_action_queue_methods ===
-            'number',
+        assert.equal(
+          mockedRequests[1].body.json.batch[0].properties.category,
+          MetaMetricsEventCategory.ServiceWorkers,
         );
-        assert(
-          serviceWorkerRestartTimeRequestProperties.service_worker_action_queue_methods >
-            0,
+        assert.equal(
+          mockedRequests[1].body.json.batch[0].properties.chain_id,
+          convertToHexValue(1337),
+        );
+        assert.equal(
+          mockedRequests[1].body.json.batch[0].properties.environment_type,
+          'background',
+        );
+        assert.equal(
+          mockedRequests[1].body.json.batch[0].properties.locale,
+          'en',
         );
       },
     );
