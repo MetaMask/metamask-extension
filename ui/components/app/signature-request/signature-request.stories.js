@@ -3,7 +3,9 @@ import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequest from './signature-request.component';
 
-const [MOCK_PRIMARY_IDENTITY] = Object.values(testData.metamask.identities);
+const [MOCK_PRIMARY_IDENTITY, MOCK_SECONDARY_IDENTITY] = Object.values(
+  testData.metamask.identities,
+);
 
 export default {
   title: 'Components/App/SignatureRequest',
@@ -76,4 +78,16 @@ DefaultStory.args = {
   },
   fromAccount: MOCK_PRIMARY_IDENTITY,
   provider: { name: 'Goerli ETH' },
+  selectedAccount: MOCK_PRIMARY_IDENTITY,
+};
+
+export const AccountMismatchStory = (args) => {
+  return <SignatureRequest {...args} />;
+};
+
+AccountMismatchStory.storyName = 'AccountMismatch';
+
+AccountMismatchStory.args = {
+  ...DefaultStory.args,
+  selectedAccount: MOCK_SECONDARY_IDENTITY,
 };

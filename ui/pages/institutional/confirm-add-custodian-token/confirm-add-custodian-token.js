@@ -22,7 +22,7 @@ import {
   ButtonLink,
   Button,
   BUTTON_SIZES,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 
@@ -183,7 +183,7 @@ const ConfirmAddCustodianToken = () => {
           <Box display={DISPLAY.FLEX} gap={4}>
             <Button
               block
-              type={BUTTON_TYPES.SECONDARY}
+              variant={BUTTON_VARIANT.SECONDARY}
               size={BUTTON_SIZES.LG}
               data-testid="cancel-btn"
               onClick={() => {

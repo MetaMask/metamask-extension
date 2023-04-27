@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { useSelector } from 'react-redux';
 ///: END:ONLY_INCLUDE_IN
 import PropTypes from 'prop-types';
@@ -11,7 +11,7 @@ import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Icon, IconName } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapsRouteObjects } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IN
 
@@ -28,7 +28,7 @@ export default function SettingsSearch({
   );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const snaps = useSelector(getSnapsRouteObjects);
   settingsRoutesListArray.push(...snaps);
   ///: END:ONLY_INCLUDE_IN

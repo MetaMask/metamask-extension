@@ -3,6 +3,7 @@ export enum DelineatorType {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Error = 'error',
   Insights = 'insights',
+  Description = 'description',
 }
 
 export const getDelineatorTitle = (type: DelineatorType) => {
@@ -11,6 +12,8 @@ export const getDelineatorTitle = (type: DelineatorType) => {
       return 'errorWithSnap';
     case DelineatorType.Insights:
       return 'insightsFromSnap';
+    case DelineatorType.Description:
+      return 'descriptionFromSnap';
     default:
       return 'contentFromSnap';
   }
