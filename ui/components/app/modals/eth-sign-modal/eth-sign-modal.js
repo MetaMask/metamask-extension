@@ -16,7 +16,6 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
   IconColor,
@@ -125,18 +124,14 @@ const EthSignModal = ({ hideModal }) => {
         gap={4}
         marginTop={6}
       >
-        <Button
-          type={BUTTON_VARIANT.SECONDARY}
-          width={BLOCK_SIZES.FULL}
-          onClick={handleCancel}
-        >
+        <Button type={BUTTON_VARIANT.SECONDARY} block onClick={handleCancel}>
           {t('cancel')}
         </Button>
         {showTextField ? (
           <Button
             type={BUTTON_VARIANT.PRIMARY}
             danger
-            width={BLOCK_SIZES.FULL}
+            block
             disabled={!isValid}
             onClick={() => {
               hideModal();
@@ -147,7 +142,7 @@ const EthSignModal = ({ hideModal }) => {
         ) : (
           <Button
             type={BUTTON_VARIANT.PRIMARY}
-            width={BLOCK_SIZES.FULL}
+            block
             disabled={!isEthSignChecked}
             onClick={() => setShowTextField(true)}
           >
