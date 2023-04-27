@@ -6,7 +6,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
     class="settings-page__body"
   >
     <h4
-      class="box box--margin-top-1 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-alternative"
+      class="box mm-text mm-text--heading-sm mm-text--font-weight-bold box--margin-bottom-2 box--flex-direction-row box--color-text-alternative"
     >
       Privacy
     </h4>
@@ -23,12 +23,12 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="settings-page__content-description"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
           >
             We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
           </h6>
           <h6
-            class="box box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="box mm-text mm-text--body-sm box--margin-top-3 box--margin-bottom-1 box--flex-direction-row box--color-text-alternative"
           >
             Select providers:
           </h6>
@@ -36,7 +36,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
           >
             <h5
-              class="box box--margin-top-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
+              class="box mm-text mm-text--body-md mm-text--font-weight-medium box--flex-direction-row box--color-text-default"
             >
               OpenSea (Beta)
             </h5>
@@ -83,7 +83,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </label>
           </div>
           <h6
-            class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
           >
             <span>
                
@@ -100,7 +100,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </span>
           </h6>
           <h5
-            class="box box--margin-top-2 box--margin-bottom-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-muted"
+            class="box mm-text mm-text--body-md mm-text--font-weight-medium box--margin-top-2 box--flex-direction-row box--color-text-muted"
           >
             More coming soon...
           </h5>
