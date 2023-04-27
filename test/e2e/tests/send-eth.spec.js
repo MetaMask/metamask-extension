@@ -336,11 +336,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.clickElement({ text: 'Save', tag: 'button' });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
-          text: '0.02367237 ETH',
+          text: '0.04503836 ETH',
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
-          text: '0.02367237 ETH',
+          text: '0.04503836 ETH',
         });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

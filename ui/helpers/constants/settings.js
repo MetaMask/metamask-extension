@@ -131,7 +131,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    icon: ICON_NAMES.BOOK,
+    iconName: ICON_NAMES.BOOK,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
@@ -139,7 +139,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('snaps'),
     descriptionMessage: (t) => t('snaps'),
     route: SNAPS_LIST_ROUTE,
-    icon: 'fa fa-flask',
+    iconName: ICON_NAMES.SNAPS,
   },
   ///: END:ONLY_INCLUDE_IN
   {
