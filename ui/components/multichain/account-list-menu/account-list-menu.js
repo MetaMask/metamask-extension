@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import { ButtonLink, TextFieldSearch, Text } from '../../component-library';
+// TODO: Replace ICON_NAMES with IconName when ButtonBase/Buttons have been updated
 import { ICON_NAMES } from '../../component-library/icon/deprecated';
 import { AccountListItem } from '..';
 import {
@@ -44,6 +45,7 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  const inputRef = useRef();
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -61,8 +63,20 @@ export const AccountListMenu = ({ onClose }) => {
     searchResults = fuse.search(searchQuery);
   }
 
+  // Focus on the search box when the popover is opened
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.rootNode.querySelector('input[type=search]').focus();
+    }
+  }, [inputRef]);
+
   return (
-    <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
+    <Popover
+      title={t('selectAnAccount')}
+      ref={inputRef}
+      centerTitle
+      onClose={onClose}
+    >
       <Box className="multichain-account-menu">
         {/* Search box */}
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
@@ -103,7 +117,6 @@ export const AccountListMenu = ({ onClose }) => {
                     },
                   });
                   dispatch(setSelectedAccount(account.address));
-                  onClose();
                 }}
                 identity={account}
                 key={account.address}

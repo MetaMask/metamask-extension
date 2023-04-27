@@ -695,10 +695,6 @@
     "message": "$1 계정은 어떤 사이트에도 연결되어 있지 않습니다.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 스냅이 이 사이트에 연결되어 있습니다. 이 사이트는 위에 나열된 접근 권한이 있습니다.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "연결 중..."
   },
@@ -1355,18 +1351,6 @@
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "세부 정보 보기",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "추가하기",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "발신",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "$1에서 이 가스 요금을 제안했습니다. 이를 무시하면 거래에 문제가 발생할 수 있습니다. 질문이 있는 경우 $1에 문의하세요.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "가스 수수료"
   },
   "gasLimit": {
     "message": "가스 한도"
@@ -2020,9 +2001,6 @@
   },
   "missingToken": {
     "message": "토큰이 보이지 않나요?"
-  },
-  "mobileSyncWarning": {
-    "message": "'확장 프로그램과 동기화' 기능이 일시적으로 비활성화됩니다. MetaMask 모바일에서 확장 지갑을 사용하려면 모바일 앱에서 지갑 설정 옵션으로 돌아가 '비밀 복구 구문 가져오기' 옵션을 선택하세요. 확장 지갑의 비밀 구문을 사용하시면 지갑을 모바일로 가져올 수 있습니다."
   },
   "moreComingSoon": {
     "message": "더 추가 예정..."
@@ -2697,10 +2675,6 @@
     "message": "정기적 활동 예약 및 실행",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "MetaMask에 확인을 표시합니다.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
     "description": "The description for the `snap_dialog` permission"
@@ -3237,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "검색 결과가 없습니다."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "보기"
   },
@@ -3314,14 +3284,6 @@
   "smartTransaction": {
     "message": "스마트 트랜잭션"
   },
-  "snapAccess": {
-    "message": "$1 스냅이 접근할 수 있는 대상:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$1에 $2에서 추가됨",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "콘텐츠 출처: $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3357,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "스냅 관리"
-  },
-  "snapsStatus": {
-    "message": "스냅 상태는 활동에 따라 달라집니다."
   },
   "snapsToggle": {
     "message": "스냅은 활성화된 상태에서만 작동합니다."
@@ -3939,33 +3898,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
-  },
-  "syncFailed": {
-    "message": "동기화 실패"
-  },
-  "syncInProgress": {
-    "message": "동기화 진행 중"
-  },
-  "syncWithMobile": {
-    "message": "모바일과 동기화"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "이 코드를 스캔할 때는 다른 사람이 화면을 보지 못하게 하세요"
-  },
-  "syncWithMobileComplete": {
-    "message": "데이터가 동기화되었습니다. MetaMask 모바일 앱을 마음껏 이용하세요!"
-  },
-  "syncWithMobileDesc": {
-    "message": "계정과 정보를 모바일 장치와 동기화할 수 있습니다. MetaMask 모바일 앱을 열고 \"설정\"으로 이동하여 \"브라우저 확장에서 동기화\"를 탭합니다."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "MetaMask 모바일 앱을 처음 여는 경우라면 휴대폰에 나타나는 지시사항을 따르세요."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMask 모바일 앱으로 이 코드를 스캔하세요"
-  },
-  "syncWithMobileTitle": {
-    "message": "모바일과 동기화"
   },
   "tenPercentIncreased": {
     "message": "10% 인상"

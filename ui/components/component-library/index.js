@@ -14,9 +14,9 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { AvatarBase } from './avatar-base';
-export { Button, BUTTON_TYPES, BUTTON_SIZES } from './button';
+export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
-export { ButtonIcon, BUTTON_ICON_SIZES } from './button-icon';
+export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
 export { ButtonPrimary, BUTTON_PRIMARY_SIZES } from './button-primary';
 export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
@@ -39,3 +39,5 @@ export { ModalOverlay } from './modal-overlay';
 export { BannerBase } from './banner-base';
 export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
+export { PopoverHeader } from './popover-header';
+export { ModalHeader } from './modal-header';

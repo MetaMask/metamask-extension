@@ -2,8 +2,11 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/constants/error-utils.js',
     '<rootDir>/app/scripts/controllers/network/**/*.js',
+    '<rootDir>/app/scripts/controllers/network/**/*.ts',
+    '!<rootDir>/app/scripts/controllers/network/**/test/*.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
+    '<rootDir>/app/scripts/controllers/decrypt-message.ts',
     '<rootDir>/app/scripts/flask/**/*.js',
     '<rootDir>/app/scripts/lib/**/*.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
@@ -15,7 +18,7 @@ module.exports = {
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: ['json'],
+  coverageReporters: ['html', 'json'],
   reporters: [
     'default',
     [
@@ -39,8 +42,10 @@ module.exports = {
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.js',
+    '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/controllers/sign.test.ts',
+    '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
     '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/**/*.test.js',
     '<rootDir>/app/scripts/lib/**/*.test.ts',

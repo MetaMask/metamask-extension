@@ -8,7 +8,7 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAPS_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from './routes';
@@ -61,13 +61,6 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('stateLogs'),
     descriptionMessage: (t) => t('stateLogsDescription'),
     route: `${ADVANCED_ROUTE}#state-logs`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('syncWithMobile'),
-    descriptionMessage: (t) => t('syncWithMobile'),
-    route: `${ADVANCED_ROUTE}#sync-withmobile`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -140,7 +133,7 @@ export const SETTINGS_CONSTANTS = [
     route: CONTACT_LIST_ROUTE,
     icon: ICON_NAMES.BOOK,
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
     tabMessage: (t) => t('snaps'),
     sectionMessage: (t) => t('snaps'),

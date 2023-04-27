@@ -221,7 +221,7 @@ export const CURRENCY_SYMBOLS = {
   OPTIMISM: 'OP',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
@@ -238,7 +238,7 @@ export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
-];
+] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.GOERLI,
@@ -540,14 +540,11 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.MOONRIVER
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.LINEA_TESTNET
+    | typeof CHAIN_IDS.GOERLI
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.GOERLI]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.SEPOLIA]: {

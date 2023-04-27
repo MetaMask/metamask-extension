@@ -695,10 +695,6 @@
     "message": "$1 chưa được kết nối với bất kỳ trang web nào.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Snap $1 được kết nối với các trang web này. Các trang web này được phép sử dụng những quyền được liệt kê ở trên.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Đang kết nối..."
   },
@@ -1355,18 +1351,6 @@
     "message": "Tính năng nhập tập tin không hoạt động? Nhấn vào đây!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Xem chi tiết",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Đã thêm vào",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "từ",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "Phí gas này đã được gợi ý bởi $1. Việc sửa đổi có thể khiến giao dịch của bạn gặp sự cố. Vui lòng liên hệ với $1 nếu bạn có câu hỏi.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Phí gas"
   },
   "gasLimit": {
     "message": "Giới hạn gas"
@@ -2020,9 +2001,6 @@
   },
   "missingToken": {
     "message": "Không thấy token của mình?"
-  },
-  "mobileSyncWarning": {
-    "message": "Tính năng 'Đồng bộ với tiện ích' tạm thời bị tắt. Nếu bạn muốn sử dụng ví tiện ích trên thiết bị di động MetaMask, thì trên ứng dụng di động: hãy quay lại các tùy chọn thiết lập ví và chọn phương án 'Nhập bằng Cụm Mật Khẩu Khôi Phục Bí Mật'. Sử dụng cụm mật khẩu bí mật của ví tiện ích để nhập ví của bạn vào thiết bị di động."
   },
   "moreComingSoon": {
     "message": "Sắp có thêm..."
@@ -2697,10 +2675,6 @@
     "message": "Lên lịch và thực hiện các hành động theo định kỳ.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Hiển thị xác nhận trong MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Hiển thị cửa sổ hộp thoại trong MetaMask.",
     "description": "The description for the `snap_dialog` permission"
@@ -3237,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Không tìm thấy kết quả trùng khớp."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Hiển thị"
   },
@@ -3314,14 +3284,6 @@
   "smartTransaction": {
     "message": "Giao dịch thông minh"
   },
-  "snapAccess": {
-    "message": "Snap $1 có quyền truy cập vào:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Đã thêm vào $1 từ $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Nội dung này đến từ $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3357,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Quản lý Snap"
-  },
-  "snapsStatus": {
-    "message": "Trạng thái Snap tùy thuộc vào hoạt động."
   },
   "snapsToggle": {
     "message": "Snap chỉ hoạt động khi đã bật"
@@ -3939,33 +3898,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Ký hiệu không được dài quá 11 ký tự."
-  },
-  "syncFailed": {
-    "message": "Đồng bộ thất bại"
-  },
-  "syncInProgress": {
-    "message": "Đang đồng bộ"
-  },
-  "syncWithMobile": {
-    "message": "Đồng bộ với thiết bị di động"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Đảm bảo rằng không có ai nhìn vào màn hình của bạn khi quét mã này"
-  },
-  "syncWithMobileComplete": {
-    "message": "Đã đồng bộ thành công dữ liệu của bạn. Tận hưởng ứng dụng MetaMask trên thiết bị di động!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Bạn có thể đồng bộ tài khoản và thông tin của mình với thiết bị di động. Mở ứng dụng MetaMask trên thiết bị di động, chuyển đến phần \"Cài đặt\" và nhấn vào \"Đồng bộ với tiện ích trình duyệt\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Nếu mới mở ứng dụng MetaMask trên thiết bị di động lần đầu tiên, bạn chỉ cần làm theo các bước hướng dẫn trên điện thoại."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Quét mã này bằng ứng dụng MetaMask trên thiết bị di động"
-  },
-  "syncWithMobileTitle": {
-    "message": "Đồng bộ với thiết bị di động"
   },
   "tenPercentIncreased": {
     "message": "Tăng 10%"

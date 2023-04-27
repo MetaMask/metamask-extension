@@ -132,6 +132,7 @@ export enum IconName {
   Snaps = 'snaps',
   Speedometer = 'speedometer',
   Star = 'star',
+  Stake = 'stake',
   Student = 'student',
   SwapHorizontal = 'swap-horizontal',
   SwapVertical = 'swap-vertical',

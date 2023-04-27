@@ -5,10 +5,10 @@ import Box from '../../../ui/box';
 import {
   Text,
   Button,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   ButtonIcon,
+  IconName,
 } from '../../../component-library';
-import { ICON_NAMES } from '../../../component-library/icon/deprecated';
 import {
   AlignItems,
   DISPLAY,
@@ -51,7 +51,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         <Text variant={TextVariant.headingSm}>{t('holdToRevealTitle')}</Text>
         <ButtonIcon
           className="hold-to-reveal-modal__close"
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.Close}
           size={Size.SM}
           onClick={handleCancel}
           ariaLabel={t('close')}
@@ -86,7 +86,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
             </Text>,
             <Button
               key="hold-to-reveal-5"
-              type={BUTTON_TYPES.LINK}
+              variant={BUTTON_VARIANT.LINK}
               size={Size.auto}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"

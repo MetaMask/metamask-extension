@@ -15,11 +15,11 @@ import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { ButtonIcon } from '../../../component-library';
 import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../component-library/icon/deprecated';
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../../component-library';
 
 const CustomizeNonce = ({
   hideModal,
@@ -58,9 +58,9 @@ const CustomizeNonce = ({
             {t('editNonceField')}
           </Typography>
           <ButtonIcon
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             className="customize-nonce-modal__close"
-            size={ICON_SIZES.SM}
+            size={ButtonIconSize.Sm}
             ariaLabel={t('close')}
             onClick={hideModal}
           />
@@ -99,6 +99,7 @@ const CustomizeNonce = ({
               <Button
                 type="link"
                 className="customize-nonce-modal__reset"
+                data-testid="customize-nonce-reset"
                 onClick={() => {
                   setCustomNonce(nextNonce);
                 }}
@@ -110,6 +111,7 @@ const CustomizeNonce = ({
           <div className="customize-nonce-modal__input">
             <TextField
               type="number"
+              data-testid="custom-nonce-input"
               min="0"
               placeholder={
                 customNonceValue ||

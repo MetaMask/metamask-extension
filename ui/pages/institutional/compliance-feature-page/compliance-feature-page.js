@@ -13,11 +13,12 @@ import {
   Color,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
-import { ButtonIcon, Text } from '../../../components/component-library';
 import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../components/component-library/icon/deprecated';
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 import ComplianceSettings from '../../../components/institutional/compliance-settings';
 
@@ -43,8 +44,8 @@ const ComplianceFeaturePage = () => {
         >
           <ButtonIcon
             ariaLabel={t('back')}
-            iconName={ICON_NAMES.ARROW_LEFT}
-            size={ICON_SIZES.SM}
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Sm}
             className="settings-page__back-button"
             color={Color.iconDefault}
             onClick={() => history.push(DEFAULT_ROUTE)}

@@ -510,6 +510,8 @@ export enum MetaMetricsEventName {
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
+  TermsOfUseShown = 'Terms of Use Shown',
+  TermsOfUseAccepted = 'Terms of Use Accepted',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   SupportLinkClicked = 'Support Link Clicked',
@@ -536,6 +538,9 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
   ServiceWorkerRestarted = 'Service Worker Restarted',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  UserClickedDeepLink = 'User clicked deeplink',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventAccountType {
@@ -575,6 +580,9 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Desktop = 'Desktop',
   ServiceWorkers = 'service_workers',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI = 'Institutional',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventLinkType {

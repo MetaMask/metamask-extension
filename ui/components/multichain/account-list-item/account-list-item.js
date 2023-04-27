@@ -11,16 +11,15 @@ import { AccountListItemMenu } from '..';
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
-  ButtonIcon,
   Text,
   AvatarFavicon,
   Tag,
   ButtonLink,
+  ButtonIcon,
+  IconName,
+  IconSize,
+  AvatarAccountVariant,
 } from '../../component-library';
-import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
 import {
   Color,
   TEXT_ALIGN,
@@ -72,6 +71,8 @@ export const AccountListItem = ({
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const ref = useRef(false);
+  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
@@ -109,6 +110,11 @@ export const AccountListItem = ({
         borderColor={BorderColor.transparent}
         size={Size.SM}
         address={identity.address}
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
       ></AvatarAccount>
       <Box
         display={DISPLAY.FLEX}
@@ -197,8 +203,8 @@ export const AccountListItem = ({
       <div ref={ref}>
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
-          iconName={ICON_NAMES.MORE_VERTICAL}
-          size={ICON_SIZES.SM}
+          iconName={IconName.MoreVertical}
+          size={IconSize.Sm}
           onClick={(e) => {
             e.stopPropagation();
             setAccountOptionsMenuOpen(true);

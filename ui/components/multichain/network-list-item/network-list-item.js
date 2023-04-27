@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
@@ -12,8 +12,12 @@ import {
   TextColor,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-import { AvatarNetwork, ButtonIcon, ButtonLink } from '../../component-library';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import {
+  AvatarNetwork,
+  ButtonIcon,
+  ButtonLink,
+  IconName,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
 
@@ -27,6 +31,14 @@ export const NetworkListItem = ({
   onDeleteClick,
 }) => {
   const t = useI18nContext();
+  const networkRef = useRef();
+
+  useEffect(() => {
+    if (networkRef.current && selected) {
+      networkRef.current.querySelector('.mm-button-link').focus();
+    }
+  }, [networkRef, selected]);
+
   return (
     <Box
       onClick={onClick}
@@ -39,6 +51,7 @@ export const NetworkListItem = ({
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BLOCK_SIZES.FULL}
+      ref={networkRef}
     >
       {selected && (
         <Box
@@ -49,7 +62,14 @@ export const NetworkListItem = ({
       )}
       <AvatarNetwork name={name} src={iconSrc} />
       <Box className="multichain-network-list-item__network-name">
-        <ButtonLink onClick={onClick} color={TextColor.textDefault} ellipsis>
+        <ButtonLink
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          color={TextColor.textDefault}
+          ellipsis
+        >
           {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
             <Tooltip
               title={name}
@@ -67,7 +87,7 @@ export const NetworkListItem = ({
         <ButtonIcon
           className="multichain-network-list-item__delete"
           color={IconColor.errorDefault}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
           ariaLabel={t('deleteNetwork')}
           size={Size.SM}
           onClick={(e) => {
