@@ -1,19 +1,25 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Popover from '../../ui/popover/popover.component';
 import {
   setAccountDetailsAddress,
   setAccountLabel,
-  showModal,
+  clearAccountDetails,
+  exportAccount,
+  hideWarning,
 } from '../../../store/actions';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
   BUTTON_SECONDARY_SIZES,
+  BannerAlert,
+  ButtonPrimary,
   ButtonSecondary,
   PopoverHeader,
+  Text,
+  TextField,
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import EditableLabel from '../../ui/editable-label/editable-label';
@@ -35,8 +41,12 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
+  Size,
+  TextColor,
   TextVariant,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
+import { AddressCopyButton } from '../address-copy-button';
 
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
@@ -49,9 +59,28 @@ export const AccountDetails = ({ address }) => {
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
   const exportPrivateKeyFeatureEnabled = !isHardwareKeyring(keyring?.type);
 
+  const [attemptingExport, setAttemptingExport] = useState(false);
+  const [password, setPassword] = useState('');
+
+  // Password error would result from appState
+  const warning = useSelector((state) => state.appState.warning);
+
+  // This is only populated when the user properly authenticates
+  const privateKey = useSelector(
+    (state) => state.appState.accountDetail.privateKey,
+  );
+
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAddress());
+    dispatch(setAccountDetailsAddress(''));
+    dispatch(clearAccountDetails());
   }, [dispatch]);
+
+  const onSubmit = useCallback(() => {
+    dispatch(exportAccount(password, address)).then((res) => {
+      dispatch(hideWarning());
+      return res;
+    });
+  }, [dispatch, password, address]);
 
   return (
     <Popover
@@ -88,34 +117,82 @@ export const AccountDetails = ({ address }) => {
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <EditableLabel
-          defaultValue={name}
-          onSubmit={(label) => dispatch(setAccountLabel(address, label))}
-          accounts={accounts}
-        />
-        <QrView Qr={{ data: address }} />
-        {exportPrivateKeyFeatureEnabled ? (
-          <ButtonSecondary
-            block
-            size={BUTTON_SECONDARY_SIZES.LG}
-            variant={TextVariant.bodyMd}
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Accounts,
-                event: MetaMetricsEventName.KeyExportSelected,
-                properties: {
-                  key_type: MetaMetricsEventKeyType.Pkey,
-                  location: 'Account Details Modal',
-                },
-              });
-              dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' }));
-              onClose();
-            }}
-          >
-            {t('showPrivateKey')}
-          </ButtonSecondary>
+        {attemptingExport === false ? (
+          <>
+            <EditableLabel
+              defaultValue={name}
+              onSubmit={(label) => dispatch(setAccountLabel(address, label))}
+              accounts={accounts}
+            />
+            <QrView Qr={{ data: address }} />
+            {exportPrivateKeyFeatureEnabled ? (
+              <ButtonSecondary
+                block
+                size={BUTTON_SECONDARY_SIZES.LG}
+                variant={TextVariant.bodyMd}
+                onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Accounts,
+                    event: MetaMetricsEventName.KeyExportSelected,
+                    properties: {
+                      key_type: MetaMetricsEventKeyType.Pkey,
+                      location: 'Account Details Modal',
+                    },
+                  });
+                  /*
+                  dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' }));
+                  onClose();
+                  */
+                  setAttemptingExport(true);
+                }}
+              >
+                {t('showPrivateKey')}
+              </ButtonSecondary>
+            ) : null}
+          </>
         ) : null}
       </Box>
+      {attemptingExport ? (
+        <>
+          <Text variant={TextVariant.headingMd}>{name}</Text>
+          <AddressCopyButton address={address} shorten />
+          <Text variant={TextVariant.headingMd}>{t('showPrivateKey')}</Text>
+          {privateKey ? (
+            <>
+              <Text>{t('copyPrivateKey')}</Text>
+              <AddressCopyButton address={privateKey} wrap />
+              <BannerAlert severity={SEVERITIES.DANGER}>
+                {t('privateKeyWarning')}
+              </BannerAlert>
+              <ButtonPrimary onClick={onClose}>{t('done')}</ButtonPrimary>
+            </>
+          ) : (
+            <>
+              <Text>{t('typePassword')}</Text>
+              <TextField
+                type="password"
+                onInput={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onSubmit();
+                  }
+                }}
+                autoFocus
+              />
+              {warning ? (
+                <Text color={TextColor.errorDefault} size={Size.SM}>
+                  {warning}
+                </Text>
+              ) : null}
+              <BannerAlert severity={SEVERITIES.DANGER}>
+                {t('privateKeyWarning')}
+              </BannerAlert>
+              <ButtonSecondary onClick={onClose}>{t('cancel')}</ButtonSecondary>
+              <ButtonPrimary onClick={onSubmit}>{t('submit')}</ButtonPrimary>
+            </>
+          )}
+        </>
+      ) : null}
     </Popover>
   );
 };
