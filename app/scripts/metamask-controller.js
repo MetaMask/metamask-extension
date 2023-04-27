@@ -1987,6 +1987,10 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.upsertNetworkConfiguration.bind(
           this.networkController,
         ),
+      getCurrentNetworkEIP1559Compatibility:
+        this.networkController.getEIP1559Compatibility.bind(
+          this.networkController,
+        ),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,

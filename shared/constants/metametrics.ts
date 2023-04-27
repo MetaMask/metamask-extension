@@ -458,6 +458,7 @@ export enum MetaMetricsEventName {
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
+  AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BridgeLinkClicked = 'Bridge Link Clicked',
   DecryptionApproved = 'Decryption Approved',
@@ -541,6 +542,17 @@ export enum MetaMetricsEventName {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   UserClickedDeepLink = 'User clicked deeplink',
   ///: END:ONLY_INCLUDE_IN
+  AccountDetailMenuOpened = 'Account Details Menu Opened',
+  BlockExplorerLinkClicked = 'Block Explorer Clicked',
+  AccountRemoved = 'Account Removed',
+  TestNetworksDisplayed = 'Test Networks Displayed',
+  AddNetworkButtonClick = 'Add Network Button Clicked',
+  CustomNetworkAdded = 'Custom Network Added',
+  TokenDetailsOpened = 'Token Details Opened',
+  NftScreenOpened = 'NFT Screen Opened',
+  ActivityScreenOpened = 'Activity Screen Opened',
+  WhatsNewViewed = `What's New Viewed`,
+  WhatsNewClicked = `What's New Link Clicked`,
 }
 
 export enum MetaMetricsEventAccountType {
@@ -583,6 +595,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
+  Tokens = 'Tokens',
 }
 
 export enum MetaMetricsEventLinkType {
