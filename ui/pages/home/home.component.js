@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(main)
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
 // eslint-disable-next-line import/no-duplicates
 import { MetaMetricsContextProp } from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
@@ -57,13 +57,13 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(main)
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(beta)
+///: BEGIN:ONLY_INCLUDE_IN(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 
@@ -88,7 +88,7 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    suggestedAssets: PropTypes.array,
+    hasWatchAssetPendingApprovals: PropTypes.bool,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -116,7 +116,7 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     showTermsOfUsePopup: PropTypes.bool.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
     removeSnapError: PropTypes.func.isRequired,
@@ -169,7 +169,7 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       isNotification,
       showAwaitingSwapScreen,
-      suggestedAssets = [],
+      hasWatchAssetPendingApprovals,
       swapsFetchParams,
       unconfirmedTransactionsCount,
     } = this.props;
@@ -180,7 +180,7 @@ export default class Home extends PureComponent {
     } else if (
       firstPermissionsRequestId ||
       unconfirmedTransactionsCount > 0 ||
-      suggestedAssets.length > 0 ||
+      hasWatchAssetPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
@@ -193,7 +193,7 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId,
       history,
       isNotification,
-      suggestedAssets = [],
+      hasWatchAssetPendingApprovals,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
@@ -210,7 +210,7 @@ export default class Home extends PureComponent {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (suggestedAssets.length > 0) {
+    } else if (hasWatchAssetPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
@@ -276,7 +276,7 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       removeSnapError,
       errorsToShow,
       shouldShowErrors,
@@ -305,7 +305,7 @@ export default class Home extends PureComponent {
     return (
       <MultipleNotifications>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           shouldShowErrors
             ? Object.entries(errorsToShow).map(([errorId, error]) => {
                 return (
@@ -715,7 +715,7 @@ export default class Home extends PureComponent {
             </Tabs>
             <div className="home__support">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(main)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
                 t('needHelp', [
                   <a
                     href={SUPPORT_LINK}
@@ -745,12 +745,12 @@ export default class Home extends PureComponent {
                 ///: END:ONLY_INCLUDE_IN
               }
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(beta)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
                 <BetaHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
                 <FlaskHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }
