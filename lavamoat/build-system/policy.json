@@ -4106,8 +4106,8 @@
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic": {
       "packages": {
         "@babel/register>clone-deep>kind-of": true,
-        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true,
-        "gulp>undertaker>bach>array-last>is-number": true
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>is-number": true,
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": {
@@ -4388,18 +4388,8 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values": {
       "packages": {
-        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": true
-      }
-    },
-    "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number": {
-      "packages": {
-        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": true
-      }
-    },
-    "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": {
@@ -5146,24 +5136,14 @@
       },
       "packages": {
         "gulp-watch>chokidar>braces>extend-shallow": true,
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
-    "gulp>glob-watcher>chokidar>braces>fill-range>is-number": {
-      "packages": {
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
     "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": {
       "packages": {
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
@@ -5313,7 +5293,6 @@
         "gulp>gulp-cli>matchdep>micromatch>fragment-cache": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch>define-property": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch>extend-shallow": true,
-        "gulp>gulp-cli>matchdep>micromatch>nanomatch>is-odd": true,
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true,
         "nyc>spawn-wrap>is-windows": true
       }
@@ -5333,11 +5312,6 @@
     "gulp>gulp-cli>matchdep>micromatch>nanomatch>extend-shallow>is-extendable": {
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true
-      }
-    },
-    "gulp>gulp-cli>matchdep>micromatch>nanomatch>is-odd": {
-      "packages": {
-        "gulp>undertaker>bach>array-last>is-number": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>regex-not": {
@@ -5429,7 +5403,7 @@
     },
     "gulp>undertaker>bach>array-initial": {
       "packages": {
-        "gulp>undertaker>bach>array-last>is-number": true,
+        "gulp>undertaker>bach>array-initial>is-number": true,
         "gulp>undertaker>object.defaults>array-slice": true
       }
     },
@@ -6595,6 +6569,7 @@
         "url.resolve": true
       },
       "globals": {
+        "TextDecoder": true,
         "setImmediate": true
       },
       "packages": {
