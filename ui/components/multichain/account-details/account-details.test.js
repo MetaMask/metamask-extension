@@ -1,33 +1,39 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { showPrivateKey } from '../../../../app/_locales/en/messages.json';
-import { showModal, setAccountDetailsAddress } from '../../../store/actions';
+import {
+  setAccountDetailsAddress,
+  exportAccount,
+  hideWarning,
+} from '../../../store/actions';
 import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
   const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-  const mockShowModal = jest.fn();
   const mockSetAccountDetailsAddress = jest.fn();
+  const mockExportAccount = jest.fn().mockResolvedValue(true);
+  const mockHideWarning = jest.fn();
 
   beforeEach(() => {
-    showModal.mockReturnValue(mockShowModal);
     setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
+    exportAccount.mockReturnValue(mockExportAccount);
+    hideWarning.mockReturnValue(mockHideWarning);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(() => jest.clearAllMocks());
 
-  function render(props = {}) {
+  function render(props = {}, storeModifications = {}) {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
       },
+      ...storeModifications,
     });
     const allProps = { address, ...props };
     return renderWithProvider(<AccountDetails {...allProps} />, store);
@@ -47,10 +53,39 @@ describe('AccountDetails', () => {
     expect(editableInput).toHaveAttribute('value', newAccountLabel);
   });
 
-  it('shows export private key modal when clicked', () => {
-    const { queryByText } = render();
+  it('shows export private key contents and password field when clicked', () => {
+    const { queryByText, queryByPlaceholderText } = render();
     const exportPrivateKeyButton = queryByText(showPrivateKey.message);
     fireEvent.click(exportPrivateKeyButton);
-    expect(mockShowModal).toHaveBeenCalled();
+
+    expect(queryByText('Show private key')).toBeInTheDocument();
+    expect(queryByPlaceholderText('Password')).toBeInTheDocument();
+  });
+
+  it('attempts to validate password when submitted', async () => {
+    const password = 'password';
+
+    const { queryByPlaceholderText, queryByText } = render();
+    const exportPrivateKeyButton = queryByText(showPrivateKey.message);
+    fireEvent.click(exportPrivateKeyButton);
+
+    queryByPlaceholderText('Password').focus();
+    await userEvent.keyboard(password);
+    fireEvent.click(queryByText('Submit'));
+
+    expect(exportAccount).toHaveBeenCalledWith(password, address);
+  });
+
+  it('displays the private key when exposed in state', () => {
+    const samplePrivateKey = '8675309';
+    const { queryByText } = render(
+      {},
+      { appState: { accountDetail: { privateKey: samplePrivateKey } } },
+    );
+
+    const exportPrivateKeyButton = queryByText(showPrivateKey.message);
+    fireEvent.click(exportPrivateKeyButton);
+
+    expect(queryByText(samplePrivateKey)).toBeInTheDocument();
   });
 });

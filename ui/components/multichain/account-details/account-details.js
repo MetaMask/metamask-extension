@@ -172,6 +172,7 @@ export const AccountDetails = ({ address }) => {
               <TextField
                 type="password"
                 onInput={(e) => setPassword(e.target.value)}
+                placeholder={t('password')}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     onSubmit();
