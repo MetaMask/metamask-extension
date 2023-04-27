@@ -6,18 +6,16 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SEND_STAGES } from '../../../ducks/send';
+import { INSUFFICIENT_FUNDS_ERROR } from '../send.constants';
 
 export default class SendFooter extends Component {
   static propTypes = {
-    addToAddressBookIfNew: PropTypes.func,
     resetSendState: PropTypes.func,
     disabled: PropTypes.bool.isRequired,
     history: PropTypes.object,
     sign: PropTypes.func,
-    to: PropTypes.string,
-    toAccounts: PropTypes.array,
     sendStage: PropTypes.string,
     sendErrors: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
@@ -52,16 +50,14 @@ export default class SendFooter extends Component {
 
   async onSubmit(event) {
     event.preventDefault();
-    const { addToAddressBookIfNew, sign, to, toAccounts, history } = this.props;
+    const { sign, history } = this.props;
     const { trackEvent } = this.context;
 
-    // TODO: add nickname functionality
-    await addToAddressBookIfNew(to, toAccounts);
     const promise = sign();
 
     Promise.resolve(promise).then(() => {
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
         properties: {
           action: 'Edit Screen',
@@ -83,7 +79,7 @@ export default class SendFooter extends Component {
       const errorMessage = sendErrors[errorField];
 
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Error',
         properties: {
           action: 'Edit Screen',
@@ -97,12 +93,14 @@ export default class SendFooter extends Component {
 
   render() {
     const { t } = this.context;
-    const { sendStage } = this.props;
+    const { sendStage, sendErrors } = this.props;
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
-        disabled={this.props.disabled}
+        disabled={
+          this.props.disabled && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR
+        }
         cancelText={sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
       />
     );

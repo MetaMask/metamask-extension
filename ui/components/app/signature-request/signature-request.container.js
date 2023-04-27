@@ -4,10 +4,15 @@ import {
   doesAddressRequireLedgerHidConnection,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  conversionRateSelector,
   getSubjectMetadata,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  getCurrentCurrency,
+  getPreferences,
+  conversionRateSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -32,12 +37,9 @@ function mapStateToProps(state, ownProps) {
   const isLedgerWallet = isAddressLedger(state, from);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
-  const subjectMetadata = getSubjectMetadata(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
-
-  const { iconUrl: siteImage = '' } =
-    subjectMetadata[txData.msgParams.origin] || {};
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
     provider,
@@ -45,15 +47,20 @@ function mapStateToProps(state, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: getSelectedAccount(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -85,9 +92,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
-    conversionRate,
     nativeCurrency,
+    currentCurrency,
+    conversionRate,
     provider,
     subjectMetadata,
     unconfirmedMessagesList,
@@ -138,9 +145,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
-    conversionRate,
     nativeCurrency,
+    currentCurrency,
+    conversionRate,
     provider,
     subjectMetadata,
     unapprovedMessagesCount,

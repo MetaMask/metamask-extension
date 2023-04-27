@@ -31,7 +31,11 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { Icon, IconName } from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,
@@ -78,6 +82,7 @@ export default function CreatePassword({
     if (isTooShort) {
       return {
         className: 'create-password__weak',
+        dataTestId: 'short-password-error',
         text: t('passwordNotLongEnough'),
         description: '',
       };
@@ -85,6 +90,7 @@ export default function CreatePassword({
     if (score >= 4) {
       return {
         className: 'create-password__strong',
+        dataTestId: 'strong-password',
         text: t('strong'),
         description: '',
       };
@@ -92,12 +98,14 @@ export default function CreatePassword({
     if (score === 3) {
       return {
         className: 'create-password__average',
+        dataTestId: 'average-password',
         text: t('average'),
         description: t('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
+      dataTestId: 'weak-password',
       text: t('weak'),
       description: t('passwordStrengthDescription'),
     };
@@ -109,7 +117,11 @@ export default function CreatePassword({
     const { score } = zxcvbn(passwordInput);
     const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
     const passwordStrengthComponent = t('passwordStrength', [
-      <span key={score} className={passwordStrengthLabel.className}>
+      <span
+        key={score}
+        data-testid={passwordStrengthLabel.dataTestId}
+        className={passwordStrengthLabel.className}
+      >
         {passwordStrengthLabel.text}
       </span>,
     ]);
@@ -140,8 +152,8 @@ export default function CreatePassword({
     }
 
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_ATTEMPTED,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
     });
 
     // If secretRecoveryPhrase is defined we are in import wallet flow
@@ -199,6 +211,7 @@ export default function CreatePassword({
               <Typography variant={TypographyVariant.H7}>
                 <a
                   href=""
+                  data-testid="show-password"
                   className="create-password__form--password-button"
                   onClick={(e) => {
                     e.preventDefault();
@@ -220,7 +233,7 @@ export default function CreatePassword({
             titleDetail={
               isValid && (
                 <div className="create-password__form--checkmark">
-                  <i className="fas fa-check" />
+                  <Icon name={IconName.Check} />
                 </div>
               )
             }

@@ -17,6 +17,7 @@ import MetaMaskTemplateRenderer from '../../components/app/metamask-template-ren
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
+  AlignItems,
   FLEX_DIRECTION,
   Size,
   TextColor,
@@ -24,8 +25,8 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getSnap,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getTargetSubjectMetadata,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
@@ -33,6 +34,11 @@ import {
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
+import { Icon, IconName } from '../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapAuthorship from '../../components/app/snaps/snap-authorship';
+import { getSnapName } from '../../helpers/utils/util';
+///: END:ONLY_INCLUDE_IN
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -176,14 +182,20 @@ export default function ConfirmationPage({
   const setInputState = (key, value) => {
     setInputStates((currentState) => ({ ...currentState, [key]: value }));
   };
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState();
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const snap = useSelector((state) =>
-    getSnap(state, pendingConfirmation?.origin),
+  const [submitAlerts, setSubmitAlerts] = useState([]);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
 
   // When pendingConfirmation is undefined, this will also be undefined
-  const proposedName = snap?.manifest.proposedName;
+  const snapName =
+    targetSubjectMetadata &&
+    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
 
   const SNAP_DIALOG_TYPE = [
     MESSAGE_TYPE.SNAP_DIALOG_ALERT,
@@ -195,7 +207,7 @@ export default function ConfirmationPage({
   ///: END:ONLY_INCLUDE_IN
 
   const INPUT_STATE_CONFIRMATIONS = [
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
     ///: END:ONLY_INCLUDE_IN
   ];
@@ -207,8 +219,8 @@ export default function ConfirmationPage({
     return pendingConfirmation
       ? getTemplateValues(
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
-            snapName: isSnapDialog && proposedName,
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            snapName: isSnapDialog && snapName,
             ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
           },
@@ -223,9 +235,9 @@ export default function ConfirmationPage({
     t,
     dispatch,
     history,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     isSnapDialog,
-    proposedName,
+    snapName,
     ///: END:ONLY_INCLUDE_IN
   ]);
 
@@ -257,14 +269,28 @@ export default function ConfirmationPage({
     return INPUT_STATE_CONFIRMATIONS.includes(type);
   };
 
-  const handleSubmit = () =>
-    templateState[pendingConfirmation.id]?.useWarningModal
-      ? setShowWarningModal(true)
-      : templatedValues.onSubmit(
-          hasInputState(pendingConfirmation.type)
-            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
-            : null,
-        );
+  const handleSubmitResult = (submitResult) => {
+    if (submitResult?.length > 0) {
+      setLoadingText(templatedValues.submitText);
+      setSubmitAlerts(submitResult);
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  };
+  const handleSubmit = async () => {
+    setLoading(true);
+    if (templateState[pendingConfirmation.id]?.useWarningModal) {
+      setShowWarningModal(true);
+    } else {
+      const inputState = hasInputState(pendingConfirmation.type)
+        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+        : null;
+      // submit result is an array of errors or empty on success
+      const submitResult = await templatedValues.onSubmit(inputState);
+      handleSubmitResult(submitResult);
+    }
+  };
 
   return (
     <div className="confirmation-page">
@@ -283,7 +309,7 @@ export default function ConfirmationPage({
                 setCurrentPendingConfirmation(currentPendingConfirmation - 1)
               }
             >
-              <i className="fas fa-chevron-left" />
+              <Icon name={IconName.ArrowLeft} />
             </button>
           )}
           <button
@@ -295,7 +321,7 @@ export default function ConfirmationPage({
               setCurrentPendingConfirmation(currentPendingConfirmation + 1)
             }
           >
-            <i className="fas fa-chevron-right" />
+            <Icon name={IconName.ArrowRight} />
           </button>
         </div>
       )}
@@ -308,30 +334,48 @@ export default function ConfirmationPage({
             />
           </Box>
         ) : null}
-        {pendingConfirmation.origin === 'metamask' ? null : (
-          <Box
-            alignItems="center"
-            marginTop={1}
-            paddingTop={1}
-            paddingRight={4}
-            paddingLeft={4}
-            paddingBottom={4}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-          >
-            <SiteOrigin
-              chip
-              siteOrigin={originMetadata.origin}
-              title={originMetadata.origin}
-              iconSrc={originMetadata.iconUrl}
-              iconName={originMetadata.hostname}
-            />
-          </Box>
-        )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          !isSnapDialog &&
+            ///: END:ONLY_INCLUDE_IN
+            pendingConfirmation.origin === 'metamask' && (
+              <Box
+                alignItems={AlignItems.center}
+                paddingTop={2}
+                paddingRight={4}
+                paddingLeft={4}
+                paddingBottom={4}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+              >
+                <SiteOrigin
+                  chip
+                  siteOrigin={originMetadata.origin}
+                  title={originMetadata.origin}
+                  iconSrc={originMetadata.iconUrl}
+                  iconName={originMetadata.hostname}
+                />
+              </Box>
+            )
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          isSnapDialog && (
+            <Box
+              alignItems="center"
+              margin={4}
+              flexDirection={FLEX_DIRECTION.COLUMN}
+            >
+              <SnapAuthorship snapId={pendingConfirmation?.origin} />
+            </Box>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
         {showWarningModal && (
           <ConfirmationWarningModal
             onSubmit={async () => {
-              await templatedValues.onSubmit();
+              const res = await templatedValues.onSubmit();
+              await handleSubmitResult(res);
               setShowWarningModal(false);
             }}
             onCancel={templatedValues.onCancel}
@@ -361,6 +405,13 @@ export default function ConfirmationPage({
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}
+        loadingText={loadingText || templatedValues.loadingText}
+        loading={loading}
+        submitAlerts={submitAlerts.map((alert, idx) => (
+          <Callout key={alert.id} severity={alert.severity} isFirst={idx === 0}>
+            <MetaMaskTemplateRenderer sections={alert.content} />
+          </Callout>
+        ))}
       />
     </div>
   );

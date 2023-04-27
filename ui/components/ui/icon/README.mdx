@@ -1,6 +1,5 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
-import IconCaretLeft from './icon-caret-left.js';
 import Approve from './approve-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
@@ -11,8 +10,6 @@ import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
-import IconBlockExplorer from './icon-block-explorer';
-
 
 # Icon
 
@@ -22,7 +19,7 @@ A range of SVG icon components
 
 ## Props
 
-<ArgsTable of={IconCaretLeft} />
+<ArgsTable of={SunCheck} />
 
 ## Usage
 
@@ -33,7 +30,7 @@ The following describes the props and example usage for this component.
 Use the `size` prop to change the size of the icon it should adhere to an `8px` grid e.g. `16px`, `24px`, `32px`
 
 <Canvas>
-  <Story id="components-ui-icon--size" />
+  <Story id="components-ui-icon--size-story" />
 </Canvas>
 
 ### Color
@@ -149,22 +146,6 @@ Use the `className` prop to add an additional class to the icon. This additional
 
 <ArgsTable of={SunCheck} />
 
-## BuyIcon
-
-<Canvas>
-  <Story id="components-ui-icon--buy-icon-story" />
-</Canvas>
-
-<ArgsTable of={BuyIcon} />
-
-## SwapIcon
-
-<Canvas>
-  <Story id="components-ui-icon--swap-icon-story" />
-</Canvas>
-
-<ArgsTable of={SwapIcon} />
-
 ## Send/SwapIcon
 
 <Canvas>
@@ -180,11 +161,3 @@ Use the `className` prop to add an additional class to the icon. This additional
 </Canvas>
 
 <ArgsTable of={Preloader} />
-
-## IconBlockExplorer
-
-<Canvas>
-  <Story id="components-ui-icon--icon-block-explorer-story" />
-</Canvas>
-
-<ArgsTable of={IconBlockExplorer} />

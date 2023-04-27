@@ -75,12 +75,6 @@
   "asset": {
     "message": "Aktīvs"
   },
-  "attemptToCancel": {
-    "message": "Vai mēģināt atcelt?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Šī mēģinājuma iesniegšana negarantē sākotnējā darījuma atcelšanu. Ja atcelšanas mēģinājums izdosies, no jums tiks pieprasīta iepriekš norādītā darījuma nodeva."
-  },
   "attemptingConnect": {
     "message": "Mēģina izveidot savienojumu ar bloku ķēdi."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
   },
-  "buyWithWyre": {
-    "message": "Pirkt $1 ar Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ļauj noguldīt $1 tieši jūsu MetaMask kontā, izmantojot kredītkarti."
-  },
   "bytes": {
     "message": "Baiti"
   },
   "cancel": {
     "message": "Atcelt"
-  },
-  "cancellationGasFee": {
-    "message": "Atcelšanas maksājums par Gas"
   },
   "cancelled": {
     "message": "Atcelts"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
+  "connectingToLineaTestnet": {
+    "message": "Pieslēdzas Linea Goerli testa tīklam"
+  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
-  },
-  "continueToWyre": {
-    "message": "Pāriet uz Wyre"
   },
   "contractDeployment": {
     "message": "Līgumu pielietošana"
@@ -332,13 +317,6 @@
   "general": {
     "message": "Vispārīgi"
   },
-  "getEther": {
-    "message": "Saņemt Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Vai vēlaties $1 iegūt Ether no krāna?",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Goerli testa tīkls"
   },
@@ -432,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testa tīkls"
   },
   "links": {
     "message": "Saites"
@@ -635,35 +616,21 @@
   "reset": {
     "message": "Atiestatīt"
   },
-  "resetAccount": {
-    "message": "Atiestatīt kontu"
-  },
-  "resetAccountDescription": {
-    "message": "Konta atiestatīšana izdzēsīs darījumu vēsturi."
-  },
   "restore": {
     "message": "Atjaunot"
   },
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ja mainīsiet pārlūku vai datoru, jūsu kontu piekļuvei būs nepieciešama šī atkopšanas frāze. Saglabājiet to drošā un slepenā vietā!"
-  },
   "revealSeedWordsWarning": {
-    "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NEDALIETIES ar šo frāzi!"
+    "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Jauns RPC URL"
   },
   "save": {
     "message": "Saglabāt"
-  },
-  "saveAsCsvFile": {
-    "message": "Saglabāt kā CSV failu"
   },
   "scanInstructions": {
     "message": "Novietojiet QR kodu kameras priekšā"
@@ -706,12 +673,6 @@
   },
   "settings": {
     "message": "Iestatījumi"
-  },
-  "showAdvancedGasInline": {
-    "message": "Papildu Gas vadīklas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Atlasiet šo, lai parādītu Gas cenu un ierobežotu kontroles iespējas tieši sūtīšanas un apstiprināšanas ekrānos."
   },
   "showFiatConversionInTestnets": {
     "message": "Rādīt konversiju testa tīklos"
@@ -776,32 +737,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
   },
-  "syncWithMobile": {
-    "message": "Sinhronizēt ar tālruni"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pārliecinieties, ka neviens cits neskatās jūsu ekrānā, kad skenējat šo kodu."
-  },
-  "syncWithMobileComplete": {
-    "message": "Jūsu dati sekmīgi sinhronizēti. Patīkamu MetaMask mobilās lietotnes lietošanu!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Jūs varat sinhronizēt savus kontus un informāciju ar mobilo ierīci. Atveriet MetaMask mobilo lietotni, ejiet uz \"Iestatījumi\" un pieskarieties pie \"Sinhronizēt no pārlūka paplašinājuma\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ja esat pirmoreiz atvēris MetaMask mobilo lietotni, vienkārši sekojiet norādēm tālrunī."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Noskenējiet šo kodu ar MetaMask mobilo lietotni"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinhronizēt ar tālruni"
-  },
   "terms": {
     "message": "Lietošanas noteikumi"
-  },
-  "testFaucet": {
-    "message": "Testa krāns"
   },
   "tips": {
     "message": "Dzeramnauda"
@@ -921,9 +858,6 @@
   "userName": {
     "message": "Lietotājvārds"
   },
-  "viewAccount": {
-    "message": "Skatīt kontu"
-  },
   "viewContact": {
     "message": "Skatīt līgumu"
   },
@@ -932,9 +866,6 @@
   },
   "welcomeBack": {
     "message": "Ar atgriešanos!"
-  },
-  "yesLetsTry": {
-    "message": "Jā, pamēģināsim"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."

@@ -87,7 +87,7 @@ export default function SignatureRequestMessage({
         >
           {primaryType}
         </Typography>
-        <SignatureRequestData data={data} />
+        <SignatureRequestData data={data.value} />
       </Box>
     </Box>
   );

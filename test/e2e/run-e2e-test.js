@@ -76,6 +76,8 @@ async function main() {
     throw error;
   }
 
+  const testFileName = path.basename(e2eTestPath);
+
   if (debug) {
     process.env.E2E_DEBUG = 'true';
   }
@@ -90,16 +92,25 @@ async function main() {
   }
 
   const configFile = path.join(__dirname, '.mocharc.js');
+  const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
+
+  const dir = 'test/test-results/e2e';
+  fs.mkdir(dir, { recursive: true });
 
   await retry({ retries }, async () => {
-    await runInShell('yarn', [
-      'mocha',
-      `--config=${configFile}`,
-      '--timeout',
-      testTimeoutInMilliseconds,
-      e2eTestPath,
-      exit,
-    ]);
+    await runInShell(
+      'yarn',
+      [
+        'mocha',
+        `--config=${configFile}`,
+        `--timeout=${testTimeoutInMilliseconds}`,
+        '--reporter=xunit',
+        ...extraArgs,
+        e2eTestPath,
+        exit,
+      ],
+      `${dir}/${testFileName}.xml`,
+    );
   });
 }
 

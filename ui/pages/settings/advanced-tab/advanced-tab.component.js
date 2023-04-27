@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
-import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
 import Dialog from '../../../components/ui/dialog';
 
@@ -19,7 +18,10 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -39,10 +41,7 @@ export default class AdvancedTab extends PureComponent {
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
-    history: PropTypes.object,
     sendHexData: PropTypes.bool,
-    setAdvancedInlineGasFeatureFlag: PropTypes.func,
-    advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
@@ -56,6 +55,13 @@ export default class AdvancedTab extends PureComponent {
     userHasALedgerAccount: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
+    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
+    disabledRpcMethodPreferences: PropTypes.shape({
+      eth_sign: PropTypes.bool.isRequired,
+    }),
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    desktopEnabled: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -184,37 +190,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderMobileSync() {
-    const { t } = this.context;
-    const { history } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-mobile-sync"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithMobile')}</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              onClick={(event) => {
-                event.preventDefault();
-                history.push(MOBILE_SYNC_ROUTE);
-              }}
-            >
-              {t('syncWithMobile')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderResetAccount() {
     const { t } = this.context;
     const { showResetAccountConfirmationModal } = this.props;
@@ -226,9 +201,9 @@ export default class AdvancedTab extends PureComponent {
         data-testid="advanced-setting-reset-account"
       >
         <div className="settings-page__content-item">
-          <span>{t('resetAccount')}</span>
+          <span>{t('clearActivity')}</span>
           <span className="settings-page__content-description">
-            {t('resetAccountDescription')}
+            {t('clearActivityDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -240,45 +215,15 @@ export default class AdvancedTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AccountReset,
                   properties: {},
                 });
                 showResetAccountConfirmationModal();
               }}
             >
-              {t('resetAccount')}
+              {t('clearActivityButton')}
             </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderAdvancedGasInputInline() {
-    const { t } = this.context;
-    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[3]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-advanced-gas-inline"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('showAdvancedGasInline')}</span>
-          <div className="settings-page__content-description">
-            {t('showAdvancedGasInlineDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={advancedInlineGas}
-              onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
           </div>
         </div>
       </div>
@@ -291,7 +236,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-hex-data"
       >
@@ -322,7 +267,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -354,7 +299,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -384,7 +329,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
       >
@@ -415,7 +360,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
       >
@@ -462,7 +407,16 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerTransportPreference,
       userHasALedgerAccount,
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      desktopEnabled,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    if (desktopEnabled) {
+      return null;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     const LEDGER_TRANSPORT_NAMES = {
       LIVE: t('ledgerLive'),
@@ -493,7 +447,11 @@ export default class AdvancedTab extends PureComponent {
       : LEDGER_TRANSPORT_NAMES.U2F;
 
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div
+        ref={this.settingsRefs[8]}
+        className="settings-page__content-row"
+        data-testId="ledger-live-control"
+      >
         <div className="settings-page__content-item">
           <span>{t('preferredLedgerConnectionType')}</span>
           <div className="settings-page__content-description">
@@ -556,7 +514,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
       >
@@ -571,6 +529,39 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={dismissSeedBackUpReminder}
               onToggle={(value) => setDismissSeedBackUpReminder(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderToggleEthSignControl() {
+    const { t } = this.context;
+    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
+      this.props;
+
+    return (
+      <div
+        ref={this.settingsRefs[10]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-toggle-ethsign"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleEthSignField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleEthSignDescriptionField')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={disabledRpcMethodPreferences?.eth_sign || false}
+              onToggle={(value) =>
+                setDisabledRpcMethodPreference('eth_sign', !value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -699,9 +690,7 @@ export default class AdvancedTab extends PureComponent {
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
-        {this.renderMobileSync()}
         {this.renderResetAccount()}
-        {this.renderAdvancedGasInputInline()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
@@ -711,6 +700,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderRestoreUserData()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderToggleEthSignControl()}
       </div>
     );
   }

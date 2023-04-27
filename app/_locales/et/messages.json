@@ -75,12 +75,6 @@
   "asset": {
     "message": "Vara"
   },
-  "attemptToCancel": {
-    "message": "Tühistamiskatse?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Selle katse esitamine ei taga teie originaaltehingu tühistamist. Kui tühistamiskatse on edukas, võetakse teilt ülaltoodud tehingutasu."
-  },
   "attemptingConnect": {
     "message": "Plokiahelaga ühenduse loomise katse."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },
-  "buyWithWyre": {
-    "message": "Ostke $1 -d Wyre'iga"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre võimaldab kasutada krediitkaarti, et teha $1 sissemakse otse MetaMaski kontole."
-  },
   "bytes": {
     "message": "Baidid"
   },
   "cancel": {
     "message": "Tühista"
-  },
-  "cancellationGasFee": {
-    "message": "Tühistamise gaasitasu"
   },
   "cancelled": {
     "message": "Tühistatud"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
+  "connectingToLineaTestnet": {
+    "message": "Ühendamine Linea Goerli testvõrguga"
+  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
-  },
-  "continueToWyre": {
-    "message": "Ava Wyre"
   },
   "contractDeployment": {
     "message": "Lepingu juurutamine"
@@ -332,13 +317,6 @@
   "general": {
     "message": "Üldine teave"
   },
-  "getEther": {
-    "message": "Hankige eetrit"
-  },
-  "getEtherFromFaucet": {
-    "message": "Hankige kraanist eetrit $1eest",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Goerli testvõrk"
   },
@@ -432,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testvõrk"
   },
   "links": {
     "message": "Lingid"
@@ -629,35 +610,21 @@
   "reset": {
     "message": "Lähtesta"
   },
-  "resetAccount": {
-    "message": "Lähtesta konto"
-  },
-  "resetAccountDescription": {
-    "message": "Konto lähtestamine tühjendab tehingute ajaloo."
-  },
   "restore": {
     "message": "Taasta"
   },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kui vahetate veebilehitsejat või arvutit, vajate oma kontodele ligipääsemiseks seemnefraasi. Hoidke seda turvalises ja salajases kohas."
-  },
   "revealSeedWordsWarning": {
-    "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
+    "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Uus RPC URL"
   },
   "save": {
     "message": "Salvesta"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvesta CSV-failina"
   },
   "scanInstructions": {
     "message": "Asetage QR-kood kaamera ette"
@@ -700,12 +667,6 @@
   },
   "settings": {
     "message": "Seaded"
-  },
-  "showAdvancedGasInline": {
-    "message": "Täiustatud gaasijuhikud"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valige see, et kuvada gaasi hinda ja piirangut otse saatmise ning kinnitamise kuval."
   },
   "showFiatConversionInTestnets": {
     "message": "Kuva teisendus Testnetsis"
@@ -770,32 +731,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "Sümbol peab olema 11 tähemärki või vähem."
   },
-  "syncWithMobile": {
-    "message": "Mobiiliga sünkroonimine"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Veenduge, et keegi teine ei vaata selle koodi skannimisel teie ekraani"
-  },
-  "syncWithMobileComplete": {
-    "message": "Teie andmed on edukalt sünkroonitud. Nautige MetaMaski mobiilirakendust!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Saate sünkroonida oma kontod ja teabe oma mobiiliseadmega. Avage MetaMaski mobiilirakendus, avage \"Settings\" (Seaded) ja puudutage valikut \"Sync from Browser Extension\" (Sünkroonimine lehitseja laiendusest)"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Järgige MetaMaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skanneerige see kood MetaMaski mobiilirakendusega"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mobiiliga sünkroonimine"
-  },
   "terms": {
     "message": "Teenusetingimused"
-  },
-  "testFaucet": {
-    "message": "Testkraan"
   },
   "tips": {
     "message": "Preemiad"
@@ -915,9 +852,6 @@
   "userName": {
     "message": "Kasutajanimi"
   },
-  "viewAccount": {
-    "message": "Kuva konto"
-  },
   "viewContact": {
     "message": "Kuva kontakt"
   },
@@ -926,9 +860,6 @@
   },
   "welcomeBack": {
     "message": "Tere tulemast tagasi!"
-  },
-  "yesLetsTry": {
-    "message": "Jah, proovime"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Selle funktsiooni kasutamiseks peate lubaga kaamera ligipääsu."

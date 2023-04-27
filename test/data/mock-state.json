@@ -16,13 +16,14 @@
         "name": null
       }
     },
-    "warning": null
+    "warning": null,
+    "customTokenAmount": "10"
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
-    "ipfsGateway": "",
+    "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
@@ -56,7 +57,43 @@
       "priorityFeeTrend": "down",
       "networkCongestion": 0.90625
     },
-    "snaps": [{}],
+    "snaps": {
+      "npm:@metamask/test-snap-bip44": {
+        "id": "npm:@metamask/test-snap-bip44",
+        "origin": "npm:@metamask/test-snap-bip44",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that signs messages using BLS.",
+          "proposedName": "BIP-44 Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-bip44",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      }
+    },
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
@@ -72,11 +109,19 @@
     "featureFlags": {
       "showIncomingTransactions": true
     },
-    "network": "5",
+    "networkId": "5",
+    "networkStatus": "available",
     "provider": {
       "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH"
+      "ticker": "ETH",
+      "id": "testNetworkConfigurationId"
+    },
+    "networkConfigurations": {
+      "testNetworkConfigurationId": {
+        "rpcUrl": "https://testrpc.com",
+        "chainId": "0x1"
+      }
     },
     "keyrings": [
       {
@@ -140,12 +185,14 @@
     "incomingTransactions": {},
     "unapprovedTxs": {
       "8393540981007587": {
+        "chainId": "0x5",
         "id": 8393540981007587,
         "time": 1536268017676,
         "status": "unapproved",
         "metamaskNetworkId": "4",
         "loadingDefaults": false,
         "txParams": {
+          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
           "value": "0x0",
@@ -185,13 +232,13 @@
             }
           ]
         ],
-        "origin": "MetaMask"
+        "origin": "metamask"
       }
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "balance": "0x0",
+        "balance": "0x346ba7725f412cbfdb",
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
       },
       "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
@@ -258,6 +305,248 @@
     "advancedGasFee": {
       "maxBaseFee": "75",
       "priorityFee": "2"
+    },
+    "nftsDropdownState": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "0x5": {
+          "0x495f947276749Ce646f68AC8c248420045cb7b5e": false
+        }
+      }
+    },
+    "allNftContracts": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "1": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ],
+        "137": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ],
+        "11155111": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ],
+        "5": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          },
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "description": null,
+            "name": "Punk Generator",
+            "logo": null,
+            "symbol": "PUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC1155",
+            "externalLink": null
+          }
+        ],
+        "153": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ]
+      }
+    },
+    "allNfts": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "1": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "1",
+            "name": "MUNK #1",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721"
+          }
+        ],
+        "137": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "1",
+            "name": "MUNK #1",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721"
+          }
+        ],
+        "11155111": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "1",
+            "name": "MUNK #1",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721"
+          }
+        ],
+        "5": [
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
+            "name": "Punk #4",
+            "creator": {
+              "user": {
+                "username": null
+              },
+              "profile_img_url": null,
+              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+              "config": ""
+            },
+            "description": "Red Mohawk bam!",
+            "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
+            "standard": "ERC1155"
+          },
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "tokenId": "58076532811975507823669075598676816378162417803895263482849101574415147073537",
+            "name": "Punk #3",
+            "creator": {
+              "user": {
+                "username": null
+              },
+              "profile_img_url": null,
+              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+              "config": ""
+            },
+            "description": "Clown PUNK!!!",
+            "image": "https://lh3.googleusercontent.com/H7VrxaalZv4PF1B8U7ADuc8AfuqTVyzmMEDQ5OXKlx0Tqu5XiwsKYj4j_pAF6wUJjLMQbSN_0n3fuj84lNyRhFW9hyrxqDfY1IiQEQ",
+            "standard": "ERC1155"
+          },
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "tokenId": "58076532811975507823669075598676816378162417803895263482849101573315635445761",
+            "name": "Punk #2",
+            "creator": {
+              "user": {
+                "username": null
+              },
+              "profile_img_url": null,
+              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+              "config": ""
+            },
+            "description": "Got glasses and black hair!",
+            "image": "https://lh3.googleusercontent.com/CHNTSlKB_Gob-iwTq8jcag6XwBkTqBMLt_vEKeBv18Q4AoPFAEPceqK6mRzkad2s5djx6CT5zbGQwDy81WwtNzViK5dQbG60uAWv",
+            "standard": "ERC1155"
+          },
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "tokenId": "58076532811975507823669075598676816378162417803895263482849101572216123817985",
+            "name": "Punk #1",
+            "creator": {
+              "user": {
+                "username": null
+              },
+              "profile_img_url": null,
+              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+              "config": ""
+            },
+            "image": "https://lh3.googleusercontent.com/4jfPi-nQNWCUXD5qVNVWX7LX2UufU_elEJcvICFlsTdcBXv70asnDEOlI8oKECZxlXq1wseeIXMwmP5tLyOUxMKk",
+            "standard": "ERC1155"
+          },
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "tokenId": "58076532811975507823669075598676816378162417803895263482849101571116612190209",
+            "name": "Punk #4651",
+            "creator": {
+              "user": {
+                "username": null
+              },
+              "profile_img_url": null,
+              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+              "config": ""
+            },
+            "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
+            "standard": "ERC1155"
+          },
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "1",
+            "name": "MUNK #1",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721",
+            "lastSale": {
+              "total_price": "4900000000000000",
+              "event_timestamp": "2023-01-18T21:51:23",
+              "payment_token": {
+                "symbol": "ETH"
+              }
+            }
+          },
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "2",
+            "name": "MUNK #2",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721"
+          },
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "3",
+            "name": "MUNK #3",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721"
+          }
+        ],
+        "153": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "tokenId": "1",
+            "name": "MUNK #1",
+            "description": null,
+            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+            "standard": "ERC721"
+          }
+        ]
+      }
     },
     "tokenList": {
       "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
@@ -1282,7 +1571,19 @@
         ],
         "origin": "tmashuang.github.io"
       }
-    ]
+    ],
+    "desktopEnabled": false,
+    "pendingApprovals": {
+      "testApprovalId": {
+        "id": "testApprovalId",
+        "time": 1528133319641,
+        "origin": "metamask",
+        "type": "transaction",
+        "requestData": { "txId": "testTransactionId" },
+        "requestState": { "test": "value" }
+      }
+    },
+    "pendingApprovalCount": 1
   },
   "send": {
     "amountMode": "INPUT",

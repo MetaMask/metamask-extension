@@ -53,15 +53,42 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  let desktopEnabled = false;
+
+  backgroundConnection.getDesktopEnabled(function (err, result) {
+    if (err) {
+      return;
+    }
+
+    desktopEnabled = result;
+  });
+  ///: END:ONLY_INCLUDE_IN
+
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      cb(err, metamaskState);
+      cb(
+        err,
+        {
+          ...metamaskState,
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          desktopEnabled,
+          ///: END:ONLY_INCLUDE_IN
+        },
+        backgroundConnection,
+      );
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupDebuggingHelpers(store);
-      cb(null, store);
+      cb(
+        null,
+        store,
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      );
     });
   });
 }
@@ -133,7 +160,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
-    metamaskState.network,
+    metamaskState.networkId,
     metamaskState.provider.chainId,
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;

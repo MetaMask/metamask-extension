@@ -28,6 +28,9 @@ export default {
     src: {
       control: 'text',
     },
+    name: {
+      control: 'text',
+    },
     borderColor: {
       options: Object.values(BorderColor),
       control: 'select',
@@ -36,6 +39,7 @@ export default {
   args: {
     src: 'https://uniswap.org/favicon.ico',
     size: Size.MD,
+    name: 'Uniswap',
   },
 };
 

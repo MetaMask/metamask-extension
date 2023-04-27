@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { ICON_NAMES } from '..';
+import { IconName } from '..';
 
 import README from './README.mdx';
 import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
@@ -35,7 +35,6 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
-
   component: AvatarIcon,
   parameters: {
     docs: {
@@ -44,7 +43,7 @@ export default {
   },
   argTypes: {
     iconName: {
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
       control: 'select',
     },
     size: {
@@ -89,7 +88,7 @@ export default {
 };
 
 const Template = (args) => {
-  return <AvatarIcon iconName={ICON_NAMES.SWAP_HORIZONTAL} {...args} />;
+  return <AvatarIcon iconName={IconName.SwapHorizontal} {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -106,81 +105,83 @@ export const SizeStory = (args) => (
 );
 SizeStory.storyName = 'Size';
 
-Size.args = {
-  iconName: ICON_NAMES.CONFIRMATION,
+SizeStory.args = {
+  iconName: IconName.Confirmation,
 };
 
-export const IconName = (args) => (
+export const IconNameStory = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarIcon
       color={IconColor.primaryDefault}
       backgroundColor={BackgroundColor.primaryMuted}
-      iconName={ICON_NAMES.SWAP_HORIZONTAL}
+      iconName={IconName.SwapHorizontal}
       {...args}
     />
     <AvatarIcon
       color={IconColor.successDefault}
       backgroundColor={BackgroundColor.successMuted}
-      iconName={ICON_NAMES.CONFIRMATION}
+      iconName={IconName.Confirmation}
       {...args}
     />
     <AvatarIcon
       color={IconColor.infoDefault}
       backgroundColor={BackgroundColor.infoMuted}
-      iconName={ICON_NAMES.INFO}
+      iconName={IconName.Info}
       {...args}
     />
     <AvatarIcon
       color={IconColor.warningDefault}
       backgroundColor={BackgroundColor.warningMuted}
-      iconName={ICON_NAMES.WARNING}
+      iconName={IconName.Warning}
       {...args}
     />
     <AvatarIcon
       color={IconColor.errorDefault}
       backgroundColor={BackgroundColor.errorMuted}
-      iconName={ICON_NAMES.DANGER}
+      iconName={IconName.Danger}
       {...args}
     />
   </Box>
 );
+
+IconNameStory.storyName = 'Icon Name';
 
 export const ColorAndBackgroundColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarIcon
       color={IconColor.primaryDefault}
       backgroundColor={BackgroundColor.primaryMuted}
-      iconName={ICON_NAMES.SWAP_HORIZONTAL}
+      iconName={IconName.SwapHorizontal}
       {...args}
     />
     <AvatarIcon
       color={IconColor.primaryInverse}
       backgroundColor={BackgroundColor.primaryDefault}
-      iconName={ICON_NAMES.SWAP_HORIZONTAL}
+      iconName={IconName.SwapHorizontal}
       {...args}
     />
     <AvatarIcon
       color={IconColor.successDefault}
       backgroundColor={BackgroundColor.successMuted}
-      iconName={ICON_NAMES.CONFIRMATION}
+      iconName={IconName.Confirmation}
       {...args}
     />
     <AvatarIcon
       color={IconColor.infoDefault}
       backgroundColor={BackgroundColor.infoMuted}
-      iconName={ICON_NAMES.INFO}
+      iconName={IconName.Info}
       {...args}
     />
     <AvatarIcon
       color={IconColor.warningDefault}
       backgroundColor={BackgroundColor.warningMuted}
-      iconName={ICON_NAMES.WARNING}
+      iconName={IconName.Warning}
       {...args}
     />
     <AvatarIcon
       color={IconColor.errorDefault}
       backgroundColor={BackgroundColor.errorMuted}
-      iconName={ICON_NAMES.DANGER}
+      iconName={IconName.Danger}
       {...args}
     />
   </Box>

@@ -1,10 +1,8 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
   /**
@@ -12,7 +10,6 @@ export default class PreferencesController {
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
-   * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
@@ -25,11 +22,13 @@ export default class PreferencesController {
    */
   constructor(opts = {}) {
     const initState = {
-      frequentRpcListDetail: [],
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      disabledRpcMethodPreferences: {
+        eth_sign: false,
+      },
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
@@ -70,10 +69,10 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
-    this.network = opts.network;
+    this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
+    this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(12);
-    this.openPopup = opts.openPopup;
+    this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
 
     this._subscribeToInfuraAvailability();
@@ -148,7 +147,7 @@ export default class PreferencesController {
   /**
    * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect collectibles.
+   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect NFTs.
    */
   setUseNftDetection(useNftDetection) {
     this.store.updateState({ useNftDetection });
@@ -166,7 +165,7 @@ export default class PreferencesController {
   /**
    * Setter for the `openSeaEnabled` property
    *
-   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for collectibles data.
+   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
    */
   setOpenSeaEnabled(openSeaEnabled) {
     this.store.updateState({
@@ -386,67 +385,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Adds custom RPC url to state.
-   *
-   * @param {string} rpcUrl - The RPC url to add to frequentRpcList.
-   * @param {string} chainId - The chainId of the selected network.
-   * @param {string} [ticker] - Ticker symbol of the selected network.
-   * @param {string} [nickname] - Nickname of the selected network.
-   * @param {object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
-   */
-  upsertToFrequentRpcList(
-    rpcUrl,
-    chainId,
-    ticker = 'ETH',
-    nickname = '',
-    rpcPrefs = {},
-  ) {
-    const rpcList = this.getFrequentRpcListDetail();
-
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === rpcUrl;
-    });
-    if (index !== -1) {
-      rpcList.splice(index, 1, { rpcUrl, chainId, ticker, nickname, rpcPrefs });
-      return;
-    }
-
-    if (!isPrefixedFormattedHexString(chainId)) {
-      throw new Error(`Invalid chainId: "${chainId}"`);
-    }
-
-    rpcList.push({ rpcUrl, chainId, ticker, nickname, rpcPrefs });
-    this.store.updateState({ frequentRpcListDetail: rpcList });
-  }
-
-  /**
-   * Removes custom RPC url from state.
-   *
-   * @param {string} url - The RPC url to remove from frequentRpcList.
-   * @returns {Promise<Array>} Promise resolving to updated frequentRpcList.
-   */
-  async removeFromFrequentRpcList(url) {
-    const rpcList = this.getFrequentRpcListDetail();
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url;
-    });
-    if (index !== -1) {
-      rpcList.splice(index, 1);
-    }
-    this.store.updateState({ frequentRpcListDetail: rpcList });
-    return rpcList;
-  }
-
-  /**
-   * Getter for the `frequentRpcListDetail` property.
-   *
-   * @returns {Array<Array>} An array of rpc urls.
-   */
-  getFrequentRpcListDetail() {
-    return this.store.getState().frequentRpcListDetail;
-  }
-
-  /**
    * Updates the `featureFlags` property, which is an object. One property within that object will be set to a boolean.
    *
    * @param {string} feature - A key that corresponds to a UI feature.
@@ -544,15 +482,39 @@ export default class PreferencesController {
     });
   }
 
+  /**
+   * A setter for the user preference to enable/disable rpc methods
+   *
+   * @param {string} methodName - The RPC method name to change the setting of
+   * @param {bool} isEnabled - true to enable the rpc method
+   */
+  async setDisabledRpcMethodPreference(methodName, isEnabled) {
+    const currentRpcMethodPreferences =
+      this.store.getState().disabledRpcMethodPreferences;
+    const updatedRpcMethodPreferences = {
+      ...currentRpcMethodPreferences,
+      [methodName]: isEnabled,
+    };
+
+    this.store.updateState({
+      disabledRpcMethodPreferences: updatedRpcMethodPreferences,
+    });
+  }
+
+  getRpcMethodPreferences() {
+    return this.store.getState().disabledRpcMethodPreferences;
+  }
+
   //
   // PRIVATE METHODS
   //
 
   _subscribeToInfuraAvailability() {
-    this.network.on(NETWORK_EVENTS.INFURA_IS_BLOCKED, () => {
+    this._onInfuraIsBlocked(() => {
       this._setInfuraBlocked(true);
     });
-    this.network.on(NETWORK_EVENTS.INFURA_IS_UNBLOCKED, () => {
+
+    this._onInfuraIsUnblocked(() => {
       this._setInfuraBlocked(false);
     });
   }

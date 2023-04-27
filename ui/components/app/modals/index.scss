@@ -5,13 +5,13 @@
 @import 'edit-approval-permission/index';
 @import 'export-private-key-modal/index';
 @import 'hide-token-confirmation-modal/index';
-@import 'metametrics-opt-in-modal/index';
 @import 'new-account-modal/index';
 @import 'qr-scanner/index';
 @import 'transaction-confirmed/index';
 @import 'customize-nonce/index';
 @import 'convert-token-to-nft-modal/index';
 @import 'contract-details-modal/index';
+@import 'hold-to-reveal-modal/index';
 
 .modal {
   z-index: 1050;

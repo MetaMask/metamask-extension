@@ -44,7 +44,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
              
             of
              
-            0
+            1
           </div>
           <div
             class="confirm-page-container-navigation__longtext"
@@ -54,7 +54,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
         </div>
         <div
           class="confirm-page-container-navigation__container"
-          style="visibility: hidden;"
+          style="visibility: initial;"
         >
           <button
             class="confirm-page-container-navigation__arrow"
@@ -167,7 +167,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           <h6
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
-            0
+            966.987986
              
             ETH
           </h6>
@@ -182,6 +182,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       >
         <div
           class="site-origin"
+          title="https://happydapp.website/governance?futarchy=true"
         >
           <div
             class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
@@ -244,7 +245,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
     >
       <footer>
         <button
-          class="button btn--rounded btn-secondary page-container__footer-button"
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
           data-testid="page-container-footer-cancel"
           role="button"
           tabindex="0"

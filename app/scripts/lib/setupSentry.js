@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
-import { BuildType } from '../../../shared/constants/app';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
@@ -41,6 +40,7 @@ export const SENTRY_STATE = {
     currentLocale: true,
     customNonceValue: true,
     defaultHomeActiveTabName: true,
+    desktopEnabled: true,
     featureFlags: true,
     firstTimeFlowType: true,
     forgottenPassword: true,
@@ -51,7 +51,8 @@ export const SENTRY_STATE = {
     isUnlocked: true,
     metaMetricsId: true,
     nativeCurrency: true,
-    network: true,
+    networkId: true,
+    networkStatus: true,
     nextNonce: true,
     participateInMetaMetrics: true,
     preferences: true,
@@ -88,7 +89,7 @@ export default function setupSentry({ release, getState }) {
   }
 
   const environment =
-    METAMASK_BUILD_TYPE === BuildType.main
+    METAMASK_BUILD_TYPE === 'main'
       ? METAMASK_ENVIRONMENT
       : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
 
@@ -140,23 +141,7 @@ export default function setupSentry({ release, getState }) {
     ],
     release,
     beforeSend: (report) => rewriteReport(report, getState),
-    beforeBreadcrumb(breadcrumb) {
-      if (getState) {
-        const appState = getState();
-        if (
-          Object.values(appState).length &&
-          (!appState?.store?.metamask?.participateInMetaMetrics ||
-            !appState?.store?.metamask?.completedOnboarding ||
-            breadcrumb?.category === 'ui.input')
-        ) {
-          return null;
-        }
-      } else {
-        return null;
-      }
-      const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
-      return newBreadcrumb;
-    },
+    beforeBreadcrumb: beforeBreadcrumb(getState),
   });
 
   return Sentry;
@@ -176,6 +161,32 @@ function hideUrlIfNotInternal(url) {
     return '';
   }
   return url;
+}
+
+/**
+ * Returns a method that handles the Sentry breadcrumb using a specific method to get the extension state
+ *
+ * @param {Function} getState - A method that returns the state of the extension
+ * @returns {(breadcrumb: object) => object} A method that modifies a Sentry breadcrumb object
+ */
+export function beforeBreadcrumb(getState) {
+  return (breadcrumb) => {
+    if (getState) {
+      const appState = getState();
+      if (
+        Object.values(appState).length &&
+        (!appState?.store?.metamask?.participateInMetaMetrics ||
+          !appState?.store?.metamask?.completedOnboarding ||
+          breadcrumb?.category === 'ui.input')
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
+    return newBreadcrumb;
+  };
 }
 
 /**
@@ -315,8 +326,11 @@ function rewriteErrorMessages(report, rewriteFn) {
 }
 
 function rewriteReportUrls(report) {
-  // update request url
-  report.request.url = toMetamaskUrl(report.request.url);
+  if (report.request?.url) {
+    // update request url
+    report.request.url = toMetamaskUrl(report.request.url);
+  }
+
   // update exception stack trace
   if (report.exception && report.exception.values) {
     report.exception.values.forEach((item) => {
@@ -330,6 +344,10 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
+  if (!globalThis.location?.origin) {
+    return origUrl;
+  }
+
   const filePath = origUrl?.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;

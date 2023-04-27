@@ -605,16 +605,13 @@ function notifyInpageOfStreamFailure() {
 
 /**
  * Redirects the current page to a phishing information page
- *
- * @param data
  */
-function redirectToPhishingWarning(data = {}) {
+function redirectToPhishingWarning() {
   console.debug('MetaMask: Routing to Phishing Warning page.');
   const { hostname, href } = window.location;
-  const { newIssueUrl } = data;
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
-  const querystring = new URLSearchParams({ hostname, href, newIssueUrl });
+  const querystring = new URLSearchParams({ hostname, href });
   window.location.href = `${baseUrl}#${querystring}`;
 }
 

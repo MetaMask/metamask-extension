@@ -66,7 +66,7 @@ function getValues(pendingApproval, t, actions) {
           props: {
             newNetwork: {
               chainId: pendingApproval.requestData.chainId,
-              name: pendingApproval.requestData.nickname,
+              nickname: pendingApproval.requestData.nickname,
             },
           },
         },

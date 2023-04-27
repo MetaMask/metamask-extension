@@ -3,15 +3,15 @@
 exports[`TextFieldSearch should render correctly 1`] = `
 <div>
   <div
-    class="box mm-text-field-base mm-text-field-base--size-md mm-text-field-base--truncate mm-text-field mm-text-field-search box--padding-left-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+    class="box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-text-field-search box--padding-left-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
   >
-    <div
-      class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-inherit"
+    <span
+      class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
       style="mask-image: url('./images/icons/search.svg');"
     />
     <input
       autocomplete="off"
-      class="box mm-text mm-text-field-base__input mm-text--body-md mm-text--color-text-default box--margin-right-6 box--padding-right-4 box--padding-left-2 box--flex-direction-row box--background-color-transparent"
+      class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--margin-right-6 box--padding-right-4 box--padding-left-2 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
       focused="false"
       type="search"
       value=""

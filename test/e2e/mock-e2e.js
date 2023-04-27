@@ -5,6 +5,21 @@ const blacklistedHosts = [
   'sepolia.infura.io',
 ];
 
+const HOTLIST_URL =
+  'https://static.metafi.codefi.network/api/v1/lists/hotlist.json';
+const STALELIST_URL =
+  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
+
+const emptyHotlist = [];
+const emptyStalelist = {
+  version: 2,
+  tolerance: 2,
+  fuzzylist: [],
+  allowlist: [],
+  blocklist: [],
+  lastUpdated: 0,
+};
+
 async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
@@ -17,6 +32,25 @@ async function setupMocking(server, testSpecificMock) {
       return {};
     },
   });
+
+  const mockedEndpoint = await testSpecificMock(server);
+
+  // Mocks below this line can be overridden by test-specific mocks
+
+  await server
+    .forPost(
+      'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1675864782845',
+          result: '0xa4b1',
+        },
+      };
+    });
 
   await server.forPost('https://api.segment.io/v1/batch').thenCallback(() => {
     return {
@@ -317,10 +351,10 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
-  // It disables loading of token icons, e.g. this URL: https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
+  // It disables loading of token icons, e.g. this URL: https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
   await server
     .forGet(
-      /^https:\/\/static\.metaswap\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
+      /^https:\/\/static\.metafi\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
     )
     .thenCallback(() => {
       return {
@@ -340,7 +374,34 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
-  testSpecificMock(server);
+  await server.forGet(STALELIST_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: emptyStalelist,
+    };
+  });
+
+  await server.forGet(HOTLIST_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: emptyHotlist,
+    };
+  });
+
+  await server
+    .forPost('https://customnetwork.com/api/customRPC')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1675864782845',
+          result: '0x122',
+        },
+      };
+    });
+
+  return mockedEndpoint;
 }
 
 module.exports = { setupMocking };

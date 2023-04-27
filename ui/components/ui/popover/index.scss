@@ -23,44 +23,8 @@
   &-header {
     position: relative;
 
-    &__title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      @include H4;
-
-      font-weight: bold;
-      padding-bottom: 8px;
-
-      h2 {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        button {
-          margin-right: 24px;
-        }
-      }
-
-      &.center {
-        justify-content: center;
-      }
-    }
-
-    &__subtitle {
-      @include H6;
-    }
-
-    &__button {
-      background: none;
-      font-size: inherit;
-      padding: 0;
-      color: var(--color-icon-default);
-    }
-
-    i {
-      cursor: pointer;
+    &__title--center {
+      flex: 1;
     }
   }
 
@@ -95,6 +59,26 @@
 
     > :only-child {
       margin: 0 auto;
+    }
+  }
+
+  &-scroll-button {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--color-primary-default);
+    z-index: 201;
+    cursor: pointer;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      opacity: 1;
     }
   }
 

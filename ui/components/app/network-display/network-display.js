@@ -16,9 +16,9 @@ import {
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Chip from '../../ui/chip/chip';
-import IconCaretDown from '../../ui/icon/icon-caret-down';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -34,8 +34,7 @@ export default function NetworkDisplay({
   }));
   const t = useI18nContext();
 
-  const { nickname: networkNickname, type: networkType } =
-    targetNetwork ?? currentNetwork;
+  const { nickname, type: networkType } = targetNetwork ?? currentNetwork;
 
   return (
     <Chip
@@ -67,13 +66,11 @@ export default function NetworkDisplay({
         </LoadingIndicator>
       }
       rightIcon={
-        onClick ? (
-          <IconCaretDown size={16} className="network-display__icon" />
-        ) : null
+        onClick ? <Icon name={IconName.ArrowDown} size={IconSize.Xs} /> : null
       }
       label={
         networkType === NETWORK_TYPES.RPC
-          ? networkNickname ?? t('privateNetwork')
+          ? nickname ?? t('privateNetwork')
           : t(networkType)
       }
       className={classnames('network-display', {

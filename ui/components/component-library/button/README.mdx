@@ -25,54 +25,54 @@ The `Button` accepts all [ButtonPrimary](/docs/components-componentlibrary-butto
 
 <ArgsTable of={ButtonLink} />
 
-### Type
+### Variant
 
-Use the `type` prop and the `BUTTON_TYPES` object from `./button.constants.js` to change the `Button` type.
+Use the `variant` prop and the `BUTTON_VARIANT` object from `./button.constants.js` to change the `Button` variant.
 
-Possible types include:
+Possible variants include:
 
-- `BUTTON_TYPES.PRIMARY`
-- `BUTTON_TYPES.SECONDARY`
-- `BUTTON_TYPES.LINK`
+- `BUTTON_VARIANT.PRIMARY`
+- `BUTTON_VARIANT.SECONDARY`
+- `BUTTON_VARIANT.LINK`
 
 <Canvas>
-  <Story id="components-componentlibrary-button--type" />
+  <Story id="components-componentlibrary-button--variant" />
 </Canvas>
 
 ```jsx
-import { Button, BUTTON_TYPES } from '../ui/component-library/button';
+import { Button, BUTTON_VARIANT } from '../ui/component-library/button';
 
-<Button type={BUTTON_TYPES.PRIMARY}>Button Primary</Button>
-<Button type={BUTTON_TYPES.SECONDARY}>Button Secondary</Button>
-<Button type={BUTTON_TYPES.LINK}>Button Link</Button>
+<Button variant={BUTTON_VARIANT.PRIMARY}>Button Primary</Button>
+<Button variant={BUTTON_VARIANT.SECONDARY}>Button Secondary</Button>
+<Button variant={BUTTON_VARIANT.LINK}>Button Link</Button>
 ```
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `SIZES.MD`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `Size.MD`
 
-Optional: `BUTTON_SIZES` from `./button` object can be used instead of `SIZES`.
+Optional: `BUTTON_SIZES` from `./button` object can be used instead of `Size`.
 
 Possible sizes include:
 
 - `Size.inherit` inherits the font-size of the parent element. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
-- `Size.auti` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Size.auto` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
 - `Size.SM` 32px
 - `Size.MD` 40px
 - `Size.LG` 48px
 
 <Canvas>
-  <Story id="components-componentlibrary-button--size" />
+  <Story id="components-componentlibrary-button--size-story" />
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { Button } from '../ui/component-library';
 
-<Button size={SIZES.INHERIT} />
-<Button size={SIZES.SM} />
-<Button size={SIZES.MD} />
-<Button size={SIZES.LG} />
+<Button size={Size.inherit} />
+<Button size={Size.SM} />
+<Button size={Size.MD} />
+<Button size={Size.LG} />
 ```
 
 ### Danger
@@ -175,17 +175,28 @@ import { Button } from '../ui/component-library';
 
 ### Icon Name
 
-Use the `iconName` prop and the `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+Use the `startIconName` and/or `endIconName` prop and the `IconName` enum from `./ui/components/component-library/icon` to select icon.
 
 Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
 <Canvas>
-  <Story id="components-componentlibrary-button--icon" />
+  <Story id="components-componentlibrary-button--start-icon-name" />
 </Canvas>
 
 ```jsx
 import { Button } from '../ui/component-library';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 
-<Button icon={ICON_NAMES.ADD_SQUARE}>Button</Button>;
+<Button startIconName={IconName.AddSquare}>Button</Button>;
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-button--end-icon-name" />
+</Canvas>
+
+```jsx
+import { Button } from '../ui/component-library';
+import { IconName } from '../icon';
+
+<Button endIconName={IconName.Arrow2Right}>Button</Button>;
 ```

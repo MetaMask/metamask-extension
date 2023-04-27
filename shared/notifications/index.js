@@ -78,8 +78,32 @@ export const UI_NOTIFICATIONS = {
     id: 15,
     date: '2022-09-15',
   },
+  16: {
+    id: 16,
+    date: null,
+  },
   17: {
     id: 17,
+    date: null,
+  },
+  18: {
+    id: 18,
+    date: null,
+    image: {
+      src: 'images/open-sea-security-provider.svg',
+      width: '100%',
+    },
+  },
+  19: {
+    id: 19,
+    date: null,
+    image: {
+      src: 'images/nfts.svg',
+      width: '100%',
+    },
+  },
+  20: {
+    id: 20,
     date: null,
   },
 };
@@ -228,14 +252,45 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    17: {
-      ...UI_NOTIFICATIONS[17],
-      title: t('notifications17Title'),
-      description: t('notifications17Description'),
-      actionText: t('notifications17ActionText'),
-      date: UI_NOTIFICATIONS[17].date
+    18: {
+      ...UI_NOTIFICATIONS[18],
+      title: t('notifications18Title'),
+      description: [
+        t('notifications18DescriptionOne'),
+        t('notifications18DescriptionTwo'),
+        t('notifications18DescriptionThree'),
+      ],
+      actionText: t('notifications18ActionText'),
+      date: UI_NOTIFICATIONS[18].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[17].date),
+            new Date(UI_NOTIFICATIONS[18].date),
+          )
+        : '',
+    },
+
+    19: {
+      ...UI_NOTIFICATIONS[19],
+      title: t('notifications19Title'),
+      description: [
+        t('notifications19DescriptionOne'),
+        t('notifications19DescriptionTwo'),
+        t('notifications19DescriptionThree'),
+      ],
+      actionText: t('notifications19ActionText'),
+      date: UI_NOTIFICATIONS[19].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[19].date),
+          )
+        : '',
+    },
+    20: {
+      ...UI_NOTIFICATIONS[20],
+      title: t('notifications20Title'),
+      description: [t('notifications20Description')],
+      actionText: t('notifications20ActionText'),
+      date: UI_NOTIFICATIONS[20].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[20].date),
           )
         : '',
     },

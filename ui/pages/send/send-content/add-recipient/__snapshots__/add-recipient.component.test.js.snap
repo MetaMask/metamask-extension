@@ -80,18 +80,10 @@ exports[`Add Recipient Component Own Account Recipient Search should match snaps
         role="button"
         tabindex="0"
       >
-        <svg
-          class="send__select-recipient-wrapper__list__back-caret"
-          fill="currentColor"
-          height="24"
-          viewBox="0 0 512 512"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m335 113c8 8 8 22 0 30l-113 113 113 113c8 8 8 22 0 30-8 8-22 8-30 0l-128-128c-8-8-8-22 0-30l128-128c8-8 22-8 30 0z"
-          />
-        </svg>
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
         Back to all
       </a>
       <div

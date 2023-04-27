@@ -4,7 +4,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
 import Typography from '../typography';
-import { ButtonLink } from '../../component-library';
+import { ButtonLink, Icon, IconName, IconSize } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -15,6 +15,7 @@ import {
   Size,
   BackgroundColor,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { Numeric } from '../../../../shared/modules/Numeric';
 
@@ -79,7 +80,10 @@ export default function ReviewSpendingCap({
                         fontWeight={FONT_WEIGHT.BOLD}
                         color={TextColor.errorDefault}
                       >
-                        <i className="fa fa-exclamation-circle" />{' '}
+                        <Icon
+                          name={IconName.Warning}
+                          style={{ verticalAlign: 'middle' }}
+                        />
                         {t('beCareful')}
                       </Typography>,
                     ])}
@@ -89,10 +93,20 @@ export default function ReviewSpendingCap({
               }
             >
               {valueIsGreaterThanBalance && (
-                <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
+                <Icon
+                  className="review-spending-cap__heading-title__tooltip__warning-icon"
+                  name={IconName.Danger}
+                  color={IconColor.errorDefault}
+                  size={IconSize.Sm}
+                  style={{ 'vertical-align': 'middle' }}
+                />
               )}
               {Number(tokenValue) === 0 && (
-                <i className="far fa-question-circle review-spending-cap__heading-title__tooltip__question-icon" />
+                <Icon
+                  className="review-spending-cap__heading-title__tooltip__question-icon"
+                  name={IconName.Question}
+                  color={IconColor.iconDefault}
+                />
               )}
             </Tooltip>
           </Box>

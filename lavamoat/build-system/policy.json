@@ -1119,6 +1119,12 @@
         "path.resolve": true
       }
     },
+    "@storybook/api>telejson>is-regex": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
     "@storybook/api>telejson>is-symbol": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
@@ -1266,16 +1272,6 @@
         "typescript": true
       }
     },
-    "addons-linter>postcss>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
-      }
-    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -1411,14 +1407,14 @@
         "brfs>static-module>acorn-node": true,
         "brfs>static-module>magic-string": true,
         "brfs>static-module>merge-source-map": true,
+        "brfs>static-module>object-inspect": true,
         "brfs>static-module>scope-analyzer": true,
         "brfs>static-module>shallow-copy": true,
         "brfs>static-module>static-eval": true,
         "brfs>static-module>through2": true,
         "browserify>concat-stream": true,
         "browserify>duplexer2": true,
-        "enzyme>has": true,
-        "enzyme>object-inspect": true,
+        "browserify>has": true,
         "jsdom>escodegen": true,
         "nyc>convert-source-map": true,
         "readable-stream": true
@@ -1454,6 +1450,15 @@
     "brfs>static-module>merge-source-map": {
       "packages": {
         "brfs>static-module>merge-source-map>source-map": true
+      }
+    },
+    "brfs>static-module>object-inspect": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
       }
     },
     "brfs>static-module>scope-analyzer": {
@@ -1551,13 +1556,13 @@
         "browserify>cached-path-relative": true,
         "browserify>concat-stream": true,
         "browserify>deps-sort": true,
+        "browserify>has": true,
         "browserify>insert-module-globals": true,
         "browserify>module-deps": true,
         "browserify>read-only-stream": true,
         "browserify>shasum": true,
         "browserify>syntax-error": true,
         "browserify>through2": true,
-        "enzyme>has": true,
         "labeled-stream-splicer": true,
         "lavamoat>htmlescape": true,
         "pumpify>inherits": true,
@@ -1678,6 +1683,11 @@
     "browserify>duplexer2": {
       "packages": {
         "readable-stream": true
+      }
+    },
+    "browserify>has": {
+      "packages": {
+        "browserify>has>function-bind": true
       }
     },
     "browserify>insert-module-globals": {
@@ -1865,12 +1875,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
-      }
-    },
-    "chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "chokidar": {
@@ -1911,10 +1916,10 @@
       "packages": {
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "chokidar>glob-parent": true,
         "chokidar>is-binary-path": true,
         "chokidar>normalize-path": true,
         "depcheck>readdirp": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "watchify>anymatch": true
       }
@@ -1943,15 +1948,6 @@
         "process.platform": true
       },
       "native": true
-    },
-    "chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
     },
     "chokidar>is-binary-path": {
       "builtin": {
@@ -1982,7 +1978,7 @@
       "packages": {
         "cross-spawn>path-key": true,
         "cross-spawn>shebang-command": true,
-        "cross-spawn>which": true
+        "mocha>which": true
       }
     },
     "cross-spawn>path-key": {
@@ -1994,21 +1990,6 @@
     "cross-spawn>shebang-command": {
       "packages": {
         "cross-spawn>shebang-command>shebang-regex": true
-      }
-    },
-    "cross-spawn>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "mocha>which>isexe": true
       }
     },
     "debounce-stream>duplexer": {
@@ -2168,7 +2149,7 @@
         "process.versions": true
       },
       "packages": {
-        "enzyme>has": true
+        "browserify>has": true
       }
     },
     "depcheck>json5": {
@@ -2241,64 +2222,6 @@
       },
       "packages": {
         "pump>once": true
-      }
-    },
-    "enzyme>array.prototype.flat": {
-      "packages": {
-        "enzyme>array.prototype.flat>es-shim-unscopables": true,
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract": true
-      }
-    },
-    "enzyme>array.prototype.flat>es-shim-unscopables": {
-      "packages": {
-        "enzyme>has": true
-      }
-    },
-    "enzyme>has": {
-      "packages": {
-        "mocha>object.assign>function-bind": true
-      }
-    },
-    "enzyme>is-callable": {
-      "globals": {
-        "document": true
-      }
-    },
-    "enzyme>is-regex": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true
-      }
-    },
-    "enzyme>is-string": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "enzyme>object-inspect": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      }
-    },
-    "enzyme>object.assign": {
-      "packages": {
-        "globalthis>define-properties": true,
-        "mocha>object.assign>object-keys": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>has-symbols": true
-      }
-    },
-    "enzyme>object.entries": {
-      "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract": true
       }
     },
     "eslint": {
@@ -2388,7 +2311,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -2419,19 +2342,27 @@
         "process.env": true
       },
       "packages": {
+        "browserify>has": true,
         "depcheck>is-core-module": true,
-        "enzyme>array.prototype.flat": true,
-        "enzyme>has": true,
-        "enzyme>object.values": true,
         "eslint": true,
+        "eslint-plugin-import>array.prototype.flat": true,
         "eslint-plugin-import>debug": true,
         "eslint-plugin-import>doctrine": true,
         "eslint-plugin-import>eslint-module-utils": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "eslint-plugin-react>array-includes": true,
+        "eslint-plugin-react>object.values": true,
         "eslint>is-glob": true,
         "eslint>minimatch": true,
         "typescript": true
+      }
+    },
+    "eslint-plugin-import>array.prototype.flat": {
+      "packages": {
+        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract": true
       }
     },
     "eslint-plugin-import>debug": {
@@ -2501,7 +2432,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -2752,15 +2683,15 @@
         "process.cwd": true
       },
       "packages": {
-        "enzyme>object.entries": true,
-        "enzyme>object.values": true,
         "eslint": true,
         "eslint-plugin-react>array-includes": true,
         "eslint-plugin-react>array.prototype.flatmap": true,
         "eslint-plugin-react>doctrine": true,
         "eslint-plugin-react>estraverse": true,
         "eslint-plugin-react>jsx-ast-utils": true,
+        "eslint-plugin-react>object.entries": true,
         "eslint-plugin-react>object.hasown": true,
+        "eslint-plugin-react>object.values": true,
         "eslint-plugin-react>resolve": true,
         "eslint-plugin-react>semver": true,
         "eslint>minimatch": true,
@@ -2776,19 +2707,29 @@
     },
     "eslint-plugin-react>array-includes": {
       "packages": {
-        "enzyme>is-string": true,
+        "eslint-plugin-react>array-includes>is-string": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>es-abstract": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "eslint-plugin-react>array-includes>is-string": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true
+      }
+    },
     "eslint-plugin-react>array.prototype.flatmap": {
       "packages": {
-        "enzyme>array.prototype.flat>es-shim-unscopables": true,
+        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>es-abstract": true
+      }
+    },
+    "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": {
+      "packages": {
+        "browserify>has": true
       }
     },
     "eslint-plugin-react>doctrine": {
@@ -2804,7 +2745,14 @@
         "console.error": true
       },
       "packages": {
-        "enzyme>object.assign": true
+        "gulp>vinyl-fs>object.assign": true
+      }
+    },
+    "eslint-plugin-react>object.entries": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract": true
       }
     },
     "eslint-plugin-react>object.hasown": {
@@ -2884,8 +2832,8 @@
         "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
         "eslint>minimatch": true,
-        "eslint>strip-json-comments": true,
         "globby>ignore": true,
+        "mocha>strip-json-comments": true,
         "nock>debug": true
       }
     },
@@ -2904,7 +2852,7 @@
         "console": true
       },
       "packages": {
-        "eslint>ajv>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true
@@ -3107,7 +3055,7 @@
         "process.cwd": true
       },
       "packages": {
-        "chokidar>glob-parent": true,
+        "eslint>glob-parent": true,
         "fast-glob>@nodelib/fs.stat": true,
         "fast-glob>@nodelib/fs.walk": true,
         "globby>merge2": true,
@@ -3213,7 +3161,7 @@
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
-        "mocha>object.assign>object-keys": true
+        "globalthis>define-properties>object-keys": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -3311,9 +3259,9 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
-        "addons-linter>postcss>picocolors": true,
         "gulp-autoprefixer>autoprefixer>fraction.js": true,
         "gulp-autoprefixer>postcss": true,
+        "gulp-sass>picocolors": true,
         "stylelint>autoprefixer>normalize-range": true,
         "stylelint>postcss-value-parser": true,
         "webpack>browserslist": true,
@@ -3348,80 +3296,9 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "addons-linter>postcss>picocolors": true,
         "addons-linter>postcss>source-map-js": true,
-        "gulp-autoprefixer>postcss>nanoid": true
-      }
-    },
-    "gulp-dart-sass": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.stderr.write": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk": true,
-        "gulp-dart-sass>lodash.clonedeep": true,
-        "gulp-dart-sass>strip-ansi": true,
-        "gulp-dart-sass>through2": true,
-        "gulp-zip>plugin-error": true,
-        "sass": true,
-        "vinyl-sourcemaps-apply": true,
-        "vinyl>replace-ext": true
-      }
-    },
-    "gulp-dart-sass>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "gulp-dart-sass>chalk>ansi-styles": true,
-        "gulp-dart-sass>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
-      }
-    },
-    "gulp-dart-sass>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
-    "gulp-dart-sass>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "mocha>supports-color>has-flag": true
-      }
-    },
-    "gulp-dart-sass>strip-ansi": {
-      "packages": {
-        "gulp-dart-sass>strip-ansi>ansi-regex": true
-      }
-    },
-    "gulp-dart-sass>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
+        "gulp-autoprefixer>postcss>nanoid": true,
+        "gulp-sass>picocolors": true
       }
     },
     "gulp-livereload": {
@@ -3444,8 +3321,8 @@
       },
       "packages": {
         "gulp-livereload>chalk>ansi-styles": true,
-        "gulp-livereload>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "gulp-livereload>chalk>escape-string-regexp": true,
+        "gulp-livereload>chalk>supports-color": true
       }
     },
     "gulp-livereload>chalk>ansi-styles": {
@@ -3465,7 +3342,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-livereload>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-livereload>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-livereload>debug": {
@@ -3482,7 +3364,7 @@
       },
       "packages": {
         "gulp-livereload>chalk>supports-color": true,
-        "gulp-livereload>debug>ms": true
+        "mocha>ms": true
       }
     },
     "gulp-livereload>event-stream": {
@@ -3608,7 +3490,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -3712,9 +3594,9 @@
         "process.platform": true
       },
       "packages": {
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "gulp-rtlcss>rtlcss>chalk>ansi-styles": true,
-        "gulp-rtlcss>rtlcss>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "gulp-rtlcss>rtlcss>chalk>supports-color": true
       }
     },
     "gulp-rtlcss>rtlcss>chalk>ansi-styles": {
@@ -3734,7 +3616,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-rtlcss>rtlcss>postcss": {
@@ -3764,6 +3651,48 @@
       "packages": {
         "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sass": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.relative": true,
+        "stream.Transform": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.exit": true,
+        "process.stderr.write": true
+      },
+      "packages": {
+        "eslint>strip-ansi": true,
+        "gulp-sass>lodash.clonedeep": true,
+        "gulp-sass>picocolors": true,
+        "gulp-sass>replace-ext": true,
+        "gulp-zip>plugin-error": true,
+        "vinyl-sourcemaps-apply": true
+      }
+    },
+    "gulp-sass>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
+    "gulp-sass>replace-ext": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
       }
     },
     "gulp-sort": {
@@ -3960,7 +3889,7 @@
         "process": true
       },
       "packages": {
-        "gulp-livereload>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -4082,11 +4011,11 @@
         "setTimeout": true
       },
       "packages": {
+        "eslint>glob-parent": true,
         "gulp-watch>ansi-colors": true,
         "gulp-watch>anymatch": true,
         "gulp-watch>chokidar": true,
         "gulp-watch>fancy-log": true,
-        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
@@ -4177,8 +4106,8 @@
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic": {
       "packages": {
         "@babel/register>clone-deep>kind-of": true,
-        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true,
-        "gulp>undertaker>bach>array-last>is-number": true
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>is-number": true,
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": {
@@ -4230,15 +4159,7 @@
         "path.dirname": true
       },
       "packages": {
-        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": true,
-        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
-      }
-    },
-    "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "packages": {
+        "eslint>glob-parent": true,
         "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
       }
     },
@@ -4291,6 +4212,7 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>anymatch": true,
         "gulp-watch>chokidar>async-each": true,
@@ -4418,11 +4340,11 @@
       "packages": {
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base": true,
         "gulp-watch>chokidar>braces>snapdragon>base>class-utils": true,
+        "gulp-watch>chokidar>braces>snapdragon>base>component-emitter": true,
         "gulp-watch>chokidar>braces>snapdragon>base>define-property": true,
         "gulp-watch>chokidar>braces>snapdragon>base>mixin-deep": true,
         "gulp-watch>chokidar>braces>snapdragon>base>pascalcase": true,
-        "gulp>gulp-cli>isobject": true,
-        "pubnub>superagent>component-emitter": true
+        "gulp>gulp-cli>isobject": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base": {
@@ -4433,9 +4355,9 @@
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>to-object-path": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>union-value": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>unset-value": true,
+        "gulp-watch>chokidar>braces>snapdragon>base>component-emitter": true,
         "gulp>gulp-cli>array-sort>get-value": true,
-        "gulp>gulp-cli>isobject": true,
-        "pubnub>superagent>component-emitter": true
+        "gulp>gulp-cli>isobject": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>collection-visit": {
@@ -4466,18 +4388,8 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values": {
       "packages": {
-        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": true
-      }
-    },
-    "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number": {
-      "packages": {
-        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": true
-      }
-    },
-    "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": {
@@ -4672,7 +4584,7 @@
     },
     "gulp-watch>chokidar>braces>to-regex>safe-regex": {
       "packages": {
-        "enzyme>rst-selector-parser>nearley>randexp>ret": true
+        "gulp-watch>chokidar>braces>to-regex>safe-regex>ret": true
       }
     },
     "gulp-watch>chokidar>fsevents": {
@@ -4892,30 +4804,6 @@
         "fancy-log>ansi-gray": true,
         "fancy-log>color-support": true,
         "fancy-log>time-stamp": true
-      }
-    },
-    "gulp-watch>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>is-glob": true,
-        "gulp-watch>glob-parent>path-dirname": true
-      }
-    },
-    "gulp-watch>glob-parent>is-glob": {
-      "packages": {
-        "gulp-watch>glob-parent>is-glob>is-extglob": true
-      }
-    },
-    "gulp-watch>glob-parent>path-dirname": {
-      "builtin": {
-        "path": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "process.platform": true
       }
     },
     "gulp-watch>path-is-absolute": {
@@ -5215,13 +5103,13 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
         "gulp>glob-watcher>chokidar>fsevents": true,
-        "gulp>glob-watcher>chokidar>glob-parent": true,
         "gulp>glob-watcher>chokidar>is-binary-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,
         "gulp>glob-watcher>chokidar>upath": true,
@@ -5248,24 +5136,14 @@
       },
       "packages": {
         "gulp-watch>chokidar>braces>extend-shallow": true,
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
-    "gulp>glob-watcher>chokidar>braces>fill-range>is-number": {
-      "packages": {
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
     "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": {
       "packages": {
-        "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
+        "gulp-watch>chokidar>braces>fill-range>is-number": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
@@ -5285,21 +5163,6 @@
       },
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>path-dirname": true,
-        "gulp>glob-watcher>chokidar>glob-parent>is-glob": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>glob-parent>is-glob": {
-      "packages": {
-        "gulp>glob-watcher>chokidar>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>glob-watcher>chokidar>is-binary-path": {
@@ -5430,7 +5293,6 @@
         "gulp>gulp-cli>matchdep>micromatch>fragment-cache": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch>define-property": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch>extend-shallow": true,
-        "gulp>gulp-cli>matchdep>micromatch>nanomatch>is-odd": true,
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true,
         "nyc>spawn-wrap>is-windows": true
       }
@@ -5450,11 +5312,6 @@
     "gulp>gulp-cli>matchdep>micromatch>nanomatch>extend-shallow>is-extendable": {
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true
-      }
-    },
-    "gulp>gulp-cli>matchdep>micromatch>nanomatch>is-odd": {
-      "packages": {
-        "gulp>undertaker>bach>array-last>is-number": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>regex-not": {
@@ -5546,7 +5403,7 @@
     },
     "gulp>undertaker>bach>array-initial": {
       "packages": {
-        "gulp>undertaker>bach>array-last>is-number": true,
+        "gulp>undertaker>bach>array-initial>is-number": true,
         "gulp>undertaker>object.defaults>array-slice": true
       }
     },
@@ -5623,12 +5480,12 @@
         "process.nextTick": true
       },
       "packages": {
-        "enzyme>object.assign": true,
         "gulp>vinyl-fs>fs-mkdirp-stream": true,
         "gulp>vinyl-fs>glob-stream": true,
         "gulp>vinyl-fs>is-valid-glob": true,
         "gulp>vinyl-fs>lazystream": true,
         "gulp>vinyl-fs>lead": true,
+        "gulp>vinyl-fs>object.assign": true,
         "gulp>vinyl-fs>pumpify": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "gulp>vinyl-fs>remove-bom-stream": true,
@@ -5676,8 +5533,8 @@
         "process.nextTick": true
       },
       "packages": {
+        "eslint>glob-parent": true,
         "gulp>glob-watcher>is-negated-glob": true,
-        "gulp>vinyl-fs>glob-stream>glob-parent": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
         "gulp>vinyl-fs>glob-stream>pumpify": true,
         "gulp>vinyl-fs>glob-stream>to-absolute-glob": true,
@@ -5686,21 +5543,6 @@
         "nyc>glob": true,
         "readable-stream": true,
         "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>path-dirname": true,
-        "gulp>vinyl-fs>glob-stream>glob-parent>is-glob": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>glob-parent>is-glob": {
-      "packages": {
-        "gulp>vinyl-fs>glob-stream>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>vinyl-fs>glob-stream>ordered-read-streams": {
@@ -5799,6 +5641,14 @@
       "packages": {
         "pumpify>inherits": true,
         "readable-stream": true
+      }
+    },
+    "gulp>vinyl-fs>object.assign": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "globalthis>define-properties>object-keys": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>has-symbols": true
       }
     },
     "gulp>vinyl-fs>pumpify": {
@@ -6097,9 +5947,9 @@
         "process.platform": true
       },
       "packages": {
+        "gulp-livereload>chalk>escape-string-regexp": true,
         "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
+        "lavamoat>@babel/highlight>chalk>supports-color": true
       }
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
@@ -6119,7 +5969,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6277,6 +6132,31 @@
         "process.platform": true
       }
     },
+    "mocha>log-symbols": {
+      "packages": {
+        "madge>ora>is-unicode-supported": true,
+        "mocha>log-symbols>chalk": true
+      }
+    },
+    "mocha>log-symbols>chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "mocha>log-symbols>chalk>supports-color": true
+      }
+    },
+    "mocha>log-symbols>chalk>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "sinon>supports-color>has-flag": true
+      }
+    },
     "mocha>minimatch>brace-expansion": {
       "packages": {
         "mocha>minimatch>brace-expansion>concat-map": true,
@@ -6285,22 +6165,15 @@
     },
     "mocha>supports-color": {
       "builtin": {
-        "os.release": true
+        "os.release": true,
+        "tty.isatty": true
       },
       "globals": {
         "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
+        "process.platform": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
-      }
-    },
-    "mocha>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "mocha>which": {
@@ -6567,28 +6440,12 @@
         "define": true
       }
     },
-    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
-      "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities-legacy": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-reference-invalid": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
-      }
-    },
-    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
-      }
-    },
     "react-markdown>unified": {
       "packages": {
         "jsdom>request>extend": true,
+        "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
         "react-markdown>unified>is-buffer": true,
-        "react-markdown>unified>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
@@ -6623,6 +6480,22 @@
     "react-markdown>vfile>vfile-message": {
       "packages": {
         "react-markdown>vfile>unist-util-stringify-position": true
+      }
+    },
+    "react-syntax-highlighter>refractor>parse-entities": {
+      "packages": {
+        "react-syntax-highlighter>refractor>parse-entities>character-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
+        "react-syntax-highlighter>refractor>parse-entities>character-reference-invalid": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true
+      }
+    },
+    "react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": {
+      "packages": {
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true
       }
     },
     "readable-stream": {
@@ -6696,6 +6569,7 @@
         "url.resolve": true
       },
       "globals": {
+        "TextDecoder": true,
         "setImmediate": true
       },
       "packages": {
@@ -6772,6 +6646,11 @@
         "process.platform": true
       }
     },
+    "sinon>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "source-map": {
       "builtin": {
         "fs.readFile": true,
@@ -6806,20 +6685,20 @@
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
-        "mocha>object.assign>function-bind": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
     "string.prototype.matchall>es-abstract": {
       "packages": {
-        "enzyme>has": true,
-        "enzyme>is-callable": true,
-        "enzyme>is-regex": true,
-        "enzyme>is-string": true,
-        "enzyme>object-inspect": true,
+        "@storybook/api>telejson>is-regex": true,
+        "brfs>static-module>object-inspect": true,
+        "browserify>has": true,
+        "eslint-plugin-react>array-includes>is-string": true,
         "globalthis>define-properties>has-property-descriptors": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
+        "string.prototype.matchall>es-abstract>is-callable": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>has-symbols": true,
         "string.prototype.matchall>internal-slot": true
@@ -6829,7 +6708,12 @@
       "packages": {
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@storybook/api>telejson>is-symbol": true,
-        "enzyme>is-callable": true
+        "string.prototype.matchall>es-abstract>is-callable": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>is-callable": {
+      "globals": {
+        "document": true
       }
     },
     "string.prototype.matchall>get-intrinsic": {
@@ -6839,28 +6723,28 @@
         "WeakRef": true
       },
       "packages": {
-        "enzyme>has": true,
-        "mocha>object.assign>function-bind": true,
+        "browserify>has": true,
+        "browserify>has>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "enzyme>has": true,
+        "browserify>has": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>side-channel": true
       }
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
-        "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
       }
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "enzyme>object-inspect": true,
+        "brfs>static-module>object-inspect": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>get-intrinsic": true
       }
@@ -6896,6 +6780,7 @@
         "globby>ignore": true,
         "globby>slash": true,
         "lodash": true,
+        "mocha>log-symbols": true,
         "nock>debug": true,
         "nyc>resolve-from": true,
         "stylelint>@stylelint/postcss-css-in-js": true,
@@ -6912,7 +6797,6 @@
         "stylelint>import-lazy": true,
         "stylelint>known-css-properties": true,
         "stylelint>leven": true,
-        "stylelint>log-symbols": true,
         "stylelint>mathml-tag-names": true,
         "stylelint>micromatch": true,
         "stylelint>normalize-selector": true,
@@ -6964,11 +6848,11 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse": {
       "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>collapse-white-space": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-word-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
@@ -6995,9 +6879,9 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": {
       "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true,
@@ -7023,10 +6907,10 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities": {
       "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities-legacy": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
+        "react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities>character-entities-html4": true
       }
     },
@@ -7094,12 +6978,7 @@
         "process.platform": true
       },
       "packages": {
-        "stylelint>chalk>supports-color>has-flag": true
-      }
-    },
-    "stylelint>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -7212,8 +7091,8 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>which": true,
-        "stylelint>global-modules>global-prefix>ini": true
+        "stylelint>global-modules>global-prefix>ini": true,
+        "stylelint>global-modules>global-prefix>which": true
       }
     },
     "stylelint>global-modules>global-prefix>ini": {
@@ -7221,39 +7100,24 @@
         "process": true
       }
     },
-    "stylelint>globjoin": {
+    "stylelint>global-modules>global-prefix>which": {
       "builtin": {
         "path.join": true
-      }
-    },
-    "stylelint>log-symbols": {
-      "packages": {
-        "madge>ora>is-unicode-supported": true,
-        "stylelint>log-symbols>chalk": true
-      }
-    },
-    "stylelint>log-symbols>chalk": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "stylelint>log-symbols>chalk>supports-color": true
-      }
-    },
-    "stylelint>log-symbols>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
       },
       "globals": {
-        "process.env": true,
+        "process.cwd": true,
+        "process.env.OSTYPE": true,
+        "process.env.PATH": true,
+        "process.env.PATHEXT": true,
         "process.platform": true
       },
       "packages": {
-        "stylelint>log-symbols>chalk>supports-color>has-flag": true
+        "mocha>which>isexe": true
       }
     },
-    "stylelint>log-symbols>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+    "stylelint>globjoin": {
+      "builtin": {
+        "path.join": true
       }
     },
     "stylelint>micromatch": {
@@ -7557,9 +7421,9 @@
     },
     "stylelint>table>slice-ansi": {
       "packages": {
-        "mocha>yargs>string-width>is-fullwidth-code-point": true,
         "stylelint>table>slice-ansi>ansi-styles": true,
-        "stylelint>table>slice-ansi>astral-regex": true
+        "stylelint>table>slice-ansi>astral-regex": true,
+        "stylelint>table>slice-ansi>is-fullwidth-code-point": true
       }
     },
     "stylelint>table>slice-ansi>ansi-styles": {
@@ -7569,7 +7433,7 @@
     },
     "stylelint>table>string-width": {
       "packages": {
-        "mocha>yargs>string-width>is-fullwidth-code-point": true,
+        "stylelint>table>slice-ansi>is-fullwidth-code-point": true,
         "stylelint>table>string-width>emoji-regex": true,
         "stylelint>table>string-width>strip-ansi": true
       }
@@ -7628,7 +7492,7 @@
     },
     "terser": {
       "globals": {
-        "Buffer.from": true,
+        "Buffer": true,
         "atob": true,
         "btoa": true,
         "console.log": true,

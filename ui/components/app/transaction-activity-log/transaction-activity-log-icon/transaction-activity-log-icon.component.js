@@ -12,16 +12,18 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
+import { Icon, IconName, IconSize } from '../../../component-library';
+import { Color } from '../../../../helpers/constants/design-system';
 
-export const imageHash = {
-  [TRANSACTION_CREATED_EVENT]: 'fa-plus',
-  [TRANSACTION_SUBMITTED_EVENT]: 'fa-arrow-up',
-  [TRANSACTION_RESUBMITTED_EVENT]: 'fa-retweet',
-  [TRANSACTION_CONFIRMED_EVENT]: 'fa-check',
-  [TRANSACTION_DROPPED_EVENT]: 'fa-times',
-  [TRANSACTION_ERRORED_EVENT]: 'fa-exclamation',
-  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: 'fa-times',
-  [TRANSACTION_CANCEL_SUCCESS_EVENT]: 'fa-times',
+export const ACTIVITY_ICONS = {
+  [TRANSACTION_CREATED_EVENT]: IconName.Add,
+  [TRANSACTION_SUBMITTED_EVENT]: IconName.ArrowUp,
+  [TRANSACTION_RESUBMITTED_EVENT]: IconName.ProgrammingArrows,
+  [TRANSACTION_CONFIRMED_EVENT]: IconName.Check,
+  [TRANSACTION_DROPPED_EVENT]: IconName.Close,
+  [TRANSACTION_ERRORED_EVENT]: IconName.Danger,
+  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: IconName.Close,
+  [TRANSACTION_CANCEL_SUCCESS_EVENT]: IconName.Close,
 };
 
 export default class TransactionActivityLogIcon extends PureComponent {
@@ -31,23 +33,17 @@ export default class TransactionActivityLogIcon extends PureComponent {
 
   static propTypes = {
     className: PropTypes.string,
-    eventKey: PropTypes.oneOf(Object.keys(imageHash)),
+    eventKey: PropTypes.oneOf(Object.keys(ACTIVITY_ICONS)),
   };
 
   render() {
     const { className, eventKey } = this.props;
-    const iconClassName = imageHash[eventKey];
+    const icon = ACTIVITY_ICONS[eventKey];
 
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
-        {iconClassName ? (
-          <i
-            className={classnames(
-              'fa',
-              'transaction-activity-log-icon__icon',
-              iconClassName,
-            )}
-          />
+        {icon ? (
+          <Icon name={icon} color={Color.iconDefault} size={IconSize.Sm} />
         ) : null}
       </div>
     );

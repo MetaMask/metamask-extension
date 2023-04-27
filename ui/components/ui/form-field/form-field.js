@@ -26,6 +26,7 @@ export default function FormField({
   TooltipCustomComponent,
   titleDetail = '',
   titleDetailWrapperProps,
+  titleHeadingWrapperProps,
   error,
   onChange = undefined,
   value = 0,
@@ -42,6 +43,7 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
+  inputRef,
 }) {
   return (
     <div
@@ -55,6 +57,7 @@ export default function FormField({
             className="form-field__heading-title"
             display={DISPLAY.FLEX}
             alignItems={AlignItems.baseline}
+            {...titleHeadingWrapperProps}
           >
             {TitleTextCustomComponent ||
               (titleText && (
@@ -108,6 +111,7 @@ export default function FormField({
             dataTestId={dataTestId}
             placeholder={placeholder}
             id={id}
+            inputRef={inputRef}
           />
         ) : (
           <input
@@ -123,6 +127,7 @@ export default function FormField({
             data-testid={dataTestId}
             placeholder={placeholder}
             id={id}
+            ref={inputRef}
             {...inputProps}
           />
         )}
@@ -211,6 +216,13 @@ FormField.propTypes = {
     ...Box.propTypes,
   }),
   /**
+   * Props to pass to wrapping Box component of the titleHeading component
+   * Accepts all props of the Box component
+   */
+  titleHeadingWrapperProps: PropTypes.shape({
+    ...Box.propTypes,
+  }),
+  /**
    * Show error message
    */
   error: PropTypes.string,
@@ -276,4 +288,8 @@ FormField.propTypes = {
    * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
    */
   wrappingLabelProps: PropTypes.object,
+  /**
+   * ref for input component
+   */
+  inputRef: PropTypes.object,
 };

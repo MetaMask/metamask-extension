@@ -6,9 +6,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
@@ -16,7 +17,7 @@ import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import {
   PRIMARY,
-  ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
   SUPPORT_REQUEST_LINK,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/common';
@@ -26,22 +27,17 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import IconCheck from '../../ui/icon/icon-check';
-import IconConnect from '../../ui/icon/icon-connect';
-import IconCog from '../../ui/icon/icon-cog';
-import IconPlus from '../../ui/icon/icon-plus';
-import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-import { Icon, ICON_NAMES } from '../../component-library';
-import { Color } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize } from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -92,7 +88,7 @@ export default class AccountMenu extends Component {
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     unreadNotificationsCount: PropTypes.number,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -214,8 +210,8 @@ export default class AccountMenu extends Component {
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
             this.context.trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.NavAccountSwitched,
               properties: {
                 location: 'Main Menu',
               },
@@ -227,7 +223,11 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <IconCheck color="var(--color-success-default)" />
+              <Icon
+                color={IconColor.successDefault}
+                name={IconName.Check}
+                size={IconSize.Lg}
+              />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
@@ -310,7 +310,7 @@ export default class AccountMenu extends Component {
       toggleAccountMenu,
       lockMetamask,
       history,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       unreadNotificationsCount,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -321,7 +321,7 @@ export default class AccountMenu extends Component {
 
     let supportText = t('support');
     let supportLink = SUPPORT_LINK;
-    ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
     supportText = t('needHelpSubmitTicket');
     supportLink = SUPPORT_REQUEST_LINK;
     ///: END:ONLY_INCLUDE_IN
@@ -361,36 +361,33 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+                account_type: MetaMetricsEventAccountType.Default,
                 location: 'Main Menu',
               },
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-alternative)" />}
+          icon={<Icon name={IconName.Add} color={IconColor.iconAlternative} />}
           text={t('createAccount')}
         />
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                account_type: MetaMetricsEventAccountType.Imported,
                 location: 'Main Menu',
               },
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
           icon={
-            <IconImport
-              color="var(--color-icon-alternative)"
-              ariaLabel={t('importAccount')}
-            />
+            <Icon name={IconName.Import} color={IconColor.iconAlternative} />
           }
           text={t('importAccount')}
         />
@@ -398,10 +395,10 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+                account_type: MetaMetricsEventAccountType.Hardware,
                 location: 'Main Menu',
               },
             });
@@ -412,16 +409,13 @@ export default class AccountMenu extends Component {
             }
           }}
           icon={
-            <IconConnect
-              color="var(--color-icon-alternative)"
-              ariaLabel={t('connectHardwareWallet')}
-            />
+            <Icon name={IconName.Hardware} color={IconColor.iconAlternative} />
           }
           text={t('connectHardwareWallet')}
         />
         <div className="account-menu__divider" />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <>
             <AccountMenuItem
               onClick={() => {
@@ -430,7 +424,7 @@ export default class AccountMenu extends Component {
               }}
               icon={
                 <div className="account-menu__notifications">
-                  <i className="fa fa-bell fa-xl" />
+                  <Icon name={IconName.Notification} size={IconSize.Lg} />
                   {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
                       {unreadNotificationsCount}
@@ -448,20 +442,22 @@ export default class AccountMenu extends Component {
           onClick={() => {
             trackEvent(
               {
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                category: MetaMetricsEventCategory.Navigation,
+                event: MetaMetricsEventName.SupportLinkClicked,
                 properties: {
                   url: supportLink,
                 },
               },
               {
-                contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                contextPropsIntoEventProperties: [
+                  MetaMetricsContextProp.PageTitle,
+                ],
               },
             );
             global.platform.openTab({ url: supportLink });
           }}
           icon={
-            <Icon name={ICON_NAMES.MESSAGES} color={Color.iconAlternative} />
+            <Icon name={IconName.Messages} color={IconColor.iconAlternative} />
           }
           text={supportText}
         />
@@ -471,16 +467,17 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             history.push(SETTINGS_ROUTE);
             this.context.trackEvent({
-              category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_SETTINGS_OPENED,
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.NavSettingsOpened,
               properties: {
                 location: 'Main Menu',
               },
             });
           }}
           icon={
-            <IconCog
-              color="var(--color-icon-alternative)"
+            <Icon
+              name={IconName.Setting}
+              color={IconColor.iconAlternative}
               ariaLabel={t('settings')}
             />
           }

@@ -1,5 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
+import { v4 as uuid } from 'uuid';
+import log from 'loglevel';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -8,7 +10,10 @@ import { isBeta } from '../../../ui/helpers/utils/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
+
+const APPROVAL_REQUEST_TYPE = 'unlock';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -20,9 +25,9 @@ export default class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
-      showUnlockRequest,
       preferencesStore,
       qrHardwareStore,
+      messenger,
     } = opts;
     super();
 
@@ -38,27 +43,27 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       outdatedBrowserWarningLastShown: new Date().getTime(),
-      collectiblesDetectionNoticeDismissed: false,
+      nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
-      showPortfolioTooltip: true,
       showBetaHeader: isBeta(),
+      showProductTour: true,
       trezorModel: null,
+      currentPopupId: undefined,
       ...initState,
       qrHardware: {},
-      collectiblesDropdownState: {},
+      nftsDropdownState: {},
       usedNetworks: {
         '0x1': true,
         '0x5': true,
         '0x539': true,
       },
+      serviceWorkerLastActiveTime: 0,
     });
     this.timer = null;
 
     this.isUnlocked = isUnlocked;
     this.waitingForUnlock = [];
     addUnlockListener(this.handleUnlock.bind(this));
-
-    this._showUnlockRequest = showUnlockRequest;
 
     preferencesStore.subscribe(({ preferences }) => {
       const currentState = this.store.getState();
@@ -73,6 +78,9 @@ export default class AppStateController extends EventEmitter {
 
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
+
+    this.messagingSystem = messenger;
+    this._approvalRequestId = null;
   }
 
   /**
@@ -107,7 +115,7 @@ export default class AppStateController extends EventEmitter {
     this.waitingForUnlock.push({ resolve });
     this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     if (shouldShowUnlockRequest) {
-      this._showUnlockRequest();
+      this._requestApproval();
     }
   }
 
@@ -121,6 +129,8 @@ export default class AppStateController extends EventEmitter {
       }
       this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     }
+
+    this._acceptApproval();
   }
 
   /**
@@ -160,6 +170,17 @@ export default class AppStateController extends EventEmitter {
   setRecoveryPhraseReminderLastShown(lastShown) {
     this.store.updateState({
       recoveryPhraseReminderLastShown: lastShown,
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has acceoted the terms of use
+   *
+   * @param {number} lastAgreed - timestamp when user last accepted the terms of use
+   */
+  setTermsOfUseLastAgreed(lastAgreed) {
+    this.store.updateState({
+      termsOfUseLastAgreed: lastAgreed,
     });
   }
 
@@ -303,21 +324,21 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets whether the portfolio site tooltip should be shown on the home page
-   *
-   * @param showPortfolioTooltip
-   */
-  setShowPortfolioTooltip(showPortfolioTooltip) {
-    this.store.updateState({ showPortfolioTooltip });
-  }
-
-  /**
    * Sets whether the beta notification heading on the home page
    *
    * @param showBetaHeader
    */
   setShowBetaHeader(showBetaHeader) {
     this.store.updateState({ showBetaHeader });
+  }
+
+  /**
+   * Sets whether the product tour should be shown
+   *
+   * @param showProductTour
+   */
+  setShowProductTour(showProductTour) {
+    this.store.updateState({ showProductTour });
   }
 
   /**
@@ -330,13 +351,13 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * A setter for the `collectiblesDropdownState` property
+   * A setter for the `nftsDropdownState` property
    *
-   * @param collectiblesDropdownState
+   * @param nftsDropdownState
    */
-  updateCollectibleDropDownState(collectiblesDropdownState) {
+  updateNftDropDownState(nftsDropdownState) {
     this.store.updateState({
-      collectiblesDropdownState,
+      nftsDropdownState,
     });
   }
 
@@ -352,5 +373,64 @@ export default class AppStateController extends EventEmitter {
     usedNetworks[chainId] = true;
 
     this.store.updateState({ usedNetworks });
+  }
+
+  /**
+   * A setter for the currentPopupId which indicates the id of popup window that's currently active
+   *
+   * @param currentPopupId
+   */
+  setCurrentPopupId(currentPopupId) {
+    this.store.updateState({
+      currentPopupId,
+    });
+  }
+
+  /**
+   * A getter to retrieve currentPopupId saved in the appState
+   */
+  getCurrentPopupId() {
+    return this.store.getState().currentPopupId;
+  }
+
+  setServiceWorkerLastActiveTime(serviceWorkerLastActiveTime) {
+    this.store.updateState({
+      serviceWorkerLastActiveTime,
+    });
+  }
+
+  _requestApproval() {
+    this._approvalRequestId = uuid();
+
+    this.messagingSystem
+      .call(
+        'ApprovalController:addRequest',
+        {
+          id: this._approvalRequestId,
+          origin: ORIGIN_METAMASK,
+          type: APPROVAL_REQUEST_TYPE,
+        },
+        true,
+      )
+      .catch(() => {
+        // Intentionally ignored as promise not currently used
+      });
+  }
+
+  _acceptApproval() {
+    if (!this._approvalRequestId) {
+      log.error('Attempted to accept missing unlock approval request');
+      return;
+    }
+    try {
+      this.messagingSystem.call(
+        'ApprovalController:acceptRequest',
+        this._approvalRequestId,
+      );
+    } catch (error) {
+      log.error('Failed to accept transaction approval request', error);
+    }
+
+    this._approvalRequestId = null;
   }
 }

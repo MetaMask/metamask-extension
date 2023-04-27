@@ -59,6 +59,10 @@ export default class Identicon extends Component {
     ipfsGateway: PropTypes.string,
   };
 
+  state = {
+    imageLoadingError: false,
+  };
+
   static defaultProps = {
     addBorder: false,
     address: undefined,
@@ -93,6 +97,9 @@ export default class Identicon extends Component {
         src={image}
         style={getStyles(diameter)}
         alt={alt}
+        onError={() => {
+          this.setState({ imageLoadingError: true });
+        }}
       />
     );
   }
@@ -124,15 +131,24 @@ export default class Identicon extends Component {
     );
   }
 
-  shouldComponentUpdate(nextProps) {
+  renderBlockieOrJazzIcon() {
+    const { useBlockie } = this.props;
+    return useBlockie ? this.renderBlockie() : this.renderJazzicon();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
     // We only want to re-render if props are different.
-    return !isEqual(nextProps, this.props);
+    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
   render() {
-    const { address, image, useBlockie, addBorder, diameter, tokenList } =
-      this.props;
+    const { address, image, addBorder, diameter, tokenList } = this.props;
+    const { imageLoadingError } = this.state;
     const size = diameter + 8;
+
+    if (imageLoadingError) {
+      return this.renderBlockieOrJazzIcon();
+    }
 
     if (image) {
       return this.renderImage();
@@ -148,7 +164,7 @@ export default class Identicon extends Component {
           className={classnames({ 'identicon__address-wrapper': addBorder })}
           style={addBorder ? getStyles(size) : null}
         >
-          {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
+          {this.renderBlockieOrJazzIcon()}
         </div>
       );
     }

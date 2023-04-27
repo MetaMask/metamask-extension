@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
-import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 
 import {
   ALERTS_ROUTE,
@@ -13,7 +12,7 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAPS_VIEW_ROUTE,
   SNAPS_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -28,6 +27,8 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
+import { ButtonIcon, Icon, IconName } from '../../components/component-library';
+import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -36,9 +37,9 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapListTab from './flask/snaps-list-tab';
-import ViewSnap from './flask/view-snap';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapListTab from './snaps/snaps-list-tab';
+import ViewSnap from './snaps/view-snap';
 ///: END:ONLY_INCLUDE_IN
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
@@ -107,6 +108,7 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
+    const { t } = this.context;
 
     return (
       <div
@@ -117,11 +119,13 @@ class SettingsPage extends PureComponent {
         <div className="settings-page__header">
           <div className="settings-page__header__title-container">
             {currentPath !== SETTINGS_ROUTE && (
-              <IconCaretLeft
+              <ButtonIcon
+                ariaLabel={t('back')}
+                iconName={IconName.ArrowLeft}
                 className="settings-page__back-button"
-                color="var(--color-icon-default)"
-                size={32}
+                color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
+                display={[DISPLAY.FLEX, DISPLAY.NONE]}
               />
             )}
 
@@ -252,63 +256,61 @@ class SettingsPage extends PureComponent {
   renderTabs() {
     const { history, currentPath } = this.props;
     const { t } = this.context;
+    const tabs = [
+      {
+        content: t('general'),
+        icon: <Icon name={IconName.Setting} />,
+        key: GENERAL_ROUTE,
+      },
+      {
+        content: t('advanced'),
+        icon: <i className="fas fa-sliders-h" />,
+        key: ADVANCED_ROUTE,
+      },
+      {
+        content: t('contacts'),
+        icon: <Icon name={IconName.Book} />,
+        key: CONTACT_LIST_ROUTE,
+      },
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      {
+        content: t('snaps'),
+        icon: (
+          <Icon name={IconName.Snaps} title={t('snapsSettingsDescription')} />
+        ),
+        key: SNAPS_LIST_ROUTE,
+      },
+      ///: END:ONLY_INCLUDE_IN
+      {
+        content: t('securityAndPrivacy'),
+        icon: <i className="fa fa-lock" />,
+        key: SECURITY_ROUTE,
+      },
+      {
+        content: t('alerts'),
+        icon: <Icon name={IconName.Notification} />,
+        key: ALERTS_ROUTE,
+      },
+      {
+        content: t('networks'),
+        icon: <i className="fa fa-plug" />,
+        key: NETWORKS_ROUTE,
+      },
+      {
+        content: t('experimental'),
+        icon: <i className="fa fa-flask" />,
+        key: EXPERIMENTAL_ROUTE,
+      },
+      {
+        content: t('about'),
+        icon: <i className="fa fa-info-circle" />,
+        key: ABOUT_US_ROUTE,
+      },
+    ];
 
     return (
       <TabBar
-        tabs={[
-          {
-            content: t('general'),
-            icon: <i className="fa fa-cog" />,
-            key: GENERAL_ROUTE,
-          },
-          {
-            content: t('advanced'),
-            icon: <i className="fas fa-sliders-h" />,
-            key: ADVANCED_ROUTE,
-          },
-          {
-            content: t('contacts'),
-            icon: <i className="fa fa-address-book" />,
-            key: CONTACT_LIST_ROUTE,
-          },
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          {
-            content: t('snaps'),
-            icon: (
-              <i
-                className="fa fa-flask"
-                title={t('snapsSettingsDescription')}
-              />
-            ),
-            key: SNAPS_LIST_ROUTE,
-          },
-          ///: END:ONLY_INCLUDE_IN
-          {
-            content: t('securityAndPrivacy'),
-            icon: <i className="fa fa-lock" />,
-            key: SECURITY_ROUTE,
-          },
-          {
-            content: t('alerts'),
-            icon: <i className="fa fa-bell" />,
-            key: ALERTS_ROUTE,
-          },
-          {
-            content: t('networks'),
-            icon: <i className="fa fa-plug" />,
-            key: NETWORKS_ROUTE,
-          },
-          {
-            content: t('experimental'),
-            icon: <i className="fa fa-flask" />,
-            key: EXPERIMENTAL_ROUTE,
-          },
-          {
-            content: t('about'),
-            icon: <i className="fa fa-info-circle" />,
-            key: ABOUT_US_ROUTE,
-          },
-        ]}
+        tabs={tabs}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
@@ -366,12 +368,12 @@ class SettingsPage extends PureComponent {
           component={ContactListTab}
         />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
           ///: END:ONLY_INCLUDE_IN
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />
           ///: END:ONLY_INCLUDE_IN
         }
