@@ -22,11 +22,7 @@ const DetectedTokenAggregators = ({ aggregators }) => {
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-aggregators">
-      <Text
-        variant={TextVariant.bodySm}
-        as="h6"
-        fontWeight={FontWeight.Normal}
-      >
+      <Text variant={TextVariant.bodySm} as="h6" fontWeight={FontWeight.Normal}>
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
             <Text
