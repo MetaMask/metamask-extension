@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -17,41 +17,47 @@ import { Text, ValidTag } from '../text';
 
 import { AvatarBaseProps, AvatarBaseSize } from './avatar-base.types';
 
-export const AvatarBase = ({
-  size = AvatarBaseSize.Md,
-  children,
-  backgroundColor = BackgroundColor.backgroundAlternative,
-  borderColor = BorderColor.borderDefault,
-  color = TextColor.textDefault,
-  className = '',
-  ...props
-}: AvatarBaseProps) => {
-  let fallbackTextVariant;
+export const AvatarBase = forwardRef(
+  (
+    {
+      size = AvatarBaseSize.Md,
+      children,
+      backgroundColor = BackgroundColor.backgroundAlternative,
+      borderColor = BorderColor.borderDefault,
+      color = TextColor.textDefault,
+      className = '',
+      ...props
+    }: AvatarBaseProps,
+    ref: Ref<HTMLElement>,
+  ) => {
+    let fallbackTextVariant;
 
-  if (size === AvatarBaseSize.Lg || size === AvatarBaseSize.Xl) {
-    fallbackTextVariant = TextVariant.bodyLgMedium;
-  } else if (size === AvatarBaseSize.Sm || size === AvatarBaseSize.Md) {
-    fallbackTextVariant = TextVariant.bodySm;
-  } else {
-    fallbackTextVariant = TextVariant.bodyXs;
-  }
-  return (
-    <Text
-      className={classnames(
-        'mm-avatar-base',
-        `mm-avatar-base--size-${size}`,
-        className,
-      )}
-      as={ValidTag.Div}
-      display={DISPLAY.FLEX}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.full}
-      variant={fallbackTextVariant}
-      textTransform={TextTransform.Uppercase}
-      {...{ backgroundColor, borderColor, color, ...props }}
-    >
-      {children}
-    </Text>
-  );
-};
+    if (size === AvatarBaseSize.Lg || size === AvatarBaseSize.Xl) {
+      fallbackTextVariant = TextVariant.bodyLgMedium;
+    } else if (size === AvatarBaseSize.Sm || size === AvatarBaseSize.Md) {
+      fallbackTextVariant = TextVariant.bodySm;
+    } else {
+      fallbackTextVariant = TextVariant.bodyXs;
+    }
+    return (
+      <Text
+        className={classnames(
+          'mm-avatar-base',
+          `mm-avatar-base--size-${size}`,
+          className,
+        )}
+        ref={ref}
+        as={ValidTag.Div}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        borderRadius={BorderRadius.full}
+        variant={fallbackTextVariant}
+        textTransform={TextTransform.Uppercase}
+        {...{ backgroundColor, borderColor, color, ...props }}
+      >
+        {children}
+      </Text>
+    );
+  },
+);
