@@ -10,7 +10,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 import {
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   Button,
   Icon,
   IconName,
@@ -24,7 +24,7 @@ const SnapVersion = ({ version, url }) => {
   const t = useI18nContext();
   return (
     <Button
-      type={BUTTON_TYPES.LINK}
+      variant={BUTTON_VARIANT.LINK}
       href={url}
       target="_blank"
       className="snap-version"
