@@ -1407,10 +1407,10 @@
     "message": "Enter max spend limit"
   },
   "enterPassword": {
-    "message": "Enter your password"
+    "message": "Enter password"
   },
   "enterPassword": {
-    "message": "Enter password"
+    "message": "Enter your password"
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"

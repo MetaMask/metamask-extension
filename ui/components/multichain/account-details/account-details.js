@@ -5,7 +5,6 @@ import Popover from '../../ui/popover/popover.component';
 import {
   setAccountDetailsAddress,
   clearAccountDetails,
-  exportAccount,
   hideWarning,
 } from '../../../store/actions';
 import {
@@ -15,11 +14,9 @@ import {
   BannerAlert,
   ButtonIcon,
   ButtonPrimary,
-  ButtonSecondary,
   IconName,
   PopoverHeader,
   Text,
-  TextField,
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import { getMetaMaskAccountsOrdered } from '../../../selectors';
@@ -29,7 +26,6 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
-  TextColor,
   TextVariant,
   SEVERITIES,
   FontWeight,
@@ -40,6 +36,7 @@ import {
 import { AddressCopyButton } from '../address-copy-button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { AccountDetailsDisplay } from './account-details-display';
+import { AccountDetailsAuthenticate } from './account-details-authenticate';
 
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
@@ -49,10 +46,6 @@ export const AccountDetails = ({ address }) => {
   const { name } = accounts.find((account) => account.address === address);
 
   const [attemptingExport, setAttemptingExport] = useState(false);
-  const [password, setPassword] = useState('');
-
-  // Password error would result from appState
-  const warning = useSelector((state) => state.appState.warning);
 
   // This is only populated when the user properly authenticates
   const privateKey = useSelector(
@@ -65,13 +58,6 @@ export const AccountDetails = ({ address }) => {
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
-
-  const onSubmit = useCallback(() => {
-    dispatch(exportAccount(password, address)).then((res) => {
-      dispatch(hideWarning());
-      return res;
-    });
-  }, [dispatch, password, address]);
 
   const avatar = (
     <AvatarAccount
@@ -183,48 +169,7 @@ export const AccountDetails = ({ address }) => {
               </ButtonPrimary>
             </>
           ) : (
-            <>
-              <Text marginTop={6} variant={TextVariant.bodySm}>
-                {t('enterPassword')}
-              </Text>
-              <TextField
-                type="password"
-                onInput={(e) => setPassword(e.target.value)}
-                placeholder={t('password')}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    onSubmit();
-                  }
-                }}
-                autoFocus
-              />
-              {warning ? (
-                <Text
-                  marginTop={1}
-                  color={TextColor.errorDefault}
-                  variant={TextVariant.bodySm}
-                >
-                  {warning}
-                </Text>
-              ) : null}
-              <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
-                <Text variant={TextVariant.bodySm}>
-                  {t('privateKeyWarning')}
-                </Text>
-              </BannerAlert>
-              <Box display={DISPLAY.FLEX} marginTop={6} gap={2}>
-                <ButtonSecondary onClick={onClose} block>
-                  {t('cancel')}
-                </ButtonSecondary>
-                <ButtonPrimary
-                  onClick={onSubmit}
-                  disabled={password === ''}
-                  block
-                >
-                  {t('submit')}
-                </ButtonPrimary>
-              </Box>
-            </>
+            <AccountDetailsAuthenticate address={address} onCancel={onClose} />
           )}
         </>
       ) : null}
