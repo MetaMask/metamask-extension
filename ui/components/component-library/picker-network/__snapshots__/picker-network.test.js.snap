@@ -7,17 +7,17 @@ exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
     data-testid="picker-network"
   >
     <div
-      class="box mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       I
     </div>
     <p
-      class="box mm-text mm-text--body-sm mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-sm mm-text--ellipsis box--flex-direction-row box--color-text-default"
     >
       Imported
     </p>
-    <div
-      class="box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs box--flex-direction-row box--color-icon-default"
+    <span
+      class="box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-icon-default"
       style="mask-image: url('./images/icons/arrow-down.svg');"
     />
   </button>

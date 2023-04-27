@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
@@ -34,7 +34,7 @@ export default class TransactionActivityLog extends PureComponent {
     const etherscanUrl = getBlockExplorerLink(activity, rpcPrefs);
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
+      category: MetaMetricsEventCategory.Transactions,
       event: 'Clicked Block Explorer Link',
       properties: {
         link_type: 'Transaction Block Explorer',

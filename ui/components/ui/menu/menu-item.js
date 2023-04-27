@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Icon, ICON_SIZES } from '../../component-library';
+import { Text, Icon, IconSize } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
 const MenuItem = ({
   children,
@@ -18,10 +19,12 @@ const MenuItem = ({
     onClick={onClick}
   >
     {iconName ? (
-      <Icon name={iconName} size={ICON_SIZES.SM} marginRight={2} />
+      <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
     ) : null}
-    <span>{children}</span>
-    {subtitle}
+    <div>
+      <div>{children}</div>
+      {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
+    </div>
   </button>
 );
 

@@ -27,8 +27,8 @@ import {
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   ButtonIcon,
-  ICON_SIZES,
-  ICON_NAMES,
+  ButtonIconSize,
+  IconName,
 } from '../../components/component-library';
 
 export default function TokenDetailsPage() {
@@ -59,7 +59,7 @@ export default function TokenDetailsPage() {
     type: state.metamask.provider.type,
   }));
 
-  const { nickname: networkNickname, type: networkType } = currentNetwork;
+  const { nickname, type: networkType } = currentNetwork;
 
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -139,11 +139,11 @@ export default function TokenDetailsPage() {
           >
             <ButtonIcon
               ariaLabel="copy"
-              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+              name={copied ? IconName.CopySuccess : IconName.Copy}
               className="token-details__copyIcon"
               onClick={() => handleCopy(token.address)}
               color={IconColor.primaryDefault}
-              size={ICON_SIZES.SM}
+              size={ButtonIconSize.Sm}
             />
           </Tooltip>
         </Box>
@@ -180,7 +180,7 @@ export default function TokenDetailsPage() {
           color={TextColor.textDefault}
         >
           {networkType === NETWORK_TYPES.RPC
-            ? networkNickname ?? t('privateNetwork')
+            ? nickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
         {aggregators && (

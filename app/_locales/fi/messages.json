@@ -75,12 +75,6 @@
   "asset": {
     "message": "Omaisuuserä"
   },
-  "attemptToCancel": {
-    "message": "Yritetäänkö peruuttaa?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Tämän yrityksen lähettäminen ei takaa, että alkuperäinen tapahtuma peruutettaisiin. Mikäli peruutusyritys onnistuu, sinulta veloitetaan yllä mainittu tapahtumamaksu."
-  },
   "attemptingConnect": {
     "message": "Yritetään yhdistää lohkoketjuun."
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
   },
-  "buyWithWyre": {
-    "message": "Osta $1 :ta Wyrella"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre antaa sinun käyttää luottokorttia, jotta voit tallettaa $1 :ta suoraan MetaMask-tilillesi."
-  },
   "bytes": {
     "message": "Tavua"
   },
   "cancel": {
     "message": "Peruuta"
-  },
-  "cancellationGasFee": {
-    "message": "Peruutuksen gas-maksu"
   },
   "cancelled": {
     "message": "Peruttu"
@@ -178,11 +163,11 @@
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
+  "connectingToLineaTestnet": {
+    "message": "Yhdistetään Linea Goerli testiverkostoon"
+  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
-  },
-  "continueToWyre": {
-    "message": "Jatka Wyreen"
   },
   "contractDeployment": {
     "message": "Sopimuksen käyttö"
@@ -336,13 +321,6 @@
   "general": {
     "message": "Yleistä"
   },
-  "getEther": {
-    "message": "Hanki Etheriä"
-  },
-  "getEtherFromFaucet": {
-    "message": "Hanki etheriä faucetista kohteelle $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "goerli": {
     "message": "Goerli-testiverkko"
   },
@@ -436,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
+  },
+  "lineatestnet": {
+    "message": "Linea-testiverkko"
   },
   "links": {
     "message": "Linkit"
@@ -636,35 +617,21 @@
   "reset": {
     "message": "Tyhjennä"
   },
-  "resetAccount": {
-    "message": "Nollaa tili"
-  },
-  "resetAccountDescription": {
-    "message": "Tilisi nollaaminen tyhjentää tapahtumahistoriasi."
-  },
   "restore": {
     "message": "Palauta"
   },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
-  "revealSeedWordsDescription": {
-    "message": "Mikäli vaihdat jossakin vaiheessa selainta tai tietokonetta, tarvitset tämän salaustekstin tiliesi käyttämiseen. Tallenna se johonkin turvalliseen ja salaiseen paikkaan."
-  },
   "revealSeedWordsWarning": {
-    "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ÄLÄ jaa tätä tekstiä kenellekään!"
+    "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Uusi RPC:n URL"
   },
   "save": {
     "message": "Tallenna"
-  },
-  "saveAsCsvFile": {
-    "message": "Tallenna CSV-tiedostona"
   },
   "scanInstructions": {
     "message": "Aseta QR-koodi kamerasi eteen"
@@ -707,12 +674,6 @@
   },
   "settings": {
     "message": "Asetukset"
-  },
-  "showAdvancedGasInline": {
-    "message": "Bensan lisävalvonta"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valitse tämä näyttääksesi gas-hinta ja rajoittaaksesi  säätimiä suoraan lähetä- ja vahvista-ruuduissa."
   },
   "showFiatConversionInTestnets": {
     "message": "Näytä vaihtokurssi koeverkoissa"
@@ -777,32 +738,8 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbolin on oltava 11 merkkiä tai vähemmän."
   },
-  "syncWithMobile": {
-    "message": "Synkronoi mobiililaitteelle"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Varmista, ettei kukaan muu katsele näyttöäsi, kun skannaat koodin"
-  },
-  "syncWithMobileComplete": {
-    "message": "Tietojesi synkronoiminen onnistui. Nauti MetaMask-mobiilisovelluksesta!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Voit synkronoida tilisi ja tietosi mobiililaitteidesi kesken. Avaa MetaMaskin mobiilisovellus, siirry \"Asetukset\"-osioon ja napauta \"Synkronoi selainlaajennuksesta\" -vaihtoehtoa"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jos avaat MetaMaskin mobiilisovelluksen vasta ensimmäistä kertaa, noudata vain puhelimesi ilmoittamia vaiheita."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Lue tämä koodi MetaMask-mobiilisovelluksellasi"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkronoi mobiililaitteen kanssa"
-  },
   "terms": {
     "message": "Käyttöehdot"
-  },
-  "testFaucet": {
-    "message": "Koe-faucet"
   },
   "tips": {
     "message": "Tipit"
@@ -922,9 +859,6 @@
   "userName": {
     "message": "Käyttäjätunnus"
   },
-  "viewAccount": {
-    "message": "Näytä tili"
-  },
   "viewContact": {
     "message": "Näytä yhteyshenkilö"
   },
@@ -933,9 +867,6 @@
   },
   "welcomeBack": {
     "message": "Tervetuloa takaisin!"
-  },
-  "yesLetsTry": {
-    "message": "Kyllä, kokeillaan"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."

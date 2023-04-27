@@ -11,6 +11,12 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import {
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
@@ -72,9 +78,11 @@ export default class ContactListTab extends Component {
     return (
       <div className="address-book__container">
         <div>
-          <i
-            className="fa fa-address-book fa-4x address-book__icon"
-            title={t('addressBookIcon')}
+          <Icon
+            name={IconName.Book}
+            color={IconColor.iconMuted}
+            className="address-book__icon"
+            size={IconSize.Xl}
           />
           <h4 className="address-book__title">{t('buildContactList')}</h4>
           <p className="address-book__sub-title">

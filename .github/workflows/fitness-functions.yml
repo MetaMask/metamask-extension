@@ -1,0 +1,29 @@
+name: Fitness Functions CI
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run fitness functions
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git fetch origin $BASE_REF
+          git diff origin/$BASE_REF HEAD -- . > diff
+          npm run fitness-functions -- "ci" "./diff"

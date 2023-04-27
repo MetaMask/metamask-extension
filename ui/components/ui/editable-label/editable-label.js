@@ -1,7 +1,9 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Color } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
+import { ButtonIcon, IconName } from '../../component-library';
 
 export default class EditableLabel extends Component {
   static propTypes = {
@@ -56,12 +58,11 @@ export default class EditableLabel extends Component {
           })}
           autoFocus
         />
-        <button
+        <ButtonIcon
+          iconName={IconName.Check}
           className="editable-label__icon-button"
           onClick={() => this.handleSubmit(isValidAccountName)}
-        >
-          <i className="fa fa-check editable-label__icon" />
-        </button>
+        />
         <div className="editable-label__error editable-label__error-amount">
           {errorMessage}
         </div>
@@ -73,13 +74,13 @@ export default class EditableLabel extends Component {
     return (
       <div className={classnames('editable-label', this.props.className)}>
         <div className="editable-label__value">{this.state.value}</div>
-        <button
-          className="editable-label__icon-button"
+        <ButtonIcon
+          iconName={IconName.Edit}
+          ariaLabel={this.context.t('edit')}
           data-testid="editable-label-button"
           onClick={() => this.setState({ isEditing: true })}
-        >
-          <i className="fas fa-pencil-alt editable-label__icon" />
-        </button>
+          color={Color.iconDefault}
+        />
       </div>
     );
   }

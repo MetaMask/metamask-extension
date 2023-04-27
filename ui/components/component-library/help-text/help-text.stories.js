@@ -2,14 +2,14 @@ import React from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  Color,
+  IconColor,
   TextColor,
-  Size,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES } from '..';
+import { Icon, IconName, IconSize } from '..';
 
 import { HelpText } from './help-text';
 
@@ -31,8 +31,9 @@ export default {
     className: {
       control: 'text',
     },
-    error: {
-      control: 'boolean',
+    severity: {
+      control: 'select',
+      options: Object.values(SEVERITIES),
     },
     color: {
       control: 'select',
@@ -52,38 +53,49 @@ DefaultStory.storyName = 'Default';
 export const Children = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
     <HelpText {...args}>Plain text</HelpText>
-    <HelpText {...args}>
-      Text and icon
+    <HelpText>
+      <span>Text and icon</span>
       <Icon
         marginLeft={1}
-        color={Color.inherit}
-        name={ICON_NAMES.WARNING}
-        size={Size.inherit}
+        color={IconColor.iconAlternative}
+        name={IconName.Warning}
+        size={IconSize.Inherit}
+        as="span"
       />
     </HelpText>
   </Box>
 );
 
-export const ErrorStory = (args) => (
-  <HelpText error {...args}>
-    This HelpText in error state
-  </HelpText>
+export const SeverityStory = (args) => (
+  <>
+    <HelpText {...args}>HelpText without severity prop</HelpText>
+    <HelpText {...args} severity={SEVERITIES.DANGER}>
+      HelpText with severity: SEVERITY.DANGER
+    </HelpText>
+    <HelpText {...args} severity={SEVERITIES.SUCCESS}>
+      HelpText with severity: SEVERITY.SUCCESS
+    </HelpText>
+    <HelpText {...args} severity={SEVERITIES.WARNING}>
+      HelpText with severity: SEVERITY.WARNING
+    </HelpText>
+    <HelpText {...args} severity={SEVERITIES.INFO}>
+      HelpText with severity: SEVERITY.INFO
+    </HelpText>
+  </>
 );
-ErrorStory.storyName = 'Error';
+
+SeverityStory.storyName = 'Severity';
 
 export const ColorStory = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <HelpText color={Color.textDefault} {...args}>
-      This HelpText default color is Color.textDefault
+    <HelpText color={TextColor.textDefault} {...args}>
+      This HelpText default color is TextColor.textDefault
     </HelpText>
-    <HelpText color={Color.infoDefault} {...args}>
-      This HelpText color is Color.infoDefault
+    <HelpText color={TextColor.textAlternative} {...args}>
+      This HelpText color is TextColor.textAlternative
     </HelpText>
-    <HelpText color={Color.warningDefault} {...args}>
-      This HelpText color is Color.warningDefault
-    </HelpText>
-    <HelpText color={Color.successDefault} {...args}>
-      This HelpText color is Color.successDefault
+    <HelpText color={TextColor.textMuted} {...args}>
+      This HelpText color is TextColor.textMuted
     </HelpText>
   </Box>
 );

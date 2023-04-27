@@ -14,13 +14,13 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 
-export default function CollectiblesDetectionNotice() {
+export default function NftsDetectionNotice() {
   const t = useI18nContext();
   const history = useHistory();
 
   return (
-    <Box className="collectibles-detection-notice">
-      <Dialog type="message" className="collectibles-detection-notice__message">
+    <Box className="nfts-detection-notice">
+      <Dialog type="message" className="nfts-detection-notice__message">
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={1}>
             <i
@@ -54,7 +54,7 @@ export default function CollectiblesDetectionNotice() {
                 e.preventDefault();
                 history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
               }}
-              className="collectibles-detection-notice__message__link"
+              className="nfts-detection-notice__message__link"
             >
               {t('selectNFTPrivacyPreference')}
             </Button>

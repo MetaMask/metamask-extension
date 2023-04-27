@@ -12,6 +12,9 @@
 @import 'connected-accounts/index';
 @import 'connected-sites/index';
 @import 'create-account/index';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+@import "create-account/institutional/connect-custody/index";
+///: END:ONLY_INCLUDE_IN
 @import 'error/index';
 @import 'send/gas-display/index';
 @import 'home/index';
@@ -25,3 +28,4 @@
 @import 'unlock-page/index';
 @import 'onboarding-flow/index';
 @import 'notifications/index';
+@import 'desktop-pairing/index';

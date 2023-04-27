@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import IconBlockExplorer from '../icon/icon-block-explorer';
 import Box from '../box/box';
 import Tooltip from '../tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,10 +13,10 @@ import {
   AlignItems,
   JustifyContent,
   TextColor,
+  Color,
 } from '../../../helpers/constants/design-system';
-import Button from '../button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { ButtonIcon, IconName } from '../../component-library';
 
 export default function ContractTokenValues({
   address,
@@ -30,14 +29,13 @@ export default function ContractTokenValues({
 
   return (
     <Box
+      className="contract-token-values"
       display={DISPLAY.FLEX}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
-      className="contract-token-values"
+      gap={2}
     >
-      <Box marginRight={2}>
-        <Identicon address={address} diameter={24} />
-      </Box>
+      <Identicon address={address} diameter={24} />
       <Typography
         variant={TypographyVariant.H2}
         fontWeight={FONT_WEIGHT.BOLD}
@@ -47,41 +45,38 @@ export default function ContractTokenValues({
       >
         {tokenName}
       </Typography>
-      <Box className="contract-token-values__copy-address">
-        <Tooltip
-          position="top"
-          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-        >
-          <ButtonIcon
-            iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-            className="contract-token-values__copy-address__button"
-            onClick={() => handleCopy(address)}
-          />
-        </Tooltip>
-      </Box>
-      <Box className="contract-token-values__block-explorer">
-        <Tooltip position="top" title={t('openInBlockExplorer')}>
-          <Button
-            type="link"
-            className="contract-token-values__block-explorer__button"
-            onClick={() => {
-              const blockExplorerTokenLink = getAccountLink(
-                address,
-                chainId,
-                {
-                  blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                },
-                null,
-              );
-              global.platform.openTab({
-                url: blockExplorerTokenLink,
-              });
-            }}
-          >
-            <IconBlockExplorer size={24} color="var(--color-icon-muted)" />
-          </Button>
-        </Tooltip>
-      </Box>
+      <Tooltip
+        position="top"
+        title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+      >
+        <ButtonIcon
+          iconName={copied ? IconName.CopySuccess : IconName.Copy}
+          color={Color.iconMuted}
+          onClick={() => handleCopy(address)}
+          ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
+        />
+      </Tooltip>
+      <Tooltip position="top" title={t('openInBlockExplorer')}>
+        <ButtonIcon
+          display={DISPLAY.FLEX}
+          iconName={IconName.Export}
+          color={Color.iconMuted}
+          onClick={() => {
+            const blockExplorerTokenLink = getAccountLink(
+              address,
+              chainId,
+              {
+                blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+              },
+              null,
+            );
+            global.platform.openTab({
+              url: blockExplorerTokenLink,
+            });
+          }}
+          ariaLabel={t('openInBlockExplorer')}
+        />
+      </Tooltip>
     </Box>
   );
 }

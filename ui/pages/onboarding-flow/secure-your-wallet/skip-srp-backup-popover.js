@@ -9,6 +9,7 @@ import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
   AlignItems,
+  IconColor,
   FLEX_DIRECTION,
   FONT_WEIGHT,
   JustifyContent,
@@ -17,8 +18,16 @@ import {
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
@@ -39,8 +48,9 @@ export default function SkipSRPBackup({ handleClose }) {
           <Button
             onClick={() => {
               trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CANCELED,
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletSecuritySkipCanceled,
               });
               handleClose();
             }}
@@ -57,8 +67,9 @@ export default function SkipSRPBackup({ handleClose }) {
             onClick={async () => {
               await dispatch(setSeedPhraseBackedUp(false));
               trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CONFIRMED,
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
               });
               history.push(ONBOARDING_COMPLETION_ROUTE);
             }}
@@ -74,9 +85,14 @@ export default function SkipSRPBackup({ handleClose }) {
         justifyContent={JustifyContent.center}
         margin={4}
       >
-        <i className="fa fa-exclamation-triangle fa-2x skip-srp-backup-popover__icon" />
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Xl}
+          className="skip-srp-backup-popover__icon"
+          color={IconColor.errorDefault}
+        />
         <Typography
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.H3}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('skipAccountSecurity')}
@@ -91,7 +107,7 @@ export default function SkipSRPBackup({ handleClose }) {
             />
             <Typography
               className="skip-srp-backup-popover__details"
-              variant={TypographyVariant.h7}
+              variant={TypographyVariant.H7}
             >
               {t('skipAccountSecurityDetails')}
             </Typography>

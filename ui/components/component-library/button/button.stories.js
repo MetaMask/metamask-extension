@@ -6,12 +6,12 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '..';
 import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import README from './README.mdx';
-import { Button, BUTTON_TYPES } from '.';
+import { Button, BUTTON_VARIANT } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -64,14 +64,18 @@ export default {
     href: {
       control: 'text',
     },
-    iconName: {
+    startIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(IconName),
     },
-    iconProps: {
+    startIconProps: {
+      control: 'object',
+    },
+    endIconProps: {
       control: 'object',
     },
     loading: {
@@ -81,8 +85,8 @@ export default {
       control: 'select',
       options: Object.values(BUTTON_LINK_SIZES),
     },
-    type: {
-      options: Object.values(BUTTON_TYPES),
+    variant: {
+      options: Object.values(BUTTON_VARIANT),
       control: 'select',
     },
     marginTop: {
@@ -115,15 +119,15 @@ export const DefaultStory = (args) => <Button {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Type = (args) => (
+export const Variant = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <Button type={BUTTON_TYPES.PRIMARY} {...args}>
+    <Button variant={BUTTON_VARIANT.PRIMARY} {...args}>
       Button Primary
     </Button>
-    <Button type={BUTTON_TYPES.SECONDARY} {...args}>
+    <Button variant={BUTTON_VARIANT.SECONDARY} {...args}>
       Button Secondary
     </Button>
-    <Button type={BUTTON_TYPES.LINK} {...args}>
+    <Button variant={BUTTON_VARIANT.LINK} {...args}>
       Button Link
     </Button>
   </Box>
@@ -146,12 +150,12 @@ export const SizeStory = (args) => (
       <Button {...args} size={Size.LG}>
         Large Button
       </Button>
-      <Button {...args} type={BUTTON_TYPES.LINK}>
+      <Button {...args} variant={BUTTON_VARIANT.LINK}>
         Auto ButtonLink
       </Button>
     </Box>
     <Text variant={TextVariant.bodySm}>
-      <Button {...args} type={BUTTON_TYPES.LINK} size={Size.inherit}>
+      <Button {...args} variant={BUTTON_VARIANT.LINK} size={Size.inherit}>
         Button Inherit
       </Button>{' '}
       inherits the font-size of the parent element. Inherit size only used for
@@ -209,8 +213,14 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
+export const StartIconName = (args) => (
+  <Button {...args} startIconName={IconName.AddSquare}>
+    Button
+  </Button>
+);
+
+export const EndIconName = (args) => (
+  <Button {...args} endIconName={IconName.Arrow2Right}>
     Button
   </Button>
 );

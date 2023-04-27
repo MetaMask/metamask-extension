@@ -3,8 +3,8 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
-@import 'flask/snaps-list-tab/index';
-@import 'flask/view-snap/index';
+@import 'snaps/snaps-list-tab/index';
+@import 'snaps/view-snap/index';
 
 .settings-page {
   position: relative;
@@ -216,17 +216,11 @@
   }
 
   &__back-button {
-    display: none;
+    margin-right: 8px;
 
-    @include screen-sm-max {
-      display: block;
-      margin-right: 8px;
-      cursor: pointer;
-
-      [dir='rtl'] & {
-        margin: 0 0 0 8px;
-        transform: rotate(180deg);
-      }
+    [dir='rtl'] & {
+      margin: 0 0 0 8px;
+      transform: rotate(180deg);
     }
   }
 
@@ -251,6 +245,12 @@
       .tab-bar__tab {
         @include screen-sm-min {
           max-height: 50px;
+        }
+
+        &__caret {
+          @include screen-sm-min {
+            display: none;
+          }
         }
       }
     }

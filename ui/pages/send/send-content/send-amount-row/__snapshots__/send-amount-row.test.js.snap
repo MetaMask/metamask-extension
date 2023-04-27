@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SendAmountRow Component render Collectible Asset Type should match snapshot for token collectible type 1`] = `<div />`;
+exports[`SendAmountRow Component render NFT Asset Type should match snapshot for token NFT type 1`] = `<div />`;
 
 exports[`SendAmountRow Component render Native Asset Type should match snapshot for native asset type 1`] = `
 <div>

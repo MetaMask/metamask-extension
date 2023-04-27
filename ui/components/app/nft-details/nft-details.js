@@ -23,24 +23,25 @@ import {
   getAssetImageURL,
   shortenAddress,
 } from '../../../helpers/utils/util';
-import { getCollectibleImageAlt } from '../../../helpers/utils/nfts';
+import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedIdentity,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
-import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
+import { getNftContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
-  setRemoveCollectibleMessage,
+  setRemoveNftMessage,
+  setNewNftAddedMessage,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import CollectibleOptions from '../nft-options/nft-options';
+import NftOptions from '../nft-options/nft-options';
 import Button from '../../ui/button';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
@@ -51,11 +52,12 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import CollectibleDefaultImage from '../nft-default-image';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import NftDefaultImage from '../nft-default-image';
+import { ButtonIcon, IconName } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 
-export default function CollectibleDetails({ collectible }) {
+export default function NftDetails({ nft }) {
   const {
     image,
     imageOriginal,
@@ -67,28 +69,25 @@ export default function CollectibleDetails({ collectible }) {
     isCurrentlyOwned,
     lastSale,
     imageThumbnail,
-  } = collectible;
+  } = nft;
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
   const ipfsGateway = useSelector(getIpfsGateway);
-  const collectibleContracts = useSelector(getCollectibleContracts);
+  const nftContracts = useSelector(getNftContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
-  const collectibleContractName = collectibleContracts.find(
-    ({ address: contractAddress }) =>
-      isEqualCaseInsensitive(contractAddress, address),
+  const nftContractName = nftContracts.find(({ address: contractAddress }) =>
+    isEqualCaseInsensitive(contractAddress, address),
   )?.name;
   const selectedAccountName = useSelector(
     (state) => getSelectedIdentity(state).name,
   );
-  const collectibleImageAlt = getCollectibleImageAlt(collectible);
-  const collectibleImageURL = getAssetImageURL(
-    imageOriginal ?? image,
-    ipfsGateway,
-  );
-  const isDataURI = collectibleImageURL.startsWith('data:');
+  const nftImageAlt = getNftImageAlt(nft);
+  const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
+  const isDataURI = nftImageURL.startsWith('data:');
+
   const formattedTimestamp = formatDate(
     new Date(lastSale?.event_timestamp).getTime(),
     'M/d/y',
@@ -96,16 +95,17 @@ export default function CollectibleDetails({ collectible }) {
 
   const onRemove = () => {
     dispatch(removeAndIgnoreNft(address, tokenId));
-    dispatch(setRemoveCollectibleMessage('success'));
+    dispatch(setNewNftAddedMessage(''));
+    dispatch(setRemoveNftMessage('success'));
     history.push(DEFAULT_ROUTE);
   };
 
-  const prevCollectible = usePrevious(collectible);
+  const prevNft = usePrevious(nft);
   useEffect(() => {
-    if (!isEqual(prevCollectible, collectible)) {
-      checkAndUpdateSingleNftOwnershipStatus(collectible);
+    if (!isEqual(prevNft, nft)) {
+      checkAndUpdateSingleNftOwnershipStatus(nft);
     }
-  }, [collectible, prevCollectible]);
+  }, [nft, prevNft]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
@@ -129,7 +129,7 @@ export default function CollectibleDetails({ collectible }) {
     await dispatch(
       startNewDraftTransaction({
         type: AssetType.NFT,
-        details: collectible,
+        details: nft,
       }),
     );
     history.push(SEND_ROUTE);
@@ -149,8 +149,8 @@ export default function CollectibleDetails({ collectible }) {
           type="primary"
           onClick={onSend}
           disabled={sendDisabled}
-          className="collectible-details__send-button"
-          data-testid="collectible-send-button"
+          className="nft-details__send-button"
+          data-testid="nft-send-button"
         >
           {t('send')}
         </Button>
@@ -165,10 +165,10 @@ export default function CollectibleDetails({ collectible }) {
     <>
       <AssetNavigation
         accountName={selectedAccountName}
-        assetName={collectibleContractName}
+        assetName={nftContractName}
         onBack={() => history.push(DEFAULT_ROUTE)}
         optionsButton={
-          <CollectibleOptions
+          <NftOptions
             onViewOnOpensea={
               openSeaLink
                 ? () => global.platform.openTab({ url: openSeaLink })
@@ -178,26 +178,26 @@ export default function CollectibleDetails({ collectible }) {
           />
         }
       />
-      <Box className="collectible-details">
-        <div className="collectible-details__top-section">
+      <Box className="nft-details">
+        <div className="nft-details__top-section">
           <Card
             padding={0}
             justifyContent={JustifyContent.center}
-            className="collectible-details__card"
+            className="nft-details__card"
           >
             {image ? (
               <img
-                className="collectible-details__image"
-                src={collectibleImageURL}
-                alt={collectibleImageAlt}
+                className="nft-details__image"
+                src={nftImageURL}
+                alt={nftImageAlt}
               />
             ) : (
-              <CollectibleDefaultImage name={name} tokenId={tokenId} />
+              <NftDefaultImage name={name} tokenId={tokenId} />
             )}
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
-            className="collectible-details__info"
+            className="nft-details__info"
             justifyContent={JustifyContent.spaceBetween}
           >
             <div>
@@ -224,7 +224,7 @@ export default function CollectibleDetails({ collectible }) {
                   color={TextColor.textDefault}
                   variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.BOLD}
-                  className="collectible-details__description"
+                  className="nft-details__description"
                   boxProps={{ margin: 0, marginBottom: 2 }}
                 >
                   {t('description')}
@@ -255,14 +255,14 @@ export default function CollectibleDetails({ collectible }) {
                     marginBottom: 4,
                     marginRight: 2,
                   }}
-                  className="collectible-details__link-title"
+                  className="nft-details__link-title"
                 >
                   {t('lastSold')}
                 </Typography>
                 <Box
                   display={DISPLAY.FLEX}
                   flexDirection={FLEX_DIRECTION.ROW}
-                  className="collectible-details__contract-wrapper"
+                  className="nft-details__contract-wrapper"
                 >
                   <Typography
                     color={TextColor.textAlternative}
@@ -284,14 +284,14 @@ export default function CollectibleDetails({ collectible }) {
                     marginBottom: 4,
                     marginRight: 2,
                   }}
-                  className="collectible-details__link-title"
+                  className="nft-details__link-title"
                 >
                   {t('lastPriceSold')}
                 </Typography>
                 <Box
                   display={DISPLAY.FLEX}
                   flexDirection={FLEX_DIRECTION.ROW}
-                  className="collectible-details__contract-wrapper"
+                  className="nft-details__contract-wrapper"
                 >
                   <Typography
                     color={TextColor.textAlternative}
@@ -299,7 +299,9 @@ export default function CollectibleDetails({ collectible }) {
                     overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                     boxProps={{ margin: 0, marginBottom: 4 }}
                   >
-                    {lastSale.total_price}
+                    {`${Number(decWEIToDecETH(lastSale.total_price))} ${
+                      lastSale.payment_token.symbol
+                    }`}
                   </Typography>
                 </Box>
               </Box>
@@ -315,7 +317,7 @@ export default function CollectibleDetails({ collectible }) {
                 marginBottom: 4,
                 marginRight: 2,
               }}
-              className="collectible-details__link-title"
+              className="nft-details__link-title"
             >
               {t('source')}
             </Typography>
@@ -325,60 +327,62 @@ export default function CollectibleDetails({ collectible }) {
                 margin: 0,
                 marginBottom: 4,
               }}
-              className="collectible-details__image-source"
+              className="nft-details__image-source"
               color={
                 isDataURI ? TextColor.textDefault : TextColor.primaryDefault
               }
             >
               {isDataURI ? (
-                <>{collectibleImageURL}</>
+                <>{nftImageURL}</>
               ) : (
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={collectibleImageURL}
-                  title={collectibleImageURL}
+                  href={nftImageURL}
+                  title={nftImageURL}
                 >
-                  {collectibleImageURL}
+                  {nftImageURL}
                 </a>
               )}
             </Typography>
           </Box>
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-            <Typography
-              color={TextColor.textDefault}
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-                marginRight: 2,
-              }}
-              className="collectible-details__link-title"
-            >
-              {t('link')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H6}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-              }}
-              className="collectible-details__image-source"
-              color={
-                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
-              }
-            >
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={collectibleImageURL}
-                title={collectibleImageURL}
+          {imageThumbnail ? (
+            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+              <Typography
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H6}
+                fontWeight={FONT_WEIGHT.BOLD}
+                boxProps={{
+                  margin: 0,
+                  marginBottom: 4,
+                  marginRight: 2,
+                }}
+                className="nft-details__link-title"
               >
-                {imageThumbnail}
-              </a>
-            </Typography>
-          </Box>
+                {t('link')}
+              </Typography>
+              <Typography
+                variant={TypographyVariant.H6}
+                boxProps={{
+                  margin: 0,
+                  marginBottom: 4,
+                }}
+                className="nft-details__image-source"
+                color={
+                  isDataURI ? TextColor.textDefault : TextColor.primaryDefault
+                }
+              >
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={nftImageURL}
+                  title={nftImageURL}
+                >
+                  {imageThumbnail}
+                </a>
+              </Typography>
+            </Box>
+          ) : null}
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
               color={TextColor.textDefault}
@@ -389,14 +393,14 @@ export default function CollectibleDetails({ collectible }) {
                 marginBottom: 4,
                 marginRight: 2,
               }}
-              className="collectible-details__link-title"
+              className="nft-details__link-title"
             >
               {t('contractAddress')}
             </Typography>
             <Box
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
-              className="collectible-details__contract-wrapper"
+              className="nft-details__contract-wrapper"
             >
               <Typography
                 color={TextColor.textAlternative}
@@ -407,7 +411,7 @@ export default function CollectibleDetails({ collectible }) {
                 {shortenAddress(address)}
               </Typography>
               <Tooltip
-                wrapperClassName="collectible-details__tooltip-wrapper"
+                wrapperClassName="nft-details__tooltip-wrapper"
                 position="bottom"
                 title={
                   addressCopied ? t('copiedExclamation') : t('copyToClipboard')
@@ -416,13 +420,13 @@ export default function CollectibleDetails({ collectible }) {
                 <ButtonIcon
                   ariaLabel="copy"
                   color={IconColor.iconAlternative}
-                  className="collectible-details__contract-copy-button"
-                  data-testid="collectible-address-copy"
+                  className="nft-details__contract-copy-button"
+                  data-testid="nft-address-copy"
                   onClick={() => {
                     handleAddressCopy(address);
                   }}
                   iconName={
-                    addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                    addressCopied ? IconName.CopySuccess : IconName.Copy
                   }
                 />
               </Tooltip>
@@ -441,8 +445,8 @@ export default function CollectibleDetails({ collectible }) {
   );
 }
 
-CollectibleDetails.propTypes = {
-  collectible: PropTypes.shape({
+NftDetails.propTypes = {
+  nft: PropTypes.shape({
     address: PropTypes.string.isRequired,
     tokenId: PropTypes.string.isRequired,
     isCurrentlyOwned: PropTypes.bool,
@@ -461,6 +465,9 @@ CollectibleDetails.propTypes = {
     lastSale: PropTypes.shape({
       event_timestamp: PropTypes.string,
       total_price: PropTypes.string,
+      payment_token: PropTypes.shape({
+        symbol: PropTypes.string,
+      }),
     }),
   }),
 };

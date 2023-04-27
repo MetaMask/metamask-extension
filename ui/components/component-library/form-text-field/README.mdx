@@ -1,6 +1,6 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
-import { TextField, TextFieldBase } from '../';
+import { TextField } from '../';
 import { FormTextField } from './form-text-field';
 
 # FormTextField
@@ -22,10 +22,10 @@ component props
 
 <ArgsTable of={TextField} />
 
-`FormTextField` accepts all [TextFieldBase](/docs/components-componentlibrary-textfield--default-story#props)
+`FormTextField` accepts all [TextField](/docs/components-componentlibrary-textfield--default-story#props)
 component props
 
-<ArgsTable of={TextFieldBase} />
+<ArgsTable of={TextField} />
 
 ### Id
 
@@ -99,7 +99,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  ICON_NAMES,
+  IconName,
   Text,
 } from '../../component-library';
 
@@ -229,7 +229,7 @@ return (
         <ButtonPrimary type="submit">Submit</ButtonPrimary>
       </Box>
     </Box>
-    <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
+    <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
       Clear form
     </ButtonSecondary>
     {submitted === FORM_STATE.SUCCESS && (
@@ -264,12 +264,11 @@ import {
 
 import Box from '../../ui/box/box';
 
+import { Icon, IconName } from '..'
 import {
   ButtonLink,
   FormTextField,
   HelpText,
-  ICON_NAMES,
-  Icon,
   Label,
   TEXT_FIELD_TYPES,
   Text,
@@ -290,12 +289,12 @@ import {
       * or require adding some form of customization
       * import the Label component separately
       */}
-    <Label htmlFor="custom-spending-cap" required>
+    <Label htmlFor="custom-spending-cap">
       Custom spending cap
     </Label>
     <Icon
-      name={ICON_NAMES.INFO}
-      size={Size.SM}
+      name={IconName.Info}
+      size={IconSize.Sm}
       marginLeft={1}
       color={IconColor.iconAlternative}
     />
@@ -305,7 +304,7 @@ import {
 <FormTextField
   id="custom-spending-cap"
   placeholder="Enter a number"
-  rightAccessory={<ButtonLink>Max</ButtonLink>}
+  endAccessory={<ButtonLink>Max</ButtonLink>}
   marginBottom={4}
   type={TEXT_FIELD_TYPES.NUMBER}
 />
@@ -326,7 +325,7 @@ import {
     * import the HelpText component separately and handle the error
     * logic yourself
     */}
-  <HelpText htmlFor="chainId" required marginRight={2}>
+  <HelpText htmlFor="chainId" marginRight={2}>
     Only enter a number that you're comfortable with the contract accessing
     now or in the future. You can always increase the token limit later.
   </HelpText>

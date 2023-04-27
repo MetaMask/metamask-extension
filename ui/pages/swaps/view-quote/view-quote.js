@@ -97,7 +97,7 @@ import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -578,7 +578,7 @@ export default function ViewQuote() {
   const trackAllAvailableQuotesOpened = () => {
     trackEvent({
       event: 'All Available Quotes Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -592,7 +592,7 @@ export default function ViewQuote() {
   const trackQuoteDetailsOpened = () => {
     trackEvent({
       event: 'Quote Details Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -606,7 +606,7 @@ export default function ViewQuote() {
   const trackEditSpendLimitOpened = () => {
     trackEvent({
       event: 'Edit Spend Limit Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         custom_spend_limit_set: originalApproveAmount === approveAmount,
@@ -618,7 +618,7 @@ export default function ViewQuote() {
   const trackBestQuoteReviewedEvent = useCallback(() => {
     trackEvent({
       event: 'Best Quote Reviewed',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         network_fees: feeInFiat,
@@ -628,7 +628,7 @@ export default function ViewQuote() {
   const trackViewQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'View Quote Page Loaded',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         response_time: currentTimestamp - reviewSwapClickedTimestamp,
@@ -896,13 +896,12 @@ export default function ViewQuote() {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
               value: '0x0', // For approval txs we need to use "0x0" here.
             },
-            chainId,
           });
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }

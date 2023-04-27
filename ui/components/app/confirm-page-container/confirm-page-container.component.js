@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -20,17 +20,19 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import Typography from '../../ui/typography';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
+import {
+  TextVariant,
+  TEXT_ALIGN,
+} from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import DepositPopover from '../deposit-popover/deposit-popover';
-import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
   getAddressBookEntry,
@@ -40,6 +42,12 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import useRamps from '../../../hooks/experiences/useRamps';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -64,7 +72,6 @@ const ConfirmPageContainer = (props) => {
     image,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     detailsComponent,
     dataComponent,
     dataHexComponent,
@@ -86,16 +93,14 @@ const ConfirmPageContainer = (props) => {
     currentTransaction,
     supportsEIP1559,
     nativeCurrency,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     txData,
-    ///: END:ONLY_INCLUDE_IN(flask)
     assetStandard,
     isApprovalOrRejection,
   } = props;
 
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
-  const [showDepositPopover, setShowDepositPopover] = useState(false);
   const [collectionBalance, setCollectionBalance] = useState(0);
 
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -111,26 +116,31 @@ const ConfirmPageContainer = (props) => {
     getMetadataContractName(state, toAddress),
   );
 
+  // TODO: Move useRamps hook to the confirm-transaction-base parent component.
+  // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
+  // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
+  // component once it is converted to a functional component
+  const { openBuyCryptoInPdapp } = useRamps();
+
   const isSetApproveForAll =
     currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
 
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
 
-  const hideTitle =
-    (currentTransaction.type === TransactionType.contractInteraction ||
-      currentTransaction.type === TransactionType.deployContract) &&
-    currentTransaction.txParams?.value === '0x0';
-
   const networkName =
     NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
-    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+    const tokenBalance = await fetchTokenBalance(
+      tokenAddress,
+      fromAddress,
+      global.ethereumProvider,
+    );
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   const insightComponent = useTransactionInsights({
@@ -193,11 +203,10 @@ const ConfirmPageContainer = (props) => {
             image={image}
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             insightComponent={insightComponent}
             ///: END:ONLY_INCLUDE_IN
             errorMessage={errorMessage}
@@ -215,7 +224,6 @@ const ConfirmPageContainer = (props) => {
             rejectNText={t('rejectTxsN', [unapprovedTxCount])}
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
-            hideTitle={hideTitle}
             supportsEIP1559={supportsEIP1559}
             currentTransaction={currentTransaction}
             nativeCurrency={nativeCurrency}
@@ -223,6 +231,7 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            txData={txData}
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -230,27 +239,45 @@ const ConfirmPageContainer = (props) => {
             <ActionableMessage
               message={
                 isBuyableChain ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    textAlign={TEXT_ALIGN.LEFT}
+                    as="h6"
+                  >
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() => setShowDepositPopover(true)}
+                        onClick={() => {
+                          openBuyCryptoInPdapp();
+                          trackEvent({
+                            event: MetaMetricsEventName.NavBuyButtonClicked,
+                            category: MetaMetricsEventCategory.Navigation,
+                            properties: {
+                              location: 'Transaction Confirmation',
+                              text: 'Buy',
+                            },
+                          });
+                        }}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
                     ])}
-                  </Typography>
+                  </Text>
                 ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    textAlign={TEXT_ALIGN.LEFT}
+                    as="h6"
+                  >
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
                     ])}
-                  </Typography>
+                  </Text>
                 )
               }
               useIcon
@@ -258,9 +285,6 @@ const ConfirmPageContainer = (props) => {
               type="danger"
             />
           </div>
-        )}
-        {showDepositPopover && (
-          <DepositPopover onClose={() => setShowDepositPopover(false)} />
         )}
         {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
           <div className="confirm-approve-content__warning">
@@ -323,7 +347,6 @@ const ConfirmPageContainer = (props) => {
 ConfirmPageContainer.propTypes = {
   // Header
   action: PropTypes.string,
-  hideSubtitle: PropTypes.bool,
   onEdit: PropTypes.func,
   showEdit: PropTypes.bool,
   subtitleComponent: PropTypes.node,
@@ -346,9 +369,7 @@ ConfirmPageContainer.propTypes = {
   dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   txData: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN(flask)
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,

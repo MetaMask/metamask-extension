@@ -3,7 +3,7 @@
 exports[`Beta Header should match snapshot 1`] = `
 <div>
   <div
-    class="box beta-header box--padding-2 box--display-flex box--flex-direction-row box--width-full box--background-color-warning-default"
+    class="box beta-header box--padding-2 box--display-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-warning-default"
   >
     <h6
       class="box box--flex-direction-row typography beta-header__message typography--h7 typography--weight-normal typography--style-normal typography--color-warning-inverse"
@@ -24,11 +24,12 @@ exports[`Beta Header should match snapshot 1`] = `
     </h6>
     <button
       aria-label="Close"
-      class="beta-header__button"
+      class="box mm-button-icon mm-button-icon--size-sm beta-header__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-warning-inverse box--background-color-transparent box--rounded-lg"
       data-testid="beta-header-close"
     >
-      <i
-        class="fa fa-times"
+      <span
+        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+        style="mask-image: url('./images/icons/close.svg');"
       />
     </button>
   </div>

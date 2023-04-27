@@ -1208,5 +1208,69 @@
     },
     "hasRetried": false,
     "hasCancelled": false
+  },
+  {
+    "initialTransaction": {
+      "blockNumber": "6195527",
+      "id": 8401691827212777,
+      "metamaskNetworkId": "4",
+      "status": "confirmed",
+      "time": 1585088013000,
+      "txParams": {
+        "from": "0xe18035bf8712672935fdb4e5e431b1a0183d2dfc",
+        "to": "0xabca64466f257793eaa52fcfff5066894b76a149",
+        "nonce": "0x1",
+        "value": "0x0",
+        "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4000000000000000000000000000000000000000000000000000000000000c350",
+        "gas": "0xea60",
+        "maxFeePerGas": "0x4a817c800",
+        "maxPriorityFeePerGas": "0x4a817c800"
+      },
+      "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
+      "type": "approve",
+      "origin": "https://metamask.github.io"
+    },
+    "transactions": [
+      {
+        "blockNumber": "6195527",
+        "id": 8401691827212777,
+        "metamaskNetworkId": "4",
+        "status": "confirmed",
+        "time": 1585088013000,
+        "txParams": {
+          "from": "0xe18035bf8712672935fdb4e5e431b1a0183d2dfc",
+          "to": "0xabca64466f257793eaa52fcfff5066894b76a149",
+          "nonce": "0x1",
+          "value": "0x0",
+          "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4000000000000000000000000000000000000000000000000000000000000c350",
+          "gas": "0xea60",
+          "maxFeePerGas": "0x4a817c800",
+          "maxPriorityFeePerGas": "0x4a817c800"
+        },
+        "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
+        "type": "approve"
+      }
+    ],
+    "primaryTransaction": {
+      "blockNumber": "6195527",
+      "id": 8401691827212777,
+      "metamaskNetworkId": "4",
+      "status": "confirmed",
+      "time": 1585088013000,
+      "txParams": {
+        "from": "0xe18035bf8712672935fdb4e5e431b1a0183d2dfc",
+        "to": "0xabca64466f257793eaa52fcfff5066894b76a149",
+        "nonce": "0x1",
+        "value": "0x0",
+        "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4000000000000000000000000000000000000000000000000000000000000c350",
+        "gas": "0xea60",
+        "maxFeePerGas": "0x4a817c800",
+        "maxPriorityFeePerGas": "0x4a817c800"
+      },
+      "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
+      "type": "approve"
+    },
+    "hasRetried": false,
+    "hasCancelled": false
   }
 ]

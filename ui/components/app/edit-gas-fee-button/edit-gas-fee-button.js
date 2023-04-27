@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
+  Color,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -12,7 +13,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
-import Typography from '../../ui/typography/typography';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();
@@ -71,7 +72,11 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
-        <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+        <Icon
+          name={IconName.ArrowRight}
+          color={Color.primaryDefault}
+          size={IconSize.Xs}
+        />
       </button>
       {estimateUsed === 'custom' && (
         <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>
@@ -81,22 +86,23 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
           contentText={
             <div className="edit-gas-fee-button__tooltip">
               {transaction?.origin && (
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.textAlternative}
                 >
                   {t('dappSuggestedTooltip', [transaction.origin])}
-                </Typography>
+                </Text>
               )}
-              <Typography variant={TypographyVariant.H7}>
+              <Text variant={TextVariant.bodySm} as="h6">
                 <b>{t('maxBaseFee')}</b> {maxFeePerGas}
-              </Typography>
-              <Typography variant={TypographyVariant.H7}>
+              </Text>
+              <Text variant={TextVariant.bodySm} as="h6">
                 <b>{t('maxPriorityFee')}</b> {maxPriorityFeePerGas}
-              </Typography>
-              <Typography variant={TypographyVariant.H7}>
+              </Text>
+              <Text variant={TextVariant.bodySm} as="h6">
                 <b>{t('gasLimit')}</b> {gasLimit}
-              </Typography>
+              </Text>
             </div>
           }
           position="top"

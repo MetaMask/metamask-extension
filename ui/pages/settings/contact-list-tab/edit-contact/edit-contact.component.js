@@ -170,9 +170,10 @@ export default class EditContact extends PureComponent {
           }}
           submitText={this.context.t('save')}
           disabled={
-            this.state.newName === name &&
-            this.state.newAddress === address &&
-            this.state.newMemo === memo
+            (this.state.newName === name &&
+              this.state.newAddress === address &&
+              this.state.newMemo === memo) ||
+            !this.state.newName.trim()
           }
         />
       </div>

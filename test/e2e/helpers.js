@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const path = require('path');
 const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
@@ -52,7 +53,6 @@ async function withFixtures(options, testSuite) {
 
   let webDriver;
   let driver;
-  const errors = [];
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
@@ -76,7 +76,7 @@ async function withFixtures(options, testSuite) {
       });
     }
     await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures);
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -105,7 +105,7 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    await setupMocking(mockServer, testSpecificMock);
+    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
@@ -117,7 +117,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions();
+      await driver.checkBrowserForExceptions(failOnConsoleError);
+      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
     let driverProxy;
@@ -142,24 +143,11 @@ async function withFixtures(options, testSuite) {
 
     await testSuite({
       driver: driverProxy ?? driver,
-      mockServer,
       contractRegistry,
+      ganacheServer,
+      secondaryGanacheServer,
+      mockedEndpoint,
     });
-
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      errors.concat(await driver.checkBrowserForConsoleErrors(driver));
-      if (errors.length) {
-        const errorReports = errors.map((err) => err.message);
-        const errorMessage = `Errors found in browser console:\n${errorReports.join(
-          '\n',
-        )}`;
-        if (failOnConsoleError) {
-          throw new Error(errorMessage);
-        } else {
-          console.error(new Error(errorMessage));
-        }
-      }
-    }
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -168,21 +156,13 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (
-        errors.length === 0 &&
-        driver.exceptions.length > 0 &&
-        failOnConsoleError
-      ) {
+      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
          * proving more helpful context
          */
         await driver.navigate(PAGES.BACKGROUND);
-        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
-          '\n',
-        )}`;
-        throw Error(errorMessage);
       }
     }
     throw error;
@@ -242,6 +222,9 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -282,6 +265,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   seedPhrase,
   password,
 ) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -312,6 +298,97 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
+const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
+  // welcome
+  await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+
+  // metrics
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+  // create password
+  await driver.fill('[data-testid="create-password-new"]', password);
+  await driver.fill('[data-testid="create-password-confirm"]', password);
+  await driver.clickElement('[data-testid="create-password-terms"]');
+  await driver.clickElement('[data-testid="create-password-wallet"]');
+
+  // secure my wallet
+  await driver.clickElement('[data-testid="secure-wallet-recommended"]');
+
+  // reveal SRP
+  await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+
+  const revealedSeedPhrase = await driver.findElement(
+    '[data-testid="recovery-phrase-chips"]',
+  );
+
+  const recoveryPhrase = await revealedSeedPhrase.getText();
+
+  await driver.clickElement('[data-testid="recovery-phrase-next"]');
+
+  // confirm SRP
+  const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
+  const finalWords = words.filter((str) => str !== '');
+  assert.equal(finalWords.length, 12);
+
+  await driver.fill('[data-testid="recovery-phrase-input-2"]', finalWords[2]);
+  await driver.fill('[data-testid="recovery-phrase-input-3"]', finalWords[3]);
+  await driver.fill('[data-testid="recovery-phrase-input-7"]', finalWords[7]);
+
+  await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
+
+  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+  // complete
+  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.clickElement('[data-testid="onboarding-complete-done"]');
+
+  // pin extension
+  await driver.clickElement('[data-testid="pin-extension-next"]');
+  await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
+  // welcome
+  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
+
+  // metrics
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+  // import with recovery phrase
+  await driver.pasteIntoField(
+    '[data-testid="import-srp__srp-word-0"]',
+    seedPhrase,
+  );
+
+  const warningText = 'Invalid Secret Recovery Phrase';
+  const warnings = await driver.findElements('.actionable-message__message');
+  const warning = warnings[1];
+
+  assert.equal(await warning.getText(), warningText);
+};
+
+const selectDropdownByNum = async (elements, index) => {
+  await elements[index].click();
+};
+
+const testSRPDropdownIterations = async (options, driver, iterations) => {
+  for (let i = 0; i < iterations; i++) {
+    await selectDropdownByNum(options, i);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const formFields = await driver.findElements('.import-srp__srp-word-label');
+    const expectedNumFields = 12 + i * 3;
+    const actualNumFields = formFields.length;
+    assert.equal(actualNumFields, expectedNumFields);
+  }
+};
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -323,5 +400,8 @@ module.exports = {
   importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
+  completeCreateNewWalletOnboardingFlow,
   createDownloadFolder,
+  importWrongSRPOnboardingFlow,
+  testSRPDropdownIterations,
 };

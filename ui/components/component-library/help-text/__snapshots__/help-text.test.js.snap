@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HelpText should render with text inside the HelpText 1`] = `
+exports[`HelpText should match snapshot 1`] = `
 <div>
-  <span
-    class="box mm-text mm-help-text mm-text--body-xs mm-text--color-text-default box--flex-direction-row"
+  <p
+    class="box mm-text mm-help-text mm-text--body-xs box--flex-direction-row box--color-text-default"
   >
     help text
-  </span>
+  </p>
 </div>
 `;

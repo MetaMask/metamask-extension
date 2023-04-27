@@ -13,6 +13,7 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
+  addToAddressBook,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -44,7 +45,9 @@ import {
   updateGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
+  getSendToAccounts,
 } from '../../ducks/metamask/metamask';
+import { addHexPrefix } from '../../../app/scripts/lib/util';
 
 import {
   parseStandardTokenTransactionData,
@@ -60,7 +63,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '../../../shared/constants/transaction';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -73,6 +75,14 @@ const customNonceMerge = (txData) =>
         customNonceValue,
       }
     : txData;
+
+function addressIsNew(toAccounts, newAddress) {
+  const newAddressNormalized = newAddress.toLowerCase();
+  const foundMatching = toAccounts.some(
+    ({ address }) => address.toLowerCase() === newAddressNormalized,
+  );
+  return !foundMatching;
+}
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -91,11 +101,9 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    network,
+    networkId,
     unapprovedTxs,
     nextNonce,
-    allNftContracts,
-    selectedAddress,
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -122,6 +130,8 @@ const mapStateToProps = (state, ownProps) => {
     toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
   }
 
+  const toAccounts = getSendToAccounts(state);
+
   const tokenList = getTokenList(state);
 
   const toName =
@@ -142,7 +152,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const {
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -150,7 +159,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
+      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
@@ -169,12 +178,6 @@ const mapStateToProps = (state, ownProps) => {
     txId,
     TransactionStatus.unapproved,
     customTxParamsData,
-  );
-
-  const isCollectibleTransfer = Boolean(
-    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
-      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
-    }),
   );
 
   customNonceValue = getCustomNonceValue(state);
@@ -196,12 +199,12 @@ const mapStateToProps = (state, ownProps) => {
     balance,
     fromAddress,
     fromName,
+    toAccounts,
     toAddress,
     toEns,
     toName,
     toNickname,
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
@@ -221,7 +224,6 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isCollectibleTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -276,6 +278,13 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
+    },
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+    addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
+      const hexPrefixedAddress = addHexPrefix(newAddress);
+      if (addressIsNew(toAccounts, hexPrefixedAddress)) {
+        dispatch(addToAddressBook(hexPrefixedAddress, nickname));
+      }
     },
   };
 };

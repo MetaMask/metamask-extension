@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
+
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
-import Typography from '../../ui/typography/typography';
+import { Text } from '../../component-library';
 import {
   AlignItems,
   BLOCK_SIZES,
@@ -14,12 +16,16 @@ import {
   JustifyContent,
   TEXT_ALIGN,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
-import GasDetailsItem from '../gas-details-item/gas-details-item';
+import { getPreferences } from '../../../selectors';
+import { ConfirmGasDisplay } from '../confirm-gas-display';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 
 export default function ApproveContentCard({
   showHeader = true,
@@ -37,6 +43,7 @@ export default function ApproveContentCard({
   ethTransactionTotal,
   nativeCurrency,
   fullTxData,
+  hexMinimumTransactionFee,
   hexTransactionTotal,
   fiatTransactionTotal,
   currentCurrency,
@@ -48,6 +55,7 @@ export default function ApproveContentCard({
   useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   return (
     <Box
@@ -73,24 +81,22 @@ export default function ApproveContentCard({
                 marginLeft={4}
                 className="approve-content-card-container__card-header__title"
               >
-                <Typography
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
+                <Text variant={TextVariant.bodySmBold} as="h6">
                   {title}
-                </Typography>
+                </Text>
               </Box>
             </>
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BLOCK_SIZES.ONE_SIXTH}>
               <Button type="link" onClick={() => onEditClick()}>
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
+                  as="h6"
                 >
                   {t('edit')}
-                </Typography>
+                </Text>
               </Button>
             </Box>
           )}
@@ -113,7 +119,7 @@ export default function ApproveContentCard({
           (!isMultiLayerFeeNetwork &&
           supportsEIP1559 &&
           !renderSimulationFailureWarning ? (
-            <GasDetailsItem
+            <ConfirmGasDisplay
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
           ) : (
@@ -128,19 +134,27 @@ export default function ApproveContentCard({
                   flexDirection={FLEX_DIRECTION.COLUMN}
                   className="approve-content-card-container__transaction-details-extra-content"
                 >
-                  <Box
-                    display={DISPLAY.FLEX}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Typography
-                      variant={TypographyVariant.H6}
-                      fontWeight={FONT_WEIGHT.NORMAL}
-                      color={TextColor.textMuted}
-                    >
-                      <span>{t('transactionDetailLayer2GasHeading')}</span>
-                      {`${ethTransactionTotal} ${nativeCurrency}`}
-                    </Typography>
-                  </Box>
+                  <TransactionDetailItem
+                    key="total-item"
+                    detailTitle={t('transactionDetailLayer2GasHeading')}
+                    detailTotal={
+                      <UserPreferencedCurrencyDisplay
+                        type={PRIMARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                        numberOfDecimals={18}
+                      />
+                    }
+                    detailText={
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    }
+                    noBold
+                    flexWidthValues
+                  />
                   <MultiLayerFeeMessage
                     transaction={fullTxData}
                     layer2fee={hexTransactionTotal}
@@ -151,12 +165,13 @@ export default function ApproveContentCard({
               ) : (
                 <>
                   <Box>
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySm}
                       color={TextColor.textAlternative}
+                      as="h6"
                     >
                       {t('feeAssociatedRequest')}
-                    </Typography>
+                    </Text>
                   </Box>
                   <Box
                     display={DISPLAY.FLEX}
@@ -166,26 +181,28 @@ export default function ApproveContentCard({
                   >
                     {useCurrencyRateCheck && (
                       <Box>
-                        <Typography
-                          variant={TypographyVariant.H4}
+                        <Text
+                          variant={TextVariant.headingSm}
                           fontWeight={FONT_WEIGHT.BOLD}
                           color={TextColor.TEXT_DEFAULT}
+                          as="h4"
                         >
                           {formatCurrency(
                             fiatTransactionTotal,
                             currentCurrency,
                           )}
-                        </Typography>
+                        </Text>
                       </Box>
                     )}
                     <Box>
-                      <Typography
-                        variant={TypographyVariant.H6}
+                      <Text
+                        variant={TextVariant.bodySm}
                         fontWeight={FONT_WEIGHT.NORMAL}
                         color={TextColor.textMuted}
+                        as="h6"
                       >
                         {`${ethTransactionTotal} ${nativeCurrency}`}
-                      </Typography>
+                      </Text>
                     </Box>
                   </Box>
                 </>
@@ -195,35 +212,38 @@ export default function ApproveContentCard({
         {renderDataContent && (
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
             <Box>
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
+                as="h6"
               >
                 {isSetApproveForAll
                   ? t('functionSetApprovalForAll')
                   : t('functionApprove')}
-              </Typography>
+              </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
               <Box>
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
+                  as="h6"
                 >
                   {`${t('parameters')}: ${isApprovalOrRejection}`}
-                </Typography>
+                </Text>
               </Box>
             ) : null}
             <Box
               marginRight={4}
               className="approve-content-card-container__data__data-block"
             >
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
+                as="h6"
               >
                 {data}
-              </Typography>
+              </Text>
             </Box>
           </Box>
         )}
@@ -298,6 +318,10 @@ ApproveContentCard.propTypes = {
    * Total sum of the transaction converted to hex value
    */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Minimum transaction fee converted to hex value
+   */
+  hexMinimumTransactionFee: PropTypes.string,
   /**
    * Total sum of the transaction in fiat currency
    */
