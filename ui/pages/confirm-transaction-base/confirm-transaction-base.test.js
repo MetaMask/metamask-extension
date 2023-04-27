@@ -8,6 +8,7 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks'
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';
@@ -98,7 +99,7 @@ const baseStore = {
     txData: {
       id: 1,
       time: 1675012496170,
-      status: 'unapproved',
+      status: TransactionStatus.unapproved,
       metamaskNetworkId: '5',
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
