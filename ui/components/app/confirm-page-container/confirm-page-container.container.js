@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { compose } from 'redux';
 import { withUseRamps } from '../../../hooks/experiences/useRamps';
 import {
   getAddressBookEntry,
@@ -33,7 +32,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default compose(
-  withUseRamps,
-  connect(mapStateToProps),
-)(ConfirmPageContainer);
+export default connect(mapStateToProps)(withUseRamps(ConfirmPageContainer));

@@ -315,6 +315,5 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
 export default compose(
   withRouter,
-  withUseRamps,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
-)(ConfirmTransactionBase);
+)(withUseRamps(ConfirmTransactionBase));
