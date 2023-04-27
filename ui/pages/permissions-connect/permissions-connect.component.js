@@ -38,11 +38,11 @@ export default class PermissionConnect extends Component {
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
+    requestType: PropTypes.string.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     snapInstallPath: PropTypes.string.isRequired,
     snapUpdatePath: PropTypes.string.isRequired,
     snapResultPath: PropTypes.string.isRequired,
-    requestType: PropTypes.string.isRequired,
     requestState: PropTypes.object.isRequired,
     approvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
