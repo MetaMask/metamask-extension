@@ -10,8 +10,7 @@ import CheckBox from '../../../ui/check-box';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  TextColor,
-  TextVariant,
+  TextColor
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';

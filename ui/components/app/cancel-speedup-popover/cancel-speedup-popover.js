@@ -8,7 +8,6 @@ import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
