@@ -72,6 +72,8 @@ import { InstitutionalFeaturesController } from '@metamask-institutional/institu
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+
+import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
@@ -687,17 +689,17 @@ export default class MetamaskController extends EventEmitter {
         QRHardwareKeyring,
       ];
 
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
-        additionalKeyringTypes.push(
-          CUSTODIAN_TYPES[custodianType].keyringClass,
-        );
-      }
-      ///: END:ONLY_INCLUDE_IN
-
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
       );
+
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+        additionalKeyrings.push(
+          mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass,  { mmiConfigurationController: this.mmiConfigurationController })
+        );
+      }
+      ///: END:ONLY_INCLUDE_IN
     }
 
     this.keyringController = new KeyringController({
