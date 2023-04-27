@@ -27,7 +27,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
           class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
         >
           <label
-            class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+            class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
             for="address-0"
           >
             <span
@@ -37,7 +37,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
             </span>
           </label>
           <label
-            class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-right-3 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+            class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-right-3 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
             for="address-0"
           >
             <span
@@ -103,7 +103,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
           class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
         >
           <label
-            class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+            class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
             for="address-1"
           >
             <span
@@ -113,7 +113,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
             </span>
           </label>
           <label
-            class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-right-3 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+            class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-right-3 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
             for="address-1"
           >
             <span
