@@ -432,10 +432,6 @@ describe('Actions', () => {
   });
 
   describe('#checkHardwareStatus', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
     it('calls checkHardwareStatus in background', async () => {
       const store = mockStore();
 
