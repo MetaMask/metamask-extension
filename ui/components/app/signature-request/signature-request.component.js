@@ -5,7 +5,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import {
   sanitizeMessage,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
@@ -19,7 +19,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   DISPLAY,
   BLOCK_SIZES,
@@ -36,7 +36,7 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
@@ -93,7 +93,7 @@ export default class SignatureRequest extends PureComponent {
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
@@ -280,7 +280,7 @@ export default class SignatureRequest extends PureComponent {
           ) : null}
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             this.props.selectedAccount.address === address ? null : (
               <Box
                 className="request-signature__mismatch-info"
