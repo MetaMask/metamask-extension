@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
 
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
-import { Text } from '../../component-library'
-import { TextVariant } from '../../../helpers/constants/design-system'
+import { Text } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import {
   AlignItems,
   DISPLAY,

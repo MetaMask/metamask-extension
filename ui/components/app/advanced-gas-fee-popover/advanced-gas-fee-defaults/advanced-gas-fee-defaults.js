@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
-import { Text } from '../../component-library'
-import { TextVariant } from '../../../helpers/constants/design-system'
+import { Text } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import CheckBox from '../../../ui/check-box';
 import {
   DISPLAY,
