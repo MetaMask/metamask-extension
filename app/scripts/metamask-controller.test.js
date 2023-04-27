@@ -701,6 +701,7 @@ describe('MetaMaskController', function () {
     });
   });
 
+  // @TODO - fix fitness-function for mocha test (no mocha: sinon/assert)
   // describe('isDeviceAccessible', function () {
   //   let unlock;
   //   let mockKeyrings = [];
