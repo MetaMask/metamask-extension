@@ -6,6 +6,7 @@ try {
     errorTaming: 'unsafe',
     mathTaming: 'unsafe',
     dateTaming: 'unsafe',
+    domainTaming: 'unsafe',
     overrideTaming: 'severe',
   });
 } catch (error) {
