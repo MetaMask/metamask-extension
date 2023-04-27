@@ -25,6 +25,9 @@ export const ModalContent = ({
       { [`mm-modal-content--size-${size}`]: !width },
       className,
     )}
+    as="section"
+    role="dialog"
+    aria-modal="true"
     backgroundColor={BackgroundColor.backgroundDefault}
     borderRadius={BorderRadius.LG}
     width={width || BLOCK_SIZES.FULL}

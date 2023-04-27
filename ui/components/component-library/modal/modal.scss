@@ -1,0 +1,6 @@
+.mm-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  // z-index: 1040; // TODO: Check if this is required for Modal to work properly. It aligns with modal z-index in extension
+}

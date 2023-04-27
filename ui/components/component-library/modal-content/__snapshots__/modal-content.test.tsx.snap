@@ -2,10 +2,12 @@
 
 exports[`ModalContent should match snapshot 1`] = `
 <div>
-  <div
+  <section
+    aria-modal="true"
     class="box mm-modal-content mm-modal-content--size-sm box--padding-4 box--flex-direction-row box--width-full box--background-color-background-default box--rounded-lg"
+    role="dialog"
   >
     test
-  </div>
+  </section>
 </div>
 `;
