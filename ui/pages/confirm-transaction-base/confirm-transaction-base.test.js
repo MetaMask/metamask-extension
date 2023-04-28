@@ -200,6 +200,38 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
   });
 
+  describe(`when the transaction is a ${TransactionType.simpleSend} type`, () => {
+    it('should use txParams.to address as the recipient value', () => {
+      const store = configureMockStore(middleware)(mockedStore);
+      const { container } = renderWithProvider(
+        <ConfirmTransactionBase actionKey="confirm" />,
+        store,
+      );
+
+      const recipientElem = container.querySelector(
+        '.sender-to-recipient__party--recipient .sender-to-recipient__name',
+      );
+      expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+    });
+
+    it('should use txParams.to address as the recipient value even when no value is passed', () => {
+      mockedStoreWithConfirmTxParams({
+        ...mockTxParams,
+        value: '0x0',
+      });
+      const store = configureMockStore(middleware)(mockedStore);
+      const { container } = renderWithProvider(
+        <ConfirmTransactionBase actionKey="confirm" />,
+        store,
+      );
+
+      const recipientElem = container.querySelector(
+        '.sender-to-recipient__party--recipient .sender-to-recipient__name',
+      );
+      expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+    });
+  });
+
   describe('when the transaction is a contract interaction', () => {
     describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
       it('should use the contract address as the recipient value', async () => {
