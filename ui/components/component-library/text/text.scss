@@ -59,11 +59,6 @@ $text-variants: (
       @else {
         font-weight: $weight;
       }
-
-      // Rule for strong tag inside Text component
-      strong {
-        font-weight: var(--font-weight-bold);
-      }
     }
   }
 

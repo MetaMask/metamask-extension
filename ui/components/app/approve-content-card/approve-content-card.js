@@ -134,20 +134,6 @@ export default function ApproveContentCard({
                   flexDirection={FLEX_DIRECTION.COLUMN}
                   className="approve-content-card-container__transaction-details-extra-content"
                 >
-                  <Box
-                    display={DISPLAY.FLEX}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text
-                      variant={TextVariant.bodySm}
-                      fontWeight={FontWeight.Normal}
-                      color={TextColor.textMuted}
-                      as="h6"
-                    >
-                      <span>{t('transactionDetailLayer2GasHeading')}</span>
-                      {`${ethTransactionTotal} ${nativeCurrency}`}
-                    </Text>
-                  </Box>
                   <TransactionDetailItem
                     key="total-item"
                     detailTitle={t('transactionDetailLayer2GasHeading')}
