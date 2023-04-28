@@ -130,11 +130,11 @@ const mapStateToProps = (state, ownProps) => {
   const { name: fromName } = identities[fromAddress];
 
   const isSendingAmount =
-    type !== TransactionType.simpleSend && isEmptyHexString(amount);
+    type === TransactionType.simpleSend || !isEmptyHexString(amount);
 
   const toAddress = isSendingAmount
-    ? propsToAddress || tokenToAddress
-    : txParamsToAddress;
+    ? txParamsToAddress
+    : propsToAddress || tokenToAddress;
 
   const toAccounts = getSendToAccounts(state);
 
