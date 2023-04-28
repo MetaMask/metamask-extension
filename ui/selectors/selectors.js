@@ -597,6 +597,10 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+export function getDisabledRpcMethodPreferences(state) {
+  return state.metamask.disabledRpcMethodPreferences;
+}
+
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const isCustomNetwork = getIsCustomNetwork(state);

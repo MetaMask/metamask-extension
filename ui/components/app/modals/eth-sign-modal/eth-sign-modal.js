@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
 import {
   BannerAlert,
   Button,
   ButtonIcon,
+  ButtonLink,
   BUTTON_VARIANT,
   FormTextField,
   Icon,
@@ -27,14 +29,30 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box';
+import { setDisabledRpcMethodPreference } from '../../../../store/actions';
+import { getDisabledRpcMethodPreferences } from '../../../../selectors';
 
 const EthSignModal = ({ hideModal }) => {
   const [isEthSignChecked, setIsEthSignChecked] = useState(false);
   const [showTextField, setShowTextField] = useState(false);
   const [inputKeyword, setInputKeyword] = useState('');
+  const disabledRpcMethodPreferences = useSelector(
+    getDisabledRpcMethodPreferences,
+  );
 
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const handleCancel = () => {
+    hideModal();
+  };
+
+  const handleSubmit = () => {
+    dispatch(
+      setDisabledRpcMethodPreference(
+        'eth_sign',
+        !disabledRpcMethodPreferences?.eth_sign,
+      ),
+    );
     hideModal();
   };
 
@@ -74,7 +92,13 @@ const EthSignModal = ({ hideModal }) => {
       <Text variant={TextVariant.bodyMd}>
         Allowing eth_sign requests can make you vulnerable to phishing attacks.
         Always review the URL and be careful when signing messages that contain
-        code. Learn more.
+        code.{' '}
+        <ButtonLink
+          href="https://support.metamask.io/hc/en-us/articles/14764161421467"
+          externalLink
+        >
+          {t('learnMoreUpperCase')}
+        </ButtonLink>
       </Text>
       <BannerAlert severity={SEVERITIES.DANGER} marginTop={6} marginBottom={6}>
         If you have been asked to turn this setting on, you might be getting
@@ -133,11 +157,9 @@ const EthSignModal = ({ hideModal }) => {
             danger
             block
             disabled={!isValid}
-            onClick={() => {
-              hideModal();
-            }}
+            onClick={handleSubmit}
           >
-            Enable
+            {t('enableSnap')}
           </Button>
         ) : (
           <Button

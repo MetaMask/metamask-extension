@@ -25,6 +25,8 @@ import {
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { BannerAlert } from '../../../components/component-library';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
@@ -541,9 +543,9 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleEthSignControl() {
     const { t } = this.context;
-    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
-      this.props;
-    const { showEthSignModal } = this.props;
+    const { disabledRpcMethodPreferences } = this.props;
+    const { showEthSignModal, setDisabledRpcMethodPreference } = this.props;
+
     return (
       <div
         ref={this.settingsRefs[10]}
@@ -556,11 +558,22 @@ export default class AdvancedTab extends PureComponent {
             {t('toggleEthSignDescriptionField')}
           </div>
         </div>
+
+        {disabledRpcMethodPreferences?.eth_sign === true ? (
+          <BannerAlert severity={SEVERITIES.DANGER} marginBottom={5}>
+            You’re at risk for phishing attacks. Protect yourself by turning off
+            eth_sign.
+          </BannerAlert>
+        ) : null}
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={disabledRpcMethodPreferences?.eth_sign || false}
-              onToggle={() => showEthSignModal()}
+              onToggle={(value) => {
+                value
+                  ? setDisabledRpcMethodPreference('eth_sign', !value)
+                  : showEthSignModal();
+              }}
               offLabel={t('off')}
               onLabel={t('on')}
             />
