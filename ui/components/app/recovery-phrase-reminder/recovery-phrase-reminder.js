@@ -39,23 +39,22 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
           color={TextColor.textDefault}
           align={TextAlign.Center}
           variant={TextVariant.bodyMd}
-          boxProps={{ marginTop: 0, marginBottom: 4 }}
+          marginBottom={4}
+
         >
           {t('recoveryPhraseReminderSubText')}
         </Text>
         <Box marginTop={4} marginBottom={8}>
           <ul className="recovery-phrase-reminder__list">
-            <li>
-              <Text
-                as="span"
-                color={TextColor.textDefault}
-                fontWeight={FontWeight.Bold}
-              >
-                {t('recoveryPhraseReminderItemOne')}
-              </Text>
-            </li>
-            <li>{t('recoveryPhraseReminderItemTwo')}</li>
-            <li>
+            <Text
+              as="li"
+              color={TextColor.textDefault}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('recoveryPhraseReminderItemOne')}
+            </Text>
+            <Text as="li">{t('recoveryPhraseReminderItemTwo')}</Text>
+            <Text as="li">
               {hasBackedUp ? (
                 t('recoveryPhraseReminderHasBackedUp')
               ) : (
@@ -75,7 +74,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
                   </Box>
                 </>
               )}
-            </li>
+            </Text>
           </ul>
         </Box>
         <Box justifyContent={JustifyContent.center}>
