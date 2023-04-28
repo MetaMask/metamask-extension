@@ -1,6 +1,10 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
+import {
+  PersonalMessageManager,
+  TypedMessageManager,
+} from '@metamask/message-manager';
 import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
@@ -22,8 +26,7 @@ export default class MMIController extends EventEmitter {
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
     this.txController = opts.txController;
-    this.typedMessageManager = opts.typedMessageManager;
-    this.personalMessageManager = opts.personalMessageManager;
+    this.securityProviderRequest = opts.securityProviderRequest;
     this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
@@ -32,6 +35,17 @@ export default class MMIController extends EventEmitter {
     this.addKeyringIfNotExists = opts.addKeyringIfNotExists;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
+
+    this.personalMessageManager = new PersonalMessageManager(
+      undefined,
+      undefined,
+      this.securityProviderRequest,
+    );
+    this.typedMessageManager = new TypedMessageManager(
+      undefined,
+      undefined,
+      this.securityProviderRequest,
+    );
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(

@@ -1118,8 +1118,7 @@ export default class MetamaskController extends EventEmitter {
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
       txController: this.txController,
-      typedMessageManager: this.typedMessageManager,
-      personalMessageManager: this.personalMessageManager,
+      securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
@@ -2321,16 +2320,9 @@ export default class MetamaskController extends EventEmitter {
         ),
       getAllCustodianAccountsWithToken:
         this.mmiController.getAllCustodianAccountsWithToken.bind(this),
-      setTypedMsgInProgress: this.typedMessageManager.setMsgInProgress.bind(
-        this.typedMessageManager,
-      ),
       getMmiConfiguration:
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
-        ),
-      setPersonalMsgInProgress:
-        this.personalMessageManager.setMsgInProgress.bind(
-          this.personalMessageManager,
         ),
       setComplianceAuthData:
         this.institutionalFeaturesController.setComplianceAuthData.bind(
