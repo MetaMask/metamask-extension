@@ -67,7 +67,7 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
           {t('cancel')}
         </ButtonSecondary>
         <ButtonPrimary onClick={onSubmit} disabled={password === ''} block>
-          {t('submit')}
+          {t('confirm')}
         </ButtonPrimary>
       </Box>
     </>
