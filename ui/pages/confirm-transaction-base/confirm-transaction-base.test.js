@@ -155,15 +155,25 @@ describe('Confirm Transaction Base', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should not contain L1 L2 fee details for chains that are not optimism', () => {
+    const store = configureMockStore(middleware)(baseStore);
+    const { queryByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(queryByText('Layer 1 fees')).not.toBeInTheDocument();
+    expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
+  });
+
   it('should contain L1 L2 fee details for optimism', () => {
     mockedStore.metamask.provider.chainId = CHAIN_IDS.OPTIMISM;
     mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
     const store = configureMockStore(middleware)(mockedStore);
-    const { getByText } = renderWithProvider(
+    const { queryByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
     );
-    expect(getByText('Layer 1 fees')).toBeInTheDocument();
-    expect(getByText('Layer 2 gas fee')).toBeInTheDocument();
+    expect(queryByText('Layer 1 fees')).toBeInTheDocument();
+    expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
   });
 });
