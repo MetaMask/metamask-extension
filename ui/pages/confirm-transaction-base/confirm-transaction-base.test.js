@@ -168,6 +168,9 @@ const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
   mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
 };
 
+const sendToRecipientSelector =
+  '.sender-to-recipient__party--recipient .sender-to-recipient__name';
+
 describe('Confirm Transaction Base', () => {
   it('should match snapshot', () => {
     const store = configureMockStore(middleware)(baseStore);
@@ -208,9 +211,7 @@ describe('Confirm Transaction Base', () => {
         store,
       );
 
-      const recipientElem = container.querySelector(
-        '.sender-to-recipient__party--recipient .sender-to-recipient__name',
-      );
+      const recipientElem = container.querySelector(sendToRecipientSelector);
       expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
     });
 
@@ -225,9 +226,7 @@ describe('Confirm Transaction Base', () => {
         store,
       );
 
-      const recipientElem = container.querySelector(
-        '.sender-to-recipient__party--recipient .sender-to-recipient__name',
-      );
+      const recipientElem = container.querySelector(sendToRecipientSelector);
       expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
     });
   });
@@ -247,9 +246,7 @@ describe('Confirm Transaction Base', () => {
           store,
         );
 
-        const recipientElem = container.querySelector(
-          '.sender-to-recipient__party--recipient .sender-to-recipient__name',
-        );
+        const recipientElem = container.querySelector(sendToRecipientSelector);
         expect(recipientElem).toHaveTextContent(mockContractAddressConcat);
       });
 
@@ -266,9 +263,7 @@ describe('Confirm Transaction Base', () => {
           store,
         );
 
-        const recipientElem = container.querySelector(
-          '.sender-to-recipient__party--recipient .sender-to-recipient__name',
-        );
+        const recipientElem = container.querySelector(sendToRecipientSelector);
         expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
       });
     });
