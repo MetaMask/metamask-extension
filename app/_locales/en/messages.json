@@ -831,10 +831,10 @@
     "message": "NFT contract"
   },
   "contractRequestingAccess": {
-    "message": "Contract requesting access"
+    "message": "Third party requesting access"
   },
   "contractRequestingSignature": {
-    "message": "Contract requesting signature"
+    "message": "Third party requesting signature"
   },
   "contractRequestingSpendingCap": {
     "message": "Third party requesting spending cap"
