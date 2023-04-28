@@ -309,6 +309,7 @@ export const AppHeader = ({ onClick }) => {
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={() => dispatch(toggleNetworkMenu())}
+                className="multichain-app-header__contents__network-picker"
               />
               <MetafoxLogo
                 unsetIconHeight
