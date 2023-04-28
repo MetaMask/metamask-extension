@@ -43,6 +43,7 @@ import ViewSnap from './snaps/view-snap';
 ///: END:ONLY_INCLUDE_IN
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { IconName } from '../../components/component-library';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -283,7 +284,7 @@ class SettingsPage extends PureComponent {
       ///: END:ONLY_INCLUDE_IN
       {
         content: t('securityAndPrivacy'),
-        icon: <i className="fa fa-lock" />,
+        icon: <Icon name={IconName.Lock} />,
         key: SECURITY_ROUTE,
       },
       {
