@@ -6,11 +6,11 @@ exports[`Beta Header should match snapshot 1`] = `
     class="box beta-header box--padding-2 box--display-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-warning-default"
   >
     <h6
-      class="box box--flex-direction-row typography beta-header__message --h7 typography--weight-normal typography--style-normal typography--color-warning-inverse"
+      class="box mm-text beta-header__message mm-text--body-sm box--flex-direction-row box--color-warning-inverse"
     >
       <span>
-
-        This is a beta version. Please report bugs
+         
+        This is a beta version. Please report bugs 
         <a
           href="https://metamask.zendesk.com/hc/en-us"
           rel="noreferrer noopener"
@@ -18,8 +18,8 @@ exports[`Beta Header should match snapshot 1`] = `
         >
           here
         </a>
-
-
+        
+         
       </span>
     </h6>
     <button
