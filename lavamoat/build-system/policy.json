@@ -55,17 +55,8 @@
         "define": true
       },
       "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator": {
