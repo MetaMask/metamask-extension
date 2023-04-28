@@ -127,33 +127,24 @@ async function assertSWRestartTimeEvent(request) {
   assert.equal(request.url, 'https://api.segment.io/v1/batch');
 
   assert.equal(request.body.json.batch.length, 1);
-  assert.equal(
-    request.body.json.batch[0].event,
-    MetaMetricsEventName.ServiceWorkerRestarted,
-  );
+
+  const [firstResult] = request.body.json.batch;
+
+  assert.equal(firstResult.event, MetaMetricsEventName.ServiceWorkerRestarted);
 
   assert.equal(
-    typeof request.body.json.batch[0].properties.service_worker_restarted_time,
+    typeof firstResult.properties.service_worker_restarted_time,
     'number',
   );
 
+  assert.equal(firstResult.properties.service_worker_restarted_time > 0, true);
   assert.equal(
-    request.body.json.batch[0].properties.service_worker_restarted_time > 0,
-    true,
-  );
-  assert.equal(
-    request.body.json.batch[0].properties.category,
+    firstResult.properties.category,
     MetaMetricsEventCategory.ServiceWorkers,
   );
-  assert.equal(
-    request.body.json.batch[0].properties.chain_id,
-    convertToHexValue(1337),
-  );
-  assert.equal(
-    request.body.json.batch[0].properties.environment_type,
-    'background',
-  );
-  assert.equal(request.body.json.batch[0].properties.locale, 'en');
+  assert.equal(firstResult.properties.chain_id, convertToHexValue(1337));
+  assert.equal(firstResult.properties.environment_type, 'background');
+  assert.equal(firstResult.properties.locale, 'en');
 }
 
 async function assertSWProcessActionQueueEvent(request, method) {
@@ -161,28 +152,21 @@ async function assertSWProcessActionQueueEvent(request, method) {
 
   assert.equal(request.body.json.batch.length, 1);
 
-  assert.equal(
-    request.body.json.batch[0].event,
-    MetaMetricsEventName.ServiceWorkerRestarted,
-  );
+  const [firstResult] = request.body.json.batch;
+
+  assert.equal(firstResult.event, MetaMetricsEventName.ServiceWorkerRestarted);
 
   assert.equal(
-    request.body.json.batch[0].properties.service_worker_action_queue_methods.indexOf(
+    firstResult.properties.service_worker_action_queue_methods.indexOf(
       method,
     ) !== '-1',
     true,
   );
   assert.equal(
-    request.body.json.batch[0].properties.category,
+    firstResult.properties.category,
     MetaMetricsEventCategory.ServiceWorkers,
   );
-  assert.equal(
-    request.body.json.batch[0].properties.chain_id,
-    convertToHexValue(1337),
-  );
-  assert.equal(
-    request.body.json.batch[0].properties.environment_type,
-    'background',
-  );
-  assert.equal(request.body.json.batch[0].properties.locale, 'en');
+  assert.equal(firstResult.properties.chain_id, convertToHexValue(1337));
+  assert.equal(firstResult.properties.environment_type, 'background');
+  assert.equal(firstResult.properties.locale, 'en');
 }
