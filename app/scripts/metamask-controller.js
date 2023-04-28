@@ -78,7 +78,9 @@ import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard'
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
 
 import {
   AssetType,
