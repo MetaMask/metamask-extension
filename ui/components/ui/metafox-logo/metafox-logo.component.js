@@ -24,17 +24,15 @@ export default class MetaFoxLogo extends PureComponent {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   renderCustodyIcon(iconProps, custodyImgSrc) {
     return (
-      <div>
-        <img
-          {...iconProps}
-          src={custodyImgSrc}
-          className={classnames(
-            'app-header__custody-logo',
-            'app-header__custody-logo--icon',
-          )}
-          alt=""
-        />
-      </div>
+      <img
+        {...iconProps}
+        src={custodyImgSrc}
+        className={classnames(
+          'app-header__custody-logo',
+          'app-header__custody-logo--icon',
+        )}
+        alt=""
+      />
     );
   }
   ///: END:ONLY_INCLUDE_IN
