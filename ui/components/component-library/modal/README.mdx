@@ -4,7 +4,7 @@ import { Modal } from './modal';
 
 # Modal
 
-The `Modal` focuses the user's attention exclusively on information via a window that is overlaid on primary content. It uses `ModalOverlay`, `ModalContent` and `ModalHeader` to create a modal dialog.
+The `Modal` focuses the user's attention exclusively on information via a window that is overlaid on primary content. It should be used with the `ModalOverlay`, `ModalContent` and `ModalHeader` components to create a complete modal.
 
 <Canvas>
   <Story id="components-componentlibrary-modal--default-story" />
@@ -78,7 +78,7 @@ import { BackgroundColor, BorderRadius, TextColor } from '../../../helpers/const
 
 import Box from '../../ui/box'
 
-import { Modal, ModalOverlay, ModalContent, ModalHeader, Text, Button } from '../../component-library';
+import { Modal, Text, Button } from '../../component-library';
 
 const modalContentRef = useRef<HTMLDivElement>(null);
 const [open, setOpen] = useState(false);
