@@ -57,7 +57,7 @@ export default class MetaFoxLogo extends PureComponent {
     iconProps.src = './images/logo/metamask-fox.svg';
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    iconProps.src = './images/logo/mmi-logo-with-words.svg';
+    iconProps.src = './build-types/mmi/images/logo/mmi-logo-with-words.svg';
     ///: END:ONLY_INCLUDE_IN
 
     let renderHorizontalLogo = () => (
