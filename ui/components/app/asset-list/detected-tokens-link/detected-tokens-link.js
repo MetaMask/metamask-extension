@@ -6,7 +6,10 @@ import classNames from 'classnames';
 import Box from '../../../ui/box/box';
 import Button from '../../../ui/button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -23,13 +26,16 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
     ({ address, symbol }) => `${symbol} - ${address}`,
   );
 
+  const chainId = useSelector(getCurrentChainId);
+
   const onClick = () => {
     setShowDetectedTokens(true);
     trackEvent({
       event: MetaMetricsEventName.TokenImportClicked,
       category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: MetaMetricsTokenEventSource.Detected,
+        source_connection_method: MetaMetricsTokenEventSource.Detected,
+        chain_id: chainId,
         tokens: detectedTokensDetails,
       },
     });
