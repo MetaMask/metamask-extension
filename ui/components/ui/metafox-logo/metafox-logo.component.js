@@ -11,11 +11,31 @@ export default class MetaFoxLogo extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     src: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    custodyImgSrc: PropTypes.string,
+    isUnlocked: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static defaultProps = {
     onClick: undefined,
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  renderCustodyIcon(iconProps, custodyImgSrc) {
+    return (
+      <img
+        {...iconProps}
+        src={custodyImgSrc}
+        className={classnames(
+          'app-header__custody-logo',
+          'app-header__custody-logo--icon',
+        )}
+        alt=""
+      />
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   render() {
     const {
@@ -25,8 +45,18 @@ export default class MetaFoxLogo extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
       src,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      custodyImgSrc,
+      isUnlocked,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
+
+    iconProps.src = './images/logo/metamask-fox.svg';
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    iconProps.src = './build-types/mmi/images/logo/mmi-logo-with-words.svg';
+    ///: END:ONLY_INCLUDE_IN
 
     let renderHorizontalLogo = () => (
       <MetaFoxHorizontalLogo
@@ -78,6 +108,13 @@ export default class MetaFoxLogo extends PureComponent {
           })}
           alt=""
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          custodyImgSrc &&
+            isUnlocked &&
+            this.renderCustodyIcon(iconProps, custodyImgSrc)
+          ///: END:ONLY_INCLUDE_IN
+        }
       </div>
     );
   }
