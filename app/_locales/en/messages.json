@@ -103,9 +103,6 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
-  "ShowMore": {
-    "message": "Show more"
-  },
   "about": {
     "message": "About"
   },
@@ -3278,6 +3275,12 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeJWT": {
+    "message": "Remove custodian token"
+  },
+  "removeJWTDescription": {
+    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
   "removeNFT": {
     "message": "Remove NFT"
   },
@@ -3660,6 +3663,9 @@
   "showIncomingTransactionsDescription": {
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
+  },
+  "showMore": {
+    "message": "Show more"
   },
   "showPermissions": {
     "message": "Show permissions"
