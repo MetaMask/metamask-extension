@@ -232,14 +232,17 @@ describe('Confirm Transaction Base', () => {
   });
 
   describe('when the transaction is a contract interaction', () => {
+    beforeEach(() => {
+      mockedStore.confirmTransaction.txData.type =
+        TransactionType.contractInteraction;
+    });
+
     describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
       it('should use the contract address as the recipient value', () => {
         mockedStoreWithConfirmTxParams({
           ...mockTxParams,
           value: '0x0',
         });
-        mockedStore.confirmTransaction.txData.type =
-          TransactionType.contractInteraction;
         const store = configureMockStore(middleware)(mockedStore);
         const { container } = renderWithProvider(
           <ConfirmTransactionBase actionKey="confirm" />,
@@ -255,8 +258,6 @@ describe('Confirm Transaction Base', () => {
           ...mockTxParams,
           value: '0x45666',
         });
-        mockedStore.confirmTransaction.txData.type =
-          TransactionType.contractInteraction;
         const store = configureMockStore(middleware)(mockedStore);
         const { container } = renderWithProvider(
           <ConfirmTransactionBase actionKey="confirm" />,
