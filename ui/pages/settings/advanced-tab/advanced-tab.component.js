@@ -587,6 +587,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
+              className="eth-sign-toggle"
               value={disabledRpcMethodPreferences?.eth_sign || false}
               onToggle={(value) => {
                 value ? toggleOff(value) : showEthSignModal();

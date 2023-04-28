@@ -5,10 +5,10 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import Box from '../../../ui/box';
 import {
   BannerAlert,
-  Button,
   ButtonIcon,
   ButtonLink,
-  BUTTON_VARIANT,
+  ButtonPrimary,
+  ButtonSecondary,
   FormTextField,
   Icon,
   IconName,
@@ -74,7 +74,7 @@ const EthSignModal = ({ hideModal }) => {
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        marginBottom={6}
+        marginBottom={4}
         justifyContent={JustifyContent.center}
       >
         <Icon
@@ -151,24 +151,24 @@ const EthSignModal = ({ hideModal }) => {
         gap={4}
         marginTop={6}
       >
-        <Button type={BUTTON_VARIANT.SECONDARY} block onClick={handleCancel}>
+        <ButtonSecondary onClick={handleCancel} size={Size.LG} block>
           {t('cancel')}
-        </Button>
+        </ButtonSecondary>
         {showTextField ? (
-          <Button
-            type={BUTTON_VARIANT.PRIMARY}
+          <ButtonPrimary
             danger
             block
             disabled={!isValid}
             onClick={handleSubmit}
+            size={Size.LG}
           >
             {t('enableSnap')}
-          </Button>
+          </ButtonPrimary>
         ) : (
-          <Button
-            type={BUTTON_VARIANT.PRIMARY}
+          <ButtonPrimary
             block
             disabled={!isEthSignChecked}
+            size={Size.LG}
             onClick={() => {
               setShowTextField(true);
               trackEvent({
@@ -182,7 +182,7 @@ const EthSignModal = ({ hideModal }) => {
             }}
           >
             {t('continue')}
-          </Button>
+          </ButtonPrimary>
         )}
       </Box>
     </Box>
