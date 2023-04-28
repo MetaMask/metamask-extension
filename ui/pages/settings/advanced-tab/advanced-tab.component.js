@@ -546,8 +546,11 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleEthSignControl() {
     const { t } = this.context;
-    const { disabledRpcMethodPreferences } = this.props;
-    const { showEthSignModal, setDisabledRpcMethodPreference } = this.props;
+    const {
+      disabledRpcMethodPreferences,
+      showEthSignModal,
+      setDisabledRpcMethodPreference,
+    } = this.props;
 
     return (
       <div
