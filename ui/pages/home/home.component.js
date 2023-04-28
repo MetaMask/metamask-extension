@@ -674,7 +674,24 @@ export default class Home extends PureComponent {
             <Tabs
               t={this.context.t}
               defaultActiveTabKey={defaultHomeActiveTabName}
-              onTabClick={onTabClick}
+              onTabClick={(tabName) => {
+                onTabClick(tabName);
+                let event;
+                switch (tabName) {
+                  case 'nfts':
+                    event = MetaMetricsEventName.NftScreenOpened;
+                    break;
+                  case 'activity':
+                    event = MetaMetricsEventName.ActivityScreenOpened;
+                    break;
+                  default:
+                    event = MetaMetricsEventName.TokenScreenOpened;
+                }
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Home,
+                  event,
+                });
+              }}
               tabsClassName="home__tabs"
             >
               <Tab

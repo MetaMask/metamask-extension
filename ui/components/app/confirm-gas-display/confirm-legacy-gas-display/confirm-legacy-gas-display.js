@@ -64,11 +64,13 @@ const ConfirmLegacyGasDisplay = () => {
           />
         }
         detailText={
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          useCurrencyRateCheck && (
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={hexMinimumTransactionFee}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          )
         }
         noBold
         flexWidthValues
