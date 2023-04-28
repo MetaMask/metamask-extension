@@ -80,6 +80,7 @@ import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { BUILD_QUOTE_ROUTE } from '../../ui/helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IN
 
 import {
