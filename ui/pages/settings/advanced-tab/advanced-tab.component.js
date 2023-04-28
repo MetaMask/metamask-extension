@@ -583,8 +583,8 @@ export default class AdvancedTab extends PureComponent {
                   ? setDisabledRpcMethodPreference('eth_sign', !value)
                   : showEthSignModal();
               }}
-              offLabel={t('off')}
-              onLabel={t('on')}
+              offLabel={t('toggleEthSignOff')}
+              onLabel={t('toggleEthSignOn')}
             />
           </div>
         </div>
