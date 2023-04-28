@@ -78,6 +78,7 @@ window.document.body.appendChild(popoverContent);
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 
+/* eslint-disable-next-line no-shadow */
 const { Headers, Request, Response } = fetch;
 Object.assign(window, { fetch, Headers, Request, Response });
 
