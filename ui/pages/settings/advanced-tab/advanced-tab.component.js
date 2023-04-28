@@ -545,13 +545,23 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleEthSignControl() {
-    const { t } = this.context;
+    const { t, trackEvent } = this.context;
     const {
       disabledRpcMethodPreferences,
       showEthSignModal,
       setDisabledRpcMethodPreference,
     } = this.props;
-
+    const toggleOff = (value) => {
+      setDisabledRpcMethodPreference('eth_sign', !value);
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+        properties: {
+          location: 'Settings',
+          enable_eth_sign: false,
+        },
+      });
+    };
     return (
       <div
         ref={this.settingsRefs[10]}
@@ -579,9 +589,7 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={disabledRpcMethodPreferences?.eth_sign || false}
               onToggle={(value) => {
-                value
-                  ? setDisabledRpcMethodPreference('eth_sign', !value)
-                  : showEthSignModal();
+                value ? toggleOff(value) : showEthSignModal();
               }}
               offLabel={t('toggleEthSignOff')}
               onLabel={t('toggleEthSignOn')}

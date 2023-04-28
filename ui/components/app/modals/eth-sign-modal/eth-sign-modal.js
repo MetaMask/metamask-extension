@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
@@ -31,6 +31,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box';
 import { setDisabledRpcMethodPreference } from '../../../../store/actions';
 import { getDisabledRpcMethodPreferences } from '../../../../selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 const EthSignModal = ({ hideModal }) => {
   const [isEthSignChecked, setIsEthSignChecked] = useState(false);
@@ -42,6 +47,7 @@ const EthSignModal = ({ hideModal }) => {
 
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
   const handleCancel = () => {
     hideModal();
   };
@@ -163,7 +169,17 @@ const EthSignModal = ({ hideModal }) => {
             type={BUTTON_VARIANT.PRIMARY}
             block
             disabled={!isEthSignChecked}
-            onClick={() => setShowTextField(true)}
+            onClick={() => {
+              setShowTextField(true);
+              trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+                properties: {
+                  location: 'Settings',
+                  enable_eth_sign: true,
+                },
+              });
+            }}
           >
             {t('continue')}
           </Button>
