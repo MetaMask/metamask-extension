@@ -234,7 +234,7 @@ describe('Confirm Transaction Base', () => {
 
   describe('when the transaction is a contract interaction', () => {
     describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
-      it('should use the contract address as the recipient value', async () => {
+      it('should use the contract address as the recipient value', () => {
         mockedStoreWithConfirmTxParams({
           ...mockTxParams,
           value: '0x0',
@@ -253,7 +253,7 @@ describe('Confirm Transaction Base', () => {
         expect(recipientElem).toHaveTextContent(mockContractAddressConcat);
       });
 
-      it('should use txParams.to address as the recipient value', async () => {
+      it('should use txParams.to address as the recipient value', () => {
         mockedStoreWithConfirmTxParams({
           ...mockTxParams,
           value: '0x45666',
