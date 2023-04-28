@@ -26,7 +26,10 @@ import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { BannerAlert } from '../../../components/component-library';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import {
+  SEVERITIES,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
@@ -560,9 +563,12 @@ export default class AdvancedTab extends PureComponent {
         </div>
 
         {disabledRpcMethodPreferences?.eth_sign === true ? (
-          <BannerAlert severity={SEVERITIES.DANGER} marginBottom={5}>
-            You’re at risk for phishing attacks. Protect yourself by turning off
-            eth_sign.
+          <BannerAlert
+            severity={SEVERITIES.DANGER}
+            marginBottom={5}
+            descriptionProps={{ variant: TextVariant.bodyMd }}
+          >
+            {t('toggleEthSignBannerDescription')}
           </BannerAlert>
         ) : null}
         <div className="settings-page__content-item">

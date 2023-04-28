@@ -56,7 +56,7 @@ const EthSignModal = ({ hideModal }) => {
     hideModal();
   };
 
-  const isValid = inputKeyword === 'I only sign what I understand';
+  const isValid = inputKeyword === t('toggleEthSignModalFormValidation');
   return (
     <Box
       className="eth-sign-modal"
@@ -87,12 +87,10 @@ const EthSignModal = ({ hideModal }) => {
       </Box>
 
       <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-        Use at your own risk
+        {t('toggleEthSignModalTitle')}
       </Text>
       <Text variant={TextVariant.bodyMd}>
-        Allowing eth_sign requests can make you vulnerable to phishing attacks.
-        Always review the URL and be careful when signing messages that contain
-        code.{' '}
+        {t('toggleEthSignModalDescription')}
         <ButtonLink
           href="https://support.metamask.io/hc/en-us/articles/14764161421467"
           externalLink
@@ -101,18 +99,18 @@ const EthSignModal = ({ hideModal }) => {
         </ButtonLink>
       </Text>
       <BannerAlert severity={SEVERITIES.DANGER} marginTop={6} marginBottom={6}>
-        If you have been asked to turn this setting on, you might be getting
-        scammed.
+        {t('toggleEthSignModalBannerText')}
+        {t('toggleEthSignModalBannerBoldText')}
       </BannerAlert>
       {showTextField ? (
         <FormTextField
           id="enter-eth-sign-text"
-          label="Enter “I only sign what I understand” to continue"
+          label={t('toggleEthSignModalFormLabel')}
           error={inputKeyword.length > 0 && !isValid}
           helpText={
             inputKeyword.length > 0 &&
             !isValid &&
-            `The text is incorrect. Try again.`
+            t('toggleEthSignModalFormError')
           }
           onChange={(event) => setInputKeyword(event.target.value)}
           value={inputKeyword}
@@ -135,8 +133,7 @@ const EthSignModal = ({ hideModal }) => {
           />
           <Label htmlFor="eth-sign__checkbox">
             <Text variant={TextVariant.bodyMd} as="span">
-              I understand that I can lose all of my funds and NFTs if I enable
-              eth_sign requests.
+              {t('toggleEthSignModalCheckBox')}
             </Text>
           </Label>
         </Box>
