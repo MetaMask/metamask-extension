@@ -71,8 +71,6 @@ import { InstitutionalFeaturesController } from '@metamask-institutional/institu
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
-
-import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -135,12 +133,14 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import MMIController from './mmi-controller';
+import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IN
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
@@ -2945,7 +2945,7 @@ export default class MetamaskController extends EventEmitter {
     const { metaMetricsId } = this.metaMetricsController.store.getState();
     const { mmiConfiguration } =
       this.mmiConfigurationController.store.getState();
-    const { cookieSetUrls } = mmiConfiguration?.portfolio;
+    const { cookieSetUrls } = mmiConfiguration && mmiConfiguration.portfolio;
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;

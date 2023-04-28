@@ -8,14 +8,10 @@
  * @param {Keyring} opts - Optional parameters to be passed to the builder.
  * @returns {Function} A builder function for the given Keyring.
  */
-function mmiKeyringBuilderFactory(Keyring, opts) {
+export function mmiKeyringBuilderFactory(Keyring, opts) {
   const builder = () => new Keyring(opts);
 
   builder.type = Keyring.type;
 
   return builder;
 }
-
-module.exports = {
-  mmiKeyringBuilderFactory,
-};
