@@ -36,5 +36,9 @@ export interface ModalContentProps extends BoxProps {
    * The ref of the ModalContent component
    * Used with Modal and closeOnOutsideClick prop
    */
-  modalContentRef?: React.RefObject<HTMLElement>;
+  modalDialogRef?: React.RefObject<HTMLElement>;
+  /**
+   * Additional props to pass to the dialog node inside of ModalContent component
+   */
+  modalDialogProps?: BoxProps;
 }

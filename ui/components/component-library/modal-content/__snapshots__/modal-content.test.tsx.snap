@@ -3,9 +3,15 @@
 exports[`ModalContent should match snapshot 1`] = `
 <div>
   <div
-    class="box mm-modal-content mm-modal-content--size-sm box--padding-4 box--flex-direction-row box--width-full box--background-color-background-default box--rounded-lg"
+    class="box mm-modal-content box--padding-4 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-flex-start box--width-screen box--height-screen"
   >
-    test
+    <section
+      aria-modal="true"
+      class="box mm-modal-content__dialog mm-modal-content__dialog--size-sm box--margin-top-12 box--margin-bottom-12 box--padding-4 box--flex-direction-row box--width-full box--background-color-background-default box--rounded-lg"
+      role="dialog"
+    >
+      test
+    </section>
   </div>
 </div>
 `;

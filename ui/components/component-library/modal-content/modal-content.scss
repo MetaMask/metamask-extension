@@ -1,17 +1,23 @@
 .mm-modal-content {
-  --modal-content-size: var(--size, 360px);
-
-  // Currently there is only use case for one size of ModalContent in the extension
-  // See audit https://www.figma.com/file/hxYqloYgmVcgsoiVqmGZ8K/Modal-Audit?node-id=481%3A244&t=XITeuRB1pRc09hiG-1
-  // Not to say there won't be more in the future, but to prevent redundant code there is only one for now
-  &--size-sm {
-    --size: 360px;
-
-    max-width: var(--modal-content-size);
-  }
-
-  position: relative;
-  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-  max-height: calc(100% - 32px); // allow for 16px padding on top and bottom
+  position: fixed;
+  left: 0;
+  top: 0;
   overflow: auto;
+  overscroll-behavior-y: none;
+
+  &__dialog {
+    --modal-content-size: var(--size, 360px);
+
+    // Currently there is only use case size of ModalContent dialog in the extension
+    // See audit https://www.figma.com/file/hxYqloYgmVcgsoiVqmGZ8K/Modal-Audit?node-id=481%3A244&t=XITeuRB1pRc09hiG-1
+    // Not to say there won't be more in the future, but to prevent redundant code there is only one for now
+    &--size-sm {
+      --size: 360px;
+
+      max-width: var(--modal-content-size);
+    }
+
+    position: relative;
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  }
 }

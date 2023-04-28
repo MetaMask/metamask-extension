@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
 import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
+
+import { ModalContext } from '../modal';
+
 import { ModalHeaderProps } from '.';
 
 export const ModalHeader: React.FC<ModalHeaderProps> = ({
@@ -13,13 +17,14 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   className = '',
   startAccessory,
   endAccessory,
-  onClose,
+  onClose: onCloseProp,
   closeButtonProps,
   onBack,
   backButtonProps,
   ...props
 }) => {
   const t = useI18nContext();
+  const { onClose } = useContext(ModalContext);
   return (
     <HeaderBase
       className={classnames('mm-modal-header', className)}
@@ -42,7 +47,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
             iconName={IconName.Close}
             ariaLabel={t('close')}
             size={ButtonIconSize.Sm}
-            onClick={onClose}
+            onClick={onClose || onCloseProp}
             {...closeButtonProps}
           />
         ))

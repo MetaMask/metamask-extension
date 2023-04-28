@@ -1,18 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import {
-  DISPLAY,
-  JustifyContent,
-  AlignItems,
-  BLOCK_SIZES,
-  TextVariant,
-  TEXT_ALIGN,
-} from '../../../helpers/constants/design-system';
-
 import Box from '../../ui/box';
 
-import { Button, Text } from '..';
+import { DISPLAY, BLOCK_SIZES } from '../../../helpers/constants/design-system';
+
+import { BUTTON_VARIANT, Button, Text, ModalHeader } from '..';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
@@ -46,6 +39,19 @@ export default {
   },
 } as ComponentMeta<typeof ModalContent>;
 
+const LoremIpsum = () => (
+  <Text marginBottom={4}>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod
+    tortor vitae nisi blandit, eu aliquam nisl ultricies. Donec euismod
+    scelerisque nisl, sit amet aliquet nunc. Donec euismod, nisl vitae
+    consectetur aliquam, nunc nunc ultricies nunc, eget aliquam nisl nisl vitae
+    nunc. Donec euismod, nisl vitae consectetur aliquam, nunc nunc ultricies
+    nunc, eget aliquam nisl nisl vitae nunc. Donec euismod, nisl vitae
+    consectetur aliquam, nunc nunc ultricies nunc, eget aliquam nisl nisl vitae
+    nunc. Donec euismod, nisl vitae consectetur aliquam, nunc
+  </Text>
+);
+
 const Template: ComponentStory<typeof ModalContent> = (args) => (
   <ModalContent {...args} />
 );
@@ -53,74 +59,80 @@ const Template: ComponentStory<typeof ModalContent> = (args) => (
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-/*
- * !!TODO: Replace with ModalHeader component
- */
-const ModalHeader = () => (
-  <>
-    <Box
-      className="mm-modal-header"
-      display={DISPLAY.FLEX}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      width={BLOCK_SIZES.FULL}
-      marginBottom={4}
-    >
-      <button>Back</button>
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
-        Modal Header
-      </Text>
-      <button>Close</button>
-    </Box>
-  </>
-);
-
 export const Children: ComponentStory<typeof ModalContent> = (args) => (
   <ModalContent {...args}>
-    <ModalHeader />
-    <Text>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio,
-      reiciendis assumenda dolorum mollitia saepe, optio at aliquam molestias
-      omnis quae corporis nesciunt natus, quas tempore ut ullam eaque fuga.
-      Velit.
+    <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
+    <Text marginBottom={4}>
+      The ModalContent with ModalHeader and Text components as children
     </Text>
+    <LoremIpsum />
+    <LoremIpsum />
+    <LoremIpsum />
+    <LoremIpsum />
+    <LoremIpsum />
   </ModalContent>
 );
 
-export const Size: ComponentStory<typeof ModalContent> = (args) => (
-  <>
-    <ModalContent {...args} marginBottom={4}>
-      <Text>ModalContentSize.Sm default and only size 360px max-width</Text>
-    </ModalContent>
-    <ModalContent
-      {...args}
-      width={[
-        BLOCK_SIZES.FULL,
-        BLOCK_SIZES.THREE_FOURTHS,
-        BLOCK_SIZES.HALF,
-        BLOCK_SIZES.ONE_THIRD,
-      ]}
-      marginBottom={4}
-    >
-      <Text>
-        Using width Box props and responsive array props <br /> [
-        BLOCK_SIZES.FULL, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.HALF,
-        BLOCK_SIZES.ONE_THIRD, ]
-      </Text>
-    </ModalContent>
-    <ModalContent {...args} marginBottom={4} style={{ maxWidth: 800 }}>
-      Adding a className and setting a max width (max-width: 800px)
-    </ModalContent>
-  </>
-);
+enum ModalContentSizeStoryOption {
+  Sm = 'sm',
+  ClassName = 'className',
+}
 
-export const ModalContentRef: ComponentStory<typeof ModalContent> = (args) => {
+export const Size: ComponentStory<typeof ModalContent> = (args) => {
+  const [show, setShow] = useState({
+    sm: false,
+    className: false,
+  });
+  const handleOnClick = (size: ModalContentSizeStoryOption) => {
+    setShow({ ...show, [size]: !show[size] });
+  };
+
+  return (
+    <>
+      <Box display={DISPLAY.FLEX} gap={4}>
+        <Button
+          variant={BUTTON_VARIANT.SECONDARY}
+          onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
+        >
+          Show sm size
+        </Button>
+        <Button
+          variant={BUTTON_VARIANT.SECONDARY}
+          onClick={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
+        >
+          Show className
+        </Button>
+      </Box>
+      {show.sm && (
+        <ModalContent {...args}>
+          <Text marginBottom={4}>
+            ModalContentSize.Sm default and only size 360px max-width
+          </Text>
+          <Button onClick={() => setShow({ ...show, sm: false })}>Close</Button>
+        </ModalContent>
+      )}
+      {show.className && (
+        <ModalContent {...args} modalDialogProps={{ style: { maxWidth: 800 } }}>
+          <Text marginBottom={4}>
+            Using modalDialogProps and adding a className setting a max width
+            (max-width: 800px)
+          </Text>
+          <Button onClick={() => setShow({ ...show, className: false })}>
+            Close
+          </Button>
+        </ModalContent>
+      )}
+    </>
+  );
+};
+
+export const ModalDialogRef: ComponentStory<typeof ModalContent> = (args) => {
   const [show, setShow] = useState(false);
-  const modalContentRef = useRef<HTMLDivElement>(null);
+  const modalDialogRef = useRef<HTMLDivElement>(null);
   const handleClickOutside = (event: MouseEvent) => {
     if (
-      modalContentRef?.current &&
-      !modalContentRef.current.contains(event.target as Node)
+      modalDialogRef?.current &&
+      !modalDialogRef.current.contains(event.target as Node)
     ) {
       setShow(false);
     }
@@ -135,7 +147,7 @@ export const ModalContentRef: ComponentStory<typeof ModalContent> = (args) => {
     <>
       <Button onClick={() => setShow(true)}>Show ModalContent</Button>
       {show && (
-        <ModalContent {...args} modalContentRef={modalContentRef}>
+        <ModalContent {...args}>
           Click outside of this ModalContent to close
         </ModalContent>
       )}

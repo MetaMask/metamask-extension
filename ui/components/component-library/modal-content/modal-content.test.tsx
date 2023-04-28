@@ -7,19 +7,24 @@ import { ModalContentSize } from './modal-content.types';
 
 describe('ModalContent', () => {
   it('should render with text inside the ModalContent', () => {
-    const { getByText } = render(<ModalContent>test</ModalContent>);
+    const { getByText, getByTestId } = render(
+      <ModalContent data-testid="modal-content">test</ModalContent>,
+    );
     expect(getByText('test')).toBeDefined();
-    expect(getByText('test')).toHaveClass('mm-modal-content');
+    expect(getByText('test')).toHaveClass('mm-modal-content__dialog');
+    expect(getByTestId('modal-content')).toHaveClass('mm-modal-content');
   });
   it('should match snapshot', () => {
     const { container } = render(<ModalContent>test</ModalContent>);
     expect(container).toMatchSnapshot();
   });
   it('should render with and additional className', () => {
-    const { getByText } = render(
-      <ModalContent className="test-class">test</ModalContent>,
+    const { getByText, getByTestId } = render(
+      <ModalContent data-testid="test" className="test-class">
+        test
+      </ModalContent>,
     );
-    expect(getByText('test')).toHaveClass('test-class');
+    expect(getByTestId('test')).toHaveClass('test-class');
   });
   it('should render with size sm', () => {
     const { getByText } = render(
@@ -28,12 +33,25 @@ describe('ModalContent', () => {
         <ModalContent size={ModalContentSize.Sm}>sm</ModalContent>
       </>,
     );
-    expect(getByText('sm')).toHaveClass('mm-modal-content--size-sm');
-    expect(getByText('default')).toHaveClass('mm-modal-content--size-sm');
+    expect(getByText('sm')).toHaveClass('mm-modal-content__dialog--size-sm');
+    expect(getByText('default')).toHaveClass(
+      'mm-modal-content__dialog--size-sm',
+    );
   });
   it('should render with a ref', () => {
     const ref = React.createRef<HTMLDivElement>();
-    render(<ModalContent modalContentRef={ref}>test</ModalContent>);
+    render(<ModalContent modalDialogRef={ref}>test</ModalContent>);
     expect(ref.current).toBeDefined();
+  });
+  it('should render with additional props being passed to modalDialogProps', () => {
+    const { getByTestId } = render(
+      <ModalContent
+        modalDialogProps={{ 'data-testid': 'test' }}
+        data-testid="modal-content"
+      >
+        test
+      </ModalContent>,
+    );
+    expect(getByTestId('test')).toBeDefined();
   });
 });
