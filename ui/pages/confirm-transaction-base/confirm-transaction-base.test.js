@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { cloneDeep } from 'lodash';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
@@ -9,7 +8,10 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks'
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '../../../shared/constants/transaction';
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';
@@ -24,44 +26,25 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
 });
 
-const mockTransaction = {
-  id: 1,
-  metamaskNetworkId: '5',
-  txParams: {
-    from: '0x0',
-    to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
-    value: '0x5af3107a4000',
-    gas: '0x5208',
-    maxFeePerGas: '0x59682f16',
-    maxPriorityFeePerGas: '0x59682f00',
-    type: '0x2',
-    data: 'data',
-  },
-};
+const mockNetworkId = '5';
 
-const mockConfirmTxData = {
-  ...cloneDeep(mockTransaction),
-  id: 1,
-  time: 1675012496170,
-  status: TransactionStatus.unapproved,
-  metamaskNetworkId: '5',
-  originalGasEstimate: '0x5208',
-  userEditedGasLimit: false,
-  chainId: '0x5',
-  loadingDefaults: false,
-  dappSuggestedGasFees: null,
-  sendFlowHistory: [],
-  origin: 'metamask',
-  actionId: 1675012496153.2039,
-  type: 'simpleSend',
-  history: [],
-  userFeeLevel: 'medium',
-  defaultGasEstimates: {
-    estimateType: 'medium',
-    gas: '0x5208',
-    maxFeePerGas: '0x59682f16',
-    maxPriorityFeePerGas: '0x59682f00',
-  },
+const mockTxParamsFromAddress = '0x123456789';
+
+const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
+const mockTxParamsToAddressConcat = '0x85c...D65e';
+
+const mockContractAddressWithout0x = 'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
+const mockContractAddressConcat = '0xe57...750A';
+
+const mockTxParams = {
+  from: mockTxParamsFromAddress,
+  to: mockTxParamsToAddress,
+  value: '0x5af3107a4000',
+  gas: '0x5208',
+  maxFeePerGas: '0x59682f16',
+  maxPriorityFeePerGas: '0x59682f00',
+  type: '0x2',
+  data: `0xa22cb465000000000000000000000000${mockContractAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
 };
 
 const baseStore = {
@@ -77,7 +60,11 @@ const baseStore = {
   history: { mostRecentOverviewPage: '/' },
   metamask: {
     unapprovedTxs: {
-      1: mockTransaction,
+      1: {
+        id: 1,
+        metamaskNetworkId: mockNetworkId,
+        txParams: { ...mockTxParams },
+      },
     },
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
@@ -85,14 +72,14 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: '0x0',
+    selectedAddress: mockTxParamsFromAddress,
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
       },
     ],
-    networkId: '5',
+    networkId: mockNetworkId,
     networkDetails: {
       EIPS: {},
     },
@@ -115,16 +102,47 @@ const baseStore = {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
-      '0x0': { balance: '0x0', address: '0x0' },
+      [mockTxParamsFromAddress]: {
+        balance: '0x0',
+        address: mockTxParamsFromAddress,
+      },
     },
-    identities: { '0x0': { address: '0x0' } },
+    identities: {
+      [mockTxParamsFromAddress]: { address: mockTxParamsFromAddress },
+      [mockTxParamsToAddress]: {
+        name: 'Test Address 1',
+      },
+    },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},
     ensResolutionsByAddress: {},
     snaps: {},
   },
   confirmTransaction: {
-    txData: cloneDeep(mockConfirmTxData),
+    txData: {
+      id: 1,
+      metamaskNetworkId: mockNetworkId,
+      txParams: { ...mockTxParams },
+      time: 1675012496170,
+      status: TransactionStatus.unapproved,
+      originalGasEstimate: '0x5208',
+      userEditedGasLimit: false,
+      chainId: '0x5',
+      loadingDefaults: false,
+      dappSuggestedGasFees: null,
+      sendFlowHistory: [],
+      origin: 'metamask',
+      actionId: 1675012496153.2039,
+      type: 'simpleSend',
+      history: [],
+      userFeeLevel: 'medium',
+      defaultGasEstimates: {
+        estimateType: 'medium',
+        gas: '0x5208',
+        maxFeePerGas: '0x59682f16',
+        maxPriorityFeePerGas: '0x59682f00',
+      },
+    },
     tokenData: {},
     tokenProps: {},
     fiatTransactionAmount: '0.16',
@@ -145,9 +163,14 @@ const baseStore = {
 
 const mockedStore = jest.mocked(baseStore);
 
+const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
+  mockedStore.metamask.unapprovedTxs[1].txParams = { ..._mockTxParams };
+  mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
+};
+
 describe('Confirm Transaction Base', () => {
   it('should match snapshot', () => {
-    const store = configureMockStore(middleware)(mockedStore);
+    const store = configureMockStore(middleware)(baseStore);
     const { container } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
@@ -175,5 +198,47 @@ describe('Confirm Transaction Base', () => {
     );
     expect(queryByText('Layer 1 fees')).toBeInTheDocument();
     expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
+  });
+
+  describe('when the transaction is a contract interaction', () => {
+    describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
+      it('should use the contract address as the recipient value', async () => {
+        mockedStoreWithConfirmTxParams({
+          ...mockTxParams,
+          value: '0x0',
+        });
+        mockedStore.confirmTransaction.txData.type =
+          TransactionType.contractInteraction;
+        const store = configureMockStore(middleware)(mockedStore);
+        const { container } = renderWithProvider(
+          <ConfirmTransactionBase actionKey="confirm" />,
+          store,
+        );
+
+        const recipientElem = container.querySelector(
+          '.sender-to-recipient__party--recipient .sender-to-recipient__name',
+        );
+        expect(recipientElem).toHaveTextContent(mockContractAddressConcat);
+      });
+
+      it('should use txParams.to address as the recipient value', async () => {
+        mockedStoreWithConfirmTxParams({
+          ...mockTxParams,
+          value: '0x45666',
+        });
+        mockedStore.confirmTransaction.txData.type =
+          TransactionType.contractInteraction;
+        const store = configureMockStore(middleware)(mockedStore);
+        const { container } = renderWithProvider(
+          <ConfirmTransactionBase actionKey="confirm" />,
+          store,
+        );
+
+        const recipientElem = container.querySelector(
+          '.sender-to-recipient__party--recipient .sender-to-recipient__name',
+        );
+        expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+      });
+    });
   });
 });
