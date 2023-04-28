@@ -237,23 +237,23 @@ describe('Confirm Transaction Base', () => {
         TransactionType.contractInteraction;
     });
 
-    describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
-      it('should use the contract address as the recipient value', () => {
-        mockedStoreWithConfirmTxParams({
-          ...mockTxParams,
-          value: '0x0',
-        });
-        const store = configureMockStore(middleware)(mockedStore);
-        const { container } = renderWithProvider(
-          <ConfirmTransactionBase actionKey="confirm" />,
-          store,
-        );
-
-        const recipientElem = container.querySelector(sendToRecipientSelector);
-        expect(recipientElem).toHaveTextContent(mockContractAddressConcat);
+    it('should use the token to address as the recipient address', () => {
+      mockedStoreWithConfirmTxParams({
+        ...mockTxParams,
+        value: '0x0',
       });
+      const store = configureMockStore(middleware)(mockedStore);
+      const { container } = renderWithProvider(
+        <ConfirmTransactionBase actionKey="confirm" />,
+        store,
+      );
 
-      it('should use txParams.to address as the recipient value', () => {
+      const recipientElem = container.querySelector(sendToRecipientSelector);
+      expect(recipientElem).toHaveTextContent(mockContractAddressConcat);
+    });
+
+    describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
+      it('should use txParams.to address (contract address) as the recipient address', () => {
         mockedStoreWithConfirmTxParams({
           ...mockTxParams,
           value: '0x45666',
