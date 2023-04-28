@@ -71,7 +71,7 @@ describe('AccountDetails', () => {
 
     queryByPlaceholderText('Password').focus();
     await userEvent.keyboard(password);
-    fireEvent.click(queryByText('Submit'));
+    fireEvent.click(queryByText('Confirm'));
 
     expect(exportAccount).toHaveBeenCalledWith(password, address);
   });
