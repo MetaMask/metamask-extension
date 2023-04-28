@@ -81,6 +81,7 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
       "packages": {
+        "eslint>@eslint-community/eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true
       }
     },
