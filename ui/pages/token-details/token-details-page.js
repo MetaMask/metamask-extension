@@ -27,8 +27,8 @@ import {
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   ButtonIcon,
-  ICON_SIZES,
-  ICON_NAMES,
+  ButtonIconSize,
+  IconName,
 } from '../../components/component-library';
 
 export default function TokenDetailsPage() {
@@ -139,11 +139,11 @@ export default function TokenDetailsPage() {
           >
             <ButtonIcon
               ariaLabel="copy"
-              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+              name={copied ? IconName.CopySuccess : IconName.Copy}
               className="token-details__copyIcon"
               onClick={() => handleCopy(token.address)}
               color={IconColor.primaryDefault}
-              size={ICON_SIZES.SM}
+              size={ButtonIconSize.Sm}
             />
           </Tooltip>
         </Box>

@@ -6,7 +6,7 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
+  BUILT_IN_INFURA_NETWORKS,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -27,7 +27,11 @@ const switchEthereumChain = {
 export default switchEthereumChain;
 
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
-  if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+  if (
+    Object.values(BUILT_IN_INFURA_NETWORKS)
+      .map(({ chainId: id }) => id)
+      .includes(chainId)
+  ) {
     return {
       chainId,
       ticker: CURRENCY_SYMBOLS.ETH,
@@ -109,13 +113,13 @@ async function switchEthereumChainHandler(
         requestData,
       });
       if (
-        chainId in CHAIN_ID_TO_TYPE_MAP &&
-        approvedRequestData.type !== NETWORK_TYPES.LOCALHOST &&
-        approvedRequestData.type !== NETWORK_TYPES.LINEA_TESTNET
+        Object.values(BUILT_IN_INFURA_NETWORKS)
+          .map(({ chainId: id }) => id)
+          .includes(chainId)
       ) {
-        setProviderType(approvedRequestData.type);
+        await setProviderType(approvedRequestData.type);
       } else {
-        await setActiveNetwork(approvedRequestData);
+        await setActiveNetwork(approvedRequestData.id);
       }
       res.result = null;
     } catch (error) {

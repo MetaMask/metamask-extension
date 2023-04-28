@@ -143,11 +143,6 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-      - test-mozilla-lint-beta:
-          <<: *rc_branch_only
-          requires:
-            - prep-deps
-            - trigger-beta-build
       - test-mozilla-lint-desktop:
           filters:
             branches:
@@ -176,7 +171,6 @@ workflows:
             - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
-            - test-mozilla-lint-beta
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
             - test-e2e-chrome
@@ -701,7 +695,7 @@ jobs:
 
   test-e2e-firefox-snaps:
     executor: node-browsers
-    parallelism: 2
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -738,7 +732,7 @@ jobs:
 
   test-e2e-chrome-snaps:
     executor: node-browsers
-    parallelism: 2
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -1098,12 +1092,6 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
-      - run:
           name: Validate source maps
           command: |
             .circleci/scripts/validate-source-maps-beta.sh
@@ -1146,22 +1134,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
-
-  test-mozilla-lint-beta:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint

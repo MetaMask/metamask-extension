@@ -23,6 +23,7 @@ jest.mock('../../../../shared/constants/network', () => ({
     },
   },
 }));
+let openTabSpy;
 
 describe('TokenOverview', () => {
   const mockStore = {
@@ -68,6 +69,11 @@ describe('TokenOverview', () => {
           openTab: jest.fn(),
         },
       });
+      openTabSpy = jest.spyOn(global.platform, 'openTab');
+    });
+
+    beforeEach(() => {
+      openTabSpy.mockClear();
     });
 
     const token = {
@@ -209,8 +215,6 @@ describe('TokenOverview', () => {
         mockedStoreWithBuyableChainId,
       );
 
-      const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
       const { queryByTestId } = renderWithProvider(
         <TokenOverview token={token} />,
         mockedStore,
@@ -227,6 +231,138 @@ describe('TokenOverview', () => {
           url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
         }),
       );
+    });
+
+    it('should always show the Portfolio button', () => {
+      const mockToken = {
+        name: 'test',
+        isERC721: false,
+        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+        symbol: 'test',
+      };
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={mockToken} />,
+        store,
+      );
+      const portfolioButton = queryByTestId('home__portfolio-site');
+      expect(portfolioButton).toBeInTheDocument();
+    });
+
+    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
+      const mockToken = {
+        name: 'test',
+        isERC721: false,
+        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+        symbol: 'test',
+      };
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={mockToken} />,
+        store,
+      );
+
+      const portfolioButton = queryByTestId('home__portfolio-site');
+
+      expect(portfolioButton).toBeInTheDocument();
+      expect(portfolioButton).not.toBeDisabled();
+
+      fireEvent.click(portfolioButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: expect.stringContaining(`?metamaskEntry=ext`),
+        }),
+      );
+    });
+
+    it('should show the Bridge button if chain id and token are supported', async () => {
+      const mockToken = {
+        name: 'test',
+        isERC721: false,
+        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+        symbol: 'test',
+      };
+
+      const mockedStoreWithBridgeableChainId = {
+        metamask: {
+          ...mockStore.metamask,
+          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithBridgeableChainId,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={mockToken} />,
+        mockedStore,
+      );
+      const bridgeButton = queryByTestId('token-overview-bridge');
+      expect(bridgeButton).toBeInTheDocument();
+      expect(bridgeButton).not.toBeDisabled();
+
+      fireEvent.click(bridgeButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: expect.stringContaining(
+            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+          ),
+        }),
+      );
+    });
+
+    it('should not show the Bridge button if chain id is not supported', async () => {
+      const mockToken = {
+        name: 'test',
+        isERC721: false,
+        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+        symbol: 'test',
+      };
+
+      const mockedStoreWithBridgeableChainId = {
+        metamask: {
+          ...mockStore.metamask,
+          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithBridgeableChainId,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={mockToken} />,
+        mockedStore,
+      );
+      const bridgeButton = queryByTestId('token-overview-bridge');
+      expect(bridgeButton).not.toBeInTheDocument();
+    });
+
+    it('should not show the Bridge button if token is not supported', async () => {
+      const mockToken = {
+        name: 'test',
+        isERC721: false,
+        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f620',
+        symbol: 'test',
+      };
+
+      const mockedStoreWithBridgeableChainId = {
+        metamask: {
+          ...mockStore.metamask,
+          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithBridgeableChainId,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={mockToken} />,
+        mockedStore,
+      );
+      const bridgeButton = queryByTestId('token-overview-bridge');
+      expect(bridgeButton).not.toBeInTheDocument();
     });
   });
 });

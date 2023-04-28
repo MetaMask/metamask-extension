@@ -23,7 +23,11 @@ setBackgroundConnection({
 });
 
 const baseStore = {
-  send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  send: {
+    ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+    currentTransactionUUID: null,
+    draftTransactions: {},
+  },
   DNS: domainInitialState,
   gas: {
     customData: { limit: null, price: null },
@@ -33,6 +37,7 @@ const baseStore = {
     unapprovedTxs: {
       1: {
         id: 1,
+        metamaskNetworkId: '5',
         txParams: {
           from: '0x0',
           to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
@@ -58,6 +63,7 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
+    networkId: '5',
     networkDetails: {
       EIPS: {},
     },
@@ -140,12 +146,24 @@ const baseStore = {
 };
 
 describe('Confirm Transaction Base', () => {
-  const store = configureMockStore(middleware)(baseStore);
   it('should match snapshot', () => {
+    const store = configureMockStore(middleware)(baseStore);
     const { container } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('should contain L1 L2 fee details for optimism', () => {
+    baseStore.metamask.provider.chainId = CHAIN_IDS.OPTIMISM;
+    baseStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+    const store = configureMockStore(middleware)(baseStore);
+    const { getByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(getByText('Layer 1 fees')).toBeInTheDocument();
+    expect(getByText('Layer 2 gas fee')).toBeInTheDocument();
   });
 });

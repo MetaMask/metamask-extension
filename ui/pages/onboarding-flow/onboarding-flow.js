@@ -3,7 +3,7 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
   ///: END:ONLY_INCLUDE_IN
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -30,8 +30,11 @@ import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { EVENT_NAMES, EVENT } from '../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IN
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
@@ -167,7 +170,7 @@ export default function OnboardingFlow() {
             component={MetaMetricsComponent}
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           }
           <Route
             path={ONBOARDING_EXPERIMENTAL_AREA}
@@ -191,11 +194,11 @@ export default function OnboardingFlow() {
           href={TWITTER_URL}
           onClick={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.ONBOARDING,
-              event: EVENT_NAMES.ONBOARDING_TWITTER_CLICK,
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
                 text: t('followUsOnTwitter'),
-                location: EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+                location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
               },
             });

@@ -18,8 +18,8 @@ import UrlIcon from '../../../../components/ui/url-icon';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
@@ -79,9 +79,9 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+        <Icon name={IconName.Check} color={IconColor.successDefault} />
       ) : (
-        <Icon name={ICON_NAMES.CHECK} color={IconColor.transparent} />
+        <Icon name={IconName.Check} color={IconColor.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -122,9 +122,9 @@ const NetworksListItem = ({
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
-            name={ICON_NAMES.LOCK}
+            name={IconName.Lock}
             color={IconColor.iconMuted}
-            size={ICON_SIZES.AUTO}
+            size={IconSize.Inherit}
             marginInlineStart={2}
           />
         )}

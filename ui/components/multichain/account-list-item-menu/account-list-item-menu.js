@@ -9,14 +9,22 @@ import {
   getRpcPrefsForCurrentProvider,
   getBlockExplorerLinkText,
   getCurrentChainId,
+  getHardwareWalletType,
+  getAccountTypeForKeyring,
 } from '../../../selectors';
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ICON_NAMES, Text } from '../../component-library';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import { Text, IconName } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { formatAccountType } from '../../../helpers/utils/metrics';
 
 export const AccountListItemMenu = ({
   anchorElement,
@@ -35,17 +43,25 @@ export const AccountListItemMenu = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
 
+  const deviceName = useSelector(getHardwareWalletType);
+
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
     trackEvent({
-      event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
-      category: EVENT.CATEGORIES.NAVIGATION,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      category: MetaMetricsEventCategory.Navigation,
       properties: {
-        link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+        link_type: MetaMetricsEventLinkType.AccountTracker,
         location: 'Account Options',
         url_domain: getURLHostName(addressLink),
       },
     });
+
     global.platform.openTab({
       url: addressLink,
     });
@@ -63,13 +79,22 @@ export const AccountListItemMenu = ({
       onHide={onClose}
     >
       <MenuItem
-        onClick={
+        onClick={() => {
           blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl
-            : openBlockExplorer
-        }
+            ? routeToAddBlockExplorerUrl()
+            : openBlockExplorer();
+
+          trackEvent({
+            event: MetaMetricsEventName.BlockExplorerLinkClicked,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              location: 'Account Options',
+              chain_id: chainId,
+            },
+          });
+        }}
         subtitle={blockExplorerUrlSubTitle || null}
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
       >
         <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
@@ -78,8 +103,8 @@ export const AccountListItemMenu = ({
         onClick={() => {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
           trackEvent({
-            event: EVENT_NAMES.NAV_ACCOUNT_DETAILS_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavAccountDetailsOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
@@ -87,7 +112,7 @@ export const AccountListItemMenu = ({
           onClose();
           closeMenu?.();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
@@ -101,9 +126,18 @@ export const AccountListItemMenu = ({
                 identity,
               }),
             );
+            trackEvent({
+              event: MetaMetricsEventName.AccountRemoved,
+              category: MetaMetricsEventCategory.Accounts,
+              properties: {
+                account_hardware_type: deviceName,
+                chain_id: chainId,
+                account_type: accountType,
+              },
+            });
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>

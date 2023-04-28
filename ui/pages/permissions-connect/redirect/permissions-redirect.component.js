@@ -12,8 +12,8 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../components/component-library';
 
 export default function PermissionsRedirect({ subjectMetadata }) {
@@ -42,8 +42,8 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             justifyContent={JustifyContent.center}
           >
             <Icon
-              name={ICON_NAMES.CHECK}
-              size={ICON_SIZES.LG}
+              name={IconName.Check}
+              size={IconSize.Lg}
               className="permissions-redirect__check"
             />
             <div className="permissions-redirect__dashed-line" />

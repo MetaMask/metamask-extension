@@ -55,6 +55,7 @@ import {
   showModal,
   addUnapprovedTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
+  getCurrentNetworkEIP1559Compatibility,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -505,7 +506,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee({
+      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
         txParams: {
           gasPrice: draftTransaction.gas.gasPrice,
           gas: draftTransaction.gas.gasLimit,
@@ -589,7 +590,10 @@ export const initializeSendState = createAsyncThunk(
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    const eip1559support = checkNetworkAndAccountSupports1559(state);
+    let eip1559support = checkNetworkAndAccountSupports1559(state);
+    if (eip1559support === undefined) {
+      eip1559support = await getCurrentNetworkEIP1559Compatibility();
+    }
     const account = getSelectedAccount(state);
     const { send: sendState, metamask } = state;
     const draftTransaction =

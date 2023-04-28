@@ -13,10 +13,10 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { Color, SEVERITIES } from '../../../helpers/constants/design-system';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import Box from '../../ui/box/box';
 
 const AssetListItem = ({
@@ -31,7 +31,6 @@ const AssetListItem = ({
   warning,
   primary,
   secondary,
-  identiconBorder,
   isERC721,
 }) => {
   const t = useI18nContext();
@@ -68,7 +67,7 @@ const AssetListItem = ({
           e.stopPropagation();
           trackEvent({
             event: 'Clicked Send: Token',
-            category: EVENT.CATEGORIES.NAVIGATION,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               action: 'Home',
               legacy_event: true,
@@ -133,7 +132,6 @@ const AssetListItem = ({
           address={tokenAddress}
           image={tokenImage}
           alt={`${primary} ${tokenSymbol}`}
-          imageBorder={identiconBorder}
         />
       }
       midContent={midContent}
@@ -141,9 +139,9 @@ const AssetListItem = ({
         !isERC721 && (
           <Box>
             <Icon
-              name={ICON_NAMES.ARROW_RIGHT}
+              name={IconName.ArrowRight}
               color={Color.iconDefault}
-              size={ICON_SIZES.SM}
+              size={IconSize.Sm}
               style={{ verticalAlign: 'middle' }}
             />
             {sendTokenButton}
@@ -166,7 +164,6 @@ AssetListItem.propTypes = {
   warning: PropTypes.node,
   primary: PropTypes.string,
   secondary: PropTypes.string,
-  identiconBorder: PropTypes.bool,
   isERC721: PropTypes.bool,
 };
 

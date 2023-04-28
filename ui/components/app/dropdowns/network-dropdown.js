@@ -23,17 +23,18 @@ import { IconColor, Size } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../shared/constants/metametrics';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  Icon,
-  ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/deprecated';
+import { Icon, IconName, IconSize } from '../../component-library';
+
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -127,8 +128,8 @@ class NetworkDropdown extends Component {
     const { trackEvent } = this.context;
 
     trackEvent({
-      category: EVENT.CATEGORIES.NAVIGATION,
-      event: EVENT_NAMES.NAV_NETWORK_SWITCHED,
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.NavNetworkSwitched,
       properties: {
         from_network: providerType,
         to_network: newProviderType,
@@ -186,7 +187,7 @@ class NetworkDropdown extends Component {
             }}
           >
             {isCurrentRpcTarget ? (
-              <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+              <Icon name={IconName.Check} color={IconColor.successDefault} />
             ) : (
               <div className="network-check__transparent">✓</div>
             )}
@@ -209,8 +210,8 @@ class NetworkDropdown extends Component {
             {isCurrentRpcTarget ? null : (
               <ButtonIcon
                 className="delete"
-                iconName={ICON_NAMES.CLOSE}
-                size={ICON_SIZES.SM}
+                iconName={IconName.Close}
+                size={IconSize.Sm}
                 ariaLabel={this.context.t('delete')}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -260,7 +261,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+          <Icon name={IconName.Check} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
@@ -320,7 +321,7 @@ class NetworkDropdown extends Component {
               },
               {
                 setActive: true,
-                source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+                source: MetaMetricsNetworkEventSource.CustomNetworkForm,
               },
             );
           }
@@ -329,7 +330,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {isCurrentRpcTarget ? (
-          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+          <Icon name={IconName.Check} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}

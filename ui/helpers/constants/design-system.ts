@@ -297,6 +297,20 @@ export const BLOCK_SIZES = {
   FULL: 'full',
 };
 
+export enum TextAlign {
+  Left = 'left',
+  Center = 'center',
+  Right = 'right',
+  Justify = 'justify',
+  End = 'end',
+  Start = 'start',
+}
+
+/**
+ * @deprecated `TEXT_ALIGN` const has been deprecated in favour of the `TextAlign` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `TEXT_ALIGN` with `TextAlign` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const TEXT_ALIGN = {
   LEFT: 'left',
   CENTER: 'center',
@@ -306,24 +320,70 @@ export const TEXT_ALIGN = {
   START: 'start',
 };
 
+export enum TextTransform {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Uppercase = 'uppercase',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Lowercase = 'lowercase',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Capitalize = 'capitalize',
+}
+
+/**
+ * @deprecated `TEXT_TRANSFORM` const has been deprecated in favour of the `TextTransform` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `TEXT_TRANSFORM` with `TextTransform` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const TEXT_TRANSFORM = {
   UPPERCASE: 'uppercase',
   LOWERCASE: 'lowercase',
   CAPITALIZE: 'capitalize',
 };
 
+export enum FontWeight {
+  Bold = 'bold',
+  Medium = 'medium',
+  Normal = 'normal',
+}
+
+/**
+ * @deprecated `FONT_WEIGHT` const has been deprecated in favour of the `FontWeight` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FONT_WEIGHT` with `FontWeight` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const FONT_WEIGHT = {
   BOLD: 'bold',
   MEDIUM: 'medium',
   NORMAL: 'normal',
 };
 
+export enum OverflowWrap {
+  BreakWord = 'break-word',
+  Anywhere = 'anywhere',
+  Normal = 'normal',
+}
+
+/**
+ * @deprecated `OVERFLOW_WRAP` const has been deprecated in favour of the `OverflowWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `OVERFLOW_WRAP` with `OverflowWrap` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const OVERFLOW_WRAP = {
   BREAK_WORD: 'break-word',
   ANYWHERE: 'anywhere',
   NORMAL: 'normal',
 };
 
+export enum FontStyle {
+  Italic = 'italic',
+  Normal = 'normal',
+}
+
+/**
+ * @deprecated `FONT_STYLE` const has been deprecated in favour of the `FontStyle` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FONT_STYLE` with `FontStyle` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const FONT_STYLE = {
   ITALIC: 'italic',
   NORMAL: 'normal',

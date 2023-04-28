@@ -101,7 +101,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    network,
+    networkId,
     unapprovedTxs,
     nextNonce,
     provider: { chainId },
@@ -152,7 +152,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const {
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -160,7 +159,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
+      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
@@ -206,7 +205,6 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,

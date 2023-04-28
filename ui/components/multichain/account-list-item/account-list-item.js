@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -11,12 +11,14 @@ import { AccountListItemMenu } from '..';
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
-  ButtonIcon,
   Text,
-  ICON_NAMES,
-  ICON_SIZES,
   AvatarFavicon,
   Tag,
+  ButtonLink,
+  ButtonIcon,
+  IconName,
+  IconSize,
+  AvatarAccountVariant,
 } from '../../component-library';
 import {
   Color,
@@ -36,6 +38,11 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -69,6 +76,8 @@ export const AccountListItem = ({
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const ref = useRef(false);
+  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
@@ -77,6 +86,8 @@ export const AccountListItem = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
+
+  const trackEvent = useContext(MetaMetricsContext);
 
   return (
     <Box
@@ -87,9 +98,7 @@ export const AccountListItem = ({
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
       })}
-      as="button"
-      onClick={(e) => {
-        e.preventDefault();
+      onClick={() => {
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
@@ -108,6 +117,11 @@ export const AccountListItem = ({
         borderColor={BorderColor.transparent}
         size={Size.SM}
         address={identity.address}
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
       ></AvatarAccount>
       <Box
         display={DISPLAY.FLEX}
@@ -121,17 +135,24 @@ export const AccountListItem = ({
             gap={2}
           >
             <Text ellipsis as="div">
-              {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-                <Tooltip
-                  title={identity.name}
-                  position="bottom"
-                  wrapperClassName="multichain-account-list-item__tooltip"
-                >
-                  {identity.name}
-                </Tooltip>
-              ) : (
-                identity.name
-              )}
+              <ButtonLink
+                onClick={onClick}
+                className="multichain-account-list-item__account-name"
+                color={Color.textDefault}
+                ellipsis
+              >
+                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                  <Tooltip
+                    title={identity.name}
+                    position="bottom"
+                    wrapperClassName="multichain-account-list-item__tooltip"
+                  >
+                    {identity.name}
+                  </Tooltip>
+                ) : (
+                  identity.name
+                )}
+              </ButtonLink>
             </Text>
             <Box
               display={DISPLAY.FLEX}
@@ -189,18 +210,18 @@ export const AccountListItem = ({
       <div ref={ref}>
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
-          iconName={ICON_NAMES.MORE_VERTICAL}
-          size={ICON_SIZES.SM}
+          iconName={IconName.MoreVertical}
+          size={IconSize.Sm}
           onClick={(e) => {
             e.stopPropagation();
+            trackEvent({
+              event: MetaMetricsEventName.AccountDetailMenuOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'Account Options',
+              },
+            });
             setAccountOptionsMenuOpen(true);
-          }}
-          as="div"
-          tabIndex={0}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              setAccountOptionsMenuOpen(true);
-            }
           }}
           data-testid="account-list-item-menu-button"
         />
