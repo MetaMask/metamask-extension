@@ -150,7 +150,7 @@ export const AppHeader = ({ onClick }) => {
                 className="multichain-app-header__contents--avatar-network"
                 ref={menuRef}
                 as="button"
-                aria-label="Network Menu" // TODO: needs locale
+                aria-label={t('networkMenu')}
                 padding={0}
                 name={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
