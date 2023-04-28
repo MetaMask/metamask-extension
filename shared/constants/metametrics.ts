@@ -358,6 +358,20 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * The address of the MMI account in question
+   */
+  mmi_account_address?: string;
+  /**
+   * What is the MMI extension ID
+   */
+  mmi_extension_id?: string;
+  /**
+   * Is the user using a custodian account
+   */
+  mmi_is_custodian?: boolean;
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export enum MetaMetricsUserTrait {
@@ -427,6 +441,20 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * Identified when we get the current account in question
+   */
+  MmiAccountAddress = 'mmi_account_address',
+  /**
+   * Identified when we the user has the extension
+   */
+  MmiExtensionId = 'mmi_extension_id',
+  /**
+   * Identified when the user connects a custodian
+   */
+  MmiIsCustodian = 'mmi_is_custodian',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 /**
