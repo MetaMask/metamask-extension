@@ -63,7 +63,7 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   CUSTODIAN_TYPES,
   MmiConfigurationController,
@@ -137,7 +137,7 @@ import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import MMIController from './mmi-controller';
 ///: END:ONLY_INCLUDE_IN
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -271,7 +271,7 @@ export default class MetamaskController extends EventEmitter {
       showApprovalRequest: opts.showUserConfirmation,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({
       initState: initState.MmiConfigurationController,
       mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
@@ -693,7 +693,7 @@ export default class MetamaskController extends EventEmitter {
         keyringBuilderFactory(keyringType),
       );
 
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
         additionalKeyrings.push(
           mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass,  { mmiConfigurationController: this.mmiConfigurationController })
@@ -926,7 +926,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.custodyController = new CustodyController({
       initState: initState.CustodyController,
     });
@@ -1000,12 +1000,12 @@ export default class MetamaskController extends EventEmitter {
       getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
@@ -1300,7 +1300,7 @@ export default class MetamaskController extends EventEmitter {
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
 
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:
         this.institutionalFeaturesController.store,
@@ -1340,7 +1340,7 @@ export default class MetamaskController extends EventEmitter {
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
 
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         CustodyController: this.custodyController.store,
         InstitutionalFeaturesController:
           this.institutionalFeaturesController.store,
@@ -2088,7 +2088,7 @@ export default class MetamaskController extends EventEmitter {
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       connectCustodyAddresses:
         this.mmiController.connectCustodyAddresses.bind(this),
       getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
@@ -2751,7 +2751,7 @@ export default class MetamaskController extends EventEmitter {
   async submitPassword(password) {
     await this.keyringController.submitPassword(password);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiController.onSubmitPassword();
     ///: END:ONLY_INCLUDE_IN
 
@@ -2876,7 +2876,7 @@ export default class MetamaskController extends EventEmitter {
     return keyring.mnemonic;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   async addKeyringIfNotExists(type) {
     let keyring = await this.keyringController.getKeyringsByType(type)[0];
     if (!keyring) {
@@ -3302,9 +3302,9 @@ export default class MetamaskController extends EventEmitter {
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.custodyController.removeAccount(address);
-    ///: END:ONLY_INCLUDE_IN(mmi)
+    ///: END:ONLY_INCLUDE_IN(build-mmi)
 
     const keyring = await this.keyringController.getKeyringForAccount(address);
     // Remove account from the keyring
@@ -3488,7 +3488,7 @@ export default class MetamaskController extends EventEmitter {
   async signPersonalMessage(msgParams) {
     log.info('MetaMaskController - signPersonalMessage');
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const custodyKeyring = await this.getCustodyKeyringIfExists(msgParams.from);
 
     if (custodyKeyring) {
@@ -3524,7 +3524,7 @@ export default class MetamaskController extends EventEmitter {
 
       return this.getState();
     }
-    ///: END:ONLY_INCLUDE_IN(mmi)
+    ///: END:ONLY_INCLUDE_IN(build-mmi)
 
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
@@ -3782,11 +3782,11 @@ export default class MetamaskController extends EventEmitter {
     const msgId = msgParams.metamaskId;
     const { version } = msgParams;
     try {
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       const custodyKeyring = await this.getCustodyKeyringIfExists(
         msgParams.from,
       );
-      ///: END:ONLY_INCLUDE_IN(mmi)
+      ///: END:ONLY_INCLUDE_IN(build-mmi)
 
       let cleanMsgParams = msgParams;
       if (!custodyKeyring) {
@@ -3803,7 +3803,7 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       if (custodyKeyring) {
         // This is a custodial signature so we cannot get the signature straight away
         const msg = this.typedMessageManager.getMsg(msgId);
@@ -3829,7 +3829,7 @@ export default class MetamaskController extends EventEmitter {
 
         return this.getState();
       }
-      ///: END:ONLY_INCLUDE_IN(mmi)
+      ///: END:ONLY_INCLUDE_IN(build-mmi)
 
       const signature = await this.keyringController.signTypedMessage(
         cleanMsgParams,
@@ -4376,7 +4376,7 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         handleMmiAuthenticate:
           this.institutionalFeaturesController.handleMmiAuthenticate.bind(
             this.institutionalFeaturesController,
