@@ -126,7 +126,7 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.selectedAddress = prefState.selectedAddress;
     ///: END:ONLY_INCLUDE_IN
 
@@ -536,7 +536,7 @@ export default class MetaMetricsController {
 
       const combinedProperties = merge(payload.sensitiveProperties, {
         ...payload.properties,
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         accountAddress: this.selectedAddress,
         ///: END:ONLY_INCLUDE_IN
       });
@@ -559,7 +559,7 @@ export default class MetaMetricsController {
           ...payload,
           properties: {
             ...payload.properties,
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             accountAddress: this.selectedAddress,
             ///: END:ONLY_INCLUDE_IN }
           },
@@ -644,7 +644,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const mmiProps = {};
 
     if (this.extension?.runtime?.id) {
@@ -656,7 +656,7 @@ export default class MetaMetricsController {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         ...mmiProps,
         ///: END:ONLY_INCLUDE_IN
       },
@@ -689,7 +689,7 @@ export default class MetaMetricsController {
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const mmiProps = {};
 
     if (this.extension?.runtime?.id) {
@@ -715,7 +715,7 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         ...mmiProps,
         ///: END:ONLY_INCLUDE_IN
       },
@@ -731,7 +731,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const mmiAccountAddress =
       metamaskState.custodyAccountDetails &&
       Object.keys(metamaskState.custodyAccountDetails).length
@@ -777,7 +777,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
       ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),

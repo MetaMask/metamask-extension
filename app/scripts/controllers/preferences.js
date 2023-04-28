@@ -1,6 +1,6 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
 ///: END:ONLY_INCLUDE_IN
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
@@ -72,7 +72,7 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     initState.useTokenDetection = Boolean(process.env.TOKEN_DETECTION_V2);
     ///: END:ONLY_INCLUDE_IN
 
@@ -83,7 +83,7 @@ export default class PreferencesController {
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.handleMmiPortfolio = opts.handleMmiPortfolio;
 
     if (!process.env.IN_TEST) {
@@ -261,7 +261,7 @@ export default class PreferencesController {
       return ids;
     }, {});
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.prepareMmiPortfolio();
     ///: END:ONLY_INCLUDE_IN
 
@@ -290,7 +290,7 @@ export default class PreferencesController {
       this.setSelectedAddress(selected);
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.prepareMmiPortfolio();
     ///: END:ONLY_INCLUDE_IN
 
@@ -350,7 +350,7 @@ export default class PreferencesController {
     this.store.updateState({ identities, lostIdentities });
     this.addAddresses(addresses);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.prepareMmiPortfolio();
     ///: END:ONLY_INCLUDE_IN
 
@@ -534,7 +534,7 @@ export default class PreferencesController {
     return this.store.getState().disabledRpcMethodPreferences;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   async prepareMmiPortfolio() {
     if (!process.env.IN_TEST) {
       this.handleMmiPortfolio().then((mmiDashboardData) => {

@@ -988,7 +988,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: [],
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: null,
         [MetaMetricsUserTrait.MmiAccountAddress]: false,
         [MetaMetricsUserTrait.MmiIsCustodian]: 'testid',

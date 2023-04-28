@@ -1,260 +1,712 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
-import { ComposedStore, ObservableStore } from '@metamask/obs-store';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
-///: END:ONLY_INCLUDE_IN
+import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import {
   createSwappableProxy,
   createEventEmitterProxy,
-} from 'swappable-obj-proxy';
+  SwappableProxy,
+} from '@metamask/swappable-obj-proxy';
 import EthQuery from 'eth-query';
-import { v4 as random } from 'uuid';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { v4 as uuid } from 'uuid';
+import { Hex, isPlainObject } from '@metamask/utils';
+import { errorCodes } from 'eth-rpc-errors';
+import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
+import { PollingBlockTracker } from 'eth-block-tracker';
 import {
   INFURA_PROVIDER_TYPES,
-  BUILT_IN_NETWORKS,
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  BUILT_IN_INFURA_NETWORKS,
+  BuiltInInfuraNetwork,
+  NetworkStatus,
 } from '../../../../shared/constants/network';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
-import { createNetworkClient } from './create-network-client';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
+import { isErrorWithMessage } from '../../../../shared/modules/error';
+import {
+  createNetworkClient,
+  NetworkClientType,
+} from './create-network-client';
 
 /**
- * @typedef {object} NetworkConfiguration
- * @property {string} rpcUrl - RPC target URL.
- * @property {string} chainId - Network ID as per EIP-155
- * @property {string} ticker - Currency ticker.
- * @property {object} [rpcPrefs] - Personalized preferences.
- * @property {string} [nickname] - Personalized network name.
+ * The name of NetworkController.
  */
+const name = 'NetworkController';
 
-const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout();
+/**
+ * A block header object that `eth_getBlockByNumber` returns. Note that this
+ * type does not specify all of the properties present within the block header;
+ * within NetworkController, we are only interested in `baseFeePerGas`.
+ */
+type Block = {
+  baseFeePerGas?: unknown;
+};
 
-let defaultProviderConfigOpts;
-if (process.env.IN_TEST) {
-  defaultProviderConfigOpts = {
-    type: NETWORK_TYPES.RPC,
-    rpcUrl: 'http://localhost:8545',
-    chainId: '0x539',
-    nickname: 'Localhost 8545',
+/**
+ * Encodes a few pieces of information:
+ *
+ * - Whether or not a provider is configured for an Infura network or a
+ * non-Infura network.
+ * - If an Infura network, then which network.
+ * - If a non-Infura network, then whether the network exists locally or
+ * remotely.
+ *
+ * Primarily used to build the network client and check the availability of a
+ * network.
+ */
+export type ProviderType = BuiltInInfuraNetwork | typeof NETWORK_TYPES.RPC;
+
+/**
+ * The network ID of a network.
+ */
+type NetworkId = `${number}`;
+
+/**
+ * The ID of a network configuration.
+ */
+type NetworkConfigurationId = string;
+
+/**
+ * The chain ID of a network.
+ */
+type ChainId = Hex;
+
+/**
+ * The set of event types that NetworkController can publish via its messenger.
+ */
+export enum NetworkControllerEventType {
+  /**
+   * @see {@link NetworkControllerNetworkDidChangeEvent}
+   */
+  NetworkDidChange = 'NetworkController:networkDidChange',
+  /**
+   * @see {@link NetworkControllerNetworkWillChangeEvent}
+   */
+  NetworkWillChange = 'NetworkController:networkWillChange',
+  /**
+   * @see {@link NetworkControllerInfuraIsBlockedEvent}
+   */
+  InfuraIsBlocked = 'NetworkController:infuraIsBlocked',
+  /**
+   * @see {@link NetworkControllerInfuraIsUnblockedEvent}
+   */
+  InfuraIsUnblocked = 'NetworkController:infuraIsUnblocked',
+}
+
+/**
+ * `networkWillChange` is published when the current network is about to be
+ * switched, but the new provider has not been created and no state changes have
+ * occurred yet.
+ */
+export type NetworkControllerNetworkWillChangeEvent = {
+  type: NetworkControllerEventType.NetworkWillChange;
+  payload: [];
+};
+
+/**
+ * `networkDidChange` is published after a provider has been created for a newly
+ * switched network (but before the network has been confirmed to be available).
+ */
+export type NetworkControllerNetworkDidChangeEvent = {
+  type: NetworkControllerEventType.NetworkDidChange;
+  payload: [];
+};
+
+/**
+ * `infuraIsBlocked` is published after the network is switched to an Infura
+ * network, but when Infura returns an error blocking the user based on their
+ * location.
+ */
+export type NetworkControllerInfuraIsBlockedEvent = {
+  type: NetworkControllerEventType.InfuraIsBlocked;
+  payload: [];
+};
+
+/**
+ * `infuraIsBlocked` is published either after the network is switched to an
+ * Infura network and Infura does not return an error blocking the user based on
+ * their location, or the network is switched to a non-Infura network.
+ */
+export type NetworkControllerInfuraIsUnblockedEvent = {
+  type: NetworkControllerEventType.InfuraIsUnblocked;
+  payload: [];
+};
+
+/**
+ * The set of events that the NetworkController messenger can publish.
+ */
+export type NetworkControllerEvent =
+  | NetworkControllerNetworkDidChangeEvent
+  | NetworkControllerNetworkWillChangeEvent
+  | NetworkControllerInfuraIsBlockedEvent
+  | NetworkControllerInfuraIsUnblockedEvent;
+
+/**
+ * The messenger that the NetworkController uses to publish events.
+ */
+export type NetworkControllerMessenger = RestrictedControllerMessenger<
+  typeof name,
+  never,
+  NetworkControllerEvent,
+  never,
+  NetworkControllerEventType
+>;
+
+/**
+ * Information used to set up the middleware stack for a particular kind of
+ * network. Currently has overlap with `NetworkConfiguration`, although the
+ * two will be merged down the road.
+ */
+export type ProviderConfiguration = {
+  /**
+   * Either a type of Infura network, "localhost" for a locally operated
+   * network, or "rpc" for everything else.
+   */
+  type: ProviderType;
+  /**
+   * The chain ID as per EIP-155.
+   */
+  chainId: ChainId;
+  /**
+   * The URL of the RPC endpoint. Only used when `type` is "localhost" or "rpc".
+   */
+  rpcUrl?: string;
+  /**
+   * The shortname of the currency used by the network.
+   */
+  ticker?: string;
+  /**
+   * The user-customizable name of the network.
+   */
+  nickname?: string;
+  /**
+   * User-customizable details for the network.
+   */
+  rpcPrefs?: {
+    blockExplorerUrl?: string;
   };
-} else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigOpts = {
-    type: NETWORK_TYPES.GOERLI,
-    chainId: CHAIN_IDS.GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP.GOERLI,
+};
+
+/**
+ * The contents of the `networkId` store.
+ */
+type NetworkIdState = NetworkId | null;
+
+/**
+ * Information about the network not held by any other part of state. Currently
+ * only used to capture whether a network supports EIP-1559.
+ */
+type NetworkDetails = {
+  /**
+   * EIPs supported by the network.
+   */
+  EIPS: {
+    [eipNumber: number]: boolean | undefined;
   };
-} else {
-  defaultProviderConfigOpts = {
+  [otherProperty: string]: unknown;
+};
+
+/**
+ * A "network configuration" represents connection data directly provided by
+ * users via the wallet UI for a custom network (we already have this
+ * information for networks that come pre-shipped with the wallet). Ultimately
+ * used to set up the middleware stack so that the wallet can make requests to
+ * the network. Currently has overlap with `ProviderConfiguration`, although the
+ * two will be merged down the road.
+ */
+type NetworkConfiguration = {
+  /**
+   * The unique ID of the network configuration. Useful for switching to and
+   * removing specific networks.
+   */
+  id: NetworkConfigurationId;
+  /**
+   * The URL of the RPC endpoint. Only used when `type` is "localhost" or "rpc".
+   */
+  rpcUrl: string;
+  /**
+   * The chain ID as per EIP-155.
+   */
+  chainId: ChainId;
+  /**
+   * The shortname of the currency used for this network.
+   */
+  ticker: string;
+  /**
+   * The user-customizable name of the network.
+   */
+  nickname?: string;
+  /**
+   * User-customizable details for the network.
+   */
+  rpcPrefs?: {
+    blockExplorerUrl: string;
+  };
+};
+
+/**
+ * A set of network configurations, keyed by ID.
+ */
+type NetworkConfigurations = Record<
+  NetworkConfigurationId,
+  NetworkConfiguration
+>;
+
+/**
+ * The state that NetworkController holds after combining its individual stores.
+ */
+export type NetworkControllerState = {
+  provider: ProviderConfiguration;
+  networkId: NetworkIdState;
+  networkStatus: NetworkStatus;
+  networkDetails: NetworkDetails;
+  networkConfigurations: NetworkConfigurations;
+};
+
+/**
+ * The options that NetworkController takes.
+ */
+export type NetworkControllerOptions = {
+  messenger: NetworkControllerMessenger;
+  state?: {
+    provider?: ProviderConfiguration;
+    networkDetails?: NetworkDetails;
+    networkConfigurations?: NetworkConfigurations;
+  };
+  infuraProjectId: string;
+  trackMetaMetricsEvent: (payload: MetaMetricsEventPayload) => void;
+};
+
+/**
+ * Type guard for determining whether the given value is an error object with a
+ * `code` property, such as an instance of Error.
+ *
+ * TODO: Move this to @metamask/utils
+ *
+ * @param error - The object to check.
+ * @returns True if `error` has a `code`, false otherwise.
+ */
+function isErrorWithCode(error: unknown): error is { code: string | number } {
+  return typeof error === 'object' && error !== null && 'code' in error;
+}
+
+/**
+ * Asserts that the given value is a network ID, i.e., that it is a decimal
+ * number represented as a string.
+ *
+ * @param value - The value to check.
+ */
+function assertNetworkId(value: any): asserts value is NetworkId {
+  assert(
+    /^\d+$/u.test(value) && !Number.isNaN(Number(value)),
+    'value is not a number',
+  );
+}
+
+/**
+ * Builds the default provider config used to initialize the network controller.
+ */
+function buildDefaultProviderConfigState(): ProviderConfiguration {
+  if (process.env.IN_TEST) {
+    return {
+      type: NETWORK_TYPES.RPC,
+      rpcUrl: 'http://localhost:8545',
+      chainId: '0x539',
+      nickname: 'Localhost 8545',
+      ticker: 'ETH',
+    };
+  } else if (
+    process.env.METAMASK_DEBUG ||
+    process.env.METAMASK_ENVIRONMENT === 'test'
+  ) {
+    return {
+      type: NETWORK_TYPES.GOERLI,
+      chainId: CHAIN_IDS.GOERLI,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+    };
+  }
+
+  return {
     type: NETWORK_TYPES.MAINNET,
     chainId: CHAIN_IDS.MAINNET,
+    ticker: 'ETH',
   };
 }
 
-const defaultProviderConfig = {
-  ticker: 'ETH',
-  ...defaultProviderConfigOpts,
-};
+/**
+ * Builds the default network ID state used to initialize the network
+ * controller.
+ */
+function buildDefaultNetworkIdState(): NetworkIdState {
+  return null;
+}
 
-const defaultNetworkDetailsState = {
-  EIPS: { 1559: undefined },
-};
+/**
+ * Builds the default network status state used to initialize the network
+ * controller.
+ */
+function buildDefaultNetworkStatusState(): NetworkStatus {
+  return NetworkStatus.Unknown;
+}
 
-export const NETWORK_EVENTS = {
-  // Fired after the actively selected network is changed
-  NETWORK_DID_CHANGE: 'networkDidChange',
-  // Fired when the actively selected network *will* change
-  NETWORK_WILL_CHANGE: 'networkWillChange',
-  // Fired when Infura returns an error indicating no support
-  INFURA_IS_BLOCKED: 'infuraIsBlocked',
-  // Fired when not using an Infura network or when Infura returns no error, indicating support
-  INFURA_IS_UNBLOCKED: 'infuraIsUnblocked',
-};
+/**
+ * Builds the default network details state used to initialize the
+ * network controller.
+ */
+function buildDefaultNetworkDetailsState(): NetworkDetails {
+  return {
+    EIPS: {
+      1559: undefined,
+    },
+  };
+}
 
-export default class NetworkController extends EventEmitter {
-  static defaultProviderConfig = defaultProviderConfig;
+/**
+ * Builds the default network configurations state used to initialize the
+ * network controller.
+ */
+function buildDefaultNetworkConfigurationsState(): NetworkConfigurations {
+  return {};
+}
+
+/**
+ * Builds the default state for the network controller.
+ *
+ * @returns The default network controller state.
+ */
+function buildDefaultState() {
+  return {
+    provider: buildDefaultProviderConfigState(),
+    networkId: buildDefaultNetworkIdState(),
+    networkStatus: buildDefaultNetworkStatusState(),
+    networkDetails: buildDefaultNetworkDetailsState(),
+    networkConfigurations: buildDefaultNetworkConfigurationsState(),
+  };
+}
+
+/**
+ * Returns whether the given argument is a type that our Infura middleware
+ * recognizes. We can't calculate this inline because the usual type of `type`,
+ * which we get from the provider config, is not a subset of the type of
+ * `INFURA_PROVIDER_TYPES`, but rather a superset, and therefore we cannot make
+ * a proper comparison without TypeScript complaining. However, if we downcast
+ * both variables, then we are able to achieve this. As a bonus, this function
+ * also types the given argument as a `BuiltInInfuraNetwork` assuming that the
+ * check succeeds.
+ *
+ * @param type - A type to compare.
+ * @returns True or false, depending on whether the given type is one that our
+ * Infura middleware recognizes.
+ */
+function isInfuraProviderType(type: string): type is BuiltInInfuraNetwork {
+  const infuraProviderTypes: readonly string[] = INFURA_PROVIDER_TYPES;
+  return infuraProviderTypes.includes(type);
+}
+
+/**
+ * The network controller creates and manages the "provider" object which allows
+ * our code and external dapps to make requests to a network. The requests are
+ * filtered through a set of middleware (provided by
+ * [`eth-json-rpc-middleware`][1]) which not only performs the HTTP request to
+ * the appropriate RPC endpoint but also uses caching to limit duplicate
+ * requests to Infura and smoothens interactions with the blockchain in general.
+ *
+ * [1]: https://github.com/MetaMask/eth-json-rpc-middleware
+ */
+export class NetworkController extends EventEmitter {
+  /**
+   * The messenger that NetworkController uses to publish events.
+   */
+  #messenger: NetworkControllerMessenger;
 
   /**
-   * Construct a NetworkController.
-   *
-   * @param {object} [options] - NetworkController options.
-   * @param {object} [options.state] - Initial controller state.
-   * @param {string} [options.infuraProjectId] - The Infura project ID.
-   * @param {string} [options.trackMetaMetricsEvent] - A method to forward events to the MetaMetricsController
+   * Observable store containing the provider configuration for the previously
+   * configured network.
    */
-  constructor({ state = {}, infuraProjectId, trackMetaMetricsEvent } = {}) {
+  #previousProviderConfig: ProviderConfiguration;
+
+  /**
+   * Observable store containing a combination of data from all of the
+   * individual stores.
+   */
+  store: ObservableStore<NetworkControllerState>;
+
+  #provider: SafeEventEmitterProvider | null;
+
+  #blockTracker: PollingBlockTracker | null;
+
+  #providerProxy: SwappableProxy<SafeEventEmitterProvider> | null;
+
+  #blockTrackerProxy: SwappableProxy<PollingBlockTracker> | null;
+
+  #infuraProjectId: NetworkControllerOptions['infuraProjectId'];
+
+  #trackMetaMetricsEvent: NetworkControllerOptions['trackMetaMetricsEvent'];
+
+  /**
+   * Constructs a network controller.
+   *
+   * @param options - Options for this constructor.
+   * @param options.messenger - The NetworkController messenger.
+   * @param options.state - Initial controller state.
+   * @param options.infuraProjectId - The Infura project ID.
+   * @param options.trackMetaMetricsEvent - A method to forward events to the
+   * {@link MetaMetricsController}.
+   */
+  constructor({
+    messenger,
+    state = {},
+    infuraProjectId,
+    trackMetaMetricsEvent,
+  }: NetworkControllerOptions) {
     super();
 
-    // create stores
-    this.providerStore = new ObservableStore(
-      state.provider || { ...defaultProviderConfig },
-    );
-    this.previousProviderStore = new ObservableStore(
-      this.providerStore.getState(),
-    );
-    this.networkStore = new ObservableStore('loading');
-    // We need to keep track of a few details about the current network
-    // Ideally we'd merge this.networkStore with this new store, but doing so
-    // will require a decent sized refactor of how we're accessing network
-    // state. Currently this is only used for detecting EIP 1559 support but
-    // can be extended to track other network details.
-    this.networkDetails = new ObservableStore(
-      state.networkDetails || {
-        ...defaultNetworkDetailsState,
-      },
-    );
+    this.#messenger = messenger;
 
-    this.networkConfigurationsStore = new ObservableStore(
-      state.networkConfigurations || {},
-    );
-
-    this.store = new ComposedStore({
-      provider: this.providerStore,
-      previousProviderStore: this.previousProviderStore,
-      network: this.networkStore,
-      networkDetails: this.networkDetails,
-      networkConfigurations: this.networkConfigurationsStore,
+    this.store = new ObservableStore({
+      ...buildDefaultState(),
+      ...state,
     });
-
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.handleMmiPortfolio = state.handleMmiPortfolio;
-
-    if (!process.env.IN_TEST) {
-      this.mmiConfigurationStore = state.mmiConfigurationStore.getState();
-    }
-    ///: END:ONLY_INCLUDE_IN
+    this.#previousProviderConfig = this.store.getState().provider;
 
     // provider and block tracker
-    this._provider = null;
-    this._blockTracker = null;
+    this.#provider = null;
+    this.#blockTracker = null;
 
     // provider and block tracker proxies - because the network changes
-    this._providerProxy = null;
-    this._blockTrackerProxy = null;
+    this.#providerProxy = null;
+    this.#blockTrackerProxy = null;
 
     if (!infuraProjectId || typeof infuraProjectId !== 'string') {
       throw new Error('Invalid Infura project ID');
     }
-    this._infuraProjectId = infuraProjectId;
-    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
-
-    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      this.lookupNetwork();
-    });
+    this.#infuraProjectId = infuraProjectId;
+    this.#trackMetaMetricsEvent = trackMetaMetricsEvent;
   }
 
   /**
-   * Destroy the network controller, stopping any ongoing polling.
+   * Deactivates the controller, stopping any ongoing polling.
    *
    * In-progress requests will not be aborted.
    */
-  async destroy() {
-    await this._blockTracker?.destroy();
+  async destroy(): Promise<void> {
+    await this.#blockTracker?.destroy();
   }
 
-  async initializeProvider() {
-    const { type, rpcUrl, chainId } = this.providerStore.getState();
-    this._configureProvider({ type, rpcUrl, chainId });
+  /**
+   * Creates the provider and block tracker for the configured network,
+   * using the provider to gather details about the network.
+   */
+  async initializeProvider(): Promise<void> {
+    const { type, rpcUrl, chainId } = this.store.getState().provider;
+    this.#configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
   }
 
-  // return the proxies so the references will always be good
-  getProviderAndBlockTracker() {
-    const provider = this._providerProxy;
-    const blockTracker = this._blockTrackerProxy;
+  /**
+   * Returns the proxies wrapping the currently set provider and block tracker.
+   */
+  getProviderAndBlockTracker(): {
+    provider: SwappableProxy<SafeEventEmitterProvider> | null;
+    blockTracker: SwappableProxy<PollingBlockTracker> | null;
+  } {
+    const provider = this.#providerProxy;
+    const blockTracker = this.#blockTrackerProxy;
     return { provider, blockTracker };
   }
 
   /**
-   * Method to check if the block header contains fields that indicate EIP 1559
-   * support (baseFeePerGas).
+   * Determines whether the network supports EIP-1559 by checking whether the
+   * latest block has a `baseFeePerGas` property, then updates state
+   * appropriately.
    *
-   * @returns {Promise<boolean>} true if current network supports EIP 1559
+   * @returns A promise that resolves to true if the network supports EIP-1559
+   * and false otherwise.
    */
-  async getEIP1559Compatibility() {
-    const { EIPS } = this.networkDetails.getState();
+  async getEIP1559Compatibility(): Promise<boolean> {
+    const { EIPS } = this.store.getState().networkDetails;
     // NOTE: This isn't necessary anymore because the block cache middleware
     // already prevents duplicate requests from taking place
     if (EIPS[1559] !== undefined) {
       return EIPS[1559];
     }
-    const latestBlock = await this._getLatestBlock();
-    const supportsEIP1559 =
-      latestBlock && latestBlock.baseFeePerGas !== undefined;
-    this._setNetworkEIPSupport(1559, supportsEIP1559);
+
+    const { provider } = this.getProviderAndBlockTracker();
+    if (!provider) {
+      // Really we should throw an error if a provider hasn't been initialized
+      // yet, but that might have undesirable repercussions, so return false for
+      // now
+      return false;
+    }
+
+    const supportsEIP1559 = await this.#determineEIP1559Compatibility(provider);
+    const { networkDetails } = this.store.getState();
+    this.store.updateState({
+      networkDetails: {
+        ...networkDetails,
+        EIPS: {
+          ...networkDetails.EIPS,
+          1559: supportsEIP1559,
+        },
+      },
+    });
     return supportsEIP1559;
   }
 
-  async lookupNetwork() {
-    // Prevent firing when provider is not defined.
-    if (!this._provider) {
+  /**
+   * Performs side effects after switching to a network. If the network is
+   * available, updates the network state with the network ID of the network and
+   * stores whether the network supports EIP-1559; otherwise clears said
+   * information about the network that may have been previously stored.
+   *
+   * @fires infuraIsBlocked if the network is Infura-supported and is blocking
+   * requests.
+   * @fires infuraIsUnblocked if the network is Infura-supported and is not
+   * blocking requests, or if the network is not Infura-supported.
+   */
+  async lookupNetwork(): Promise<void> {
+    const { chainId, type } = this.store.getState().provider;
+    const { provider } = this.getProviderAndBlockTracker();
+    let networkChanged = false;
+    let networkId: NetworkIdState = null;
+    let supportsEIP1559 = false;
+    let networkStatus: NetworkStatus;
+
+    if (provider === null) {
       log.warn(
         'NetworkController - lookupNetwork aborted due to missing provider',
       );
       return;
     }
 
-    const { chainId } = this.providerStore.getState();
     if (!chainId) {
       log.warn(
         'NetworkController - lookupNetwork aborted due to missing chainId',
       );
-      this._setNetworkState('loading');
-      this._clearNetworkDetails();
+      this.#resetNetworkId();
+      this.#resetNetworkStatus();
+      this.#resetNetworkDetails();
       return;
     }
 
-    // Ping the RPC endpoint so we can confirm that it works
-    const initialNetwork = this.networkStore.getState();
-    const { type } = this.providerStore.getState();
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+    const isInfura = isInfuraProviderType(type);
+
+    const listener = () => {
+      networkChanged = true;
+      this.#messenger.unsubscribe(
+        NetworkControllerEventType.NetworkDidChange,
+        listener,
+      );
+    };
+    this.#messenger.subscribe(
+      NetworkControllerEventType.NetworkDidChange,
+      listener,
+    );
+
+    try {
+      const results = await Promise.all([
+        this.#getNetworkId(provider),
+        this.#determineEIP1559Compatibility(provider),
+      ]);
+      const possibleNetworkId = results[0];
+      assertNetworkId(possibleNetworkId);
+      networkId = possibleNetworkId;
+      supportsEIP1559 = results[1];
+      networkStatus = NetworkStatus.Available;
+    } catch (error) {
+      if (isErrorWithCode(error) && isErrorWithMessage(error)) {
+        let responseBody;
+        try {
+          responseBody = JSON.parse(error.message);
+        } catch {
+          // error.message must not be JSON
+        }
+
+        if (
+          isPlainObject(responseBody) &&
+          responseBody.error === INFURA_BLOCKED_KEY
+        ) {
+          networkStatus = NetworkStatus.Blocked;
+        } else if (error.code === errorCodes.rpc.internal) {
+          networkStatus = NetworkStatus.Unknown;
+        } else {
+          networkStatus = NetworkStatus.Unavailable;
+        }
+      } else {
+        log.warn(
+          'NetworkController - could not determine network status',
+          error,
+        );
+        networkStatus = NetworkStatus.Unknown;
+      }
+    }
+
+    if (networkChanged) {
+      // If the network has changed, then `lookupNetwork` either has been or is
+      // in the process of being called, so we don't need to go further.
+      return;
+    }
+    this.#messenger.unsubscribe(
+      NetworkControllerEventType.NetworkDidChange,
+      listener,
+    );
+
+    this.store.updateState({
+      networkStatus,
+    });
+
+    if (networkStatus === NetworkStatus.Available) {
+      const { networkDetails } = this.store.getState();
+      this.store.updateState({
+        networkId,
+        networkDetails: {
+          ...networkDetails,
+          EIPS: {
+            ...networkDetails.EIPS,
+            1559: supportsEIP1559,
+          },
+        },
+      });
+    } else {
+      this.#resetNetworkId();
+      this.#resetNetworkDetails();
+    }
 
     if (isInfura) {
-      this._checkInfuraAvailability(type);
+      if (networkStatus === NetworkStatus.Available) {
+        this.#messenger.publish(NetworkControllerEventType.InfuraIsUnblocked);
+      } else if (networkStatus === NetworkStatus.Blocked) {
+        this.#messenger.publish(NetworkControllerEventType.InfuraIsBlocked);
+      }
     } else {
-      this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
-    }
-
-    let networkVersion;
-    let networkVersionError;
-    try {
-      networkVersion = await this._getNetworkId();
-    } catch (error) {
-      networkVersionError = error;
-    }
-    if (initialNetwork !== this.networkStore.getState()) {
-      return;
-    }
-
-    if (networkVersionError) {
-      this._setNetworkState('loading');
-      // keep network details in sync with network state
-      this._clearNetworkDetails();
-    } else {
-      this._setNetworkState(networkVersion);
-      // look up EIP-1559 support
-      await this.getEIP1559Compatibility();
+      // Always publish infuraIsUnblocked regardless of network status to
+      // prevent consumers from being stuck in a blocked state if they were
+      // previously connected to an Infura network that was blocked
+      this.#messenger.publish(NetworkControllerEventType.InfuraIsUnblocked);
     }
   }
 
   /**
-   * A method for setting the currently selected network provider by networkConfigurationId.
+   * Switches to the network specified by a network configuration.
    *
-   * @param {string} networkConfigurationId - the universal unique identifier that corresponds to the network configuration to set as active.
-   * @returns {string} The rpcUrl of the network that was just set as active
+   * @param networkConfigurationId - The unique identifier that refers to a
+   * previously added network configuration.
+   * @returns The URL of the RPC endpoint representing the newly switched
+   * network.
    */
-  setActiveNetwork(networkConfigurationId) {
+  async setActiveNetwork(networkConfigurationId: NetworkConfigurationId) {
     const targetNetwork =
-      this.networkConfigurationsStore.getState()[networkConfigurationId];
+      this.store.getState().networkConfigurations[networkConfigurationId];
 
     if (!targetNetwork) {
       throw new Error(
@@ -262,7 +714,7 @@ export default class NetworkController extends EventEmitter {
       );
     }
 
-    this._setProviderConfig({
+    await this.#setProviderConfig({
       type: NETWORK_TYPES.RPC,
       ...targetNetwork,
     });
@@ -270,223 +722,284 @@ export default class NetworkController extends EventEmitter {
     return targetNetwork.rpcUrl;
   }
 
-  setProviderType(type) {
+  /**
+   * Switches to an Infura-supported network.
+   *
+   * @param type - The shortname of the network.
+   * @throws if the `type` is "rpc" or if it is not a known Infura-supported
+   * network.
+   */
+  async setProviderType(type: string) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPES.RPC,
       `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setActiveNetwork"`,
     );
     assert.ok(
-      INFURA_PROVIDER_TYPES.includes(type),
+      isInfuraProviderType(type),
       `Unknown Infura provider type "${type}".`,
     );
-    const { chainId, ticker, blockExplorerUrl } = BUILT_IN_NETWORKS[type];
-    this._setProviderConfig({
+    const network = BUILT_IN_INFURA_NETWORKS[type];
+    await this.#setProviderConfig({
       type,
-      rpcUrl: '',
-      chainId,
-      ticker: ticker ?? 'ETH',
-      nickname: '',
-      rpcPrefs: { blockExplorerUrl },
-    });
-  }
-
-  resetConnection() {
-    this._setProviderConfig(this.providerStore.getState());
-  }
-
-  rollbackToPreviousProvider() {
-    const config = this.previousProviderStore.getState();
-    this.providerStore.putState(config);
-    this._switchNetwork(config);
-  }
-
-  //
-  // Private
-  //
-
-  /**
-   * Get the network ID for the current selected network
-   *
-   * @returns {string} The network ID for the current network.
-   */
-  async _getNetworkId() {
-    const ethQuery = new EthQuery(this._provider);
-    return await new Promise((resolve, reject) => {
-      ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      });
+      rpcUrl: undefined,
+      chainId: network.chainId,
+      ticker: 'ticker' in network ? network.ticker : 'ETH',
+      nickname: undefined,
+      rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
     });
   }
 
   /**
-   * Method to return the latest block for the current network
-   *
-   * @returns {object} Block header
+   * Re-initializes the provider and block tracker for the current network.
    */
-  _getLatestBlock() {
+  async resetConnection() {
+    await this.#setProviderConfig(this.store.getState().provider);
+  }
+
+  /**
+   * Switches to the previous network, assuming that the current network is
+   * different than the initial network (if it is, then this is equivalent to
+   * calling `resetConnection`).
+   */
+  async rollbackToPreviousProvider() {
+    const config = this.#previousProviderConfig;
+    this.store.updateState({
+      provider: config,
+    });
+    await this.#switchNetwork(config);
+  }
+
+  /**
+   * Fetches the latest block for the network.
+   *
+   * @param provider - A provider, which is guaranteed to be available.
+   * @returns A promise that either resolves to the block header or null if
+   * there is no latest block, or rejects with an error.
+   */
+  #getLatestBlock(provider: SafeEventEmitterProvider): Promise<Block | null> {
     return new Promise((resolve, reject) => {
-      const { provider } = this.getProviderAndBlockTracker();
       const ethQuery = new EthQuery(provider);
-      ethQuery.sendAsync(
+      ethQuery.sendAsync<['latest', false], Block | null>(
         { method: 'eth_getBlockByNumber', params: ['latest', false] },
-        (err, block) => {
-          if (err) {
-            return reject(err);
+        (...args) => {
+          if (args[0] === null) {
+            resolve(args[1]);
+          } else {
+            reject(args[0]);
           }
-          return resolve(block);
         },
       );
     });
   }
 
-  _setNetworkState(network) {
-    this.networkStore.putState(network);
-  }
-
   /**
-   * Set EIP support indication in the networkDetails store
+   * Fetches the network ID for the network.
    *
-   * @param {number} EIPNumber - The number of the EIP to mark support for
-   * @param {boolean} isSupported - True if the EIP is supported
+   * @param provider - A provider, which is guaranteed to be available.
+   * @returns A promise that either resolves to the network ID, or rejects with
+   * an error.
    */
-  _setNetworkEIPSupport(EIPNumber, isSupported) {
-    this.networkDetails.putState({
-      EIPS: {
-        [EIPNumber]: isSupported,
-      },
+  async #getNetworkId(provider: SafeEventEmitterProvider): Promise<string> {
+    const ethQuery = new EthQuery(provider);
+    return await new Promise((resolve, reject) => {
+      ethQuery.sendAsync<never[], string>(
+        { method: 'net_version' },
+        (...args) => {
+          if (args[0] === null) {
+            resolve(args[1]);
+          } else {
+            reject(args[0]);
+          }
+        },
+      );
     });
   }
 
   /**
-   * Reset EIP support to default (no support)
+   * Clears the stored network ID.
    */
-  _clearNetworkDetails() {
-    this.networkDetails.putState({ ...defaultNetworkDetailsState });
+  #resetNetworkId(): void {
+    this.store.updateState({
+      networkId: buildDefaultNetworkIdState(),
+    });
   }
 
   /**
-   * Sets the provider config and switches the network.
-   *
-   * @param config
+   * Resets network status to the default ("unknown").
    */
-  _setProviderConfig(config) {
-    this.previousProviderStore.putState(this.providerStore.getState());
-    this.providerStore.putState(config);
-    this._switchNetwork(config);
-  }
-
-  async _checkInfuraAvailability(network) {
-    const rpcUrl = `https://${network}.infura.io/v3/${this._infuraProjectId}`;
-
-    let networkChanged = false;
-    this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      networkChanged = true;
+  #resetNetworkStatus(): void {
+    this.store.updateState({
+      networkStatus: buildDefaultNetworkStatusState(),
     });
-
-    try {
-      const response = await fetchWithTimeout(rpcUrl, {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'eth_blockNumber',
-          params: [],
-          id: 1,
-        }),
-      });
-
-      if (networkChanged) {
-        return;
-      }
-
-      if (response.ok) {
-        this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
-      } else {
-        const responseMessage = await response.json();
-        if (networkChanged) {
-          return;
-        }
-        if (responseMessage.error === INFURA_BLOCKED_KEY) {
-          this.emit(NETWORK_EVENTS.INFURA_IS_BLOCKED);
-        }
-      }
-    } catch (err) {
-      log.warn(`MetaMask - Infura availability check failed`, err);
-    }
   }
 
-  _switchNetwork(opts) {
-    // Indicate to subscribers that network is about to change
-    this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
-    // Set loading state
-    this._setNetworkState('loading');
-    // Reset network details
-    this._clearNetworkDetails();
-    // Configure the provider appropriately
-    this._configureProvider(opts);
-    // Notify subscribers that network has changed
-    this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
+  /**
+   * Clears details previously stored for the network.
+   */
+  #resetNetworkDetails(): void {
+    this.store.updateState({
+      networkDetails: buildDefaultNetworkDetailsState(),
+    });
   }
 
-  _configureProvider({ type, rpcUrl, chainId }) {
-    // infura type-based endpoints
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+  /**
+   * Stores the given provider configuration representing a network in state,
+   * then uses it to create a new provider for that network.
+   *
+   * @param providerConfig - The provider configuration.
+   */
+  async #setProviderConfig(providerConfig: ProviderConfiguration) {
+    this.#previousProviderConfig = this.store.getState().provider;
+    this.store.updateState({ provider: providerConfig });
+    await this.#switchNetwork(providerConfig);
+  }
+
+  /**
+   * Retrieves the latest block from the currently selected network; if the
+   * block has a `baseFeePerGas` property, then we know that the network
+   * supports EIP-1559; otherwise it doesn't.
+   *
+   * @param provider - A provider, which is guaranteed to be available.
+   * @returns A promise that resolves to true if the network supports EIP-1559
+   * and false otherwise.
+   */
+  async #determineEIP1559Compatibility(
+    provider: SafeEventEmitterProvider,
+  ): Promise<boolean> {
+    const latestBlock = await this.#getLatestBlock(provider);
+    return latestBlock?.baseFeePerGas !== undefined;
+  }
+
+  /**
+   * Executes a series of steps to change the current network:
+   *
+   * 1. Notifies subscribers that the network is about to change.
+   * 2. Clears state associated with the current network.
+   * 3. Creates a new network client along with a provider for the desired
+   * network.
+   * 4. Notifies subscribes that the network has changed.
+   *
+   * @param providerConfig - The provider configuration object that specifies
+   * the new network.
+   */
+  async #switchNetwork(providerConfig: ProviderConfiguration) {
+    this.#messenger.publish(NetworkControllerEventType.NetworkWillChange);
+    this.#resetNetworkId();
+    this.#resetNetworkStatus();
+    this.#resetNetworkDetails();
+    this.#configureProvider(providerConfig);
+    this.#messenger.publish(NetworkControllerEventType.NetworkDidChange);
+    await this.lookupNetwork();
+  }
+
+  /**
+   * Creates a network client (a stack of middleware along with a provider and
+   * block tracker) to talk to a network.
+   *
+   * @param args - The arguments.
+   * @param args.type - The shortname of an Infura-supported network (see
+   * {@link NETWORK_TYPES}).
+   * @param args.rpcUrl - The URL of the RPC endpoint that represents the
+   * network. Only used for non-Infura networks.
+   * @param args.chainId - The chain ID of the network (as per EIP-155). Only
+   * used for non-Infura-supported networks (as we already know the chain ID of
+   * any Infura-supported network).
+   * @throws if the `type` if not a known Infura-supported network.
+   */
+  #configureProvider({ type, rpcUrl, chainId }: ProviderConfiguration): void {
+    const isInfura = isInfuraProviderType(type);
     if (isInfura) {
-      this._configureInfuraProvider({
+      // infura type-based endpoints
+      this.#configureInfuraProvider({
         type,
-        infuraProjectId: this._infuraProjectId,
+        infuraProjectId: this.#infuraProjectId,
       });
+    } else if (type === NETWORK_TYPES.RPC && rpcUrl) {
       // url-based rpc endpoints
-    } else if (type === NETWORK_TYPES.RPC) {
-      this._configureStandardProvider(rpcUrl, chainId);
+      this.#configureStandardProvider(rpcUrl, chainId);
     } else {
       throw new Error(
-        `NetworkController - _configureProvider - unknown type "${type}"`,
+        `NetworkController - #configureProvider - unknown type "${type}"`,
       );
     }
   }
 
-  _configureInfuraProvider({ type, infuraProjectId }) {
-    log.info('NetworkController - configureInfuraProvider', type);
+  /**
+   * Creates a network client (a stack of middleware along with a provider and
+   * block tracker) to talk to an Infura-supported network.
+   *
+   * @param args - The arguments.
+   * @param args.type - The shortname of the Infura network (see
+   * {@link NETWORK_TYPES}).
+   * @param args.infuraProjectId - An Infura API key. ("Project ID" is a
+   * now-obsolete term we've retained for backward compatibility.)
+   */
+  #configureInfuraProvider({
+    type,
+    infuraProjectId,
+  }: {
+    type: BuiltInInfuraNetwork;
+    infuraProjectId: NetworkControllerOptions['infuraProjectId'];
+  }): void {
+    log.info('NetworkController - #configureInfuraProvider', type);
     const { provider, blockTracker } = createNetworkClient({
       network: type,
       infuraProjectId,
-      type: 'infura',
+      type: NetworkClientType.Infura,
     });
-    this._setProviderAndBlockTracker({ provider, blockTracker });
+    this.#setProviderAndBlockTracker({ provider, blockTracker });
   }
 
-  _configureStandardProvider(rpcUrl, chainId) {
-    log.info('NetworkController - configureStandardProvider', rpcUrl);
+  /**
+   * Creates a network client (a stack of middleware along with a provider and
+   * block tracker) to talk to a non-Infura-supported network.
+   *
+   * @param rpcUrl - The URL of the RPC endpoint that represents the network.
+   * @param chainId - The chain ID of the network (as per EIP-155).
+   */
+  #configureStandardProvider(rpcUrl: string, chainId: ChainId): void {
+    log.info('NetworkController - #configureStandardProvider', rpcUrl);
     const { provider, blockTracker } = createNetworkClient({
       chainId,
       rpcUrl,
-      type: 'custom',
+      type: NetworkClientType.Custom,
     });
-    this._setProviderAndBlockTracker({ provider, blockTracker });
+    this.#setProviderAndBlockTracker({ provider, blockTracker });
   }
 
-  _setProviderAndBlockTracker({ provider, blockTracker }) {
+  /**
+   * Given a provider and a block tracker, updates any proxies pointing to
+   * these objects that have been previously set, or initializes any proxies
+   * that have not been previously set.
+   *
+   * @param args - The arguments.
+   * @param args.provider - The provider.
+   * @param args.blockTracker - The block tracker.
+   */
+  #setProviderAndBlockTracker({
+    provider,
+    blockTracker,
+  }: {
+    provider: SafeEventEmitterProvider;
+    blockTracker: PollingBlockTracker;
+  }): void {
     // update or initialize proxies
-    if (this._providerProxy) {
-      this._providerProxy.setTarget(provider);
+    if (this.#providerProxy) {
+      this.#providerProxy.setTarget(provider);
     } else {
-      this._providerProxy = createSwappableProxy(provider);
+      this.#providerProxy = createSwappableProxy(provider);
     }
-    if (this._blockTrackerProxy) {
-      this._blockTrackerProxy.setTarget(blockTracker);
+    if (this.#blockTrackerProxy) {
+      this.#blockTrackerProxy.setTarget(blockTracker);
     } else {
-      this._blockTrackerProxy = createEventEmitterProxy(blockTracker, {
+      this.#blockTrackerProxy = createEventEmitterProxy(blockTracker, {
         eventFilter: 'skipInternal',
       });
     }
     // set new provider and blockTracker
-    this._provider = provider;
-    this._blockTracker = blockTracker;
+    this.#provider = provider;
+    this.#blockTracker = blockTracker;
   }
 
   /**
@@ -494,20 +1007,51 @@ export default class NetworkController extends EventEmitter {
    */
 
   /**
-   * Adds a network configuration if the rpcUrl is not already present on an
-   * existing network configuration. Otherwise updates the entry with the matching rpcUrl.
+   * Updates an existing network configuration matching the same RPC URL as the
+   * given network configuration; otherwise adds the network configuration.
+   * Following the upsert, the `trackMetaMetricsEvent` callback specified
+   * via the NetworkController constructor will be called to (presumably) create
+   * a MetaMetrics event.
    *
-   * @param {NetworkConfiguration} networkConfiguration - The network configuration to add or, if rpcUrl matches an existing entry, to modify.
-   * @param {object} options
-   * @param {boolean} options.setActive - An option to set the newly added networkConfiguration as the active provider.
-   * @param {string} options.referrer - The site from which the call originated, or 'metamask' for internal calls - used for event metrics.
-   * @param {string} options.source - Where the upsertNetwork event originated (i.e. from a dapp or from the network form)- used for event metrics.
-   * @returns {string} id for the added or updated network configuration
+   * @param networkConfiguration - The network configuration to upsert.
+   * @param networkConfiguration.chainId - The chain ID of the network as per
+   * EIP-155.
+   * @param networkConfiguration.ticker - The shortname of the currency used by
+   * the network.
+   * @param networkConfiguration.nickname - The user-customizable name of the
+   * network.
+   * @param networkConfiguration.rpcPrefs - User-customizable details for the
+   * network.
+   * @param networkConfiguration.rpcUrl - The URL of the RPC endpoint.
+   * @param additionalArgs - Additional arguments.
+   * @param additionalArgs.setActive - Switches to the network specified by
+   * the given network configuration following the upsert.
+   * @param additionalArgs.referrer - The site from which the call originated,
+   * or 'metamask' for internal calls; used for event metrics.
+   * @param additionalArgs.source - Where the metric event originated (i.e. from
+   * a dapp or from the network form); used for event metrics.
+   * @throws if the `chainID` does not match EIP-155 or is too large.
+   * @throws if `rpcUrl` is not a valid URL.
+   * @returns The ID for the added or updated network configuration.
    */
-  upsertNetworkConfiguration(
-    { rpcUrl, chainId, ticker, nickname, rpcPrefs },
-    { setActive = false, referrer, source },
-  ) {
+  async upsertNetworkConfiguration(
+    {
+      rpcUrl,
+      chainId,
+      ticker,
+      nickname,
+      rpcPrefs,
+    }: Omit<NetworkConfiguration, 'id'>,
+    {
+      setActive = false,
+      referrer,
+      source,
+    }: {
+      setActive?: boolean;
+      referrer: string;
+      source: string;
+    },
+  ): Promise<NetworkConfigurationId> {
     assert.ok(
       isPrefixedFormattedHexString(chainId),
       `Invalid chain ID "${chainId}": invalid hex string.`,
@@ -533,7 +1077,7 @@ export default class NetworkController extends EventEmitter {
       // eslint-disable-next-line no-new
       new URL(rpcUrl);
     } catch (e) {
-      if (e.message.includes('Invalid URL')) {
+      if (isErrorWithMessage(e) && e.message.includes('Invalid URL')) {
         throw new Error('rpcUrl must be a valid URL');
       }
     }
@@ -544,7 +1088,7 @@ export default class NetworkController extends EventEmitter {
       );
     }
 
-    const networkConfigurations = this.networkConfigurationsStore.getState();
+    const { networkConfigurations } = this.store.getState();
     const newNetworkConfiguration = {
       rpcUrl,
       chainId,
@@ -558,19 +1102,21 @@ export default class NetworkController extends EventEmitter {
         networkConfiguration.rpcUrl?.toLowerCase() === rpcUrl?.toLowerCase(),
     )?.id;
 
-    const newNetworkConfigurationId = oldNetworkConfigurationId || random();
-    this.networkConfigurationsStore.putState({
-      ...networkConfigurations,
-      [newNetworkConfigurationId]: {
-        ...newNetworkConfiguration,
-        id: newNetworkConfigurationId,
+    const newNetworkConfigurationId = oldNetworkConfigurationId || uuid();
+    this.store.updateState({
+      networkConfigurations: {
+        ...networkConfigurations,
+        [newNetworkConfigurationId]: {
+          ...newNetworkConfiguration,
+          id: newNetworkConfigurationId,
+        },
       },
     });
 
     if (!oldNetworkConfigurationId) {
-      this._trackMetaMetricsEvent({
+      this.#trackMetaMetricsEvent({
         event: 'Custom Network Added',
-        category: EVENT.CATEGORIES.NETWORK,
+        category: MetaMetricsEventCategory.Network,
         referrer: {
           url: referrer,
         },
@@ -583,42 +1129,30 @@ export default class NetworkController extends EventEmitter {
     }
 
     if (setActive) {
-      this.setActiveNetwork(newNetworkConfigurationId);
+      await this.setActiveNetwork(newNetworkConfigurationId);
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.prepareMmiPortfolio();
-    ///: END:ONLY_INCLUDE_IN
 
     return newNetworkConfigurationId;
   }
 
   /**
-   * Removes network configuration from state.
+   * Removes a network configuration from state.
    *
-   * @param {string} networkConfigurationId - the unique id for the network configuration to remove.
+   * @param networkConfigurationId - The unique id for the network configuration
+   * to remove.
    */
-  removeNetworkConfiguration(networkConfigurationId) {
+  removeNetworkConfiguration(networkConfigurationId: NetworkConfigurationId) {
+    if (!this.store.getState().networkConfigurations[networkConfigurationId]) {
+      throw new Error(
+        `networkConfigurationId ${networkConfigurationId} does not match a configured networkConfiguration`,
+      );
+    }
     const networkConfigurations = {
-      ...this.networkConfigurationsStore.getState(),
+      ...this.store.getState().networkConfigurations,
     };
     delete networkConfigurations[networkConfigurationId];
-    this.networkConfigurationsStore.putState(networkConfigurations);
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.prepareMmiPortfolio();
-    ///: END:ONLY_INCLUDE_IN
+    this.store.updateState({
+      networkConfigurations,
+    });
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  async prepareMmiPortfolio() {
-    if (!process.env.IN_TEST) {
-      this.handleMmiPortfolio().then((mmiDashboardData) => {
-        setDashboardCookie(
-          mmiDashboardData,
-          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls,
-        );
-      });
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 }
