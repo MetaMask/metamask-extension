@@ -4600,7 +4600,7 @@ export default class MetamaskController extends EventEmitter {
   //     const custodyKeyring = await this.getCustodyKeyringIfExists(
   //       msgParams.from,
   //     );
-  //     ///: END:ONLY_INCLUDE_IN(build-mmi)
+  //     ///: END:ONLY_INCLUDE_IN
 
   //     let cleanMsgParams = msgParams;
   //     if (!custodyKeyring) {
@@ -4643,7 +4643,7 @@ export default class MetamaskController extends EventEmitter {
 
   //       return this.getState();
   //     }
-  //     ///: END:ONLY_INCLUDE_IN(build-mmi)
+  //     ///: END:ONLY_INCLUDE_IN
 
   //     const signature = await this.keyringController.signTypedMessage(
   //       cleanMsgParams,
