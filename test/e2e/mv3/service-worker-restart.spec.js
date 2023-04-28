@@ -17,7 +17,7 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
 };
 
-const numberOfSegmentRequests = 2;
+const numberOfSegmentRequests = 3;
 
 async function mockSegment(mockServer) {
   return await mockServer
@@ -33,18 +33,6 @@ async function mockSegment(mockServer) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-      };
-    });
-}
-
-async function mockPostToSentryEnvelope(mockServer) {
-  await mockServer
-    .forPost('https://sentry.io/api/0000000/envelope/')
-    .withQuery({ sentry_key: 'fake', sentry_version: '7' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {},
       };
     });
 }
@@ -70,12 +58,10 @@ describe('MV3 - Service worker restart', function () {
         title: this.test.title,
         // because of segment
         failOnConsoleError: false,
-        testSpecificMock: mockPostToSentryEnvelope,
+        testSpecificMock: mockSegment,
         driverOptions,
       },
-      async ({ driver, mockServer }) => {
-        const mockedSegmentEndpoints = await mockSegment(mockServer);
-
+      async ({ driver, mockedEndpoint }) => {
         await driver.navigate();
 
         // unlock wallet
@@ -119,81 +105,84 @@ describe('MV3 - Service worker restart', function () {
 
         // assert that the segment request has been sent through inspecting the mock
         await driver.wait(async () => {
-          const isPending = await mockedSegmentEndpoints.isPending();
+          const isPending = await mockedEndpoint.isPending();
           return isPending === false;
         }, 10_000);
-        const mockedRequests = await mockedSegmentEndpoints.getSeenRequests();
+        const mockedRequests = await mockedEndpoint.getSeenRequests();
 
         assert.equal(mockedRequests.length, numberOfSegmentRequests);
 
-        assert.equal(mockedRequests[0].url, 'https://api.segment.io/v1/batch');
-
-        assert.equal(mockedRequests[0].body.json.batch.length, 1);
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].event,
-          MetaMetricsEventName.ServiceWorkerRestarted,
-        );
-
-        assert.equal(
-          typeof mockedRequests[0].body.json.batch[0].properties
-            .service_worker_restarted_time,
-          'number',
-        );
-
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].properties
-            .service_worker_restarted_time > 0,
-          true,
-        );
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].properties.category,
-          MetaMetricsEventCategory.ServiceWorkers,
-        );
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].properties.chain_id,
-          convertToHexValue(1337),
-        );
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].properties.environment_type,
-          'background',
-        );
-        assert.equal(
-          mockedRequests[0].body.json.batch[0].properties.locale,
-          'en',
-        );
-
-        assert.equal(mockedRequests[1].url, 'https://api.segment.io/v1/batch');
-
-        assert.equal(mockedRequests[1].body.json.batch.length, 1);
-
-        assert.equal(
-          mockedRequests[1].body.json.batch[0].event,
-          MetaMetricsEventName.ServiceWorkerRestarted,
-        );
-
-        assert.equal(
-          mockedRequests[1].body.json.batch[0].properties.service_worker_action_queue_methods.indexOf(
-            'addNewAccount',
-          ) !== '-1',
-          true,
-        );
-        assert.equal(
-          mockedRequests[1].body.json.batch[0].properties.category,
-          MetaMetricsEventCategory.ServiceWorkers,
-        );
-        assert.equal(
-          mockedRequests[1].body.json.batch[0].properties.chain_id,
-          convertToHexValue(1337),
-        );
-        assert.equal(
-          mockedRequests[1].body.json.batch[0].properties.environment_type,
-          'background',
-        );
-        assert.equal(
-          mockedRequests[1].body.json.batch[0].properties.locale,
-          'en',
+        await assertSWRestartTimeEvent(mockedRequests[0]);
+        await assertSWRestartTimeEvent(mockedRequests[1]);
+        await assertSWProcessActionQueueEvent(
+          mockedRequests[2],
+          'addNewAccount',
         );
       },
     );
   });
 });
+
+async function assertSWRestartTimeEvent(request) {
+  assert.equal(request.url, 'https://api.segment.io/v1/batch');
+
+  assert.equal(request.body.json.batch.length, 1);
+  assert.equal(
+    request.body.json.batch[0].event,
+    MetaMetricsEventName.ServiceWorkerRestarted,
+  );
+
+  assert.equal(
+    typeof request.body.json.batch[0].properties.service_worker_restarted_time,
+    'number',
+  );
+
+  assert.equal(
+    request.body.json.batch[0].properties.service_worker_restarted_time > 0,
+    true,
+  );
+  assert.equal(
+    request.body.json.batch[0].properties.category,
+    MetaMetricsEventCategory.ServiceWorkers,
+  );
+  assert.equal(
+    request.body.json.batch[0].properties.chain_id,
+    convertToHexValue(1337),
+  );
+  assert.equal(
+    request.body.json.batch[0].properties.environment_type,
+    'background',
+  );
+  assert.equal(request.body.json.batch[0].properties.locale, 'en');
+}
+
+async function assertSWProcessActionQueueEvent(request, method) {
+  assert.equal(request.url, 'https://api.segment.io/v1/batch');
+
+  assert.equal(request.body.json.batch.length, 1);
+
+  assert.equal(
+    request.body.json.batch[0].event,
+    MetaMetricsEventName.ServiceWorkerRestarted,
+  );
+
+  assert.equal(
+    request.body.json.batch[0].properties.service_worker_action_queue_methods.indexOf(
+      method,
+    ) !== '-1',
+    true,
+  );
+  assert.equal(
+    request.body.json.batch[0].properties.category,
+    MetaMetricsEventCategory.ServiceWorkers,
+  );
+  assert.equal(
+    request.body.json.batch[0].properties.chain_id,
+    convertToHexValue(1337),
+  );
+  assert.equal(
+    request.body.json.batch[0].properties.environment_type,
+    'background',
+  );
+  assert.equal(request.body.json.batch[0].properties.locale, 'en');
+}
