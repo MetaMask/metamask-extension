@@ -163,6 +163,12 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
   TransactionStatus.signed,
   TransactionStatus.submitted,
   TransactionStatus.pending,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  TransactionStatus.rejected,
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  TransactionStatus.confirmed,
+  ///: END:ONLY_INCLUDE_IN
 ];
 
 /**

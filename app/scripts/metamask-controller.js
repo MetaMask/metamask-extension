@@ -75,6 +75,13 @@ import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard'
 import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+// eslint-disable-next-line import/order
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
+///: END:ONLY_INCLUDE_IN
+
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+
 import {
   AssetType,
   TransactionStatus,
@@ -127,10 +134,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-// eslint-disable-next-line import/order
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IN
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
   onMessageReceived,
@@ -748,7 +751,10 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
         additionalKeyrings.push(
-          mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass,  { mmiConfigurationController: this.mmiConfigurationController })
+          mmiKeyringBuilderFactory(
+            CUSTODIAN_TYPES[custodianType].keyringClass,
+            { mmiConfigurationController: this.mmiConfigurationController },
+          ),
         );
       }
       ///: END:ONLY_INCLUDE_IN
@@ -2361,7 +2367,6 @@ export default class MetamaskController extends EventEmitter {
           appStateController,
         ),
       ///: END:ONLY_INCLUDE_IN
-
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // snaps
@@ -4515,143 +4520,141 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * @Shane-T: Just to use as a reference for now, dev-purpose
+   * Shane-T: Just to use as a reference for now, dev-purpose
    * Delete after this logic goes into our mmi-controller and/or passed into the
    * app/scripts/controllers/sign.ts L376
    */
-  async signPersonalMessage(msgParams) {
-    log.info('MetaMaskController - signPersonalMessage');
+  // async signPersonalMessage(msgParams) {
+  //   log.info('MetaMaskController - signPersonalMessage');
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    const custodyKeyring = await this.getCustodyKeyringIfExists(msgParams.from);
+  //   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  //   const custodyKeyring = await this.getCustodyKeyringIfExists(msgParams.from);
 
-    if (custodyKeyring) {
-      const msgId = msgParams.metamaskId;
+  //   if (custodyKeyring) {
+  //     const msgId = msgParams.metamaskId;
 
-      const msg = this.personalMessageManager.getMsg(msgId);
+  //     const msg = this.personalMessageManager.getMsg(msgId);
 
-      if (msg.custodyId) {
-        return this.getState();
-      }
+  //     if (msg.custodyId) {
+  //       return this.getState();
+  //     }
 
-      const messageObject = await this.keyringController.signPersonalMessage(
-        msgParams,
-      );
+  //     const messageObject = await this.keyringController.signPersonalMessage(
+  //       msgParams,
+  //     );
 
-      this.personalMessageManager.setMsgCustodyId(
-        msgId,
-        messageObject.custodian_transactionId,
-      );
+  //     this.personalMessageManager.setMsgCustodyId(
+  //       msgId,
+  //       messageObject.custodian_transactionId,
+  //     );
 
-      /**
-       * From "messageObject" we have:
-       * - custodian_transactionId
-       * - from
-       * -transactionStatus
-       */
-      this.transactionUpdateController.addTransactionToWatchList(
-        messageObject.custodian_transactionId,
-        messageObject.from,
-        'personal',
-        true,
-      );
+  //     /**
+  //      * From "messageObject" we have:
+  //      * - custodian_transactionId
+  //      * - from
+  //      * -transactionStatus
+  //      */
+  //     this.transactionUpdateController.addTransactionToWatchList(
+  //       messageObject.custodian_transactionId,
+  //       messageObject.from,
+  //       'personal',
+  //       true,
+  //     );
 
-      return this.getState();
-    }
-    ///: END:ONLY_INCLUDE_IN(build-mmi)
+  //     return this.getState();
+  //   }
+  //   ///: END:ONLY_INCLUDE_IN(build-mmi)
 
-    const msgId = msgParams.metamaskId;
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    try {
-      const cleanMsgParams = await this.personalMessageManager.approveMessage(
-        msgParams,
-      );
-      const rawSig = await this.keyringController.signPersonalMessage(
-        cleanMsgParams,
-      );
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_personalSign failed', error);
-      this.personalMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
+  //   const msgId = msgParams.metamaskId;
+  //   // sets the status op the message to 'approved'
+  //   // and removes the metamaskId for signing
+  //   try {
+  //     const cleanMsgParams = await this.personalMessageManager.approveMessage(
+  //       msgParams,
+  //     );
+  //     const rawSig = await this.keyringController.signPersonalMessage(
+  //       cleanMsgParams,
+  //     );
+  //     // tells the listener that the message has been signed
+  //     // and can be returned to the dapp
+  //     this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
+  //     return this.getState();
+  //   } catch (error) {
+  //     log.info('MetaMaskController - eth_personalSign failed', error);
+  //     this.personalMessageManager.errorMessage(msgId, error);
+  //     throw error;
+  //   }
+  // }
 
   /**
-   * @Shane-T: Just to use as a reference for now, dev-purpose
+   * Shane-T: Just to use as a reference for now, dev-purpose
    * Delete after this logic goes into our mmi-controller and/or passed into the
    * app/scripts/controllers/sign.ts L393
    */
-  async signTypedMessage(msgParams) {
-    log.info('MetaMaskController - eth_signTypedData');
-    const msgId = msgParams.metamaskId;
-    const { version } = msgParams;
-    try {
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      const custodyKeyring = await this.getCustodyKeyringIfExists(
-        msgParams.from,
-      );
-      ///: END:ONLY_INCLUDE_IN(build-mmi)
+  // async signTypedMessage(msgParams) {
+  //   log.info('MetaMaskController - eth_signTypedData');
+  //   const msgId = msgParams.metamaskId;
+  //   const { version } = msgParams;
+  //   try {
+  //     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  //     const custodyKeyring = await this.getCustodyKeyringIfExists(
+  //       msgParams.from,
+  //     );
+  //     ///: END:ONLY_INCLUDE_IN(build-mmi)
 
-      let cleanMsgParams = msgParams;
-      if (!custodyKeyring) {
-        cleanMsgParams = await this.typedMessageManager.approveMessage(
-          msgParams,
-        );
-      }
+  //     let cleanMsgParams = msgParams;
+  //     if (!custodyKeyring) {
+  //       cleanMsgParams = await this.typedMessageManager.approveMessage(
+  //         msgParams,
+  //       );
+  //     }
 
-      // For some reason every version after V1 used stringified params.
-      if (version !== 'V1') {
-        // But we don't have to require that. We can stop suggesting it now:
-        if (typeof cleanMsgParams.data === 'string') {
-          cleanMsgParams.data = JSON.parse(cleanMsgParams.data);
-        }
-      }
+  //     // For some reason every version after V1 used stringified params.
+  //     if (version !== 'V1') {
+  //       // But we don't have to require that. We can stop suggesting it now:
+  //       if (typeof cleanMsgParams.data === 'string') {
+  //         cleanMsgParams.data = JSON.parse(cleanMsgParams.data);
+  //       }
+  //     }
 
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      if (custodyKeyring) {
-        // This is a custodial signature so we cannot get the signature straight away
-        const msg = this.typedMessageManager.getMsg(msgId);
+  //     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  //     if (custodyKeyring) {
+  //       // This is a custodial signature so we cannot get the signature straight away
+  //       const msg = this.typedMessageManager.getMsg(msgId);
 
-        if (msg.custodyId) {
-          return this.getState();
-        }
-        const messageObject = await this.keyringController.signTypedMessage(
-          cleanMsgParams,
-          { version },
-        );
-        this.typedMessageManager.setMsgCustodyId(
-          msgId,
-          messageObject.custodian_transactionId,
-        );
+  //       if (msg.custodyId) {
+  //         return this.getState();
+  //       }
+  //       const messageObject = await this.keyringController.signTypedMessage(
+  //         cleanMsgParams,
+  //         { version },
+  //       );
+  //       this.typedMessageManager.setMsgCustodyId(
+  //         msgId,
+  //         messageObject.custodian_transactionId,
+  //       );
 
-        this.transactionUpdateController.addTransactionToWatchList(
-          messageObject.custodian_transactionId,
-          messageObject.from,
-          'v4',
-          true,
-        );
+  //       this.transactionUpdateController.addTransactionToWatchList(
+  //         messageObject.custodian_transactionId,
+  //         messageObject.from,
+  //         'v4',
+  //         true,
+  //       );
 
-        return this.getState();
-      }
-      ///: END:ONLY_INCLUDE_IN(build-mmi)
+  //       return this.getState();
+  //     }
+  //     ///: END:ONLY_INCLUDE_IN(build-mmi)
 
-      const signature = await this.keyringController.signTypedMessage(
-        cleanMsgParams,
-        { version },
-      );
-      this.typedMessageManager.setMsgStatusSigned(msgId, signature);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_signTypedData failed.', error);
-      this.typedMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-
+  //     const signature = await this.keyringController.signTypedMessage(
+  //       cleanMsgParams,
+  //       { version },
+  //     );
+  //     this.typedMessageManager.setMsgStatusSigned(msgId, signature);
+  //     return this.getState();
+  //   } catch (error) {
+  //     log.info('MetaMaskController - eth_signTypedData failed.', error);
+  //     this.typedMessageManager.errorMessage(msgId, error);
+  //     throw error;
+  //   }
+  // }
 }
