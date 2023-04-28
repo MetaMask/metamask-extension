@@ -4452,7 +4452,7 @@
     "message": "Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code."
   },
   "toggleEthSignModalFormError": {
-    "message": "The text is incorrect. Try again"
+    "message": "The text is incorrect"
   },
   "toggleEthSignModalFormLabel": {
     "message": "Enter “I only sign what I understand” to continue"
