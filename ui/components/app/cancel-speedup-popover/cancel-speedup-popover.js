@@ -104,7 +104,11 @@ const CancelSpeedupPopover = () => {
           className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
-            <Text as="strong" key="cancelSpeedupCancel">
+            <Text
+              as="strong"
+              variant={TextVariant.bodySm}
+              key="cancelSpeedupCancel"
+            >
               {t('replace')}
             </Text>,
           ])}
