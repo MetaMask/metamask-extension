@@ -14,13 +14,14 @@ import {
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
-import { NonEmptyArray, ApprovalType } from '@metamask/controller-utils';
+import { NonEmptyArray } from '@metamask/controller-utils';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
@@ -1416,7 +1417,7 @@ export function cancelMsgs(
         ({ id, type }) =>
           new Promise<void>((resolve, reject) => {
             switch (type) {
-              case ApprovalType.EthSignTypedData:
+              case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
                 callBackgroundMethod('cancelTypedMessage', [id], (err) => {
                   if (err) {
                     reject(err);
@@ -1425,7 +1426,7 @@ export function cancelMsgs(
                   resolve();
                 });
                 return;
-              case ApprovalType.PersonalSign:
+              case MESSAGE_TYPE.PERSONAL_SIGN:
                 callBackgroundMethod('cancelPersonalMessage', [id], (err) => {
                   if (err) {
                     reject(err);
@@ -1434,7 +1435,7 @@ export function cancelMsgs(
                   resolve();
                 });
                 return;
-              case ApprovalType.EthDecrypt:
+              case MESSAGE_TYPE.ETH_DECRYPT:
                 callBackgroundMethod('cancelDecryptMessage', [id], (err) => {
                   if (err) {
                     reject(err);
@@ -1443,7 +1444,7 @@ export function cancelMsgs(
                   resolve();
                 });
                 return;
-              case ApprovalType.EthGetEncryptionPublicKey:
+              case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
                 callBackgroundMethod(
                   'cancelEncryptionPublicKey',
                   [id],
@@ -1456,7 +1457,7 @@ export function cancelMsgs(
                   },
                 );
                 return;
-              case ApprovalType.EthSign:
+              case MESSAGE_TYPE.ETH_SIGN:
                 callBackgroundMethod('cancelMessage', [id], (err) => {
                   if (err) {
                     reject(err);

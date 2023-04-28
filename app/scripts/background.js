@@ -9,7 +9,7 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';

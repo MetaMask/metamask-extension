@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 import {
   getURLHostName,
@@ -38,7 +39,6 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
