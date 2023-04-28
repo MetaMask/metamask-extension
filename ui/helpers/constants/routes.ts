@@ -21,7 +21,6 @@ const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 const REVEAL_SEED_ROUTE = '/seed';
-const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
@@ -29,13 +28,25 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
+const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
+const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+const COMPLIANCE_FEATURE_ROUTE = '/compliance-feature';
+const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT =
+  '/confirm-institutional-feature-connect';
+const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
+const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
+  '/interactive-replacement-token-page';
+///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
+const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
@@ -60,16 +71,17 @@ const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
-const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/import-mobile';
 const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
 const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 const DESKTOP_ERROR_ROUTE = '/desktop/error';
 const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
@@ -112,7 +124,6 @@ const PATH_NAME_MAP = {
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
   [`${CONTACT_VIEW_ROUTE}/:address`]: 'View Contact Settings Page',
   [REVEAL_SEED_ROUTE]: 'Reveal Secret Recovery Phrase Page',
-  [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
   [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
@@ -120,6 +131,16 @@ const PATH_NAME_MAP = {
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
+  [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
+  [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
+  [COMPLIANCE_FEATURE_ROUTE]: 'Compliance Feature Page',
+  [CONFIRM_INSTITUTIONAL_FEATURE_CONNECT]:
+    'Confirm Institutional Feature Connect',
+  [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
+  [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
+  ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
   [`${CONNECT_ROUTE}/:id`]: 'Connect To Site Confirmation Page',
@@ -168,7 +189,6 @@ export {
   LOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
-  MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
   IMPORT_TOKEN_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
@@ -202,15 +222,25 @@ export {
   CONTACT_EDIT_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CUSTODY_ACCOUNT_DONE_ROUTE,
+  CUSTODY_ACCOUNT_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  ///: END:ONLY_INCLUDE_IN
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
+  CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
@@ -230,7 +260,6 @@ export {
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_IMPORT_MOBILE_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -240,7 +269,7 @@ export {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
   DESKTOP_ERROR_ROUTE,

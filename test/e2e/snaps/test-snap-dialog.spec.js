@@ -52,29 +52,32 @@ describe('Test Snap Dialog', function () {
           tag: 'button',
         });
 
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // switch to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectDialogSnap',
+          text: 'Reconnect to Dialog Snap',
+        });
 
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -82,12 +85,12 @@ describe('Test Snap Dialog', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // check dialog contents
         let result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
-        await driver.delay(1000);
+        await driver.delay(500);
         assert.equal(await result.getText(), 'Alert Dialog\nText here');
 
         // click ok button
@@ -102,12 +105,12 @@ describe('Test Snap Dialog', function () {
 
         // check result is null
         result = await driver.findElement('#dialogResult');
-        await driver.delay(1000);
+        await driver.delay(500);
         assert.equal(await result.getText(), 'null');
 
         // click conf button
         await driver.clickElement('#sendConfButton');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -115,7 +118,7 @@ describe('Test Snap Dialog', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // click reject
         await driver.clickElement({
@@ -129,12 +132,12 @@ describe('Test Snap Dialog', function () {
 
         // check for false result
         result = await driver.findElement('#dialogResult');
-        await driver.delay(1000);
+        await driver.delay(500);
         assert.equal(await result.getText(), 'false');
 
         // click conf button again
         await driver.clickElement('#sendConfButton');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -142,7 +145,7 @@ describe('Test Snap Dialog', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // click accept
         await driver.clickElement({
@@ -156,12 +159,12 @@ describe('Test Snap Dialog', function () {
 
         // check for true result
         result = await driver.findElement('#dialogResult');
-        await driver.delay(1000);
+        await driver.delay(500);
         assert.equal(await result.getText(), 'true');
 
         // click prompt button
         await driver.clickElement('#sendPromptButton');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -169,7 +172,7 @@ describe('Test Snap Dialog', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // click cancel button
         await driver.clickElement({
@@ -183,12 +186,12 @@ describe('Test Snap Dialog', function () {
 
         // check result is equal to 'null'
         result = await driver.findElement('#dialogResult');
-        await driver.delay(1000);
+        await driver.delay(500);
         assert.equal(await result.getText(), 'null');
 
         // click prompt button
         await driver.clickElement('#sendPromptButton');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -196,10 +199,10 @@ describe('Test Snap Dialog', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // fill '2323' in form field
-        await driver.fill('.MuiInput-input', '2323');
+        await driver.pasteIntoField('.MuiInput-input', '2323');
 
         // click submit button
         await driver.clickElement({
@@ -213,7 +216,6 @@ describe('Test Snap Dialog', function () {
 
         // check result is equal to '2323'
         result = await driver.findElement('#dialogResult');
-        await driver.delay(1000);
         assert.equal(await result.getText(), '"2323"');
       },
     );

@@ -672,12 +672,6 @@
   "settings": {
     "message": "সেটিংস"
   },
-  "showAdvancedGasInline": {
-    "message": "উন্নত গ্যাস নিয়ন্ত্রণসমূহ"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "গ্যাসের মূল্য দেখাতে এটি নির্বাচন করুন এবং পাঠানোর এবং নিশ্চিতকরণের স্ক্রিনগুলিতে নিয়ন্ত্রণগুলি সরাসরি সীমিত করুন।"
-  },
   "showFiatConversionInTestnets": {
     "message": "Testnets এ রূপান্তর দেখান"
   },
@@ -740,27 +734,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "প্রতীকটি 11 টি অক্ষর বা তার চেয়ে কম হতে হবে।"
-  },
-  "syncWithMobile": {
-    "message": "মোবাইল দিয়ে সিঙ্ক করুন"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "এই কোডটি স্ক্যান করার সময় কেউ আপনার স্ক্রিনটি দেখছে না তা নিশ্চিত করুন"
-  },
-  "syncWithMobileComplete": {
-    "message": "আপনার ডেটা সফলভাবে সিঙ্ক করা হয়েছে। MetaMask মোবাইল অ্যাপ উপভোগ করুন!"
-  },
-  "syncWithMobileDesc": {
-    "message": "আপনি আপনার অ্যাকাউন্ট এবং তথ্য আপনার মোবাইল ডিভাইস দিয়ে সিঙ্ক করতে পারেন। MetaMask মোবাইল অ্যাপটি খুলুন, \"সেটিংস\" এ যান এবং \"ব্রাউজার এক্সটেনশন থেকে সিঙ্ক করুন\" এ ট্যাপ করুন "
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "আপনি প্রথমবারের জন্য MetaMask খোলার পরে, শুধু আপনার ফোনে পদক্ষেপগুলি অনুসরণ করুন। "
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "আপনার MetaMask মোবাইল অ্যাপ দিয়ে এই কোডটি স্ক্যান করুন"
-  },
-  "syncWithMobileTitle": {
-    "message": "মোবাইল দিয়ে সিঙ্ক করুন"
   },
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"

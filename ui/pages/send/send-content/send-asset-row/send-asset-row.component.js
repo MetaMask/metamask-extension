@@ -7,7 +7,7 @@ import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import {
   AssetType,
   TokenStandard,
@@ -97,7 +97,7 @@ export default class SendAssetRow extends Component {
       },
       () => {
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           event: 'User clicks "Assets" dropdown',
           properties: {
             action: 'Send Screen',

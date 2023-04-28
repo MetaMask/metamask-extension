@@ -15,6 +15,8 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        // agree to terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -84,7 +86,7 @@ describe('MetaMask Responsive UI', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
@@ -104,9 +106,10 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
+        const balance = await ganacheServer.getBalance();
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: '1000 ETH',
+          text: `${balance} ETH`,
         });
       },
     );
@@ -162,13 +165,10 @@ describe('MetaMask Responsive UI', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-1 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 ETH',
+        });
       },
     );
   });

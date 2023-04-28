@@ -26,7 +26,7 @@ import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -106,7 +106,7 @@ const NewNetworkInfo = () => {
           ) : (
             <Icon
               className="question"
-              name={ICON_NAMES.QUESTION}
+              name={IconName.Question}
               color={Color.iconDefault}
             />
           )

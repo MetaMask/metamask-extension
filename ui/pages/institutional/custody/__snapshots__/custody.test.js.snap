@@ -1,0 +1,174 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustodyPage renders CustodyPage 1`] = `
+<div>
+  <div
+    class="box box--flex-direction-row"
+  >
+    
+    
+    <div
+      class="box box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
+    >
+      <button
+        aria-label="Back"
+        class="box mm-button-icon mm-button-icon--size-sm box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+      >
+        <span
+          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+      <h4
+        class="box mm-text mm-text--body-lg-medium box--margin-top-4 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+      >
+        Custodial Accounts
+      </h4>
+      <h6
+        class="box mm-text mm-text--body-md box--margin-top-2 box--margin-bottom-5 box--flex-direction-row box--color-text-default"
+      >
+        Please choose the custodian you want to connect in order to add or refresh a token.
+      </h6>
+      <div
+        class="box box--flex-direction-row"
+      >
+        <ul
+          width="full"
+        >
+          <div
+            class="box box--margin-bottom-4 box--padding-3 box--sm:padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center box--rounded-sm box--border-color-border-default box--border-style-solid box--border-width-1"
+          >
+            <div
+              class="box box--display-flex box--flex-direction-row box--align-items-center"
+            >
+              <img
+                alt="Saturn Custody"
+                height="32"
+                src="https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg"
+                width="32"
+              />
+              <p
+                class="box mm-text mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-text-default"
+              >
+                Saturn Custody
+              </p>
+            </div>
+            <button
+              class="box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+              data-testid="custody-connect-button"
+            >
+              Select
+            </button>
+          </div>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+</div>
+`;
+
+exports[`CustodyPage renders CustodyPage 2`] = `
+<div>
+  <div
+    class="box box--flex-direction-row"
+  >
+    
+    
+    <div
+      class="box box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
+    >
+      <button
+        aria-label="Back"
+        class="box mm-button-icon mm-button-icon--size-sm box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
+      >
+        <span
+          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+      <h4
+        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+      >
+        <div
+          class="box box--display-flex box--flex-direction-row box--align-items-center"
+        >
+          <p
+            class="box mm-text mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-text-default"
+          />
+        </div>
+      </h4>
+      <p
+        class="box mm-text mm-text--body-md box--margin-top-4 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+      >
+        Enter your  token or add a new token
+      </p>
+    </div>
+    <div
+      class="box box--padding-top-7 box--padding-bottom-7 box--flex-direction-row"
+    >
+      <div
+        class="box jwt-url-form box--margin-bottom-8 box--display-flex box--flex-direction-column box--align-items-flex-start"
+      >
+        <div
+          class="box jwt-url-form__jwt-container box--margin-top-4 box--margin-bottom-6 box--display-flex box--flex-direction-column box--align-items-center box--width-full"
+        >
+          <div
+            class="box box--flex-direction-row"
+          >
+            <p
+              class="box mm-text jwt-url-form__instruction mm-text--body-md box--display-block box--flex-direction-row box--color-text-default"
+            >
+              Paste or drop your token here:
+            </p>
+            <textarea
+              class="jwt-url-form__input-jwt"
+              data-testid="jwt-input"
+              id="jwt-box"
+            >
+              token
+            </textarea>
+          </div>
+        </div>
+        <div
+          class="box box--flex-direction-row box--width-full"
+        >
+          <p
+            class="box mm-text jwt-url-form__instruction mm-text--body-md box--display-block box--flex-direction-row box--color-text-default"
+          >
+             API URL
+          </p>
+          <div
+            class="box box--flex-direction-row"
+          >
+            <input
+              class="jwt-url-form__input"
+              data-testid="jwt-api-url-input"
+              id="api-url-box"
+              value="url"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="box box--padding-4 box--display-flex box--flex-direction-row box--justify-content-center"
+      >
+        <button
+          class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--margin-right-4 box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+          type="secondary"
+        >
+          Cancel
+        </button>
+        <button
+          class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+          data-testid="jwt-form-connect-button"
+        >
+          Connect
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyPage renders CustodyPage 3`] = `<div />`;
