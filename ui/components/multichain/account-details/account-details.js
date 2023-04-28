@@ -112,8 +112,8 @@ export const AccountDetails = ({ address }) => {
             <Text
               marginTop={2}
               marginBottom={2}
-              variant={TextVariant.headingSm}
-              fontWeight={FontWeight.Normal}
+              variant={TextVariant.bodyLgMedium}
+              style={{ wordBreak: 'break-word' }}
             >
               {name}
             </Text>

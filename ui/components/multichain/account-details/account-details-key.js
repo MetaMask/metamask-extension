@@ -27,7 +27,11 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
 
   return (
     <>
-      <Text marginTop={6} variant={TextVariant.bodySm}>
+      <Text
+        marginTop={6}
+        variant={TextVariant.bodySm}
+        style={{ wordBreak: 'break-word' }}
+      >
         {t('privateKeyCopyWarning', [accountName])}
       </Text>
       <Box
