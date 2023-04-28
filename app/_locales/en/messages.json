@@ -4458,7 +4458,7 @@
     "message": "Enter “I only sign what I understand” to continue"
   },
   "toggleEthSignModalFormValidation": {
-    "message": "I only sign what I understand "
+    "message": "I only sign what I understand"
   },
   "toggleEthSignModalTitle": {
     "message": "Use at your own risk"
