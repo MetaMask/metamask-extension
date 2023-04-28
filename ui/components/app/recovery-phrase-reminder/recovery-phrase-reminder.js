@@ -40,7 +40,6 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
           align={TextAlign.Center}
           variant={TextVariant.bodyMd}
           marginBottom={4}
-
         >
           {t('recoveryPhraseReminderSubText')}
         </Text>
