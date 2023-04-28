@@ -4458,10 +4458,16 @@
     "message": "Enter “I only sign what I understand” to continue"
   },
   "toggleEthSignModalFormValidation": {
-    "message": "I only sign what I understand"
+    "message": "I only sign what I understand "
   },
   "toggleEthSignModalTitle": {
     "message": "Use at your own risk"
+  },
+  "toggleEthSignOff": {
+    "message": "OFF (Recommended)"
+  },
+  "toggleEthSignOn": {
+    "message": "ON (Not recommended)"
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",
