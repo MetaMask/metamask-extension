@@ -1,7 +1,19 @@
 #! /bin/bash
+
+validate-number(){
+  re='^[0-9]+$'
+  if [[ ! $1 =~ $re ]]; then
+    echo "Error: The value must be a number." >&2
+    exit 1
+  fi
+}
+
 g-migration() {
   [[ -z "$1" ]] && { echo "Migration version is required!" ; exit 1; }
   local vnum=$1
+
+  validate-number "$vnum"
+
   if (($1 < 100)); then
     vnum=0$1
   fi
