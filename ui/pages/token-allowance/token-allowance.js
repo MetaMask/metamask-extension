@@ -26,7 +26,6 @@ import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-sp
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
-  getCurrentAccountWithSendEtherInfo,
   getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
@@ -35,6 +34,7 @@ import {
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
+  getTargetAccountWithSendEtherInfo,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -115,7 +115,9 @@ export default function TokenAllowance({
   const renderSimulationFailureWarning = useSimulationFailureWarning(
     userAcknowledgedGasMissing,
   );
-  const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
+  const fromAccount = useSelector((state) =>
+    getTargetAccountWithSendEtherInfo(state, userAddress),
+  );
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
@@ -314,7 +316,7 @@ export default function TokenAllowance({
       </Box>
       <NetworkAccountBalanceHeader
         networkName={networkName}
-        accountName={currentAccount.name}
+        accountName={fromAccount.name}
         accountBalance={currentTokenBalance}
         tokenName={tokenSymbol}
         accountAddress={userAddress}

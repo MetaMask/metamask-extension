@@ -119,6 +119,11 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function getMetaMetricsId(state) {
+  const { metaMetricsId } = state.metamask;
+  return metaMetricsId;
+}
+
 export function isCurrentProviderCustom(state) {
   const provider = getProvider(state);
   return (
@@ -233,7 +238,15 @@ export function getHardwareWalletType(state) {
 
 export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const type = currentKeyring && currentKeyring.type;
+  return getAccountTypeForKeyring(currentKeyring);
+}
+
+export function getAccountTypeForKeyring(keyring) {
+  if (!keyring) {
+    return '';
+  }
+
+  const { type } = keyring;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   if (type.startsWith('Custody')) {
@@ -245,6 +258,7 @@ export function getAccountType(state) {
     case KeyringType.trezor:
     case KeyringType.ledger:
     case KeyringType.lattice:
+    case KeyringType.qr:
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
