@@ -226,7 +226,7 @@ export default class TransactionController extends EventEmitter {
     this._updatePendingTxsAfterFirstBlock();
     this._onBootCleanUp();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.transactionUpdateController = opts.transactionUpdateController;
     ///: END:ONLY_INCLUDE_IN
   }
@@ -1358,7 +1358,7 @@ export default class TransactionController extends EventEmitter {
     // that is already being incremented & signed.
     const txMeta = this.txStateManager.getTransaction(txId);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
     if (txMeta.custodyStatus) {
       this.inProcessOfSigning.delete(txId);
@@ -1521,12 +1521,12 @@ export default class TransactionController extends EventEmitter {
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       txMeta.custodyStatus ? txMeta : undefined,
       ///: END:ONLY_INCLUDE_IN
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (txMeta.custodyStatus) {
       txMeta.custodyId = signedEthTx.custodian_transactionId;
       txMeta.custodyStatus = signedEthTx.transactionStatus;
@@ -1900,7 +1900,7 @@ export default class TransactionController extends EventEmitter {
         },
       })
       .forEach((txMeta) => {
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         // If you create a Tx and its still inside the custodian waiting to be approved we don't want to approve it right away
         if (!txMeta.custodyStatus) {
           ///: END:ONLY_INCLUDE_IN
@@ -1909,7 +1909,7 @@ export default class TransactionController extends EventEmitter {
           // APPROVED state at the time of controller bootup
           this.approveTransaction(txMeta.id);
 
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         }
         ///: END:ONLY_INCLUDE_IN
       });

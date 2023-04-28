@@ -144,7 +144,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       return undefined;
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // Don't ever resubmit custodian transactions
     if (txMeta.custodyId) {
       return undefined;
@@ -190,7 +190,7 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     let hasNoHash = !txHash;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // Don't emit noTxHashErr for custodian transactions
     hasNoHash ||= !txMeta.custodyId;
     ///: END:ONLY_INCLUDE_IN
