@@ -25,7 +25,6 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
   TextVariant,
-  FontWeight,
   Size,
 } from '../../../helpers/constants/design-system';
 import { AddressCopyButton } from '../address-copy-button';

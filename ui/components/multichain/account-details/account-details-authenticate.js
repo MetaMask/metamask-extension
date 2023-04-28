@@ -11,8 +11,8 @@ import {
   BannerAlert,
   ButtonPrimary,
   ButtonSecondary,
+  FormTextField,
   Text,
-  TextField,
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -34,21 +34,30 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
     });
   }, [dispatch, password, address]);
 
+  const handleKeyPress = useCallback(
+    (e) => {
+      if (e.key === 'Enter') {
+        onSubmit();
+      }
+    },
+    [onSubmit],
+  );
+
   return (
     <>
-      <Text marginTop={6} variant={TextVariant.bodySm}>
-        {t('enterYourPassword')}
-      </Text>
-      <TextField
-        type="password"
-        onInput={(e) => setPassword(e.target.value)}
+      <FormTextField
+        marginTop={6}
+        id="account-details-authenticate"
+        label={t('enterYourPassword')}
         placeholder={t('password')}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            onSubmit();
-          }
+        error={warning}
+        helpText={warning}
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
+        variant={TextVariant.bodySm}
+        inputProps={{
+          onKeyPress: handleKeyPress,
         }}
-        autoFocus
       />
       {warning ? (
         <Text
