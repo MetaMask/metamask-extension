@@ -359,11 +359,7 @@ export default function TokenAllowance({
         </Box>
       </Box>
       <Box marginLeft={4} marginRight={4}>
-        <Text
-          variant={TextVariant.headingMd}
-          as="h3"
-          align={TextAlign.Center}
-        >
+        <Text variant={TextVariant.headingMd} as="h3" align={TextAlign.Center}>
           {isFirstPage ? (
             t('setSpendingCap', [renderContractTokenValues])
           ) : (
