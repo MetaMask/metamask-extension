@@ -2702,7 +2702,6 @@
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true,
         "eslint>@eslint-community/eslint-utils": true,
