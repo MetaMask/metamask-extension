@@ -2960,6 +2960,42 @@ export default class MetamaskController extends EventEmitter {
       extensionId,
     });
   }
+
+  async setAccountAndNetwork(origin, address, chainId) {
+    await this.appStateController.getUnlockPromise(true);
+    const selectedAddress = this.preferencesController.getSelectedAddress();
+    if (selectedAddress.toLowerCase() !== address.toLowerCase()) {
+      this.preferencesController.setSelectedAddress(address);
+    }
+    const selectedChainId = parseInt(
+      this.networkController.getCurrentChainId(),
+      16,
+    );
+    if (selectedChainId !== chainId && chainId === 1) {
+      this.networkController.setProviderType('mainnet');
+    } else if (selectedChainId !== chainId) {
+      const network = this.preferencesController
+        .getFrequentRpcListDetail()
+        .find((item) => parseInt(item.chainId, 16) === chainId);
+      this.networkController.setRpcTarget(
+        network.rpcUrl,
+        network.chainId,
+        network.ticker,
+        network.nickname,
+      );
+    }
+    getPermissionBackgroundApiMethods(
+      this.permissionController,
+    ).addPermittedAccount(origin, address);
+
+    return true;
+  }
+
+  async handleMmiOpenSwaps(origin, address, chainId) {
+    await this.setAccountAndNetwork(origin, address, chainId);
+    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+    return true;
+  }
   ///: END:ONLY_INCLUDE_IN
 
   //
