@@ -7,6 +7,7 @@ import {
   TextAlign,
   TextColor,
   IconColor,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -85,7 +86,11 @@ export default function OnboardingMetametrics() {
       >
         {t('onboardingMetametricsTitle')}
       </Text>
-      <Text className="onboarding-metametrics__desc" align={TextAlign.Center}>
+      <Text
+        className="onboarding-metametrics__desc"
+        marginTop={2}
+        align={TextAlign.Center}
+      >
         {t('onboardingMetametricsDescription')}
       </Text>
       <Text className="onboarding-metametrics__desc" align={TextAlign.Center}>
@@ -118,6 +123,7 @@ export default function OnboardingMetametrics() {
             />
             {t('onboardingMetametricsNeverCollect', [
               <Text
+                display={DISPLAY.INLINE_BLOCK}
                 variant={TextVariant.bodyMd}
                 key="never"
                 fontWeight={FontWeight.Bold}
@@ -138,6 +144,7 @@ export default function OnboardingMetametrics() {
             />
             {t('onboardingMetametricsNeverCollectIP', [
               <Text
+                display={DISPLAY.INLINE_BLOCK}
                 variant={TextVariant.bodyMd}
                 key="never-collect"
                 fontWeight={FontWeight.Bold}
@@ -157,6 +164,7 @@ export default function OnboardingMetametrics() {
             />
             {t('onboardingMetametricsNeverSellData', [
               <Text
+                display={DISPLAY.INLINE_BLOCK}
                 variant={TextVariant.bodyMd}
                 key="never-sell"
                 fontWeight={FontWeight.Bold}
