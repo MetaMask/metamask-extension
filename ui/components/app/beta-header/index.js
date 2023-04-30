@@ -2,7 +2,7 @@
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Box from '../../ui/box/box';
+import Box from '../../ui/box/box'
 import {
   TextVariant,
   Color,
@@ -14,12 +14,7 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../component-library';
+import { ButtonIcon, ButtonIconSize, IconName, Text } from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -34,8 +29,7 @@ const BetaHeader = () => {
       alignItems={AlignItems.center}
     >
       <Text
-        variant={TextVariant.bodySm}
-        as="h6"
+        variant={TextVariant.bodySm} as="h6"
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
