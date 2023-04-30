@@ -1,10 +1,10 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box/box';
-import Typography from '../../ui/typography/typography';
 import {
-  TypographyVariant,
+  TextVariant,
   Color,
   BLOCK_SIZES,
   DISPLAY,
@@ -14,7 +14,12 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -28,8 +33,9 @@ const BetaHeader = () => {
       className="beta-header"
       alignItems={AlignItems.center}
     >
-      <Typography
-        variant={TypographyVariant.H7}
+      <Text
+        variant={TextVariant.bodySm}
+        as="h6"
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
@@ -45,7 +51,7 @@ const BetaHeader = () => {
             {t('here')}
           </a>,
         ])}
-      </Typography>
+      </Text>
       <ButtonIcon
         iconName={IconName.Close}
         size={ButtonIconSize.Sm}
