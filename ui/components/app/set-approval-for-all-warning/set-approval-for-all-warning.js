@@ -5,18 +5,17 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
-import Typography from '../../ui/typography';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Identicon from '../../ui/identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, Text } from '../../component-library';
 
 const SetApproveForAllWarning = ({
   collectionName,
@@ -65,12 +64,13 @@ const SetApproveForAllWarning = ({
           name={IconName.Danger}
           className="set-approval-for-all-warning__content__header__warning-icon"
         />
-        <Typography
-          variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
+          fontWeight={FontWeight.Bold}
         >
           {t('yourNFTmayBeAtRisk')}
-        </Typography>
+        </Text>
       </Box>
       <Box
         display={DISPLAY.FLEX}
@@ -80,25 +80,25 @@ const SetApproveForAllWarning = ({
       >
         <Box display={DISPLAY.FLEX}>
           <Identicon address={senderAddress} diameter={32} />
-          <Typography
-            variant={TypographyVariant.H5}
+          <Text
+            variant={TextVariant.bodyMd}
+            as="h5"
             marginLeft={2}
             className="set-approval-for-all-warning__content__account-name"
           >
             <b>{name}</b> {` (${shortenAddress(senderAddress)})`}
-          </Typography>
+          </Text>
         </Box>
-        {isERC721 && total && (
-          <Typography>{`${t('total')}: ${total}`}</Typography>
-        )}
+        {isERC721 && total && <Text>{`${t('total')}: ${total}`}</Text>}
       </Box>
 
-      <Typography
+      <Text
         color={TextColor.textAlternative}
         margin={4}
         marginTop={4}
         marginBottom={4}
-        variant={TypographyVariant.H6}
+        variant={TextVariant.bodySm}
+        as="h6"
       >
         {t('nftWarningContent', [
           <strong
@@ -111,7 +111,7 @@ const SetApproveForAllWarning = ({
             {t('nftWarningContentGrey')}
           </strong>,
         ])}
-      </Typography>
+      </Text>
     </Popover>
   );
 };
