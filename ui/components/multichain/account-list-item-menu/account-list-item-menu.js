@@ -9,7 +9,10 @@ import {
   getRpcPrefsForCurrentProvider,
   getBlockExplorerLinkText,
   getCurrentChainId,
+  getHardwareWalletType,
+  getAccountTypeForKeyring,
 } from '../../../selectors';
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
 import { Text, IconName } from '../../component-library';
@@ -21,6 +24,7 @@ import {
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { formatAccountType } from '../../../helpers/utils/metrics';
 
 export const AccountListItemMenu = ({
   anchorElement,
@@ -39,6 +43,13 @@ export const AccountListItemMenu = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
 
+  const deviceName = useSelector(getHardwareWalletType);
+
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
     trackEvent({
@@ -50,6 +61,7 @@ export const AccountListItemMenu = ({
         url_domain: getURLHostName(addressLink),
       },
     });
+
     global.platform.openTab({
       url: addressLink,
     });
@@ -67,11 +79,20 @@ export const AccountListItemMenu = ({
       onHide={onClose}
     >
       <MenuItem
-        onClick={
+        onClick={() => {
           blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl
-            : openBlockExplorer
-        }
+            ? routeToAddBlockExplorerUrl()
+            : openBlockExplorer();
+
+          trackEvent({
+            event: MetaMetricsEventName.BlockExplorerLinkClicked,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              location: 'Account Options',
+              chain_id: chainId,
+            },
+          });
+        }}
         subtitle={blockExplorerUrlSubTitle || null}
         iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
@@ -105,6 +126,15 @@ export const AccountListItemMenu = ({
                 identity,
               }),
             );
+            trackEvent({
+              event: MetaMetricsEventName.AccountRemoved,
+              category: MetaMetricsEventCategory.Accounts,
+              properties: {
+                account_hardware_type: deviceName,
+                chain_id: chainId,
+                account_type: accountType,
+              },
+            });
             onClose();
           }}
           iconName={IconName.Trash}
