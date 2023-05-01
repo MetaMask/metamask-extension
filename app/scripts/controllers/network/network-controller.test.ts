@@ -227,11 +227,9 @@ describe('NetworkController', () => {
 
   describe('destroy', () => {
     it('does not throw if called before the provider is initialized', async () => {
-      const controller = new NetworkController(
-        buildDefaultNetworkControllerOptions(buildMessenger()),
-      );
-
-      expect(await controller.destroy()).toBeUndefined();
+      await withController(async ({ controller }) => {
+        expect(await controller.destroy()).toBeUndefined();
+      });
     });
 
     it('stops the block tracker for the currently selected network as long as the provider has been initialized', async () => {
@@ -8072,17 +8070,13 @@ function buildMessenger() {
 }
 
 /**
- * Despite the signature of its constructor, NetworkController must take an
- * Infura project ID. The object that this function returns is mixed into the
- * options first when a NetworkController is instantiated in tests.
+ * Build a restricted controller messenger for the network controller.
  *
  * @param messenger - A controller messenger.
- * @returns The controller options.
+ * @returns The network controller restricted messenger.
  */
-function buildDefaultNetworkControllerOptions(
-  messenger: ControllerMessenger<never, NetworkControllerEvent>,
-) {
-  const restrictedMessenger = messenger.getRestricted<
+function buildNetworkControllerMessenger(messenger = buildMessenger()) {
+  return messenger.getRestricted<
     'NetworkController',
     never,
     NetworkControllerEventType
@@ -8095,11 +8089,6 @@ function buildDefaultNetworkControllerOptions(
       NetworkControllerEventType.InfuraIsUnblocked,
     ],
   });
-  return {
-    messenger: restrictedMessenger,
-    infuraProjectId: DEFAULT_INFURA_PROJECT_ID,
-    trackMetaMetricsEvent: jest.fn(),
-  };
 }
 
 /**
@@ -8143,11 +8132,13 @@ async function withController<ReturnValue>(
   const [givenNetworkControllerOptions, fn] =
     args.length === 2 ? args : [{}, args[0]];
   const messenger = buildMessenger();
-  const networkControllerOptions = {
-    ...buildDefaultNetworkControllerOptions(messenger),
+  const restrictedMessenger = buildNetworkControllerMessenger(messenger);
+  const controller = new NetworkController({
+    infuraProjectId: DEFAULT_INFURA_PROJECT_ID,
+    messenger: restrictedMessenger,
+    trackMetaMetricsEvent: jest.fn(),
     ...givenNetworkControllerOptions,
-  };
-  const controller = new NetworkController(networkControllerOptions);
+  });
   try {
     return await fn({ controller, messenger });
   } finally {
