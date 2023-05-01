@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
   },
-  "importTokens": {
-    "message": "添加资产"
-  },
   "importTokensCamelCase": {
     "message": "添加代币"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "在这里请求"
-  },
-  "missingToken": {
-    "message": "没有看到您的代币？"
   },
   "moreComingSoon": {
     "message": "更多即将到来……"

@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Tout un chacun peut créer un jeton avec n’importe quel nom, y compris de fausses versions de jetons existants. Ajoutez et échangez avec prudence !"
   },
-  "importTokens": {
-    "message": "importer des jetons"
-  },
   "importTokensCamelCase": {
     "message": "Importer des jetons"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Demandez ici"
-  },
-  "missingToken": {
-    "message": "Vous ne voyez pas votre jeton ?"
   },
   "moreComingSoon": {
     "message": "D’autres à venir..."

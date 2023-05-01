@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
   },
-  "importTokens": {
-    "message": "nhập token"
-  },
   "importTokensCamelCase": {
     "message": "Nhập token"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
-  },
-  "missingToken": {
-    "message": "Không thấy token của mình?"
   },
   "moreComingSoon": {
     "message": "Sắp có thêm..."

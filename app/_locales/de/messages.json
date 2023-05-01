@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Jeder kann ein Token mit beliebigem Namen erstellen, einschließlich gefälschter Versionen bestehender Token. Hinzufügen und Handeln auf eigene Gefahr!"
   },
-  "importTokens": {
-    "message": "Token importieren"
-  },
   "importTokensCamelCase": {
     "message": "Token importieren"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Hier anfragen"
-  },
-  "missingToken": {
-    "message": "Sie sehen Ihren Token nicht?"
   },
   "moreComingSoon": {
     "message": "Mehr in Kürze ..."

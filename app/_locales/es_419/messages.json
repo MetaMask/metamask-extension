@@ -1091,9 +1091,6 @@
   "importTokenWarning": {
     "message": "Toda persona puede crear un token con cualquier nombre, incluso versiones falsas de tokens existentes. ¡Agréguelo y realice transacciones bajo su propio riesgo!"
   },
-  "importTokens": {
-    "message": "importar tokens"
-  },
   "importTokensCamelCase": {
     "message": "Importar tokens"
   },
@@ -1350,9 +1347,6 @@
   },
   "missingNFT": {
     "message": "¿No ve su NFT?"
-  },
-  "missingToken": {
-    "message": "¿No ve su token?"
   },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."

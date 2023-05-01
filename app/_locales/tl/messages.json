@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Sinumang ay maaaring lumikha ng token gamit ang alinmang pangalan, kabilang ang mga pekeng bersyon ng umiiral na mga token. Magdagdag at mag-trade sa sarili mong panganib!"
   },
-  "importTokens": {
-    "message": "magdagdag ng mga token"
-  },
   "importTokensCamelCase": {
     "message": "Mag-import ng mga Token"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Hilingin dito"
-  },
-  "missingToken": {
-    "message": "Hindi mo ba nakikita ang iyong mga token?"
   },
   "moreComingSoon": {
     "message": "Marami pang parating..."

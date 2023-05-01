@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります!"
   },
-  "importTokens": {
-    "message": "トークンをインポート"
-  },
   "importTokensCamelCase": {
     "message": "トークンをインポート"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "ここからリクエスト"
-  },
-  "missingToken": {
-    "message": "トークンが見当たりませんか？"
   },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."

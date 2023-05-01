@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
   },
-  "importTokens": {
-    "message": "импорт токенов"
-  },
   "importTokensCamelCase": {
     "message": "Импорт токенов"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Запросите здесь"
-  },
-  "missingToken": {
-    "message": "Не видите свой токен?"
   },
   "moreComingSoon": {
     "message": "Скоро появится больше..."

@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "कोई भी किसी भी नाम के साथ एक टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण शामिल हैं। अपने जोखिम पर जोड़ें और व्यापार करें!"
   },
-  "importTokens": {
-    "message": "टोकन आयात करें"
-  },
   "importTokensCamelCase": {
     "message": "टोकन आयात करें"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "यहां अनुरोध करें"
-  },
-  "missingToken": {
-    "message": "क्या अपना टोकन नहीं देख रहे हैं?"
   },
   "moreComingSoon": {
     "message": "और अधिक जल्द ही आ रहा..."

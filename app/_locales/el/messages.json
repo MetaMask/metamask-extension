@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Ο καθένας μπορεί να δημιουργήσει ένα token με οποιοδήποτε όνομα, συμπεριλαμβανομένων ψεύτικων εκδόσεων των υφιστάμενων νομισμάτων. Προσθέστε και ανταλλάξτε με δική σας ευθύνη!"
   },
-  "importTokens": {
-    "message": "εισαγωγή token"
-  },
   "importTokensCamelCase": {
     "message": "Εισαγωγή Token"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Υποβάλετε αίτημα εδώ"
-  },
-  "missingToken": {
-    "message": "Δεν βλέπετε το token σας;"
   },
   "moreComingSoon": {
     "message": "Περισσότερα έρχονται σύντομα..."

@@ -1636,9 +1636,6 @@
   "importTokenWarning": {
     "message": "Herkes, mevcut tokenlerin sahte sürümleri de dahil olmak üzere herhangi bir ada sahip bir token oluşturabilir. Riski tamamen size ait olacak şekikde token ekleyin ve işlem yapın!"
   },
-  "importTokens": {
-    "message": "tokenleri içe aktar"
-  },
   "importTokensCamelCase": {
     "message": "Tokenleri içe aktar"
   },
@@ -1989,9 +1986,6 @@
   },
   "missingSettingRequest": {
     "message": "Buradan talep et"
-  },
-  "missingToken": {
-    "message": "Tokeninizi görmüyor musunuz?"
   },
   "moreComingSoon": {
     "message": "Daha fazlası çok yakında..."
