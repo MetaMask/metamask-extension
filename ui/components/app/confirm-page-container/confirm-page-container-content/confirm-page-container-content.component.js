@@ -167,9 +167,7 @@ export default class ConfirmPageContainerContent extends Component {
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559 &&
-      (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+      (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -206,11 +204,13 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559 && (errorKey || errorMessage) && (
-          <div className="confirm-page-container-content__error-container">
-            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-          </div>
-        )}
+        {!supportsEIP1559 &&
+          !showInsuffienctFundsError &&
+          (errorKey || errorMessage) && (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+            </div>
+          )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
