@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [10.29.0]
+## [10.99.0]
 ### Added
 - [FLASK] Redesign snaps permission screens ([#18372](https://github.com/MetaMask/metamask-extension/pull/18372))
+
+## [10.29.0]
+### Added
 - [FLASK] Add tooltips to show info about a permission ([#17685](https://github.com/MetaMask/metamask-extension/pull/17685))
 
 ### Changed
@@ -3688,7 +3691,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.29.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.99.0...HEAD
+[10.99.0]: https://github.com/MetaMask/metamask-extension/compare/v10.29.0...v10.99.0
 [10.29.0]: https://github.com/MetaMask/metamask-extension/compare/v10.28.3...v10.29.0
 [10.28.3]: https://github.com/MetaMask/metamask-extension/compare/v10.28.2...v10.28.3
 [10.28.2]: https://github.com/MetaMask/metamask-extension/compare/v10.28.1...v10.28.2
