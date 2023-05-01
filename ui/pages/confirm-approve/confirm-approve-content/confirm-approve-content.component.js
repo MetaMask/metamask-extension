@@ -290,6 +290,11 @@ export default class ConfirmApproveContent extends Component {
   renderDataContent() {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { tokenAddress } = this.props;
+    ///: END:ONLY_INCLUDE_IN
+
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -300,6 +305,11 @@ export default class ConfirmApproveContent extends Component {
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <div className="confirm-approve-content__small-text">
             {`${t('parameters')}: ${isApprovalOrRejection}`}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              `${t('tokenContractAddress')}: ${tokenAddress}`
+              ///: END:ONLY_INCLUDE_IN
+            }
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
