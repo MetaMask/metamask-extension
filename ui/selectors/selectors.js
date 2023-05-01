@@ -24,7 +24,6 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
-  NetworkStatus,
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
   ETH_TOKEN_IMAGE_URL,
@@ -88,54 +87,6 @@ import {
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
-
-/**
- * Returns true if the currently selected network is inaccessible or whether no
- * provider has been set yet for the currently selected network.
- *
- * @param {object} state - Redux state object.
- */
-export function isNetworkLoading(state) {
-  return state.metamask.networkStatus !== NetworkStatus.Available;
-}
-
-export function getNetworkIdentifier(state) {
-  const {
-    metamask: {
-      provider: { type, nickname, rpcUrl },
-    },
-  } = state;
-
-  return nickname || rpcUrl || type;
-}
-
-export function getMetricsNetworkIdentifier(state) {
-  const { provider } = state.metamask;
-  return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
-}
-
-export function getCurrentChainId(state) {
-  const { chainId } = state.metamask.provider;
-  return chainId;
-}
-
-export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
-}
-
-export function isCurrentProviderCustom(state) {
-  const provider = getProvider(state);
-  return (
-    provider.type === NETWORK_TYPES.RPC &&
-    !Object.values(CHAIN_IDS).includes(provider.chainId)
-  );
-}
-
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
-}
 
 export function hasUnsignedQRHardwareTransaction(state) {
   const { txParams } = state.confirmTransaction.txData;
@@ -267,59 +218,6 @@ export function getAccountTypeForKeyring(keyring) {
   }
 }
 
-/**
- * get the currently selected networkId which will be 'loading' when the
- * network changes. The network id should not be used in most cases,
- * instead use chainId in most situations. There are a limited number of
- * use cases to use this method still, such as when comparing transaction
- * metadata that predates the switch to using chainId.
- *
- * @deprecated - use getCurrentChainId instead
- * @param {object} state - redux state object
- */
-export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.networkId ?? 'loading';
-}
-
-export const getMetaMaskAccounts = createSelector(
-  getMetaMaskAccountsRaw,
-  getMetaMaskCachedBalances,
-  (currentAccounts, cachedBalances) =>
-    Object.entries(currentAccounts).reduce(
-      (selectedAccounts, [accountID, account]) => {
-        if (account.balance === null || account.balance === undefined) {
-          return {
-            ...selectedAccounts,
-            [accountID]: {
-              ...account,
-              balance: cachedBalances && cachedBalances[accountID],
-            },
-          };
-        }
-        return {
-          ...selectedAccounts,
-          [accountID]: account,
-        };
-      },
-      {},
-    ),
-);
-
-export function getSelectedAddress(state) {
-  return state.metamask.selectedAddress;
-}
-
-export function getSelectedIdentity(state) {
-  const selectedAddress = getSelectedAddress(state);
-  const { identities } = state.metamask;
-
-  return identities[selectedAddress];
-}
-
-export function getNumberOfAccounts(state) {
-  return Object.keys(state.metamask.accounts).length;
-}
-
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;
@@ -331,23 +229,6 @@ export function getMetaMaskKeyrings(state) {
 
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
-}
-
-export function getMetaMaskAccountsRaw(state) {
-  return state.metamask.accounts;
-}
-
-export function getMetaMaskCachedBalances(state) {
-  const chainId = getCurrentChainId(state);
-
-  // Fallback to fetching cached balances from network id
-  // this can eventually be removed
-  const network = deprecatedGetCurrentNetworkId(state);
-
-  return (
-    state.metamask.cachedBalances[chainId] ??
-    state.metamask.cachedBalances[network]
-  );
 }
 
 /**
@@ -1150,10 +1031,6 @@ export function getNewNetworkAdded(state) {
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
-}
-
-export function getProvider(state) {
-  return state.metamask.provider;
 }
 
 export function getNetworkConfigurations(state) {

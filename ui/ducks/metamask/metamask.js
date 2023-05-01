@@ -1,10 +1,16 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { createSelector } from 'reselect';
 import * as actionConstants from '../../store/actionConstants';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
+import {
+  CHAIN_IDS,
+  NetworkStatus,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -229,6 +235,193 @@ export function updateGasFees({
 // Selectors
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
+
+/**
+ * Get the currently selected networkId which will be 'loading' when the
+ * network changes. The network id should not be used in most cases,
+ * instead use chainId in most situations. There are a limited number of
+ * use cases to use this method still, such as when comparing transaction
+ * metadata that predates the switch to using chainId.
+ *
+ * @deprecated - Use `getCurrentChainId` instead.
+ * @param {object} state - Redux state object.
+ * @returns {string} The network ID of the current network, or "loading" if the
+ * current network is unavailable.
+ */
+export function deprecatedGetCurrentNetworkId(state) {
+  return state.metamask.networkId ?? 'loading';
+}
+
+/**
+ * Get the chain ID for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {string} The chain ID for the current selected network.
+ */
+export function getCurrentChainId(state) {
+  const { chainId } = state.metamask.provider;
+  return chainId;
+}
+
+/**
+ * Get the QR Hardware wallet state.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} The QR Hardware wallet state.
+ */
+export function getCurrentQRHardwareState(state) {
+  const { qrHardware } = state.metamask;
+  return qrHardware || {};
+}
+
+/**
+ * Get collection of all accounts, including cached balances.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} A collection of all accounts.
+ */
+export const getMetaMaskAccounts = createSelector(
+  getMetaMaskAccountsRaw,
+  getMetaMaskCachedBalances,
+  (currentAccounts, cachedBalances) =>
+    Object.entries(currentAccounts).reduce(
+      (selectedAccounts, [accountID, account]) => {
+        if (account.balance === null || account.balance === undefined) {
+          return {
+            ...selectedAccounts,
+            [accountID]: {
+              ...account,
+              balance: cachedBalances && cachedBalances[accountID],
+            },
+          };
+        }
+        return {
+          ...selectedAccounts,
+          [accountID]: account,
+        };
+      },
+      {},
+    ),
+);
+
+/**
+ * Get collection of all accounts.
+ *
+ * Note that this usually shouldn't be used directly. Use the
+ * `getMetaMaskAccounts` selector instead to ensure cached balances are
+ * combined with account tracker balances.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} A collection of all accounts.
+ */
+export function getMetaMaskAccountsRaw(state) {
+  return state.metamask.accounts;
+}
+
+/**
+ * Get cached account balances.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} A collection of cached account balances.
+ */
+export function getMetaMaskCachedBalances(state) {
+  const chainId = getCurrentChainId(state);
+
+  // Fallback to fetching cached balances from network id
+  // this can eventually be removed
+  const network = deprecatedGetCurrentNetworkId(state);
+
+  return (
+    state.metamask.cachedBalances[chainId] ??
+    state.metamask.cachedBalances[network]
+  );
+}
+
+/**
+ * Get the MetaMetrics ID of the current user.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {string} The MetaMetrics ID of the current user.
+ */
+export function getMetaMetricsId(state) {
+  const { metaMetricsId } = state.metamask;
+  return metaMetricsId;
+}
+
+/**
+ * Get a human-readable identifier for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {string} A human-readable identifier for the current selected network.
+ */
+export function getNetworkIdentifier(state) {
+  const {
+    metamask: {
+      provider: { type, nickname, rpcUrl },
+    },
+  } = state;
+
+  return nickname || rpcUrl || type;
+}
+
+/**
+ * Get the provider configuration for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} The provider configuration for the current selected network.
+ */
+export function getProvider(state) {
+  return state.metamask.provider;
+}
+
+/**
+ * Get the address of the current selected account.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {string} The address of the current selected account.
+ */
+export function getSelectedAddress(state) {
+  return state.metamask.selectedAddress;
+}
+
+/**
+ * Get the identity of the current selected account.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} The identity of the current selected account.
+ */
+export function getSelectedIdentity(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const { identities } = state.metamask;
+
+  return identities[selectedAddress];
+}
+
+/**
+ * Return true if the current selected network was added by the user, or false
+ * if the current selected network was built-in.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {boolean} Whether the current network is a custom network.
+ */
+export function isCurrentProviderCustom(state) {
+  const provider = getProvider(state);
+  return (
+    provider.type === NETWORK_TYPES.RPC &&
+    !Object.values(CHAIN_IDS).includes(provider.chainId)
+  );
+}
+
+/**
+ * Returns true if the currently selected network is inaccessible or whether no
+ * provider has been set yet for the currently selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {boolean} Whether the currently selected network is unavailable.
+ */
+export function isNetworkLoading(state) {
+  return state.metamask.networkStatus !== NetworkStatus.Available;
+}
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
