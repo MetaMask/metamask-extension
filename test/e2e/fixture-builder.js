@@ -140,7 +140,8 @@ function defaultFixture() {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
-        termsOfUseLastAgreed: 86400000000000,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
