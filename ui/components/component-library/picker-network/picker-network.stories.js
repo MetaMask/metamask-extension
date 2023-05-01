@@ -38,6 +38,11 @@ export const Label = (args) => (
     <PickerNetwork {...args} label="Arbitrum One" />
     <PickerNetwork {...args} label="Polygon Mainnet" />
     <PickerNetwork {...args} label="Optimism" />
+    <PickerNetwork
+      {...args}
+      label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
+      style={{ maxWidth: '200px' }}
+    />
   </Box>
 );
 
