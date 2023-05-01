@@ -3,18 +3,14 @@ import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import Tooltip from '../tooltip';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AddressCopyButton } from '../../multichain/address-copy-button';
 import Box from '../box/box';
-import { Icon, IconName, IconSize } from '../../component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -28,8 +24,6 @@ function mapStateToProps(state) {
 }
 
 function QrCodeView({ Qr, warning }) {
-  const [copied, handleCopy] = useCopyToClipboard();
-  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const { message, data } = Qr;
   const address = `${
@@ -65,43 +59,21 @@ function QrCodeView({ Qr, warning }) {
             : qrImage.createTableTag(4),
         }}
       />
-      {process.env.MULTICHAIN ? (
-        <Box marginBottom={6}>
-          <AddressCopyButton
-            wrap
-            address={toChecksumHexAddress(data)}
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Accounts,
-                event: MetaMetricsEventName.PublicAddressCopied,
-                properties: {
-                  location: 'Account Details Modal',
-                },
-              });
-            }}
-          />
-        </Box>
-      ) : (
-        <Tooltip
-          wrapperClassName="qr-code__address-container__tooltip-wrapper"
-          position="bottom"
-          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-        >
-          <div
-            className="qr-code__address-container"
-            onClick={() => {
-              handleCopy(toChecksumHexAddress(data));
-            }}
-          >
-            <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
-            <Icon
-              name={copied ? IconName.CopySuccess : IconName.Copy}
-              size={IconSize.Sm}
-              marginInlineStart={3}
-            />
-          </div>
-        </Tooltip>
-      )}
+      <Box marginBottom={6}>
+        <AddressCopyButton
+          wrap
+          address={toChecksumHexAddress(data)}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.PublicAddressCopied,
+              properties: {
+                location: 'Account Details Modal',
+              },
+            });
+          }}
+        />
+      </Box>
     </div>
   );
 }
