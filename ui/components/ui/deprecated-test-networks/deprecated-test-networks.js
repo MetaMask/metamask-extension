@@ -5,14 +5,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   DISPLAY,
   JustifyContent,
-  TypographyVariant,
+  TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
 import Box from '../box/box';
-import Typography from '../typography/typography';
 import ActionableMessage from '../actionable-message/actionable-message';
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { Text } from '../../component-library';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
@@ -48,8 +48,9 @@ export default function DeprecatedTestNetworks() {
               <i className="fa fa-info-circle deprecated-test-networks__content__icon" />
             </Box>
             <Box justifyContent={JustifyContent.spaceBetween}>
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 marginTop={0}
                 marginBottom={0}
               >
@@ -64,7 +65,7 @@ export default function DeprecatedTestNetworks() {
                   {' '}
                   {t('deprecatedTestNetworksLink')}
                 </Button>
-              </Typography>
+              </Text>
 
               <Box
                 className="deprecated-test-networks__content__close"

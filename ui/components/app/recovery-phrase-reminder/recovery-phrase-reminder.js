@@ -6,11 +6,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
-import { Text } from '../../component-library';
 // Helpers
 import {
   DISPLAY,
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
   BLOCK_SIZES,
   FontWeight,
@@ -18,6 +17,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { Text } from '../../component-library';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
@@ -37,7 +37,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
       >
         <Text
           color={TextColor.textDefault}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           variant={TextVariant.bodyMd}
           marginBottom={4}
         >
