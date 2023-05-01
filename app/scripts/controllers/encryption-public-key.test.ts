@@ -352,6 +352,15 @@ describe('EncryptionPublicKeyController', () => {
         'Cancel',
       );
     });
+
+    it('returns current state', async () => {
+      getStateMock.mockReturnValueOnce(stateMock);
+      expect(
+        await encryptionPublicKeyController.cancelEncryptionPublicKey(
+          messageIdMock,
+        ),
+      ).toEqual(stateMock);
+    });
   });
 
   describe('message manager events', () => {

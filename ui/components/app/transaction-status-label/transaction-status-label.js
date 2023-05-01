@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { useSelector } from 'react-redux';
+///: END:ONLY_INCLUDE_IN
 import Tooltip from '../../ui/tooltip';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -9,7 +12,15 @@ import {
   TransactionStatus,
 } from '../../../../shared/constants/transaction';
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getTransactionStatusMap } from '../../../selectors/institutional/selectors';
+import { getCurrentKeyring } from '../../../selectors';
+///: END:ONLY_INCLUDE_IN
+
 const QUEUED_PSEUDO_STATUS = 'queued';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+const CUSTODIAN_PSEUDO_STATUS = 'inCustody';
+///: END:ONLY_INCLUDE_IN
 
 /**
  * A note about status logic for this component:
@@ -35,6 +46,9 @@ const statusToClassNameHash = {
   [TransactionGroupStatus.cancelled]: 'transaction-status-label--cancelled',
   [QUEUED_PSEUDO_STATUS]: 'transaction-status-label--queued',
   [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  [CUSTODIAN_PSEUDO_STATUS]: 'transaction-status--custodian',
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default function TransactionStatusLabel({
@@ -44,9 +58,13 @@ export default function TransactionStatusLabel({
   isEarliestNonce,
   className,
   statusOnly,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  custodyStatus,
+  custodyStatusDisplayText,
+  ///: END:ONLY_INCLUDE_IN
 }) {
   const t = useI18nContext();
-  const tooltipText = error?.rpc?.message || error?.message;
+  let tooltipText = error?.rpc?.message || error?.message;
   let statusKey = status;
   if (pendingStatusHash[status]) {
     statusKey = isEarliestNonce
@@ -54,10 +72,43 @@ export default function TransactionStatusLabel({
       : QUEUED_PSEUDO_STATUS;
   }
 
-  const statusText =
-    statusKey === TransactionStatus.confirmed && !statusOnly
-      ? date
-      : statusKey && t(statusKey);
+  let statusText = statusKey && t(statusKey);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  statusText = custodyStatusDisplayText || t(statusKey);
+  ///: END:ONLY_INCLUDE_IN
+
+  if (statusKey === TransactionStatus.confirmed && !statusOnly) {
+    statusText = date;
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const transactionStatusMap = useSelector(getTransactionStatusMap);
+  const currentKeyring = useSelector(getCurrentKeyring);
+  const custodyType = currentKeyring?.type.split(' - ')[1]?.toLowerCase();
+
+  if (
+    custodyStatus &&
+    transactionStatusMap &&
+    transactionStatusMap[custodyType]
+  ) {
+    const custodyStatusInfo = transactionStatusMap[custodyType][custodyStatus];
+    const shortText = custodyStatusInfo?.shortText || custodyStatus;
+    const longText = custodyStatusInfo?.longText;
+
+    if (error) {
+      tooltipText = error.message;
+      statusText =
+        custodyStatus === 'aborted'
+          ? custodyStatusDisplayText
+          : t('snapResultError');
+    } else {
+      tooltipText = custodyStatusDisplayText || longText || custodyStatus;
+      statusText = custodyStatusDisplayText || shortText;
+    }
+  }
+
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <Tooltip
@@ -82,4 +133,8 @@ TransactionStatusLabel.propTypes = {
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
   statusOnly: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  custodyStatus: PropTypes.string,
+  custodyStatusDisplayText: PropTypes.string,
+  ///: END:ONLY_INCLUDE_IN
 };
