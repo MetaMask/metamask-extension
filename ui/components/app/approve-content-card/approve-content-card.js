@@ -135,7 +135,7 @@ export default function ApproveContentCard({
                   className="approve-content-card-container__transaction-details-extra-content"
                 >
                   <TransactionDetailItem
-                    key="total-item"
+                    key="approve-content-card-min-tx-fee"
                     detailTitle={t('transactionDetailLayer2GasHeading')}
                     detailTotal={
                       <UserPreferencedCurrencyDisplay

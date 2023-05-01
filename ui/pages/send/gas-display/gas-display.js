@@ -157,7 +157,7 @@ export default function GasDisplay({ gasError }) {
             <ConfirmGasDisplay key="gas-display" />,
             (gasError || isInsufficientTokenError) && (
               <TransactionDetailItem
-                key="total-item"
+                key="gas-display-total-item"
                 detailTitle={t('total')}
                 detailText={
                   showCurrencyRateCheck && (
