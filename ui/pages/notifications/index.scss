@@ -107,9 +107,7 @@
       width: 100%;
 
       &__message {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow-wrap: anywhere
       }
 
       &__infos {
