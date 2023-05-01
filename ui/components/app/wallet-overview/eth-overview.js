@@ -162,40 +162,38 @@ const EthOverview = ({ className }) => {
               ) : null}
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                process.env.MULTICHAIN ? null : (
-                  <ButtonIcon
-                    className="eth-overview__portfolio-button"
-                    data-testid="home__portfolio-site"
-                    color={IconColor.primaryDefault}
-                    iconName={IconName.Diagram}
-                    ariaLabel={t('portfolio')}
-                    size={ButtonIconSize.Lg}
-                    onClick={() => {
-                      const portfolioUrl = getPortfolioUrl(
-                        '',
-                        'ext',
-                        metaMetricsId,
-                      );
-                      global.platform.openTab({
-                        url: portfolioUrl,
-                      });
-                      trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Home,
-                          event: MetaMetricsEventName.PortfolioLinkClicked,
-                          properties: {
-                            url: portfolioUrl,
-                          },
+                <ButtonIcon
+                  className="eth-overview__portfolio-button"
+                  data-testid="home__portfolio-site"
+                  color={IconColor.primaryDefault}
+                  iconName={IconName.Diagram}
+                  ariaLabel={t('portfolio')}
+                  size={ButtonIconSize.Lg}
+                  onClick={() => {
+                    const portfolioUrl = getPortfolioUrl(
+                      '',
+                      'ext',
+                      metaMetricsId,
+                    );
+                    global.platform.openTab({
+                      url: portfolioUrl,
+                    });
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.PortfolioLinkClicked,
+                        properties: {
+                          url: portfolioUrl,
                         },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  />
-                )
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                />
                 ///: END:ONLY_INCLUDE_IN
               }
             </div>
