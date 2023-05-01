@@ -66,8 +66,6 @@ const SetApproveForAllWarning = ({
         />
         <Text
           variant={TextVariant.headingSm}
-          as="h4"
-          fontWeight={FontWeight.Bold}
         >
           {t('yourNFTmayBeAtRisk')}
         </Text>
