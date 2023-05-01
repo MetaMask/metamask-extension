@@ -6,7 +6,11 @@ import QrView from '../../ui/qr-code';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import { getMetaMaskKeyrings } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getHardwareWalletType,
+  getMetaMaskKeyrings,
+} from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import {
   BUTTON_SECONDARY_SIZES,
@@ -41,6 +45,9 @@ export const AccountDetailsDisplay = ({
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
   const exportPrivateKeyFeatureEnabled = !isHardwareKeyring(keyring?.type);
 
+  const chainId = useSelector(getCurrentChainId);
+  const deviceName = useSelector(getHardwareWalletType);
+
   return (
     <Box
       display={DISPLAY.FLEX}
@@ -49,7 +56,18 @@ export const AccountDetailsDisplay = ({
     >
       <EditableLabel
         defaultValue={accountName}
-        onSubmit={(label) => dispatch(setAccountLabel(address, label))}
+        onSubmit={(label) => {
+          dispatch(setAccountLabel(address, label));
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountRenamed,
+            properties: {
+              location: 'Account Details Modal',
+              chain_id: chainId,
+              account_hardware_type: deviceName,
+            },
+          });
+        }}
         accounts={accounts}
       />
       <QrView Qr={{ data: address }} />

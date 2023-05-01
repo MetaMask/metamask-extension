@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
@@ -10,6 +10,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AddressCopyButton } from '../../multichain/address-copy-button';
 import Box from '../box/box';
 import { Icon, IconName, IconSize } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -22,14 +27,14 @@ function mapStateToProps(state) {
   };
 }
 
-function QrCodeView(props) {
-  const { Qr, warning } = props;
+function QrCodeView({ Qr, warning }) {
+  const [copied, handleCopy] = useCopyToClipboard();
+  const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const { message, data } = Qr;
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
   }${toChecksumHexAddress(data)}`;
-  const [copied, handleCopy] = useCopyToClipboard();
-  const t = useI18nContext();
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
   qrImage.make();
@@ -62,7 +67,19 @@ function QrCodeView(props) {
       />
       {process.env.MULTICHAIN ? (
         <Box marginBottom={6}>
-          <AddressCopyButton wrap address={toChecksumHexAddress(data)} />
+          <AddressCopyButton
+            wrap
+            address={toChecksumHexAddress(data)}
+            onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.PublicAddressCopied,
+                properties: {
+                  location: 'Account Details Modal',
+                },
+              });
+            }}
+          />
         </Box>
       ) : (
         <Tooltip
