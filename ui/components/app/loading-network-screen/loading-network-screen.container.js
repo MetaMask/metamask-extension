@@ -2,25 +2,23 @@ import { connect } from 'react-redux';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import * as actions from '../../../store/actions';
 import { getNetworkIdentifier, isNetworkLoading } from '../../../selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import LoadingNetworkScreen from './loading-network-screen.component';
 
 const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
 
 const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
-  const { provider } = state.metamask;
+  const provider = getProviderConfig(state);
   const { rpcUrl, chainId, ticker, nickname, type } = provider;
 
   const setProviderArgs =
-    type === NETWORK_TYPES.RPC
-      ? [rpcUrl, chainId, ticker, nickname]
-      : [provider.type];
+    type === NETWORK_TYPES.RPC ? [rpcUrl, chainId, ticker, nickname] : [type];
 
-  const providerChainId = provider?.chainId;
+  const providerChainId = chainId;
   const isDeprecatedNetwork =
     DEPRECATED_TEST_NET_CHAINIDS.includes(providerChainId);
-  const isInfuraRpcUrl =
-    provider?.rpcUrl && new URL(provider.rpcUrl).host.endsWith('.infura.io');
+  const isInfuraRpcUrl = rpcUrl && new URL(rpcUrl).host.endsWith('.infura.io');
   const showDeprecatedRpcUrlWarning = isDeprecatedNetwork && isInfuraRpcUrl;
 
   return {
