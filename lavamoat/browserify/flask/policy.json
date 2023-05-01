@@ -783,11 +783,6 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
-    "@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/controllers>web3": {
       "globals": {
         "XMLHttpRequest": true
@@ -1496,6 +1491,11 @@
         "superstruct": true
       }
     },
+    "@metamask/rpc-methods-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/rpc-methods>@metamask/browser-passworder": {
       "globals": {
         "btoa": true,
@@ -1651,6 +1651,11 @@
         "browserify>process": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-controllers>gunzip-maybe": {
