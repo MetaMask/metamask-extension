@@ -3416,9 +3416,6 @@
   "status": {
     "message": "Trạng thái"
   },
-  "statusConnected": {
-    "message": "Đã kết nối"
-  },
   "statusNotConnected": {
     "message": "Chưa kết nối"
   },

@@ -1322,9 +1322,6 @@
   "stateLogsDescription": {
     "message": "狀態紀錄包含您的公開帳戶位址和已傳送的交易資訊"
   },
-  "statusConnected": {
-    "message": "已連結"
-  },
   "statusNotConnected": {
     "message": "未連結"
   },

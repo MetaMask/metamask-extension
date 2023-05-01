@@ -3957,9 +3957,6 @@
   "status": {
     "message": "Status"
   },
-  "statusConnected": {
-    "message": "Connected"
-  },
   "statusNotConnected": {
     "message": "Not connected"
   },

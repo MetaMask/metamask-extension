@@ -3416,9 +3416,6 @@
   "status": {
     "message": "स्टेटस"
   },
-  "statusConnected": {
-    "message": "कनेक्ट किया गया"
-  },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
   },
