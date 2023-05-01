@@ -26,7 +26,6 @@ import {
   MultichainTokenListItem,
   MultichainImportTokenLink,
 } from '../../multichain';
-import DetectedTokensLink from './detected-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -97,20 +96,12 @@ const AssetList = ({ onClickAsset }) => {
         }}
       />
       {detectedTokens.length > 0 &&
-        !istokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <>
-            {process.env.MULTICHAIN ? (
-              <DetectedTokensBanner
-                actionButtonOnClick={() => setShowDetectedTokens(true)}
-                margin={4}
-              />
-            ) : (
-              <DetectedTokensLink
-                setShowDetectedTokens={setShowDetectedTokens}
-              />
-            )}
-          </>
-        )}
+      !istokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+        <DetectedTokensBanner
+          actionButtonOnClick={() => setShowDetectedTokens(true)}
+          margin={4}
+        />
+      ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <MultichainImportTokenLink margin={4} />
       </Box>
