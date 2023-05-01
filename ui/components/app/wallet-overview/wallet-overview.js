@@ -13,13 +13,10 @@ const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
-        {process.env.MULTICHAIN ? (
-          <Box marginTop={2}>
-            <AddressCopyButton address={checksummedAddress} shorten />
-          </Box>
-        ) : (
-          <>{loading ? null : icon}</>
-        )}
+        <Box marginTop={2}>
+          <AddressCopyButton address={checksummedAddress} shorten />
+        </Box>
+        <>{loading ? null : icon}</>
         {balance}
       </div>
       <div className="wallet-overview__buttons">{buttons}</div>
