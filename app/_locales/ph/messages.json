@@ -1794,10 +1794,6 @@
     "message": "Nagkaproblema kami sa pagkonekta sa iyong $1, subukang suriin ang $2 at subukan ulit.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleTokenBalances": {
-    "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Subukan ulit"
   },

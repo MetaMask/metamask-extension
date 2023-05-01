@@ -813,10 +813,6 @@
   "transferFrom": {
     "message": "Pervedimas iš"
   },
-  "troubleTokenBalances": {
-    "message": "Susidurta su sunkumais įkeliant jūsų žetonų likučius. Galite juos peržiūrėti ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Bandyti dar kartą"
   },

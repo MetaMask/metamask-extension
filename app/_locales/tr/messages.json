@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
   },
-  "troubleTokenBalances": {
-    "message": "Token bakiyeleriniz yüklenirken sorun yaşadık. Burada görüntüleyebilirsiniz ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "İzin verdiğinizde paranıza aşağıdaki $1 erişimine izin verirsiniz"
   },

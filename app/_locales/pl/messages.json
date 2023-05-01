@@ -801,10 +801,6 @@
   "transferFrom": {
     "message": "Przelew z"
   },
-  "troubleTokenBalances": {
-    "message": "Wystąpił problem z załadowaniem informacji o Twoich tokenach. Można je zobaczyć ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Spróbuj ponownie"
   },

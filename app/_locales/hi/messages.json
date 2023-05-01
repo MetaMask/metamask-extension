@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "MetaMask को शुरू करने में परेशानी आई। यह त्रुटि रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
   },
-  "troubleTokenBalances": {
-    "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "अनुमति प्रदान करके, आप निम्नलिखित $1 को अपने फंड तक पहुंचने की इजाजत दे रहे हैं"
   },

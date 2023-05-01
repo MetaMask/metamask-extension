@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
   },
-  "troubleTokenBalances": {
-    "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "Dengan memberikan izin, Anda mengizinkan $1 berikut untuk mengakses dana Anda"
   },

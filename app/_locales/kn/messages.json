@@ -813,10 +813,6 @@
   "transferFrom": {
     "message": "ಇದರಿಂದ ವರ್ಗಾಯಿಸಿ"
   },
-  "troubleTokenBalances": {
-    "message": "ನಿಮ್ಮ ಟೋಕನ್ ಬ್ಯಾಲೆನ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ನಮಗೆ ಸಮಸ್ಯೆಯಾಗಿದೆ. ನೀವು ಅವುಗಳನ್ನು ನೋಡಬಹುದು",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"
   },

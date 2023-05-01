@@ -563,10 +563,6 @@
   "transfer": {
     "message": "Transfè"
   },
-  "troubleTokenBalances": {
-    "message": "Nou te gen pwoblèm chaje balans token ou. Ou ka wè yo ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Eseye anko"
   },

@@ -788,10 +788,6 @@
   "transferFrom": {
     "message": "Overfør fra"
   },
-  "troubleTokenBalances": {
-    "message": "Vi hadde problemer med å laste inn sjetongsaldoen din. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Prøv igjen"
   },

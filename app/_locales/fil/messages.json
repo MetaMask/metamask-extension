@@ -725,10 +725,6 @@
   "transferFrom": {
     "message": "I-transfer Mula Sa"
   },
-  "troubleTokenBalances": {
-    "message": "Nagkaroon kami ng problema sa pag-loading sa iyong mga token balance. Makikita mo ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Subukang muli"
   },

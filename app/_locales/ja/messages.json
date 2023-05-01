@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
   },
-  "troubleTokenBalances": {
-    "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "パーミッションを付与することで、次の$1による資金へのアクセスが許可されます"
   },

@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
-import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
@@ -74,31 +73,16 @@ const AssetList = ({ onClickAsset }) => {
   const title = tokenData?.name || primaryCurrencyProperties.suffix;
   return (
     <>
-      {process.env.MULTICHAIN ? (
-        <MultichainTokenListItem
-          onClick={() => onClickAsset(nativeCurrency)}
-          title={title}
-          primary={
-            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
-          }
-          tokenSymbol={primaryCurrencyProperties.suffix}
-          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-          tokenImage={balanceIsLoading ? null : primaryTokenImage}
-        />
-      ) : (
-        <AssetListItem
-          onClick={() => onClickAsset(nativeCurrency)}
-          data-testid="wallet-balance"
-          primary={
-            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
-          }
-          tokenSymbol={primaryCurrencyProperties.suffix}
-          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-          tokenImage={balanceIsLoading ? null : primaryTokenImage}
-          identiconBorder
-        />
-      )}
-
+      <MultichainTokenListItem
+        onClick={() => onClickAsset(nativeCurrency)}
+        title={title}
+        primary={
+          primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+        }
+        tokenSymbol={primaryCurrencyProperties.suffix}
+        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+        tokenImage={balanceIsLoading ? null : primaryTokenImage}
+      />
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);

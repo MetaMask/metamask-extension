@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "Nagkaproblema ang MetaMask sa pagsisimula. Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
   },
-  "troubleTokenBalances": {
-    "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "Sa pamamagitan ng pagbibigay ng pahintulot, pinapayagan mo ang sumusunod na $1 para ma-access ang pondo mo"
   },

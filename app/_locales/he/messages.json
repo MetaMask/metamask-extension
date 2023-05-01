@@ -810,10 +810,6 @@
   "transferFrom": {
     "message": "העברה מ-"
   },
-  "troubleTokenBalances": {
-    "message": "לא הצלחנו לטעון את יתרות הטוקנים שלך. באפשרותך להציג אותן",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "ניסיון חוזר"
   },

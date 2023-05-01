@@ -4098,10 +4098,6 @@
   "troubleStarting": {
     "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση. Αυτό το σφάλμα μπορεί να είναι τυχαίο, γι' αυτό προσπαθήστε να επανεκκινήσετε την επέκταση."
   },
-  "troubleTokenBalances": {
-    "message": "Είχαμε πρόβλημα να φορτώσουμε τα υπόλοιπα του διακριτικού σας. Μπορείτε να τα δείτε ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "Χορηγώντας άδεια, επιτρέπετε στα ακόλουθα $1 να έχουν πρόσβαση στα χρήματά σας"
   },

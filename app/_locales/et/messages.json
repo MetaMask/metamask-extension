@@ -803,10 +803,6 @@
   "transferFrom": {
     "message": "Ülekandmine asukohast"
   },
-  "troubleTokenBalances": {
-    "message": "Teie loasaldode laadimisega oli probleem. Saate neid vaadata",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Proovi uuesti"
   },

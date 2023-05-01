@@ -434,10 +434,6 @@
   "transactionError": {
     "message": "பரிவர்த்தனை பிழை. விதிமுறை ஒப்பந்தத்தில் விதிவிலக்கு."
   },
-  "troubleTokenBalances": {
-    "message": "உங்கள் டோக்கன் நிலுவைகளை ஏற்றுவதில் சிக்கல் ஏற்பட்டது. நீங்கள் அவர்களை பார்க்க முடியும்.",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "மீண்டும் முயல்க"
   },

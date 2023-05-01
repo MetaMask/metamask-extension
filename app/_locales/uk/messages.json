@@ -813,10 +813,6 @@
   "transferFrom": {
     "message": "Передати від"
   },
-  "troubleTokenBalances": {
-    "message": "В нас виникли складнощі при завантаженні ваших залишків токенів. Ви можете переглянути їх",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Повторити"
   },

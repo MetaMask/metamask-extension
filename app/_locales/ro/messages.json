@@ -794,10 +794,6 @@
   "transferFrom": {
     "message": "Transferați de la"
   },
-  "troubleTokenBalances": {
-    "message": "Am avut dificultăți cu încărcarea soldurilor dvs. de tokenuri. Le puteți vizualiza",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Încearcă din nou"
   },

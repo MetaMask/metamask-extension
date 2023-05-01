@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "MetaMask tuvo problemas para iniciar. Este error podría ser intermitente, así que intente reiniciar la extensión."
   },
-  "troubleTokenBalances": {
-    "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "Al conceder el permiso, usted permite que los siguientes $1 tengan acceso a sus fondos"
   },

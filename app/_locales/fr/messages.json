@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
   },
-  "troubleTokenBalances": {
-    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "En accordant cette autorisation, vous permettez au(x) $1 suivant(s) d’accéder à vos fonds"
   },

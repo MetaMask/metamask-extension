@@ -2687,10 +2687,6 @@
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleTokenBalances": {
-    "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "Al conceder el permiso, usted permite que los siguientes $1 tengan acceso a sus fondos"
   },

@@ -4101,10 +4101,6 @@
   "troubleStarting": {
     "message": "Beim Starten von MetaMask ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
   },
-  "troubleTokenBalances": {
-    "message": "Wir haben Schwierigkeiten dein Tokenguthaben zu laden. Du kannst es hier anzeigen lassen",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "trustSiteApprovePermission": {
     "message": "Durch Erteilung der Erlaubnis erlauben Sie den folgenden $1 Zugriff auf Ihr Guthaben"
   },

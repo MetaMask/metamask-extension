@@ -798,10 +798,6 @@
   "transferFrom": {
     "message": "የማዛወሪያ ቅጽ"
   },
-  "troubleTokenBalances": {
-    "message": "የተለዋጭ ስም ቀሪ ሂሳብዎን ስንጭን ችግር አጋጥሞናል። ማየት ይችላሉ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "እንደገና ሞክር"
   },

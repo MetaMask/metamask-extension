@@ -1840,10 +1840,6 @@
     "message": "Abbiamo riscontrato un errore nella connessione a $1, guarda la documentazione $2 e prova di nuovo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleTokenBalances": {
-    "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Prova di nuovo"
   },

@@ -809,10 +809,6 @@
   "transferFrom": {
     "message": "Nosūtīt no"
   },
-  "troubleTokenBalances": {
-    "message": "Mums neizdevās ielādēt marķieru bilanci. Varat tos skatīt",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Mēģināt vēlreiz"
   },

@@ -803,10 +803,6 @@
   "transferFrom": {
     "message": "Átvezetés innen: "
   },
-  "troubleTokenBalances": {
-    "message": "Gondjaink voltak tokenegyenlegeid betöltésével. Megtekintheted őket",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Újra"
   },

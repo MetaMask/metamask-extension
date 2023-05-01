@@ -807,10 +807,6 @@
   "transferFrom": {
     "message": "থেকে ট্রান্সফার করুন"
   },
-  "troubleTokenBalances": {
-    "message": "আপনার টোকেন ব্যালেন্সগুলি লোড করতে আমাদের সমস্যা হয়েছিল। আপনি সেগুলি দেখতে পারেন",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "আবার করুন"
   },

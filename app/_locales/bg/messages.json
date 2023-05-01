@@ -809,10 +809,6 @@
   "transferFrom": {
     "message": "Трансфер от"
   },
-  "troubleTokenBalances": {
-    "message": "Имахме проблеми със зареждането на вашите символи. Можете да ги видите",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Нов опит"
   },

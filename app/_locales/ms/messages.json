@@ -790,10 +790,6 @@
   "transferFrom": {
     "message": "Pindah Daripada"
   },
-  "troubleTokenBalances": {
-    "message": "Kami menghadapi masalah memuatkan baki token anda. Anda boleh melihatnya",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Cuba lagi"
   },
