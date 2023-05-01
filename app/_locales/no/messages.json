@@ -151,9 +151,6 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectHardwareWallet": {
-    "message": "Koble til maskinvarelommebok"
-  },
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Opprett"
-  },
-  "createAccount": {
-    "message": "Opprett konto"
   },
   "createPassword": {
     "message": "Opprett passord "

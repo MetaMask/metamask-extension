@@ -154,9 +154,6 @@
   "connect": {
     "message": "Prisijungti"
   },
-  "connectHardwareWallet": {
-    "message": "Susieti aparatinės įrangos slaptažodinę"
-  },
   "connectingTo": {
     "message": "Jungiamasi prie $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Sukurti"
-  },
-  "createAccount": {
-    "message": "Sukurti paskyrą"
   },
   "createPassword": {
     "message": "Sukurti slaptažodį"

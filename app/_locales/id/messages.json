@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Hubungkan akun atau buat baru"
   },
-  "connectHardwareWallet": {
-    "message": "Hubungkan dompet perangkat keras"
-  },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Buat"
-  },
-  "createAccount": {
-    "message": "Buat akun"
   },
   "createNewWallet": {
     "message": "Buat dompet baru"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
-  },
-  "notifications": {
-    "message": "Notifikasi"
   },
   "notifications10ActionText": {
     "message": "Lihat di Pengaturan",

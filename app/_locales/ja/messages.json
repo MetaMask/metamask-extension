@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "アカウントを接続するか、または新規に作成します"
   },
-  "connectHardwareWallet": {
-    "message": "ハードウェアウォレットの接続"
-  },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "作成"
-  },
-  "createAccount": {
-    "message": "アカウントを作成"
   },
   "createNewWallet": {
     "message": "新規ウォレットを作成"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "設定に移動",

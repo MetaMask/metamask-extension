@@ -252,9 +252,6 @@
   "connectAccountOrCreate": {
     "message": "Ikonekta ang account o gumawa ng bago"
   },
-  "connectHardwareWallet": {
-    "message": "Ikonekta ang Hardware Wallet"
-  },
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
   },
@@ -355,9 +352,6 @@
   },
   "create": {
     "message": "Gumawa"
-  },
-  "createAccount": {
-    "message": "Gumawa ng Account"
   },
   "createPassword": {
     "message": "Gumawa ng Password"

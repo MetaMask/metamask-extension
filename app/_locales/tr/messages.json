@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Hesabı bağla ya da yeni hesap oluştur"
   },
-  "connectHardwareWallet": {
-    "message": "Donanım Cüzdanı Bağla"
-  },
   "connectManually": {
     "message": "Mevcut siteye manuel olarak bağlan"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Oluştur"
-  },
-  "createAccount": {
-    "message": "Hesap Oluştur"
   },
   "createNewWallet": {
     "message": "Yeni bir cüzdan oluştur"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
-  },
-  "notifications": {
-    "message": "Bildirimler"
   },
   "notifications10ActionText": {
     "message": "Ayarlarda ziyaret et",

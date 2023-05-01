@@ -69,9 +69,6 @@
   "create": {
     "message": "बनाएं"
   },
-  "createAccount": {
-    "message": "खाता बनाएं"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },

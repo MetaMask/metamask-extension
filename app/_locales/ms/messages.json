@@ -154,9 +154,6 @@
   "connect": {
     "message": "Sambung"
   },
-  "connectHardwareWallet": {
-    "message": "Sambungkan Dompet Perkakasan"
-  },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Cipta"
-  },
-  "createAccount": {
-    "message": "Cipta Akaun"
   },
   "createPassword": {
     "message": "Cipta Kata Laluan"

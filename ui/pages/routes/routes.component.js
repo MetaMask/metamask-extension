@@ -26,7 +26,6 @@ import CreateAccountPage from '../create-account';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
-import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -548,7 +547,6 @@ export default class Routes extends Component {
           isUnlocked ? <InteractiveReplacementTokenNotification /> : null
           ///: END:ONLY_INCLUDE_IN
         }
-        <AccountMenu />
         {isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}

@@ -154,9 +154,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "اتصال کیف سخت افزار"
-  },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "ایجاد"
-  },
-  "createAccount": {
-    "message": "ایجاد حساب"
   },
   "createPassword": {
     "message": "ایجاد رمز عبور"

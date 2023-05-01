@@ -154,9 +154,6 @@
   "connect": {
     "message": "Свързване"
   },
-  "connectHardwareWallet": {
-    "message": "Свържете хардуерен портфейл"
-  },
   "connectingTo": {
     "message": "Свързване с $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Създаване"
-  },
-  "createAccount": {
-    "message": "Създай акаунт"
   },
   "createPassword": {
     "message": "Създаване на парола"

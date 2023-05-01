@@ -148,9 +148,6 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectHardwareWallet": {
-    "message": "Pripojiť hardvérovú peňaženku"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAccount": {
-    "message": "Vytvořit účet"
   },
   "createPassword": {
     "message": "Vytvoriť heslo"

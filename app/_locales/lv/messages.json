@@ -154,9 +154,6 @@
   "connect": {
     "message": "Pievienošana"
   },
-  "connectHardwareWallet": {
-    "message": "Pieslēgt aparatūras maku"
-  },
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Izveidot"
-  },
-  "createAccount": {
-    "message": "Izveidot kontu"
   },
   "createPassword": {
     "message": "Izveidot paroli"

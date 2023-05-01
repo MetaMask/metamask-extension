@@ -158,9 +158,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "ربط محفظة الأجهزة"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
@@ -196,9 +193,6 @@
   },
   "create": {
     "message": "إنشاء"
-  },
-  "createAccount": {
-    "message": "إنشاء حساب"
   },
   "createPassword": {
     "message": "إنشاء كلمة مرور"

@@ -154,9 +154,6 @@
   "connect": {
     "message": "Połącz"
   },
-  "connectHardwareWallet": {
-    "message": "Podłącz portfel sprzętowy"
-  },
   "connectingTo": {
     "message": "Łączenie z $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Utwórz"
-  },
-  "createAccount": {
-    "message": "Utwórz konto"
   },
   "createPassword": {
     "message": "Utwórz hasło"

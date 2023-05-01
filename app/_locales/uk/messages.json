@@ -154,9 +154,6 @@
   "connect": {
     "message": "Під’єднатися"
   },
-  "connectHardwareWallet": {
-    "message": "Приєднайте апаратний гаманець"
-  },
   "connectingTo": {
     "message": "Під'єднуємось до $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Створити"
-  },
-  "createAccount": {
-    "message": "Створити обліковий запис"
   },
   "createPassword": {
     "message": "Створити пароль"

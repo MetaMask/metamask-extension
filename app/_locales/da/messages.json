@@ -154,9 +154,6 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectHardwareWallet": {
-    "message": "Forbind Hardwarepung"
-  },
   "connectingTo": {
     "message": "Forbinder til $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Opret"
-  },
-  "createAccount": {
-    "message": "Opret konto"
   },
   "createPassword": {
     "message": "Opret adgangskode"

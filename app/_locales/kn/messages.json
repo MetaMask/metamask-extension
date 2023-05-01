@@ -154,9 +154,6 @@
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
   },
-  "connectHardwareWallet": {
-    "message": "ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್‌‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ"
-  },
   "connectingTo": {
     "message": "$1 ಗೆ ಸಂಪರ್ಕಪಡಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "ರಚಿಸಿ"
-  },
-  "createAccount": {
-    "message": "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
   },
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"

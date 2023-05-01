@@ -148,9 +148,6 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectHardwareWallet": {
-    "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "ፍጠር"
-  },
-  "createAccount": {
-    "message": "መለያ ፍጠር"
   },
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"

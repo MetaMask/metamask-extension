@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Ikonekta ang account o gumawa ng bago"
   },
-  "connectHardwareWallet": {
-    "message": "Ikonekta ang hardware wallet"
-  },
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Gumawa"
-  },
-  "createAccount": {
-    "message": "Gumawa ng account"
   },
   "createNewWallet": {
     "message": "Gumawa ng bagong wallet"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
-  },
-  "notifications": {
-    "message": "Mga Abiso"
   },
   "notifications10ActionText": {
     "message": "Bisitahin sa mga setting",

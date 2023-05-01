@@ -148,9 +148,6 @@
   "connect": {
     "message": "Unganisha"
   },
-  "connectHardwareWallet": {
-    "message": "Unganisha Waleti ya Programu Maunzi"
-  },
   "connectingTo": {
     "message": "Inaunganisha kwenye $1"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Unda"
-  },
-  "createAccount": {
-    "message": "Fungua Akaunti"
   },
   "createPassword": {
     "message": "Unda Nenosiri"

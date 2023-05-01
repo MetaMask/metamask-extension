@@ -154,9 +154,6 @@
   "connect": {
     "message": "Povežite se"
   },
-  "connectHardwareWallet": {
-    "message": "Poveži hardverski novčanik"
-  },
   "connectingTo": {
     "message": "Povezivanje na $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Stvori"
-  },
-  "createAccount": {
-    "message": "Stvori račun"
   },
   "createPassword": {
     "message": "Stvori lozinku"

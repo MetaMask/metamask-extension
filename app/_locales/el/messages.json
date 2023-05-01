@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Σύνδεση λογαριασμού ή δημιουργία νέου"
   },
-  "connectHardwareWallet": {
-    "message": "Σύνδεση Πορτοφολιού Υλικού"
-  },
   "connectManually": {
     "message": "Χειροκίνητη σύνδεση στον τρέχοντα ιστότοπο"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Δημιουργία"
-  },
-  "createAccount": {
-    "message": "Δημιουργία Λογαριασμού"
   },
   "createNewWallet": {
     "message": "Δημιουργήστε ένα νέο πορτοφόλι"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Δεν Υπάρχει Αρκετό τέλος συναλλαγής"
-  },
-  "notifications": {
-    "message": "Ειδοποιήσεις"
   },
   "notifications10ActionText": {
     "message": "Μετάβαση στις Ρυθμίσεις",

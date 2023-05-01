@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "계정 연결 또는 새 계정 만들기"
   },
-  "connectHardwareWallet": {
-    "message": "하드웨어 지갑 연결"
-  },
   "connectManually": {
     "message": "현재 사이트에 수동으로 연결"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "생성"
-  },
-  "createAccount": {
-    "message": "계정 생성"
   },
   "createNewWallet": {
     "message": "새 지갑 생성"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
-  },
-  "notifications": {
-    "message": "알림"
   },
   "notifications10ActionText": {
     "message": "설정으로 이동하기",

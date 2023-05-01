@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "खाता कनेक्ट करें या नया बनाएं"
   },
-  "connectHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट कनेक्ट करें"
-  },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "बनाएं"
-  },
-  "createAccount": {
-    "message": "अकाउंट बनाएं"
   },
   "createNewWallet": {
     "message": "एक नया वॉलेट बनाएं"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "पर्याप्त गैस नहीं"
-  },
-  "notifications": {
-    "message": "सूचनाएं"
   },
   "notifications10ActionText": {
     "message": "सेटिंग्स में जाएं",

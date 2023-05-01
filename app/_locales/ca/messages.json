@@ -151,9 +151,6 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectHardwareWallet": {
-    "message": "Connectar Moneder Hardaware"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea "
   },
   "createPassword": {
     "message": "Crear Contrasenya"

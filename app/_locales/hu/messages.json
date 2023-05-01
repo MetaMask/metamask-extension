@@ -154,9 +154,6 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectHardwareWallet": {
-    "message": "Hardverpénztárca csatlakoztatása"
-  },
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Létrehozás"
-  },
-  "createAccount": {
-    "message": "Fiók létrehozása"
   },
   "createPassword": {
     "message": "Jelszó létrehozása"

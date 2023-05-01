@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Kết nối tài khoản hoặc tạo tài khoản mới"
   },
-  "connectHardwareWallet": {
-    "message": "Kết nối với ví cứng"
-  },
   "connectManually": {
     "message": "Kết nối thủ công với trang web hiện tại"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Tạo"
-  },
-  "createAccount": {
-    "message": "Tạo tài khoản"
   },
   "createNewWallet": {
     "message": "Tạo ví mới"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Không đủ gas"
-  },
-  "notifications": {
-    "message": "Thông báo"
   },
   "notifications10ActionText": {
     "message": "Xem trong phần Cài đặt",

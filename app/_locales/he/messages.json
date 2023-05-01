@@ -154,9 +154,6 @@
   "connect": {
     "message": "התחברות"
   },
-  "connectHardwareWallet": {
-    "message": "חבר ארנק חומרה"
-  },
   "connectingTo": {
     "message": "מתחבר ל- $1 "
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "צור"
-  },
-  "createAccount": {
-    "message": "פתיחת חשבון"
   },
   "createPassword": {
     "message": "יצירת ססמה"

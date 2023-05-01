@@ -154,9 +154,6 @@
   "connect": {
     "message": "সংযুক্ত করুন"
   },
-  "connectHardwareWallet": {
-    "message": "হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
-  },
   "connectingTo": {
     "message": " $1 এর সাথে সংযোগ করছে"
   },
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "তৈরি করুন"
-  },
-  "createAccount": {
-    "message": "অ্যাকাউন্ট তৈরি করুন"
   },
   "createPassword": {
     "message": "পাসওয়ার্ড তৈরি করুন"

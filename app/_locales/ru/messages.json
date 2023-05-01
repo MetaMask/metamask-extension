@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Подключите счет или создайте новый"
   },
-  "connectHardwareWallet": {
-    "message": "Подключить аппаратный кошелек"
-  },
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Создать"
-  },
-  "createAccount": {
-    "message": "Создать счет"
   },
   "createNewWallet": {
     "message": "Создать новый кошелек"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notifications": {
-    "message": "Уведомления"
   },
   "notifications10ActionText": {
     "message": "Смотреть в настройках",

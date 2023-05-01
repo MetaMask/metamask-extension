@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "连接账户或创建新账户"
   },
-  "connectHardwareWallet": {
-    "message": "连接硬件钱包"
-  },
   "connectManually": {
     "message": "手动连接到当前站点"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "创建"
-  },
-  "createAccount": {
-    "message": "创建账户"
   },
   "createNewWallet": {
     "message": "创建新钱包"
@@ -2228,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "在设置中访问",

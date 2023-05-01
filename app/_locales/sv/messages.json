@@ -148,9 +148,6 @@
   "connect": {
     "message": "Ansluta"
   },
-  "connectHardwareWallet": {
-    "message": "Anslut hårdvaruplånbok"
-  },
   "connectingTo": {
     "message": "Ansluter till $1"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Skapa"
-  },
-  "createAccount": {
-    "message": "Skapa konto"
   },
   "createPassword": {
     "message": "Skapa lösenord"

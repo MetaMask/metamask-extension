@@ -389,9 +389,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar cuenta o crear nueva"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar la cartera de hardware"
-  },
   "connectManually": {
     "message": "Conectarse manualmente al sitio actual"
   },
@@ -498,9 +495,6 @@
   },
   "create": {
     "message": "Crear"
-  },
-  "createAccount": {
-    "message": "Crear cuenta"
   },
   "createNewWallet": {
     "message": "Crear una nueva cartera"

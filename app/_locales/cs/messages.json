@@ -81,9 +81,6 @@
   "create": {
     "message": "Vytvořit"
   },
-  "createAccount": {
-    "message": "Vytvořit účet"
-  },
   "customToken": {
     "message": "Vlastní token"
   },

@@ -154,9 +154,6 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectHardwareWallet": {
-    "message": "Ühendage riistvara rahakott"
-  },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Loo"
-  },
-  "createAccount": {
-    "message": "Loo konto"
   },
   "createPassword": {
     "message": "Loo parool"

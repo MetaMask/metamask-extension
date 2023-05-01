@@ -87,9 +87,6 @@
   "create": {
     "message": "สร้าง"
   },
-  "createAccount": {
-    "message": "สร้างบัญชี"
-  },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
   },
