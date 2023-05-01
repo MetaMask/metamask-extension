@@ -10,11 +10,10 @@ import {
   AlignItems,
   Color,
   DISPLAY,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TypographyVariant,
+  FontWeight,
+  TextAlign,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import Typography from '../typography';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
@@ -26,7 +25,7 @@ import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, Text } from '../../component-library';
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -80,14 +79,15 @@ const NewNetworkInfo = () => {
         </Button>
       }
     >
-      <Typography
-        variant={TypographyVariant.H4}
+      <Text
+        variant={TextVariant.headingSm}
+        as="h4"
         color={Color.textDefault}
-        fontWeight={FONT_WEIGHT.BOLD}
-        align={TEXT_ALIGN.CENTER}
+        fontWeight={FontWeight.Bold}
+        align={TextAlign.Center}
       >
         {t('switchedTo')}
-      </Typography>
+      </Text>
       <Chip
         className="new-network-info__token-box"
         backgroundColor={Color.backgroundAlternative}
@@ -112,15 +112,15 @@ const NewNetworkInfo = () => {
           )
         }
       />
-      <Typography
-        variant={TypographyVariant.H7}
+      <Text
+        variant={TextVariant.bodySmBold}
+        as="h6"
         color={Color.textDefault}
-        fontWeight={FONT_WEIGHT.BOLD}
-        align={TEXT_ALIGN.CENTER}
+        align={TextAlign.Center}
         margin={[8, 0, 0, 0]}
       >
         {t('thingsToKeep')}
-      </Typography>
+      </Text>
       <Box marginRight={4} marginLeft={5} marginTop={6}>
         {currentProvider.ticker ? (
           <Box
@@ -133,23 +133,24 @@ const NewNetworkInfo = () => {
             <Box marginRight={4} color={Color.textDefault}>
               &bull;
             </Box>
-            <Typography
-              variant={TypographyVariant.H7}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={Color.textDefault}
-              boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              display={DISPLAY.INLINE_BLOCK}
               key="nativeTokenInfo"
             >
               {t('nativeToken', [
-                <Typography
-                  variant={TypographyVariant.H7}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                  fontWeight={FONT_WEIGHT.BOLD}
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
+                  display={DISPLAY.INLINE_BLOCK}
                   key="ticker"
                 >
                   {currentProvider.ticker}
-                </Typography>,
+                </Text>,
               ])}
-            </Typography>
+            </Text>
           </Box>
         ) : null}
         <Box
@@ -166,10 +167,11 @@ const NewNetworkInfo = () => {
           <Box marginRight={4} color={Color.textDefault}>
             &bull;
           </Box>
-          <Typography
-            variant={TypographyVariant.H7}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={Color.textDefault}
-            boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+            display={DISPLAY.INLINE_BLOCK}
             className="new-network-info__bullet-paragraph__text"
           >
             {t('attemptSendingAssets')}{' '}
@@ -178,15 +180,16 @@ const NewNetworkInfo = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={Color.infoDefault}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                display={DISPLAY.INLINE_BLOCK}
               >
                 {t('learnMoreUpperCase')}
-              </Typography>
+              </Text>
             </a>
-          </Typography>
+          </Text>
         </Box>
         {!autoDetectToken || !tokenDetectionSupported ? (
           <Box
@@ -199,8 +202,9 @@ const NewNetworkInfo = () => {
               &bull;
             </Box>
             <Box>
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={Color.textDefault}
                 className="new-network-info__token-show-up"
               >
@@ -210,15 +214,16 @@ const NewNetworkInfo = () => {
                   onClick={addTokenManually}
                   className="new-network-info__button"
                 >
-                  <Typography
-                    variant={TypographyVariant.H7}
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
                     color={Color.infoDefault}
                     className="new-network-info__manually-add-tokens"
                   >
                     {t('clickToManuallyAdd')}
-                  </Typography>
+                  </Text>
                 </Button>
-              </Typography>
+              </Text>
             </Box>
           </Box>
         ) : null}

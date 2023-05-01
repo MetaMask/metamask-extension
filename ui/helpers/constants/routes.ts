@@ -32,6 +32,12 @@ const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
 const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
 const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+const COMPLIANCE_FEATURE_ROUTE = '/compliance-feature';
+const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT =
+  '/confirm-institutional-feature-connect';
+const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
+const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
+  '/interactive-replacement-token-page';
 ///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
@@ -127,6 +133,13 @@ const PATH_NAME_MAP = {
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
+  [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
+  [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
+  [COMPLIANCE_FEATURE_ROUTE]: 'Compliance Feature Page',
+  [CONFIRM_INSTITUTIONAL_FEATURE_CONNECT]:
+    'Confirm Institutional Feature Connect',
+  [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
+  [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
   ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
@@ -161,9 +174,6 @@ const PATH_NAME_MAP = {
     'Decrypt Message Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
-  ///: END:ONLY_INCLUDE_IN
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
@@ -216,6 +226,10 @@ export {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
