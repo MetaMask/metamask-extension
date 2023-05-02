@@ -2281,6 +2281,9 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
+  "networkMenu": {
+    "message": "Network Menu"
+  },
   "networkMenuHeading": {
     "message": "Select a network"
   },
