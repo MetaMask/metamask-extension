@@ -205,13 +205,13 @@ browser.runtime.onConnect.addListener(async (...args) => {
     throw new Error('UNEXPECTED_CONNECTION_ATTEMPT');
   }
 
-  const id = `${remotePort.sender?.tab?.id}-${processName}`;
-  const connection = openMetamaskConnections.get(id);
+  const connectionId = generateConnectionId(remotePort, processName);
+  const connection = openMetamaskConnections.get(connectionId);
 
   if (Boolean(connection) === false) {
     // This is set in `setupController`, which is called as part of initialization
     connectRemote(...args);
-    openMetamaskConnections.set(id, true);
+    openMetamaskConnections.set(connectionId, true);
   } else {
     throw new Error('CONNECTION_ALREADY_EXISTS');
   }
@@ -445,6 +445,15 @@ export async function loadStateFromPersistence() {
   return versionedData.data;
 }
 
+function generateConnectionId(remotePort, processName) {
+  const id = remotePort.sender?.tab?.id;
+  if (!id || !processName) {
+    throw new Error(
+      'Must provide id and processName to generate connection id.',
+    );
+  }
+  return `${id}-${processName}`;
+}
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
@@ -612,11 +621,12 @@ export function setupController(
           }
         });
       }
-      const id = `${remotePort.sender?.tab?.id}-${processName}`;
+
+      const connectionId = generateConnectionId(remotePort, processName);
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(id, false);
+          openMetamaskConnections.set(connectionId, false);
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -627,7 +637,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(id, false);
+          openMetamaskConnections.set(connectionId, false);
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -643,7 +653,7 @@ export function setupController(
         openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(id, false);
+          openMetamaskConnections.set(connectionId, false);
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
