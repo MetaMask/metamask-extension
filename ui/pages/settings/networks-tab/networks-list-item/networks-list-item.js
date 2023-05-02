@@ -11,7 +11,7 @@ import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
-import { getProvider } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
@@ -34,7 +34,7 @@ const NetworksListItem = ({
   const dispatch = useDispatch();
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
-  const provider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
   const {
     label,
     labelKey,
@@ -46,10 +46,10 @@ const NetworksListItem = ({
   const listItemNetworkIsSelected =
     selectedNetworkConfigurationId &&
     selectedNetworkConfigurationId === networkConfigurationId;
-  const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
+  const listItemUrlIsProviderUrl = rpcUrl === providerConfig.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
-    provider.type !== NETWORK_TYPES.RPC &&
-    currentProviderType === provider.type;
+    providerConfig.type !== NETWORK_TYPES.RPC &&
+    currentProviderType === providerConfig.type;
   const listItemNetworkIsCurrentProvider =
     !networkIsSelected &&
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);

@@ -53,7 +53,7 @@ const ConfirmLegacyGasDisplay = () => {
   if (isMultiLayerFeeNetwork) {
     return [
       <TransactionDetailItem
-        key="total-item"
+        key="legacy-total-item"
         detailTitle={t('transactionDetailLayer2GasHeading')}
         detailTotal={
           <UserPreferencedCurrencyDisplay

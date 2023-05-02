@@ -67,6 +67,7 @@ import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
+  getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -125,7 +126,7 @@ export function getMetaMetricsId(state) {
 }
 
 export function isCurrentProviderCustom(state) {
-  const provider = getProvider(state);
+  const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
     !Object.values(CHAIN_IDS).includes(provider.chainId)
@@ -1151,10 +1152,6 @@ export function getNewNetworkAdded(state) {
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
-}
-
-export function getProvider(state) {
-  return state.metamask.provider;
 }
 
 export function getNetworkConfigurations(state) {
