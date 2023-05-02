@@ -4,8 +4,7 @@ import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
-import Typography from '../typography';
-import { ButtonIcon, IconName, IconSize } from '../../component-library';
+import { ButtonIcon, IconName, IconSize, Text } from '../../component-library';
 
 export default function Callout({
   severity,
@@ -38,9 +37,9 @@ export default function Callout({
   return (
     <div className={calloutClassName}>
       <InfoIconInverted severity={severity} />
-      <Typography color={Color.textDefault} className="callout__content">
+      <Text color={Color.textDefault} className="callout__content">
         {children}
-      </Typography>
+      </Text>
       {dismiss && (
         <ButtonIcon
           iconName={IconName.Close}
