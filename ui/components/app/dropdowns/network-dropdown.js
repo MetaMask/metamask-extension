@@ -7,6 +7,7 @@ import { pickBy } from 'lodash';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
   BUILT_IN_NETWORKS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -55,7 +56,7 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 
 function mapStateToProps(state) {
   return {
-    provider: state.metamask.provider,
+    provider: getProviderConfig(state),
     shouldShowTestNetworks: getShowTestNetworks(state),
     networkConfigurations: state.metamask.networkConfigurations,
     networkDropdownOpen: state.appState.networkDropdownOpen,
