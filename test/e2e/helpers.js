@@ -10,7 +10,6 @@ const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
@@ -55,7 +54,6 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
   try {
-    console.log('Ganache');
     await ganacheServer.start(ganacheOptions);
     let contractRegistry;
 
@@ -76,10 +74,8 @@ async function withFixtures(options, testSuite) {
         ...ganacheOptions2,
       });
     }
-    console.log('Fixtures');
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
-    console.log('Phishing server');
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -100,7 +96,6 @@ async function withFixtures(options, testSuite) {
             'dist',
           );
         }
-        console.log('Dapp server');
         dappServer.push(createStaticServer(dappDirectory));
         dappServer[i].listen(`${dappBasePort + i}`);
         await new Promise((resolve, reject) => {
@@ -109,21 +104,12 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    console.log('Mocking');
     const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
-    console.log('XSET?');
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      // await ensureXServerIsRunning();
-    }
-    console.log('Building web driver');
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
-    console.log('Checking for errors?');
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(failOnConsoleError);
       await driver.checkBrowserForConsoleErrors(failOnConsoleError);
@@ -148,8 +134,6 @@ async function withFixtures(options, testSuite) {
         },
       });
     }
-
-    console.log('Running suite');
 
     await testSuite({
       driver: driverProxy ?? driver,
