@@ -2993,12 +2993,12 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('addInitialTransactionApprovals', function () {
+  describe('initApprovals', function () {
     it('adds unapprovedTxs as approvals', async function () {
-      const txId = '1';
+      const firstTxId = '1';
       txController.addTransaction(
         {
-          id: txId,
+          id: firstTxId,
           origin: ORIGIN_METAMASK,
           status: TransactionStatus.unapproved,
           metamaskNetworkId: currentNetworkId,
@@ -3009,20 +3009,41 @@ describe('Transaction Controller', function () {
         },
         noop,
       );
-      const callbackSpy = sinon.spy();
-      txController.addInitialTransactionApprovals(callbackSpy);
-
+      const secondTxId = '2';
+      txController.addTransaction(
+        {
+          id: secondTxId,
+          origin: ORIGIN_METAMASK,
+          status: TransactionStatus.unapproved,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+        },
+        noop,
+      );
+      await txController.initApprovals();
       assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:addRequest',
         {
-          id: txId,
+          id: firstTxId,
           origin: ORIGIN_METAMASK,
-          requestData: { txId },
+          requestData: { txId: firstTxId },
           type: MESSAGE_TYPE.TRANSACTION,
         },
-        false, // Show popup
+        false,
       ]);
-      assert.equal(callbackSpy.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: secondTxId,
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: secondTxId },
+          type: MESSAGE_TYPE.TRANSACTION,
+        },
+        false,
+      ]);
     });
   });
 });
