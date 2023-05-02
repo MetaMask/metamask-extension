@@ -41,7 +41,6 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getCurrentChainId } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
@@ -54,7 +53,6 @@ const CustodyPage = () => {
 
   const mmiActions = mmiActionsFactory();
   const currentChainId = useSelector(getCurrentChainId);
-  const providerConfig = useSelector(getProviderConfig);
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [selectedAccounts, setSelectedAccounts] = useState({});
@@ -494,7 +492,6 @@ const CustodyPage = () => {
 
               setSelectedAccounts(selectedAccounts);
             }}
-            provider={providerConfig}
             selectedAccounts={selectedAccounts}
             onAddAccounts={async () => {
               try {
