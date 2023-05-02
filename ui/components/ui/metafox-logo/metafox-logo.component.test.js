@@ -19,4 +19,12 @@ describe('MetaFoxLogo', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('does match snapshot with custodyImgSrc', () => {
+    const { container } = renderWithProvider(
+      <MetaFoxLogo custodyImgSrc="/test" isUnlocked />,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
 });

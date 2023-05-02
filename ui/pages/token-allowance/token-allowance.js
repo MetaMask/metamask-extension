@@ -26,7 +26,6 @@ import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-sp
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
-  getCurrentAccountWithSendEtherInfo,
   getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
@@ -35,6 +34,7 @@ import {
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
+  getTargetAccountWithSendEtherInfo,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -61,10 +61,7 @@ import {
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../components/component-library/icon/deprecated';
+import { Icon, IconName } from '../../components/component-library';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
@@ -81,6 +78,7 @@ export default function TokenAllowance({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  hexMinimumTransactionFee,
   txData,
   isMultiLayerFeeNetwork,
   supportsEIP1559,
@@ -117,7 +115,9 @@ export default function TokenAllowance({
   const renderSimulationFailureWarning = useSimulationFailureWarning(
     userAcknowledgedGasMissing,
   );
-  const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
+  const fromAccount = useSelector((state) =>
+    getTargetAccountWithSendEtherInfo(state, userAddress),
+  );
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
@@ -316,7 +316,7 @@ export default function TokenAllowance({
       </Box>
       <NetworkAccountBalanceHeader
         networkName={networkName}
-        accountName={currentAccount.name}
+        accountName={fromAccount.name}
         accountBalance={currentTokenBalance}
         tokenName={tokenSymbol}
         accountAddress={userAddress}
@@ -448,7 +448,7 @@ export default function TokenAllowance({
             </Box>
           )}
           <ApproveContentCard
-            symbol={<Icon name={ICON_NAMES.TAG} />}
+            symbol={<Icon name={IconName.Tag} />}
             title={t('transactionFee')}
             showEdit
             showAdvanceGasFeeOptions
@@ -463,6 +463,7 @@ export default function TokenAllowance({
             userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             renderSimulationFailureWarning={renderSimulationFailureWarning}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
             fiatTransactionTotal={fiatTransactionTotal}
             currentCurrency={currentCurrency}
             useCurrencyRateCheck={useCurrencyRateCheck}
@@ -514,6 +515,7 @@ export default function TokenAllowance({
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
               useCurrencyRateCheck={useCurrencyRateCheck}
+              hexMinimumTransactionFee={hexMinimumTransactionFee}
             />
           </Box>
         </Box>
@@ -595,6 +597,10 @@ TokenAllowance.propTypes = {
    * Total sum of the transaction converted to hex value
    */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Minimum transaction fee converted to hex value
+   */
+  hexMinimumTransactionFee: PropTypes.string,
   /**
    * Current transaction
    */

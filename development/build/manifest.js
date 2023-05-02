@@ -6,7 +6,7 @@ const { mergeWith, cloneDeep, capitalize } = require('lodash');
 const baseManifest = process.env.ENABLE_MV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const { BuildType } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
@@ -165,25 +165,24 @@ async function writeJson(obj, file) {
  * Get manifest modifications for the given build type, including modifications specific to the
  * given platform.
  *
- * @param {BuildType} buildType - The build type.
+ * @param {string} buildType - The build type.
  * @param {string} platform - The platform (i.e. the browser).
- * @returns {object} The build modificantions for the given build type and platform.
+ * @returns {object} The build modifications for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
-  if (!Object.values(BuildType).includes(buildType)) {
+  const buildConfig = loadBuildTypesConfig();
+  if (!(buildType in buildConfig.buildTypes)) {
     throw new Error(`Invalid build type: ${buildType}`);
-  } else if (buildType === BuildType.main) {
+  }
+
+  const overridesPath = buildConfig.buildTypes[buildType].manifestOverrides;
+  if (overridesPath === undefined) {
     return {};
   }
 
   const builtTypeManifestDirectoryPath = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'app',
-    'build-types',
-    buildType,
-    'manifest',
+    process.cwd(),
+    overridesPath,
   );
 
   const baseBuildTypeModificationsPath = path.join(
