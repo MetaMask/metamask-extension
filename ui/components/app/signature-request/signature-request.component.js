@@ -112,7 +112,7 @@ export default class SignatureRequest extends PureComponent {
     showContractDetails: false,
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   componentDidMount() {
     if (this.props.txData.custodyId) {
       this.props.showCustodianDeepLink({
@@ -395,7 +395,7 @@ export default class SignatureRequest extends PureComponent {
           cancelAction={onCancel}
           signAction={onSign}
           disabled={
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             Boolean(this.props.txData?.custodyId) ||
             ///: END:ONLY_INCLUDE_IN
             hardwareWalletRequiresConnection ||

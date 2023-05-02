@@ -21,25 +21,27 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
-import { showCustodianDeepLink } from '@codefi/mmi-sdk';
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import {
+  mmiActionsFactory,
+  setTypedMsgInProgress,
+} from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 ///: END:ONLY_INCLUDE_IN
 
 import {
   MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ENVIRONMENT_TYPE_NOTIFICATION,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/app';
 import {
   cancelMsgs,
   showModal,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   goHome,
-  setTypedMsgInProgress,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -49,7 +51,7 @@ import SignatureRequest from './signature-request.component';
 function mapStateToProps(state, ownProps) {
   const { txData } = ownProps;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const envType = getEnvironmentType();
   ///: END:ONLY_INCLUDE_IN
 
@@ -94,7 +96,7 @@ function mapStateToProps(state, ownProps) {
 
 let mapDispatchToProps = null;
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
@@ -176,7 +178,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNotification,
     ///: END:ONLY_INCLUDE_IN
@@ -214,7 +216,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     sign = signMessage;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const signFn = async (...opts) => {
     if (accountType === 'custody') {
       try {
@@ -256,10 +258,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     fromAccount,
     txData,
     cancel,
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     sign,
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // eslint-disable-next-line no-dupe-keys
     sign: signFn,
     ///: END:ONLY_INCLUDE_IN
