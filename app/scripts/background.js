@@ -191,19 +191,17 @@ browser.runtime.onConnect.addListener(async (...args) => {
   const url = sender?.url;
   const detectedProcessName = url ? getEnvironmentType(url) : '';
 
-  if (detectedProcessName === 'background') {
-    // This is set in `setupController`, which is called as part of initialization
-    connectRemote(...args);
-    return;
-  }
-
   const connectionId = generateConnectionId(remotePort, detectedProcessName);
-  const connection = openMetamaskConnections.get(connectionId);
+  const openConnections = openMetamaskConnections.get(connectionId) || 0;
 
-  if (Boolean(connection) === false) {
+  if (
+    openConnections === 0 ||
+    (detectedProcessName === 'background' && openConnections < 1)
+    // 2 background connections are allowed, one for phishing warning page and one for the ledger bridge keyring
+  ) {
     // This is set in `setupController`, which is called as part of initialization
     connectRemote(...args);
-    openMetamaskConnections.set(connectionId, true);
+    openMetamaskConnections.set(connectionId, openConnections + 1);
   } else {
     throw new Error('CONNECTION_ALREADY_EXISTS');
   }
@@ -625,7 +623,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, false);
+          openMetamaskConnections.set(connectionId, 0);
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -636,7 +634,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, false);
+          openMetamaskConnections.set(connectionId, 0);
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -652,7 +650,7 @@ export function setupController(
         openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, false);
+          openMetamaskConnections.set(connectionId, 0);
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
