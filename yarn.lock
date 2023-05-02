@@ -3590,10 +3590,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/portfolio-dashboard@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask-institutional/portfolio-dashboard@npm:1.1.1"
-  checksum: d87c91ed0d5231e7eadcf05d8b8427a52e7c9cf16c559bbbb66f6cbb29f6e16d8a2286c9a918649cbef49a87db5243bba904a3931eeca997840f2f5a8fe0843c
+"@metamask-institutional/portfolio-dashboard@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@metamask-institutional/portfolio-dashboard@npm:1.1.2"
+  checksum: f2e1ec83fe0411f4d2e67dfdf2183f89667f34ae862425ece7b5cd0f4099eb7ae091910d67a3f15b7b5982e87bc80e9f668c25072c3bc5a977377fce14357cd3
   languageName: node
   linkType: hard
 
@@ -23936,7 +23936,7 @@ __metadata:
     "@lavamoat/lavapack": ^5.0.0
     "@lavamoat/snow": ^1.5.0
     "@material-ui/core": ^4.11.0
-    "@metamask-institutional/portfolio-dashboard": ^1.1.1
+    "@metamask-institutional/portfolio-dashboard": 1.1.2
     "@metamask/address-book-controller": ^2.0.0
     "@metamask/announcement-controller": ^3.0.0
     "@metamask/approval-controller": ^2.1.0
