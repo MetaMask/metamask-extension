@@ -635,7 +635,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome:
-          chrome-version: 111.0.5563.64-1
+          chrome-version: "111.0.5563.64-1"
       - attach_workspace:
           at: .
       - run:
@@ -671,7 +671,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome:
-          chrome-version: 111.0.5563.64-1
+          chrome-version: "111.0.5563.64-1"
       - attach_workspace:
           at: .
       - run:
@@ -698,7 +698,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-firefox:
-          version: 111.0
+          version: "110.0"
       - attach_workspace:
           at: .
       - run:
@@ -734,7 +734,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome:
-          chrome-version: 111.0.5563.64-1
+          chrome-version: "111.0.5563.64-1"
       - attach_workspace:
           at: .
       - run:
@@ -770,7 +770,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-firefox:
-          version: 111.0
+          version: "110.0"
       - attach_workspace:
           at: .
       - run:
@@ -805,7 +805,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome:
-          chrome-version: 111.0.5563.64-1
+          chrome-version: "111.0.5563.64-1"
       - attach_workspace:
           at: .
       - run:
@@ -830,7 +830,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome:
-          chrome-version: 111.0.5563.64-1
+          chrome-version: "111.0.5563.64-1"
       - attach_workspace:
           at: .
       - run:
@@ -855,7 +855,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome:
-          chrome-version: 111.0.5563.64-1
+          chrome-version: "111.0.5563.64-1"
       - attach_workspace:
           at: .
       - run:
