@@ -186,26 +186,18 @@ browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   const remotePort = args[0];
-  const { sender, name } = remotePort;
+  const { sender } = remotePort;
 
   const url = sender?.url;
   const detectedProcessName = url ? getEnvironmentType(url) : '';
-  const processName = name;
 
-  if (
-    processName === 'metamask-contentscript' &&
-    detectedProcessName === 'background'
-  ) {
+  if (detectedProcessName === 'background') {
     // This is set in `setupController`, which is called as part of initialization
     connectRemote(...args);
     return;
   }
 
-  if (detectedProcessName !== processName) {
-    throw new Error('UNEXPECTED_CONNECTION_ATTEMPT');
-  }
-
-  const connectionId = generateConnectionId(remotePort, processName);
+  const connectionId = generateConnectionId(remotePort, detectedProcessName);
   const connection = openMetamaskConnections.get(connectionId);
 
   if (Boolean(connection) === false) {
@@ -427,6 +419,7 @@ export async function loadStateFromPersistence() {
     sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
+      w,
     });
   });
 
@@ -445,14 +438,20 @@ export async function loadStateFromPersistence() {
   return versionedData.data;
 }
 
-function generateConnectionId(remotePort, processName) {
-  const id = remotePort.sender?.tab?.id;
-  if (!id || !processName) {
+function generateConnectionId(remotePort, detectedProcessName) {
+  const { sender } = remotePort;
+  const id = sender?.tab ? sender.tab.id : sender?.id;
+  if (!id || !detectedProcessName) {
+    console.error(
+      'Must provide id and detectedProcessName to generate connection id.',
+      id,
+      detectedProcessName,
+    ); // eslint-disable-line no-console
     throw new Error(
-      'Must provide id and processName to generate connection id.',
+      'Must provide id and detectedProcessName to generate connection id.',
     );
   }
-  return `${id}-${processName}`;
+  return `${id}-${detectedProcessName}`;
 }
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
