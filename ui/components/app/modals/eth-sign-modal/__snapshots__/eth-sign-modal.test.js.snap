@@ -23,7 +23,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
       </button>
     </div>
     <h3
-      class="box mm-text mm-text--heading-md mm-text--text-align-center box--flex-direction-row box--color-text-default"
+      class="box mm-text mm-text--heading-md mm-text--text-align-center box--margin-bottom-6 box--flex-direction-row box--color-text-default"
     >
       Use at your own risk
     </h3>

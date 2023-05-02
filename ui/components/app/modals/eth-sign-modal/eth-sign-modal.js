@@ -48,15 +48,12 @@ const EthSignModal = ({ hideModal }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const handleCancel = () => {
-    hideModal();
-  };
 
   const handleSubmit = () => {
     dispatch(
       setDisabledRpcMethodPreference(
         'eth_sign',
-        !disabledRpcMethodPreferences?.eth_sign,
+        !disabledRpcMethodPreferences.eth_sign,
       ),
     );
     hideModal();
@@ -87,12 +84,16 @@ const EthSignModal = ({ hideModal }) => {
           className="eth-sign-modal__close"
           iconName={IconName.Close}
           size={Size.SM}
-          onClick={handleCancel}
+          onClick={() => hideModal()}
           ariaLabel={t('close')}
         />
       </Box>
 
-      <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
+      <Text
+        variant={TextVariant.headingMd}
+        textAlign={TextAlign.Center}
+        marginBottom={6}
+      >
         {t('toggleEthSignModalTitle')}
       </Text>
       <Text variant={TextVariant.bodyMd}>
@@ -151,7 +152,7 @@ const EthSignModal = ({ hideModal }) => {
         gap={4}
         marginTop={6}
       >
-        <ButtonSecondary onClick={handleCancel} size={Size.LG} block>
+        <ButtonSecondary onClick={() => hideModal()} size={Size.LG} block>
           {t('cancel')}
         </ButtonSecondary>
         {showTextField ? (
