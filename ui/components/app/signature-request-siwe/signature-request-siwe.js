@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
+import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -51,17 +52,7 @@ export default function SignatureRequestSIWE({
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
 
-  const checkSIWEDomain = () => {
-    let isSIWEDomainValid = false;
-
-    if (origin) {
-      const { host } = new URL(origin);
-      isSIWEDomainValid = parsedMessage.domain === host;
-    }
-    return isSIWEDomainValid;
-  };
-
-  const isSIWEDomainValid = checkSIWEDomain();
+  const isSIWEDomainValid = isValidSIWEOrigin(txData.msgParams);
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
