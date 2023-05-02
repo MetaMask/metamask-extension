@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-sudo apt-get install libu2f-udev libvulkan1
+sudo apt-get update
 
 # To get the latest version, see <https://www.ubuntuupdates.org/ppa/google_chrome?dist=stable>
 CHROME_VERSION='111.0.5563.64-1'
