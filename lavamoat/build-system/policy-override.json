@@ -82,11 +82,13 @@
     "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
       "packages": {
         "eslint>@eslint-community/eslint-utils": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true,
+        "semver": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils": {
       "builtin": {
+        "assert": true,
         "path": true
       },
       "packages": {
@@ -98,6 +100,7 @@
         "eslint-plugin-mocha>eslint-utils": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
+        "semver": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true,
         "eslint>eslint-utils": true,
