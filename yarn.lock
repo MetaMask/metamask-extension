@@ -3590,6 +3590,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-institutional/portfolio-dashboard@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask-institutional/portfolio-dashboard@npm:1.1.1"
+  checksum: d87c91ed0d5231e7eadcf05d8b8427a52e7c9cf16c559bbbb66f6cbb29f6e16d8a2286c9a918649cbef49a87db5243bba904a3931eeca997840f2f5a8fe0843c
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^1.1.0":
   version: 1.1.1
   resolution: "@metamask/abi-utils@npm:1.1.1"
@@ -23929,6 +23936,7 @@ __metadata:
     "@lavamoat/lavapack": ^5.0.0
     "@lavamoat/snow": ^1.5.0
     "@material-ui/core": ^4.11.0
+    "@metamask-institutional/portfolio-dashboard": ^1.1.1
     "@metamask/address-book-controller": ^2.0.0
     "@metamask/announcement-controller": ^3.0.0
     "@metamask/approval-controller": ^2.1.0
