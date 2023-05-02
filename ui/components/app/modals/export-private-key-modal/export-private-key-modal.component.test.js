@@ -27,7 +27,7 @@ describe('Export Private Key Modal', () => {
           name: 'Test Account',
         },
       },
-      provider: {
+      providerConfig: {
         type: 'rpc',
         chainId: '0x5',
         ticker: 'ETH',
