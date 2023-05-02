@@ -35,9 +35,9 @@ describe('Selectors', () => {
   });
 
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.provider is undefined', () => {
+    it('returns an empty object if state.metamask.provider is empty', () => {
       expect(
-        selectors.getRpcPrefsForCurrentProvider({ metamask: {} }),
+        selectors.getRpcPrefsForCurrentProvider({ metamask: { provider: {} } }),
       ).toStrictEqual({});
     });
     it('returns rpcPrefs from the provider', () => {
