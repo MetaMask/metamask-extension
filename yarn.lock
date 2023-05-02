@@ -3737,10 +3737,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "@metamask/browser-passworder@npm:4.0.2"
-  checksum: 997c330b1c72f7135d0fd2a7f4b0dce37b3c2e6b30e92f048fa8d4f8c949f5b669dcc3064790f41df30ee2e53a9e64a812df72e00527736be704cce2cf4f6e49
+"@metamask/browser-passworder@npm:^4.0.2, @metamask/browser-passworder@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/browser-passworder@npm:4.1.0"
+  checksum: f1edb3b75594b8e8d075b3134c9ce6c73573160eb48184ef722b9d96a5763db1e2e9acb166fc5c66c7c82936e134a02a3fb4c0022ca9a948857a30181cb84d7e
   languageName: node
   linkType: hard
 
@@ -24153,6 +24153,7 @@ __metadata:
     "@metamask/assets-controllers": ^6.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^2.0.0
+    "@metamask/browser-passworder": ^4.1.0
     "@metamask/contract-metadata": ^2.3.1
     "@metamask/controller-utils": ^3.3.0
     "@metamask/design-tokens": ^1.9.0

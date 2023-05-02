@@ -237,6 +237,7 @@
     "@metamask/approval-controller": "^2.1.0",
     "@metamask/assets-controllers": "^6.0.0",
     "@metamask/base-controller": "^2.0.0",
+    "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
     "@metamask/controller-utils": "^3.3.0",
     "@metamask/design-tokens": "^1.9.0",
