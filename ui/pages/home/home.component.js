@@ -62,7 +62,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(build-main, build-mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
@@ -218,7 +218,8 @@ export default class Home extends PureComponent {
   checkInstitutionalConnectRequest() {
     const { history, institutionalConnectRequests } = this.props;
     if (
-      institutionalConnectRequests && institutionalConnectRequests.length > 0 &&
+      institutionalConnectRequests &&
+      institutionalConnectRequests.length > 0 &&
       institutionalConnectRequests[0].feature === 'custodian'
     ) {
       if (
@@ -749,12 +750,12 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null
             ///: END:ONLY_INCLUDE_IN
           }
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             !showWhatsNew && showRecoveryPhraseReminder ? (
               <RecoveryPhraseReminder
                 hasBackedUp={seedPhraseBackedUp}
@@ -764,14 +765,14 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IN
           }
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             showTermsOfUse ? (
               <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
             ) : null
             ///: END:ONLY_INCLUDE_IN
           }
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             isPopup && !connectedStatusPopoverHasBeenShown
               ? this.renderPopover()
               : null
@@ -781,7 +782,7 @@ export default class Home extends PureComponent {
             {process.env.MULTICHAIN ? null : <MenuBar />}
             <div className="home__balance-wrapper">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                 <EthOverview />
                 ///: END:ONLY_INCLUDE_IN
               }
@@ -831,7 +832,7 @@ export default class Home extends PureComponent {
                 />
               </Tab>
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
@@ -859,7 +860,7 @@ export default class Home extends PureComponent {
             </Tabs>
             <div className="home__support">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main, build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
                 t('needHelp', [
                   <a
                     href={SUPPORT_LINK}
