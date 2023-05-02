@@ -197,7 +197,7 @@ function defaultFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
@@ -329,7 +329,7 @@ function onboardingFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
