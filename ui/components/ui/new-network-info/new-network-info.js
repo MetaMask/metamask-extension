@@ -18,9 +18,9 @@ import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/toke
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   getNativeCurrencyImage,
-  getProvider,
   getUseTokenDetection,
 } from '../../../selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
@@ -34,22 +34,22 @@ const NewNetworkInfo = () => {
   const [showPopup, setShowPopup] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const currentProvider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
 
   const onCloseClick = () => {
     setShowPopup(false);
-    setFirstTimeUsedNetwork(currentProvider.chainId);
+    setFirstTimeUsedNetwork(providerConfig.chainId);
   };
 
   const addTokenManually = () => {
     history.push(IMPORT_TOKEN_ROUTE);
     setShowPopup(false);
-    setFirstTimeUsedNetwork(currentProvider.chainId);
+    setFirstTimeUsedNetwork(providerConfig.chainId);
   };
 
   const getIsTokenDetectionSupported = async () => {
     const fetchedTokenData = await fetchWithCache(
-      `${TOKEN_API_METASWAP_CODEFI_URL}${currentProvider.chainId}`,
+      `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
     );
 
     return !fetchedTokenData.error;
@@ -93,9 +93,9 @@ const NewNetworkInfo = () => {
         backgroundColor={Color.backgroundAlternative}
         maxContent={false}
         label={
-          currentProvider.type === NETWORK_TYPES.RPC
-            ? currentProvider.nickname ?? t('privateNetwork')
-            : t(currentProvider.type)
+          providerConfig.type === NETWORK_TYPES.RPC
+            ? providerConfig.nickname ?? t('privateNetwork')
+            : t(providerConfig.type)
         }
         labelProps={{
           color: Color.textDefault,
@@ -122,7 +122,7 @@ const NewNetworkInfo = () => {
         {t('thingsToKeep')}
       </Text>
       <Box marginRight={4} marginLeft={5} marginTop={6}>
-        {currentProvider.ticker ? (
+        {providerConfig.ticker ? (
           <Box
             display={DISPLAY.FLEX}
             alignItems={AlignItems.center}
@@ -147,7 +147,7 @@ const NewNetworkInfo = () => {
                   display={DISPLAY.INLINE_BLOCK}
                   key="ticker"
                 >
-                  {currentProvider.ticker}
+                  {providerConfig.ticker}
                 </Text>,
               ])}
             </Text>
