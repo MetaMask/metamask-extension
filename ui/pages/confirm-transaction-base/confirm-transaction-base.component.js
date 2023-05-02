@@ -476,7 +476,7 @@ export default class ConfirmTransactionBase extends Component {
             ),
             !isMultiLayerFeeNetwork && (
               <TransactionDetailItem
-                key="total-item"
+                key="confirm-transaction-base-total-item"
                 detailTitle={t('total')}
                 detailText={useCurrencyRateCheck && renderTotalDetailText()}
                 detailTotal={renderTotalDetailTotal()}

@@ -187,7 +187,7 @@ export default class ConfirmApproveContent extends Component {
         {isMultiLayerFeeNetwork ? (
           <div className="confirm-approve-content__transaction-details-extra-content">
             <TransactionDetailItem
-              key="total-item"
+              key="confirm-approve-content-min-tx-fee"
               detailTitle={t('transactionDetailLayer2GasHeading')}
               detailTotal={
                 <UserPreferencedCurrencyDisplay

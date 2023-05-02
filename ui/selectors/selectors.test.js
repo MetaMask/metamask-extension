@@ -39,16 +39,18 @@ describe('Selectors', () => {
   });
 
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.provider is undefined', () => {
+    it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
-        selectors.getRpcPrefsForCurrentProvider({ metamask: {} }),
+        selectors.getRpcPrefsForCurrentProvider({
+          metamask: { providerConfig: {} },
+        }),
       ).toStrictEqual({});
     });
-    it('returns rpcPrefs from the provider', () => {
+    it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            provider: {
+            providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
             },
           },
@@ -500,17 +502,17 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.provider.chainId = '0xa';
+    mockState.metamask.providerConfig.chainId = '0xa';
     const isOptimismSupported = selectors.getIsBridgeChain(mockState);
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.provider.chainId = '0xfa';
+    mockState.metamask.providerConfig.chainId = '0xfa';
     const isFantomSupported = selectors.getIsBridgeChain(mockState);
     expect(isFantomSupported).toBeFalsy();
   });
 
   it('#getIsBridgeToken', () => {
-    mockState.metamask.provider.chainId = '0xa';
+    mockState.metamask.providerConfig.chainId = '0xa';
     const isOptimismTokenSupported = selectors.getIsBridgeToken(
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);
@@ -521,7 +523,7 @@ describe('Selectors', () => {
     )(mockState);
     expect(isOptimismUnknownTokenSupported).toBeFalsy();
 
-    mockState.metamask.provider.chainId = '0xfa';
+    mockState.metamask.providerConfig.chainId = '0xfa';
     const isFantomTokenSupported = selectors.getIsBridgeToken(
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);

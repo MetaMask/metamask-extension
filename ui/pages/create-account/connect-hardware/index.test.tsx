@@ -48,7 +48,7 @@ const mockProps = {
 
 const mockState = {
   metamask: {
-    provider: {
+    providerConfig: {
       chainId: '0x1',
     },
   },

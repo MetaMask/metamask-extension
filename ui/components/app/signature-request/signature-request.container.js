@@ -18,6 +18,7 @@ import {
 import {
   isAddressLedger,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -31,7 +32,7 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = txData;
-  const { provider } = state.metamask;
+  const providerConfig = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -44,7 +45,7 @@ function mapStateToProps(state, ownProps) {
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
-    provider,
+    providerConfig,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
     isHdWallet,
@@ -99,7 +100,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     nativeCurrency,
     currentCurrency,
     conversionRate,
-    provider,
+    providerConfig,
     subjectMetadata,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
@@ -153,7 +154,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     nativeCurrency,
     currentCurrency,
     conversionRate,
-    provider,
+    providerConfig,
     subjectMetadata,
     unapprovedMessagesCount,
     mostRecentOverviewPage,

@@ -14,7 +14,7 @@ const difference = require('lodash/difference');
 const { intersection } = require('lodash');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-const { TASKS, ENVIRONMENT } = require('./constants');
+const { TASKS } = require('./constants');
 const {
   createTask,
   composeSeries,
@@ -27,7 +27,7 @@ const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const { getBrowserVersionMap, getEnvironment } = require('./utils');
-const { getConfig, getProductionConfig } = require('./config');
+const { getConfig } = require('./config');
 const { BUILD_TARGETS } = require('./constants');
 
 // Packages required dynamically via browserify configuration in dependencies
@@ -360,13 +360,8 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
   const highLevelTasks = Object.values(BUILD_TARGETS);
   if (highLevelTasks.includes(task)) {
     const environment = getEnvironment({ buildTarget: task });
-    if (environment === ENVIRONMENT.PRODUCTION) {
-      // Output ignored, this is only called to ensure config is validated
-      await getProductionConfig(buildType);
-    } else {
-      // Output ignored, this is only called to ensure config is validated
-      await getConfig();
-    }
+    // Output ignored, this is only called to ensure config is validated
+    await getConfig(buildType, environment);
   }
 
   return {
