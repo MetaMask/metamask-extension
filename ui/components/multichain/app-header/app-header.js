@@ -164,6 +164,7 @@ export const AppHeader = ({ onClick }) => {
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={networkOpenCallback}
                 display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+                className="multichain-app-header__contents__network-picker"
               />
               {showProductTour &&
               popupStatus &&
