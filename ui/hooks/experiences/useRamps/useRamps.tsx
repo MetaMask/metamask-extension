@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
 import { AggregatorNetwork } from '@consensys/on-ramp-sdk/dist/API';
 import { ChainId, CHAIN_IDS } from '../../../../shared/constants/network';
@@ -23,7 +24,7 @@ interface IUseRamps {
   isNativeTokenBuyableChain: boolean;
 }
 
-const getBuyURI = (chainId: ChainId, params?: BuyURLParams) => {
+const getBuyURI = (chainId: Hex, params?: BuyURLParams) => {
   switch (chainId) {
     case CHAIN_IDS.SEPOLIA:
       return 'https://faucet.sepolia.dev/';
