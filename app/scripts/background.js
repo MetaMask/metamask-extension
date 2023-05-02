@@ -678,6 +678,7 @@ export function setupController(
   //
 
   updateBadge();
+  controller.tokensController.addPendingApprovals(updateBadge);
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
