@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
@@ -40,11 +40,21 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import ComplianceFeaturePage from '../institutional/compliance-feature-page';
+import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
+import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
+import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
+import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
+import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -69,14 +79,24 @@ import {
   ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  COMPLIANCE_FEATURE_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  CUSTODY_ACCOUNT_DONE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
 ///: END:ONLY_INCLUDE_IN
 
@@ -147,7 +167,7 @@ export default class Routes extends Component {
     document.documentElement.setAttribute('data-theme', osTheme);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   componentDidMount() {
     const { history } = this.props;
     browserAPI.runtime.onMessage.addListener(
@@ -209,7 +229,7 @@ export default class Routes extends Component {
         <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           <Route
             path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
             component={DesktopErrorPage}
@@ -230,7 +250,7 @@ export default class Routes extends Component {
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           ///: END:ONLY_INCLUDE_IN
         }
@@ -269,6 +289,44 @@ export default class Routes extends Component {
           path={CONFIRMATION_V_NEXT_ROUTE}
           component={ConfirmationPage}
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        }
+        <Authenticated
+          path={CUSTODY_ACCOUNT_DONE_ROUTE}
+          component={InstitutionalEntityDonePage}
+          exact
+        />
+        <Authenticated
+          path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
+          component={InstitutionalEntityDonePage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+          component={ConfirmAddCustodianToken}
+          exact
+        />
+        <Authenticated
+          path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
+          component={InteractiveReplacementTokenPage}
+          exact
+        />
+        <Authenticated
+          path={COMPLIANCE_FEATURE_ROUTE}
+          component={ComplianceFeaturePage}
+        />
+        <Authenticated
+          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
+          component={ConfirmAddInstitutionalFeature}
+        />
+        <Authenticated
+          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+          component={ConfirmAddCustodianToken}
+        />
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
@@ -277,7 +335,7 @@ export default class Routes extends Component {
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           <Authenticated
             path={DESKTOP_PAIRING_ROUTE}
             component={DesktopPairingPage}
@@ -345,7 +403,7 @@ export default class Routes extends Component {
   hideAppHeader() {
     const { location } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     const isDesktopConnectionLostScreen = Boolean(
       matchPath(location.pathname, {
         path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,
@@ -496,6 +554,11 @@ export default class Routes extends Component {
           ))}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          isUnlocked ? <InteractiveReplacementTokenNotification /> : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {process.env.MULTICHAIN ? null : <AccountMenu />}
         {process.env.MULTICHAIN && isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />

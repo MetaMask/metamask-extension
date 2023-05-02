@@ -74,7 +74,6 @@ export default class ConfirmTransactionBase extends Component {
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
-    hexMinimumTransactionFee: PropTypes.string,
     hexMaximumTransactionFee: PropTypes.string,
     hexTransactionTotal: PropTypes.string,
     methodData: PropTypes.object,
@@ -315,7 +314,6 @@ export default class ConfirmTransactionBase extends Component {
     const {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
-      hexMinimumTransactionFee,
       hexMaximumTransactionFee,
       hexTransactionTotal,
       useNonceField,
@@ -478,27 +476,18 @@ export default class ConfirmTransactionBase extends Component {
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           onEdit={
-            renderSimulationFailureWarning || isMultiLayerFeeNetwork
-              ? null
-              : () => this.handleEditGas()
+            renderSimulationFailureWarning ? null : () => this.handleEditGas()
           }
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning && !isMultiLayerFeeNetwork && (
+            !renderSimulationFailureWarning && (
               <ConfirmGasDisplay
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
               />
             ),
-            !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
-              <MultiLayerFeeMessage
-                transaction={txData}
-                layer2fee={hexMinimumTransactionFee}
-                nativeCurrency={nativeCurrency}
-              />
-            ),
             !isMultiLayerFeeNetwork && (
               <TransactionDetailItem
-                key="total-item"
+                key="confirm-transaction-base-total-item"
                 detailTitle={t('total')}
                 detailText={useCurrencyRateCheck && renderTotalDetailText()}
                 detailTotal={renderTotalDetailTotal()}

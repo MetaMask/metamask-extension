@@ -173,7 +173,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
@@ -229,6 +229,16 @@ export function updateGasFees({
 // Selectors
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
+
+/**
+ * Get the provider configuration for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {object} The provider configuration for the current selected network.
+ */
+export function getProviderConfig(state) {
+  return state.metamask.provider;
+}
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];

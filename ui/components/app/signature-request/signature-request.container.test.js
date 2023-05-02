@@ -111,6 +111,9 @@ describe('Signature Request', () => {
     nativeCurrency: 'ETH',
     currentCurrency: 'usd',
     conversionRate: null,
+    selectedAccount: {
+      address: '0x123456789abcdef',
+    },
   };
 
   const propsWithFiat = {

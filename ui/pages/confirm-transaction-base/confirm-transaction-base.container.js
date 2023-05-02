@@ -177,7 +177,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const {
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -249,7 +248,6 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
