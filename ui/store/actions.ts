@@ -28,7 +28,7 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  hasTransactionPendingApprovalsSelector,
+  hasTransactionPendingApprovals,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -2698,7 +2698,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasTransactionPendingApprovalsSelector(getState())
+      !hasTransactionPendingApprovals(getState())
     ) {
       closeNotificationPopup();
     }

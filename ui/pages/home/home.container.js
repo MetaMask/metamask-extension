@@ -70,7 +70,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
-import { hasTransactionPendingApprovalsSelector } from '../../selectors/approvals';
+import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -126,14 +126,11 @@ const mapStateToProps = (state) => {
     ApprovalType.WatchAsset,
   );
 
-  const hasTransactionPendingApprovals =
-    hasTransactionPendingApprovalsSelector(state);
-
   return {
     forgottenPassword,
     hasWatchAssetPendingApprovals,
     swapsEnabled,
-    hasTransactionPendingApprovals,
+    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,

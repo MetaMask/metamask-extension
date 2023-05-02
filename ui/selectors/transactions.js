@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -17,6 +18,10 @@ import {
   deprecatedGetCurrentNetworkId,
   getSelectedAddress,
 } from './selectors';
+import {
+  hasPendingApprovalsSelector,
+  getApprovalRequestsByType,
+} from './approvals';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -534,3 +539,32 @@ export const submittedPendingTransactionsSelector = createSelector(
       (transaction) => transaction.status === TransactionStatus.submitted,
     ),
 );
+
+const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
+  const { unapprovedTxs } = state.metamask;
+  const unapprovedTxRequests = getApprovalRequestsByType(
+    state,
+    ApprovalType.Transaction,
+  );
+
+  const chainId = getCurrentChainId(state);
+
+  const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
+    ({ id }) => transactionMatchesNetwork(unapprovedTxs[id], chainId),
+  );
+
+  return filteredUnapprovedTxInCurrentNetwork.length > 0;
+};
+
+export function hasTransactionPendingApprovals(state) {
+  return (
+    hasUnapprovedTransactionsInCurrentNetwork(state) ||
+    [
+      ApprovalType.EthDecrypt,
+      ApprovalType.EthGetEncryptionPublicKey,
+      ApprovalType.EthSign,
+      ApprovalType.EthSignTypedData,
+      ApprovalType.PersonalSign,
+    ].some((type) => hasPendingApprovalsSelector(state, type))
+  );
+}
