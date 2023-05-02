@@ -218,7 +218,7 @@ export default class Home extends PureComponent {
   checkInstitutionalConnectRequest() {
     const { history, institutionalConnectRequests } = this.props;
     if (
-      institutionalConnectRequests.length > 0 &&
+      institutionalConnectRequests && institutionalConnectRequests.length > 0 &&
       institutionalConnectRequests[0].feature === 'custodian'
     ) {
       if (
@@ -233,6 +233,7 @@ export default class Home extends PureComponent {
         history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
       }
     } else if (
+      institutionalConnectRequests &&
       institutionalConnectRequests.length > 0 &&
       institutionalConnectRequests[0].feature !== 'custodian'
     ) {

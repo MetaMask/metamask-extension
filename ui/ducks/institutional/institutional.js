@@ -29,19 +29,19 @@ const { actions, reducer } = slice;
 export default reducer;
 
 export const getComplianceProjectId = (state) =>
-  state.metamask[name].complianceProjectId;
+  state.metamask[name]?.complianceProjectId;
 export const getComplianceClientId = (state) =>
-  state.metamask[name].complianceClientId;
+  state.metamask[name]?.complianceClientId;
 export const getComplianceTenantSubdomain = (state) =>
-  state.metamask[name].complianceTenantSubdomain;
+  state.metamask[name]?.complianceTenantSubdomain;
 export const getComplianceHistoricalReports = (state) =>
-  state.metamask[name].historicalReports;
+  state.metamask[name]?.historicalReports;
 export const getComplianceReportsInProgress = (state) =>
-  state.metamask[name].reportsInProgress;
-export const getInstitutionalConnectRequests = (state) =>
-  state.metamask[name].connectRequests;
+  state.metamask[name]?.reportsInProgress;
+export const getInstitutionalConnectRequests = (state) => state.metamask[name]?.connectRequests;
+
 export const complianceActivated = (state) =>
-  Boolean(state.metamask[name].complianceProjectId);
+  Boolean(state.metamask[name]?.complianceProjectId);
 
 export const getComplianceHistoricalReportsByAddress = (address) =>
   createSelector(getComplianceHistoricalReports, (reports) =>
