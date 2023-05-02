@@ -17,6 +17,7 @@ import {
 import {
   isAddressLedger,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -30,7 +31,7 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = txData;
-  const { provider } = state.metamask;
+  const provider = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
