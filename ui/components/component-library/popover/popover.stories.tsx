@@ -8,7 +8,7 @@ import {
   Color,
   DISPLAY,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize, PopoverHeader, Text } from '..';
 import README from './README.mdx';
@@ -91,12 +91,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   };
 
   return (
-    <Box
-      display={DISPLAY.FLEX}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      style={{ width: '200vw', height: '200vh' }}
-    >
+    <>
       <Box
         ref={setBoxRef}
         onClick={handleClick}
@@ -116,7 +111,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
         isOpen={isOpen}
         {...args}
       ></Popover>
-    </Box>
+    </>
   );
 };
 
@@ -143,7 +138,7 @@ export const ReferenceElement = ({ args }) => {
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
-      ></Box>
+      />
       <Popover
         position={PopoverPosition.Bottom}
         referenceElement={referenceElement}
@@ -170,7 +165,7 @@ export const Children = ({ args }) => {
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
-      ></Box>
+      />
       <Popover
         referenceElement={referenceElement}
         isOpen={true}
@@ -220,7 +215,7 @@ export const Position = ({ args }) => {
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
         >
           Position
         </Box>
@@ -359,7 +354,7 @@ export const Position = ({ args }) => {
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.center}
             alignItems={AlignItems.center}
-            textAlign={TEXT_ALIGN.CENTER}
+            textAlign={TextAlign.Center}
           >
             Position
           </Box>
@@ -431,7 +426,7 @@ export const HasArrow = ({ args }) => {
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
-      ></Box>
+      />
       <Popover
         position={PopoverPosition.RightStart}
         referenceElement={referenceElement}
@@ -570,7 +565,7 @@ export const PreventOverflow = ({ args }) => {
         display={DISPLAY.FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
       >
         Scroll to see popover preventOverflow
       </Box>
@@ -617,7 +612,7 @@ export const ReferenceHidden = ({ args }) => {
         display={DISPLAY.FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
       >
         Scroll to see popover referenceHidden
       </Box>
@@ -657,7 +652,7 @@ export const MatchWidth = ({ args }) => {
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
-      ></Box>
+      />
       <Popover
         position={PopoverPosition.Bottom}
         referenceElement={referenceElement}
@@ -694,7 +689,7 @@ export const Role = ({ args }) => {
         display={DISPLAY.FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
       >
         Inspect to view role
       </Box>
@@ -740,7 +735,7 @@ export const Offset = ({ args }) => {
         display={DISPLAY.FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
       >
         Offset Demo
       </Box>
@@ -784,7 +779,7 @@ export const WithPopoverHeader = ({ args }) => {
         backgroundColor={BackgroundColor.primaryDefault}
         style={{ width: 200, height: 200 }}
         onClick={handleClick}
-      ></Box>
+      />
       <Popover
         referenceElement={refTitleElement}
         isOpen={isOpen}
