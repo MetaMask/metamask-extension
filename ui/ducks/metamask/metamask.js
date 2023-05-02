@@ -27,7 +27,6 @@ const initialState = {
   isUnlocked: false,
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
-  accountDetailsAddress: '',
   identities: {},
   unapprovedTxs: {},
   networkConfigurations: {},
@@ -109,13 +108,6 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         isNetworkMenuOpen: !metamaskState.isNetworkMenuOpen,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...metamaskState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action;
