@@ -42,6 +42,9 @@ class FirefoxDriver {
       'browser.download.dir',
       `${process.cwd()}/test-artifacts/downloads`,
     );
+    if (process.env.CI === 'true') {
+      options.setBinary('/opt/firefox');
+    }
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
