@@ -67,6 +67,7 @@ import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
+  getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -119,8 +120,13 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function getMetaMetricsId(state) {
+  const { metaMetricsId } = state.metamask;
+  return metaMetricsId;
+}
+
 export function isCurrentProviderCustom(state) {
-  const provider = getProvider(state);
+  const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
     !Object.values(CHAIN_IDS).includes(provider.chainId)
@@ -233,7 +239,15 @@ export function getHardwareWalletType(state) {
 
 export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const type = currentKeyring && currentKeyring.type;
+  return getAccountTypeForKeyring(currentKeyring);
+}
+
+export function getAccountTypeForKeyring(keyring) {
+  if (!keyring) {
+    return '';
+  }
+
+  const { type } = keyring;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   if (type.startsWith('Custody')) {
@@ -245,6 +259,7 @@ export function getAccountType(state) {
     case KeyringType.trezor:
     case KeyringType.ledger:
     case KeyringType.lattice:
+    case KeyringType.qr:
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
@@ -1136,10 +1151,6 @@ export function getNewNetworkAdded(state) {
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
-}
-
-export function getProvider(state) {
-  return state.metamask.provider;
 }
 
 export function getNetworkConfigurations(state) {

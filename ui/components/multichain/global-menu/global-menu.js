@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   CONNECTED_ROUTE,
   SETTINGS_ROUTE,
@@ -21,12 +21,15 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { getMetaMetricsId } from '../../../selectors';
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
@@ -38,7 +41,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             event: MetaMetricsEventName.NavConnectedSitesOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
-              location: 'Account Options',
+              location: 'Global Menu',
             },
           });
           closeMenu();
@@ -49,9 +52,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <MenuItem
         iconName={IconName.Diagram}
         onClick={() => {
-          const portfolioUrl = process.env.PORTFOLIO_URL;
+          const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
           global.platform.openTab({
-            url: `${portfolioUrl}?metamaskEntry=ext`,
+            url: portfolioUrl,
           });
           trackEvent(
             {
@@ -59,6 +62,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.PortfolioLinkClicked,
               properties: {
                 url: portfolioUrl,
+                location: 'Global Menu',
               },
             },
             {
@@ -82,7 +86,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
-                location: 'Account Options',
+                location: 'Global Menu',
               },
             });
             closeMenu();
@@ -102,6 +106,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_LINK,
+                location: 'Global Menu',
               },
             },
             {
@@ -124,7 +129,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
-              location: 'Main Menu',
+              location: 'Global Menu',
             },
           });
           closeMenu();
@@ -137,6 +142,13 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         onClick={() => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);
+          trackEvent({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.AppLocked,
+            properties: {
+              location: 'Global Menu',
+            },
+          });
           closeMenu();
         }}
         data-testid="global-menu-lock"

@@ -112,7 +112,7 @@ export default function AddNft() {
         tokenId: tokenId.toString(),
         asset_type: AssetType.NFT,
         token_standard: tokenDetails?.standard,
-        source: MetaMetricsTokenEventSource.Custom,
+        source_connection_method: MetaMetricsTokenEventSource.Custom,
       },
     });
 
