@@ -117,7 +117,7 @@ async function withFixtures(options, testSuite) {
       process.env.SELENIUM_BROWSER === 'chrome' &&
       process.env.CI === 'true'
     ) {
-      await ensureXServerIsRunning();
+      // await ensureXServerIsRunning();
     }
     console.log('Building web driver');
     driver = (await buildWebDriver(driverOptions)).driver;
