@@ -70,7 +70,7 @@ describe('Custody Confirm Link', () => {
           custodianName: mockedCustodianName,
         },
       },
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       selectedAddress: '0xAddress',

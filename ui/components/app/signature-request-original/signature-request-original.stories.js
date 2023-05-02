@@ -73,7 +73,7 @@ export default {
     },
     mostRecentOverviewPage: '/',
     nativeCurrency: 'ETH',
-    provider: { name: 'Goerli ETH' },
+    providerConfig: { name: 'Goerli ETH' },
     selectedAccount: MOCK_PRIMARY_IDENTITY,
   },
 };

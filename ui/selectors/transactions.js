@@ -11,6 +11,7 @@ import {
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
@@ -28,10 +29,8 @@ export const incomingTxListSelector = (state) => {
     return [];
   }
 
-  const {
-    networkId,
-    provider: { chainId },
-  } = state.metamask;
+  const { networkId } = state.metamask;
+  const { chainId } = getProviderConfig(state);
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
