@@ -235,7 +235,7 @@ describe('DetectTokensController', function () {
           const modifiedNetworkState = {
             ...networkState,
             providerConfig: {
-              ...networkState.provider,
+              ...networkState.providerConfig,
             },
           };
           return cb(modifiedNetworkState);
@@ -254,8 +254,10 @@ describe('DetectTokensController', function () {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
-                ...networkState.provider,
-                chainId: convertHexToDecimal(networkState.provider.chainId),
+                ...networkState.providerConfig,
+                chainId: convertHexToDecimal(
+                  networkState.providerConfig.chainId,
+                ),
               },
             };
             return cb(modifiedNetworkState);

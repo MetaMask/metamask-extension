@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
-import { getTokens } from '../../ducks/metamask/metamask';
+import { getProviderConfig, getTokens } from '../../ducks/metamask/metamask';
 import { getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
@@ -54,12 +54,7 @@ export default function TokenDetailsPage() {
     token?.symbol,
   );
 
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-  }));
-
-  const { nickname, type: networkType } = currentNetwork;
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
 
   const [copied, handleCopy] = useCopyToClipboard();
 
