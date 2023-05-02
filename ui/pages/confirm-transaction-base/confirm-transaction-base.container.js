@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
@@ -41,7 +41,7 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getTargetAccountWithSendEtherInfo,
   ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
@@ -69,7 +69,7 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 
 import {
@@ -113,7 +113,7 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const envType = getEnvironmentType();
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   ///: END:ONLY_INCLUDE_IN
@@ -198,7 +198,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const accountType = getTargetAccountWithSendEtherInfo(state, fromAddress);
   ///: END:ONLY_INCLUDE_IN
 
@@ -219,7 +219,7 @@ const mapStateToProps = (state, ownProps) => {
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const complianceProjectId = getComplianceProjectId(state);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   let isNoteToTraderSupported = false;
@@ -288,7 +288,7 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     complianceProjectId,
     isNoteToTraderSupported,
@@ -298,7 +298,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
   return {
@@ -338,7 +338,7 @@ export const mapDispatchToProps = (dispatch) => {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     getCustodianConfirmDeepLink: (id) =>
       dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
     showCustodyConfirmLink: ({ link, address, closeNotification, custodyId }) =>

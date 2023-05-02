@@ -30,7 +30,7 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import ComplianceRow from '../swaps/mmi/compliance-row';
 import NoteToTrader from '../../components/institutional/note-to-trader/note-to-trader';
 ///: END:ONLY_INCLUDE_IN
@@ -136,7 +136,7 @@ export default class ConfirmTransactionBase extends Component {
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     isNotification: PropTypes.bool,
     accountType: PropTypes.string,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
@@ -158,7 +158,7 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     complianceReportInProgress: false,
     noteText: '',
     ///: END:ONLY_INCLUDE_IN
@@ -328,7 +328,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       complianceProjectId,
       toAddress,
       showComplianceDetailsModal,
@@ -348,7 +348,7 @@ export default class ConfirmTransactionBase extends Component {
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const { complianceReportInProgress } = this.state;
     ///: END:ONLY_INCLUDE_IN
 
@@ -513,7 +513,7 @@ export default class ConfirmTransactionBase extends Component {
           />
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           complianceProjectId && toAddress && (
             <ComplianceRow
               address={toAddress}
@@ -544,7 +544,7 @@ export default class ConfirmTransactionBase extends Component {
     return <ConfirmData txData={txData} dataComponent={dataComponent} />;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   renderNote() {
     const { t } = this.context;
     const { isNoteToTraderSupported } = this.props;
@@ -665,7 +665,7 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       unapprovedTxCount,
       accountType,
       isNotification,
@@ -677,13 +677,13 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const {
       submitting,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       noteText,
       ///: END:ONLY_INCLUDE_IN
     } = this.state;
     const { name } = methodData;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
       txData.custodyStatus = 'created';
 
@@ -748,7 +748,7 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         if (txData.custodyStatus) {
           setWaitForConfirmDeepLinkDialog(true);
         }
@@ -760,7 +760,7 @@ export default class ConfirmTransactionBase extends Component {
               return;
             }
 
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             if (txData.custodyStatus) {
               this.props.showCustodianDeepLink({
                 fromAddress,
@@ -792,7 +792,7 @@ export default class ConfirmTransactionBase extends Component {
                   updateCustomNonce('');
                 },
               );
-              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             }
             ///: END:ONLY_INCLUDE_IN
           })
@@ -800,14 +800,14 @@ export default class ConfirmTransactionBase extends Component {
             if (!this._isMounted) {
               return;
             }
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             showTransactionsFailedModal(error.message, isNotification);
             ///: END:ONLY_INCLUDE_IN
             this.setState({
               submitting: false,
               submitError: error.message,
             });
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             setWaitForConfirmDeepLinkDialog(true);
             ///: END:ONLY_INCLUDE_IN
             updateCustomNonce('');
@@ -844,7 +844,7 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   onGenerateComplianceReport(address) {
     const { generateComplianceReport, fetchHistoricalReports } = this.props;
     try {
@@ -1052,7 +1052,7 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           noteComponent={this.renderNote()}
           ///: END:ONLY_INCLUDE_IN
         />
