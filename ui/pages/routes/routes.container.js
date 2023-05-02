@@ -24,6 +24,7 @@ import {
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -46,7 +47,7 @@ function mapStateToProps(state) {
     browserEnvironmentOs: state.metamask.browserEnvironment?.os,
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
     providerId: getNetworkIdentifier(state),
-    providerType: state.metamask.provider?.type,
+    providerType: getProviderConfig(state).type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
     isNetworkUsed: getIsNetworkUsed(state),
