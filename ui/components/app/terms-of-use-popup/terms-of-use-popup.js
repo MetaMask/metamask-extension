@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
 import {
@@ -40,10 +41,14 @@ export default function TermsOfUsePopup({ onAccept }) {
     });
   };
 
-  const handleScroll = (e) => {
+  const handleDebouncedScroll = debounce((target) => {
     setShouldShowScrollButton(
-      e.target.scrollHeight - e.target.scrollTop !== e.target.clientHeight,
+      target.scrollHeight - target.scrollTop !== target.clientHeight,
     );
+  }, 100);
+
+  const handleScroll = (e) => {
+    handleDebouncedScroll(e.target);
   };
 
   useEffect(() => {
