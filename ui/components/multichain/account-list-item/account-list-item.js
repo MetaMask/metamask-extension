@@ -136,6 +136,10 @@ export const AccountListItem = ({
           >
             <Text ellipsis as="div">
               <ButtonLink
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick();
+                }}
                 className="multichain-account-list-item__account-name"
                 color={Color.textDefault}
                 ellipsis
