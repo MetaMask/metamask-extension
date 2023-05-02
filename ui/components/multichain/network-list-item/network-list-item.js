@@ -11,6 +11,7 @@ import {
   JustifyContent,
   TextColor,
   BLOCK_SIZES,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -20,8 +21,26 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
+import {
+  GOERLI_DISPLAY_NAME,
+  LINEA_TESTNET_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
+
+function getAvatarNetworkColor(name) {
+  switch (name) {
+    case GOERLI_DISPLAY_NAME:
+      return BackgroundColor.goerli;
+    case LINEA_TESTNET_DISPLAY_NAME:
+      return BackgroundColor.lineaTestnet;
+    case SEPOLIA_DISPLAY_NAME:
+      return BackgroundColor.sepolia;
+    default:
+      return undefined;
+  }
+}
 
 export const NetworkListItem = ({
   name,
@@ -38,6 +57,10 @@ export const NetworkListItem = ({
       networkRef.current.querySelector('.mm-button-link').focus();
     }
   }, [networkRef, selected]);
+
+  const networkAvatarColor = getAvatarNetworkColor(name);
+
+  console.log('networkAvatarColor is: ', networkAvatarColor, name);
 
   return (
     <Box
@@ -60,7 +83,11 @@ export const NetworkListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      <AvatarNetwork name={name} src={iconSrc} />
+      <AvatarNetwork
+        backgroundColor={getAvatarNetworkColor(name)}
+        name={name}
+        src={iconSrc}
+      />
       <Box className="multichain-network-list-item__network-name">
         <ButtonLink
           onClick={(e) => {
