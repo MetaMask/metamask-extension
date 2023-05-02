@@ -257,7 +257,6 @@ export default class Home extends PureComponent {
       !modalOpen
     ) {
       global.platform.closeCurrentWindow();
-      return;
     }
   }
   ///: END:ONLY_INCLUDE_IN
@@ -276,7 +275,7 @@ export default class Home extends PureComponent {
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    shouldCloseCurrentWindow();
+    this.shouldCloseCurrentWindow();
     ///: END:ONLY_INCLUDE_IN
 
     if (!isNotification && showAwaitingSwapScreen) {
@@ -295,7 +294,7 @@ export default class Home extends PureComponent {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    checkInstitutionalConnectRequest();
+    this.checkInstitutionalConnectRequest();
     ///: END:ONLY_INCLUDE_IN
   }
 

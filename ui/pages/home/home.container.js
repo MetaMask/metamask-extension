@@ -7,7 +7,9 @@ import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '@metamask-institutional/portfolio-dashboard';
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { mmiActionsFactory } from '../../store/institutional/institution-background';
+import { getWaitForConfirmDeepLinkDialog } from '../../selectors/institutional/selectors';
+import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
 ///: END:ONLY_INCLUDE_IN
 import {
   activeTabHasPermissions,
@@ -35,9 +37,6 @@ import {
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   hasPendingApprovalsSelector,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  getWaitForConfirmDeepLinkDialog,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 
 import {
@@ -64,9 +63,6 @@ import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask'
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
-///: END:ONLY_INCLUDE_IN
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
