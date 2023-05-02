@@ -698,7 +698,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-firefox:
-          firefox-version: 111.0
+          version: 111.0
       - attach_workspace:
           at: .
       - run:
@@ -770,7 +770,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-firefox:
-          firefox-version: 111.0
+          version: 111.0
       - attach_workspace:
           at: .
       - run:
