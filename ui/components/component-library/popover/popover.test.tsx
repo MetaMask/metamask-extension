@@ -1,7 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
-import { PopoverHeader } from '../popover-header';
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.types';
 
@@ -18,6 +17,15 @@ describe('Popover', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should NOT render popover', () => {
+    const { queryByTestId } = render(
+      <>
+        <Popover isOpen={false}>Popover not open</Popover>
+      </>,
+    );
+    expect(queryByTestId('popover')).not.toBeInTheDocument();
+  });
+
   it('should render popover children', () => {
     const { getByText } = render(
       <Popover isOpen={true}>Popover content goes here</Popover>,
@@ -25,49 +33,12 @@ describe('Popover', () => {
     expect(getByText('Popover content goes here')).toBeDefined();
   });
 
-  it('should render popover back button', () => {
-    const onBackTest = jest.fn();
-    const { getByTestId } = render(
-      <Popover data-testid="popover" isOpen={true}>
-        <PopoverHeader
-          onBack={onBackTest}
-          backButtonProps={{ 'data-testid': 'back' }}
-        >
-          onClose Test
-        </PopoverHeader>
-      </Popover>,
-    );
-
-    const backButton = getByTestId('back');
-    fireEvent.click(backButton);
-
-    expect(onBackTest).toHaveBeenCalled();
-  });
-
-  it('should render popover close button', () => {
-    const onCloseTest = jest.fn();
-    const { getByTestId } = render(
-      <Popover data-testid="popover" isOpen={true}>
-        <PopoverHeader
-          onClose={onCloseTest}
-          closeButtonProps={{ 'data-testid': 'close' }}
-        >
-          onClose Test
-        </PopoverHeader>
-      </Popover>,
-    );
-
-    const closeButton = getByTestId('close');
-    fireEvent.click(closeButton);
-
-    expect(onCloseTest).toHaveBeenCalled();
-  });
-
   it('should render popover position', () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <>
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.Auto}
           position={PopoverPosition.Auto}
         >
@@ -76,7 +47,8 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
-          data-testid={PopoverPosition.Top}
+          isPortal={false}
+          data-testid="top"
           position={PopoverPosition.Top}
         >
           {PopoverPosition.Top}
@@ -84,6 +56,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.TopStart}
           position={PopoverPosition.TopStart}
         >
@@ -92,6 +65,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.TopEnd}
           position={PopoverPosition.TopEnd}
         >
@@ -100,6 +74,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.Right}
           position={PopoverPosition.Right}
         >
@@ -108,6 +83,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.RightStart}
           position={PopoverPosition.RightStart}
         >
@@ -116,6 +92,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.RightEnd}
           position={PopoverPosition.RightEnd}
         >
@@ -124,6 +101,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.Bottom}
           position={PopoverPosition.Bottom}
         >
@@ -132,6 +110,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.BottomStart}
           position={PopoverPosition.BottomStart}
         >
@@ -140,6 +119,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.BottomEnd}
           position={PopoverPosition.BottomEnd}
         >
@@ -148,6 +128,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.Left}
           position={PopoverPosition.Left}
         >
@@ -156,6 +137,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.LeftStart}
           position={PopoverPosition.LeftStart}
         >
@@ -164,6 +146,7 @@ describe('Popover', () => {
 
         <Popover
           isOpen={true}
+          isPortal={false}
           data-testid={PopoverPosition.LeftEnd}
           position={PopoverPosition.LeftEnd}
         >
@@ -172,19 +155,19 @@ describe('Popover', () => {
       </>,
     );
 
-    expect(getByText(PopoverPosition.Auto)).toBeDefined();
-    expect(getByText(PopoverPosition.Top)).toBeDefined();
-    expect(getByText(PopoverPosition.TopStart)).toBeDefined();
-    expect(getByText(PopoverPosition.TopEnd)).toBeDefined();
-    expect(getByText(PopoverPosition.Right)).toBeDefined();
-    expect(getByText(PopoverPosition.RightStart)).toBeDefined();
-    expect(getByText(PopoverPosition.RightEnd)).toBeDefined();
-    expect(getByText(PopoverPosition.Bottom)).toBeDefined();
-    expect(getByText(PopoverPosition.BottomStart)).toBeDefined();
-    expect(getByText(PopoverPosition.BottomEnd)).toBeDefined();
-    expect(getByText(PopoverPosition.Left)).toBeDefined();
-    expect(getByText(PopoverPosition.LeftStart)).toBeDefined();
-    expect(getByText(PopoverPosition.LeftEnd)).toBeDefined();
+    expect(getByTestId(PopoverPosition.Auto)).toBeDefined();
+    expect(getByTestId(PopoverPosition.Top)).toBeDefined();
+    expect(getByTestId(PopoverPosition.TopStart)).toBeDefined();
+    expect(getByTestId(PopoverPosition.TopEnd)).toBeDefined();
+    expect(getByTestId(PopoverPosition.Right)).toBeDefined();
+    expect(getByTestId(PopoverPosition.RightStart)).toBeDefined();
+    expect(getByTestId(PopoverPosition.RightEnd)).toBeDefined();
+    expect(getByTestId(PopoverPosition.Bottom)).toBeDefined();
+    expect(getByTestId(PopoverPosition.BottomStart)).toBeDefined();
+    expect(getByTestId(PopoverPosition.BottomEnd)).toBeDefined();
+    expect(getByTestId(PopoverPosition.Left)).toBeDefined();
+    expect(getByTestId(PopoverPosition.LeftStart)).toBeDefined();
+    expect(getByTestId(PopoverPosition.LeftEnd)).toBeDefined();
   });
 
   it('should render an arrow on popover', () => {
@@ -198,4 +181,45 @@ describe('Popover', () => {
       getByTestId('popover').querySelector('.mm-popover__arrow');
     expect(arrowElement).toHaveClass('mm-popover__arrow');
   });
+});
+
+test('should render Popover with isPortal set to false', () => {
+  const { getByTestId } = render(
+    <div>
+      <Popover
+        data-testid="popover"
+        isOpen={true}
+        position={PopoverPosition.Bottom}
+        isPortal={false}
+      >
+        <p>Popover content</p>
+      </Popover>
+    </div>,
+  );
+  // Check that the Popover is rendered inside the body DOM
+  expect(getByTestId('popover')).toBeInTheDocument();
+});
+
+test('should render Popover with isPortal set to true', () => {
+  const { getByTestId } = render(
+    <div>
+      <Popover data-testid="popover" isOpen={true} isPortal={true}>
+        <p>Popover content</p>
+      </Popover>
+    </div>,
+  );
+
+  expect(getByTestId('popover')).toBeTruthy();
+});
+
+test('should add reference-hidden classname when referenceHidden prop is true', () => {
+  const { getByTestId } = render(
+    <div>
+      <Popover data-testid="popover" isOpen={true} referenceHidden={true}>
+        <p>Popover content</p>
+      </Popover>
+    </div>,
+  );
+
+  expect(getByTestId('popover')).toHaveClass('mm-popover--reference-hidden');
 });
