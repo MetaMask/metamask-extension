@@ -1,6 +1,6 @@
 {
   "name": "@metamask/signature-controller",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Processes signing requests in order to sign arbitrary and typed data",
   "keywords": [
     "MetaMask",
@@ -29,20 +29,20 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^2.1.0",
+    "@metamask/approval-controller": "^2.1.1",
     "@metamask/base-controller": "^2.0.0",
-    "@metamask/controller-utils": "^3.2.0",
-    "@metamask/message-manager": "^3.1.0",
+    "@metamask/controller-utils": "^3.4.0",
+    "@metamask/message-manager": "^3.1.1",
     "eth-rpc-errors": "^4.0.2",
     "ethereumjs-util": "^7.0.10",
     "immer": "^9.0.6"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "yalcSig": "a83183d27d3848e5851d414dd63550e5"
+  "yalcSig": "26c086f705e6f3fa5013164b1f542e8f"
 }

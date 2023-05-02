@@ -3619,16 +3619,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^2.0.0, @metamask/approval-controller@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/approval-controller@npm:2.1.0"
+"@metamask/approval-controller@npm:^2.0.0, @metamask/approval-controller@npm:^2.1.0, @metamask/approval-controller@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@metamask/approval-controller@npm:2.1.1"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-    eth-rpc-errors: ^4.0.0
+    "@metamask/controller-utils": ^3.4.0
+    eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 207380e3ed0007aec3b9efcde62ac3ece9fa46cc7b9e6157c0d54271e0936b5a9a05e59adcfb1e47e3f3df397d2d2dc757f3b97745528695182e7c66a5207aca
+  checksum: 2e3798e67821660be7c7a35cbe5d001085fd2814fb58bc21e1525383fe2fba66ddb4074896c530de29407d929790ee3a036e180c5576962e3b50a85afe3fd9df
   languageName: node
   linkType: hard
 
@@ -4041,7 +4041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^3.1.0, @metamask/message-manager@npm:^3.1.1":
+"@metamask/message-manager@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/message-manager@npm:3.1.1"
   dependencies:
@@ -4309,17 +4309,17 @@ __metadata:
   linkType: hard
 
 "@metamask/signature-controller@file:pending/signature-controller::locator=metamask-crx%40workspace%3A.":
-  version: 1.0.0
-  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=a669ea&locator=metamask-crx%40workspace%3A."
+  version: 0.0.0
+  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=1204f7&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/approval-controller": ^2.1.0
+    "@metamask/approval-controller": ^2.1.1
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.2.0
-    "@metamask/message-manager": ^3.1.0
+    "@metamask/controller-utils": ^3.4.0
+    "@metamask/message-manager": ^3.1.1
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: 269dc2e780f75456f49de8d60341967e8e38b4a927fecb69779bb452163d04e97f05573f56ca55fe0c873896a11a54a706db85651415ef1d2fbdec52a4fc20c5
+  checksum: 825dff33b80e8008f83b939cd12b8d8be677970d06f523f4643a8b8e6295deaf4bcb17f937f941c5ca912b1c9b081e35fb058aa4200176bf1c5346c4aa612dbd
   languageName: node
   linkType: hard
 

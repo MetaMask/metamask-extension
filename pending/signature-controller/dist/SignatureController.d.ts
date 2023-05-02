@@ -39,20 +39,15 @@ export declare type SignatureControllerOptions = {
     messenger: SignatureControllerMessenger;
     keyringController: KeyringController;
     isEthSignEnabled: () => boolean;
-    getState: () => any;
+    getAllState: () => unknown;
     securityProviderRequest?: (requestData: any, methodName: string) => Promise<any>;
 };
 /**
  * Controller for creating signing requests requiring user approval.
  */
 export declare class SignatureController extends BaseControllerV2<typeof controllerName, SignatureControllerState, SignatureControllerMessenger> {
+    #private;
     hub: EventEmitter;
-    private _keyringController;
-    private _isEthSignEnabled;
-    private _getState;
-    private _messageManager;
-    private _personalMessageManager;
-    private _typedMessageManager;
     /**
      * Construct a Sign controller.
      *
@@ -60,10 +55,10 @@ export declare class SignatureController extends BaseControllerV2<typeof control
      * @param options.messenger - The restricted controller messenger for the sign controller.
      * @param options.keyringController - An instance of a keyring controller used to perform the signing operations.
      * @param options.isEthSignEnabled - Callback to return true if eth_sign is enabled.
-     * @param options.getState - Callback to retrieve all user state.
+     * @param options.getAllState - Callback to retrieve all user state.
      * @param options.securityProviderRequest - A function for verifying a message, whether it is malicious or not.
      */
-    constructor({ messenger, keyringController, isEthSignEnabled, getState, securityProviderRequest, }: SignatureControllerOptions);
+    constructor({ messenger, keyringController, isEthSignEnabled, getAllState, securityProviderRequest, }: SignatureControllerOptions);
     /**
      * A getter for the number of 'unapproved' Messages in this.messages.
      *
@@ -176,21 +171,6 @@ export declare class SignatureController extends BaseControllerV2<typeof control
      * Clears all unapproved messages from memory.
      */
     clearUnapproved(): void;
-    private _rejectUnapproved;
-    private _clearUnapproved;
-    private _signAbstractMessage;
-    private _errorMessage;
-    private _cancelAbstractMessage;
-    private _handleMessageManagerEvents;
-    private _subscribeToMessageState;
-    private _migrateMessages;
-    private _migrateMessage;
-    private _normalizeMsgData;
-    private _getMessage;
-    private _requestApproval;
-    private _acceptApproval;
-    private _rejectApproval;
-    private _removeJsonData;
 }
 export {};
 //# sourceMappingURL=SignatureController.d.ts.map
