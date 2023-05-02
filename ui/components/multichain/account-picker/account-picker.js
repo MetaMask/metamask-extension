@@ -25,6 +25,7 @@ export const AccountPicker = ({ address, name, onClick, disabled }) => {
   return (
     <Button
       className="multichain-account-picker"
+      data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
       borderRadius={BorderRadius.LG}
