@@ -60,7 +60,12 @@ export const NetworkListMenu = ({ onClose }) => {
   }, [showTestNetworks, showTestNetworksRef]);
 
   return (
-    <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
+    <Popover
+      contentClassName="multichain-network-list-menu-content-wrapper"
+      onClose={onClose}
+      centerTitle
+      title={t('networkMenuHeading')}
+    >
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
           {networks.map((network) => {
