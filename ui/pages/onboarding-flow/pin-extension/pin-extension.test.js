@@ -16,7 +16,7 @@ const completeOnboardingStub = jest
 describe('Creation Successful Onboarding View', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
     },
