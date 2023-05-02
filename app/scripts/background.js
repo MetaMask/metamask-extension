@@ -417,7 +417,6 @@ export async function loadStateFromPersistence() {
     sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
-      w,
     });
   });
 
