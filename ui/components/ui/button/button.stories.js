@@ -63,7 +63,7 @@ export const DefaultStory = (args) => (
       marginBottom={4}
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="This version of Button has been deprecated in favour of the component-library version. Contribute to replacing old Button with new Button by submitting a PR against #18896"
+      description="This version of Button has been deprecated in favor of the component-library version. Contribute to replacing old Button with new Button by submitting a PR"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/18896',
