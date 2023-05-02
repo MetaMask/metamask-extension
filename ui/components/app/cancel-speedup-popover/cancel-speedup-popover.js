@@ -99,8 +99,9 @@ const CancelSpeedupPopover = () => {
       <div className="cancel-speedup-popover__wrapper">
         <Text
           alignItems={AlignItems.center}
-          display={DISPLAY.FLEX }
-          variant={TextVariant.bodySm} as="h6"
+          display={DISPLAY.FLEX}
+          variant={TextVariant.bodySm}
+          as="h6"
           marginTop={0}
           marginBottom={2}
         >

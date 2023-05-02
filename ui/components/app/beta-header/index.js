@@ -1,6 +1,5 @@
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
 import Box from '../../ui/box/box';
 import {
   TextVariant,
@@ -13,7 +12,12 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { ButtonIcon, ButtonIconSize, IconName, Text } from '../../component-library';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
