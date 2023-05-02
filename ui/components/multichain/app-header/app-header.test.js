@@ -97,6 +97,9 @@ describe('App Header', () => {
           },
         },
       },
+      appState: {
+        onboardedInThisUISession: false,
+      },
     };
 
     const mockStore = configureStore();

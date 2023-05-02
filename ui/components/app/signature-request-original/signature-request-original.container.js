@@ -13,6 +13,9 @@ import {
   getTotalUnapprovedMessagesCount,
   getPreferences,
   getCurrentCurrency,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -20,6 +23,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
 
@@ -27,7 +31,7 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
-  const { provider } = state.metamask;
+  const provider = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -53,6 +57,9 @@ function mapStateToProps(state, ownProps) {
     messagesList,
     messagesCount,
     provider,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: getSelectedAccount(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

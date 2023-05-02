@@ -173,7 +173,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
@@ -230,6 +230,16 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
+/**
+ * Get the provider configuration for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['provider']} The provider configuration for the current selected network.
+ */
+export function getProviderConfig(state) {
+  return state.metamask.provider;
+}
+
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
@@ -249,12 +259,9 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: {
-      allNfts,
-      provider: { chainId },
-      selectedAddress,
-    },
+    metamask: { allNfts, selectedAddress },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
   const chainIdAsDecimal = hexToDecimal(chainId);
 
@@ -263,12 +270,9 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: {
-      allNftContracts,
-      provider: { chainId },
-      selectedAddress,
-    },
+    metamask: { allNftContracts, selectedAddress },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
   const chainIdAsDecimal = hexToDecimal(chainId);
 
@@ -287,7 +291,7 @@ export function getNativeCurrency(state) {
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   return useCurrencyRateCheck
     ? state.metamask.nativeCurrency
-    : state.metamask.provider.ticker;
+    : getProviderConfig(state).ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {

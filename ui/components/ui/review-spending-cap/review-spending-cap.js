@@ -3,20 +3,19 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
-import Typography from '../typography';
-import { ButtonLink } from '../../component-library';
 import {
+  ButtonLink,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+  IconName,
+  IconSize,
+  Text,
+} from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
-  TypographyVariant,
-  TEXT_ALIGN,
+  TextVariant,
+  TextAlign,
   Size,
   BackgroundColor,
   TextColor,
@@ -59,57 +58,57 @@ export default function ReviewSpendingCap({
           flexDirection={FLEX_DIRECTION.ROW}
           className="review-spending-cap__heading-title"
         >
-          <Typography
-            as={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TypographyVariant.H6}
-            boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+          <Text
+            variant={TextVariant.bodySmBold}
+            as="h6"
+            display={DISPLAY.INLINE_BLOCK}
           >
             {t('customSpendingCap')}
-          </Typography>
+          </Text>
           <Box marginLeft={2} display={DISPLAY.INLINE_BLOCK}>
             <Tooltip
               interactive
               position="top"
               html={
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
                   color={TextColor.textAlternative}
                   className="review-spending-cap__heading-title__tooltip"
                 >
                   {valueIsGreaterThanBalance &&
                     t('warningTooltipText', [
-                      <Typography
+                      <Text
                         key="tooltip-text"
-                        variant={TypographyVariant.H7}
-                        fontWeight={FONT_WEIGHT.BOLD}
+                        variant={TextVariant.bodySmBold}
+                        as="h6"
                         color={TextColor.errorDefault}
                       >
                         <Icon
-                          name={ICON_NAMES.WARNING}
+                          name={IconName.Warning}
                           style={{ verticalAlign: 'middle' }}
                         />
                         {t('beCareful')}
-                      </Typography>,
+                      </Text>,
                     ])}
                   {Number(tokenValue) === 0 &&
                     t('revokeSpendingCapTooltipText')}
-                </Typography>
+                </Text>
               }
             >
               {valueIsGreaterThanBalance && (
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__warning-icon"
-                  name={ICON_NAMES.DANGER}
+                  name={IconName.Danger}
                   color={IconColor.errorDefault}
-                  size={ICON_SIZES.SM}
+                  size={IconSize.Sm}
                   style={{ 'vertical-align': 'middle' }}
                 />
               )}
               {Number(tokenValue) === 0 && (
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__question-icon"
-                  name={ICON_NAMES.QUESTION}
+                  name={IconName.Question}
                   color={IconColor.iconDefault}
                 />
               )}
@@ -118,7 +117,7 @@ export default function ReviewSpendingCap({
         </Box>
         <Box
           className="review-spending-cap__heading-detail"
-          textAlign={TEXT_ALIGN.END}
+          textAlign={TextAlign.End}
         >
           <ButtonLink
             size={Size.auto}
@@ -132,18 +131,18 @@ export default function ReviewSpendingCap({
         </Box>
       </Box>
       <Box className="review-spending-cap__value">
-        <Typography
-          as={TypographyVariant.H6}
+        <Text
           color={
             valueIsGreaterThanBalance
               ? TextColor.errorDefault
               : TextColor.textDefault
           }
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySmBold}
+          as="h6"
           marginBottom={3}
         >
           {tokenValue} {tokenName}
-        </Typography>
+        </Text>
       </Box>
     </Box>
   );

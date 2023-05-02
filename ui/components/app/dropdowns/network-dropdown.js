@@ -7,6 +7,7 @@ import { pickBy } from 'lodash';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
   BUILT_IN_NETWORKS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -33,11 +34,7 @@ import {
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library/icon/deprecated';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
@@ -59,7 +56,7 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 
 function mapStateToProps(state) {
   return {
-    provider: state.metamask.provider,
+    provider: getProviderConfig(state),
     shouldShowTestNetworks: getShowTestNetworks(state),
     networkConfigurations: state.metamask.networkConfigurations,
     networkDropdownOpen: state.appState.networkDropdownOpen,
@@ -191,7 +188,7 @@ class NetworkDropdown extends Component {
             }}
           >
             {isCurrentRpcTarget ? (
-              <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+              <Icon name={IconName.Check} color={IconColor.successDefault} />
             ) : (
               <div className="network-check__transparent">✓</div>
             )}
@@ -214,8 +211,8 @@ class NetworkDropdown extends Component {
             {isCurrentRpcTarget ? null : (
               <ButtonIcon
                 className="delete"
-                iconName={ICON_NAMES.CLOSE}
-                size={ICON_SIZES.SM}
+                iconName={IconName.Close}
+                size={IconSize.Sm}
                 ariaLabel={this.context.t('delete')}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -265,7 +262,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+          <Icon name={IconName.Check} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
@@ -334,7 +331,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {isCurrentRpcTarget ? (
-          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+          <Icon name={IconName.Check} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
