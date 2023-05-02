@@ -225,7 +225,7 @@
     "preferences": {
       "useETHAsPrimaryCurrency": true
     },
-    "provider": {
+    "providerConfig": {
       "type": "goerli"
     },
     "network": "4",

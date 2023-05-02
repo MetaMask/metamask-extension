@@ -111,7 +111,7 @@
     },
     "networkId": "5",
     "networkStatus": "available",
-    "provider": {
+    "providerConfig": {
       "type": "rpc",
       "chainId": "0x5",
       "ticker": "ETH",

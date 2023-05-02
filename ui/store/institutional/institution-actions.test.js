@@ -15,7 +15,7 @@ const defaultState = {
   metamask: {
     currentLocale: 'test',
     selectedAddress: '0xFirstAddress',
-    provider: { chainId: '0x1' },
+    providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -199,7 +199,7 @@ describe('#updateCustodyState', () => {
     _setBackgroundConnection(background.getApi());
 
     const newState = {
-      provider: {
+      providerConfig: {
         nickname: 'mainnet',
         chainId: '0x1',
       },
@@ -225,7 +225,7 @@ describe('#updateCustodyState', () => {
     _setBackgroundConnection(background.getApi());
 
     const newState = {
-      provider: {
+      providerConfig: {
         nickname: 'mainnet',
         chainId: '0x1',
       },
@@ -280,7 +280,7 @@ describe('#updateCustodyState', () => {
     _setBackgroundConnection(background.getApi());
 
     const newState = {
-      provider: {
+      providerConfig: {
         nickname: 'mainnet',
         chainId: '0x1',
       },
