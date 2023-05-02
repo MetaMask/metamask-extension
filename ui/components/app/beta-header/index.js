@@ -1,8 +1,7 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Box from '../../ui/box/box'
+import Box from '../../ui/box/box';
 import {
   TextVariant,
   Color,
@@ -29,7 +28,8 @@ const BetaHeader = () => {
       alignItems={AlignItems.center}
     >
       <Text
-        variant={TextVariant.bodySm} as="h6"
+        variant={TextVariant.bodySm}
+        as="h6"
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"

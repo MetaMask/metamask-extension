@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
 
@@ -8,7 +7,7 @@ import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TextVariant
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
@@ -99,7 +98,8 @@ const CancelSpeedupPopover = () => {
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
         <Text
-          boxProps={{ alignItems: AlignItems.center, display: DISPLAY.FLEX }}
+          alignItems={AlignItems.center}
+          display={DISPLAY.FLEX }
           variant={TextVariant.bodySm} as="h6"
           marginTop={0}
           marginBottom={2}
