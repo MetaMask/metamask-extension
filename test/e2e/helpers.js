@@ -122,7 +122,7 @@ async function withFixtures(options, testSuite) {
     }
 
     let driverProxy;
-    if (process.env.E2E_DEBUG === 'true') {
+    if (true || process.env.E2E_DEBUG === 'true') {
       driverProxy = new Proxy(driver, {
         get(target, prop, receiver) {
           const originalProperty = target[prop];
