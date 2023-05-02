@@ -113,16 +113,18 @@ async function withFixtures(options, testSuite) {
     ) {
       await ensureXServerIsRunning();
     }
+    console.log('Building web driver');
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
+    console.log('Checking for errors?');
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(failOnConsoleError);
       await driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
     let driverProxy;
-    if (true || process.env.E2E_DEBUG === 'true') {
+    if (process.env.E2E_DEBUG === 'true') {
       driverProxy = new Proxy(driver, {
         get(target, prop, receiver) {
           const originalProperty = target[prop];
@@ -140,6 +142,8 @@ async function withFixtures(options, testSuite) {
         },
       });
     }
+
+    console.log('Running suite');
 
     await testSuite({
       driver: driverProxy ?? driver,
