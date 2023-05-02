@@ -26,7 +26,6 @@ jobs:
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
-          git fetch origin $BASE_REF
           # The following command generates a diff of changes between the common
           # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
           # files in the current directory and its subdirectories. The output is
