@@ -716,7 +716,7 @@ export default class Home extends PureComponent {
       completedOnboarding,
       onboardedInThisUISession,
       newNetworkAddedConfigurationId,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       mmiPortfolioEnabled,
       mmiPortfolioUrl,
       ///: END:ONLY_INCLUDE_IN
@@ -748,19 +748,35 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && showRecoveryPhraseReminder ? (
-            <RecoveryPhraseReminder
-              hasBackedUp={seedPhraseBackedUp}
-              onConfirm={this.onRecoveryPhraseReminderClose}
-            />
-          ) : null}
-          {showTermsOfUse ? (
-            <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
-          ) : null}
-          {isPopup && !connectedStatusPopoverHasBeenShown
-            ? this.renderPopover()
-            : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null
+            ///: END:ONLY_INCLUDE_IN
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            !showWhatsNew && showRecoveryPhraseReminder ? (
+              <RecoveryPhraseReminder
+                hasBackedUp={seedPhraseBackedUp}
+                onConfirm={this.onRecoveryPhraseReminderClose}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IN
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            showTermsOfUse ? (
+              <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
+            ) : null
+            ///: END:ONLY_INCLUDE_IN
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            isPopup && !connectedStatusPopoverHasBeenShown
+              ? this.renderPopover()
+              : null
+            ///: END:ONLY_INCLUDE_IN
+          }
           <div className="home__main-view">
             {process.env.MULTICHAIN ? null : <MenuBar />}
             <div className="home__balance-wrapper">
@@ -770,7 +786,7 @@ export default class Home extends PureComponent {
                 ///: END:ONLY_INCLUDE_IN
               }
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 <EthOverview
                   mmiPortfolioEnabled={mmiPortfolioEnabled}
                   mmiPortfolioUrl={mmiPortfolioUrl}
