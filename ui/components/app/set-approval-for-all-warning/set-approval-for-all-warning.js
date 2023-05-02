@@ -8,7 +8,6 @@ import Button from '../../ui/button';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  FontWeight,
   JustifyContent,
   TextColor,
   TextVariant,
