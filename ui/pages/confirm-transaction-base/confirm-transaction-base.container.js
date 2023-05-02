@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import { showCustodianDeepLink } from '@codefi/mmi-sdk';
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';

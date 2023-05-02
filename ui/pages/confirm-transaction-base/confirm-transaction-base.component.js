@@ -30,7 +30,6 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
-import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
 import ComplianceRow from '../swaps/mmi/compliance-row';
 import NoteToTrader from '../../components/institutional/note-to-trader/note-to-trader';
