@@ -634,8 +634,9 @@ jobs:
     parallelism: 8
     steps:
       - checkout
-      - browser-tools/install-chrome:
-          chrome-version: "111.0.5563.64"
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -670,8 +671,9 @@ jobs:
     parallelism: 8
     steps:
       - checkout
-      - browser-tools/install-chrome:
-          chrome-version: "111.0.5563.64"
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -733,8 +735,9 @@ jobs:
     parallelism: 4
     steps:
       - checkout
-      - browser-tools/install-chrome:
-          chrome-version: "111.0.5563.64"
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -804,8 +807,9 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - checkout
-      - browser-tools/install-chrome:
-          chrome-version: "111.0.5563.64"
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -829,8 +833,9 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - checkout
-      - browser-tools/install-chrome:
-          chrome-version: "111.0.5563.64"
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -854,8 +859,9 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - checkout
-      - browser-tools/install-chrome:
-          chrome-version: "111.0.5563.64"
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
