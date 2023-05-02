@@ -39,7 +39,7 @@ const state = {
         name: 'Address Book Account 1',
       },
     ],
-    provider: {
+    providerConfig: {
       type: 'mainnet',
       nickname: '',
     },

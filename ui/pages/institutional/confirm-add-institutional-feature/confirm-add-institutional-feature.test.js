@@ -46,7 +46,7 @@ const render = ({ newState } = {}) => {
   const state = {
     ...mockState,
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       institutionalFeatures: {

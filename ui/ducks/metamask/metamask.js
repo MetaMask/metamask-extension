@@ -234,10 +234,10 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  * Get the provider configuration for the current selected network.
  *
  * @param {object} state - Redux state object.
- * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['provider']} The provider configuration for the current selected network.
+ * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['providerConfig']} The provider configuration for the current selected network.
  */
 export function getProviderConfig(state) {
-  return state.metamask.provider;
+  return state.metamask.providerConfig;
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
