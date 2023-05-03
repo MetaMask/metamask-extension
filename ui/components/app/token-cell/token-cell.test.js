@@ -15,7 +15,7 @@ describe('Token Cell', () => {
       },
       conversionRate: 7.0,
       preferences: {},
-      provider: {
+      providerConfig: {
         chainId: '0x1',
         ticker: 'ETH',
         type: 'mainnet',

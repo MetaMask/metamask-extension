@@ -1776,7 +1776,7 @@ export function updateMetamaskState(
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-      provider: newProviderConfig,
+      providerConfig: newProviderConfig,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
