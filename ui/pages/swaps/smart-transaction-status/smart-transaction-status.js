@@ -338,10 +338,10 @@ export default function SmartTransactionStatusPage() {
           </Text>
           <Text
             color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodySmBold}
             as="h6"
-            fontWeight={FontWeight.Bold}
-            boxProps={{ marginLeft: 1, marginRight: 2 }}
+            marginLeft={1}
+            marginRight={2}
           >
             {fetchParamsSourceTokenInfo.symbol ??
               latestSmartTransaction?.sourceTokenSymbol}
@@ -417,10 +417,9 @@ export default function SmartTransactionStatusPage() {
             </Text>
             <Text
               color={TextColor.textAlternative}
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodySmBold}
               as="h6"
-              fontWeight={FontWeight.Bold}
-              boxProps={{ marginLeft: 1 }}
+              marginLeft={1}
               className="smart-transaction-status__remaining-time"
             >
               {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
@@ -473,7 +472,7 @@ export default function SmartTransactionStatusPage() {
           <Text
             variant={TextVariant.bodySm}
             as="h6"
-            boxProps={{ marginTop: 8 }}
+            marginTop={8}
             color={TextColor.textAlternative}
           >
             {subDescription}
