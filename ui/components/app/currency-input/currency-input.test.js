@@ -10,7 +10,7 @@ describe('CurrencyInput Component', () => {
       nativeCurrency: 'ETH',
       currentCurrency: 'usd',
       conversionRate: 231.06,
-      provider: {
+      providerConfig: {
         chainId: '0x5',
       },
       preferences: {

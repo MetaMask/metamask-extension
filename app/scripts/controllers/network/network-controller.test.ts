@@ -164,7 +164,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999' as const,
@@ -188,7 +188,7 @@ describe('NetworkController', () => {
               },
               "networkId": null,
               "networkStatus": "unknown",
-              "provider": {
+              "providerConfig": {
                 "chainId": "0x9999",
                 "nickname": "Test initial state",
                 "rpcUrl": "http://example-custom-rpc.metamask.io",
@@ -212,7 +212,7 @@ describe('NetworkController', () => {
             },
             "networkId": null,
             "networkStatus": "unknown",
-            "provider": {
+            "providerConfig": {
               "chainId": "0x539",
               "nickname": "Localhost 8545",
               "rpcUrl": "http://localhost:8545",
@@ -260,7 +260,7 @@ describe('NetworkController', () => {
         /* @ts-expect-error We're intentionally passing bad input. */
         {
           state: {
-            provider: invalidProviderConfig,
+            providerConfig: invalidProviderConfig,
           },
         },
         async ({ controller }) => {
@@ -279,7 +279,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID
                   // of the network selected, it just needs to exist
@@ -329,7 +329,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID
                   // of the network selected, it just needs to exist
@@ -359,7 +359,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID
                   // of the network selected, it just needs to exist
@@ -399,7 +399,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID
                   // of the network selected, it just needs to exist
@@ -444,7 +444,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 chainId: '0x1337',
                 rpcUrl: 'https://mock-rpc-url',
@@ -502,7 +502,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
@@ -540,7 +540,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
@@ -579,7 +579,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
@@ -625,7 +625,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0xtest',
@@ -705,7 +705,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -788,7 +788,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'goerli',
                 // NOTE: This doesn't need to match the logical chain ID of
                 // the network selected, it just needs to exist
@@ -1088,7 +1088,7 @@ describe('NetworkController', () => {
           nickname: 'Test initial state',
         };
         const initialState = {
-          provider: providerConfig,
+          providerConfig,
           networkDetails: {
             EIPS: {
               1559: true,
@@ -1160,7 +1160,7 @@ describe('NetworkController', () => {
           /* @ts-expect-error We are intentionally not including a chainId in the provider config. */
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'http://example-custom-rpc.metamask.io',
               },
@@ -1192,7 +1192,7 @@ describe('NetworkController', () => {
           /* @ts-expect-error We are intentionally not including a chainId in the provider config. */
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'http://example-custom-rpc.metamask.io',
               },
@@ -1223,7 +1223,7 @@ describe('NetworkController', () => {
           /* @ts-expect-error We are intentionally not including a chainId in the provider config. */
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'http://example-custom-rpc.metamask.io',
               },
@@ -1257,7 +1257,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1305,7 +1305,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1351,7 +1351,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1401,7 +1401,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1451,7 +1451,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID
                     // of the network selected, it just needs to exist
@@ -1498,7 +1498,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID
                     // of the network selected, it just needs to exist
@@ -1543,7 +1543,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1609,7 +1609,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1663,7 +1663,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID
                     // of the network selected, it just needs to exist
@@ -1706,7 +1706,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID
                     // of the network selected, it just needs to exist
@@ -1753,7 +1753,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1824,7 +1824,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1895,7 +1895,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -1964,7 +1964,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -2056,7 +2056,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -2103,7 +2103,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -2213,7 +2213,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -2305,7 +2305,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID of
                     // the network selected, it just needs to exist
@@ -2407,7 +2407,7 @@ describe('NetworkController', () => {
             await withController(
               {
                 state: {
-                  provider: {
+                  providerConfig: {
                     type: networkType,
                     // NOTE: This doesn't need to match the logical chain ID
                     // of the network selected, it just needs to exist
@@ -2491,7 +2491,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2542,7 +2542,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2595,7 +2595,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2647,7 +2647,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2699,7 +2699,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2751,7 +2751,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2817,7 +2817,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2881,7 +2881,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -2945,7 +2945,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3026,7 +3026,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3075,7 +3075,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3125,7 +3125,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3189,7 +3189,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3255,7 +3255,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3330,7 +3330,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3379,7 +3379,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3429,7 +3429,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3521,7 +3521,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3625,7 +3625,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3745,7 +3745,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3836,7 +3836,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -3932,7 +3932,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -4035,7 +4035,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -4155,7 +4155,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -4278,7 +4278,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
@@ -4315,7 +4315,7 @@ describe('NetworkController', () => {
 
           await controller.setActiveNetwork('testNetworkConfiguration');
 
-          expect(controller.store.getState().provider).toStrictEqual({
+          expect(controller.store.getState().providerConfig).toStrictEqual({
             id: 'testNetworkConfiguration',
             type: 'rpc',
             rpcUrl: 'https://mock-rpc-url-2',
@@ -4334,7 +4334,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
@@ -4419,7 +4419,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
@@ -4497,7 +4497,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
@@ -4643,7 +4643,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-1',
               chainId: '0x111',
@@ -4874,7 +4874,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -4893,7 +4893,7 @@ describe('NetworkController', () => {
 
               controller.setProviderType(networkType);
 
-              expect(controller.store.getState().provider).toStrictEqual({
+              expect(controller.store.getState().providerConfig).toStrictEqual({
                 type: networkType,
                 rpcUrl: undefined,
                 chainId,
@@ -4929,7 +4929,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -4997,7 +4997,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -5127,7 +5127,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
@@ -5309,7 +5309,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5341,7 +5341,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5387,7 +5387,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5441,7 +5441,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5484,7 +5484,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5513,7 +5513,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5543,7 +5543,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5585,7 +5585,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5624,7 +5624,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -5668,7 +5668,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5699,7 +5699,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5742,7 +5742,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5799,7 +5799,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5841,7 +5841,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5869,7 +5869,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5898,7 +5898,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5927,7 +5927,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -5963,7 +5963,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -6008,7 +6008,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID
                   // of the network selected, it just needs to exist
@@ -6057,7 +6057,7 @@ describe('NetworkController', () => {
                 })
                 .mockReturnValue(fakeNetworkClients[1]);
               await controller.setActiveNetwork('testNetworkConfiguration');
-              expect(controller.store.getState().provider).toStrictEqual({
+              expect(controller.store.getState().providerConfig).toStrictEqual({
                 type: 'rpc',
                 id: 'testNetworkConfiguration',
                 rpcUrl: 'https://mock-rpc-url-2',
@@ -6076,7 +6076,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(controller.store.getState().provider).toStrictEqual({
+              expect(controller.store.getState().providerConfig).toStrictEqual({
                 type: networkType,
                 chainId: '0x111',
                 rpcUrl: 'https://mock-rpc-url-1',
@@ -6094,7 +6094,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6154,7 +6154,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6241,7 +6241,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6334,7 +6334,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6410,7 +6410,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6468,7 +6468,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6529,7 +6529,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6604,7 +6604,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6680,7 +6680,7 @@ describe('NetworkController', () => {
           await withController(
             {
               state: {
-                provider: {
+                providerConfig: {
                   type: networkType,
                   // NOTE: This doesn't need to match the logical chain ID of
                   // the network selected, it just needs to exist
@@ -6774,7 +6774,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -6807,7 +6807,7 @@ describe('NetworkController', () => {
               })
               .mockReturnValue(fakeNetworkClients[1]);
             await controller.setProviderType('goerli');
-            expect(controller.store.getState().provider).toStrictEqual({
+            expect(controller.store.getState().providerConfig).toStrictEqual({
               type: 'goerli',
               rpcUrl: undefined,
               chainId: '0x5',
@@ -6824,7 +6824,7 @@ describe('NetworkController', () => {
                 await controller.rollbackToPreviousProvider();
               },
             });
-            expect(controller.store.getState().provider).toStrictEqual({
+            expect(controller.store.getState().providerConfig).toStrictEqual({
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0x1337',
@@ -6842,7 +6842,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -6893,7 +6893,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -6969,7 +6969,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7049,7 +7049,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7116,7 +7116,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7165,7 +7165,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7216,7 +7216,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7267,7 +7267,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7332,7 +7332,7 @@ describe('NetworkController', () => {
         await withController(
           {
             state: {
-              provider: {
+              providerConfig: {
                 type: 'rpc',
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
@@ -7781,7 +7781,7 @@ describe('NetworkController', () => {
 
     it('should add the given network and not set it to active if the setActive option is not passed (or a falsy value is passed)', async () => {
       uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      const originalProvider = {
+      const originalProviderConfig = {
         type: NETWORK_TYPES.RPC,
         rpcUrl: 'https://mock-rpc-url',
         chainId: '0xtest' as const,
@@ -7790,7 +7790,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: originalProvider,
+            providerConfig: originalProviderConfig,
             networkConfigurations: {
               testNetworkConfigurationId: {
                 rpcUrl: 'https://mock-rpc-url',
@@ -7813,8 +7813,8 @@ describe('NetworkController', () => {
             source: MetaMetricsNetworkEventSource.Dapp,
           });
 
-          expect(controller.store.getState().provider).toStrictEqual(
-            originalProvider,
+          expect(controller.store.getState().providerConfig).toStrictEqual(
+            originalProviderConfig,
           );
         },
       );
@@ -7825,7 +7825,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0xtest',
@@ -7857,7 +7857,7 @@ describe('NetworkController', () => {
             source: MetaMetricsNetworkEventSource.Dapp,
           });
 
-          expect(controller.store.getState().provider).toStrictEqual({
+          expect(controller.store.getState().providerConfig).toStrictEqual({
             ...rpcUrlNetwork,
             nickname: undefined,
             rpcPrefs: undefined,
@@ -7874,7 +7874,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0xtest',
@@ -7941,7 +7941,7 @@ describe('NetworkController', () => {
       await withController(
         {
           state: {
-            provider: {
+            providerConfig: {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0xtest',
