@@ -55,6 +55,7 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         onChange={(e) => setPassword(e.target.value)}
         value={password}
         variant={TextVariant.bodySm}
+        type="password"
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
