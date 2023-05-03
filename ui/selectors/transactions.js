@@ -259,8 +259,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         typeof nonce === 'undefined' || type === TransactionType.incoming;
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      shouldNotBeGrouped =
-        shouldNotBeGrouped || Boolean(transaction.custodyId);
+      shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
       ///: END:ONLY_INCLUDE_IN
 
       if (shouldNotBeGrouped) {
