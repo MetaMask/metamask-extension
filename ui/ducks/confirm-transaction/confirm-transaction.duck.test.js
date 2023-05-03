@@ -290,7 +290,7 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          provider: {
+          providerConfig: {
             ticker: 'ETH',
           },
         },
@@ -345,7 +345,7 @@ describe('Confirm Transaction Duck', () => {
           currentCurrency: 'usd',
           networkId: '5',
           networkStatus: 'available',
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
           unapprovedTxs: {

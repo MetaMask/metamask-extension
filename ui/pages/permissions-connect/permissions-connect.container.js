@@ -9,8 +9,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getSnapInstallOrUpdateRequests,
   getRequestState,
-  getRequestType,
   ///: END:ONLY_INCLUDE_IN
+  getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -73,10 +73,10 @@ const mapStateToProps = (state, ownProps) => {
     subjectType: SubjectType.Unknown,
   };
 
+  const requestType = getRequestType(state, permissionsRequestId);
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
-
-  const requestType = getRequestType(state, permissionsRequestId);
 
   const requestState = getRequestState(state, permissionsRequestId);
   ///: END:ONLY_INCLUDE_IN
@@ -126,8 +126,8 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     isRequestingAccounts,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     requestType,
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     snapInstallPath,
     snapUpdatePath,
     snapResultPath,

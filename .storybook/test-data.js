@@ -599,7 +599,7 @@ const state = {
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
-    provider: {
+    providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
       nickname: '',

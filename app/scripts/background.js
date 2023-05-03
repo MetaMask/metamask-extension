@@ -219,9 +219,9 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} provider - The current selected network provider.
- * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
+ * @property {object} providerConfig - The current selected network provider.
+ * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
+ * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkId - The stringified number of the current network ID.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
@@ -462,7 +462,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.store.getState().provider.chainId,
+      controller.networkController.store.getState().providerConfig.chainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
