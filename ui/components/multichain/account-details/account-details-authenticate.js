@@ -58,6 +58,7 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         type="password"
         inputProps={{ onKeyPress: handleKeyPress }}
         labelProps={{ fontWeight: FontWeight.Medium }}
+        autoFocus
       />
       <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
