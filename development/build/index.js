@@ -14,7 +14,7 @@ const difference = require('lodash/difference');
 const { intersection } = require('lodash');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-const { TASKS, ENVIRONMENT } = require('./constants');
+const { TASKS } = require('./constants');
 const {
   createTask,
   composeSeries,
@@ -27,7 +27,7 @@ const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const { getBrowserVersionMap, getEnvironment } = require('./utils');
-const { getConfig, getProductionConfig } = require('./config');
+const { getConfig } = require('./config');
 const { BUILD_TARGETS } = require('./constants');
 
 // Packages required dynamically via browserify configuration in dependencies
@@ -73,6 +73,7 @@ async function defineAndRunBuildTasks() {
     shouldLintFenceFiles,
     skipStats,
     version,
+    platform,
   } = await parseArgv();
 
   const isRootTask = ['dist', 'prod', 'test', 'dev'].includes(entryTask);
@@ -124,6 +125,8 @@ async function defineAndRunBuildTasks() {
         'Uint8Array',
         'String',
         'Promise',
+        'JSON',
+        'Date',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
@@ -135,7 +138,7 @@ async function defineAndRunBuildTasks() {
     });
   }
 
-  const browserPlatforms = ['firefox', 'chrome'];
+  const browserPlatforms = platform ? [platform] : ['firefox', 'chrome'];
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
 
@@ -317,6 +320,13 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           hidden: true,
           type: 'boolean',
         })
+        .option('platform', {
+          default: '',
+          description:
+            'Specify a single browser platform to build for. Either `chrome` or `firefox`',
+          hidden: true,
+          type: 'string',
+        })
         .check((args) => {
           if (!Number.isInteger(args.buildVersion)) {
             throw new Error(
@@ -341,6 +351,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     policyOnly,
     skipStats,
     task,
+    platform,
   } = argv;
 
   // Manually default this to `false` for dev builds only.
@@ -351,13 +362,8 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
   const highLevelTasks = Object.values(BUILD_TARGETS);
   if (highLevelTasks.includes(task)) {
     const environment = getEnvironment({ buildTarget: task });
-    if (environment === ENVIRONMENT.PRODUCTION) {
-      // Output ignored, this is only called to ensure config is validated
-      await getProductionConfig(buildType);
-    } else {
-      // Output ignored, this is only called to ensure config is validated
-      await getConfig();
-    }
+    // Output ignored, this is only called to ensure config is validated
+    await getConfig(buildType, environment);
   }
 
   return {
@@ -371,6 +377,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     shouldLintFenceFiles,
     skipStats,
     version,
+    platform,
   };
 }
 

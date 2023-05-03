@@ -1,0 +1,14 @@
+@import '../../../components/institutional/jwt-dropdown/jwt-dropdown.scss';
+@import '../../../components/institutional/jwt-url-form/jwt-url-form.scss';
+
+.custody-accounts-empty {
+  min-height: 300px;
+
+  &__footer {
+    border-top: 1px solid var(--color-border-muted);
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+  }
+}

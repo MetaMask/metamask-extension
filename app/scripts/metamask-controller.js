@@ -90,7 +90,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -150,7 +149,7 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
-import DecryptMessageManager from './lib/decrypt-message-manager';
+import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -286,7 +285,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       ),
       preventPollingOnNetworkRestart: initState.TokenListController
         ? initState.TokenListController.preventPollingOnNetworkRestart
@@ -296,8 +295,8 @@ export default class MetamaskController extends EventEmitter {
           const modifiedNetworkState = {
             ...networkState,
             providerConfig: {
-              ...networkState.provider,
-              chainId: hexToDecimal(networkState.provider.chainId),
+              ...networkState.providerConfig,
+              chainId: hexToDecimal(networkState.providerConfig.chainId),
             },
           };
           return cb(modifiedNetworkState);
@@ -331,7 +330,7 @@ export default class MetamaskController extends EventEmitter {
           const modifiedNetworkState = {
             ...networkState,
             providerConfig: {
-              ...networkState.provider,
+              ...networkState.providerConfig,
             },
           };
           return cb(modifiedNetworkState);
@@ -368,8 +367,8 @@ export default class MetamaskController extends EventEmitter {
               const modifiedNetworkState = {
                 ...networkState,
                 providerConfig: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
+                  ...networkState.providerConfig,
+                  chainId: hexToDecimal(networkState.providerConfig.chainId),
                 },
               };
               return cb(modifiedNetworkState);
@@ -393,8 +392,8 @@ export default class MetamaskController extends EventEmitter {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
+                ...networkState.providerConfig,
+                chainId: hexToDecimal(networkState.providerConfig.chainId),
               },
             };
             return cb(modifiedNetworkState);
@@ -453,8 +452,8 @@ export default class MetamaskController extends EventEmitter {
           const modifiedNetworkState = {
             ...networkState,
             providerConfig: {
-              ...networkState.provider,
-              chainId: hexToDecimal(networkState.provider.chainId),
+              ...networkState.providerConfig,
+              chainId: hexToDecimal(networkState.providerConfig.chainId),
             },
           };
           return cb(modifiedNetworkState);
@@ -477,11 +476,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
-          this.networkController.store.getState().provider;
+          this.networkController.store.getState().providerConfig;
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
@@ -523,13 +522,14 @@ export default class MetamaskController extends EventEmitter {
       legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const { chainId } = this.networkController.store.getState().provider;
+        const { chainId } =
+          this.networkController.store.getState().providerConfig;
         return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
       getChainId: () => {
         return process.env.IN_TEST
           ? CHAIN_IDS.MAINNET
-          : this.networkController.store.getState().provider.chainId;
+          : this.networkController.store.getState().providerConfig.chainId;
       },
     });
 
@@ -559,7 +559,8 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
-        nativeCurrency: this.networkController.store.getState().provider.ticker,
+        nativeCurrency:
+          this.networkController.store.getState().providerConfig.ticker,
       },
     });
 
@@ -599,8 +600,8 @@ export default class MetamaskController extends EventEmitter {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
+                ...networkState.providerConfig,
+                chainId: hexToDecimal(networkState.providerConfig.chainId),
               },
             };
             return cb(modifiedNetworkState);
@@ -633,7 +634,7 @@ export default class MetamaskController extends EventEmitter {
     this.ensController = new EnsController({
       provider: this.provider,
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         NetworkControllerEventType.NetworkDidChange,
@@ -651,7 +652,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkControllerEventType.NetworkDidChange,
       ),
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
       initState: initState.IncomingTransactionsController,
@@ -662,10 +663,10 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
-          this.networkController.store.getState().provider;
+          this.networkController.store.getState().providerConfig;
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       preferencesController: this.preferencesController,
@@ -702,7 +703,7 @@ export default class MetamaskController extends EventEmitter {
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       initState: initState.CachedBalancesController,
     });
 
@@ -988,7 +989,8 @@ export default class MetamaskController extends EventEmitter {
       initState:
         initState.TransactionController || initState.TransactionManager,
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getProviderConfig: () => this.networkController.store.getState().provider,
+      getProviderConfig: () =>
+        this.networkController.store.getState().providerConfig,
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -1009,7 +1011,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
@@ -1145,7 +1147,8 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       NetworkControllerEventType.NetworkDidChange,
       async () => {
-        const { ticker } = this.networkController.store.getState().provider;
+        const { ticker } =
+          this.networkController.store.getState().providerConfig;
         try {
           await this.currencyRateController.setNativeCurrency(ticker);
         } catch (error) {
@@ -1156,7 +1159,17 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.networkController.lookupNetwork();
-    this.decryptMessageManager = new DecryptMessageManager({
+    this.decryptMessageController = new DecryptMessageController({
+      getState: this.getState.bind(this),
+      keyringController: this.keyringController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'DecryptMessageController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -1204,10 +1217,11 @@ export default class MetamaskController extends EventEmitter {
       onNetworkStateChange: (listener) =>
         this.networkController.store.subscribe(listener),
       provider: this.provider,
-      getProviderConfig: () => this.networkController.store.getState().provider,
+      getProviderConfig: () =>
+        this.networkController.store.getState().providerConfig,
       getTokenRatesState: () => this.tokenRatesController.state,
       getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
+        this.networkController.store.getState().providerConfig.chainId,
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
     });
@@ -1218,7 +1232,7 @@ export default class MetamaskController extends EventEmitter {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
-                ...networkState.provider,
+                ...networkState.providerConfig,
               },
             };
             return cb(modifiedNetworkState);
@@ -1256,7 +1270,7 @@ export default class MetamaskController extends EventEmitter {
       () => {
         this.txController.txStateManager.clearUnapprovedTxs();
         this.encryptionPublicKeyController.clearUnapproved();
-        this.decryptMessageManager.clearUnapproved();
+        this.decryptMessageController.clearUnapproved();
         this.signController.clearUnapproved();
       },
     );
@@ -1321,10 +1335,13 @@ export default class MetamaskController extends EventEmitter {
         this.signController.newUnsignedPersonalMessage.bind(
           this.signController,
         ),
-      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey:
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
+        ),
+      processDecryptMessage:
+        this.decryptMessageController.newRequestDecryptMessage.bind(
+          this.decryptMessageController,
         ),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
@@ -1347,7 +1364,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
-      DecryptMessageManager: this.decryptMessageManager.memStore,
+      DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignController: this.signController,
       SwapsController: this.swapsController.store,
@@ -1433,7 +1450,9 @@ export default class MetamaskController extends EventEmitter {
     const resetMethods = [
       this.accountTracker.resetState,
       this.txController.resetState,
-      this.decryptMessageManager.resetState,
+      this.decryptMessageController.resetState.bind(
+        this.decryptMessageController,
+      ),
       this.encryptionPublicKeyController.resetState.bind(
         this.encryptionPublicKeyController,
       ),
@@ -1769,7 +1788,7 @@ export default class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
-      const { chainId } = networkController.store.getState().provider;
+      const { chainId } = networkController.store.getState().providerConfig;
       if (memState.networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(selectPublicState(chainId, memState));
       }
@@ -1810,7 +1829,7 @@ export default class MetamaskController extends EventEmitter {
   getProviderNetworkState(memState) {
     const { networkId } = memState || this.getState();
     return {
-      chainId: this.networkController.store.getState().provider.chainId,
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       networkVersion: networkId ?? 'loading',
     };
   }
@@ -1967,6 +1986,10 @@ export default class MetamaskController extends EventEmitter {
         networkController.setActiveNetwork.bind(networkController),
       upsertNetworkConfiguration:
         this.networkController.upsertNetworkConfiguration.bind(
+          this.networkController,
+        ),
+      getCurrentNetworkEIP1559Compatibility:
+        this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
         ),
       // PreferencesController
@@ -2137,10 +2160,18 @@ export default class MetamaskController extends EventEmitter {
         this.signController,
       ),
 
-      // decryptMessageManager
-      decryptMessage: this.decryptMessage.bind(this),
-      decryptMessageInline: this.decryptMessageInline.bind(this),
-      cancelDecryptMessage: this.cancelDecryptMessage.bind(this),
+      // decryptMessageController
+      decryptMessage: this.decryptMessageController.decryptMessage.bind(
+        this.decryptMessageController,
+      ),
+      decryptMessageInline:
+        this.decryptMessageController.decryptMessageInline.bind(
+          this.decryptMessageController,
+        ),
+      cancelDecryptMessage:
+        this.decryptMessageController.cancelDecryptMessage.bind(
+          this.decryptMessageController,
+        ),
 
       // EncryptionPublicKeyController
       encryptionPublicKey:
@@ -2770,7 +2801,8 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.setTrezorModel(model);
     }
 
-    keyring.network = this.networkController.store.getState().provider.type;
+    keyring.network =
+      this.networkController.store.getState().providerConfig.type;
 
     return keyring;
   }
@@ -3156,95 +3188,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async newUnapprovedTransaction(txParams, req) {
     return await this.txController.newUnapprovedTransaction(txParams, req);
-  }
-
-  // eth_decrypt methods
-
-  /**
-   * Called when a dapp uses the eth_decrypt method.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @param {object} req - (optional) the original request, containing the origin
-   * Passed back to the requesting Dapp.
-   */
-  async newRequestDecryptMessage(msgParams, req) {
-    const promise = this.decryptMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * Only decrypt message and don't touch transaction state
-   *
-   * @param {object} msgParams - The params of the message to decrypt.
-   * @returns {Promise<object>} A full state update.
-   */
-  async decryptMessageInline(msgParams) {
-    log.info('MetaMaskController - decryptMessageInline');
-    // decrypt the message inline
-    const msgId = msgParams.metamaskId;
-    const msg = this.decryptMessageManager.getMsg(msgId);
-    try {
-      const stripped = stripHexPrefix(msgParams.data);
-      const buff = Buffer.from(stripped, 'hex');
-      msgParams.data = JSON.parse(buff.toString('utf8'));
-
-      msg.rawData = await this.keyringController.decryptMessage(msgParams);
-    } catch (e) {
-      msg.error = e.message;
-    }
-    this.decryptMessageManager._updateMsg(msg);
-
-    return this.getState();
-  }
-
-  /**
-   * Signifies a user's approval to decrypt a message in queue.
-   * Triggers decrypt, and the callback function from newUnsignedDecryptMessage.
-   *
-   * @param {object} msgParams - The params of the message to decrypt & return to the Dapp.
-   * @returns {Promise<object>} A full state update.
-   */
-  async decryptMessage(msgParams) {
-    log.info('MetaMaskController - decryptMessage');
-    const msgId = msgParams.metamaskId;
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for decryption
-    try {
-      const cleanMsgParams = await this.decryptMessageManager.approveMessage(
-        msgParams,
-      );
-
-      const stripped = stripHexPrefix(cleanMsgParams.data);
-      const buff = Buffer.from(stripped, 'hex');
-      cleanMsgParams.data = JSON.parse(buff.toString('utf8'));
-
-      // decrypt the message
-      const rawMess = await this.keyringController.decryptMessage(
-        cleanMsgParams,
-      );
-      // tells the listener that the message has been decrypted and can be returned to the dapp
-      this.decryptMessageManager.setMsgStatusDecrypted(msgId, rawMess);
-    } catch (error) {
-      log.info('MetaMaskController - eth_decrypt failed.', error);
-      this.decryptMessageManager.errorMessage(msgId, error);
-    }
-    return this.getState();
-  }
-
-  /**
-   * Used to cancel a eth_decrypt type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelDecryptMessage(msgId) {
-    const messageManager = this.decryptMessageManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
   }
 
   /**
@@ -3731,9 +3674,9 @@ export default class MetamaskController extends EventEmitter {
           ),
 
         getCurrentChainId: () =>
-          this.networkController.store.getState().provider.chainId,
+          this.networkController.store.getState().providerConfig.chainId,
         getCurrentRpcUrl: () =>
-          this.networkController.store.getState().provider.rpcUrl,
+          this.networkController.store.getState().providerConfig.rpcUrl,
         // network configuration-related
         getNetworkConfigurations: () =>
           this.networkController.store.getState().networkConfigurations,
@@ -4325,7 +4268,9 @@ export default class MetamaskController extends EventEmitter {
 
     if (transactionSecurityCheckEnabled) {
       const chainId = Number(
-        hexToDecimal(this.networkController.store.getState().provider.chainId),
+        hexToDecimal(
+          this.networkController.store.getState().providerConfig.chainId,
+        ),
       );
 
       try {

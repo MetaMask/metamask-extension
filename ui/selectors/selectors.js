@@ -67,6 +67,7 @@ import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
+  getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -100,27 +101,23 @@ export function isNetworkLoading(state) {
 }
 
 export function getNetworkIdentifier(state) {
-  const {
-    metamask: {
-      provider: { type, nickname, rpcUrl },
-    },
-  } = state;
+  const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
 }
 
-export function getMetricsNetworkIdentifier(state) {
-  const { provider } = state.metamask;
-  return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
-}
-
 export function getCurrentChainId(state) {
-  const { chainId } = state.metamask.provider;
+  const { chainId } = getProviderConfig(state);
   return chainId;
 }
 
+export function getMetaMetricsId(state) {
+  const { metaMetricsId } = state.metamask;
+  return metaMetricsId;
+}
+
 export function isCurrentProviderCustom(state) {
-  const provider = getProvider(state);
+  const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
     !Object.values(CHAIN_IDS).includes(provider.chainId)
@@ -233,7 +230,15 @@ export function getHardwareWalletType(state) {
 
 export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const type = currentKeyring && currentKeyring.type;
+  return getAccountTypeForKeyring(currentKeyring);
+}
+
+export function getAccountTypeForKeyring(keyring) {
+  if (!keyring) {
+    return '';
+  }
+
+  const { type } = keyring;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   if (type.startsWith('Custody')) {
@@ -245,6 +250,7 @@ export function getAccountType(state) {
     case KeyringType.trezor:
     case KeyringType.ledger:
     case KeyringType.lattice:
+    case KeyringType.qr:
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
@@ -300,10 +306,6 @@ export function getSelectedIdentity(state) {
   const { identities } = state.metamask;
 
   return identities[selectedAddress];
-}
-
-export function getNumberOfAccounts(state) {
-  return Object.keys(state.metamask.accounts).length;
 }
 
 export function getNumberOfTokens(state) {
@@ -497,14 +499,9 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { unapprovedDecryptMsgCount = 0, pendingApprovalCount = 0 } =
-    state.metamask;
+  const { pendingApprovalCount = 0 } = state.metamask;
 
-  return (
-    unapprovedDecryptMsgCount +
-    pendingApprovalCount +
-    getSuggestedAssetCount(state)
-  );
+  return pendingApprovalCount + getSuggestedAssetCount(state);
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -648,8 +645,8 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
-  return rpcPrefs;
+  const { rpcPrefs } = getProviderConfig(state);
+  return rpcPrefs || {};
 }
 
 export function getKnownMethodData(state, data) {
@@ -1141,10 +1138,6 @@ export function getNewNetworkAdded(state) {
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
-}
-
-export function getProvider(state) {
-  return state.metamask.provider;
 }
 
 export function getNetworkConfigurations(state) {

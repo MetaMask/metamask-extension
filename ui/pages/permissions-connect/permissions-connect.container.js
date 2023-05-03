@@ -9,8 +9,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getSnapInstallOrUpdateRequests,
   getRequestState,
-  getRequestType,
   ///: END:ONLY_INCLUDE_IN
+  getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -57,9 +57,6 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  // TODO(hmalik88) write some logic to figure out if there are multiple
-  // snaps permissions requests
-
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.eth_accounts,
   );
@@ -76,13 +73,12 @@ const mapStateToProps = (state, ownProps) => {
     subjectType: SubjectType.Unknown,
   };
 
+  const requestType = getRequestType(state, permissionsRequestId);
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
 
-  const requestType = getRequestType(state, permissionsRequestId);
-
-  // change request type to some new routes e.g. wallet_multi_installSnap
-  // render in the permissions connect screen the new screen for multi install, update and install snaps result
+  // change request type to some new routes for multiple snaps e.g. wallet_multi_installSnap
 
   const requestState = getRequestState(state, permissionsRequestId);
   ///: END:ONLY_INCLUDE_IN
@@ -132,8 +128,8 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     isRequestingAccounts,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     requestType,
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     snapInstallPath,
     snapUpdatePath,
     snapResultPath,

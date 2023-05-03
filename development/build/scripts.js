@@ -27,6 +27,7 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
+const moduleResolver = require('babel-plugin-module-resolver');
 
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -125,7 +126,7 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
     return variables.get('INFURA_PROJECT_ID');
   }
   /** @type {string|undefined} */
-  const infuraKeyReference = process.env.INFURA_ENV_KEY_REF;
+  const infuraKeyReference = variables.get('INFURA_ENV_KEY_REF');
   assert(
     typeof infuraKeyReference === 'string' && infuraKeyReference.length > 0,
     `Build type "${buildType}" has improperly set INFURA_ENV_KEY_REF in builds.yml. Current value: "${infuraKeyReference}"`,
@@ -154,7 +155,7 @@ function getSegmentWriteKey({ buildType, variables, environment }) {
     return variables.get('SEGMENT_WRITE_KEY');
   }
 
-  const segmentKeyReference = process.env.SEGMENT_WRITE_KEY_REF;
+  const segmentKeyReference = variables.get('SEGMENT_WRITE_KEY_REF');
   assert(
     typeof segmentKeyReference === 'string' && segmentKeyReference.length > 0,
     `Build type "${buildType}" has improperly set SEGMENT_WRITE_KEY_REF in builds.yml. Current value: "${segmentKeyReference}"`,
@@ -922,6 +923,9 @@ function setupBundlerDefaults(
   const { bundlerOpts } = buildConfiguration;
   const extensions = ['.js', '.ts', '.tsx'];
 
+  const isSnapsFlask =
+    features.active.has('snaps') && features.active.has('build-flask');
+
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
@@ -931,7 +935,25 @@ function setupBundlerDefaults(
       [
         babelify,
         // Run TypeScript files through Babel
-        { extensions },
+        {
+          extensions,
+          plugins: isSnapsFlask
+            ? [
+                [
+                  moduleResolver,
+                  {
+                    alias: {
+                      '@metamask/snaps-controllers':
+                        '@metamask/snaps-controllers-flask',
+                      '@metamask/snaps-ui': '@metamask/snaps-ui-flask',
+                      '@metamask/snaps-utils': '@metamask/snaps-utils-flask',
+                      '@metamask/rpc-methods': '@metamask/rpc-methods-flask',
+                    },
+                  },
+                ],
+              ]
+            : [],
+        },
       ],
       // Inline `fs.readFileSync` files
       brfs,

@@ -51,7 +51,6 @@ const DetectedTokenIgnoredPopover = ({
       <Text
         variant={TextVariant.bodySm}
         as="h6"
-        tag={TextVariant.bodySm}
         marginTop={0}
         marginRight={5}
         marginBottom={7}
