@@ -751,31 +751,21 @@ export default class Home extends PureComponent {
         <div className="home__container">
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null
-            ///: END:ONLY_INCLUDE_IN
           }
+          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
+          {!showWhatsNew && showRecoveryPhraseReminder ? (
+            <RecoveryPhraseReminder
+              hasBackedUp={seedPhraseBackedUp}
+              onConfirm={this.onRecoveryPhraseReminderClose}
+            />
+          ) : null}
+          {showTermsOfUse ? (
+            <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
+          ) : null}
+          {isPopup && !connectedStatusPopoverHasBeenShown
+            ? this.renderPopover()
+            : null}
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            !showWhatsNew && showRecoveryPhraseReminder ? (
-              <RecoveryPhraseReminder
-                hasBackedUp={seedPhraseBackedUp}
-                onConfirm={this.onRecoveryPhraseReminderClose}
-              />
-            ) : null
-            ///: END:ONLY_INCLUDE_IN
-          }
-          {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            showTermsOfUse ? (
-              <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
-            ) : null
-            ///: END:ONLY_INCLUDE_IN
-          }
-          {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            isPopup && !connectedStatusPopoverHasBeenShown
-              ? this.renderPopover()
-              : null
             ///: END:ONLY_INCLUDE_IN
           }
           <div className="home__main-view">
