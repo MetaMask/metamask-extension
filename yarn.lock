@@ -24179,7 +24179,7 @@ __metadata:
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^2.0.0
     "@metamask/obs-store": ^8.1.0
-    "@metamask/permission-controller": ^3.1.0
+    "@metamask/permission-controller": ^3.2.0
     "@metamask/phishing-controller": ^3.0.0
     "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0

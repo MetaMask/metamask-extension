@@ -755,6 +755,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `SnapController:getPermitted`,
           `SnapController:install`,
+          `SubjectMetadataController:getSubjectMetadata`,
         ],
       }),
       state: initState.PermissionController,
