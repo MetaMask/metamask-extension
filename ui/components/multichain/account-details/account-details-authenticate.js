@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   DISPLAY,
+  FontWeight,
   SEVERITIES,
   TextColor,
   TextVariant,
@@ -56,9 +57,8 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         value={password}
         variant={TextVariant.bodySm}
         type="password"
-        inputProps={{
-          onKeyPress: handleKeyPress,
-        }}
+        inputProps={{ onKeyPress: handleKeyPress }}
+        labelProps={{ fontWeight: FontWeight.Medium }}
       />
       {warning ? (
         <Text
