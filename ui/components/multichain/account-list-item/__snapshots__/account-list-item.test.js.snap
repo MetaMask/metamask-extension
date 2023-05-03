@@ -58,10 +58,10 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between"
         >
           <div
-            class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+            class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
             <button
-              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
+              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
             >
               <span
                 class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
@@ -71,29 +71,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             </button>
           </div>
           <div
-            class="box box--display-flex box--flex-direction-row box--align-items-center"
+            class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
           >
             <div
-              class="box mm-text mm-text--body-md mm-text--text-align-end box--flex-direction-row box--color-text-default"
+              class="currency-display-component"
+              title="0.006 ETH"
             >
-              <div
-                class="currency-display-component"
-                title="0.006 ETH"
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
               >
-                <span
-                  class="currency-display-component__prefix"
-                />
-                <span
-                  class="currency-display-component__text"
-                >
-                  0.006
-                </span>
-                <span
-                  class="currency-display-component__suffix"
-                >
-                  ETH
-                </span>
-              </div>
+                0.006
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
             </div>
           </div>
         </div>

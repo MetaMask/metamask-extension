@@ -11,10 +11,18 @@
   }
 
   &__account-name {
-    &:hover,
-    &:focus {
-      opacity: 1;
+    min-width: 40%;
+
+    &__button {
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
     }
+  }
+
+  &____asset {
+    max-width: 60%;
   }
 
   &__selected-indicator {
@@ -30,11 +38,13 @@
     flex: 1;
   }
 
-  .currency-display-component {
-    flex-wrap: nowrap;
+  &__tooltip {
+    display: inline;
   }
 
-  &__tooltip {
+  .currency-display-component {
+    text-overflow: ellipsis;
+    overflow: hidden;
     display: inline;
   }
 }

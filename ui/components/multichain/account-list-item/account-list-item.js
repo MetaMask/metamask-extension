@@ -134,13 +134,17 @@ export const AccountListItem = ({
             justifyContent={JustifyContent.spaceBetween}
             gap={2}
           >
-            <Text ellipsis as="div">
+            <Text
+              ellipsis
+              as="div"
+              className="multichain-account-list-item__account-name"
+            >
               <ButtonLink
                 onClick={(e) => {
                   e.stopPropagation();
                   onClick();
                 }}
-                className="multichain-account-list-item__account-name"
+                className="multichain-account-list-item__account-name__button"
                 color={Color.textDefault}
                 ellipsis
               >
@@ -157,10 +161,14 @@ export const AccountListItem = ({
                 )}
               </ButtonLink>
             </Text>
-            <Box
+            <Text
+              as="div"
+              className="multichain-account-list-item__asset"
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
               alignItems={AlignItems.center}
+              ellipsis
+              textAlign={TextAlign.End}
             >
               {connectedAvatar ? (
                 <AvatarFavicon
@@ -170,14 +178,12 @@ export const AccountListItem = ({
                   marginInlineEnd={2}
                 />
               ) : null}
-              <Text textAlign={TextAlign.End} as="div">
-                <UserPreferencedCurrencyDisplay
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={identity.balance}
-                  type={SECONDARY}
-                />
-              </Text>
-            </Box>
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={identity.balance}
+                type={SECONDARY}
+              />
+            </Text>
           </Box>
         </Box>
         <Box
