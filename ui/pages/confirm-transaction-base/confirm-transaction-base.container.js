@@ -52,6 +52,7 @@ import {
   getIsGasEstimatesLoading,
   getNativeCurrency,
   getSendToAccounts,
+  getProviderConfig,
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -129,8 +130,8 @@ const mapStateToProps = (state, ownProps) => {
     networkId,
     unapprovedTxs,
     nextNonce,
-    provider: { chainId },
   } = metamask;
+  const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || Number(paramsTransactionId);
