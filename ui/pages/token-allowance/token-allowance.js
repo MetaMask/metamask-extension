@@ -352,7 +352,7 @@ export default function TokenAllowance({
             variant={TextVariant.bodySm}
             as="h6"
             color={TextColor.textAlternative}
-            boxProps={{ marginLeft: 1, marginTop: 2 }}
+            marginLeft={1}
           >
             {origin}
           </Text>
