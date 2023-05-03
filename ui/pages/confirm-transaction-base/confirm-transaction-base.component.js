@@ -31,7 +31,7 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceRow from '../swaps/mmi/compliance-row';
+import ComplianceRow from '../../components/institutional/compliance-row';
 import NoteToTrader from '../../components/institutional/note-to-trader/note-to-trader';
 ///: END:ONLY_INCLUDE_IN
 import {

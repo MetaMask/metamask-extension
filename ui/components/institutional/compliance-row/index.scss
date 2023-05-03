@@ -1,0 +1,89 @@
+.compliance-row {
+  border: 1px solid lightgray;
+  transition: 0.3s all ease-in-out;
+
+  @keyframes load {
+    from {
+      left: -250px;
+    }
+
+    to {
+      left: 100%;
+    }
+  }
+
+  &__loading {
+    position: relative;
+    overflow: hidden;
+    height: 35px;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: -250px;
+      top: 0;
+      height: 100%;
+      width: 250px;
+      background: linear-gradient(to right, transparent 0%, #e8e8e8 50%, transparent 100%);
+      animation: load 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &__column {
+    &-risk {
+      background: lightgray;
+      border-radius: 5px;
+      margin-right: 10px;
+      padding: 3px 5px;
+      color: white;
+      font-size: 0.7em;
+      line-height: 20px;
+      max-width: 120px;
+      text-align: center;
+
+      &--green {
+        background: #08cd9f;
+      }
+
+      &--yellow {
+        background: #eabe38;
+      }
+
+      &--orange {
+        background: #e4802d;
+      }
+
+      &--red {
+        background: #e10000;
+      }
+    }
+
+    &-report {
+      height: 26px;
+      width: 26px;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-right: 10px;
+
+      &--invalid {
+        background-image: url("./build-types/mmi/images/close-red-solid.svg");
+        width: 20px;
+      }
+
+      &--valid {
+        background-image: url("./build-types/mmi/images/check-green-solid.svg");
+      }
+    }
+  }
+
+  .info-tooltip {
+    display: flex;
+    align-items: center;
+  }
+}
