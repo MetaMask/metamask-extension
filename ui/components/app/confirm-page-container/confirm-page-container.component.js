@@ -99,6 +99,7 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    displayAccountBalanceHeader,
   } = props;
 
   const t = useI18nContext();
@@ -169,9 +170,7 @@ const ConfirmPageContainer = (props) => {
     <GasFeeContextProvider transaction={currentTransaction}>
       <div className="page-container" data-testid="page-container">
         <ConfirmPageContainerNavigation />
-        {assetStandard === TokenStandard.ERC20 ||
-        assetStandard === TokenStandard.ERC721 ||
-        assetStandard === TokenStandard.ERC1155 ? (
+        {displayAccountBalanceHeader ? (
           <NetworkAccountBalanceHeader
             accountName={fromName}
             accountBalance={accountBalance}
@@ -398,6 +397,7 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  displayAccountBalanceHeader: PropTypes.bool,
 };
 
 export default ConfirmPageContainer;
