@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
@@ -30,6 +30,7 @@ import {
 } from '../../component-library';
 
 import {
+  getCurrentChainId,
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
@@ -60,6 +61,7 @@ export const AppHeader = ({ onClick }) => {
   const history = useHistory();
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
+  const chainId = useSelector(getCurrentChainId);
 
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
@@ -71,7 +73,7 @@ export const AppHeader = ({ onClick }) => {
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
 
-  // used to get the environment and connection status
+  // Used to get the environment and connection status
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -82,6 +84,19 @@ export const AppHeader = ({ onClick }) => {
   const productTourDirection = document
     .querySelector('[dir]')
     ?.getAttribute('dir');
+
+  // Callback for network dropdown
+  const networkOpenCallback = useCallback(() => {
+    dispatch(toggleNetworkMenu());
+    trackEvent({
+      event: MetaMetricsEventName.NavNetworkMenuOpened,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'App header',
+        chain_id: chainId,
+      },
+    });
+  }, [chainId, dispatch, trackEvent]);
 
   return (
     <>
@@ -135,20 +150,21 @@ export const AppHeader = ({ onClick }) => {
                 className="multichain-app-header__contents--avatar-network"
                 ref={menuRef}
                 as="button"
-                aria-label="Network Menu" // TODO: needs locale
+                aria-label={t('networkMenu')}
                 padding={0}
                 name={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 size={Size.SM}
-                onClick={() => dispatch(toggleNetworkMenu())}
+                onClick={networkOpenCallback}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
               />
               <PickerNetwork
                 margin={2}
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={() => dispatch(toggleNetworkMenu())}
+                onClick={networkOpenCallback}
                 display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+                className="multichain-app-header__contents__network-picker"
               />
               {showProductTour &&
               popupStatus &&
@@ -171,7 +187,17 @@ export const AppHeader = ({ onClick }) => {
               <AccountPicker
                 address={identity.address}
                 name={identity.name}
-                onClick={() => dispatch(toggleAccountMenu())}
+                onClick={() => {
+                  dispatch(toggleAccountMenu());
+
+                  trackEvent({
+                    event: MetaMetricsEventName.NavAccountMenuOpened,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                    },
+                  });
+                }}
               />
               <Box
                 display={DISPLAY.FLEX}
@@ -181,7 +207,13 @@ export const AppHeader = ({ onClick }) => {
                 {showStatus ? (
                   <Box ref={menuRef}>
                     <ConnectedStatusIndicator
-                      onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
+                      onClick={() => {
+                        history.push(CONNECTED_ACCOUNTS_ROUTE);
+                        trackEvent({
+                          event: MetaMetricsEventName.NavConnectedSitesOpened,
+                          category: MetaMetricsEventCategory.Navigation,
+                        });
+                      }}
                     />
                   </Box>
                 ) : null}{' '}
@@ -278,6 +310,7 @@ export const AppHeader = ({ onClick }) => {
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={() => dispatch(toggleNetworkMenu())}
+                className="multichain-app-header__contents__network-picker"
               />
               <MetafoxLogo
                 unsetIconHeight

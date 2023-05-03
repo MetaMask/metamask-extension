@@ -14,7 +14,7 @@ describe('App Header', () => {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
-        provider: {
+        providerConfig: {
           chainId: CHAIN_IDS.GOERLI,
         },
         accounts: {

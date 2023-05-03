@@ -149,6 +149,22 @@ export enum IconName {
   WalletMoney = 'wallet-money',
   Wallet = 'wallet',
   Warning = 'warning',
+  Twitter = 'twitter',
+  QrCode = 'qr-code',
+  UserCheck = 'user-check',
+  Ban = 'ban',
+  Bold = 'bold',
+  CircleX = 'circle-x',
+  Download = 'download',
+  File = 'file',
+  Flask = 'flask',
+  Plug = 'plug',
+  Share = 'share',
+  Square = 'square',
+  Tint = 'tint',
+  Upload = 'upload',
+  Usb = 'usb',
+  Wifi = 'wifi',
 }
 
 export interface IconProps extends BoxProps {

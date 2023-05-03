@@ -43,7 +43,7 @@ describe('MetaMask Reducers', () => {
         useCurrencyRateCheck: true,
         networkId: '5',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           type: 'testnet',
           chainId: '0x5',
           ticker: 'TestETH',

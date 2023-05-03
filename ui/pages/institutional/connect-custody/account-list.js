@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../../components/ui/button';
-import CustodyLabels from '../../../../components/institutional/custody-labels';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { shortenAddress } from '../../../../helpers/utils/util';
-import Tooltip from '../../../../components/ui/tooltip';
+import Button from '../../../components/ui/button';
+import CustodyLabels from '../../../components/institutional/custody-labels';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { shortenAddress } from '../../../helpers/utils/util';
+import Tooltip from '../../../components/ui/tooltip';
 import {
   TextVariant,
   JustifyContent,
   BLOCK_SIZES,
   DISPLAY,
   IconColor,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Box from '../../../../components/ui/box';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import Box from '../../../components/ui/box';
 import {
   Text,
   Label,
@@ -22,8 +22,8 @@ import {
   IconName,
   IconSize,
   ButtonLink,
-} from '../../../../components/component-library';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+} from '../../../components/component-library';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const getButtonLinkHref = (account) => {
   const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
@@ -34,7 +34,7 @@ export default function CustodyAccountList({
   rawList,
   accounts,
   onAccountChange,
-  selectedAccounts,
+  selectedAccounts = {},
   onCancel,
   onAddAccounts,
   custody,
@@ -94,7 +94,6 @@ export default function CustodyAccountList({
               >
                 <Label
                   display={DISPLAY.FLEX}
-                  justifyContent={JustifyContent.center}
                   marginTop={2}
                   marginLeft={2}
                   htmlFor={`address-${idx}`}
@@ -114,6 +113,7 @@ export default function CustodyAccountList({
                   display={DISPLAY.FLEX}
                   size={TextVariant.bodySm}
                   marginTop={2}
+                  marginLeft={2}
                   marginRight={3}
                   htmlFor={`address-${idx}`}
                 >

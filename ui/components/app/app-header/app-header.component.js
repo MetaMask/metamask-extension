@@ -37,6 +37,9 @@ export default class AppHeader extends PureComponent {
     showBetaHeader: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    custodianIcon: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -132,6 +135,10 @@ export default class AppHeader extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       desktopEnabled,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      custodianIcon,
+      isUnlocked,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     return (
@@ -152,6 +159,10 @@ export default class AppHeader extends PureComponent {
                 }
                 history.push(DEFAULT_ROUTE);
               }}
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              custodyImgSrc={custodianIcon}
+              isUnlocked={isUnlocked}
+              ///: END:ONLY_INCLUDE_IN
             />
             {
               ///: BEGIN:ONLY_INCLUDE_IN(desktop)
