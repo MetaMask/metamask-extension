@@ -68,16 +68,6 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
-    .forPost('https://sentry.io/api/0000000/envelope/')
-    .withQuery({ sentry_key: 'fake', sentry_version: '7' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {},
-      };
-    });
-
-  await server
     .forPost('https://sentry.io/api/0000000/store/')
     .thenCallback(() => {
       return {
