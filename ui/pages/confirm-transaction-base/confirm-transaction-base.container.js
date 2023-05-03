@@ -56,7 +56,9 @@ import {
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getEnvironmentType,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../app/scripts/lib/util';
 
 import {
