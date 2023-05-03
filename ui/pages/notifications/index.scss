@@ -78,7 +78,7 @@
     flex-direction: row;
     align-items: center;
     border-bottom: 1px solid var(--color-border-muted);
-    padding: 16px;
+    padding: 16px 32px 16px 16px;
     cursor: pointer;
 
     &:hover {
@@ -96,6 +96,7 @@
     }
 
     .unread {
+      flex-shrink: 0;
       background-color: var(--color-primary-default);
     }
 
@@ -103,6 +104,10 @@
       display: flex;
       flex-direction: column;
       margin-left: 12px;
+
+      &__message {
+        overflow-wrap: anywhere;
+      }
 
       &__infos {
         color: var(--color-text-muted);
