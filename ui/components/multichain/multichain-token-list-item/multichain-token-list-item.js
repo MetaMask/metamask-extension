@@ -51,6 +51,7 @@ export const MultichainTokenListItem = ({
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
       gap={4}
+      marginTop={className === 'native-token' ? 2 : 'auto'} // spacing is needed only between tab header and native token list item
       data-testid="multichain-token-list-item"
     >
       <Box
