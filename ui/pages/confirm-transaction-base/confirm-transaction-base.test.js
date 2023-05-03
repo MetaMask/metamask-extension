@@ -192,7 +192,7 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
-    mockedStore.metamask.provider.chainId = CHAIN_IDS.OPTIMISM;
+    mockedStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
     mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
     const store = configureMockStore(middleware)(mockedStore);
     const { queryByText } = renderWithProvider(
