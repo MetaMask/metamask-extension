@@ -196,7 +196,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
 
   if (
     openConnections === 0 ||
-    (detectedProcessName === 'background' && openConnections < 1)
+    (detectedProcessName === 'background' && openConnections < 2)
     // 2 background connections are allowed, one for phishing warning page and one for the ledger bridge keyring
   ) {
     // This is set in `setupController`, which is called as part of initialization
