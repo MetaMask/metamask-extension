@@ -150,7 +150,7 @@ export const AppHeader = ({ onClick }) => {
                 className="multichain-app-header__contents--avatar-network"
                 ref={menuRef}
                 as="button"
-                aria-label="Network Menu" // TODO: needs locale
+                aria-label={t('networkMenu')}
                 padding={0}
                 name={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
@@ -164,6 +164,7 @@ export const AppHeader = ({ onClick }) => {
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={networkOpenCallback}
                 display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+                className="multichain-app-header__contents__network-picker"
               />
               {showProductTour &&
               popupStatus &&
@@ -309,6 +310,7 @@ export const AppHeader = ({ onClick }) => {
                 label={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 onClick={() => dispatch(toggleNetworkMenu())}
+                className="multichain-app-header__contents__network-picker"
               />
               <MetafoxLogo
                 unsetIconHeight

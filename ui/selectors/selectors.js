@@ -67,6 +67,7 @@ import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
+  getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -100,22 +101,18 @@ export function isNetworkLoading(state) {
 }
 
 export function getNetworkIdentifier(state) {
-  const {
-    metamask: {
-      provider: { type, nickname, rpcUrl },
-    },
-  } = state;
+  const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
 }
 
 export function getMetricsNetworkIdentifier(state) {
-  const { provider } = state.metamask;
+  const provider = getProviderConfig(state);
   return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
 }
 
 export function getCurrentChainId(state) {
-  const { chainId } = state.metamask.provider;
+  const { chainId } = getProviderConfig(state);
   return chainId;
 }
 
@@ -125,7 +122,7 @@ export function getMetaMetricsId(state) {
 }
 
 export function isCurrentProviderCustom(state) {
-  const provider = getProvider(state);
+  const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
     !Object.values(CHAIN_IDS).includes(provider.chainId)
@@ -657,8 +654,8 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
-  return rpcPrefs;
+  const { rpcPrefs } = getProviderConfig(state);
+  return rpcPrefs || {};
 }
 
 export function getKnownMethodData(state, data) {
@@ -1150,10 +1147,6 @@ export function getNewNetworkAdded(state) {
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
-}
-
-export function getProvider(state) {
-  return state.metamask.provider;
 }
 
 export function getNetworkConfigurations(state) {
