@@ -179,7 +179,7 @@ export default function ComplianceRow({ address, rowClick, inProgress }) {
             marginRight={2}
             variant={TextVariant.bodyXs}
           >
-            {t('n/a')}
+            {t('na')}
           </Text>
         )}
         <InfoTooltip
