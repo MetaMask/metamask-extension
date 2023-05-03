@@ -483,6 +483,7 @@ export enum MetaMetricsEventName {
   AccountAddFailed = 'Account Add Failed',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
+  AccountRenamed = 'Account Renamed',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
