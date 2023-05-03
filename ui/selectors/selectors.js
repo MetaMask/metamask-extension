@@ -1279,8 +1279,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
   }
 };
 /**
- * To check if teh chainId supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ * To check if the chainId supports token detection,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1292,6 +1292,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
+    CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
 
@@ -1334,7 +1335,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
