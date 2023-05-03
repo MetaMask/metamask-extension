@@ -98,7 +98,7 @@ const mockedNetworks = [
 // test helpers
 const storeWithChainId = (chainId: string) => ({
   metamask: {
-    provider: {
+    providerConfig: {
       chainId,
     },
   },
