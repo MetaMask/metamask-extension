@@ -1,5 +1,5 @@
 .compliance-row {
-  border: 1px solid lightgray;
+  border: 1px solid var(--color-border-muted);
   transition: 0.3s all ease-in-out;
 
   @keyframes load {
@@ -25,7 +25,7 @@
       top: 0;
       height: 100%;
       width: 250px;
-      background: linear-gradient(to right, transparent 0%, #e8e8e8 50%, transparent 100%);
+      background: linear-gradient(to right, transparent 0%, var(--color-background-default-hover) 50%, transparent 100%);
       animation: load 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
   }
@@ -37,18 +37,18 @@
 
   &__column {
     &-risk {
-      background: lightgray;
+      background: var(--color-background-alternative-pressed);
       border-radius: 5px;
       margin-right: 10px;
       padding: 3px 5px;
-      color: white;
+      color: var(--color-background-default);
       font-size: 0.7em;
       line-height: 20px;
       max-width: 120px;
       text-align: center;
 
       &--green {
-        background: #08cd9f;
+        background: var(--color-success-default);
       }
 
       &--yellow {
@@ -56,11 +56,11 @@
       }
 
       &--orange {
-        background: #e4802d;
+        background: var(--color-warning-default);
       }
 
       &--red {
-        background: #e10000;
+        background: var(--color-error-default);
       }
     }
 

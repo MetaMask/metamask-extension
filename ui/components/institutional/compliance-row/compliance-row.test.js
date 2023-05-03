@@ -11,7 +11,7 @@ import ComplianceRow from '.';
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
   return {
-    address: '0xAddress',
+    address: '0xaddress',
     rowClick: sinon.spy(),
     inProgress: false,
     ...customProps,
@@ -26,24 +26,23 @@ describe('ComplianceRow', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)({
       metamask: {
-        institutionalFeatures: {},
-      },
-      institutionalFeatures: {
-        historicalReports: {
-          '0xAddress': [
-            {
-              reportId: 'reportId',
-              address: '0xAddress',
-              risk: 'low',
-              createTime: new Date(),
-            },
-            {
-              reportId: 'reportId2',
-              address: '0xAddress',
-              risk: 'low',
-              createTime: new Date(),
-            },
-          ],
+        institutionalFeatures: {
+          historicalReports: {
+            '0xaddress': [
+              {
+                reportId: 'reportId',
+                address: '0xaddress',
+                risk: 'low',
+                createTime: new Date(),
+              },
+              {
+                reportId: 'reportId2',
+                address: '0xaddress',
+                risk: 'low',
+                createTime: new Date(),
+              },
+            ],
+          },
         },
       },
     });
@@ -58,10 +57,7 @@ describe('ComplianceRow', () => {
   it('renders the component with loading bar', () => {
     const store = configureMockStore(middleware)({
       metamask: {
-        institutionalFeatures: {},
-      },
-      institutionalFeatures: {
-        historicalReports: {},
+        institutionalFeatures: { historicalReports: {} },
       },
     });
     const props = {
@@ -78,18 +74,17 @@ describe('ComplianceRow', () => {
   it('renders the component with valid reportOlderThanEightHours', () => {
     const store = configureMockStore(middleware)({
       metamask: {
-        institutionalFeatures: {},
-      },
-      institutionalFeatures: {
-        historicalReports: {
-          '0xAddress': [
-            {
-              reportId: 'reportId',
-              address: '0xAddress',
-              risk: 'low',
-              createTime: new Date().setHours(new Date().getHours() - 7),
-            },
-          ],
+        institutionalFeatures: {
+          historicalReports: {
+            '0xaddress': [
+              {
+                reportId: 'reportId',
+                address: '0xaddress',
+                risk: 'low',
+                createTime: new Date().setHours(new Date().getHours() - 7),
+              },
+            ],
+          },
         },
       },
     });
@@ -106,18 +101,17 @@ describe('ComplianceRow', () => {
   it('renders the component with invalid reportOlderThanEightHours', () => {
     const store = configureMockStore(middleware)({
       metamask: {
-        institutionalFeatures: {},
-      },
-      institutionalFeatures: {
-        historicalReports: {
-          '0xAddress': [
-            {
-              reportId: 'reportId',
-              address: '0xAddress',
-              risk: 'low',
-              createTime: new Date().setHours(new Date().getHours() - 9),
-            },
-          ],
+        institutionalFeatures: {
+          historicalReports: {
+            '0xaddress': [
+              {
+                reportId: 'reportId',
+                address: '0xaddress',
+                risk: 'low',
+                createTime: new Date().setHours(new Date().getHours() - 9),
+              },
+            ],
+          },
         },
       },
     });

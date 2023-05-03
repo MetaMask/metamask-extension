@@ -33,6 +33,9 @@ export default function ComplianceRow({ address, rowClick, inProgress }) {
   let historicalReports = useSelector(
     getComplianceHistoricalReportsByAddress(address),
   );
+  const reportsInProgress = useSelector(
+    getComplianceReportsInProgressByAddress(address),
+  );
 
   if (historicalReports?.length) {
     lastReport = historicalReports.reduce((prev, cur) =>
@@ -43,9 +46,6 @@ export default function ComplianceRow({ address, rowClick, inProgress }) {
   } else {
     historicalReports = [];
   }
-  const reportsInProgress = useSelector(
-    getComplianceReportsInProgressByAddress(address),
-  );
 
   numberOfReportsInProgress = reportsInProgress ? reportsInProgress.length : 0;
 
