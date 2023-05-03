@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { handlers as permittedSnapMethods } from '@metamask/rpc-methods/dist/permitted';
+import { permittedMethods as permittedSnapMethods } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/rpc-methods/dist/utils';

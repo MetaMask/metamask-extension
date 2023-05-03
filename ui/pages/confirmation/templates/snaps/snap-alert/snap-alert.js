@@ -1,5 +1,5 @@
 import { mapToTemplate } from '../../../../../components/app/snaps/snap-ui-renderer';
-import { DelineatorType } from '../../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../../helpers/constants/snaps';
 
 function getValues(pendingApproval, t, actions) {
   const {
