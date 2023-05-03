@@ -57,6 +57,9 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
+  // TODO(hmalik88) write some logic to figure out if there are multiple
+  // snaps permissions requests
+
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.eth_accounts,
   );
@@ -77,6 +80,9 @@ const mapStateToProps = (state, ownProps) => {
   const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
 
   const requestType = getRequestType(state, permissionsRequestId);
+
+  // change request type to some new routes e.g. wallet_multi_installSnap
+  // render in the permissions connect screen the new screen for multi install, update and install snaps result
 
   const requestState = getRequestState(state, permissionsRequestId);
   ///: END:ONLY_INCLUDE_IN
@@ -150,6 +156,9 @@ const mapStateToProps = (state, ownProps) => {
     targetSubjectMetadata,
   };
 };
+
+// add a function that iterates through the given array of snaps approvals
+// and approves them i.e. approvePendingApprovals, rejectPendingApprovals.
 
 const mapDispatchToProps = (dispatch) => {
   return {
