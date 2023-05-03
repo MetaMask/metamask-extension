@@ -52,7 +52,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
 
   return (
     <TransactionDetailItem
-      key="gas-item"
+      key="gas-details-item"
       detailTitle={<GasDetailsItemTitle />}
       detailTitleColor={TextColor.textDefault}
       detailText={

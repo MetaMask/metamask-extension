@@ -4272,7 +4272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-methods@npm:^0.32.2":
+"@metamask/rpc-methods-flask@npm:@metamask/rpc-methods@0.32.2, @metamask/rpc-methods@npm:^0.32.2":
   version: 0.32.2
   resolution: "@metamask/rpc-methods@npm:0.32.2"
   dependencies:
@@ -4334,7 +4334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^0.32.2":
+"@metamask/snaps-controllers-flask@npm:@metamask/snaps-controllers@0.32.2, @metamask/snaps-controllers@npm:^0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-controllers@npm:0.32.2"
   dependencies:
@@ -4396,7 +4396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-ui@npm:^0.32.2":
+"@metamask/snaps-ui-flask@npm:@metamask/snaps-ui@0.32.2, @metamask/snaps-ui@npm:^0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-ui@npm:0.32.2"
   dependencies:
@@ -4406,7 +4406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^0.32.2":
+"@metamask/snaps-utils-flask@npm:@metamask/snaps-utils@0.32.2, @metamask/snaps-utils@npm:^0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-utils@npm:0.32.2"
   dependencies:
@@ -9938,6 +9938,19 @@ __metadata:
     cosmiconfig: ^7.0.0
     resolve: ^1.19.0
   checksum: 765de4abebd3e4688ebdfbff8571ddc8cd8061f839bb6c3e550b0344a4027b04c60491f843296ce3f3379fb356cc873d57a9ee6694262547eb822c14a25be9a6
+  languageName: node
+  linkType: hard
+
+"babel-plugin-module-resolver@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "babel-plugin-module-resolver@npm:5.0.0"
+  dependencies:
+    find-babel-config: ^2.0.0
+    glob: ^8.0.3
+    pkg-up: ^3.1.0
+    reselect: ^4.1.7
+    resolve: ^1.22.1
+  checksum: d6880e49fc8e7bac509a2c183b4303ee054a47a80032a59a6f7844bb468ebe5e333b5dc5378443afdab5839e2da2b31a6c8d9a985a0047cd076b82bb9161cc78
   languageName: node
   linkType: hard
 
@@ -16848,6 +16861,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"find-babel-config@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "find-babel-config@npm:2.0.0"
+  dependencies:
+    json5: ^2.1.1
+    path-exists: ^4.0.0
+  checksum: d110308b02fe6a6411a0cfb7fd50af6740fbf5093eada3d6ddacf99b07fc8eea4aa3475356484710a0032433029a21ce733bb3ef88fda1d6e35c29a3e4983014
+  languageName: node
+  linkType: hard
+
 "find-cache-dir@npm:^2.0.0, find-cache-dir@npm:^2.1.0":
   version: 2.1.0
   resolution: "find-cache-dir@npm:2.1.0"
@@ -17899,7 +17922,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.1, glob@npm:^8.1.0":
+"glob@npm:^8.0.1, glob@npm:^8.0.3, glob@npm:^8.1.0":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
   dependencies:
@@ -19788,12 +19811,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.4.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "is-core-module@npm:2.9.0"
+"is-core-module@npm:^2.12.0, is-core-module@npm:^2.4.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
+  version: 2.12.0
+  resolution: "is-core-module@npm:2.12.0"
   dependencies:
     has: ^1.0.3
-  checksum: b27034318b4b462f1c8f1dfb1b32baecd651d891a4e2d1922135daeff4141dfced2b82b07aef83ef54275c4a3526aa38da859223664d0868ca24182badb784ce
+  checksum: f7f7eb2ab71fd769ee9fb2385c095d503aa4b5ce0028c04557de03f1e67a87c85e5bac1f215945fc3c955867a139a415a3ec4c4234a0bffdf715232660f440a6
   languageName: node
   linkType: hard
 
@@ -22165,7 +22188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.2, json5@npm:^2.1.3, json5@npm:^2.2.2, json5@npm:^2.2.3":
+"json5@npm:^2.1.1, json5@npm:^2.1.2, json5@npm:^2.1.3, json5@npm:^2.2.2, json5@npm:^2.2.3":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
   bin:
@@ -23967,13 +23990,17 @@ __metadata:
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^2.0.0
     "@metamask/rpc-methods": ^0.32.2
+    "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.32.2"
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/scure-bip39": ^2.0.3
     "@metamask/slip44": ^3.0.0
     "@metamask/smart-transactions-controller": ^3.1.0
     "@metamask/snaps-controllers": ^0.32.2
+    "@metamask/snaps-controllers-flask": "npm:@metamask/snaps-controllers@0.32.2"
     "@metamask/snaps-ui": ^0.32.2
+    "@metamask/snaps-ui-flask": "npm:@metamask/snaps-ui@0.32.2"
     "@metamask/snaps-utils": ^0.32.2
+    "@metamask/snaps-utils-flask": "npm:@metamask/snaps-utils@0.32.2"
     "@metamask/subject-metadata-controller": ^2.0.0
     "@metamask/swappable-obj-proxy": ^2.1.0
     "@metamask/test-dapp": ^6.0.0
@@ -24041,6 +24068,7 @@ __metadata:
     "@zxing/library": 0.8.0
     addons-linter: ^5.2.0
     await-semaphore: ^0.1.1
+    babel-plugin-module-resolver: ^5.0.0
     babelify: ^10.0.0
     base32-encode: ^1.2.0
     base64-js: ^1.5.1
@@ -26984,6 +27012,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pkg-up@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "pkg-up@npm:3.1.0"
+  dependencies:
+    find-up: ^3.0.0
+  checksum: 5bac346b7c7c903613c057ae3ab722f320716199d753f4a7d053d38f2b5955460f3e6ab73b4762c62fd3e947f58e04f1343e92089e7bb6091c90877406fcd8c8
+  languageName: node
+  linkType: hard
+
 "playwright-core@npm:1.29.2, playwright-core@npm:>=1.2.0":
   version: 1.29.2
   resolution: "playwright-core@npm:1.29.2"
@@ -29555,10 +29592,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "reselect@npm:4.0.0"
-  checksum: ac7dfc9ef2cdb42b6fc87a856f3ce904c2e4363a2bc1e6fb7eea5f78902a6f506e4388e6509752984877c6dbfe501100c076671d334799eb5a1bfe9936cb2c12
+"reselect@npm:^4.0.0, reselect@npm:^4.1.7":
+  version: 4.1.8
+  resolution: "reselect@npm:4.1.8"
+  checksum: a4ac87cedab198769a29be92bc221c32da76cfdad6911eda67b4d3e7136dca86208c3b210e31632eae31ebd2cded18596f0dd230d3ccc9e978df22f233b5583e
   languageName: node
   linkType: hard
 
@@ -29674,16 +29711,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.12.0, resolve@npm:^1.14.2, resolve@npm:^1.15.1, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.3.2, resolve@npm:^1.4.0":
-  version: 1.22.1
-  resolution: "resolve@npm:1.22.1"
+"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.12.0, resolve@npm:^1.14.2, resolve@npm:^1.15.1, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.3.2, resolve@npm:^1.4.0":
+  version: 1.22.3
+  resolution: "resolve@npm:1.22.3"
   dependencies:
-    is-core-module: ^2.9.0
+    is-core-module: ^2.12.0
     path-parse: ^1.0.7
     supports-preserve-symlinks-flag: ^1.0.0
   bin:
     resolve: bin/resolve
-  checksum: 07af5fc1e81aa1d866cbc9e9460fbb67318a10fa3c4deadc35c3ad8a898ee9a71a86a65e4755ac3195e0ea0cfbe201eb323ebe655ce90526fd61917313a34e4e
+  checksum: fb834b81348428cb545ff1b828a72ea28feb5a97c026a1cf40aa1008352c72811ff4d4e71f2035273dc536dcfcae20c13604ba6283c612d70fa0b6e44519c374
   languageName: node
   linkType: hard
 
@@ -29707,16 +29744,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.4#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.5#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.11.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.15.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.21.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#~builtin<compat/resolve>":
-  version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
+? "resolve@patch:resolve@^1.1.4#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.5#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.11.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.15.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.21.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#~builtin<compat/resolve>"
+:
+  version: 1.22.3
+  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
   dependencies:
-    is-core-module: ^2.9.0
+    is-core-module: ^2.12.0
     path-parse: ^1.0.7
     supports-preserve-symlinks-flag: ^1.0.0
   bin:
     resolve: bin/resolve
-  checksum: 5656f4d0bedcf8eb52685c1abdf8fbe73a1603bb1160a24d716e27a57f6cecbe2432ff9c89c2bd57542c3a7b9d14b1882b73bfe2e9d7849c9a4c0b8b39f02b8b
+  checksum: ad59734723b596d0891321c951592ed9015a77ce84907f89c9d9307dd0c06e11a67906a3e628c4cae143d3e44898603478af0ddeb2bba3f229a9373efe342665
   languageName: node
   linkType: hard
 

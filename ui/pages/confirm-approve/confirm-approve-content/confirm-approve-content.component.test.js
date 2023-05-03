@@ -7,7 +7,7 @@ import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { provider: { chainId: '0x0' } },
+    metamask: { providerConfig: { chainId: '0x0' } },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };

@@ -18,7 +18,7 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import { Text } from '../../../component-library';
 import { Copyable } from '../copyable';
-import { DelineatorType } from '../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 export const UI_MAPPING = {
   panel: (props, elementKey) => ({
