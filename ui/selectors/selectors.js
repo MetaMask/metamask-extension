@@ -106,11 +106,6 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
-export function getMetricsNetworkIdentifier(state) {
-  const provider = getProviderConfig(state);
-  return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
-}
-
 export function getCurrentChainId(state) {
   const { chainId } = getProviderConfig(state);
   return chainId;
@@ -311,10 +306,6 @@ export function getSelectedIdentity(state) {
   const { identities } = state.metamask;
 
   return identities[selectedAddress];
-}
-
-export function getNumberOfAccounts(state) {
-  return Object.keys(state.metamask.accounts).length;
 }
 
 export function getNumberOfTokens(state) {
