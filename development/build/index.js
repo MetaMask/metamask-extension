@@ -125,6 +125,8 @@ async function defineAndRunBuildTasks() {
         'Uint8Array',
         'String',
         'Promise',
+        'JSON',
+        'Date',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
@@ -132,8 +134,6 @@ async function defineAndRunBuildTasks() {
         'stateHooks',
         'sentryHooks',
         'sentry',
-        'JSON',
-        'Date',
       ],
     });
   }
