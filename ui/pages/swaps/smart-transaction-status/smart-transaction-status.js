@@ -452,7 +452,7 @@ export default function SmartTransactionStatusPage() {
           <Text
             variant={TextVariant.bodySm}
             as="h6"
-            boxProps={{ ...(blockExplorerUrl && { margin: [1, 0, 0] }) }}
+            marginTop={1}
             color={TextColor.textAlternative}
           >
             {description}
