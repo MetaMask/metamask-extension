@@ -29,8 +29,12 @@
       width: $width-screen-lg-min;
     }
 
+    &__network-container {
+      max-width: 250px;
+    }
+
     &__network-picker {
-      max-width: 200px;
+      max-width: 100%;
     }
 
     &--avatar-network {
