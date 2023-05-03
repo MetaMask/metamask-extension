@@ -21,7 +21,7 @@ import {
 import {
   DelineatorType,
   getDelineatorTitle,
-} from '../../../../helpers/constants/flask';
+} from '../../../../helpers/constants/snaps';
 
 export const SnapDelineator = ({
   snapName,

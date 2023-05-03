@@ -27,6 +27,7 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
+const moduleResolver = require('babel-plugin-module-resolver');
 
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -922,6 +923,9 @@ function setupBundlerDefaults(
   const { bundlerOpts } = buildConfiguration;
   const extensions = ['.js', '.ts', '.tsx'];
 
+  const isSnapsFlask =
+    features.active.has('snaps') && features.active.has('build-flask');
+
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
@@ -931,7 +935,25 @@ function setupBundlerDefaults(
       [
         babelify,
         // Run TypeScript files through Babel
-        { extensions },
+        {
+          extensions,
+          plugins: isSnapsFlask
+            ? [
+                [
+                  moduleResolver,
+                  {
+                    alias: {
+                      '@metamask/snaps-controllers':
+                        '@metamask/snaps-controllers-flask',
+                      '@metamask/snaps-ui': '@metamask/snaps-ui-flask',
+                      '@metamask/snaps-utils': '@metamask/snaps-utils-flask',
+                      '@metamask/rpc-methods': '@metamask/rpc-methods-flask',
+                    },
+                  },
+                ],
+              ]
+            : [],
+        },
       ],
       // Inline `fs.readFileSync` files
       brfs,
