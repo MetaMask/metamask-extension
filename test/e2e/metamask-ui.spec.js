@@ -11,7 +11,6 @@ const {
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
-const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -45,12 +44,6 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();

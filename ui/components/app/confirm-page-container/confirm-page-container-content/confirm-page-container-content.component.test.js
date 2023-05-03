@@ -13,7 +13,7 @@ import ConfirmPageContainerContent from './confirm-page-container-content.compon
 describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: '0x5',
       },
