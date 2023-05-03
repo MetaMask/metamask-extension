@@ -9,6 +9,7 @@ import {
   DISPLAY,
   AlignItems,
   IconColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
@@ -36,7 +37,7 @@ const BetaHeader = () => {
         variant={TextVariant.bodySm}
         as="h6"
         className="beta-header__message"
-        color={Color.warningInverse}
+        color={TextColor.warningInverse}
       >
         {t('betaHeaderText', [
           <a
