@@ -6,7 +6,7 @@ import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 describe('CancelTransactionGasFee Component', () => {
   const mockState = {
     metamask: {
-      provider: {
+      providerConfig: {
         chainId: '0x4',
       },
       preferences: {
