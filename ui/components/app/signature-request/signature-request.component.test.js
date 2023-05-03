@@ -15,7 +15,7 @@ const baseProps = {
   showRejectTransactionsConfirmationModal: () => undefined,
   sign: () => undefined,
   history: { push: '/' },
-  provider: { type: 'rpc' },
+  providerConfig: { type: 'rpc' },
   nativeCurrency: 'ABC',
   currentCurrency: 'def',
   fromAccount: {

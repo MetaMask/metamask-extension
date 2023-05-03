@@ -63,7 +63,7 @@ export enum BackgroundColor {
   primaryAlternative = 'primary-alternative',
   primaryMuted = 'primary-muted',
   errorDefault = 'error-default',
-  errorAlternative = 'error-Alternative',
+  errorAlternative = 'error-alternative',
   errorMuted = 'error-muted',
   warningDefault = 'warning-default',
   warningAlternative = 'warning-alternative',

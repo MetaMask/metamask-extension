@@ -85,7 +85,7 @@ export default class SignatureRequest extends PureComponent {
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
     conversionRate: PropTypes.number,
-    provider: PropTypes.object,
+    providerConfig: PropTypes.object,
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
     clearConfirmTransaction: PropTypes.func.isRequired,
@@ -143,8 +143,8 @@ export default class SignatureRequest extends PureComponent {
   }
 
   getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
+    const { providerConfig } = this.props;
+    const providerName = providerConfig.type;
     const { t } = this.context;
 
     switch (providerName) {
@@ -159,7 +159,7 @@ export default class SignatureRequest extends PureComponent {
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
-        return provider.nickname || t('unknownNetwork');
+        return providerConfig.nickname || t('unknownNetwork');
     }
   }
 
