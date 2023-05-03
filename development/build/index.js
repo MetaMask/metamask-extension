@@ -134,8 +134,6 @@ async function defineAndRunBuildTasks() {
         'stateHooks',
         'sentryHooks',
         'sentry',
-        'JSON',
-        'Date',
       ],
     });
   }
