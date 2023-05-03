@@ -37,7 +37,7 @@ export default function Callout({
   return (
     <div className={calloutClassName}>
       <InfoIconInverted severity={severity} />
-      <Text color={Color.textDefault} className="callout__content">
+      <Text color={TextColor.textDefault} className="callout__content">
         {children}
       </Text>
       {dismiss && (
