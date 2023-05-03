@@ -1,5 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { getSelectedIdentity, getAccountType, getProvider } from '../selectors';
+import { getSelectedIdentity, getAccountType } from '../selectors';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;
@@ -49,7 +50,7 @@ export function getCustodianIconForAddress(state, address) {
 export function getIsCustodianSupportedChain(state) {
   const selectedIdentity = getSelectedIdentity(state);
   const accountType = getAccountType(state);
-  const provider = getProvider(state);
+  const providerConfig = getProviderConfig(state);
 
   const supportedChains =
     accountType === 'custody'
@@ -58,7 +59,7 @@ export function getIsCustodianSupportedChain(state) {
 
   return supportedChains?.supportedChains
     ? supportedChains.supportedChains.includes(
-        Number(provider.chainId).toString(),
+        Number(providerConfig.chainId).toString(),
       )
     : true;
 }
@@ -71,7 +72,7 @@ export function getMMIAddressFromModalOrAddress(state) {
 }
 
 export function getMMIConfiguration(state) {
-  return state.metamask.mmiConfiguration;
+  return state.metamask.mmiConfiguration || [];
 }
 
 export function getInteractiveReplacementToken(state) {

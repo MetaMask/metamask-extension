@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Remove JWT should render correctly 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__header"
+    >
+      <div
+        class="modal-container__header-text"
+      >
+        Remove custodian token?
+      </div>
+      <div
+        class="modal-container__header-close"
+        data-testid="modal-header-close"
+      />
+    </div>
+    <div
+      class="modal-container__content"
+    >
+      <div
+        class="box confirm-action-jwt__jwt box--padding-2 box--display-flex box--flex-direction-row box--rounded-sm"
+      >
+        ...Dce07538D
+      </div>
+      <p
+        class="box mm-text confirm-action-jwt__show-more mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-goerli"
+      >
+        <a
+          rel="noopener noreferrer"
+        >
+          Show more
+        </a>
+      </p>
+      <h6
+        class="box mm-text mm-text--body-sm mm-text--text-align-center box--margin-top-2 box--flex-direction-row box--color-text-default"
+      >
+        Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: 
+      </h6>
+      <div
+        class="box confirm-action-jwt__accounts-list box--flex-direction-row"
+      >
+        <div
+          class="box box--padding-top-4 box--padding-right-7 box--padding-bottom-7 box--padding-left-7 box--flex-direction-row"
+        >
+          <div
+            class="box custody-account-list box--display-flex box--flex-direction-column box--width-full"
+            data-testid="custody-account-list"
+          >
+            <div
+              class="box custody-account-list__item box--display-flex box--flex-direction-row"
+            >
+              <div
+                class="box box--display-flex box--flex-direction-row box--align-items-flex-start"
+                data-testid="custody-account-list-item-radio-button"
+              />
+              <div
+                class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
+              >
+                <label
+                  class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                  for="address-0"
+                >
+                  <span
+                    class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                  >
+                    Test name account
+                  </span>
+                </label>
+                <label
+                  class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-right-3 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                  for="address-0"
+                >
+                  <span
+                    class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                  >
+                    <a
+                      class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                      href="https://etherscan.io/address/0xaD6D458402F60fD3Bd25163575031ACDce07538D"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <span
+                        class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
+                      >
+                        0xaD6...538D
+                        <span
+                          class="box mm-icon mm-icon--size-md box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+                          style="mask-image: url('./images/icons/undefined.svg');"
+                        />
+                      </span>
+                    </a>
+                    <div>
+                      <div
+                        aria-describedby="tippy-tooltip-1"
+                        class=""
+                        data-original-title="Copy to clipboard"
+                        data-tooltipped=""
+                        style="display: inline; background-color: transparent;"
+                        tabindex="0"
+                      >
+                        <button
+                          class="custody-account-list__item__clipboard"
+                        >
+                          <span
+                            class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-muted"
+                            style="mask-image: url('./images/icons/undefined.svg');"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </span>
+                </label>
+                <div
+                  class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
+                >
+                  <label
+                    class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                    for="address-0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        Nevermind
+      </button>
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+`;
