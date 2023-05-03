@@ -46,7 +46,7 @@ const DetectedTokenValues = ({
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-values">
       <Box marginBottom={1}>
-        <Text variant={TextVariant.headingSm} as="h4">
+        <Text variant={TextVariant.bodyLgMedium} as="h4">
           {`${balanceString || '0'} ${token.symbol}`}
         </Text>
         <Text
