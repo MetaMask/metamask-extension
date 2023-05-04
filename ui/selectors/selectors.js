@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -7,7 +7,7 @@ import {
   defaultMemoize,
 } from 'reselect';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   memoize,
   ///: END:ONLY_INCLUDE_IN
   isEqual,
@@ -46,12 +46,19 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_TOKEN_ADDRESSES,
+} from '../../shared/constants/bridge';
 
 import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  removeSnapIdPrefix,
+  getSnapName,
+  ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
@@ -60,6 +67,7 @@ import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getNativeCurrency,
+  getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -77,7 +85,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -93,27 +101,23 @@ export function isNetworkLoading(state) {
 }
 
 export function getNetworkIdentifier(state) {
-  const {
-    metamask: {
-      provider: { type, nickname, rpcUrl },
-    },
-  } = state;
+  const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
 }
 
-export function getMetricsNetworkIdentifier(state) {
-  const { provider } = state.metamask;
-  return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
-}
-
 export function getCurrentChainId(state) {
-  const { chainId } = state.metamask.provider;
+  const { chainId } = getProviderConfig(state);
   return chainId;
 }
 
+export function getMetaMetricsId(state) {
+  const { metaMetricsId } = state.metamask;
+  return metaMetricsId;
+}
+
 export function isCurrentProviderCustom(state) {
-  const provider = getProvider(state);
+  const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
     !Object.values(CHAIN_IDS).includes(provider.chainId)
@@ -226,9 +230,17 @@ export function getHardwareWalletType(state) {
 
 export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const type = currentKeyring && currentKeyring.type;
+  return getAccountTypeForKeyring(currentKeyring);
+}
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+export function getAccountTypeForKeyring(keyring) {
+  if (!keyring) {
+    return '';
+  }
+
+  const { type } = keyring;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   if (type.startsWith('Custody')) {
     return 'custody';
   }
@@ -238,6 +250,7 @@ export function getAccountType(state) {
     case KeyringType.trezor:
     case KeyringType.ledger:
     case KeyringType.lattice:
+    case KeyringType.qr:
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
@@ -293,10 +306,6 @@ export function getSelectedIdentity(state) {
   const { identities } = state.metamask;
 
   return identities[selectedAddress];
-}
-
-export function getNumberOfAccounts(state) {
-  return Object.keys(state.metamask.accounts).length;
 }
 
 export function getNumberOfTokens(state) {
@@ -490,14 +499,9 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { unapprovedDecryptMsgCount = 0, pendingApprovalCount = 0 } =
-    state.metamask;
+  const { pendingApprovalCount = 0 } = state.metamask;
 
-  return (
-    unapprovedDecryptMsgCount +
-    pendingApprovalCount +
-    getSuggestedAssetCount(state)
-  );
+  return pendingApprovalCount + getSuggestedAssetCount(state);
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -615,7 +619,7 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -628,7 +632,7 @@ const getEmbeddableSvg = memoize(
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
@@ -641,8 +645,8 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
-  return rpcPrefs;
+  const { rpcPrefs } = getProviderConfig(state);
+  return rpcPrefs || {};
 }
 
 export function getKnownMethodData(state, data) {
@@ -747,6 +751,15 @@ export function getIsBridgeChain(state) {
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
+export const getIsBridgeToken = (tokenAddress) => (state) => {
+  const chainId = getCurrentChainId(state);
+  const isBridgeChain = getIsBridgeChain(state);
+  return (
+    isBridgeChain &&
+    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
+  );
+};
+
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
@@ -827,7 +840,7 @@ export const getFullTxData = createDeepEqualSelector(
   (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
-      txData.simulationFails = transaction.simulationFails;
+      fullTxData.simulationFails = { ...transaction.simulationFails };
     }
     if (customTxParamsData) {
       fullTxData = {
@@ -842,7 +855,7 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
@@ -935,6 +948,7 @@ function getAllowedAnnouncementIds(state) {
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
+  const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
     1: false,
@@ -956,6 +970,7 @@ function getAllowedAnnouncementIds(state) {
     17: false,
     18: true,
     19: true,
+    20: currentKeyringIsLedger && isFirefox,
   };
 }
 
@@ -1027,6 +1042,9 @@ export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
 
+export function getShowProductTour(state) {
+  return state.metamask.showProductTour;
+}
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1122,10 +1140,6 @@ export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }
 
-export function getProvider(state) {
-  return state.metamask.provider;
-}
-
 export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
 }
@@ -1137,9 +1151,19 @@ export function getCurrentNetwork(state) {
   return allNetworks.find((network) => network.chainId === currentChainId);
 }
 
+export function getAllEnabledNetworks(state) {
+  const allNetworks = getAllNetworks(state);
+  const showTestnetNetworks = getShowTestNetworks(state);
+
+  return showTestnetNetworks
+    ? allNetworks
+    : allNetworks.filter(
+        (network) => TEST_CHAINS.includes(network.chainId) === false,
+      );
+}
+
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
-  const showTestnetNetworks = getShowTestNetworks(state);
   const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
 
   const networks = [];
@@ -1162,34 +1186,32 @@ export function getAllNetworks(state) {
       )
       .map(([, network]) => network),
   );
-  // Test networks if flag is on
-  if (showTestnetNetworks) {
-    networks.push(
-      ...[
-        {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-          providerType: NETWORK_TYPES.GOERLI,
-        },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          nickname: SEPOLIA_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-          providerType: NETWORK_TYPES.SEPOLIA,
-        },
-        {
-          chainId: CHAIN_IDS.LINEA_TESTNET,
-          nickname: LINEA_TESTNET_DISPLAY_NAME,
-          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-          provderType: NETWORK_TYPES.LINEA_TESTNET,
-        },
-      ], // Localhosts
-      ...Object.entries(networkConfigurations)
-        .filter(([, network]) => localhostFilter(network))
-        .map(([, network]) => network),
-    );
-  }
+  // Test networks
+  networks.push(
+    ...[
+      {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+        providerType: NETWORK_TYPES.GOERLI,
+      },
+      {
+        chainId: CHAIN_IDS.SEPOLIA,
+        nickname: SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+        providerType: NETWORK_TYPES.SEPOLIA,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_TESTNET,
+        nickname: LINEA_TESTNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+        provderType: NETWORK_TYPES.LINEA_TESTNET,
+      },
+    ], // Localhosts
+    ...Object.entries(networkConfigurations)
+      .filter(([, network]) => localhostFilter(network))
+      .map(([, network]) => network),
+  );
 
   return networks;
 }
@@ -1199,10 +1221,6 @@ export function getIsOptimism(state) {
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
   );
-}
-
-export function getNetworkSupportsSettingGasFees(state) {
-  return !getIsOptimism(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
@@ -1417,6 +1435,10 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getOnboardedInThisUISession(state) {
+  return state.appState.onboardedInThisUISession;
+}
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *
@@ -1427,7 +1449,7 @@ export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 /**
  * To get the `desktopEnabled` value which determines whether we use the desktop app
  *
@@ -1436,5 +1458,27 @@ export function getUseCurrencyRateCheck(state) {
  */
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * To get all installed snaps with proper metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getSnapsList(state) {
+  const snaps = getSnaps(state);
+  return Object.entries(snaps).map(([key, snap]) => {
+    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+
+    return {
+      key,
+      id: snap.id,
+      packageName: removeSnapIdPrefix(snap.id),
+      name: getSnapName(snap.id, targetSubjectMetadata),
+    };
+  });
 }
 ///: END:ONLY_INCLUDE_IN

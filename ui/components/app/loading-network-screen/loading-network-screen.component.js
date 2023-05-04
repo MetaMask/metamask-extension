@@ -17,7 +17,7 @@ export default class LoadingNetworkScreen extends PureComponent {
   static propTypes = {
     loadingMessage: PropTypes.string,
     cancelTime: PropTypes.number,
-    provider: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    providerConfig: PropTypes.object,
     providerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     showNetworkDropdown: PropTypes.func,
     setProviderArgs: PropTypes.array,
@@ -38,8 +38,8 @@ export default class LoadingNetworkScreen extends PureComponent {
     if (loadingMessage) {
       return loadingMessage;
     }
-    const { provider, providerId } = this.props;
-    const providerName = provider.type;
+    const { providerConfig, providerId } = this.props;
+    const providerName = providerConfig.type;
     const { t } = this.context;
 
     switch (providerName) {
@@ -125,9 +125,9 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { provider } = this.props;
-    const { provider: prevProvider } = prevProps;
-    if (provider.type !== prevProvider.type) {
+    const { providerConfig } = this.props;
+    const { providerConfig: prevProvider } = prevProps;
+    if (providerConfig.type !== prevProvider.type) {
       window.clearTimeout(this.cancelCallTimeout);
       this.setState({ showErrorScreen: false });
       this.cancelCallTimeout = setTimeout(

@@ -23,7 +23,11 @@ setBackgroundConnection({
 });
 
 const baseStore = {
-  send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  send: {
+    ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+    currentTransactionUUID: null,
+    draftTransactions: {},
+  },
   DNS: domainInitialState,
   gas: {
     customData: { limit: null, price: null },
@@ -68,7 +72,7 @@ const baseStore = {
       useNativeCurrencyAsPrimaryCurrency: false,
     },
     currentCurrency: 'USD',
-    provider: {
+    providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
@@ -142,12 +146,24 @@ const baseStore = {
 };
 
 describe('Confirm Transaction Base', () => {
-  const store = configureMockStore(middleware)(baseStore);
   it('should match snapshot', () => {
+    const store = configureMockStore(middleware)(baseStore);
     const { container } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('should contain L1 L2 fee details for optimism', () => {
+    baseStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
+    baseStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+    const store = configureMockStore(middleware)(baseStore);
+    const { getByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(getByText('Layer 1 fees')).toBeInTheDocument();
+    expect(getByText('Layer 2 gas fee')).toBeInTheDocument();
   });
 });

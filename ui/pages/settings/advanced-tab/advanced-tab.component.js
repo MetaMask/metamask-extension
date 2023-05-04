@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
-import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
 import Dialog from '../../../components/ui/dialog';
 
@@ -42,7 +41,6 @@ export default class AdvancedTab extends PureComponent {
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
-    history: PropTypes.object,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
@@ -61,7 +59,7 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -185,37 +183,6 @@ export default class AdvancedTab extends PureComponent {
               }}
             >
               {t('downloadStateLogs')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderMobileSync() {
-    const { t } = this.context;
-    const { history } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-mobile-sync"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithMobile')}</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              onClick={(event) => {
-                event.preventDefault();
-                history.push(MOBILE_SYNC_ROUTE);
-              }}
-            >
-              {t('syncWithMobile')}
             </Button>
           </div>
         </div>
@@ -440,12 +407,12 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerTransportPreference,
       userHasALedgerAccount,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       desktopEnabled,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (desktopEnabled) {
       return null;
     }
@@ -723,7 +690,6 @@ export default class AdvancedTab extends PureComponent {
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
-        {this.renderMobileSync()}
         {this.renderResetAccount()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}

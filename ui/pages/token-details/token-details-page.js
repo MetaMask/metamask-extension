@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
-import { getTokens } from '../../ducks/metamask/metamask';
+import { getProviderConfig, getTokens } from '../../ducks/metamask/metamask';
 import { getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
@@ -26,10 +26,10 @@ import {
 } from '../../helpers/constants/design-system';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
-  ICON_SIZES,
-  ICON_NAMES,
-} from '../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../components/component-library/button-icon/deprecated';
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../components/component-library';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();
@@ -54,12 +54,7 @@ export default function TokenDetailsPage() {
     token?.symbol,
   );
 
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-  }));
-
-  const { nickname, type: networkType } = currentNetwork;
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
 
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -139,11 +134,11 @@ export default function TokenDetailsPage() {
           >
             <ButtonIcon
               ariaLabel="copy"
-              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+              name={copied ? IconName.CopySuccess : IconName.Copy}
               className="token-details__copyIcon"
               onClick={() => handleCopy(token.address)}
               color={IconColor.primaryDefault}
-              size={ICON_SIZES.SM}
+              size={ButtonIconSize.Sm}
             />
           </Tooltip>
         </Box>

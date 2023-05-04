@@ -235,7 +235,7 @@ describe('DetectTokensController', function () {
           const modifiedNetworkState = {
             ...networkState,
             providerConfig: {
-              ...networkState.provider,
+              ...networkState.providerConfig,
             },
           };
           return cb(modifiedNetworkState);
@@ -254,8 +254,10 @@ describe('DetectTokensController', function () {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
-                ...networkState.provider,
-                chainId: convertHexToDecimal(networkState.provider.chainId),
+                ...networkState.providerConfig,
+                chainId: convertHexToDecimal(
+                  networkState.providerConfig.chainId,
+                ),
               },
             };
             return cb(modifiedNetworkState);
@@ -278,7 +280,7 @@ describe('DetectTokensController', function () {
 
   it('should be called on every polling period', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -304,7 +306,7 @@ describe('DetectTokensController', function () {
 
   it('should not check and add tokens while on unsupported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.SEPOLIA);
+    await network.setProviderType(NETWORK_TYPES.SEPOLIA);
     const tokenListMessengerSepolia = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
@@ -337,7 +339,7 @@ describe('DetectTokensController', function () {
 
   it('should skip adding tokens listed in ignoredTokens array', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -388,7 +390,7 @@ describe('DetectTokensController', function () {
 
   it('should check and add tokens while on supported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -483,7 +485,7 @@ describe('DetectTokensController', function () {
 
   it('should not trigger detect new tokens when not unlocked', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -504,7 +506,7 @@ describe('DetectTokensController', function () {
 
   it('should not trigger detect new tokens when not open', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.MAINNET);
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,

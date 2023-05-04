@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -45,6 +45,7 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  const inputRef = useRef();
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -62,19 +63,42 @@ export const AccountListMenu = ({ onClose }) => {
     searchResults = fuse.search(searchQuery);
   }
 
+  // Focus on the search box when the popover is opened
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.rootNode.querySelector('input[type=search]').focus();
+    }
+  }, [inputRef]);
+
   return (
-    <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
+    <Popover
+      title={t('selectAnAccount')}
+      ref={inputRef}
+      centerTitle
+      onClose={onClose}
+    >
       <Box className="multichain-account-menu">
         {/* Search box */}
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <TextFieldSearch
-            size={Size.SM}
-            width={BLOCK_SIZES.FULL}
-            placeholder={t('searchAccounts')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </Box>
+        {accounts.length > 1 ? (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+          >
+            <TextFieldSearch
+              size={Size.SM}
+              width={BLOCK_SIZES.FULL}
+              placeholder={t('searchAccounts')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              clearButtonOnClick={() => setSearchQuery('')}
+              clearButtonProps={{
+                size: Size.SM,
+              }}
+            />
+          </Box>
+        ) : null}
         {/* Account list block */}
         <Box className="multichain-account-menu__list">
           {searchResults.length === 0 && searchQuery !== '' ? (
