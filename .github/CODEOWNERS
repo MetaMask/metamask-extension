@@ -8,10 +8,10 @@
 # those changes on build, release and publishing outcomes.
 
 *                                    @MetaMask/extension-devs
-development/                         @MetaMask/extension-devs @kumavis
-lavamoat/                            @MetaMask/supply-chain
 **/snaps/**                          @MetaMask/snaps-devs
 **/flask/**                          @MetaMask/snaps-devs
+development/                         @MetaMask/extension-devs @kumavis
+lavamoat/                            @MetaMask/supply-chain
 
 # The .circleci/ folder instructs Circle CI on the process by which it
 # should test, build and publish releases of our application. Due to the
