@@ -375,7 +375,7 @@ export default function SmartTransactionStatusPage() {
             color={TextColor.textAlternative}
             variant={TextVariant.bodySm}
             as="h6"
-            boxProps={{ marginLeft: 2 }}
+            marginLeft={2}
           >
             {`~${destinationValue && Number(destinationValue).toFixed(5)} `}
           </Text>
@@ -383,7 +383,7 @@ export default function SmartTransactionStatusPage() {
             color={TextColor.textAlternative}
             variant={TextVariant.bodySmBold}
             as="h6"
-            boxProps={{ marginLeft: 1 }}
+            marginLeft={1}
           >
             {fetchParamsDestinationTokenInfo.symbol ??
               latestSmartTransaction?.destinationTokenSymbol}
@@ -411,7 +411,7 @@ export default function SmartTransactionStatusPage() {
               color={TextColor.textAlternative}
               variant={TextVariant.bodySm}
               as="h6"
-              boxProps={{ marginLeft: 1 }}
+              marginLeft={1}
             >
               {`${t('stxSwapCompleteIn')} `}
             </Text>
@@ -452,7 +452,7 @@ export default function SmartTransactionStatusPage() {
           <Text
             variant={TextVariant.bodySm}
             as="h6"
-            marginTop={1}
+            marginTop={blockExplorerUrl && 1}
             color={TextColor.textAlternative}
           >
             {description}
