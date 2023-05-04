@@ -358,6 +358,9 @@
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
+  "amlCompliance": {
+    "message": "AML/CFT Compliance"
+  },
   "amount": {
     "message": "Amount"
   },

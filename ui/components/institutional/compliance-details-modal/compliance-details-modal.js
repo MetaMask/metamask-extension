@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import Modal from '../../../modal';
-import { hideModal } from '../../../../../store/actions';
-import ComplianceDetails from '../../../../institutional/compliance-details';
+import Modal from '../../app/modal';
+import { hideModal } from '../../../store/actions';
+import ComplianceDetails from '../compliance-details';
+import { I18nContext } from '../../../contexts/i18n';
 
 export default function ComplianceDetailsModal({
   onGenerateComplianceReport,
@@ -11,10 +12,11 @@ export default function ComplianceDetailsModal({
 }) {
   const dispatch = useDispatch();
   const handleClose = () => dispatch(hideModal);
+  const t = useContext(I18nContext);
 
   return (
     <Modal
-      headerText="AML/CFT Compliance"
+      headerText={t('amlCompliance')}
       hideFooter="true"
       onClose={handleClose}
       contentClass="compliance-details-modal-content"
