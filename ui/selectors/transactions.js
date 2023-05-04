@@ -251,7 +251,18 @@ export const nonceSortedTransactionsSelector = createSelector(
         txReceipt,
       } = transaction;
 
-      if (typeof nonce === 'undefined' || type === TransactionType.incoming) {
+      // Don't group transactions by nonce if:
+      // 1. Tx nonce is undefined
+      // 2. Tx is incoming (deposit)
+      // 3. Tx is custodial (mmi specific)
+      let shouldNotBeGrouped =
+        typeof nonce === 'undefined' || type === TransactionType.incoming;
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
+      ///: END:ONLY_INCLUDE_IN
+
+      if (shouldNotBeGrouped) {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,

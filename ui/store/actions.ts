@@ -3123,6 +3123,13 @@ export function toggleNetworkMenu() {
   };
 }
 
+export function setAccountDetailsAddress(address: string) {
+  return {
+    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
+    payload: address,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
