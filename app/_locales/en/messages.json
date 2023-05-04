@@ -552,6 +552,9 @@
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
+  "blockaid": {
+    "message": "Blockaid"
+  },
   "blockies": {
     "message": "Blockies"
   },
@@ -2863,7 +2866,7 @@
     "message": "Open in block explorer"
   },
   "openSea": {
-    "message": "OpenSea (Beta)"
+    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3495,6 +3498,9 @@
   },
   "security": {
     "message": "Security"
+  },
+  "securityAlert": {
+    "message": "Security alert from $1 and $2"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -4429,9 +4435,6 @@
   "thisCollection": {
     "message": "this collection"
   },
-  "thisIsBasedOn": {
-    "message": "This is based on information from "
-  },
   "thisServiceIsExperimental": {
     "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
     "description": "$1 is link to open sea terms of use"
@@ -4449,11 +4452,44 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleEthSignBannerDescription": {
+    "message": "You’re at risk for phishing attacks. Protect yourself by turning off eth_sign."
+  },
   "toggleEthSignDescriptionField": {
-    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
+    "message": "If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs."
   },
   "toggleEthSignField": {
-    "message": "Toggle eth_sign requests"
+    "message": "Eth_sign requests"
+  },
+  "toggleEthSignModalBannerBoldText": {
+    "message": " you might be getting scammed"
+  },
+  "toggleEthSignModalBannerText": {
+    "message": "If you've been asked to turn this setting on,"
+  },
+  "toggleEthSignModalCheckBox": {
+    "message": "I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. "
+  },
+  "toggleEthSignModalDescription": {
+    "message": "Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code."
+  },
+  "toggleEthSignModalFormError": {
+    "message": "The text is incorrect"
+  },
+  "toggleEthSignModalFormLabel": {
+    "message": "Enter “I only sign what I understand” to continue"
+  },
+  "toggleEthSignModalFormValidation": {
+    "message": "I only sign what I understand"
+  },
+  "toggleEthSignModalTitle": {
+    "message": "Use at your own risk"
+  },
+  "toggleEthSignOff": {
+    "message": "OFF (Recommended)"
+  },
+  "toggleEthSignOn": {
+    "message": "ON (Not recommended)"
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",
@@ -4617,7 +4653,7 @@
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSecurityCheck": {
-    "message": "Enable transaction security providers"
+    "message": "Enable security alerts"
   },
   "transactionSecurityCheckDescription": {
     "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
