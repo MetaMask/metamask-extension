@@ -243,11 +243,11 @@ async function assertSWProcessActionQueueEvent(request, method) {
 }
 
 async function assertTransactionDetails(driver) {
-  const TRUNACATED_RECIPIENT_ADDRESS = '0x0c5...AaFb';
+  const TRUNCATED_RECIPIENT_ADDRESS = '0x0c5...AaFb';
   const recipientAddress = await driver.findElement(
     '[data-testid="sender-to-recipient__name"]',
   );
-  assert.equal(await recipientAddress.getText(), TRUNACATED_RECIPIENT_ADDRESS);
+  assert.equal(await recipientAddress.getText(), TRUNCATED_RECIPIENT_ADDRESS);
   const transactionAmounts = await driver.findElements(
     '.currency-display-component__text',
   );
