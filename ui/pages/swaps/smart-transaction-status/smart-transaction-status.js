@@ -452,7 +452,7 @@ export default function SmartTransactionStatusPage() {
           <Text
             variant={TextVariant.bodySm}
             as="h6"
-            marginTop={1}
+            marginTop={blockExplorerUrl && 1}
             color={TextColor.textAlternative}
           >
             {description}
