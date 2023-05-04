@@ -427,7 +427,7 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
@@ -3919,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "注意事项:"
-  },
-  "thisIsBasedOn": {
-    "message": "所根据的信息是来自"
   },
   "time": {
     "message": "时间"
