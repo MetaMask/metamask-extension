@@ -100,7 +100,7 @@ describe('Test Snap getEntropy', function () {
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0x933d1295c73c0e1efe628f097c5d3bfb5f3b1035d74fc06f02b2d800af025d381978f5779ae9df16b147b929f3eb49ef0b01e7aac0c7dfa1df9fdbf6a02b87a6101461612107272d27e6000d0510e6b85ec9d8b9ce217c733c6b307cb72950d9"',
+          text: '"0xb9c20d675976e12c8bb53c3fd8fdff2dee11ad2b132eb453b5a8f35b0553c52d3bcac0fd3324d22ff0c53b3445ef48c119ba6435bc9bfb03234806719599aa6f6245593238c734bcf9d94d2873cacdd65a3176be3ae7e5b84f95fdd4487a395f"',
         });
       },
     );
