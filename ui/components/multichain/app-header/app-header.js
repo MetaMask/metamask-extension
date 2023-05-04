@@ -170,7 +170,6 @@ export const AppHeader = ({ onClick }) => {
                     onClick={networkOpenCallback}
                     display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
                     className="multichain-app-header__contents__network-picker"
-                    style={{ maxWidth: '100%' }}
                   />
                 </div>
               )}
