@@ -2343,6 +2343,10 @@
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
   },
+  "networkSwitchConnectionError": {
+    "message": "We can't connect to $1",
+    "description": "$1 represents the network name"
+  },
   "networkURL": {
     "message": "Network URL"
   },
