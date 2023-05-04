@@ -7,6 +7,9 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { getSnapPrefix } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -19,8 +22,11 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import {
+  SNAPS_DERIVATION_PATHS,
+  SNAPS_METADATA,
+} from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -56,6 +62,7 @@ export function isDefaultMetaMaskChain(chainId) {
     chainId === CHAIN_IDS.MAINNET ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
+    chainId === CHAIN_IDS.LINEA_TESTNET ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -532,7 +539,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * @param {string[]} path
  * @param {string} curve
@@ -547,6 +554,18 @@ export function getSnapDerivationPathName(path, curve) {
 
   return pathMetadata?.name ?? null;
 }
+
+export const removeSnapIdPrefix = (snapId) =>
+  snapId?.replace(getSnapPrefix(snapId), '');
+
+export const getSnapName = (snapId, subjectMetadata) => {
+  if (SNAPS_METADATA[snapId]?.name) {
+    return SNAPS_METADATA[snapId].name;
+  }
+
+  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
 ///: END:ONLY_INCLUDE_IN
 
 /**

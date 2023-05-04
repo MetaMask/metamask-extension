@@ -1,6 +1,6 @@
 const path = require('path');
 const semver = require('semver');
-const { BuildType } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
 /**
@@ -48,6 +48,8 @@ function getBrowserVersionMap(platforms, version) {
   let buildType, buildVersionSummary, buildVersion;
   if (prerelease) {
     [buildType, buildVersionSummary] = prerelease;
+    // TODO(ritave): Figure out why the version 10.25.0-beta.1-flask.0 in the below comment is even possible
+    //               since those are two different build types
     // The version could be version: '10.25.0-beta.1-flask.0',
     // That results in buildVersionSummary becomes 1-flask
     // And we only want 1 from this string
@@ -57,9 +59,7 @@ function getBrowserVersionMap(platforms, version) {
         : buildVersionSummary;
     if (!String(buildVersion).match(/^\d+$/u)) {
       throw new Error(`Invalid prerelease build version: '${buildVersion}'`);
-    } else if (
-      ![BuildType.beta, BuildType.flask, BuildType.desktop].includes(buildType)
-    ) {
+    } else if (!loadBuildTypesConfig().buildTypes[buildType].isPrerelease) {
       throw new Error(`Invalid prerelease build type: ${buildType}`);
     }
   }

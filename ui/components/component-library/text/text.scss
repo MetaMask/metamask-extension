@@ -33,6 +33,10 @@ $text-variants: (
   color: var(--color-text-default);
   font-family: var(--font-family-sans);
 
+  > strong {
+    font-weight: var(--font-weight-bold);
+  }
+
   @each $type, $size-options in $text-variants {
     &--#{$type} {
       // Sets a default
@@ -43,12 +47,6 @@ $text-variants: (
           @include textVariables($type, $size);
         }
       }
-    }
-  }
-
-  @each $variant, $color in $color-map {
-    &--color-#{$variant} {
-      color: var($color);
     }
   }
 

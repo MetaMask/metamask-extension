@@ -47,6 +47,7 @@ interface AppState {
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
+  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -65,6 +66,7 @@ interface AppState {
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: number | null;
+  accountDetailsAddress: string;
 }
 
 interface AppSliceState {
@@ -109,6 +111,7 @@ const initialState: AppState = {
   openMetaMaskTabs: {},
   currentWindowTab: {},
   showWhatsNewPopup: true,
+  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
@@ -128,6 +131,7 @@ const initialState: AppState = {
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
+  accountDetailsAddress: '',
 };
 
 export default function reduceApp(
@@ -167,6 +171,13 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
+
+    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
+      return {
+        ...appState,
+        accountDetailsAddress: action.payload,
+      };
+    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:

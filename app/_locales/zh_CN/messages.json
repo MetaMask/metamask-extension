@@ -329,9 +329,6 @@
     "message": "允许 $1 提取和消费最高以下金额：",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "在批准任何请求之前，始终确保执行自身尽职调查。"
-  },
   "amount": {
     "message": "数额"
   },
@@ -430,7 +427,7 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
@@ -698,10 +695,6 @@
     "message": "$1 还没连接到任何网站。",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1的snap已连接到这些站点。它们有上述的访问权限。",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "连接中……"
   },
@@ -710,6 +703,9 @@
   },
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
+  },
+  "connectingToLineaTestnet": {
+    "message": "正在连接Linea测试网络"
   },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
@@ -1222,9 +1218,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "启用安全服务提供商"
-  },
   "enableSmartTransactions": {
     "message": "启用智能交易"
   },
@@ -1320,9 +1313,6 @@
   "etherscanViewOn": {
     "message": "在 Etherscan 上查看"
   },
-  "expandExperience": {
-    "message": "扩展MetaMask Snap的web3体验"
-  },
   "expandView": {
     "message": "展开视图"
   },
@@ -1360,18 +1350,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "查看详细信息",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "添加于",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "自",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -1437,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "燃料费"
   },
   "gasLimit": {
     "message": "燃料上限"
@@ -1518,9 +1493,6 @@
   },
   "general": {
     "message": "常规"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "每当收到已知恶意请求，即从 OpenSea 获取警告。"
   },
   "goBack": {
     "message": "返回"
@@ -1895,6 +1867,9 @@
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
   },
+  "lineatestnet": {
+    "message": "Linea测试网络"
+  },
   "link": {
     "message": "链接"
   },
@@ -1954,9 +1929,6 @@
   },
   "malformedData": {
     "message": "格式错误的数据"
-  },
-  "manageSnaps": {
-    "message": "管理已安装的Snap"
   },
   "max": {
     "message": "最大"
@@ -2029,9 +2001,6 @@
   },
   "missingToken": {
     "message": "没有看到您的代币？"
-  },
-  "mobileSyncWarning": {
-    "message": "“与扩展程序同步”功能暂时被禁用。如果您想要在 MetaMask 移动设备上使用您的扩展程序钱包，那么在您的移动应用程序上：返回钱包设置选项并选择“使用账户助记词导入”选项。使用您的扩展程序钱包的助记词来将您的钱包导入移动设备。"
   },
   "moreComingSoon": {
     "message": "更多即将到来……"
@@ -2191,9 +2160,6 @@
     "message": "Nonce 高于建议的 nouce 值 $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "非同质化代币(NFT)"
-  },
   "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
   },
@@ -2278,9 +2244,6 @@
   "notEnoughGas": {
     "message": "燃料不足"
   },
-  "notNow": {
-    "message": "暂时不"
-  },
   "notifications": {
     "message": "通知"
   },
@@ -2341,12 +2304,6 @@
   },
   "notifications15Title": {
     "message": "以太坊合并来了！"
-  },
-  "notifications17ActionText": {
-    "message": "显示安全和隐私设置"
-  },
-  "notifications17Title": {
-    "message": "安全和隐私设置"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
@@ -2611,12 +2568,6 @@
   "openSea": {
     "message": "OpenSea（测试版）"
   },
-  "openSeaAltText": {
-    "message": "OpenSea 安全服务提供商"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea 是该功能的第一个安全服务提供商。即将推出更多提供商！"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2723,10 +2674,6 @@
   "permission_cronjob": {
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "在MetaMask中显示确认。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
@@ -3264,18 +3211,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "没有找到匹配的结果."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "显示"
-  },
-  "showAdvancedGasInline": {
-    "message": "高级燃料控制"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
   },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
@@ -3347,14 +3284,6 @@
   "smartTransaction": {
     "message": "智能交易"
   },
-  "snapAccess": {
-    "message": "$1的snap可以访问：",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "从 $2 添加到 $1",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3376,22 +3305,11 @@
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "此Snap正在请求以下权限："
-  },
   "snapUpdate": {
     "message": "更新Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1需要更新版本的snap。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
@@ -3402,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "管理您的Snap"
   },
-  "snapsStatus": {
-    "message": "Snap状态取决于活动。"
-  },
   "snapsToggle": {
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
@@ -3517,9 +3433,6 @@
   },
   "statusNotConnected": {
     "message": "未连接"
-  },
-  "staySafeWithOpenSea": {
-    "message": "通过 OpenSea 确保安全"
   },
   "step1LatticeWallet": {
     "message": "关联您的 Lattice1"
@@ -3986,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
   },
-  "syncFailed": {
-    "message": "同步失败"
-  },
-  "syncInProgress": {
-    "message": "同步进行中"
-  },
-  "syncWithMobile": {
-    "message": "与移动设备同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "扫描此代码时，请确保附近没有其他人在看您的屏幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 MetaMask 移动应用程序吧！"
-  },
-  "syncWithMobileDesc": {
-    "message": "您可以将您的账户和信息与您的移动设备同步。打开 MetaMask 移动应用程序，进入“设置”，点击“从浏览器扩展程序同步”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "使用 MetaMask 移动应用程序扫描此代码"
-  },
-  "syncWithMobileTitle": {
-    "message": "与移动设备同步"
-  },
   "tenPercentIncreased": {
     "message": "增加10%"
   },
@@ -4036,9 +3922,6 @@
   },
   "thisIsBasedOn": {
     "message": "所根据的信息是来自"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的"
   },
   "time": {
     "message": "时间"

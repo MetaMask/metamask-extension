@@ -4,6 +4,9 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ACTION_QUEUE_METRICS_E2E_TEST,
+} = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 
 function defaultFixture() {
@@ -114,11 +117,21 @@ function defaultFixture() {
           16: {
             date: null,
             id: 16,
-            isShown: true,
+            isShown: false,
           },
           17: {
             date: null,
             id: 17,
+            isShown: false,
+          },
+          18: {
+            date: null,
+            id: 18,
+            isShown: true,
+          },
+          19: {
+            date: null,
+            id: 19,
             isShown: true,
           },
         },
@@ -127,6 +140,8 @@ function defaultFixture() {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
@@ -180,8 +195,9 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        network: '1337',
-        provider: {
+        networkId: '1337',
+        networkStatus: 'available',
+        providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
@@ -245,8 +261,6 @@ function defaultFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        transactionSecurityCheckEnabled: true,
-        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -310,10 +324,12 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
-        network: '1337',
-        provider: {
+        networkId: '1337',
+        networkStatus: 'available',
+        providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
@@ -360,8 +376,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        transactionSecurityCheckEnabled: true,
-        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -488,15 +502,6 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
-    return this;
-  }
-
-  withNetworkControllerSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
     return this;
   }
 
@@ -698,6 +703,43 @@ class FixtureBuilder {
 
   withTokensController(data) {
     merge(this.fixture.data.TokensController, data);
+    return this;
+  }
+
+  withTokensControllerERC20() {
+    merge(this.fixture.data.TokensController, {
+      tokens: [
+        {
+          address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+          symbol: 'TST',
+          decimals: 4,
+          image:
+            'https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+          isERC721: false,
+          aggregators: [],
+        },
+      ],
+      ignoredTokens: [],
+      detectedTokens: [],
+      allTokens: {
+        '0x539': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+              symbol: 'TST',
+              decimals: 4,
+              image:
+                'https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
+      suggestedAssets: [],
+    });
     return this;
   }
 

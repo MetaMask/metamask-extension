@@ -15,13 +15,16 @@ import {
   Size,
   BorderColor,
   IconColor,
+  TEXT_ALIGN,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
+
 import {
   ButtonIcon,
-  Text,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
+  Text,
 } from '../../component-library';
 
 const defaultHeaderProps = {
@@ -54,6 +57,7 @@ const Popover = ({
   footerClassName,
   onBack,
   onClose,
+  onScroll,
   className,
   contentClassName,
   showArrow,
@@ -76,26 +80,33 @@ const Popover = ({
       <Box
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
-        justifyContent={
-          centerTitle ? JustifyContent.center : JustifyContent.spaceBetween
-        }
+        justifyContent={centerTitle ? null : JustifyContent.spaceBetween}
+        className={classnames('popover-header__title', {
+          'popover-header__title--center': centerTitle,
+        })}
         marginBottom={2}
       >
         {onBack ? (
           <ButtonIcon
-            iconName={ICON_NAMES.ARROW_LEFT}
+            iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
             onClick={onBack}
             color={Color.iconDefault}
             size={Size.SM}
           />
         ) : null}
-        <Text ellipsis variant={TextVariant.headingSm} as="h2">
+        <Text
+          textAlign={centerTitle ? TEXT_ALIGN.CENTER : TEXT_ALIGN.START}
+          ellipsis
+          variant={TextVariant.headingSm}
+          as="h2"
+          width={BLOCK_SIZES.FULL}
+        >
           {title}
         </Text>
         {onClose ? (
           <ButtonIcon
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             ariaLabel={t('close')}
             data-testid="popover-close"
             onClick={onClose}
@@ -118,6 +129,17 @@ const Popover = ({
         className={classnames('popover-wrap', className)}
         ref={popoverRef}
       >
+        {showArrow ? <div className="popover-arrow" /> : null}
+        {showHeader && <Header />}
+        {children ? (
+          <Box
+            className={classnames('popover-content', contentClassName)}
+            onScroll={onScroll}
+            {...{ ...defaultContentProps, ...contentProps }}
+          >
+            {children}
+          </Box>
+        ) : null}
         {showScrollDown ? (
           <Box
             display={DISPLAY.FLEX}
@@ -127,25 +149,16 @@ const Popover = ({
             backgroundColor={BackgroundColor.backgroundDefault}
             color={Color.iconDefault}
             onClick={onScrollDownButtonClick}
-            className="whats-new-popup__scroll-button"
-            data-testid="whats-new-popup-scroll-button"
+            className="popover-scroll-button"
+            style={{ bottom: footer ? '140px' : '12px' }}
+            data-testid="popover-scroll-button"
           >
             <Icon
-              name={ICON_NAMES.ARROW_DOWN}
+              name={IconName.ArrowDown}
               color={IconColor.primaryDefault}
-              size={ICON_SIZES.MD}
+              size={IconSize.Md}
               aria-label={t('scrollDown')}
             />
-          </Box>
-        ) : null}
-        {showArrow ? <div className="popover-arrow" /> : null}
-        {showHeader && <Header />}
-        {children ? (
-          <Box
-            className={classnames('popover-content', contentClassName)}
-            {...{ ...defaultContentProps, ...contentProps }}
-          >
-            {children}
           </Box>
         ) : null}
         {footer ? (
@@ -190,6 +203,10 @@ Popover.propTypes = {
    * onClose handler
    */
   onClose: PropTypes.func,
+  /**
+   * onScroll handler
+   */
+  onScroll: PropTypes.func,
   CustomBackground: PropTypes.func,
   /**
    * Add custom CSS class for content

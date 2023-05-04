@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
+  "connectingToLineaTestnet": {
+    "message": "ከ Linea Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
+  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
   },
@@ -399,6 +402,9 @@
   },
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
+  },
+  "lineatestnet": {
+    "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
   },
   "links": {
     "message": "ማስፈንጠሪያዎች"
@@ -657,12 +663,6 @@
   "settings": {
     "message": "ቅንብሮች"
   },
-  "showAdvancedGasInline": {
-    "message": "የላቁ የነዳጅ ቁጥጥሮች"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "በላክ እና አረጋግጥ ማያዎች ላይ የነዳጅ ዋጋን ለማሳየትና ቁጥጥሮችን ለመገደብ ይህን ይምረጡ።"
-  },
   "showFiatConversionInTestnets": {
     "message": "ልወጣን በ Testnets ላይ አሳይ"
   },
@@ -725,27 +725,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
-  },
-  "syncWithMobile": {
-    "message": "ከሞባይል ጋር አሳምር"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "ይህን ኮድ ስካን ሲያደርጉ ሌላ ሰው የእርስዎን ማያ እየተመለከተ አለመሆኑን ያረጋግጡ"
-  },
-  "syncWithMobileComplete": {
-    "message": "ውሂብዎ በሚገባ ተሳምሯል። በ MetaMask የሞባይል መተግበሪያ ይደሰቱ!"
-  },
-  "syncWithMobileDesc": {
-    "message": "መለያዎችዎንና መረጃዎችዎን ከሞባይል መሳሪያዎ ጋር ያሳምሩ። የ MetaMask የሞባይል መተግበሪያን ይክፈቱ፣ ወደ \"ቅንብሮች\" ይሂዱና \"ከማሰሺያ ቅጥያ አሳምር\" የሚለውን ይንኩ"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "የ MetaMask የሞባይል መተግበሪያን ለመጀመሪያ ጊዜ ገና እየከፈቱ ከሆነ፣ በስልክዎ ላይ ያሉትን ቅደም ተከተሎች ብቻ ይከተሉ።"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "ይህን ኮድ በ MetaMask የሞባይል መተግበሪያዎ ስካን ያድርጉ"
-  },
-  "syncWithMobileTitle": {
-    "message": "ከሞባይል ጋር አሳምር"
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"

@@ -32,11 +32,14 @@ import { getNftsDropdownState } from '../../ducks/metamask/metamask';
 import NftsDetectionNotice from '../../components/app/nfts-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
 import {
   ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  ButtonIconSize,
 } from '../../components/component-library';
 
 export default function AddNft() {
@@ -101,7 +104,7 @@ export default function AddNft() {
     );
 
     trackEvent({
-      event: EVENT_NAMES.TOKEN_ADDED,
+      event: MetaMetricsEventName.TokenAdded,
       category: 'Wallet',
       sensitiveProperties: {
         token_contract_address: nftAddress,
@@ -109,7 +112,7 @@ export default function AddNft() {
         tokenId: tokenId.toString(),
         asset_type: AssetType.NFT,
         token_standard: tokenDetails?.standard,
-        source: EVENT.SOURCE.TOKEN.CUSTOM,
+        source_connection_method: MetaMetricsTokenEventSource.Custom,
       },
     });
 
@@ -160,8 +163,8 @@ export default function AddNft() {
                     </Typography>
                     <ButtonIcon
                       className="add-nft__close"
-                      iconName={ICON_NAMES.CLOSE}
-                      size={ICON_SIZES.SM}
+                      iconName={IconName.Close}
+                      size={ButtonIconSize.Sm}
                       ariaLabel={t('close')}
                       data-testid="add-nft-error-close"
                       onClick={() => setNftAddFailed(false)}

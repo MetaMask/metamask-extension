@@ -329,9 +329,6 @@
     "message": "Разрешить $1 снять и потратить до следующей суммы:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Всегда обязательно проводите собственную комплексную проверку, прежде чем утверждать какие-либо запросы."
-  },
   "amount": {
     "message": "Сумма"
   },
@@ -698,10 +695,6 @@
     "message": "$1 не подключен ни к каким сайтам.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Снап $1 подключен к этим сайтам. У них есть доступ к перечисленным выше разрешениям.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Подключение..."
   },
@@ -710,6 +703,9 @@
   },
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
+  },
+  "connectingToLineaTestnet": {
+    "message": "Подключение к тестовой сети Linea..."
   },
   "connectingToMainnet": {
     "message": "Подключение к сети Ethereum Mainnet..."
@@ -1222,9 +1218,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Включить поставщика услуг безопасности"
-  },
   "enableSmartTransactions": {
     "message": "Включить смарт-транзакции"
   },
@@ -1320,9 +1313,6 @@
   "etherscanViewOn": {
     "message": "Посмотреть на Etherscan"
   },
-  "expandExperience": {
-    "message": "Расширьте свои возможности web3 с помощью MetaMask Snaps"
-  },
   "expandView": {
     "message": "Развернуть представление"
   },
@@ -1360,18 +1350,6 @@
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "См. подробности",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Добавлена",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "от",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "вам нужно должны удалить это расширение",
@@ -1437,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "Эта плата за газ была предложена $1. Ее переопредление может вызвать проблемы с вашей транзакцией. При наличии вопросов обратитесь к $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Плата за газ"
   },
   "gasLimit": {
     "message": "Лимит газа"
@@ -1518,9 +1493,6 @@
   },
   "general": {
     "message": "Общее"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Получайте предупреждения от OpenSea всякий раз, когда вы получаете заведомо вредоносный запрос."
   },
   "goBack": {
     "message": "Назад"
@@ -1895,6 +1867,9 @@
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
   },
+  "lineatestnet": {
+    "message": "Тестовая сеть Linea Goerli"
+  },
   "link": {
     "message": "Привязать"
   },
@@ -1954,9 +1929,6 @@
   },
   "malformedData": {
     "message": "Искаженные данные"
-  },
-  "manageSnaps": {
-    "message": "Управляйте установленными снапами"
   },
   "max": {
     "message": "Макс."
@@ -2029,9 +2001,6 @@
   },
   "missingToken": {
     "message": "Не видите свой токен?"
-  },
-  "mobileSyncWarning": {
-    "message": "Функция «Синхронизация с расширением» временно отключена. Если вы хотите использовать свой кошелек из расширения браузера в мобильной версии MetaMask, тогда в мобильном приложении вернитесь к параметрам настройки кошелька и выберите параметр «Импортировать с помощью секретной фразы для восстановления». Используйте секретную фразу своего кошелька из расширения, чтобы импортировать кошелек на мобильное устройство."
   },
   "moreComingSoon": {
     "message": "Скоро появится больше..."
@@ -2191,9 +2160,6 @@
     "message": "Одноразовый номер больше, чем предложенный одноразовый номер $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
   },
@@ -2278,9 +2244,6 @@
   "notEnoughGas": {
     "message": "Недостаточно газа"
   },
-  "notNow": {
-    "message": "Не сейчас"
-  },
   "notifications": {
     "message": "Уведомления"
   },
@@ -2341,12 +2304,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Merge уже досутпно!"
-  },
-  "notifications17ActionText": {
-    "message": "Показать настройки безопасности и конфиденциальности"
-  },
-  "notifications17Title": {
-    "message": "Настройки безопасности и конфиденциальности"
   },
   "notifications1Description": {
     "message": "Теперь пользователи MetaMask Mobile могут обменивать токены в своем мобильном кошельке. Отсканируйте QR-код, чтобы скачать мобильное приложение и начать обмен.",
@@ -2611,12 +2568,6 @@
   "openSea": {
     "message": "OpenSea (бета-версия)"
   },
-  "openSeaAltText": {
-    "message": "Поставщик услуг безопасности OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea является первым поставщиком услуг безопасности для этой функции. Скоро появятся новые поставщики!"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2723,10 +2674,6 @@
   "permission_cronjob": {
     "message": "Планируйте и выполняйте периодические действия.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Показать подтверждение в MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Отображение диалоговых окон в MetaMask.",
@@ -3264,18 +3211,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "Совпадений не найдено."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Показать"
-  },
-  "showAdvancedGasInline": {
-    "message": "Расширенное управление газом"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Выберите это, чтобы отображать цену газа и управление лимитами непосредственно на экранах отправки и подтверждения."
   },
   "showFiatConversionInTestnets": {
     "message": "Показывать конвертацию в тестовых сетях"
@@ -3347,14 +3284,6 @@
   "smartTransaction": {
     "message": "Смарт-транзакция"
   },
-  "snapAccess": {
-    "message": "У снапа $1 есть доступ к:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Добавлено на $1 из $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Этот контент поступает от $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3376,22 +3305,11 @@
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Этот снап запрашивает следующие разрешения:"
-  },
   "snapUpdate": {
     "message": "Обновить снап"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 нужна более новая версия вашей привязки.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Снапы"
-  },
-  "snapsInsightError": {
-    "message": "Произошла ошибка с $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Загрузка аналитики по транзакции..."
@@ -3402,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "Управление вашим снапами"
   },
-  "snapsStatus": {
-    "message": "Статус снапа зависит от активности."
-  },
   "snapsToggle": {
     "message": "Снап будет работать только в том случае, если он включен"
   },
   "snapsUIError": {
-    "message": "Пользовательский интерфейс, указанный привязкой, недействителен."
+    "message": "Пользовательский интерфейс, указанный привязкой, недействителен.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
@@ -3517,9 +3433,6 @@
   },
   "statusNotConnected": {
     "message": "Не подключено"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Оставайтесь в безопасности с OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Подключите Lattice1"
@@ -3986,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
   },
-  "syncFailed": {
-    "message": "Ошибка синхронизации"
-  },
-  "syncInProgress": {
-    "message": "Выполняется синхронизация"
-  },
-  "syncWithMobile": {
-    "message": "Синхронизировать с мобильным устройством"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Убедитесь, что никто не смотрит на ваш экран, когда вы сканируете этот код"
-  },
-  "syncWithMobileComplete": {
-    "message": "Ваши данные успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в раздел «Настройки» и нажмите «Синхронизировать из расширения браузера»."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Если вы открываете приложение MetaMask Mobile в первый раз, просто следуйте инструкциям на телефоне."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Отсканируйте этот код с помощью мобильного приложения MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Синхронизировать с мобильным устройством"
-  },
   "tenPercentIncreased": {
     "message": "Увеличение на 10%"
   },
@@ -4036,9 +3922,6 @@
   },
   "thisIsBasedOn": {
     "message": "Это основано на информации от "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Этот сервис является экспериментальным"
   },
   "time": {
     "message": "Время"

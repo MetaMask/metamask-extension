@@ -12,7 +12,7 @@ import {
   getCurrentChainId,
   getMetaMaskAccountsOrdered,
   getBlockExplorerLinkText,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
   getCustodyAccountDetails,
   ///: END:ONLY_INCLUDE_IN
@@ -27,7 +27,7 @@ const mapStateToProps = (state) => {
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     accounts: getMetaMaskAccountsOrdered(state),
     blockExplorerLinkText: getBlockExplorerLinkText(state, true),
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType: getAccountType(state),
     custodyAccountDetails: getCustodyAccountDetails(state),
     ///: END:ONLY_INCLUDE_IN

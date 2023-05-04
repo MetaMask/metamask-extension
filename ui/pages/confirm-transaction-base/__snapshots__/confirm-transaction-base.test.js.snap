@@ -254,7 +254,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="confirm-page-container-summary__title"
         >
           <h3
-            class="box mm-text confirm-page-container-summary__title-text mm-text--heading-md mm-text--color-text-default box--flex-direction-row"
+            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
             <div
               class="currency-display-component"
@@ -278,35 +278,41 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="tabs"
+        class="box tabs box--flex-direction-row"
       >
         <ul
-          class="tabs__list"
+          class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
         >
           <li
-            class="tab confirm-page-container-content__tab tab--active"
+            class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Details
             </button>
           </li>
           <li
-            class="tab confirm-page-container-content__tab"
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Data
             </button>
           </li>
           <li
-            class="tab confirm-page-container-content__tab"
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
-            <button>
+            <button
+              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+            >
               Hex
             </button>
           </li>
         </ul>
         <div
-          class="tabs__content"
+          class="box tabs__content box--flex-direction-row"
         >
           <div
             class="confirm-page-container-content__details"
@@ -368,9 +374,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
                       >
-                        <div
-                          class="confirm-page-container-content__currency-container"
-                        >
+                        <div>
                           <div
                             class="currency-display-component"
                             title="0.000021"
@@ -391,18 +395,14 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   <div
                     class="transaction-detail-item__row"
                   >
-                    <div>
-                      
-                    </div>
+                    <div />
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
                     >
                       <strong>
                         Max fee:
                       </strong>
-                      <div
-                        class="confirm-page-container-content__currency-container"
-                      >
+                      <div>
                         <div
                           class="currency-display-component"
                           title="0.000021"
@@ -501,16 +501,26 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         class="confirm-page-container-content__error-container"
       >
         <div
-          class="error-message"
+          class="actionable-message actionable-message--danger actionable-message--warning actionable-message--with-icon"
         >
-          <span
-            class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
-            style="mask-image: url('./images/icons/warning.svg');"
-          />
-          <div
-            class="error-message__text"
+          <svg
+            viewBox="0 0 10 10"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            Insufficient funds.
+            <path
+              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+              fill="var(--color-error-default)"
+            />
+          </svg>
+          
+          <div
+            class="actionable-message__message"
+          >
+            <h6
+              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+            >
+              You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
+            </h6>
           </div>
         </div>
       </div>

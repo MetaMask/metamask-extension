@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -31,13 +30,15 @@ describe('Test Snap bip-44', function () {
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
+
+        // find and scroll to the bip44 test and connect
         const snapButton1 = await driver.findElement('#connectBip44Snap');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectBip44Snap');
         await driver.delay(1000);
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension and click connect and approve
         let windowHandles = await driver.waitUntilXWindowHandles(
           2,
           1000,
@@ -51,32 +52,26 @@ describe('Test Snap bip-44', function () {
           text: 'Connect',
           tag: 'button',
         });
-
-        await driver.delay(2000);
-
-        // switch to metamask extension
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-
-        // approve install of snap
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.waitForSelector({ text: 'Approve & install' });
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
         // deal with permissions popover
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#key-access-bip44-1-0');
-        await driver.delay(1500);
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
+        await driver.waitForSelector({ text: 'Ok' });
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
-        // click send inputs on test snap page
+        // switch back to test-snaps window
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success
@@ -85,22 +80,21 @@ describe('Test Snap bip-44', function () {
           text: 'Reconnect to BIP-44 Snap',
         });
 
+        // find and click bip44 test
         await driver.clickElement('#sendBip44Test');
 
-        // check the results of the public key test
-        await driver.delay(1000);
-        const bip44Result = await driver.findElement('#bip44Result');
-        assert.equal(
-          await bip44Result.getText(),
-          '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"',
-        );
+        // check the results of the public key test using waitForSelector
+        await driver.waitForSelector({
+          css: '#bip44Result',
+          text: '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"',
+        });
 
         // enter a message to sign
         await driver.pasteIntoField('#bip44Message', '1234');
-        await driver.delay(1000);
+        await driver.delay(500);
         const snapButton3 = await driver.findElement('#signBip44Message');
         await driver.scrollToElement(snapButton3);
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve
@@ -117,14 +111,12 @@ describe('Test Snap bip-44', function () {
         // switch back to test-snaps page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
 
-        // check the results of the message signature
-        const bip44SignResult = await driver.findElement('#bip44SignResult');
-        assert.equal(
-          await bip44SignResult.getText(),
-          '"0xa41ab87ca50606eefd47525ad90294bbe44c883f6bc53655f1b8a55aa8e1e35df216f31be62e52c7a1faa519420e20810162e07dedb0fde2a4d997ff7180a78232ecd8ce2d6f4ba42ccacad33c5e9e54a8c4d41506bdffb2bb4c368581d8b086"',
-        );
+        // check the results of the message signature using waitForSelector
+        await driver.waitForSelector({
+          css: '#bip44SignResult',
+          text: '"0xa41ab87ca50606eefd47525ad90294bbe44c883f6bc53655f1b8a55aa8e1e35df216f31be62e52c7a1faa519420e20810162e07dedb0fde2a4d997ff7180a78232ecd8ce2d6f4ba42ccacad33c5e9e54a8c4d41506bdffb2bb4c368581d8b086"',
+        });
       },
     );
   });

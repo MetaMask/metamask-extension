@@ -27,14 +27,10 @@ const t = (key) => {
       return 'State logs';
     case 'stateLogsDescription':
       return 'State logs contain your public account addresses and sent transactions.';
-    case 'syncWithMobile':
-      return 'Sync with mobile';
     case 'clearActivity':
       return 'Clear activity and nonce data';
     case 'clearActivityDescription':
       return "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.";
-    case 'showAdvancedGasInline':
-      return 'Advanced gas controls';
     case 'showAdvancedGasInlineDescription':
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
@@ -159,7 +155,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(14);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
     });
 
     it('should get good contact section number', () => {
@@ -177,7 +173,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(4);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(5);
     });
 
     it('should get good experimental section number', () => {

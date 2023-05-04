@@ -7,7 +7,7 @@ import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { EVENT } from '../../shared/constants/metametrics';
+import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
 
@@ -16,7 +16,7 @@ const defaultState = {
   metamask: {
     currentLocale: 'test',
     selectedAddress: '0xFirstAddress',
-    provider: { chainId: '0x1' },
+    providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -45,6 +45,10 @@ describe('Actions', () => {
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
     });
+
+    background.signMessage = sinon.stub();
+    background.signPersonalMessage = sinon.stub();
+    background.signTypedMessage = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -227,7 +231,7 @@ describe('Actions', () => {
         cb(null, {
           currentLocale: 'test',
           selectedAddress: '0xAnotherAddress',
-          provider: {
+          providerConfig: {
             chainId: '0x1',
           },
           accounts: {
@@ -1381,14 +1385,14 @@ describe('Actions', () => {
 
       await store.dispatch(
         actions.upsertNetworkConfiguration(networkConfiguration, {
-          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
         }),
       );
 
       expect(
         upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
           referrer: ORIGIN_METAMASK,
-          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
           setActive: undefined,
         }),
       ).toBe(true);
@@ -2034,7 +2038,7 @@ describe('Actions', () => {
           cb(null, {
             currentLocale: 'test',
             selectedAddress: '0xFirstAddress',
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
             accounts: {
@@ -2080,7 +2084,7 @@ describe('Actions', () => {
           cb(null, {
             currentLocale: 'test',
             selectedAddress: '0xFirstAddress',
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
             accounts: {

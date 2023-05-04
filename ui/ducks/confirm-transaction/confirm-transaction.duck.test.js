@@ -290,7 +290,7 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          provider: {
+          providerConfig: {
             ticker: 'ETH',
           },
         },
@@ -343,8 +343,9 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          network: '5',
-          provider: {
+          networkId: '5',
+          networkStatus: 'available',
+          providerConfig: {
             chainId: '0x5',
           },
           unapprovedTxs: {
@@ -368,7 +369,6 @@ describe('Confirm Transaction Duck', () => {
         },
         confirmTransaction: {},
       };
-
       const middlewares = [thunk];
       const mockStore = configureMockStore(middlewares);
       const store = mockStore(mockState);

@@ -4,7 +4,7 @@ import Tooltip from '../../../../../ui/tooltip/tooltip';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
 import { useCopyToClipboard } from '../../../../../../hooks/useCopyToClipboard';
-import { Icon, ICON_NAMES } from '../../../../../component-library';
+import { Icon, IconName } from '../../../../../component-library';
 import { IconColor } from '../../../../../../helpers/constants/design-system';
 
 const CopyRawData = ({ data }) => {
@@ -22,7 +22,7 @@ const CopyRawData = ({ data }) => {
         >
           <div className="copy-raw-data__icon">
             <Icon
-              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+              name={copied ? IconName.CopySuccess : IconName.Copy}
               color={IconColor.iconDefault}
             />
           </div>

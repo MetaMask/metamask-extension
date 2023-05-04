@@ -9,7 +9,6 @@ export default {
     warning: { control: 'text' },
     useNonceField: { control: 'boolean' },
     sendHexData: { control: 'boolean' },
-    advancedInlineGas: { control: 'boolean' },
     showFiatInTestnets: { control: 'boolean' },
     useLedgerLive: { control: 'boolean' },
     dismissSeedBackUpReminder: { control: 'boolean' },
@@ -28,8 +27,8 @@ export default {
     showResetAccountConfirmationModal: {
       action: 'showResetAccountConfirmationModal',
     },
-    setAdvancedInlineGasFeatureFlag: {
-      action: 'setAdvancedInlineGasFeatureFlag',
+    showEthSignModal: {
+      action: 'showEthSignModal',
     },
   },
 };
@@ -39,7 +38,6 @@ export const DefaultStory = (args) => {
     {
       useNonceField,
       sendHexData,
-      advancedInlineGas,
       showFiatInTestnets,
       dismissSeedBackUpReminder,
     },
@@ -55,12 +53,6 @@ export const DefaultStory = (args) => {
   const handleSendHexData = () => {
     updateArgs({
       sendHexData: !sendHexData,
-    });
-  };
-
-  const handleAdvancedInlineGas = () => {
-    updateArgs({
-      advancedInlineGas: !advancedInlineGas,
     });
   };
 
@@ -83,8 +75,6 @@ export const DefaultStory = (args) => {
         setUseNonceField={handleUseNonceField}
         sendHexData={sendHexData}
         setHexDataFeatureFlag={handleSendHexData}
-        advancedInlineGas={advancedInlineGas}
-        setAdvancedInlineGasFeatureFlag={handleAdvancedInlineGas}
         showFiatInTestnets={showFiatInTestnets}
         setShowFiatConversionOnTestnetsPreference={handleShowFiatInTestnets}
         dismissSeedBackUpReminder={dismissSeedBackUpReminder}
@@ -100,7 +90,6 @@ DefaultStory.args = {
   warning: 'Warning Sample',
   useNonceField: false,
   sendHexData: false,
-  advancedInlineGas: false,
   showFiatInTestnets: false,
   useLedgerLive: false,
   dismissSeedBackUpReminder: false,

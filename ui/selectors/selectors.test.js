@@ -1,5 +1,9 @@
 import mockState from '../../test/data/mock-state.json';
-import { HardwareKeyringTypes } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
+import {
+  CHAIN_IDS,
+  LOCALHOST_DISPLAY_NAME,
+} from '../../shared/constants/network';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -31,16 +35,18 @@ describe('Selectors', () => {
   });
 
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.provider is undefined', () => {
+    it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
-        selectors.getRpcPrefsForCurrentProvider({ metamask: {} }),
+        selectors.getRpcPrefsForCurrentProvider({
+          metamask: { providerConfig: {} },
+        }),
       ).toStrictEqual({});
     });
-    it('returns rpcPrefs from the provider', () => {
+    it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            provider: {
+            providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
             },
           },
@@ -103,40 +109,84 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getAllNetworks', () => {
+    it('sorts Localhost to the bottom of the test lists', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME,
+            },
+          },
+        },
+      });
+      const lastItem = networks.pop();
+      expect(lastItem.nickname.toLowerCase()).toContain('localhost');
+    });
+  });
+
+  describe('#getAllEnabledNetworks', () => {
+    it('returns only MainNet with showTestNetworks off', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: false,
+          },
+        },
+      });
+      expect(networks).toHaveLength(1);
+    });
+
+    it('returns networks with showTestNetworks on', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+        },
+      });
+      expect(networks.length).toBeGreaterThan(1);
+    });
+  });
+
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
+      mockState.metamask.keyrings[0].type = KeyringType.imported;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
+      mockState.metamask.keyrings[0].type = KeyringType.ledger;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
+      mockState.metamask.keyrings[0].type = KeyringType.trezor;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
+      mockState.metamask.keyrings[0].type = KeyringType.imported;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
+      mockState.metamask.keyrings[0].type = KeyringType.ledger;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        HardwareKeyringTypes.ledger,
+        KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
+      mockState.metamask.keyrings[0].type = KeyringType.trezor;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        HardwareKeyringTypes.trezor,
+        KeyringType.trezor,
       );
     });
   });
@@ -174,7 +224,7 @@ describe('Selectors', () => {
           ...mockState.metamask,
           keyrings: [
             {
-              type: HardwareKeyringTypes.ledger,
+              type: KeyringType.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
             },
           ],
@@ -389,5 +439,34 @@ describe('Selectors', () => {
   it('#getIsDesktopEnabled', () => {
     const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
     expect(isDesktopEnabled).toBeFalsy();
+  });
+
+  it('#getIsBridgeChain', () => {
+    mockState.metamask.providerConfig.chainId = '0xa';
+    const isOptimismSupported = selectors.getIsBridgeChain(mockState);
+    expect(isOptimismSupported).toBeTruthy();
+
+    mockState.metamask.providerConfig.chainId = '0xfa';
+    const isFantomSupported = selectors.getIsBridgeChain(mockState);
+    expect(isFantomSupported).toBeFalsy();
+  });
+
+  it('#getIsBridgeToken', () => {
+    mockState.metamask.providerConfig.chainId = '0xa';
+    const isOptimismTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
+    )(mockState);
+    expect(isOptimismTokenSupported).toBeTruthy();
+
+    const isOptimismUnknownTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e60',
+    )(mockState);
+    expect(isOptimismUnknownTokenSupported).toBeFalsy();
+
+    mockState.metamask.providerConfig.chainId = '0xfa';
+    const isFantomTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
+    )(mockState);
+    expect(isFantomTokenSupported).toBeFalsy();
   });
 });

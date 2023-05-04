@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -28,7 +28,7 @@ let openTabSpy;
 describe('EthOverview', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
@@ -56,11 +56,11 @@ describe('EthOverview', () => {
       selectedAddress: '0x1',
       keyrings: [
         {
-          type: HardwareKeyringTypes.imported,
+          type: KeyringType.imported,
           accounts: ['0x1', '0x2'],
         },
         {
-          type: HardwareKeyringTypes.ledger,
+          type: KeyringType.ledger,
           accounts: [],
         },
       ],
@@ -145,13 +145,33 @@ describe('EthOverview', () => {
       expect(secondaryBalance).toHaveTextContent('0');
     });
 
-    it('should always show the Bridge button', () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+    it('should have the Bridge button enabled if chain id is part of supported chains', () => {
+      const mockedAvalancheStore = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          providerConfig: {
+            ...mockStore.metamask.providerConfig,
+            chainId: '0xa86a',
+          },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
+
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
       expect(bridgeButton).toBeInTheDocument();
+      expect(bridgeButton).toBeEnabled();
+      expect(queryByText('Bridge').parentElement).not.toHaveAttribute(
+        'data-original-title',
+        'Unavailable on this network',
+      );
     });
 
-    it('should open the Bridge URI when clicking on Bridge button', async () => {
+    it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
 
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
@@ -164,8 +184,36 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/bridge?metamaskEntry=ext`),
+          url: expect.stringContaining(
+            '/bridge?metamaskEntry=ext_bridge_button',
+          ),
         }),
+      );
+    });
+
+    it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
+      const mockedFantomStore = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          providerConfig: {
+            ...mockStore.metamask.providerConfig,
+            chainId: '0xfa',
+          },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(mockedFantomStore);
+
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+      expect(bridgeButton).toBeInTheDocument();
+      expect(bridgeButton).toBeDisabled();
+      expect(queryByText('Bridge').parentElement).toHaveAttribute(
+        'data-original-title',
+        'Unavailable on this network',
       );
     });
 
@@ -203,7 +251,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -223,7 +271,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -243,7 +291,7 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

@@ -6,12 +6,12 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import CustodyLabels from '../../ui/mmi/custody-labels';
+import CustodyLabels from '../../institutional/custody-labels/custody-labels';
 ///: END:ONLY_INCLUDE_IN
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 class SelectedAccount extends Component {
@@ -25,7 +25,7 @@ class SelectedAccount extends Component {
 
   static propTypes = {
     selectedIdentity: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType: PropTypes.string,
     accountDetails: PropTypes.object,
     provider: PropTypes.object,
@@ -48,7 +48,7 @@ class SelectedAccount extends Component {
     const { t } = this.context;
     const {
       selectedIdentity,
-      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       accountType,
       accountDetails,
       provider,
@@ -64,7 +64,7 @@ class SelectedAccount extends Component {
 
     let showAccountCopyIcon = true;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const custodyLabels = accountDetails
       ? accountDetails[toChecksumHexAddress(selectedIdentity.address)]?.labels
       : {};
@@ -94,7 +94,7 @@ class SelectedAccount extends Component {
           <button
             className="selected-account__clickable"
             data-testid="selected-account-click"
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             disabled={!isCustodianSupportedChain}
             ///: END:ONLY_INCLUDE_IN
             onClick={() => {
@@ -111,7 +111,7 @@ class SelectedAccount extends Component {
             </div>
             <div className="selected-account__address">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 showCustodyLabels && <CustodyLabels labels={custodyLabels} />
                 ///: END:ONLY_INCLUDE_IN
               }
@@ -120,15 +120,22 @@ class SelectedAccount extends Component {
                 <div className="selected-account__copy">
                   <Icon
                     name={
-                      this.state.copied
-                        ? ICON_NAMES.COPY_SUCCESS
-                        : ICON_NAMES.COPY
+                      this.state.copied ? IconName.COPY_SUCCESS : IconName.COPY
                     }
-                    size={ICON_SIZES.SM}
+                    size={IconSize.SM}
                     color={IconColor.iconAlternative}
                   />
                 </div>
               )}
+              <div className="selected-account__copy">
+                <Icon
+                  name={
+                    this.state.copied ? IconName.CopySuccess : IconName.Copy
+                  }
+                  size={IconSize.Sm}
+                  color={IconColor.iconAlternative}
+                />
+              </div>
             </div>
           </button>
         </Tooltip>

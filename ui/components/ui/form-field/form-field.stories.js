@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
 
 import React, { useState } from 'react';
-import Typography from '../typography';
 import Tooltip from '../tooltip';
 
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName, Text } from '../../component-library';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import FormField from '.';
@@ -70,7 +69,7 @@ export const FormFieldWithTitleDetail = (args) => {
         Click Me
       </button>
     ),
-    checkmark: <Icon name={ICON_NAMES.CHECK} />,
+    checkmark: <Icon name={IconName.Check} />,
   };
 
   return <FormField {...args} titleDetail={detailOptions[args.titleDetail]} />;
@@ -96,22 +95,20 @@ export const CustomComponents = (args) => {
       <FormField
         {...args}
         titleHeadingWrapperProps={{ alignItems: AlignItems.center }}
-        TitleTextCustomComponent={
-          <Typography>TitleTextCustomComponent</Typography>
-        }
+        TitleTextCustomComponent={<Text>TitleTextCustomComponent</Text>}
         TitleUnitCustomComponent={
-          <Typography marginLeft={2}>TitleUnitCustomComponent</Typography>
+          <Text marginLeft={2}>TitleUnitCustomComponent</Text>
         }
         TooltipCustomComponent={
           <Tooltip
             interactive
             position="top"
-            html={<Typography>Custom tooltip</Typography>}
+            html={<Text>Custom tooltip</Text>}
           >
-            <Icon name={ICON_NAMES.QUESTION} marginLeft={2} />
+            <Icon name={IconName.Question} marginLeft={2} />
           </Tooltip>
         }
-        titleDetail={<Typography>TitleDetail</Typography>}
+        titleDetail={<Text>TitleDetail</Text>}
         titleDetailWrapperProps={{ marginBottom: 0 }}
       />
     </div>

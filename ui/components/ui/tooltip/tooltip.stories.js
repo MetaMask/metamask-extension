@@ -1,6 +1,6 @@
 import React from 'react';
 import Box from '../box/box';
-import Typography from '../typography/typography';
+import { Text } from '../../component-library';
 import Tooltip from '.';
 
 export default {
@@ -58,7 +58,7 @@ export default {
 
 export const DefaultStory = (args) => (
   <Box display="flex">
-    <Typography>Hover over the info icon to see the tooltip</Typography>
+    <Text>Hover over the info icon to see the tooltip</Text>
     <Tooltip {...args}>
       <i
         className="fa fa-sm fa-info-circle"
@@ -72,7 +72,7 @@ DefaultStory.storyName = 'Default';
 
 export const HTML = (args) => (
   <Box display="flex">
-    <Typography>This tooltips content is html</Typography>
+    <Text>This tooltips content is html</Text>
     <Tooltip {...args}>
       <i
         className="fa fa-sm fa-info-circle"
