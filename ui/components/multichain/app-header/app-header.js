@@ -144,7 +144,9 @@ export const AppHeader = ({ onClick }) => {
               alignItems={AlignItems.center}
               width={BLOCK_SIZES.FULL}
               backgroundColor={BackgroundColor.backgroundDefault}
-              padding={4}
+              padding={2}
+              paddingLeft={4}
+              paddingRight={4}
               gap={2}
             >
               <AvatarNetwork
