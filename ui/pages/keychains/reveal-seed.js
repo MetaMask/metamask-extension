@@ -148,9 +148,39 @@ const RevealSeedPage = () => {
   };
 
   const renderRevealSeedContent = () => {
+    // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpViewSrpText,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+      },
+    });
+
     return (
       <div>
-        <Tabs defaultActiveTabName={t('revealSeedWordsText')}>
+        <Tabs
+          defaultActiveTabName={t('revealSeedWordsText')}
+          onTabClick={(tabName) => {
+            if (tabName === 'text-seed') {
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewSrpText,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                },
+              });
+            } else if (tabName === 'qr-seed') {
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewsSrpQR,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                },
+              });
+            }
+          }}
+        >
           <Tab
             name={t('revealSeedWordsText')}
             className="reveal-seed__tab"
@@ -164,6 +194,14 @@ const RevealSeedPage = () => {
                 trackEvent({
                   category: MetaMetricsEventCategory.Keys,
                   event: MetaMetricsEventName.KeyExportCopied,
+                  properties: {
+                    key_type: MetaMetricsEventKeyType.Srp,
+                    copy_method: 'clipboard',
+                  },
+                });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Keys,
+                  event: MetaMetricsEventName.SrpCopiedToClipboard,
                   properties: {
                     key_type: MetaMetricsEventKeyType.Srp,
                     copy_method: 'clipboard',
@@ -211,6 +249,13 @@ const RevealSeedPage = () => {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCancelled,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
             history.push(mostRecentOverviewPage);
           }}
         >
@@ -223,6 +268,13 @@ const RevealSeedPage = () => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
               event: MetaMetricsEventName.KeyExportRequested,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealNextClicked,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
@@ -244,7 +296,16 @@ const RevealSeedPage = () => {
           variant={BUTTON_VARIANT.SECONDARY}
           width={BLOCK_SIZES.FULL}
           size={Size.LG}
-          onClick={() => history.push(mostRecentOverviewPage)}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCloseClicked,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            history.push(mostRecentOverviewPage);
+          }}
         >
           {t('close')}
         </Button>

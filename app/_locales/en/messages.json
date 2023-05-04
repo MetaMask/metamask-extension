@@ -1412,6 +1412,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "enterYourPassword": {
+    "message": "Enter your password"
+  },
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3167,6 +3170,10 @@
     "message": "Private Key",
     "description": "select this type of file to use to import an account"
   },
+  "privateKeyCopyWarning": {
+    "message": "Private key for $1",
+    "description": "$1 represents the account name"
+  },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
@@ -3672,6 +3679,9 @@
   },
   "showPermissions": {
     "message": "Show permissions"
+  },
+  "showPrivateKey": {
+    "message": "Show private key"
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
@@ -4439,11 +4449,44 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleEthSignBannerDescription": {
+    "message": "You’re at risk for phishing attacks. Protect yourself by turning off eth_sign."
+  },
   "toggleEthSignDescriptionField": {
-    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
+    "message": "If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs."
   },
   "toggleEthSignField": {
-    "message": "Toggle eth_sign requests"
+    "message": "Eth_sign requests"
+  },
+  "toggleEthSignModalBannerBoldText": {
+    "message": " you might be getting scammed"
+  },
+  "toggleEthSignModalBannerText": {
+    "message": "If you've been asked to turn this setting on,"
+  },
+  "toggleEthSignModalCheckBox": {
+    "message": "I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. "
+  },
+  "toggleEthSignModalDescription": {
+    "message": "Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code."
+  },
+  "toggleEthSignModalFormError": {
+    "message": "The text is incorrect"
+  },
+  "toggleEthSignModalFormLabel": {
+    "message": "Enter “I only sign what I understand” to continue"
+  },
+  "toggleEthSignModalFormValidation": {
+    "message": "I only sign what I understand"
+  },
+  "toggleEthSignModalTitle": {
+    "message": "Use at your own risk"
+  },
+  "toggleEthSignOff": {
+    "message": "OFF (Recommended)"
+  },
+  "toggleEthSignOn": {
+    "message": "ON (Not recommended)"
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",

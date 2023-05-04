@@ -29,7 +29,7 @@ export default {
   },
   args: {
     secondary: '$9.80 USD',
-    primary: '88.00687889',
+    primary: '88.0068',
     tokenImage: './images/eth_logo.png',
     tokenSymbol: 'ETH',
     title: 'Ethereum',
