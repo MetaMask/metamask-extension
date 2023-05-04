@@ -43,6 +43,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
         }
         address={address}
         size={Size.XS}
+        borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
       <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
         {name}
