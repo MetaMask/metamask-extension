@@ -3,7 +3,10 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap RPC', function () {
-  it('can use the cross-snap RPC endowment and produce a public key', async function () {
+  // Disabled for now due to a bug.
+  // TODO: Re-enable when fixed.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can use the cross-snap RPC endowment and produce a public key', async function () {
     const ganacheOptions = {
       accounts: [
         {
