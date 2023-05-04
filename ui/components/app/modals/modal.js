@@ -6,13 +6,13 @@ import * as actions from '../../../store/actions';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
 
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt';
 import TransactionFailed from '../../institutional/transaction-failed';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link';
@@ -38,7 +38,7 @@ import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 ///: END:ONLY_INCLUDE_IN
 
 const modalContainerBaseStyle = {
@@ -89,7 +89,7 @@ const accountModalStyle = {
   },
 };
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const custodyConfirmModalStyle = {
   mobileModalStyle: {
     width: '95%',
@@ -319,7 +319,7 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   COMPLIANCE: {
     contents: <ComplianceModal />,
     onHide: (props) => props.hideWarning(),
@@ -416,7 +416,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
   return {
@@ -429,7 +429,7 @@ function mapDispatchToProps(dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning());
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IN
@@ -442,7 +442,7 @@ class Modal extends Component {
     hideModal: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -475,7 +475,7 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             if (this.props.modalState.name === 'CUSTODY_CONFIRM_LINK') {
               this.props.setWaitForConfirmDeepLinkDialog(false);
             }
