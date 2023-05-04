@@ -22,9 +22,13 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ICON_NAMES } from '../../component-library';
+import { IconName } from '../../component-library';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext();
@@ -50,10 +54,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
 
   const openBlockExplorer = () => {
     trackEvent({
-      event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
-      category: EVENT.CATEGORIES.NAVIGATION,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      category: MetaMetricsEventCategory.Navigation,
       properties: {
-        link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+        link_type: MetaMetricsEventLinkType.AccountTracker,
         location: 'Account Options',
         url_domain: getURLHostName(addressLink),
       },
@@ -83,7 +87,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             </span>
           ) : null
         }
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
       >
         {t(
           blockExplorerLinkText.firstPart,
@@ -96,8 +100,8 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         <MenuItem
           onClick={() => {
             trackEvent({
-              event: EVENT_NAMES.APP_WINDOW_EXPANDED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Account Options',
               },
@@ -105,7 +109,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             global.platform.openExtensionInBrowser();
             onClose();
           }}
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
         >
           {t('expandView')}
         </MenuItem>
@@ -115,15 +119,15 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
           trackEvent({
-            event: EVENT_NAMES.NAV_ACCOUNT_DETAILS_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavAccountDetailsOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
           });
           onClose();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         {t('accountDetails')}
       </MenuItem>
@@ -131,8 +135,8 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         data-testid="account-options-menu__connected-sites"
         onClick={() => {
           trackEvent({
-            event: EVENT_NAMES.NAV_CONNECTED_SITES_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavConnectedSitesOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
@@ -140,7 +144,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           history.push(CONNECTED_ROUTE);
           onClose();
         }}
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
       >
         {t('connectedSites')}
       </MenuItem>
@@ -156,7 +160,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             );
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           {t('removeAccount')}
         </MenuItem>

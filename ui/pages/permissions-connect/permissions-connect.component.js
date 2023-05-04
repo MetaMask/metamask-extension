@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 ///: END:ONLY_INCLUDE_IN
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -9,17 +9,13 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../components/component-library';
+import { Icon, IconName, IconSize } from '../../components/component-library';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapInstall from './flask/snap-install';
-import SnapUpdate from './flask/snap-update';
-import SnapResult from './flask/snap-result';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapInstall from './snaps/snap-install';
+import SnapUpdate from './snaps/snap-update';
+import SnapResult from './snaps/snap-result';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
@@ -42,11 +38,11 @@ export default class PermissionConnect extends Component {
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    requestType: PropTypes.string.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     snapInstallPath: PropTypes.string.isRequired,
     snapUpdatePath: PropTypes.string.isRequired,
     snapResultPath: PropTypes.string.isRequired,
-    requestType: PropTypes.string.isRequired,
     requestState: PropTypes.object.isRequired,
     approvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
@@ -102,7 +98,7 @@ export default class PermissionConnect extends Component {
     const {
       connectPath,
       confirmPermissionPath,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
@@ -116,7 +112,7 @@ export default class PermissionConnect extends Component {
     getRequestAccountTabIds();
 
     if (!permissionsRequest) {
-      history.push(DEFAULT_ROUTE);
+      history.replace(DEFAULT_ROUTE);
       return;
     }
 
@@ -126,22 +122,22 @@ export default class PermissionConnect extends Component {
     }
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
       switch (requestType) {
         case 'wallet_installSnap':
-          history.push(snapInstallPath);
+          history.replace(snapInstallPath);
           break;
         case 'wallet_updateSnap':
-          history.push(snapUpdatePath);
+          history.replace(snapUpdatePath);
           break;
         case 'wallet_installSnapResult':
-          history.push(snapResultPath);
+          history.replace(snapResultPath);
           break;
         default:
           ///: END:ONLY_INCLUDE_IN
-          history.push(confirmPermissionPath);
-        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          history.replace(confirmPermissionPath);
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }
       ///: END:ONLY_INCLUDE_IN
     }
@@ -179,23 +175,20 @@ export default class PermissionConnect extends Component {
   selectAccounts = (addresses) => {
     const {
       confirmPermissionPath,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      requestType,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
-      requestType,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     this.setState(
       {
         selectedAccountAddresses: addresses,
       },
-      ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
-      () => this.props.history.push(confirmPermissionPath),
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       () => {
         switch (requestType) {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           case 'wallet_installSnap':
             this.props.history.push(snapInstallPath);
             break;
@@ -205,56 +198,43 @@ export default class PermissionConnect extends Component {
           case 'wallet_installSnapResult':
             this.props.history.push(snapResultPath);
             break;
+          ///: END:ONLY_INCLUDE_IN
           default:
             this.props.history.push(confirmPermissionPath);
         }
       },
-      ///: END:ONLY_INCLUDE_IN
     );
   };
 
   redirect(approved) {
     const {
       history,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       permissionsRequest,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    let shouldRedirect = true;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const isRequestingSnap =
       permissionsRequest?.permissions &&
       Object.keys(permissionsRequest.permissions).includes('wallet_snap');
 
-    const shouldRedirect = !isRequestingSnap;
+    shouldRedirect = !isRequestingSnap;
+    ///: END:ONLY_INCLUDE_IN
 
     this.setState({
       redirecting: shouldRedirect,
       permissionsApproved: approved,
     });
-    ///: END:ONLY_INCLUDE_IN
-
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
-    this.setState({
-      redirecting: true,
-      permissionsApproved: approved,
-    });
-    ///: END:ONLY_INCLUDE_IN
     this.removeBeforeUnload();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (shouldRedirect && approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
+      return;
     }
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
-    if (approved) {
-      setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
-    }
-    ///: END:ONLY_INCLUDE_IN
-    else {
-      history.push(DEFAULT_ROUTE);
-    }
+    history.push(DEFAULT_ROUTE);
   }
 
   cancelPermissionsRequest = async (requestId) => {
@@ -283,9 +263,9 @@ export default class PermissionConnect extends Component {
             onClick={() => this.goBack()}
           >
             <Icon
-              name={ICON_NAMES.ARROW_RIGHT}
+              name={IconName.ArrowRight}
               marginInlineEnd={1}
-              size={ICON_SIZES.XS}
+              size={IconSize.Xs}
             />
             {t('back')}
           </div>
@@ -311,7 +291,7 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
@@ -380,7 +360,7 @@ export default class PermissionConnect extends Component {
               )}
             />
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             }
             <Route
               path={snapInstallPath}
@@ -413,7 +393,7 @@ export default class PermissionConnect extends Component {
               ///: END:ONLY_INCLUDE_IN
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             }
             <Route
               path={snapUpdatePath}
@@ -446,7 +426,7 @@ export default class PermissionConnect extends Component {
               ///: END:ONLY_INCLUDE_IN
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             }
             <Route
               path={snapResultPath}

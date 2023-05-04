@@ -1,0 +1,677 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmSendEther should render correct information for for confirm send ether 1`] = `
+[
+  <div
+    class="page-container"
+    data-testid="page-container"
+  >
+    <div
+      class="confirm-page-container-navigation"
+      style="display: flex;"
+    >
+      <div
+        class="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
+        >
+          <i
+            class="fa fa-angle-double-left fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
+        >
+          <i
+            class="fa fa-angle-left fa-2x"
+          />
+        </button>
+      </div>
+      <div
+        class="confirm-page-container-navigation__textcontainer"
+      >
+        <div
+          class="confirm-page-container-navigation__navtext"
+        >
+          0
+           
+          of
+           
+          2
+        </div>
+        <div
+          class="confirm-page-container-navigation__longtext"
+        >
+          requests waiting to be acknowledged
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-navigation__container"
+        style="visibility: initial;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
+        >
+          <i
+            class="fa fa-angle-right fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
+        >
+          <i
+            class="fa fa-angle-double-right fa-2x"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="confirm-page-container-header"
+      data-testid="header-container"
+    >
+      <div
+        class="confirm-page-container-header__row"
+      >
+        <div
+          class="confirm-page-container-header__back-button-container"
+          style="visibility: initial;"
+        >
+          <span
+            class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+          <span
+            class="confirm-page-container-header__back-button"
+            data-testid="confirm-page-back-edit-button"
+          >
+            Edit
+          </span>
+        </div>
+      </div>
+      <div
+        class="sender-to-recipient sender-to-recipient--default"
+        data-testid="sender-to-recipient"
+      >
+        <div
+          class="sender-to-recipient__party sender-to-recipient__party--sender"
+        >
+          <div
+            class="sender-to-recipient__sender-icon"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 24px; width: 24px; border-radius: 12px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+                >
+                  <svg
+                    height="24"
+                    width="24"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#18CDF2"
+                      height="24"
+                      transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                      width="24"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#035E56"
+                      height="24"
+                      transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                      width="24"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F26602"
+                      height="24"
+                      transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                      width="24"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="sender-to-recipient__tooltip-wrapper"
+          >
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class="sender-to-recipient__tooltip-container"
+              data-original-title="null"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <div
+                class="sender-to-recipient__name"
+              >
+                Test Account
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="sender-to-recipient__arrow-container"
+        >
+          <div
+            class="sender-to-recipient__arrow-circle"
+          >
+            <i
+              class="fa fa-arrow-right sender-to-recipient__arrow-circle__icon"
+            />
+          </div>
+        </div>
+        <div
+          class="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+        >
+          <div
+            class="sender-to-recipient__sender-icon"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 24px; width: 24px; border-radius: 12px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(3, 73, 94);"
+                >
+                  <svg
+                    height="24"
+                    width="24"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#F5D800"
+                      height="24"
+                      transform="translate(-1.6948137315966292 7.490045892231985) rotate(238.2 12 12)"
+                      width="24"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#1888F2"
+                      height="24"
+                      transform="translate(2.6987555575750655 10.47254609666851) rotate(211.2 12 12)"
+                      width="24"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#017E8E"
+                      height="24"
+                      transform="translate(4.1286145552783005 -17.188975454864387) rotate(404.9 12 12)"
+                      width="24"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="sender-to-recipient__tooltip-wrapper"
+          >
+            <div
+              class="sender-to-recipient__tooltip-container"
+              style="display: inline;"
+              tabindex="0"
+              title=""
+            >
+              <div
+                class="sender-to-recipient__name"
+                data-testid="sender-to-recipient__name"
+              >
+                0x0c5...AaFb
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirm-page-container-content"
+    >
+      
+      <div
+        class="confirm-page-container-summary confirm-page-container-summary--border"
+      >
+        <div
+          class="site-origin confirm-page-container-summary__origin"
+        >
+          <bdi
+            dir="ltr"
+          >
+            https://metamask.github.io
+          </bdi>
+        </div>
+        <div
+          class="confirm-page-container-summary__action-row"
+        >
+          <div
+            class="confirm-page-container-summary__action"
+          >
+            <span
+              class="confirm-page-container-summary__action__name"
+            >
+              Sending ETH
+            </span>
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-summary__title"
+        >
+          <h3
+            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          >
+            <div
+              class="currency-display-component"
+              title="0"
+            >
+              <span
+                class="currency-display-component__prefix"
+              >
+                <i
+                  class="fab fa-ethereum"
+                  style="font-size: 24px;"
+                />
+              </span>
+              <span
+                class="currency-display-component__text"
+              >
+                0
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-content__details"
+      >
+        <div
+          class="transaction-alerts"
+        >
+          <div
+            class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+          >
+            <span
+              class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-warning-default"
+              style="mask-image: url('./images/icons/warning.svg');"
+            />
+            <div>
+              <p
+                class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              >
+                Network is busy. Gas prices are high and estimates are less accurate.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="transaction-detail"
+        >
+          <div
+            class="box box--padding-top-5 box--display-flex box--flex-direction-row box--justify-content-flex-end"
+          >
+            <div
+              class="edit-gas-fee-button"
+            >
+              <button
+                data-testid="edit-gas-fee-button"
+              >
+                <span
+                  class="edit-gas-fee-button__icon"
+                >
+                  🌐
+                </span>
+                <span
+                  class="edit-gas-fee-button__label"
+                >
+                  Site suggested
+                </span>
+                <span
+                  class="box mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-primary-default"
+                  style="mask-image: url('./images/icons/arrow-right.svg');"
+                />
+              </button>
+              <div
+                class="info-tooltip"
+              >
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-2"
+                    class="info-tooltip__tooltip-container"
+                    data-original-title="null"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <svg
+                      viewBox="0 0 10 10"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                        fill="var(--color-icon-alternative)"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="transaction-detail-rows"
+          >
+            <div
+              class="transaction-detail-item"
+            >
+              <div
+                class="transaction-detail-item__row"
+              >
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                >
+                  <div
+                    class="box box--display-flex box--flex-direction-row"
+                  >
+                    <div
+                      class="box box--margin-right-1 box--flex-direction-row"
+                    >
+                      Gas
+                    </div>
+                    <span
+                      class="gas-details-item-title__estimate"
+                    >
+                      (
+                      estimated
+                      )
+                    </span>
+                    <div
+                      class="info-tooltip"
+                    >
+                      <div>
+                        <div
+                          aria-describedby="tippy-tooltip-3"
+                          class="info-tooltip__tooltip-container"
+                          data-original-title="null"
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
+                        >
+                          <svg
+                            viewBox="0 0 10 10"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                              fill="var(--color-icon-alternative)"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </h6>
+                <div
+                  class="transaction-detail-item__detail-values"
+                >
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                  >
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.00021"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.00021
+                        </span>
+                      </div>
+                    </div>
+                  </h6>
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                  >
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.00021 ETH"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.00021
+                        </span>
+                        <span
+                          class="currency-display-component__suffix"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </h6>
+                </div>
+              </div>
+              <div
+                class="transaction-detail-item__row"
+              >
+                <div>
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--positive typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+                  >
+                    Unknown processing time
+                  </h6>
+                </div>
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                >
+                  <div
+                    class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+                  >
+                    <div
+                      class="box box--margin-right-1 box--flex-direction-row"
+                    >
+                      <strong>
+                        Max fee:
+                      </strong>
+                    </div>
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.00021 ETH"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.00021
+                        </span>
+                        <span
+                          class="currency-display-component__suffix"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </h6>
+              </div>
+            </div>
+            <div
+              class="transaction-detail-item"
+            >
+              <div
+                class="transaction-detail-item__row"
+              >
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                >
+                  Total
+                </h6>
+                <div
+                  class="transaction-detail-item__detail-values"
+                >
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                  >
+                    <div
+                      class="confirm-page-container-content__total-value"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.00021"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.00021
+                        </span>
+                      </div>
+                    </div>
+                  </h6>
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                  >
+                    <div
+                      class="confirm-page-container-content__total-value"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.00021 ETH"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.00021
+                        </span>
+                        <span
+                          class="currency-display-component__suffix"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </h6>
+                </div>
+              </div>
+              <div
+                class="transaction-detail-item__row"
+              >
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                >
+                  Amount + gas fee
+                </h6>
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                >
+                  <div
+                    class="confirm-page-container-content__total-amount"
+                  >
+                    <strong>
+                      Max amount:
+                    </strong>
+                     
+                    <div
+                      class="currency-display-component"
+                      title="0.00021 ETH"
+                    >
+                      <span
+                        class="currency-display-component__prefix"
+                      />
+                      <span
+                        class="currency-display-component__text"
+                      >
+                        0.00021
+                      </span>
+                      <span
+                        class="currency-display-component__suffix"
+                      >
+                        ETH
+                      </span>
+                    </div>
+                  </div>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="page-container__footer"
+      >
+        <footer>
+          <button
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+            data-testid="page-container-footer-cancel"
+            role="button"
+            tabindex="0"
+          >
+            Reject
+          </button>
+          <button
+            class="button btn--rounded btn-primary page-container__footer-button"
+            data-testid="page-container-footer-next"
+            role="button"
+            tabindex="0"
+          >
+            Confirm
+          </button>
+        </footer>
+        <div
+          class="page-container__footer-secondary"
+        >
+          <a>
+            Reject 2 transactions
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>,
+]
+`;

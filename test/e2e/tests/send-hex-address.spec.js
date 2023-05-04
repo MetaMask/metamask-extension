@@ -155,7 +155,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item',
-          text: '0.00008346 ETH',
+          text: '0.00008455 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -168,7 +168,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
@@ -221,7 +220,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item',
-          text: '0.00008346 ETH',
+          text: '0.00008455 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -234,7 +233,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',

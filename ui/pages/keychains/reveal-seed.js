@@ -5,7 +5,11 @@ import qrCode from 'qrcode-generator';
 import { requestRevealSeedWords, showModal } from '../../store/actions';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import {
   TextVariant,
   SEVERITIES,
@@ -24,7 +28,7 @@ import {
   Button,
   TextField,
   HelpText,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
@@ -72,10 +76,10 @@ const RevealSeedPage = () => {
     dispatch(requestRevealSeedWords(password))
       .then((revealedSeedWords) => {
         trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
           properties: {
-            key_type: EVENT.KEY_TYPES.SRP,
+            key_type: MetaMetricsEventKeyType.Srp,
           },
         });
         setSeedWords(revealedSeedWords);
@@ -92,10 +96,10 @@ const RevealSeedPage = () => {
       })
       .catch((e) => {
         trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_FAILED,
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportFailed,
           properties: {
-            key_type: EVENT.KEY_TYPES.SRP,
+            key_type: MetaMetricsEventKeyType.Srp,
             reason: e.message, // 'incorrect_password',
           },
         });
@@ -144,9 +148,39 @@ const RevealSeedPage = () => {
   };
 
   const renderRevealSeedContent = () => {
+    // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpViewSrpText,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+      },
+    });
+
     return (
       <div>
-        <Tabs defaultActiveTabName={t('revealSeedWordsText')}>
+        <Tabs
+          defaultActiveTabName={t('revealSeedWordsText')}
+          onTabClick={(tabName) => {
+            if (tabName === 'text-seed') {
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewSrpText,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                },
+              });
+            } else if (tabName === 'qr-seed') {
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewsSrpQR,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                },
+              });
+            }
+          }}
+        >
           <Tab
             name={t('revealSeedWordsText')}
             className="reveal-seed__tab"
@@ -158,10 +192,18 @@ const RevealSeedPage = () => {
               text={seedWords}
               onClickCopy={() => {
                 trackEvent({
-                  category: EVENT.CATEGORIES.KEYS,
-                  event: EVENT_NAMES.KEY_EXPORT_COPIED,
+                  category: MetaMetricsEventCategory.Keys,
+                  event: MetaMetricsEventName.KeyExportCopied,
                   properties: {
-                    key_type: EVENT.KEY_TYPES.SRP,
+                    key_type: MetaMetricsEventKeyType.Srp,
+                    copy_method: 'clipboard',
+                  },
+                });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Keys,
+                  event: MetaMetricsEventName.SrpCopiedToClipboard,
+                  properties: {
+                    key_type: MetaMetricsEventKeyType.Srp,
                     copy_method: 'clipboard',
                   },
                 });
@@ -198,13 +240,20 @@ const RevealSeedPage = () => {
         <Button
           width={BLOCK_SIZES.FULL}
           size={Size.LG}
-          type={BUTTON_TYPES.SECONDARY}
+          variant={BUTTON_VARIANT.SECONDARY}
           onClick={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_CANCELED,
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.KeyExportCanceled,
               properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCancelled,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -217,10 +266,17 @@ const RevealSeedPage = () => {
           size={Size.LG}
           onClick={(event) => {
             trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.KeyExportRequested,
               properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealNextClicked,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
               },
             });
             handleSubmit(event);
@@ -237,10 +293,19 @@ const RevealSeedPage = () => {
     return (
       <Box marginTop="auto">
         <Button
-          type={BUTTON_TYPES.SECONDARY}
+          variant={BUTTON_VARIANT.SECONDARY}
           width={BLOCK_SIZES.FULL}
           size={Size.LG}
-          onClick={() => history.push(mostRecentOverviewPage)}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCloseClicked,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            history.push(mostRecentOverviewPage);
+          }}
         >
           {t('close')}
         </Button>
@@ -274,7 +339,7 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription1', [
           <Button
             key="srp-learn-srp"
-            type={BUTTON_TYPES.LINK}
+            variant={BUTTON_VARIANT.LINK}
             size={BUTTON_SIZES.INHERIT}
             as="a"
             href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
@@ -296,7 +361,7 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription2', [
           <Button
             key="srp-learn-more-non-custodial"
-            type={BUTTON_TYPES.LINK}
+            variant={BUTTON_VARIANT.LINK}
             size={BUTTON_SIZES.INHERIT}
             as="a"
             href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}

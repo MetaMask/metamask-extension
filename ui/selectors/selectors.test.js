@@ -1,5 +1,9 @@
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
+import {
+  CHAIN_IDS,
+  LOCALHOST_DISPLAY_NAME,
+} from '../../shared/constants/network';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -31,16 +35,18 @@ describe('Selectors', () => {
   });
 
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.provider is undefined', () => {
+    it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
-        selectors.getRpcPrefsForCurrentProvider({ metamask: {} }),
+        selectors.getRpcPrefsForCurrentProvider({
+          metamask: { providerConfig: {} },
+        }),
       ).toStrictEqual({});
     });
-    it('returns rpcPrefs from the provider', () => {
+    it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            provider: {
+            providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
             },
           },
@@ -100,6 +106,50 @@ describe('Selectors', () => {
           },
         }),
       ).toStrictEqual(networkConfigurations);
+    });
+  });
+
+  describe('#getAllNetworks', () => {
+    it('sorts Localhost to the bottom of the test lists', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME,
+            },
+          },
+        },
+      });
+      const lastItem = networks.pop();
+      expect(lastItem.nickname.toLowerCase()).toContain('localhost');
+    });
+  });
+
+  describe('#getAllEnabledNetworks', () => {
+    it('returns only MainNet with showTestNetworks off', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: false,
+          },
+        },
+      });
+      expect(networks).toHaveLength(1);
+    });
+
+    it('returns networks with showTestNetworks on', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+        },
+      });
+      expect(networks.length).toBeGreaterThan(1);
     });
   });
 
@@ -392,12 +442,31 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.provider.chainId = '0xa';
+    mockState.metamask.providerConfig.chainId = '0xa';
     const isOptimismSupported = selectors.getIsBridgeChain(mockState);
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.provider.chainId = '0xfa';
+    mockState.metamask.providerConfig.chainId = '0xfa';
     const isFantomSupported = selectors.getIsBridgeChain(mockState);
     expect(isFantomSupported).toBeFalsy();
+  });
+
+  it('#getIsBridgeToken', () => {
+    mockState.metamask.providerConfig.chainId = '0xa';
+    const isOptimismTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
+    )(mockState);
+    expect(isOptimismTokenSupported).toBeTruthy();
+
+    const isOptimismUnknownTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e60',
+    )(mockState);
+    expect(isOptimismUnknownTokenSupported).toBeFalsy();
+
+    mockState.metamask.providerConfig.chainId = '0xfa';
+    const isFantomTokenSupported = selectors.getIsBridgeToken(
+      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
+    )(mockState);
+    expect(isFantomTokenSupported).toBeFalsy();
   });
 });

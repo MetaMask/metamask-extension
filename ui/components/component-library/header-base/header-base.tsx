@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   BLOCK_SIZES,
@@ -23,7 +23,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
   const endAccessoryRef = useRef<HTMLDivElement>(null);
   const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     function handleResize() {
       if (startAccessoryRef.current && endAccessoryRef.current) {
         const accMinWidth = Math.max(
@@ -70,7 +70,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
     >
       {startAccessory && (
         <Box
-          className="mm-header-base__start-accessory"
           ref={startAccessoryRef}
           style={
             children
@@ -86,7 +85,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
       )}
       {children && (
         <Box
-          className="mm-header-base__children"
           width={BLOCK_SIZES.FULL}
           style={getTitleStyles}
           {...childrenWrapperProps}
@@ -98,7 +96,6 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
         <Box
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.flexEnd}
-          className="mm-header-base__end-accessory"
           ref={endAccessoryRef}
           style={
             children

@@ -1,8 +1,12 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import { getMmiPortfolioEnabled, getMmiPortfolioUrl } from '@codefi/mmi-sdk';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  getMmiPortfolioEnabled,
+  getMmiPortfolioUrl,
+  getCustodyAccountDetails,
+} from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
   toggleAccountMenu,
@@ -16,12 +20,8 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  getAccountType,
-  getCustodyAccountDetails,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
@@ -38,7 +38,7 @@ function mapStateToProps(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const origin = getOriginOfCurrentTab(state);
   const selectedAddress = getSelectedAddress(state);
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = getUnreadNotificationsCount(state);
   ///: END:ONLY_INCLUDE_IN
   return {
@@ -49,13 +49,12 @@ function mapStateToProps(state) {
     keyrings: getMetaMaskKeyrings(state),
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     unreadNotificationsCount,
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     mmiPortfolioUrl: getMmiPortfolioUrl(state),
     mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
-    accountType: getAccountType(state),
     custodyAccountDetails: getCustodyAccountDetails(state),
     ///: END:ONLY_INCLUDE_IN
   };

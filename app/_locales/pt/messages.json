@@ -695,10 +695,6 @@
     "message": "$1 não está conectada a nenhum site.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "O snap $1 está conectado a estes sites. Eles têm acesso às permissões listadas acima.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Conectando..."
   },
@@ -1355,18 +1351,6 @@
     "message": "A importação de ficheiro não está a funcionar? Carregue aqui!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Ver detalhes",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Adicionado em",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Taxa de gás"
   },
   "gasLimit": {
     "message": "Limite de gás"
@@ -2021,9 +2002,6 @@
   "missingToken": {
     "message": "Não está vendo seu token?"
   },
-  "mobileSyncWarning": {
-    "message": "A funcionalidade \"Sincronizar com a extensão\" está temporariamente desativada. Se você quer usar sua carteira de extensão na MetaMask mobile, então, no seu app mobile: volte às opções de configuração da carteira e selecione a opção \"Importar com frase de recuperação secreta\". Use a frase secreta da sua carteira de extensão para, então, importar a sua carteira no celular."
-  },
   "moreComingSoon": {
     "message": "Mais em breve..."
   },
@@ -2326,12 +2304,6 @@
   },
   "notifications15Title": {
     "message": "A fusão do Ethereum chegou!"
-  },
-  "notifications17ActionText": {
-    "message": "Mostrar configurações de segurança e privacidade"
-  },
-  "notifications17Title": {
-    "message": "Configurações de segurança e privacidade"
   },
   "notifications1Description": {
     "message": "Usuários da MetaMask Mobile agora podem trocar tokens dentro de sua carteira mobile. Leia o QR code para obter o aplicativo para dispositivos móveis e comece a trocar.",
@@ -2702,10 +2674,6 @@
   "permission_cronjob": {
     "message": "Agende e execute ações periódicas.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Exibir uma confirmação na MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Exibir janelas de diálogo na MetaMask.",
@@ -3243,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Nenhum resultado correspondente encontrado."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Exibir"
   },
@@ -3320,14 +3284,6 @@
   "smartTransaction": {
     "message": "Transação inteligente"
   },
-  "snapAccess": {
-    "message": "Snap $1 tem acesso a:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Adicionado em $1 a partir de $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Esse conteúdo vem de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3355,10 +3311,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Ocorreu um erro com $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Carregando insight da transação..."
   },
@@ -3368,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "Gerencie seus snaps"
   },
-  "snapsStatus": {
-    "message": "O status do snap depende da atividade."
-  },
   "snapsToggle": {
     "message": "O snap só será executado se estiver ativado"
   },
   "snapsUIError": {
-    "message": "A IU especificada pelo snap é inválida."
+    "message": "A IU especificada pelo snap é inválida.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Algumas redes podem representar riscos de segurança e/ou privacidade. Tenha os riscos em mente antes de adicionar e usar uma rede."
@@ -3949,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter 11 caracteres ou menos."
   },
-  "syncFailed": {
-    "message": "Falha na sincronização"
-  },
-  "syncInProgress": {
-    "message": "Sincronização em andamento"
-  },
-  "syncWithMobile": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Ao escanear esse código, verifique se não há mais ninguém olhando para a sua tela"
-  },
-  "syncWithMobileComplete": {
-    "message": "Seus dados foram sincronizados. Curta o app da MetaMask para dispositivos móveis!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Você pode sincronizar suas contas e informações com o seu dispositivo móvel. Abra o aplicativo da MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Se você tiver acabado de abrir o app da MetaMask para dispositivos móveis pela primeira vez, basta seguir as etapas no seu telefone."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escaneie esse código com seu app da MetaMask para dispositivos móveis"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
   "tenPercentIncreased": {
     "message": "10% de aumento"
   },
@@ -3999,9 +3922,6 @@
   },
   "thisIsBasedOn": {
     "message": "Isso se baseia em informações de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Esse serviço é experimental"
   },
   "time": {
     "message": "Hora"

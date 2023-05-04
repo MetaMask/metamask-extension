@@ -2,20 +2,23 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import Typography from '../../../components/ui/typography/typography';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  TextVariant,
+  FontWeight,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
+import { Text } from '../../../components/component-library';
 import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {
@@ -32,8 +35,8 @@ export default function OnboardingPinExtension() {
     } else {
       await dispatch(setCompletedOnboarding());
       trackEvent({
-        category: EVENT.CATEGORIES.ONBOARDING,
-        event: EVENT_NAMES.ONBOARDING_WALLET_SETUP_COMPLETE,
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletSetupComplete,
         properties: {
           wallet_setup_type:
             firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
@@ -51,13 +54,14 @@ export default function OnboardingPinExtension() {
       className="onboarding-pin-extension"
       data-testid="onboarding-pin-extension"
     >
-      <Typography
-        variant={TypographyVariant.H2}
-        align={TEXT_ALIGN.CENTER}
-        fontWeight={FONT_WEIGHT.BOLD}
+      <Text
+        variant={TextVariant.headingLg}
+        as="h2"
+        align={TextAlign.Center}
+        fontWeight={FontWeight.Bold}
       >
         {t('onboardingPinExtensionTitle')}
-      </Typography>
+      </Text>
       <Carousel
         selectedItem={selectedIndex}
         showThumbs={false}
@@ -66,20 +70,20 @@ export default function OnboardingPinExtension() {
         onChange={(index) => setSelectedIndex(index)}
       >
         <div>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          <Text align={TextAlign.Center}>
             {t('onboardingPinExtensionDescription')}
-          </Typography>
+          </Text>
           <div className="onboarding-pin-extension__diagram">
             <OnboardingPinBillboard />
           </div>
         </div>
         <div>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          <Text align={TextAlign.Center}>
             {t('onboardingPinExtensionDescription2')}
-          </Typography>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          </Text>
+          <Text align={TextAlign.Center}>
             {t('onboardingPinExtensionDescription3')}
-          </Typography>
+          </Text>
           <img
             src="/images/onboarding-pin-browser.svg"
             width="799"

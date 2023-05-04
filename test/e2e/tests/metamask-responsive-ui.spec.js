@@ -4,7 +4,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { openDevToolsForTabs: true };
 
     await withFixtures(
       {
@@ -15,6 +15,8 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        // agree to terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -73,7 +75,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Importing existing wallet from lock page', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { openDevToolsForTabs: true };
     const testSeedPhrase =
       'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
@@ -114,7 +116,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { openDevToolsForTabs: true };
     const ganacheOptions = {
       accounts: [
         {
@@ -163,13 +165,10 @@ describe('MetaMask Responsive UI', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-1 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 ETH',
+        });
       },
     );
   });

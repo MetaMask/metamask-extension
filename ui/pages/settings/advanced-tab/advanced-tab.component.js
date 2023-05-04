@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
-import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
 import Dialog from '../../../components/ui/dialog';
 
@@ -19,10 +18,18 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { BannerAlert } from '../../../components/component-library';
+import {
+  SEVERITIES,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
@@ -38,8 +45,8 @@ export default class AdvancedTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
+    showEthSignModal: PropTypes.func,
     warning: PropTypes.string,
-    history: PropTypes.object,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
@@ -58,7 +65,7 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -189,37 +196,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderMobileSync() {
-    const { t } = this.context;
-    const { history } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-mobile-sync"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithMobile')}</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              onClick={(event) => {
-                event.preventDefault();
-                history.push(MOBILE_SYNC_ROUTE);
-              }}
-            >
-              {t('syncWithMobile')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderResetAccount() {
     const { t } = this.context;
     const { showResetAccountConfirmationModal } = this.props;
@@ -245,8 +221,8 @@ export default class AdvancedTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AccountReset,
                   properties: {},
                 });
                 showResetAccountConfirmationModal();
@@ -437,12 +413,12 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerTransportPreference,
       userHasALedgerAccount,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       desktopEnabled,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (desktopEnabled) {
       return null;
     }
@@ -569,10 +545,23 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleEthSignControl() {
-    const { t } = this.context;
-    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
-      this.props;
-
+    const { t, trackEvent } = this.context;
+    const {
+      disabledRpcMethodPreferences,
+      showEthSignModal,
+      setDisabledRpcMethodPreference,
+    } = this.props;
+    const toggleOff = (value) => {
+      setDisabledRpcMethodPreference('eth_sign', !value);
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+        properties: {
+          location: 'Settings',
+          enable_eth_sign: false,
+        },
+      });
+    };
     return (
       <div
         ref={this.settingsRefs[10]}
@@ -585,15 +574,26 @@ export default class AdvancedTab extends PureComponent {
             {t('toggleEthSignDescriptionField')}
           </div>
         </div>
+
+        {disabledRpcMethodPreferences?.eth_sign === true ? (
+          <BannerAlert
+            severity={SEVERITIES.DANGER}
+            marginBottom={5}
+            descriptionProps={{ variant: TextVariant.bodyMd }}
+          >
+            {t('toggleEthSignBannerDescription')}
+          </BannerAlert>
+        ) : null}
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
+              className="eth-sign-toggle"
               value={disabledRpcMethodPreferences?.eth_sign || false}
-              onToggle={(value) =>
-                setDisabledRpcMethodPreference('eth_sign', !value)
-              }
-              offLabel={t('off')}
-              onLabel={t('on')}
+              onToggle={(value) => {
+                value ? toggleOff(value) : showEthSignModal();
+              }}
+              offLabel={t('toggleEthSignOff')}
+              onLabel={t('toggleEthSignOn')}
             />
           </div>
         </div>
@@ -720,7 +720,6 @@ export default class AdvancedTab extends PureComponent {
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
-        {this.renderMobileSync()}
         {this.renderResetAccount()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}

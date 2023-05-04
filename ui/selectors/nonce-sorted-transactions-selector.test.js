@@ -74,7 +74,7 @@ const getStateTree = ({
   unapprovedMsgs = [],
 } = {}) => ({
   metamask: {
-    provider: {
+    providerConfig: {
       nickname: 'mainnet',
       chainId: CHAIN_IDS.MAINNET,
     },
