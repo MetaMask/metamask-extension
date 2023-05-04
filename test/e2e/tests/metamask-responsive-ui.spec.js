@@ -4,7 +4,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { openDevToolsForTabs: true };
 
     await withFixtures(
       {
@@ -75,7 +75,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Importing existing wallet from lock page', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { openDevToolsForTabs: true };
     const testSeedPhrase =
       'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
@@ -116,7 +116,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { openDevToolsForTabs: true };
     const ganacheOptions = {
       accounts: [
         {
