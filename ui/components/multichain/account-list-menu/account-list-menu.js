@@ -92,6 +92,10 @@ export const AccountListMenu = ({ onClose }) => {
               placeholder={t('searchAccounts')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              clearButtonOnClick={() => setSearchQuery('')}
+              clearButtonProps={{
+                size: Size.SM,
+              }}
             />
           </Box>
         ) : null}

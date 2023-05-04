@@ -21,6 +21,7 @@ export const AddressCopyButton = ({
   address,
   shorten = false,
   wrap = false,
+  onClick,
 }) => {
   const displayAddress = shorten ? shortenAddress(address) : address;
   const [copied, handleCopy] = useCopyToClipboard();
@@ -30,7 +31,10 @@ export const AddressCopyButton = ({
     <Tooltip position="bottom" title={copied ? t('copiedExclamation') : null}>
       <ButtonBase
         backgroundColor={BackgroundColor.primaryMuted}
-        onClick={() => handleCopy(address)}
+        onClick={() => {
+          handleCopy(address);
+          onClick?.();
+        }}
         paddingRight={4}
         paddingLeft={4}
         size={Size.SM}
@@ -63,4 +67,8 @@ AddressCopyButton.propTypes = {
    * Represents if the element should wrap to multiple lines
    */
   wrap: PropTypes.bool,
+  /**
+   * Fires when the button is clicked
+   */
+  onClick: PropTypes.func,
 };
