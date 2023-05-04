@@ -18,6 +18,7 @@ const Tab = (props) => {
     onClick,
     tabIndex,
     tabKey,
+    boxProps,
   } = props;
 
   return (
@@ -33,6 +34,7 @@ const Tab = (props) => {
         onClick(tabIndex);
       }}
       key={tabKey}
+      {...boxProps}
     >
       <Box
         as="button"
@@ -56,6 +58,12 @@ Tab.propTypes = {
   tabKey: PropTypes.string.isRequired, // for Tabs selection purpose
   onClick: PropTypes.func,
   tabIndex: PropTypes.number, // required, but added using React.cloneElement
+  /**
+   * The Tab component accepts all Box component props inside the boxProps object
+   */
+  boxProps: PropTypes.shape({
+    ...Box.propTypes,
+  }),
 };
 
 Tab.defaultProps = {

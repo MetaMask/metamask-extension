@@ -94,7 +94,6 @@ const AssetList = ({ onClickAsset }) => {
           tokenSymbol={primaryCurrencyProperties.suffix}
           secondary={showFiat ? secondaryCurrencyDisplay : undefined}
           tokenImage={balanceIsLoading ? null : primaryTokenImage}
-          className="native-token"
         />
       ) : (
         <AssetListItem
