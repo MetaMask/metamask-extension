@@ -46,20 +46,20 @@
     align-items: center;
     margin: 16px 0;
     padding: 0 16px;
-    max-width: 100%;
+    max-width: 326px;
   }
 
   &__primary-container {
     display: flex;
-    position: relative;
+    max-width: inherit;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   &__primary-balance {
     @include H2;
 
     color: var(--color-text-default);
-    width: 100%;
-    justify-content: center;
   }
 
   &__cached-star {
@@ -67,10 +67,8 @@
   }
 
   &__portfolio-button {
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    left: calc(100% + 2px);
+    height: inherit;
+    padding-inline-start: 16px;
   }
 
   &__cached-balance,
@@ -116,7 +114,14 @@
     align-items: center;
     margin: 16px 0;
     padding: 0 16px;
-    max-width: 100%;
+    max-width: 326px;
+  }
+
+  &__primary-container {
+    display: flex;
+    max-width: inherit;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   &__primary-balance {
@@ -131,6 +136,11 @@
     @include H5;
 
     color: var(--color-text-alternative);
+  }
+
+  &__portfolio-button {
+    height: inherit;
+    padding-inline-start: 16px;
   }
 
   &__button:last-of-type {

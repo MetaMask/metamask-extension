@@ -49,29 +49,24 @@ describe('Test Snap Management', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
-        await driver.delay(1000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // switch to the original MM tab
         const extensionPage = windowHandles[0];
@@ -97,6 +92,10 @@ describe('Test Snap Management', function () {
         await driver.delay(1000);
 
         // try to disable the snap
+        await driver.clickElement({
+          text: 'Notification Test Snap',
+          tag: 'p',
+        });
         await driver.clickElement('.toggle-button > div');
 
         // switch back to test-snaps window
@@ -135,12 +134,11 @@ describe('Test Snap Management', function () {
         );
         assert.equal(await notificationResult.getText(), '1');
 
-        // click on see details
-        await driver.clickElement({ text: 'See details', tag: 'button' });
-        await driver.delay(1000);
-
         // try to remove snap
-        await driver.clickElement({ text: 'Remove snap', tag: 'button' });
+        await driver.clickElement({
+          text: 'Remove Notification Test Snap',
+          tag: 'p',
+        });
         await driver.delay(1000);
 
         // try to click remove on popover
@@ -150,9 +148,12 @@ describe('Test Snap Management', function () {
         // check the results of the removal
         await driver.delay(2000);
         const removeResult = await driver.findElement(
-          '.snap-list-tab__container--no-snaps',
+          '.snap-list-tab__container--no-snaps_inner',
         );
-        assert.equal(await removeResult.getText(), 'No Snaps installed');
+        assert.equal(
+          await removeResult.getText(),
+          "You don't have any snaps installed.",
+        );
       },
     );
   });

@@ -10,13 +10,24 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
+import {
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
+  Button,
+  Text,
+} from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { TextColor } from '../../../helpers/constants/design-system';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -70,6 +81,7 @@ class ConnectHardwareForm extends Component {
     browserSupported: true,
     unlocked: false,
     device: null,
+    isFirefox: false,
   };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -85,6 +97,10 @@ class ConnectHardwareForm extends Component {
 
   componentDidMount() {
     this.checkIfUnlocked();
+    const useAgent = window.navigator.userAgent;
+    if (/Firefox/u.test(useAgent)) {
+      this.setState({ isFirefox: true });
+    }
   }
 
   async checkIfUnlocked() {
@@ -253,10 +269,10 @@ class ConnectHardwareForm extends Component {
     )
       .then((_) => {
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.ACCOUNTS,
-          event: EVENT_NAMES.ACCOUNT_ADDED,
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.AccountAdded,
           properties: {
-            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_type: MetaMetricsEventAccountType.Hardware,
             account_hardware_type: device,
           },
         });
@@ -264,10 +280,10 @@ class ConnectHardwareForm extends Component {
       })
       .catch((e) => {
         this.context.trackEvent({
-          category: EVENT.CATEGORIES.ACCOUNTS,
-          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.AccountAddFailed,
           properties: {
-            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_type: MetaMetricsEventAccountType.Hardware,
             account_hardware_type: device,
             error: e.message,
           },
@@ -283,23 +299,64 @@ class ConnectHardwareForm extends Component {
 
   renderError() {
     if (this.state.error === U2F_ERROR) {
+      if (this.state.device === 'ledger' && this.state.isFirefox) {
+        return (
+          <>
+            <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
+              {this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
+                // eslint-disable-next-line react/jsx-key
+                <Button
+                  variant={BUTTON_VARIANT.LINK}
+                  href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                  size={BUTTON_SIZES.INHERIT}
+                  key="u2f-error-1"
+                  as="a"
+                  block={false}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {this.context.t('troubleConnectingToLedgerU2FOnFirefox2')}
+                </Button>,
+              ])}
+            </Text>
+            <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
+              {this.context.t(
+                'troubleConnectingToLedgerU2FOnFirefoxLedgerSolution',
+                [
+                  // eslint-disable-next-line react/jsx-key
+                  <Button
+                    variant={BUTTON_VARIANT.LINK}
+                    href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
+                    size={BUTTON_SIZES.INHERIT}
+                    key="u2f-error-1"
+                    as="a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {this.context.t(
+                      'troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2',
+                    )}
+                  </Button>,
+                ],
+              )}
+            </Text>
+          </>
+        );
+      }
       return (
-        <p className="hw-connect__error">
+        <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
           {this.context.t('troubleConnectingToWallet', [
             this.state.device,
             // eslint-disable-next-line react/jsx-key
-            <a
+            <Button
+              variant={BUTTON_VARIANT.LINK}
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
-              key="hardware-connection-guide"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hw-connect__link"
-              style={{ marginLeft: '5px', marginRight: '5px' }}
+              key="u2f-error-1"
             >
               {this.context.t('walletConnectionGuide')}
-            </a>,
+            </Button>,
           ])}
-        </p>
+        </Text>
       );
     }
     return this.state.error ? (

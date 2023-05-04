@@ -9,10 +9,15 @@ import {
   getTotalUnapprovedMessagesCount,
   getCurrentCurrency,
   getPreferences,
+  conversionRateSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
   isAddressLedger,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -26,7 +31,7 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = txData;
-  const { provider } = state.metamask;
+  const providerConfig = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -38,7 +43,7 @@ function mapStateToProps(state, ownProps) {
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
-    provider,
+    providerConfig,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
     chainId,
@@ -48,10 +53,15 @@ function mapStateToProps(state, ownProps) {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
     currentCurrency: getCurrentCurrency(state),
-    useNativeCurrencyAsPrimaryCurrency,
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: getSelectedAccount(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -85,8 +95,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     rpcPrefs,
     nativeCurrency,
     currentCurrency,
-    useNativeCurrencyAsPrimaryCurrency,
-    provider,
+    conversionRate,
+    providerConfig,
     subjectMetadata,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
@@ -138,8 +148,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     rpcPrefs,
     nativeCurrency,
     currentCurrency,
-    useNativeCurrencyAsPrimaryCurrency,
-    provider,
+    conversionRate,
+    providerConfig,
     subjectMetadata,
     unapprovedMessagesCount,
     mostRecentOverviewPage,

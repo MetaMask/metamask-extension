@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
   },
@@ -400,6 +403,9 @@
   },
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
+  },
+  "lineatestnet": {
+    "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
     "message": "Pautan"
@@ -652,12 +658,6 @@
   "settings": {
     "message": "Tetapan"
   },
-  "showAdvancedGasInline": {
-    "message": "Kawalan gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menunjukkan harga gas dan kawalan had terus di skrin hantar dan sahkan."
-  },
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
   },
@@ -720,27 +720,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mestilah 11 aksara atau kurang."
-  },
-  "syncWithMobile": {
-    "message": "Segerakkan dengan telefon mudah alih"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pastikan tiada orang lain melihat skrin anda ketika anda mengimbas kod ini"
-  },
-  "syncWithMobileComplete": {
-    "message": "Data anda berjaya disegerakkan. Nikmati aplikasi mudah alih MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Anda boleh menyegerakkan akaun dan maklumat anda dengan peranti mudah alih anda. Buka ap mudah alih MetaMask, pergi ke \"Tetapan\" dan ketik \"Segerakkan daripada Sambungan Pelayar\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jika ini kali pertama anda membuka aplikasi mudah alih MetaMask, anda cuma perlu ikuti langkah-langkah di telefon anda."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Imbas kod ini dengan aplikasi mudah alih MetaMask anda"
-  },
-  "syncWithMobileTitle": {
-    "message": "Segerakkan dengan mudah alih"
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"

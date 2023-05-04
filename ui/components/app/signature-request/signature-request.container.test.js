@@ -5,73 +5,82 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.container';
 
-describe('Signature Request', () => {
-  const mockStore = {
-    metamask: {
-      tokenList: {
-        '0x514910771af9ca656af840dff83e8264ecf986ca': {
-          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-          symbol: 'LINK',
-          decimals: 18,
-          name: 'ChainLink Token',
-          iconUrl:
-            'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
-          aggregators: [
-            'Aave',
-            'Bancor',
-            'CMC',
-            'Crypto.com',
-            'CoinGecko',
-            '1inch',
-            'Paraswap',
-            'PMM',
-            'Zapper',
-            'Zerion',
-            '0x',
-          ],
-          occurrences: 12,
-          unlisted: false,
-        },
+const mockStoreWithEth = {
+  metamask: {
+    tokenList: {
+      '0x514910771af9ca656af840dff83e8264ecf986ca': {
+        address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+        symbol: 'LINK',
+        decimals: 18,
+        name: 'ChainLink Token',
+        iconUrl: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        occurrences: 12,
+        unlisted: false,
       },
-      identities: {
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          name: 'Account 2',
-          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-        },
-      },
-      addressBook: {
-        undefined: {
-          0: {
-            address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-            name: '',
-            isEns: false,
-          },
-        },
-      },
-      provider: {
-        type: 'rpc',
-      },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
-      accounts: {
-        '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
-          address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-          balance: '0x03',
-        },
-      },
-      cachedBalances: {},
-      unapprovedDecryptMsgs: {},
-      unapprovedEncryptionPublicKeyMsgs: {},
-      uncofirmedTransactions: {},
-      selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     },
-  };
-  const store = configureMockStore()(mockStore);
+    identities: {
+      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+        name: 'Account 2',
+        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+      },
+    },
+    addressBook: {
+      undefined: {
+        0: {
+          address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
+          name: '',
+          isEns: false,
+        },
+      },
+    },
+    providerConfig: {
+      type: 'rpc',
+    },
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    accounts: {
+      '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+        address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        balance: '0x03',
+      },
+    },
+    cachedBalances: {},
+    unapprovedDecryptMsgs: {},
+    unapprovedEncryptionPublicKeyMsgs: {},
+    uncofirmedTransactions: {},
+    selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    nativeCurrency: 'ETH',
+    currentCurrency: 'usd',
+    conversionRate: 231.06,
+  },
+};
 
-  const props = {
+const mockStoreWithFiat = {
+  ...mockStoreWithEth,
+  preferences: {
+    useNativeCurrencyAsPrimaryCurrency: false,
+  },
+};
+describe('Signature Request', () => {
+  const propsWithEth = {
     fromAccount: {
       address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+      balance: '0x346ba7725f412cbfdb',
+      name: 'John Doe',
     },
     history: {
       push: sinon.spy(),
@@ -83,7 +92,7 @@ describe('Signature Request', () => {
     cancel: sinon.stub().resolves(),
     showRejectTransactionsConfirmationModal: sinon.stub().resolves(),
     cancelAll: sinon.stub().resolves(),
-    provider: {
+    providerConfig: {
       type: 'rpc',
     },
     unapprovedMessagesCount: 2,
@@ -99,76 +108,124 @@ describe('Signature Request', () => {
       time: 1,
       type: 'eth_sign',
     },
+    nativeCurrency: 'ETH',
+    currentCurrency: 'usd',
+    conversionRate: null,
+    selectedAccount: {
+      address: '0x123456789abcdef',
+    },
   };
 
-  let rerender;
+  const propsWithFiat = {
+    ...propsWithEth,
+    conversionRate: 156.72,
+  };
 
-  beforeEach(() => {
-    rerender = renderWithProvider(
-      <SignatureRequest.WrappedComponent {...props} />,
-      store,
-    ).rerender;
+  describe('Render with different currencies', () => {
+    it('should render balance with ETH when conversionRate is not provided', () => {
+      const store = configureMockStore()(mockStoreWithEth);
+      renderWithProvider(
+        <SignatureRequest.WrappedComponent {...propsWithEth} />,
+        store,
+      );
+      expect(
+        screen.getByTestId('request-signature-account').textContent,
+      ).toMatchInlineSnapshot(
+        `"UUnknown private networkJohn DoeBalance966.987986 ETH"`,
+      );
+    });
+
+    it('should render balance with fiat when conversionRate not provided', () => {
+      const store = configureMockStore()(mockStoreWithFiat);
+      renderWithProvider(
+        <SignatureRequest.WrappedComponent {...propsWithFiat} />,
+        store,
+      );
+      expect(
+        screen.getByTestId('request-signature-account').textContent,
+      ).toMatchInlineSnapshot(
+        `"UUnknown private networkJohn DoeBalance$151,546.36 USD"`,
+      );
+    });
   });
 
-  afterEach(() => {
-    props.clearConfirmTransaction.resetHistory();
+  describe('functionality check', () => {
+    beforeEach(() => {
+      const store = configureMockStore()(mockStoreWithFiat);
+      renderWithProvider(
+        <SignatureRequest.WrappedComponent {...propsWithFiat} />,
+        store,
+      );
+    });
+
+    afterEach(() => {
+      propsWithFiat.clearConfirmTransaction.resetHistory();
+    });
+
+    it('cancel', () => {
+      const cancelButton = screen.getByTestId('page-container-footer-cancel');
+      fireEvent.click(cancelButton);
+      expect(propsWithFiat.cancel.calledOnce).toStrictEqual(true);
+    });
+
+    it('sign', () => {
+      const signButton = screen.getByTestId('page-container-footer-next');
+      fireEvent.click(signButton);
+      expect(propsWithFiat.sign.calledOnce).toStrictEqual(true);
+    });
+
+    it('cancelAll', () => {
+      const cancelAll = screen.getByTestId('signature-request-reject-all');
+      fireEvent.click(cancelAll);
+      expect(propsWithFiat.cancelAll.calledOnce).toStrictEqual(false);
+    });
+
+    it('have user warning', () => {
+      const warningText = screen.getByText(
+        'Only sign this message if you fully understand the content and trust the requesting site.',
+      );
+
+      expect(warningText).toBeInTheDocument();
+    });
   });
 
-  it('cancel', () => {
-    const cancelButton = screen.getByTestId('page-container-footer-cancel');
+  describe('contract details', () => {
+    let store;
+    beforeEach(() => {
+      store = configureMockStore()(mockStoreWithFiat);
+    });
+    it('shows verify contract details link when verifyingContract is set', () => {
+      renderWithProvider(
+        <SignatureRequest.WrappedComponent {...propsWithFiat} />,
+        store,
+      );
+      const verifyingContractLink = screen.getByTestId(
+        'verify-contract-details',
+      );
+      expect(verifyingContractLink).toBeInTheDocument();
+    });
 
-    fireEvent.click(cancelButton);
+    it('should not show verify contract details link when verifyingContract is not set', () => {
+      const newData = JSON.parse(propsWithFiat.txData.msgParams.data);
+      delete newData.domain.verifyingContract;
 
-    expect(props.cancel.calledOnce).toStrictEqual(true);
-  });
-
-  it('sign', () => {
-    const signButton = screen.getByTestId('page-container-footer-next');
-
-    fireEvent.click(signButton);
-
-    expect(props.sign.calledOnce).toStrictEqual(true);
-  });
-
-  it('cancelAll', () => {
-    const cancelAll = screen.getByTestId('signature-request-reject-all');
-
-    fireEvent.click(cancelAll);
-
-    expect(props.cancelAll.calledOnce).toStrictEqual(false);
-  });
-
-  it('have user warning', () => {
-    const warningText = screen.getByText(
-      'Only sign this message if you fully understand the content and trust the requesting site.',
-    );
-
-    expect(warningText).toBeInTheDocument();
-  });
-
-  it('shows verify contract details link when verifyingContract is set', () => {
-    const verifyingContractLink = screen.getByTestId('verify-contract-details');
-
-    expect(verifyingContractLink).toBeInTheDocument();
-  });
-
-  it('does not show verify contract details link when verifyingContract is not set', () => {
-    const newData = JSON.parse(props.txData.msgParams.data);
-    delete newData.domain.verifyingContract;
-
-    const newProps = {
-      ...props,
-      txData: {
-        ...props.txData,
-        msgParams: {
-          ...props.txData.msgParams,
-          data: JSON.stringify(newData),
+      const newProps = {
+        ...propsWithFiat,
+        txData: {
+          ...propsWithFiat.txData,
+          msgParams: {
+            ...propsWithFiat.txData.msgParams,
+            data: JSON.stringify(newData),
+          },
         },
-      },
-    };
+      };
 
-    rerender(<SignatureRequest.WrappedComponent {...newProps} />, store);
+      renderWithProvider(
+        <SignatureRequest.WrappedComponent {...newProps} />,
+        store,
+      );
 
-    expect(screen.queryByTestId('verify-contract-details')).toBeNull();
+      expect(screen.queryByTestId('verify-contract-details')).toBeNull();
+    });
   });
 });

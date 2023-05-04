@@ -329,9 +329,6 @@
     "message": "$1 को निम्नलिखित तक राशि निकालने और खर्च करने की अनुमति दें:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "किसी भी अनुरोध को मंजूरी देने से पहले हमेशा अपनी खुद की उचित कर्मठता सुनिश्चित करें।"
-  },
   "amount": {
     "message": "राशि"
   },
@@ -698,10 +695,6 @@
     "message": "$1 किसी भी साइट से कनेक्ट नहीं है।",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 स्नैप इन साइटों से जुड़ा है। वे ऊपर सूचीबद्ध अनुमतियों को एक्सेस कर सकती हैं।",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है..."
   },
@@ -710,6 +703,9 @@
   },
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
@@ -1222,9 +1218,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "सुरक्षा प्रदाता सक्षम करें"
-  },
   "enableSmartTransactions": {
     "message": "स्मार्ट लेनदेन को सक्षम करें"
   },
@@ -1320,9 +1313,6 @@
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
   },
-  "expandExperience": {
-    "message": "MetaMask स्नैप्स के साथ अपने web3 अनुभव का विस्तार करें"
-  },
   "expandView": {
     "message": "दृश्य का विस्तार करें"
   },
@@ -1360,18 +1350,6 @@
   "fileImportFail": {
     "message": "फाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "विवरण देखें",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "जोड़ा गया",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "से",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
@@ -1437,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "यह गैस शुल्क $1 द्वारा सुझाया गया है। इसे ओवरराइड करने से आपके लेन-देन में समस्या हो सकती है। यदि आपके पास कोई सवाल हैं तो कृपया $1 तक पहुंचें।",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "गैस शुल्क"
   },
   "gasLimit": {
     "message": "गैस की सीमा"
@@ -1518,9 +1493,6 @@
   },
   "general": {
     "message": "सामान्य"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "जब भी आप एक ज्ञात दुर्भावनापूर्ण अनुरोध प्राप्त करते हैं, OpenSea से चेतावनी प्राप्त करें।"
   },
   "goBack": {
     "message": "वापस जाएं"
@@ -1610,11 +1582,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "इसे किसी के साथ साझा न करें। $1$2",
+    "message": "इसे किसी के साथ साझा न करें। $1,$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा,",
+    "message": "MetaMask सपोर्ट इसका अनुरोध नहीं करेगा",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -1895,6 +1867,9 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क"
+  },
   "link": {
     "message": "लिंक"
   },
@@ -1954,9 +1929,6 @@
   },
   "malformedData": {
     "message": "विकृत डेटा"
-  },
-  "manageSnaps": {
-    "message": "अपने इंस्टाल किए गए स्नैप्स मैनेज करें"
   },
   "max": {
     "message": "अधिकतम"
@@ -2029,9 +2001,6 @@
   },
   "missingToken": {
     "message": "क्या अपना टोकन नहीं देख रहे हैं?"
-  },
-  "mobileSyncWarning": {
-    "message": "'एक्सटेंशन के साथ सिंक' फीचर अस्थायी रूप से अक्षम है। यदि आप MetaMask मोबाइल पर अपने एक्सटेंशन वॉलेट का उपयोग करना चाहते हैं, तो अपने मोबाइल ऐप पर: वॉलेट सेटअप ऑप्शन पर वापस जाएं और 'सीक्रेट रिकवरी फ्रेज के साथ इम्पोर्ट करें' विकल्प चुनें। फिर अपने वॉलेट को मोबाइल में इम्पोर्ट करने के लिए अपने एक्सटेंशन वॉलेट के सीक्रेट फ्रेज का उपयोग करें।"
   },
   "moreComingSoon": {
     "message": "और अधिक जल्द ही आ रहा..."
@@ -2191,9 +2160,6 @@
     "message": "नॉन्स $1 के सुझाए गए नॉन्स से अधिक है",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "एनएफटी"
-  },
   "nftAddFailedMessage": {
     "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
   },
@@ -2278,9 +2244,6 @@
   "notEnoughGas": {
     "message": "पर्याप्त गैस नहीं"
   },
-  "notNow": {
-    "message": "अभी नहीं"
-  },
   "notifications": {
     "message": "सूचनाएं"
   },
@@ -2341,15 +2304,6 @@
   },
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
-  },
-  "notifications17ActionText": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
-  },
-  "notifications17Description": {
-    "message": "यह अपडेट अधिक विकल्प प्रदान करता है ताकि आप अपनी गोपनीयता को बेहतर ढंग से नियंत्रित कर सकें। हमने डेटा कैसे एकत्र किया जाता है और इसे साझा करने के लिए स्पष्ट विकल्पों के बारे में और अधिक पारदर्शिता जोड़ी है। सुरक्षा और गोपनीयता के सेटिंग्स के माध्यम से अपनी प्राथमिकताओं को बदलें या एक्सटेंशन उपयोग डेटा हटाएं।"
-  },
-  "notifications17Title": {
-    "message": "सुरक्षा और गोपनीयता सेटिंग्स"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile उपयोगकर्ता अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",
@@ -2614,12 +2568,6 @@
   "openSea": {
     "message": "OpenSea (बीटा)"
   },
-  "openSeaAltText": {
-    "message": "OpenSea सुरक्षा प्रदाता"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea इस सुविधा के लिए पहला सुरक्षा प्रदाता है।अधिक प्रदाता जल्द ही आ रहे हैं!"
-  },
   "openSeaNew": {
     "message": "ओपनसी"
   },
@@ -2713,7 +2661,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 से कनेक्ट करें।",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "इंटरनेट एक्सेस करें।",
@@ -2721,15 +2669,11 @@
   },
   "permission_accessSnap": {
     "message": "$1 स्नैप से कनेक्ट करें।",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask में पुष्टि को दर्शाएं।",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
@@ -3267,18 +3211,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "कोई मेल खाने वाला परिणाम नहीं मिला।"
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "दिखाएं"
-  },
-  "showAdvancedGasInline": {
-    "message": "उन्नत गैस नियंत्रण"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
   },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
@@ -3350,14 +3284,6 @@
   "smartTransaction": {
     "message": "स्मार्ट लेनदेन"
   },
-  "snapAccess": {
-    "message": "$1 स्नैप को एक्सेस है:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$2 से $1 जोड़ा गया",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "यह सामग्री $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3379,22 +3305,11 @@
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "ये स्नैप निम्नलिखित अनुमतियों हेतु अनुरोध कर रहा है:"
-  },
   "snapUpdate": {
     "message": "स्नैप अपडेट करें"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 को आपके स्नैप के नए वर्जन की जरूरत है।",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "स्नैप्स"
-  },
-  "snapsInsightError": {
-    "message": "$1: $2 के साथ त्रुटि हुई",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
@@ -3405,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "अपने स्नैप्स प्रबंधित करें"
   },
-  "snapsStatus": {
-    "message": "स्नैप स्टेटस एक्टिविटी पर निर्भर करता है।"
-  },
   "snapsToggle": {
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
   },
   "snapsUIError": {
-    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।"
+    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और उपयोग करने से पहले जोखिमों को समझें।"
@@ -3520,9 +3433,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea के साथ सुरक्षित रहें"
   },
   "step1LatticeWallet": {
     "message": "अपना Lattice1 कनेक्ट करें"
@@ -3989,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
   },
-  "syncFailed": {
-    "message": "सिंक विफल"
-  },
-  "syncInProgress": {
-    "message": "सिंक प्रगति पर है"
-  },
-  "syncWithMobile": {
-    "message": "मोबाइल के साथ सिंक करें"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "सुनिश्चित करें कि जब आप इस कोड को स्कैन कर रहे हों, तो आपकी स्क्रीन को कोई और न देख रहा हो"
-  },
-  "syncWithMobileComplete": {
-    "message": "आपका डेटा सफलतापूर्वक सिंक कर लिया गया है। MetaMask मोबाइल ऐप का आनंद लें!"
-  },
-  "syncWithMobileDesc": {
-    "message": "आप अपने खाते और जानकारी को अपने मोबाइल डिवाइस के साथ सिंक कर सकते हैं। MetaMask मोबाइल ऐप खोलें, \"सेटिंग\" पर जाएं और \"ब्राउजर एक्सटेंशन से सिंक करें\" पर टैप करें"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "यदि आप पहली बार MetaMask मोबाइल ऐप खोलते हैं, तो बस अपने फोन में दिए गए चरणों का पालन करें।"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "इस कोड को अपने MetaMask मोबाइल ऐप से स्कैन करें"
-  },
-  "syncWithMobileTitle": {
-    "message": "मोबाइल के साथ सिंक करें"
-  },
   "tenPercentIncreased": {
     "message": "10% बढ़ोत्तरी"
   },
@@ -4039,9 +3922,6 @@
   },
   "thisIsBasedOn": {
     "message": "से प्राप्त जानकारी पर आधारित है"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रयोगात्मक है"
   },
   "time": {
     "message": "समय"

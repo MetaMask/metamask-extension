@@ -19,27 +19,18 @@ describe('Remove ERC1155 NFT', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, _, contractRegistry }) => {
-        const contractAddress =
-          contractRegistry.getContractAddress(smartContract);
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // After login, go to NFTs tab and import an ERC1155 NFT
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
-
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '1');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
         // Open the details page and click remove nft button
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
         const importedNftImage = await driver.findVisibleElement(
           '.nfts-items__item img',
         );

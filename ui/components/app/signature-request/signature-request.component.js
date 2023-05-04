@@ -2,8 +2,14 @@ import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  sanitizeMessage,
+  getURLHostName,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shortenAddress,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/utils/util';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -13,6 +19,13 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  IconColor,
+  DISPLAY,
+  BLOCK_SIZES,
+  TextVariant,
+  BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
@@ -21,6 +34,13 @@ import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { Icon, IconName, Text } from '../../component-library';
+import Box from '../../ui/box/box';
+///: END:ONLY_INCLUDE_IN
+
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -64,8 +84,8 @@ export default class SignatureRequest extends PureComponent {
     rpcPrefs: PropTypes.object,
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool.isRequired,
-    provider: PropTypes.object,
+    conversionRate: PropTypes.number,
+    providerConfig: PropTypes.object,
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
     clearConfirmTransaction: PropTypes.func.isRequired,
@@ -73,6 +93,11 @@ export default class SignatureRequest extends PureComponent {
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
+    selectedAccount: PropTypes.object,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -97,8 +122,8 @@ export default class SignatureRequest extends PureComponent {
   }
 
   getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
+    const { providerConfig } = this.props;
+    const providerName = providerConfig.type;
     const { t } = this.context;
 
     switch (providerName) {
@@ -108,10 +133,12 @@ export default class SignatureRequest extends PureComponent {
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('sepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('lineatestnet');
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
-        return provider.nickname || t('unknownNetwork');
+        return providerConfig.nickname || t('unknownNetwork');
     }
   }
 
@@ -158,9 +185,10 @@ export default class SignatureRequest extends PureComponent {
       subjectMetadata,
       nativeCurrency,
       currentCurrency,
-      useNativeCurrencyAsPrimaryCurrency,
+      conversionRate,
       unapprovedMessagesCount,
     } = this.props;
+
     const { t, trackEvent } = this.context;
     const {
       sanitizedMessage,
@@ -169,19 +197,29 @@ export default class SignatureRequest extends PureComponent {
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
     const currentNetwork = this.getNetworkName();
-    const tokenName = useNativeCurrencyAsPrimaryCurrency
-      ? nativeCurrency
-      : currentCurrency?.toUpperCase();
 
-    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
-      .toDenomination(EtherDenomination.ETH)
-      .round(6)
-      .toBase(10)
-      .toString();
+    const balanceInBaseAsset = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
+
     const onSign = (event) => {
       sign(event);
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Confirm',
         properties: {
           action: 'Sign Request',
@@ -195,7 +233,7 @@ export default class SignatureRequest extends PureComponent {
     const onCancel = (event) => {
       cancel(event);
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Cancel',
         properties: {
           action: 'Sign Request',
@@ -216,12 +254,17 @@ export default class SignatureRequest extends PureComponent {
     return (
       <div className="signature-request">
         <ConfirmPageContainerNavigation />
-        <div className="request-signature__account">
+        <div
+          className="request-signature__account"
+          data-testid="request-signature-account"
+        >
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
             accountName={name}
             accountBalance={balanceInBaseAsset}
-            tokenName={tokenName}
+            tokenName={
+              conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+            }
             accountAddress={address}
           />
         </div>
@@ -235,6 +278,38 @@ export default class SignatureRequest extends PureComponent {
               securityProviderResponse={txData.securityProviderResponse}
             />
           ) : null}
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            this.props.selectedAccount.address === address ? null : (
+              <Box
+                className="request-signature__mismatch-info"
+                display={DISPLAY.FLEX}
+                width={BLOCK_SIZES.FULL}
+                padding={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.primaryMuted}
+              >
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.infoDefault}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textDefault}
+                  as="h7"
+                >
+                  {this.context.t('mismatchAccount', [
+                    shortenAddress(this.props.selectedAccount.address),
+                    shortenAddress(address),
+                  ])}
+                </Text>
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
+
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}

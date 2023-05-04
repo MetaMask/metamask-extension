@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 const Disclosure = ({ children, title, size }) => {
   const disclosureFooterEl = useRef(null);
@@ -23,7 +24,12 @@ const Disclosure = ({ children, title, size }) => {
       {title ? (
         <details>
           <summary className="disclosure__summary">
-            <i className="fa fa-plus" />
+            <Icon
+              className="disclosure__summary--icon"
+              name={IconName.Add}
+              size={IconSize.Sm}
+              marginInlineEnd={2}
+            />
             {title}
           </summary>
           <div className={classnames('disclosure__content', size)}>

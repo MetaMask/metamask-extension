@@ -9,7 +9,7 @@ import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -199,7 +199,7 @@ function Arrow({ variant }) {
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">
-      <Icon name={ICON_NAMES.ARROW_RIGHT} />
+      <Icon name={IconName.ArrowRight} />
     </div>
   );
 }

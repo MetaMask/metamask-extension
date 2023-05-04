@@ -46,6 +46,7 @@ import {
   getIsGasEstimatesLoading,
   getNativeCurrency,
   getSendToAccounts,
+  getProviderConfig,
 } from '../../ducks/metamask/metamask';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 
@@ -59,11 +60,13 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getAccountType } from '../../selectors/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
   TransactionType,
 } from '../../../shared/constants/transaction';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -102,13 +105,11 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    network,
+    networkId,
     unapprovedTxs,
     nextNonce,
-    allNftContracts,
-    selectedAddress,
-    provider: { chainId },
   } = metamask;
+  const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || Number(paramsTransactionId);
@@ -155,7 +156,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const {
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -163,7 +163,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
+      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
@@ -184,12 +184,6 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
   );
 
-  const isNftTransfer = Boolean(
-    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
-      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
-    }),
-  );
-
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
@@ -205,6 +199,20 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accountType = getAccountType(state);
+
+  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
+  let isNoteToTraderSupported = false;
+  if (state.metamask.custodyAccountDetails[fromChecksumHexAddress]) {
+    const { custodianName } =
+      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
+    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
+      (custodian) => custodian.name === custodianName,
+    )?.isNoteToTraderSupported;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     balance,
     fromAddress,
@@ -215,7 +223,6 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
@@ -235,7 +242,6 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isNftTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -257,6 +263,10 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNoteToTraderSupported,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

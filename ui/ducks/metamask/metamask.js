@@ -14,7 +14,7 @@ import {
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import {
@@ -26,9 +26,10 @@ const initialState = {
   isInitialized: false,
   isUnlocked: false,
   isAccountMenuOpen: false,
+  isNetworkMenuOpen: false,
   identities: {},
   unapprovedTxs: {},
-  frequentRpcList: [],
+  networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
   pendingTokens: {},
@@ -102,6 +103,12 @@ export default function reduceMetamask(state = initialState, action) {
         isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
       };
 
+    case actionConstants.TOGGLE_NETWORK_MENU:
+      return {
+        ...metamaskState,
+        isNetworkMenuOpen: !metamaskState.isNetworkMenuOpen,
+      };
+
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action;
       let { currentNetworkTxList } = metamaskState;
@@ -166,7 +173,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
@@ -223,6 +230,16 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
+/**
+ * Get the provider configuration for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['providerConfig']} The provider configuration for the current selected network.
+ */
+export function getProviderConfig(state) {
+  return state.metamask.providerConfig;
+}
+
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
@@ -242,12 +259,9 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: {
-      allNfts,
-      provider: { chainId },
-      selectedAddress,
-    },
+    metamask: { allNfts, selectedAddress },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
   const chainIdAsDecimal = hexToDecimal(chainId);
 
@@ -256,12 +270,9 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: {
-      allNftContracts,
-      provider: { chainId },
-      selectedAddress,
-    },
+    metamask: { allNftContracts, selectedAddress },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
   const chainIdAsDecimal = hexToDecimal(chainId);
 
@@ -280,7 +291,7 @@ export function getNativeCurrency(state) {
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   return useCurrencyRateCheck
     ? state.metamask.nativeCurrency
-    : state.metamask.provider.ticker;
+    : getProviderConfig(state).ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -407,7 +418,7 @@ export function getLedgerTransportType(state) {
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === HardwareKeyringTypes.ledger;
+  return keyring?.type === KeyringType.ledger;
 }
 
 /**
@@ -419,6 +430,6 @@ export function isAddressLedger(state, address) {
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === HardwareKeyringTypes.ledger;
+    return kr.type === KeyringType.ledger;
   });
 }

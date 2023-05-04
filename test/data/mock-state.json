@@ -16,7 +16,8 @@
         "name": null
       }
     },
-    "warning": null
+    "warning": null,
+    "customTokenAmount": "10"
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
@@ -56,7 +57,43 @@
       "priorityFeeTrend": "down",
       "networkCongestion": 0.90625
     },
-    "snaps": [{}],
+    "snaps": {
+      "npm:@metamask/test-snap-bip44": {
+        "id": "npm:@metamask/test-snap-bip44",
+        "origin": "npm:@metamask/test-snap-bip44",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that signs messages using BLS.",
+          "proposedName": "BIP-44 Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-bip44",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      }
+    },
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
@@ -72,11 +109,19 @@
     "featureFlags": {
       "showIncomingTransactions": true
     },
-    "network": "5",
-    "provider": {
+    "networkId": "5",
+    "networkStatus": "available",
+    "providerConfig": {
       "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH"
+      "ticker": "ETH",
+      "id": "testNetworkConfigurationId"
+    },
+    "networkConfigurations": {
+      "testNetworkConfigurationId": {
+        "rpcUrl": "https://testrpc.com",
+        "chainId": "0x1"
+      }
     },
     "keyrings": [
       {
@@ -465,7 +510,14 @@
             "name": "MUNK #1",
             "description": null,
             "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
+            "standard": "ERC721",
+            "lastSale": {
+              "total_price": "4900000000000000",
+              "event_timestamp": "2023-01-18T21:51:23",
+              "payment_token": {
+                "symbol": "ETH"
+              }
+            }
           },
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
@@ -1520,7 +1572,18 @@
         "origin": "tmashuang.github.io"
       }
     ],
-    "desktopEnabled": false
+    "desktopEnabled": false,
+    "pendingApprovals": {
+      "testApprovalId": {
+        "id": "testApprovalId",
+        "time": 1528133319641,
+        "origin": "metamask",
+        "type": "transaction",
+        "requestData": { "txId": "testTransactionId" },
+        "requestState": { "test": "value" }
+      }
+    },
+    "pendingApprovalCount": 1
   },
   "send": {
     "amountMode": "INPUT",

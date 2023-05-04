@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "מתחבר ל-Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },
@@ -411,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
+  },
+  "lineatestnet": {
+    "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
     "message": "קישורים"
@@ -669,12 +675,6 @@
   "settings": {
     "message": "הגדרות"
   },
-  "showAdvancedGasInline": {
-    "message": "אמצעי שליטה מתקדמים בדלק"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג אמצעי שליטה במחיר הדלק וההגבלה (limit) ישירות במסכי השליחה והאישור."
-  },
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"
   },
@@ -737,27 +737,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "הסמל חייב להיות 11 תווים או פחות."
-  },
-  "syncWithMobile": {
-    "message": "סנכרן עם הנייד"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "ודא/י כי איש אינו מסתכל על המסך שלך בזמן סריקת קוד זה"
-  },
-  "syncWithMobileComplete": {
-    "message": "הנתונים שלך סונכרנו בהצלחה. תיהנה/י מאפליקציית MetaMask לטלפונים ניידים! "
-  },
-  "syncWithMobileDesc": {
-    "message": "באפשרותך לסנכרן את החשבונות והמידע שלך עם המכשיר הנייד שלך. יש לפתוח את האפליקציה לנייד של MetaMask, לעבור אל \"הגדרות\" וללחוץ על \"סנכרון מהרחבה לדפדפן\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "אם את/ה פותח/ת  את אפליקציית MetaMask Mobile בפעם הראשונה, פשוט בצע/י את השלבים בטלפון שלך."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "יש לסרוק קוד QR זה באמצעות אפליקציית MetaMask לטלפון נייד"
-  },
-  "syncWithMobileTitle": {
-    "message": "סנכרן עם הנייד"
   },
   "terms": {
     "message": "תנאי שימוש"

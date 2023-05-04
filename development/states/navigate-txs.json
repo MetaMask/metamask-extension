@@ -225,7 +225,7 @@
     "preferences": {
       "useETHAsPrimaryCurrency": true
     },
-    "provider": {
+    "providerConfig": {
       "type": "goerli"
     },
     "network": "4",
@@ -304,7 +304,8 @@
     "infuraNetworkStatus": {
       "mainnet": "ok",
       "goerli": "ok",
-      "sepolia": "ok"
+      "sepolia": "ok",
+      "lineatestnet": "ok"
     }
   },
   "send": {

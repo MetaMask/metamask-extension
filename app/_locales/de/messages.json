@@ -329,9 +329,6 @@
     "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Gehen Sie immer mit Sorgfalt vor, bevor Sie irgendwelche Anfragen genehmigen."
-  },
   "amount": {
     "message": "Betrag"
   },
@@ -698,10 +695,6 @@
     "message": "$1 ist mit keiner Site verbunden.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1-Snap ist mit diesen Sites verbunden. Sie haben Zugriff auf die oben aufgeführten Berechtigungen.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Verbinden..."
   },
@@ -710,6 +703,9 @@
   },
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Verbindungsaufbau zum Linea-Testnetzwerk"
   },
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Mainnet"
@@ -1222,9 +1218,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Sicherheitsanbieter aktivieren"
-  },
   "enableSmartTransactions": {
     "message": "Intelligente Transaktionen ermöglichen"
   },
@@ -1320,9 +1313,6 @@
   "etherscanViewOn": {
     "message": "Auf Etherscan anzeigen"
   },
-  "expandExperience": {
-    "message": "Erweitern Sie Ihre Web3-Erfahrung"
-  },
   "expandView": {
     "message": "Ansicht erweitern"
   },
@@ -1360,18 +1350,6 @@
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Details ansehen",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Hinzugefügt am",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "von",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "Sie sollten diese Erweiterung deinstallieren",
@@ -1437,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "Diese Gasgebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Gasgebühr"
   },
   "gasLimit": {
     "message": "Gaslimit"
@@ -1518,9 +1493,6 @@
   },
   "general": {
     "message": "Allgemein"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Erhalten Sie Warnungen von OpenSea, wenn Sie eine bekannte bösartige Anfrage erhalten."
   },
   "goBack": {
     "message": "Zurück"
@@ -1895,6 +1867,9 @@
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
   },
+  "lineatestnet": {
+    "message": "Linea-Testnetzwerk"
+  },
   "link": {
     "message": "Link"
   },
@@ -1954,9 +1929,6 @@
   },
   "malformedData": {
     "message": "Fehlerhafte Daten"
-  },
-  "manageSnaps": {
-    "message": "Verwalten Sie Ihre installierten Snaps"
   },
   "max": {
     "message": "Max."
@@ -2029,9 +2001,6 @@
   },
   "missingToken": {
     "message": "Sie sehen Ihren Token nicht?"
-  },
-  "mobileSyncWarning": {
-    "message": "Die Funktion \"Mit Erweiterung synchronisieren\" ist vorübergehend deaktiviert. Wenn Sie Ihre Erweiterungs-Wallet auf MetaMask mobile verwenden möchten, dann gehen Sie in Ihrer mobilen App zurück zu den Einrichtungsoptionen für die Wallet und wählen Sie die Option \"Import mit Geheime Wiederherstellungsphrase\". Verwenden Sie die Geheime Wiederherstellungsphrase Ihrer Erweiterungs-Wallet, um Ihre Wallet in Mobile zu importieren."
   },
   "moreComingSoon": {
     "message": "Mehr in Kürze ..."
@@ -2191,9 +2160,6 @@
     "message": "Nonce ist höher als vorgeschlagen nonce von $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
   },
@@ -2278,9 +2244,6 @@
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
   },
-  "notNow": {
-    "message": "Nicht jetzt"
-  },
   "notifications": {
     "message": "Benachrichtigungen"
   },
@@ -2341,15 +2304,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Merge ist da!"
-  },
-  "notifications17ActionText": {
-    "message": "Sicherheits- und Datenschutzeinstellungen anzeigen"
-  },
-  "notifications17Description": {
-    "message": "Dieses Update gibt Ihnen mehr Möglichkeiten zur Kontrolle Ihrer Privatsphäre. Wir haben mehr Transparenz in Hinsicht auf die Sammlung von Daten sowie deutlichere Optionen bezüglich des Teilens hinzugefügt. Ändern Sie Ihre Einstellungen oder löschen Sie die Erweiterungsnutzung über Sicherheits- und Datenschutzeinstellungen."
-  },
-  "notifications17Title": {
-    "message": "Sicherheits- und Datenschutzeinstellungen"
   },
   "notifications1Description": {
     "message": "Mobile MetaMask-Anwender können jetzt Token in ihren mobilen Wallets swappen. Scannen Sie den QR-Code, um die mobile App zu erhalten und mit dem Swapping zu beginnen.",
@@ -2614,12 +2568,6 @@
   "openSea": {
     "message": "OpenSea (Beta)"
   },
-  "openSeaAltText": {
-    "message": "OpenSea-Sicherheitsanbieter"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea ist der erset Sicherheitsanbieter für diese Funktion. Mehr Anbieter folgen in Kürze!"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2713,7 +2661,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Mit $1 verbinden.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Zugriff auf das Internet.",
@@ -2721,15 +2669,11 @@
   },
   "permission_accessSnap": {
     "message": "Verbinden Sie sich mit dem $1-Snap.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Regelmäßige Transaktionen planen und ausführen.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Bestätigung in MetaMask anzeigen.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Dialogfenster in MetaMask anzeigen.",
@@ -3267,18 +3211,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "Keine passenden Ergebnisse gefunden."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Zeigen"
-  },
-  "showAdvancedGasInline": {
-    "message": "Erweiterte Gaskontrollen"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Wählen Sie dies aus, um den Gaspreis und die Limitkontrollen direkt auf den Senden- und Bestätigen-Bildschirmen anzuzeigen."
   },
   "showFiatConversionInTestnets": {
     "message": "Umwandlung auf Testnets anzeigen"
@@ -3350,14 +3284,6 @@
   "smartTransaction": {
     "message": "Intelligente Transaktionen"
   },
-  "snapAccess": {
-    "message": "$1-Snap hat Zugriff auf:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Am $1 von $2 hinzugefügt",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Diese Inhalte stammen von $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3379,22 +3305,11 @@
     "message": "Sie gewähren dem Snap „$1“ wichtige $2-Zugriffsrechte. Dies kann nicht rückgängig gemacht werden und gibt „$1“ Kontrolle über Ihre $2-Konten und Vermögenswerte. Stellen Sie sicher, dass Sie „$1“ vertrauen, bevor Sie fortfahren.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Für diesen Snap werden die folgenden Berechtigungen beantragt:"
-  },
   "snapUpdate": {
     "message": "Snap aktualisieren"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 benötigt eine neuere Version Ihres Snaps.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightError": {
-    "message": "Ein Fehler ist mit $1: $2 aufgetreten",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Transaktions-Einsicht wird geladen ..."
@@ -3405,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "Verwalten Sie Ihre Snaps"
   },
-  "snapsStatus": {
-    "message": "Snap-Status ist von der Aktivität abhängig."
-  },
   "snapsToggle": {
     "message": "Ein Snap wird nur ausgeführt, wenn er aktiviert ist"
   },
   "snapsUIError": {
-    "message": "Die vom Snap spezifizierte UI ist ungültig."
+    "message": "Die vom Snap spezifizierte UI ist ungültig.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Einige Netzwerke können Sicherheits- und/oder Datenschutzrisiken bergen. Informieren Sie sich über die Risiken, bevor Sie ein Netzwerk hinzufügen und nutzen."
@@ -3520,9 +3433,6 @@
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Mit OpenSea sicher bleiben"
   },
   "step1LatticeWallet": {
     "message": "Verbinden Sie Ihr Lattice1"
@@ -3989,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Das Symbol darf maximal 11 Zeichen lang sein."
   },
-  "syncFailed": {
-    "message": "Sync fehlgeschlagen"
-  },
-  "syncInProgress": {
-    "message": "Synchronisation läuft"
-  },
-  "syncWithMobile": {
-    "message": "Mit Mobilgerät synchronisieren"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Stellen Sie sicher, dass niemand sonst auf Ihren Bildschirm blickt, wenn Sie diesen Code scannen"
-  },
-  "syncWithMobileComplete": {
-    "message": "Ihre Daten wurden erfolgreich synchronisiert. Viel Spaß mit der MetaMask-Handy-App!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Sie können Ihre Konten und Informationen mit Ihrem Mobilgerät synchronisieren. Öffnen Sie die MetaMask-Mobilapp, gehen Sie zu \"Einstellungen\" und tippen Sie auf \"Von Browsererweiterung aus synchronisieren\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Wenn Sie die MetaMask-Mobilapp gerade zum ersten Mal öffnen, folgen Sie einfach den Schritten auf Ihrem Telefon."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scannen Sie diesen Code mit Ihrer MetaMask-Mobilapp"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mit Mobilgerät synchronisieren"
-  },
   "tenPercentIncreased": {
     "message": "10% Erhöhung"
   },
@@ -4039,9 +3922,6 @@
   },
   "thisIsBasedOn": {
     "message": "Dies basiert auf Informationen von "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Dieser Dienst ist experimentell"
   },
   "time": {
     "message": "Zeit"

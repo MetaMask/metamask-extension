@@ -8,25 +8,25 @@ import {
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
+import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
-import { getProvider } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
 const NetworksListItem = ({
   network,
   networkIsSelected,
-  selectedRpcUrl,
+  selectedNetworkConfigurationId,
   setSearchQuery,
   setSearchedNetworks,
 }) => {
@@ -34,19 +34,22 @@ const NetworksListItem = ({
   const dispatch = useDispatch();
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
-  const provider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
   const {
     label,
     labelKey,
+    networkConfigurationId,
     rpcUrl,
     providerType: currentProviderType,
   } = network;
 
-  const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
-  const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
+  const listItemNetworkIsSelected =
+    selectedNetworkConfigurationId &&
+    selectedNetworkConfigurationId === networkConfigurationId;
+  const listItemUrlIsProviderUrl = rpcUrl === providerConfig.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
-    provider.type !== NETWORK_TYPES.RPC &&
-    currentProviderType === provider.type;
+    providerConfig.type !== NETWORK_TYPES.RPC &&
+    currentProviderType === providerConfig.type;
   const listItemNetworkIsCurrentProvider =
     !networkIsSelected &&
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
@@ -64,21 +67,21 @@ const NetworksListItem = ({
   return (
     <div
       ref={settingsRefs}
-      key={`settings-network-list-item:${rpcUrl}`}
+      key={`settings-network-list-item:${networkConfigurationId}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
         setSearchQuery('');
         setSearchedNetworks([]);
-        dispatch(setSelectedSettingsRpcUrl(rpcUrl));
+        dispatch(setSelectedNetworkConfigurationId(networkConfigurationId));
         if (!isFullScreen) {
           global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
         }
       }}
     >
       {isCurrentRpcTarget ? (
-        <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+        <Icon name={IconName.Check} color={IconColor.successDefault} />
       ) : (
-        <Icon name={ICON_NAMES.CHECK} color={IconColor.transparent} />
+        <Icon name={IconName.Check} color={IconColor.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -119,9 +122,9 @@ const NetworksListItem = ({
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
-            name={ICON_NAMES.LOCK}
+            name={IconName.Lock}
             color={IconColor.iconMuted}
-            size={ICON_SIZES.AUTO}
+            size={IconSize.Inherit}
             marginInlineStart={2}
           />
         )}
@@ -133,7 +136,7 @@ const NetworksListItem = ({
 NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
-  selectedRpcUrl: PropTypes.string,
+  selectedNetworkConfigurationId: PropTypes.string,
   setSearchQuery: PropTypes.func,
   setSearchedNetworks: PropTypes.func,
 };

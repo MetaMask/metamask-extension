@@ -8,14 +8,22 @@ import {
   ignoreTokens,
   setNewTokensImported,
 } from '../../../store/actions';
-import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -42,6 +50,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const chainId = useSelector(getCurrentChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
   const [tokensListDetected, setTokensListDetected] = useState(() =>
@@ -58,15 +67,17 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const importSelectedTokens = async (selectedTokens) => {
     selectedTokens.forEach((importedToken) => {
       trackEvent({
-        event: EVENT_NAMES.TOKEN_ADDED,
-        category: EVENT.CATEGORIES.WALLET,
+        event: MetaMetricsEventName.TokenAdded,
+        category: MetaMetricsEventCategory.Wallet,
         sensitiveProperties: {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: EVENT.SOURCE.TOKEN.DETECTED,
+          source_connection_method: MetaMetricsTokenEventSource.Detected,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
+          token_added_type: 'detected',
+          chain_id: chainId,
         },
       });
     });
@@ -86,11 +97,11 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       ({ symbol, address }) => `${symbol} - ${address}`,
     );
     trackEvent({
-      event: EVENT_NAMES.TOKEN_HIDDEN,
-      category: EVENT.CATEGORIES.WALLET,
+      event: MetaMetricsEventName.TokenHidden,
+      category: MetaMetricsEventCategory.Wallet,
       sensitiveProperties: {
         tokens: tokensDetailsList,
-        location: EVENT.LOCATION.TOKEN_DETECTION,
+        location: MetaMetricsEventLocation.TokenDetection,
         token_standard: TokenStandard.ERC20,
         asset_type: AssetType.token,
       },

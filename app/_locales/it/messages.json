@@ -538,10 +538,6 @@
     "message": "$1 non è connesso ad alcun sito.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 snap è collegato a questi siti. Hanno accesso alle autorizzazioni sopra elencate.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Connessione..."
   },
@@ -550,6 +546,9 @@
   },
   "connectingToGoerli": {
     "message": "Connessione alla Rete di Test Goerli"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Connessione alla Rete di test Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Connessione alla Rete Ethereum Principale"
@@ -1125,6 +1124,9 @@
   "likeToImportTokens": {
     "message": "Vorresti aggiungere questi token?"
   },
+  "lineatestnet": {
+    "message": "Rete di test Linea Goerli"
+  },
   "links": {
     "message": "Collegamenti"
   },
@@ -1464,12 +1466,6 @@
   "settings": {
     "message": "Impostazioni"
   },
-  "showAdvancedGasInline": {
-    "message": "Controlli gas avanzati"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Seleziona per visualizzare i controlli su prezzo e limite del gas nelle schermate di invio e conferma."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostra conversione nelle reti di test"
   },
@@ -1769,27 +1765,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Il simbolo deve essere lungo tra 0 e 12 caratteri."
-  },
-  "syncWithMobile": {
-    "message": "Sincronizza con dispositivo mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Assicurati che nessun'altro stia guardando al tuo schermo quando scansioni questo codice"
-  },
-  "syncWithMobileComplete": {
-    "message": "I tuoi dati sono stati sincronizzati con successo. Goditi l'app di MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Puoi sincronizzare i tuoi account e le tue informazioni con il tuo dispositivo mobile. Apri l'app di MetaMask, vai su \"Impostazioni\" e tocca \"Sincronizza da Estensione sul Browser\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Se hai appena aperto l'app di MetaMask per la prima volta, segui i passaggi sul tuo telefono."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scansiona questo codice con l'app di MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizza con dispositivo mobile"
   },
   "terms": {
     "message": "Termini di Uso"

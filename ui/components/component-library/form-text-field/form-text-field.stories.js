@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  Size,
   DISPLAY,
   AlignItems,
   TextVariant,
@@ -12,18 +11,18 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
-
 import {
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
   HelpText,
-  Icon,
-  ICON_NAMES,
   Label,
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
+  Icon,
+  IconName,
+  IconSize,
 } from '..';
 
 import { FormTextField } from './form-text-field';
@@ -374,7 +373,7 @@ export const FormExample = () => {
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
+      <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
@@ -405,12 +404,10 @@ export const CustomLabelOrHelpText = () => (
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
-        <Label htmlFor="custom-spending-cap" required>
-          Custom spending cap
-        </Label>
+        <Label htmlFor="custom-spending-cap">Custom spending cap</Label>
         <Icon
-          name={ICON_NAMES.INFO}
-          size={Size.SM}
+          name={IconName.Info}
+          size={IconSize.Sm}
           marginLeft={1}
           color={IconColor.iconAlternative}
         />

@@ -329,9 +329,6 @@
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
-  },
   "amount": {
     "message": "Montant"
   },
@@ -698,10 +695,6 @@
     "message": "$1 n’est connecté à aucun site.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Le snap $1 est connecté à ces sites. Ils ont accès aux autorisations énumérées ci-dessus.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Connexion…"
   },
@@ -710,6 +703,9 @@
   },
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Connexion au réseau de test Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
@@ -1222,9 +1218,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Activer le fournisseur de services de sécurité"
-  },
   "enableSmartTransactions": {
     "message": "Activer les transactions intelligentes"
   },
@@ -1320,9 +1313,6 @@
   "etherscanViewOn": {
     "message": "Afficher sur Etherscan"
   },
-  "expandExperience": {
-    "message": "Développez votre expérience web3 avec les Snaps MetaMask"
-  },
   "expandView": {
     "message": "Agrandir la vue"
   },
@@ -1360,18 +1350,6 @@
   "fileImportFail": {
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Voir les détails",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Ajouté le",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "vous devriez désinstaller cette extension",
@@ -1437,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "Ce prix de carburant a été suggéré par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Frais de transaction"
   },
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
@@ -1518,9 +1493,6 @@
   },
   "general": {
     "message": "Général"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "OpenSea vous avertira dès que vous recevrez une requête malveillante."
   },
   "goBack": {
     "message": "Retour"
@@ -1895,6 +1867,9 @@
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
+  "lineatestnet": {
+    "message": "Réseau de test Linea Goerli"
+  },
   "link": {
     "message": "Associer"
   },
@@ -1954,9 +1929,6 @@
   },
   "malformedData": {
     "message": "Données malformées"
-  },
-  "manageSnaps": {
-    "message": "Gérez vos Snaps installés"
   },
   "max": {
     "message": "Max."
@@ -2029,9 +2001,6 @@
   },
   "missingToken": {
     "message": "Vous ne voyez pas votre jeton ?"
-  },
-  "mobileSyncWarning": {
-    "message": "La fonction « Synchronisation avec l’extension » est temporairement désactivée. Si vous souhaitez utiliser votre portefeuille d’extension sur MetaMask mobile : sur votre application mobile, revenez aux options de configuration du portefeuille et sélectionnez l’option « Importation avec la phrase secrète de récupération ». Utilisez la phrase secrète de votre portefeuille d’extension pour importer celui-ci sur votre mobile."
   },
   "moreComingSoon": {
     "message": "D’autres à venir..."
@@ -2191,9 +2160,6 @@
     "message": "Le nonce est supérieur au nonce suggéré de $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
   },
@@ -2278,9 +2244,6 @@
   "notEnoughGas": {
     "message": "Pas assez de gaz"
   },
-  "notNow": {
-    "message": "Pas maintenant"
-  },
   "notifications": {
     "message": "Notifications"
   },
@@ -2341,15 +2304,6 @@
   },
   "notifications15Title": {
     "message": "La fusion Ethereum est en marche !"
-  },
-  "notifications17ActionText": {
-    "message": "Afficher les paramètres de sécurité et de confidentialité"
-  },
-  "notifications17Description": {
-    "message": "Nous vous proposons dans cette mise à jour davantage d’options pour protéger votre vie privée. Nous avons clarifié notre politique de collecte des données et les options de partage de ces données. Modifiez vos préférences ou supprimez les données d’utilisation des extensions depuis les paramètres de sécurité et de confidentialité."
-  },
-  "notifications17Title": {
-    "message": "Paramètres de sécurité et de confidentialité"
   },
   "notifications1Description": {
     "message": "Les utilisateurs de MetaMask Mobile peuvent désormais échanger des jetons dans leur portefeuille mobile. Scannez le code QR pour obtenir l’application mobile et commencez à échanger.",
@@ -2614,12 +2568,6 @@
   "openSea": {
     "message": "OpenSea (Beta)"
   },
-  "openSeaAltText": {
-    "message": "Fournisseur de services de sécurité OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea est le premier fournisseur de services de sécurité à offrir cette fonctionnalité. D’autres fournisseurs seront bientôt ajoutés !"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -2713,7 +2661,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Se connecter à $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Accéder à internet.",
@@ -2721,15 +2669,11 @@
   },
   "permission_accessSnap": {
     "message": "Connexion au Snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Planifiez et exécutez des actions périodiques.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Afficher une confirmation dans MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Afficher les boîtes de dialogue dans MetaMask.",
@@ -3267,18 +3211,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "Aucun résultat correspondant trouvé."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Afficher"
-  },
-  "showAdvancedGasInline": {
-    "message": "Contrôles de carburant avancés"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
   },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur les testnets"
@@ -3350,14 +3284,6 @@
   "smartTransaction": {
     "message": "Transaction intelligente"
   },
-  "snapAccess": {
-    "message": "Le snap $1 peut accéder à :",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Ajouté le $1 à partir de $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Ce contenu provient de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3379,22 +3305,11 @@
     "message": "Vous autorisez $2 à accéder à la clé du snap « $1 ». Cette action est irréversible et accorde à « $1 » le contrôle de vos comptes et actifs $2. Assurez-vous que vous faites confiance à « $1 » avant de continuer.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Ce snap demande les autorisations suivantes :"
-  },
   "snapUpdate": {
     "message": "Mettre à jour Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 a besoin d’une version plus récente de votre snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightError": {
-    "message": "Une erreur s’est produite avec $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Chargement de l’aperçu de transaction…"
@@ -3405,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "Gérez vos Snaps"
   },
-  "snapsStatus": {
-    "message": "L’état du Snap dépend de l’activité."
-  },
   "snapsToggle": {
     "message": "Un snap ne s’exécute que s’il est activé"
   },
   "snapsUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
+    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Certains réseaux peuvent présenter des risques pour la sécurité et/ou la vie privée. Informez-vous sur les risques avant d’ajouter et d’utiliser un réseau."
@@ -3520,9 +3433,6 @@
   },
   "statusNotConnected": {
     "message": "Non connecté"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Restez en sécurité avec OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Connectez votre Lattice1"
@@ -3989,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Le symbole doit comporter 11 caractères ou moins."
   },
-  "syncFailed": {
-    "message": "Échec de la synchronisation"
-  },
-  "syncInProgress": {
-    "message": "Synchronisation en cours"
-  },
-  "syncWithMobile": {
-    "message": "Synchroniser avec le mobile"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Assurez-vous que personne d’autre ne regarde votre écran lorsque vous scannez ce code."
-  },
-  "syncWithMobileComplete": {
-    "message": "Vos données ont été synchronisées avec succès. Profitez de l’application mobile MetaMask !"
-  },
-  "syncWithMobileDesc": {
-    "message": "Vous pouvez synchroniser vos comptes et vos informations avec votre appareil mobile. Ouvrez l’application mobile MetaMask, allez dans « Paramètres » et appuyez sur « Synchroniser depuis l’extension de navigateur »"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Si vous ouvrez l’application MetaMask Mobile pour la première fois, suivez simplement les étapes dans votre téléphone."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scannez ce code avec votre application mobile MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synchroniser avec le mobile"
-  },
   "tenPercentIncreased": {
     "message": "Augmentation de 10 %"
   },
@@ -4039,9 +3922,6 @@
   },
   "thisIsBasedOn": {
     "message": "Ces informations proviennent de "
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ce service est expérimental"
   },
   "time": {
     "message": "Temps"

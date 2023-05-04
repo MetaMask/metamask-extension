@@ -11,6 +11,11 @@ import {
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  getPreferences,
+  getCurrentCurrency,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -18,6 +23,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
 
@@ -25,27 +31,35 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
-  const { provider } = state.metamask;
+  const providerConfig = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+
   return {
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     hardwareWalletRequiresConnection,
     isLedgerWallet,
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     subjectMetadata: getSubjectMetadata(state),
     messagesList,
     messagesCount,
-    provider,
+    providerConfig,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: getSelectedAccount(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

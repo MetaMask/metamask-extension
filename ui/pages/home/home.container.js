@@ -1,10 +1,11 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   activeTabHasPermissions,
   getFirstPermissionRequest,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
@@ -17,6 +18,7 @@ import {
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
+  getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
@@ -25,6 +27,7 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
+  hasPendingApprovalsSelector,
 } from '../../selectors';
 
 import {
@@ -35,20 +38,18 @@ import {
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
+  setTermsOfUseLastAgreed,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
   setNewNftAddedMessage,
   setRemoveNftMessage,
   setNewTokensImported,
-  setRpcTarget,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  setActiveNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  setNewCustomNetworkAdded,
-} from '../../ducks/app/app';
+import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -66,7 +67,6 @@ import Home from './home.component';
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedAssets,
     seedPhraseBackedUp,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
@@ -90,7 +90,7 @@ const mapStateToProps = (state) => {
 
   // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
@@ -109,9 +109,14 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
+  const hasWatchAssetPendingApprovals = hasPendingApprovalsSelector(
+    state,
+    ApprovalType.WatchAsset,
+  );
+
   return {
     forgottenPassword,
-    suggestedAssets,
+    hasWatchAssetPendingApprovals,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
@@ -133,28 +138,29 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     errorsToShow: metamask.snapErrors,
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
-    newNetworkAdded: getNewNetworkAdded(state),
+    newNetworkAddedName: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
-    newCustomNetworkAdded: appState.newCustomNetworkAdded,
+    newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   closeNotificationPopup: () => closeNotificationPopup(),
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   removeSnapError: async (id) => await removeSnapError(id),
   ///: END:ONLY_INCLUDE_IN
   setConnectedStatusPopoverHasBeenShown: () =>
@@ -169,12 +175,11 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+  setTermsOfUseLastAgreed: (lastAgreed) => {
+    dispatch(setTermsOfUseLastAgreed(lastAgreed));
+  },
   setOutdatedBrowserWarningLastShown: (lastShown) => {
     dispatch(setOutdatedBrowserWarningLastShown(lastShown));
-  },
-  setNewNetworkAdded: (newNetwork) => {
-    console.log({ newNetwork });
-    dispatch(setNewNetworkAdded(newNetwork));
   },
   setNewNftAddedMessage: (message) => {
     dispatch(setRemoveNftMessage(''));
@@ -187,11 +192,11 @@ const mapDispatchToProps = (dispatch) => ({
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
-  clearNewCustomNetworkAdded: () => {
-    dispatch(setNewCustomNetworkAdded({}));
+  clearNewNetworkAdded: () => {
+    dispatch(setNewNetworkAdded({}));
   },
-  setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
-    dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
+  setActiveNetwork: (networkConfigurationId) => {
+    dispatch(setActiveNetwork(networkConfigurationId));
   },
 });
 
