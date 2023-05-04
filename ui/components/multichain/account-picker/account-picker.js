@@ -42,7 +42,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={Size.SM}
+        size={Size.XS}
       />
       <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
         {name}

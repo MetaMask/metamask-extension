@@ -25,7 +25,9 @@ import {
 import {
   AvatarNetwork,
   ButtonIcon,
+  ButtonIconSize,
   IconName,
+  IconSize,
   PickerNetwork,
 } from '../../component-library';
 
@@ -142,7 +144,7 @@ export const AppHeader = ({ onClick }) => {
               alignItems={AlignItems.center}
               width={BLOCK_SIZES.FULL}
               backgroundColor={BackgroundColor.backgroundDefault}
-              padding={2}
+              padding={4}
               gap={2}
             >
               <AvatarNetwork
@@ -202,96 +204,104 @@ export const AppHeader = ({ onClick }) => {
               <Box
                 display={DISPLAY.FLEX}
                 alignItems={AlignItems.center}
-                justifyContent={JustifyContent.spaceBetween}
+                justifyContent={JustifyContent.flexEnd}
               >
-                {showStatus ? (
-                  <Box ref={menuRef}>
-                    <ConnectedStatusIndicator
+                <Box display={DISPLAY.FLEX} gap={4}>
+                  {showStatus ? (
+                    <Box ref={menuRef}>
+                      <ConnectedStatusIndicator
+                        onClick={() => {
+                          history.push(CONNECTED_ACCOUNTS_ROUTE);
+                          trackEvent({
+                            event: MetaMetricsEventName.NavConnectedSitesOpened,
+                            category: MetaMetricsEventCategory.Navigation,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : null}{' '}
+                  {popupStatus && multichainProductTourStep === 2 ? (
+                    <ProductTour
+                      className="multichain-app-header__product-tour"
+                      anchorElement={menuRef.current}
+                      closeMenu={() => setAccountOptionsMenuOpen(false)}
+                      prevIcon
+                      title={t('permissionsTitle')}
+                      description={t('permissionsTourDescription')}
+                      currentStep="2"
+                      totalSteps="3"
+                      prevClick={() =>
+                        setMultichainProductTourStep(
+                          multichainProductTourStep - 1,
+                        )
+                      }
+                      onClick={() =>
+                        setMultichainProductTourStep(
+                          multichainProductTourStep + 1,
+                        )
+                      }
+                      positionObj={
+                        productTourDirection === 'rtl' ? '74%' : '12%'
+                      }
+                      productTourDirection={productTourDirection}
+                    />
+                  ) : null}
+                  <Box
+                    ref={menuRef}
+                    display={DISPLAY.FLEX}
+                    justifyContent={JustifyContent.flexEnd}
+                    width={BLOCK_SIZES.FULL}
+                  >
+                    <ButtonIcon
+                      iconName={IconName.MoreVertical}
+                      data-testid="account-options-menu-button"
+                      ariaLabel={t('accountOptions')}
                       onClick={() => {
-                        history.push(CONNECTED_ACCOUNTS_ROUTE);
                         trackEvent({
-                          event: MetaMetricsEventName.NavConnectedSitesOpened,
+                          event: MetaMetricsEventName.NavAccountMenuOpened,
                           category: MetaMetricsEventCategory.Navigation,
+                          properties: {
+                            location: 'Home',
+                          },
                         });
+                        setAccountOptionsMenuOpen(true);
                       }}
+                      size={ButtonIconSize.Sm}
+                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
-                ) : null}{' '}
-                {popupStatus && multichainProductTourStep === 2 ? (
+                </Box>
+                {accountOptionsMenuOpen ? (
+                  <GlobalMenu
+                    anchorElement={menuRef.current}
+                    closeMenu={() => setAccountOptionsMenuOpen(false)}
+                  />
+                ) : null}
+                {showProductTour &&
+                popupStatus &&
+                multichainProductTourStep === 3 ? (
                   <ProductTour
                     className="multichain-app-header__product-tour"
                     anchorElement={menuRef.current}
                     closeMenu={() => setAccountOptionsMenuOpen(false)}
                     prevIcon
-                    title={t('permissionsTitle')}
-                    description={t('permissionsTourDescription')}
-                    currentStep="2"
+                    title={t('globalTitle')}
+                    description={t('globalTourDescription')}
+                    currentStep="3"
                     totalSteps="3"
                     prevClick={() =>
                       setMultichainProductTourStep(
                         multichainProductTourStep - 1,
                       )
                     }
-                    onClick={() =>
-                      setMultichainProductTourStep(
-                        multichainProductTourStep + 1,
-                      )
-                    }
-                    positionObj={productTourDirection === 'rtl' ? '74%' : '12%'}
+                    onClick={() => {
+                      hideProductTour();
+                    }}
+                    positionObj={productTourDirection === 'rtl' ? '89%' : '0%'}
                     productTourDirection={productTourDirection}
                   />
                 ) : null}
-                <Box
-                  ref={menuRef}
-                  display={DISPLAY.FLEX}
-                  justifyContent={JustifyContent.flexEnd}
-                  width={BLOCK_SIZES.FULL}
-                >
-                  <ButtonIcon
-                    iconName={IconName.MoreVertical}
-                    data-testid="account-options-menu-button"
-                    ariaLabel={t('accountOptions')}
-                    onClick={() => {
-                      trackEvent({
-                        event: MetaMetricsEventName.NavAccountMenuOpened,
-                        category: MetaMetricsEventCategory.Navigation,
-                        properties: {
-                          location: 'Home',
-                        },
-                      });
-                      setAccountOptionsMenuOpen(true);
-                    }}
-                  />
-                </Box>
               </Box>
-              {accountOptionsMenuOpen ? (
-                <GlobalMenu
-                  anchorElement={menuRef.current}
-                  closeMenu={() => setAccountOptionsMenuOpen(false)}
-                />
-              ) : null}
-              {showProductTour &&
-              popupStatus &&
-              multichainProductTourStep === 3 ? (
-                <ProductTour
-                  className="multichain-app-header__product-tour"
-                  anchorElement={menuRef.current}
-                  closeMenu={() => setAccountOptionsMenuOpen(false)}
-                  prevIcon
-                  title={t('globalTitle')}
-                  description={t('globalTourDescription')}
-                  currentStep="3"
-                  totalSteps="3"
-                  prevClick={() =>
-                    setMultichainProductTourStep(multichainProductTourStep - 1)
-                  }
-                  onClick={() => {
-                    hideProductTour();
-                  }}
-                  positionObj={productTourDirection === 'rtl' ? '89%' : '0%'}
-                  productTourDirection={productTourDirection}
-                />
-              ) : null}
             </Box>
           ) : (
             <Box

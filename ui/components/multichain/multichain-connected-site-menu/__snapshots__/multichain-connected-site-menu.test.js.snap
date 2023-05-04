@@ -19,7 +19,7 @@ exports[`Multichain Connected Site Menu should render the site menu in connected
           class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -56,7 +56,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
           class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -93,7 +93,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
           class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
