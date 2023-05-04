@@ -23971,6 +23971,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
+    "@metamask/message-manager": ^4.0.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^2.0.0
     "@metamask/obs-store": ^8.1.0
