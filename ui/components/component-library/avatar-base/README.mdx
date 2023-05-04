@@ -39,13 +39,13 @@ The text styles of the `AvatarBase` is based on the `size` prop. To override thi
 </Canvas>
 
 ```jsx
-import { AVATAR_BASE_SIZES } from '../ui/component-library/avatar-base';
-import { AvatarBase } from '../../component-library';
-<AvatarBase size={AVATAR_BASE_SIZES.XS} />
-<AvatarBase size={AVATAR_BASE_SIZES.SM} />
-<AvatarBase size={AVATAR_BASE_SIZES.MD} />
-<AvatarBase size={AVATAR_BASE_SIZES.LG} />
-<AvatarBase size={AVATAR_BASE_SIZES.XL} />
+import { AvatarBaseSize } from '../ui/component-library/avatar-base/avatar-base.types';
+import { AvatarBase } from '../../component-library/avatar-base';
+<AvatarBase size={AvatarBaseSize.XS} />
+<AvatarBase size={AvatarBaseSize.SM} />
+<AvatarBase size={AvatarBaseSize.MD} />
+<AvatarBase size={AvatarBaseSize.LG} />
+<AvatarBase size={AvatarBaseSize.XL} />
 ```
 
 ### Children
@@ -59,7 +59,7 @@ The `AvatarBase` component can contain images, icons or text
 ```jsx
 import { AvatarBase } from '../../component-library';
 <AvatarBase>
-  <img src="./images/eth_logo.svg" />
+  <img src="./images/eth_logo.png" />
 </AvatarBase>
 <AvatarBase>
   <img width="100%" src="./images/arbitrum.svg" />

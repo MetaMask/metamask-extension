@@ -266,7 +266,7 @@ type NetworkConfigurations = Record<
  * The state that NetworkController holds after combining its individual stores.
  */
 export type NetworkControllerState = {
-  provider: ProviderConfiguration;
+  providerConfig: ProviderConfiguration;
   networkId: NetworkIdState;
   networkStatus: NetworkStatus;
   networkDetails: NetworkDetails;
@@ -279,7 +279,7 @@ export type NetworkControllerState = {
 export type NetworkControllerOptions = {
   messenger: NetworkControllerMessenger;
   state?: {
-    provider?: ProviderConfiguration;
+    providerConfig?: ProviderConfiguration;
     networkDetails?: NetworkDetails;
     networkConfigurations?: NetworkConfigurations;
   };
@@ -327,7 +327,7 @@ function buildDefaultProviderConfigState(): ProviderConfiguration {
     };
   } else if (
     process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENV === 'test'
+    process.env.METAMASK_ENVIRONMENT === 'test'
   ) {
     return {
       type: NETWORK_TYPES.GOERLI,
@@ -386,7 +386,7 @@ function buildDefaultNetworkConfigurationsState(): NetworkConfigurations {
  */
 function buildDefaultState() {
   return {
-    provider: buildDefaultProviderConfigState(),
+    providerConfig: buildDefaultProviderConfigState(),
     networkId: buildDefaultNetworkIdState(),
     networkStatus: buildDefaultNetworkStatusState(),
     networkDetails: buildDefaultNetworkDetailsState(),
@@ -477,7 +477,7 @@ export class NetworkController extends EventEmitter {
       ...buildDefaultState(),
       ...state,
     });
-    this.#previousProviderConfig = this.store.getState().provider;
+    this.#previousProviderConfig = this.store.getState().providerConfig;
 
     // provider and block tracker
     this.#provider = null;
@@ -508,7 +508,7 @@ export class NetworkController extends EventEmitter {
    * using the provider to gather details about the network.
    */
   async initializeProvider(): Promise<void> {
-    const { type, rpcUrl, chainId } = this.store.getState().provider;
+    const { type, rpcUrl, chainId } = this.store.getState().providerConfig;
     this.#configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
   }
@@ -575,7 +575,7 @@ export class NetworkController extends EventEmitter {
    * blocking requests, or if the network is not Infura-supported.
    */
   async lookupNetwork(): Promise<void> {
-    const { chainId, type } = this.store.getState().provider;
+    const { chainId, type } = this.store.getState().providerConfig;
     const { provider } = this.getProviderAndBlockTracker();
     let networkChanged = false;
     let networkId: NetworkIdState = null;
@@ -704,7 +704,7 @@ export class NetworkController extends EventEmitter {
    * @returns The URL of the RPC endpoint representing the newly switched
    * network.
    */
-  setActiveNetwork(networkConfigurationId: NetworkConfigurationId): string {
+  async setActiveNetwork(networkConfigurationId: NetworkConfigurationId) {
     const targetNetwork =
       this.store.getState().networkConfigurations[networkConfigurationId];
 
@@ -714,7 +714,7 @@ export class NetworkController extends EventEmitter {
       );
     }
 
-    this.#setProviderConfig({
+    await this.#setProviderConfig({
       type: NETWORK_TYPES.RPC,
       ...targetNetwork,
     });
@@ -742,10 +742,10 @@ export class NetworkController extends EventEmitter {
     const network = BUILT_IN_INFURA_NETWORKS[type];
     await this.#setProviderConfig({
       type,
-      rpcUrl: '',
+      rpcUrl: undefined,
       chainId: network.chainId,
       ticker: 'ticker' in network ? network.ticker : 'ETH',
-      nickname: '',
+      nickname: undefined,
       rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
     });
   }
@@ -754,7 +754,7 @@ export class NetworkController extends EventEmitter {
    * Re-initializes the provider and block tracker for the current network.
    */
   async resetConnection() {
-    await this.#setProviderConfig(this.store.getState().provider);
+    await this.#setProviderConfig(this.store.getState().providerConfig);
   }
 
   /**
@@ -765,7 +765,7 @@ export class NetworkController extends EventEmitter {
   async rollbackToPreviousProvider() {
     const config = this.#previousProviderConfig;
     this.store.updateState({
-      provider: config,
+      providerConfig: config,
     });
     await this.#switchNetwork(config);
   }
@@ -850,8 +850,8 @@ export class NetworkController extends EventEmitter {
    * @param providerConfig - The provider configuration.
    */
   async #setProviderConfig(providerConfig: ProviderConfiguration) {
-    this.#previousProviderConfig = this.store.getState().provider;
-    this.store.updateState({ provider: providerConfig });
+    this.#previousProviderConfig = this.store.getState().providerConfig;
+    this.store.updateState({ providerConfig });
     await this.#switchNetwork(providerConfig);
   }
 
@@ -1034,7 +1034,7 @@ export class NetworkController extends EventEmitter {
    * @throws if `rpcUrl` is not a valid URL.
    * @returns The ID for the added or updated network configuration.
    */
-  upsertNetworkConfiguration(
+  async upsertNetworkConfiguration(
     {
       rpcUrl,
       chainId,
@@ -1051,7 +1051,7 @@ export class NetworkController extends EventEmitter {
       referrer: string;
       source: string;
     },
-  ): NetworkConfigurationId {
+  ): Promise<NetworkConfigurationId> {
     assert.ok(
       isPrefixedFormattedHexString(chainId),
       `Invalid chain ID "${chainId}": invalid hex string.`,
@@ -1129,7 +1129,7 @@ export class NetworkController extends EventEmitter {
     }
 
     if (setActive) {
-      this.setActiveNetwork(newNetworkConfigurationId);
+      await this.setActiveNetwork(newNetworkConfigurationId);
     }
 
     return newNetworkConfigurationId;
@@ -1141,9 +1141,12 @@ export class NetworkController extends EventEmitter {
    * @param networkConfigurationId - The unique id for the network configuration
    * to remove.
    */
-  removeNetworkConfiguration(
-    networkConfigurationId: NetworkConfigurationId,
-  ): void {
+  removeNetworkConfiguration(networkConfigurationId: NetworkConfigurationId) {
+    if (!this.store.getState().networkConfigurations[networkConfigurationId]) {
+      throw new Error(
+        `networkConfigurationId ${networkConfigurationId} does not match a configured networkConfiguration`,
+      );
+    }
     const networkConfigurations = {
       ...this.store.getState().networkConfigurations,
     };

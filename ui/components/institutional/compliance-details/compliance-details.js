@@ -11,6 +11,17 @@ import {
   getComplianceTenantSubdomain,
 } from '../../../ducks/institutional/institutional';
 import { formatDate } from '../../../helpers/utils/util';
+import Box from '../../ui/box';
+import { Text } from '../../component-library';
+import {
+  TextColor,
+  TextVariant,
+  JustifyContent,
+  AlignItems,
+  BLOCK_SIZES,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
 
 const ComplianceDetails = ({ address, onClose, onGenerate }) => {
   const t = useContext(I18nContext);
@@ -38,22 +49,47 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
   const complianceTenantSubdomain = useSelector(getComplianceTenantSubdomain);
 
   return (
-    <div className="compliance-details">
-      <div className="compliance-details__row">
-        <div className="compliance-details__detail-header">{t('address')}</div>
-        <div className="compliance-details__detail-content--address">
-          {address}
-        </div>
-      </div>
-      <div className="compliance-details__row">
-        <div className="compliance-details__detail-header">
-          {t('riskRating')}
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      paddingLeft={4}
+      paddingRight={4}
+      className="compliance-details"
+    >
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.TWO_THIRDS}
+        paddingTop={4}
+        paddingBottom={4}
+        className="compliance-details__row"
+      >
+        <Text>{t('address')}</Text>
+        <Text variant={TextVariant.bodyXs}>{address}</Text>
+      </Box>
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.TWO_THIRDS}
+        paddingTop={4}
+        paddingBottom={4}
+        className="compliance-details__row"
+      >
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          marginBottom={1}
+          color={TextColor.textAlternative}
+        >
+          <Text marginRight={2}>{t('riskRating')}</Text>
           <InfoTooltip
             position="bottom"
             contentText={<span>{t('riskRatingTooltip')}</span>}
           />
-        </div>
-        <div
+        </Box>
+        <Box
           className={classnames('compliance-row__column-risk', {
             'compliance-row__column-risk--green': lastReport?.risk === 'low',
             'compliance-row__column-risk--yellow':
@@ -63,24 +99,36 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
               lastReport?.risk === 'unacceptable',
           })}
         >
-          {lastReport ? lastReport.risk : 'No Report'}
-        </div>
-      </div>
-      <div className="compliance-details__row">
-        <div className="compliance-details__detail-header">
-          {t('reportLastRun')}
+          <Text>{lastReport ? lastReport.risk : t('noReport')}</Text>
+        </Box>
+      </Box>
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.TWO_THIRDS}
+        paddingTop={4}
+        paddingBottom={4}
+        className="compliance-details__row"
+      >
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          color={TextColor.textAlternative}
+        >
+          <Text marginRight={2}>{t('reportLastRun')}</Text>
           <InfoTooltip
             position="bottom"
             contentText={<span>{t('reportLastRunTooltip')}</span>}
           />
-        </div>
-        <div className="compliance-details__detail-content">
+        </Box>
+        <Text color={TextColor.textDefault}>
           {lastReport
             ? formatDate(new Date(lastReport.createTime).getTime())
             : 'N/A'}
-        </div>
-      </div>
-      <div className="compliance-details__footer">
+        </Text>
+      </Box>
+      <Box>
         <SwapsFooter
           onSubmit={() => {
             onGenerate(address);
@@ -97,8 +145,8 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
           approveActive={lastReport}
           showTopBorder
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

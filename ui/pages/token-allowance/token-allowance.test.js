@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -24,6 +24,10 @@ const state = {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         name: 'Account 1',
       },
+      '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        name: 'Account 2',
+      },
     },
     cachedBalances: {},
     addressBook: [
@@ -35,7 +39,7 @@ const state = {
         name: 'Address Book Account 1',
       },
     ],
-    provider: {
+    providerConfig: {
       type: 'mainnet',
       nickname: '',
     },
@@ -65,10 +69,10 @@ const state = {
       },
     ],
     unapprovedTxs: {},
-    keyringTypes: [KeyringType.ledger],
+    keyringTypes: [],
     keyrings: [
       {
-        type: KeyringType.ledger,
+        type: KeyringType.hdKeyTree,
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
@@ -96,12 +100,14 @@ jest.mock('../../store/actions', () => ({
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
   updateCustomNonce: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
+  estimateGas: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
 jest.mock('../../contexts/gasFee', () => ({
   useGasFeeContext: () => ({
     maxPriorityFeePerGas: '0.1',
     maxFeePerGas: '0.1',
+    updateTransaction: jest.fn(),
   }),
 }));
 
@@ -130,7 +136,7 @@ describe('TokenAllowancePage', () => {
     hexTransactionTotal: '0x44364c5bb0000',
     isMultiLayerFeeNetwork: false,
     supportsEIP1559: true,
-    userAddress: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
+    userAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
     data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
     isSetApproveForAll: false,
@@ -155,7 +161,7 @@ describe('TokenAllowancePage', () => {
       },
       sendFlowHistory: [],
       txParams: {
-        from: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
+        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         to: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
         value: '0x0',
         data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
@@ -215,8 +221,10 @@ describe('TokenAllowancePage', () => {
       store,
     );
 
-    const useDefault = getByText('Use default');
-    fireEvent.click(useDefault);
+    act(() => {
+      const useDefault = getByText('Use default');
+      fireEvent.click(useDefault);
+    });
 
     const input = getByTestId('custom-spending-cap-input');
     expect(input.value).toBe('1');
@@ -256,9 +264,9 @@ describe('TokenAllowancePage', () => {
     expect(gotIt).not.toBeInTheDocument();
   });
 
-  it('should show hardware wallet info text', () => {
+  it('should show ledger info text if the sending address is ledger', () => {
     const { queryByText, getByText, getByTestId } = renderWithProvider(
-      <TokenAllowance {...props} />,
+      <TokenAllowance {...props} fromAddressIsLedger />,
       store,
     );
 
@@ -273,11 +281,19 @@ describe('TokenAllowancePage', () => {
     expect(queryByText('Prior to clicking confirm:')).toBeInTheDocument();
   });
 
-  it('should not show hardware wallet info text', () => {
-    const { queryByText } = renderWithProvider(
-      <TokenAllowance {...props} />,
+  it('should not show ledger info text if the sending address is not ledger', () => {
+    const { queryByText, getByText, getByTestId } = renderWithProvider(
+      <TokenAllowance {...props} fromAddressIsLedger={false} />,
       store,
     );
+
+    const textField = getByTestId('custom-spending-cap-input');
+    fireEvent.change(textField, { target: { value: '1' } });
+
+    expect(queryByText('Prior to clicking confirm:')).toBeNull();
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
   });
@@ -298,5 +314,32 @@ describe('TokenAllowancePage', () => {
     );
 
     expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
+  });
+
+  it('should render from account name in header', () => {
+    const { getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    expect(getByText('Account 1')).toBeInTheDocument();
+  });
+
+  it('should account name from transaction even if currently selected account is different', () => {
+    const newState = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        selectedAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+      },
+    };
+    const newStore = configureMockStore()(newState);
+    const { queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      newStore,
+    );
+
+    expect(queryByText('Account 1')).toBeInTheDocument();
+    expect(queryByText('Account 2')).not.toBeInTheDocument();
   });
 });

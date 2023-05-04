@@ -55,6 +55,7 @@ import {
   showModal,
   addUnapprovedTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
+  getCurrentNetworkEIP1559Compatibility,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -77,6 +78,7 @@ import {
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
+  getProviderConfig,
   getTokens,
   getUnapprovedTxs,
 } from '../metamask/metamask';
@@ -589,7 +591,10 @@ export const initializeSendState = createAsyncThunk(
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    const eip1559support = checkNetworkAndAccountSupports1559(state);
+    let eip1559support = checkNetworkAndAccountSupports1559(state);
+    if (eip1559support === undefined) {
+      eip1559support = await getCurrentNetworkEIP1559Compatibility();
+    }
     const account = getSelectedAccount(state);
     const { send: sendState, metamask } = state;
     const draftTransaction =
@@ -1963,7 +1968,7 @@ export function updateRecipientUserInput(userInput) {
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
     const state = getState();
-    const { metamask } = state;
+    const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     let logAmount = amount;
@@ -1988,9 +1993,7 @@ export function updateSendAmount(amount) {
         toCurrency: EtherDenomination.ETH,
         numberOfDecimals: 8,
       });
-      logAmount = `${ethValue} ${
-        metamask?.provider?.ticker || EtherDenomination.ETH
-      }`;
+      logAmount = `${ethValue} ${ticker || EtherDenomination.ETH}`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
@@ -2020,6 +2023,7 @@ export function updateSendAsset(
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     const sendingAddress =
@@ -2034,7 +2038,7 @@ export function updateSendAsset(
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${AssetType.native} with symbol ${
-            state.metamask.provider?.ticker ?? EtherDenomination.ETH
+            ticker ?? EtherDenomination.ETH
           }`,
         ),
       );
