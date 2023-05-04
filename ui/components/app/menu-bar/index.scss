@@ -14,21 +14,21 @@
     color: var(--color-text-default);
   }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    &__custody-logo {
-      display: flex;
-      align-items: center;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  &__custody-logo {
+    display: flex;
+    align-items: center;
 
-      @media screen and (max-width: $break-small) {
-        display: none;
-      }
-
-      &--icon {
-        height: 35px;
-        margin-left: 10px;
-      }
+    @media screen and (max-width: $break-small) {
+      display: none;
     }
-    ///: END:ONLY_INCLUDE_IN
+
+    &--icon {
+      height: 35px;
+      margin-left: 10px;
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   .selected-account {
     grid-column: 2 / span 1;
