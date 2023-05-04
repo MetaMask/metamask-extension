@@ -28,3 +28,5 @@ jobs:
 
     - name: Run PR labelling script
       run: npm run label-prs
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

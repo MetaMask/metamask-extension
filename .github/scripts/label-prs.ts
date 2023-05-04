@@ -1,7 +1,20 @@
-import { context } from '@actions/github';
+import * as core from '@actions/core';
+import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
 type GithubClient = InstanceType<typeof GitHub>;
+
+const token = process.env.GITHUB_TOKEN;
+
+console.log({ token });
+
+if (!token) {
+  core.setFailed('GITHUB_TOKEN not found');
+  process.exit(1);
+}
+
+const octokit = getOctokit(token);
+
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -20,7 +33,7 @@ async function main(): Promise<void> {
     issueNumber = getIssueNumberFromBranchName(headRef);
   }
 
-  await updateLabels(github, issueNumber);
+  await updateLabels(github, issueNumber, octokit);
 }
 
 async function getIssueNumberFromPullRequestBody(): Promise<string> {
@@ -96,7 +109,7 @@ function bailIfIsNotFeatureBranch(branchName: string): void {
   }
 }
 
-async function updateLabels(github: GithubClient, issueNumber: string): Promise<void> {
+async function updateLabels(github: GithubClient, issueNumber: string, octokit: InstanceType<typeof GitHub>): Promise<void> {
   interface ILabel {
     name: string;
   };
@@ -133,12 +146,18 @@ async function updateLabels(github: GithubClient, issueNumber: string): Promise<
     dedupedFinalPRLabels,
   );
   if (hasIssueAdditionalLabels) {
-    await github.request(`PATCH /repos/${owner}/${repo}/issues/${prNumber}`, {
+    await octokit.rest.issues.update({
       owner,
       repo,
       issue_number: prNumber,
       labels: dedupedFinalPRLabels,
     });
+    // await github.request(`PATCH /repos/${owner}/${repo}/issues/${prNumber}`, {
+    //   owner,
+    //   repo,
+    //   issue_number: prNumber,
+    //   labels: dedupedFinalPRLabels,
+    // });
   }
 }
 

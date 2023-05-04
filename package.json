@@ -213,6 +213,7 @@
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
+    "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
