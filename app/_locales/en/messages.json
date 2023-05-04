@@ -552,6 +552,9 @@
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
+  "blockaid": {
+    "message": "Blockaid"
+  },
   "blockies": {
     "message": "Blockies"
   },
@@ -2865,9 +2868,6 @@
   "openSea": {
     "message": "OpenSea + Blockaid (Beta)"
   },
-  "blockaid": {
-    "message": "Blockaid"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3498,6 +3498,9 @@
   },
   "security": {
     "message": "Security"
+  },
+  "securityAlert": {
+    "message": "Security alert from $1 and $2"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -4431,9 +4434,6 @@
   },
   "thisCollection": {
     "message": "this collection"
-  },
-  "securityAlert": {
-    "message": "Security alert from $1 and $2"
   },
   "thisServiceIsExperimental": {
     "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
