@@ -1,6 +1,6 @@
 import React from 'react';
 import { cloneDeep } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
@@ -48,7 +48,7 @@ const mockProps = {
         },
       },
     },
-    type: ApprovalType.PersonalSign,
+    type: MESSAGE_TYPE.PERSONAL_SIGN,
   },
 };
 
