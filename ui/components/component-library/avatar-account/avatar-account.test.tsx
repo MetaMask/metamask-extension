@@ -1,12 +1,11 @@
-/* eslint-disable jest/require-top-level-describe */
-import { render } from '@testing-library/react';
-import React from 'react';
+import { render, RenderResult } from '@testing-library/react';
+import React, { RefObject } from 'react';
 import { AvatarAccount, AvatarAccountSize, AvatarAccountVariant } from '.';
 import 'jest-canvas-mock';
 
 describe('AvatarAccount', () => {
   it('should render correctly', () => {
-    const { getByTestId, container } = render(
+    const { getByTestId, container }: RenderResult = render(
       <AvatarAccount
         data-testid="avatar-account"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
@@ -21,7 +20,7 @@ describe('AvatarAccount', () => {
   });
 
   it('should render Jazzicon correctly', () => {
-    const { container } = render(
+    const { container }: RenderResult = render(
       <AvatarAccount
         data-testid="avatar-account"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
@@ -32,7 +31,7 @@ describe('AvatarAccount', () => {
   });
 
   it('should render Blockies correctly', () => {
-    const { container } = render(
+    const { container }: RenderResult = render(
       <AvatarAccount
         data-testid="avatar-account"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
@@ -44,7 +43,7 @@ describe('AvatarAccount', () => {
   });
 
   it('should render with custom classname', () => {
-    const { getByTestId } = render(
+    const { getByTestId }: RenderResult = render(
       <AvatarAccount
         className="mm-avatar-account--test"
         data-testid="test"
@@ -55,7 +54,7 @@ describe('AvatarAccount', () => {
   });
 
   it('should render with address', () => {
-    const container = (
+    const container: JSX.Element = (
       <AvatarAccount
         className="mm-avatar-account--test"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
@@ -67,7 +66,7 @@ describe('AvatarAccount', () => {
   });
 
   it('should render with different size classes', () => {
-    const { getByTestId } = render(
+    const { getByTestId }: RenderResult = render(
       <>
         <AvatarAccount
           size={AvatarAccountSize.Xs}

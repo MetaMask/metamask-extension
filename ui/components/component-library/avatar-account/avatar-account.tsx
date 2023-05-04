@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
 
-import Box from '../../ui/box/box';
+import Box, { BoxProps } from '../../ui/box/box';
 
 import { AvatarBase } from '../avatar-base';
 import {
@@ -13,7 +13,13 @@ import {
   AvatarAccountSize,
 } from './avatar-account.types';
 
-export const AvatarAccount = React.forwardRef(
+export interface AvatarAccountProps extends BoxProps {
+  size?: AvatarAccountSize;
+  address: string;
+  variant?: AvatarAccountVariant;
+}
+
+export const AvatarAccount = forwardRef<HTMLDivElement, AvatarAccountProps>(
   (
     {
       size = AvatarAccountSize.Md,
@@ -48,28 +54,10 @@ export const AvatarAccount = React.forwardRef(
 );
 
 AvatarAccount.propTypes = {
-  /**
-   * The size of the AvatarAccount.
-   * Possible values could be 'AvatarAccountSize.Xs', 'AvatarAccountSize.Sm', 'AvatarAccountSize.Md', 'AvatarAccountSize.Lg', 'AvatarAccountSize.Xl'
-   * Defaults to AvatarAccountSize.Md
-   */
   size: PropTypes.oneOf(Object.values(AvatarAccountSize)),
-  /**
-   * The variant of the avatar to be rendered, it can render either a AvatarAccountVariant.Jazzicon or a AvatarAccountVariant.Blockie
-   */
   variant: PropTypes.oneOf(Object.values(AvatarAccountVariant)),
-  /**
-   * Address used for generating random image
-   */
   address: PropTypes.string.isRequired,
-  /**
-   * Add custom css class
-   */
   className: PropTypes.string,
-  /**
-   * AvatarAccount also accepts all Box props including but not limited to
-   * className, as(change root element of HTML element) and margin props
-   */
   ...Box.propTypes,
 };
 

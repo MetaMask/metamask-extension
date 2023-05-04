@@ -21,7 +21,7 @@ export default {
     size: {
       control: 'select',
       options: Object.values(AvatarAccountSize).map(
-        (value) => value.toLowerCase(), // Removes reverse mapping from enum this is a temporary fix until we are using typescript for everything
+        (value: AvatarAccountSize) => value.toLowerCase(),
       ),
     },
     address: { control: 'text' },
@@ -37,11 +37,11 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <AvatarAccount {...args} />;
+export const DefaultStory: React.FC = (args) => <AvatarAccount {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
+export const Size: React.FC = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
     <AvatarAccount {...args} size={AvatarAccountSize.Xs} />
     <AvatarAccount {...args} size={AvatarAccountSize.Sm} />
@@ -51,24 +51,20 @@ export const Size = (args) => (
   </Box>
 );
 
-export const Variant = (args) => (
+export const Variant: React.FC = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
     <AvatarAccount {...args} variant={AvatarAccountVariant.Jazzicon} />
     <AvatarAccount {...args} variant={AvatarAccountVariant.Blockies} />
   </Box>
 );
 
-export const Address = (args) => (
+export const Address: React.FC = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.BASELINE} gap={1}>
     <AvatarAccount
       {...args}
       variant={AvatarAccountVariant.Jazzicon}
       address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
     />
-    <AvatarAccount
-      {...args}
-      variant={AvatarAccountVariant.Blockies}
-      address="0x0"
-    />
+    <AvatarAccount {...args} variant={AvatarAccountVariant.Blockies} address="0x0" />
   </Box>
 );
