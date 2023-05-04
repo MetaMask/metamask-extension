@@ -130,7 +130,7 @@ export default function TransactionList({
               )
               ///: END:ONLY_INCLUDE_IN
               .map((transactionGroup, index) => {
-                ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                 if (
                   transactionGroup.initialTransaction.transactionType ===
                   TransactionType.smart
