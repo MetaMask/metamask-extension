@@ -226,7 +226,7 @@ const mapStateToProps = (state, ownProps) => {
   const complianceProjectId = getComplianceProjectId(state);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   let isNoteToTraderSupported = false;
-  if (state.metamask.custodyAccountDetails[fromChecksumHexAddress]) {
+  if (state.metamask.custodyAccountDetails?.[fromChecksumHexAddress]) {
     const { custodianName } =
       state.metamask.custodyAccountDetails[fromChecksumHexAddress];
 
