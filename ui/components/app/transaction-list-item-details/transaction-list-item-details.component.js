@@ -12,7 +12,7 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import CustodyIcon from '../../ui/mmi/icon/custody-icon.component';
+import CustodyIcon from '../../institutional/icon/custody-icon.component';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
