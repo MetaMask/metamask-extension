@@ -15,7 +15,7 @@ exports[`MetaFoxLogo does match snapshot with custodyImgSrc 1`] = `
       width="42"
     />
     <img
-      alt=""
+      alt="custody-logo"
       class="app-header__custody-logo app-header__custody-logo--icon"
       height="42"
       src="/test"
