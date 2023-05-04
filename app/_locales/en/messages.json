@@ -1412,6 +1412,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "enterYourPassword": {
+    "message": "Enter your password"
+  },
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3183,6 +3186,10 @@
     "message": "Private Key",
     "description": "select this type of file to use to import an account"
   },
+  "privateKeyCopyWarning": {
+    "message": "Private key for $1",
+    "description": "$1 represents the account name"
+  },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
@@ -3688,6 +3695,9 @@
   },
   "showPermissions": {
     "message": "Show permissions"
+  },
+  "showPrivateKey": {
+    "message": "Show private key"
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
