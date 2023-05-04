@@ -12,7 +12,7 @@ import {
   Size,
   TextColor,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -133,7 +133,7 @@ export const MultichainTokenListItem = ({
               fontWeight={FONT_WEIGHT.MEDIUM}
               variant={TextVariant.bodyMd}
               width={[BLOCK_SIZES.TWO_THIRD]}
-              textAlign={TEXT_ALIGN.END}
+              textAlign={TextAlign.End}
             >
               {secondary}
             </Text>
