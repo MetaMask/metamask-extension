@@ -13,12 +13,12 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt';
-import TransactionFailed from '../../institutional/transaction-failed';
-import CustodyConfirmLink from '../../institutional/custody-confirm-link';
+import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
+import TransactionFailed from '../../institutional/transaction-failed-modal';
+import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
 import ComplianceModal from '../../institutional/compliance-modal';
-import ComplianceDetailsModal from '../../institutional/compliance-details-modal';
+import ComplianceDetailsModal from '../../institutional/compliance-details';
 ///: END:ONLY_INCLUDE_IN
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
