@@ -11,7 +11,7 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
-///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import Button from '../../ui/button';
 ///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
@@ -259,7 +259,7 @@ const ConfirmPageContainer = (props) => {
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
-                      ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
