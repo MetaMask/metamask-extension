@@ -37,9 +37,7 @@ import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
-
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-///: END:ONLY_INCLUDE_IN
+import EthSignModal from './eth-sign-modal/eth-sign-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -202,6 +200,18 @@ const MODALS = {
     },
   },
 
+  ETH_SIGN: {
+    contents: <EthSignModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
   CONFIRM_REMOVE_ACCOUNT: {
     contents: <ConfirmRemoveAccount />,
     mobileModalStyle: {

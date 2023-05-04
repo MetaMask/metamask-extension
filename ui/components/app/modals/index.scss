@@ -20,6 +20,7 @@
 @import '../../institutional/interactive-replacement-token-modal/index';
 @import '../../institutional/transaction-failed/index';
 ///: END:ONLY_INCLUDE_IN
+@import 'eth-sign-modal/index';
 
 .modal {
   z-index: 1050;
