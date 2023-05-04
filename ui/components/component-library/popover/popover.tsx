@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'classnames';
@@ -29,6 +29,7 @@ export const Popover = ({
   title,
   isPortal = true,
   arrowProps,
+  escKeyClose,
   ...props
 }: PopoverProps) => {
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
@@ -66,6 +67,22 @@ export const Popover = ({
   const contentStyle = {
     width: matchWidth ? referenceElement?.clientWidth : 'auto',
   };
+
+  // Define the Esc key press handler
+  useEffect(() => {
+    function handleEscKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        // Close the popover when the "Esc" key is pressed
+        escKeyClose();
+      }
+    }
+
+    document.addEventListener('keydown', handleEscKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [escKeyClose]);
 
   const PopoverContent = (
     <Box

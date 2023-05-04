@@ -701,6 +701,43 @@ export const Offset: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
+export const EscKeyClose: ComponentStory<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Set Popover Ref
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        onClick={handleClick}
+        backgroundColor={BackgroundColor.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={Color.primaryInverse}
+        as="button"
+      >
+        Click to open
+      </Box>
+      <Popover
+        referenceElement={referenceElement}
+        escKeyClose={() => setIsOpen(false)}
+        isOpen={isOpen}
+        {...args}
+      >
+        Press esc key to close
+      </Popover>
+    </>
+  );
+};
+
 export const WithPopoverHeader: ComponentStory<typeof Popover> = (args) => {
   const [refTitleElement, setRefTitleElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
@@ -812,53 +849,6 @@ export const OnFocusBlur: ComponentStory<typeof Popover> = (args) => {
       </Box>
       <Popover referenceElement={referenceElement} isOpen={isOpen} {...args}>
         onFocus to open and onBlur to close
-      </Popover>
-    </>
-  );
-};
-
-export const EscKeyDemo: ComponentStory<typeof Popover> = (args) => {
-  const [referenceElement, setReferenceElement] = useState();
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Set Popover Ref
-  const setBoxRef = (ref) => {
-    setReferenceElement(ref);
-  };
-
-  const handleClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false);
-    }
-  };
-
-  // Example of how to use keyboard events to close popover with escape key
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [isOpen]);
-
-  return (
-    <>
-      <Box
-        ref={setBoxRef}
-        onClick={handleClick}
-        backgroundColor={BackgroundColor.primaryAlternative}
-        style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
-        as="button"
-      >
-        Click to open
-      </Box>
-      <Popover referenceElement={referenceElement} isOpen={isOpen} {...args}>
-        Press esc key to close
       </Popover>
     </>
   );

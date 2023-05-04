@@ -87,4 +87,8 @@ export interface PopoverProps extends BoxProps {
    * Boolean to allow the Popover to be rendered in a createPortal
    */
   isPortal?: boolean;
+  /**
+   * Pass a close function for the escape key callback to close the Popover
+   */
+  escKeyClose?: () => void;
 }
