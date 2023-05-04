@@ -223,8 +223,6 @@ export default class AccountMenu extends Component {
         addressConnectedSubjectMap[identity.address] || {};
       const iconAndNameForOpenSubject = addressSubjects[originOfCurrentTab];
 
-      const iconAndNameForOpenSubjectUrl = iconAndNameForOpenSubject?.icon;
-
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       const labels = custodyAccountDetails
         ? custodyAccountDetails[toChecksumHexAddress(identity.address)]
@@ -300,7 +298,7 @@ export default class AccountMenu extends Component {
           {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
-                icon={iconAndNameForOpenSubjectUrl}
+                icon={iconAndNameForOpenSubject.icon}
                 name={iconAndNameForOpenSubject.name}
                 size={32}
               />
