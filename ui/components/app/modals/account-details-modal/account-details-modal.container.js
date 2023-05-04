@@ -14,9 +14,11 @@ import {
   getBlockExplorerLinkText,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
-  getCustodyAccountDetails,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getCustodyAccountDetails } from '../../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
 import AccountDetailsModal from './account-details-modal.component';
 
 const mapStateToProps = (state) => {

@@ -9,7 +9,7 @@ import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import CustodyLabels from '../../../ui/mmi/custody-labels';
+import CustodyLabels from '../../../institutional/custody-labels/custody-labels';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
 import {

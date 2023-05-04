@@ -3,11 +3,17 @@ import {
   getSelectedIdentity,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
-  getCustodyAccountDetails,
-  getProvider,
-  getIsCustodianSupportedChain,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  getCustodyAccountDetails,
+  getIsCustodianSupportedChain,
+} from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+///: END:ONLY_INCLUDE_IN
 import SelectedAccount from './selected-account.component';
 
 const mapStateToProps = (state) => {
@@ -16,7 +22,7 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType: getAccountType(state),
     accountDetails: getCustodyAccountDetails(state),
-    provider: getProvider(state),
+    provider: getProviderConfig(state),
     isCustodianSupportedChain: getIsCustodianSupportedChain(state),
     ///: END:ONLY_INCLUDE_IN
   };
