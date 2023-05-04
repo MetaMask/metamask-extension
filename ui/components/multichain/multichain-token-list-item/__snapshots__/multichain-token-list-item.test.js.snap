@@ -3,7 +3,7 @@
 exports[`MultichainTokenListItem should render correctly 1`] = `
 <div>
   <div
-    class="box multichain-token-list-item box--margin-top-auto box--display-flex box--gap-4 box--flex-direction-column"
+    class="box multichain-token-list-item box--display-flex box--gap-4 box--flex-direction-column"
     data-testid="multichain-token-list-item"
   >
     <a
