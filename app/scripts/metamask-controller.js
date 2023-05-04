@@ -2827,6 +2827,10 @@ export default class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
+
+      // set the snapcontroller referernce for snap keyring
+      const [snapKeyring] = keyringController.getKeyringsByType('Snap Keyring');
+      snapKeyring.setController(this.snapController);
       return vault;
     } finally {
       releaseLock();
@@ -2888,6 +2892,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.setLedgerTransportPreference(transportPreference);
 
+    const [snapKeyring] =
+      this.keyringController.getKeyringsByType('Snap Keyring');
+    snapKeyring.setController(this.snapController);
     return this.keyringController.fullUpdate();
   }
 
