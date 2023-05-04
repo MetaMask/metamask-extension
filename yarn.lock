@@ -4041,9 +4041,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "@metamask/message-manager@npm:3.1.1"
+"@metamask/message-manager@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/message-manager@npm:4.0.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
     "@metamask/controller-utils": ^3.4.0
@@ -4052,7 +4052,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: 5f2341a67826b04a2b9dafff1bd53f1a7d3748e9617da5360248549eb5c048aebe542d3c364e77a5d4263358f8dfac8109f0f5faaabf0630c3be7d5857ab881d
+  checksum: 9c3295a726eb59c2cc3f764b96010833edf2463e2dd3ee0a4d23ea6bf662615b3bd71110a5c6b60f253eac1de6c8b38af1edc0188ec766770a9d02c0f7401caa
   languageName: node
   linkType: hard
 
@@ -4308,18 +4308,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@file:pending/signature-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/signature-controller@file:pending/signature-controller#pending/signature-controller::hash=1204f7&locator=metamask-crx%40workspace%3A."
+"@metamask/signature-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/signature-controller@npm:1.0.0"
   dependencies:
     "@metamask/approval-controller": ^2.1.1
     "@metamask/base-controller": ^2.0.0
     "@metamask/controller-utils": ^3.4.0
-    "@metamask/message-manager": ^3.1.1
+    "@metamask/message-manager": ^4.0.0
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: 825dff33b80e8008f83b939cd12b8d8be677970d06f523f4643a8b8e6295deaf4bcb17f937f941c5ca912b1c9b081e35fb058aa4200176bf1c5346c4aa612dbd
+  checksum: 7efb738646a179db15c45d6e1654e17ce6c7a3e42b03fd27d365e50bb2e4287a1757f26efc0b3e99b3e5d320816f3f9e0c7038491289cf6071b7f886eaa0f27b
   languageName: node
   linkType: hard
 
@@ -23971,7 +23971,6 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^3.1.1
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^2.0.0
     "@metamask/obs-store": ^8.1.0
@@ -23984,7 +23983,7 @@ __metadata:
     "@metamask/rpc-methods": ^0.32.2
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/scure-bip39": ^2.0.3
-    "@metamask/signature-controller": "file:pending/signature-controller"
+    "@metamask/signature-controller": ^1.0.0
     "@metamask/slip44": ^3.0.0
     "@metamask/smart-transactions-controller": ^3.1.0
     "@metamask/snaps-controllers": ^0.32.2

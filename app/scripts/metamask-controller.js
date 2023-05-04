@@ -1200,7 +1200,7 @@ export default class MetamaskController extends EventEmitter {
       isEthSignEnabled: () =>
         this.preferencesController.store.getState()
           ?.disabledRpcMethodPreferences?.eth_sign,
-      getState: this.getState.bind(this),
+      getAllState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
