@@ -1,6 +1,10 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
@@ -232,7 +236,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // initiates a send from the dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -311,7 +315,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // initiates a transaction from the dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();

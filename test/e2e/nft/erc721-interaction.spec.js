@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -34,7 +38,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await connectToDApp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Click Transer
@@ -86,7 +90,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await connectToDApp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Click Approve
@@ -158,7 +162,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await connectToDApp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Enable Set approval for all
@@ -229,7 +233,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await connectToDApp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Disable Set approval for all

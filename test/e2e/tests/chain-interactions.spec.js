@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Chain Interactions', function () {
@@ -29,7 +33,7 @@ describe('Chain Interactions', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // trigger add chain confirmation
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -81,7 +85,7 @@ describe('Chain Interactions', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // trigger add chain confirmation
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();

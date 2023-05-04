@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+  DAPP_URL,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Permissions', function () {
@@ -27,7 +32,7 @@ describe('Permissions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -65,7 +70,7 @@ describe('Permissions', function () {
         });
         await driver.waitForSelector({
           css: '.connected-sites-list__subject-name',
-          text: '127.0.0.1:8080',
+          text: DAPP_URL,
         });
         const domains = await driver.findClickableElements(
           '.connected-sites-list__subject-name',

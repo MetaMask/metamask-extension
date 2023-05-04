@@ -383,7 +383,16 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
+const DAPP_URL = 'http://127.0.0.1:8080';
+
+const connectToDApp = async (driver, contract = null) => {
+  contract
+    ? await driver.openNewPage(`${DAPP_URL}/?contract=${contract}`)
+    : await driver.openNewPage(DAPP_URL);
+};
+
 module.exports = {
+  DAPP_URL,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -398,4 +407,5 @@ module.exports = {
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
+  connectToDApp,
 };

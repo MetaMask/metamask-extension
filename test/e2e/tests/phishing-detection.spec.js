@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const STALELIST_URL =
@@ -107,7 +111,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await connectToDApp(driver);
         await driver.clickElement({
           text: 'continue to the site.',
         });
@@ -208,7 +212,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await connectToDApp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -236,7 +240,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await connectToDApp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -276,7 +280,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await connectToDApp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 

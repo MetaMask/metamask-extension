@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+  DAPP_URL,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Dapp interactions', function () {
@@ -31,7 +36,7 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
@@ -76,7 +81,7 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
@@ -86,7 +91,7 @@ describe('Dapp interactions', function () {
         await driver.clickElement({ text: 'Lock', tag: 'button' });
 
         // Connect to Dapp1
-        await driver.openNewPage('http://127.0.0.1:8081/');
+        await connectToDApp(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(4);
         windowHandles = await driver.getAllWindowHandles();
@@ -111,7 +116,7 @@ describe('Dapp interactions', function () {
         );
         await driver.clickElement({ text: 'Connected sites', tag: 'div' });
         const connectedDapp1 = await driver.isElementPresent({
-          text: 'http://127.0.0.1:8080',
+          text: DAPP_URL,
           tag: 'bdi',
         });
         const connectedDapp2 = await driver.isElementPresent({

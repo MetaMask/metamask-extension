@@ -1,6 +1,10 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+} = require('../helpers');
 
 describe('Swtich ethereum chain', function () {
   const ganacheOptions = {
@@ -33,7 +37,7 @@ describe('Swtich ethereum chain', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectToDApp(driver);
 
         await driver.clickElement({
           tag: 'button',

@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectToDApp,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
@@ -142,7 +146,7 @@ describe('MV3 - Service worker restart', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // initialize a transaction of send from dapp
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await connectToDApp(driver);
         await driver.clickElement('#sendButton');
 
         // A popup window is initialized
