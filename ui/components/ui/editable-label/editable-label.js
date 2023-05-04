@@ -65,6 +65,7 @@ export default class EditableLabel extends Component {
           error={!isValidAccountName}
           helpText={errorMessage}
           autoFocus
+          placeholder={this.context.t('accountName')}
         />
         <ButtonIcon
           iconName={IconName.Check}
