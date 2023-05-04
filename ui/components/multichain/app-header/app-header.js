@@ -322,10 +322,7 @@ export const AppHeader = ({ onClick }) => {
               gap={2}
             >
               {popupStatus ? null : (
-                <Box
-                  display={DISPLAY.FLEX}
-                  className="multichain-app-header__contents__network-container"
-                >
+                <div>
                   <PickerNetwork
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
