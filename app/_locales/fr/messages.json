@@ -1416,9 +1416,6 @@
     "message": "Ce prix de carburant a été suggéré par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Frais de transaction"
-  },
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
   },
@@ -3922,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "Les choses que vous devez garder à l’esprit :"
-  },
-  "thisIsBasedOn": {
-    "message": "Ces informations proviennent de "
   },
   "time": {
     "message": "Temps"

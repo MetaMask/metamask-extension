@@ -1416,9 +1416,6 @@
     "message": "Biaya gas ini telah disarankan oleh $1. Pengabaian dapat menyebabkan masalah pada transaksi Anda. Hubungi $1 jika ada pertanyaan.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Biaya gas"
-  },
   "gasLimit": {
     "message": "Batas gas"
   },
@@ -3922,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "Hal-hal yang perlu diingat:"
-  },
-  "thisIsBasedOn": {
-    "message": "Hal ini berdasarkan informasi dari "
   },
   "time": {
     "message": "Waktu"

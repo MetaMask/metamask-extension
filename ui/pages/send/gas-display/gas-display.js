@@ -22,7 +22,6 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import {
-  getProvider,
   getPreferences,
   getIsBuyableChain,
   transactionFeeSelector,
@@ -32,7 +31,10 @@ import {
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../ducks/metamask/metamask';
 import { showModal } from '../../../store/actions';
 import {
   addHexes,
@@ -53,21 +55,21 @@ export default function GasDisplay({ gasError }) {
 
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const currentProvider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
-  const { provider, unapprovedTxs } = useSelector((state) => state.metamask);
+  const { unapprovedTxs } = useSelector((state) => state.metamask);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const { chainId } = provider;
+  const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
-  const currentNetworkName = networkName || currentProvider.nickname;
+  const currentNetworkName = networkName || providerConfig.nickname;
 
   const transactionData = {
     txParams: {
@@ -157,7 +159,7 @@ export default function GasDisplay({ gasError }) {
             <ConfirmGasDisplay key="gas-display" />,
             (gasError || isInsufficientTokenError) && (
               <TransactionDetailItem
-                key="total-item"
+                key="gas-display-total-item"
                 detailTitle={t('total')}
                 detailText={
                   showCurrencyRateCheck && (

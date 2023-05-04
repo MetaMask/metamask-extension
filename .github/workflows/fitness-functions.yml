@@ -11,18 +11,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
+      - name: Install dependencies
+        run: yarn
+
       - name: Run fitness functions
         env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
-          # git fetch origin $HEAD_REF
-          # git fetch origin $BASE_REF
-          # git diff origin/$BASE_REF origin/$HEAD_REF -- . > diff
-          # npm run fitness-functions -- "ci" "./diff"
+          # The following command generates a diff of changes between the common
+          # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
+          # files in the current directory and its subdirectories. The output is
+          # then saved to a file called "diff".
+          git diff "$(git merge-base "origin/$BASE_REF" HEAD)" HEAD -- . > ./diff
+          npm run fitness-functions -- "ci" "./diff"

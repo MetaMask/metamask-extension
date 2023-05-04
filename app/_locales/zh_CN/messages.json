@@ -427,7 +427,7 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
@@ -1415,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "燃料费"
   },
   "gasLimit": {
     "message": "燃料上限"
@@ -3922,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "注意事项:"
-  },
-  "thisIsBasedOn": {
-    "message": "所根据的信息是来自"
   },
   "time": {
     "message": "时间"

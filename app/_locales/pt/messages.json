@@ -1416,9 +1416,6 @@
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Taxa de gás"
-  },
   "gasLimit": {
     "message": "Limite de gás"
   },
@@ -3922,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "Informações importantes:"
-  },
-  "thisIsBasedOn": {
-    "message": "Isso se baseia em informações de "
   },
   "time": {
     "message": "Hora"

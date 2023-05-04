@@ -1416,9 +1416,6 @@
     "message": "Esta tarifa de gas ha sido sugerida por $1. Anularla puede causar un problema con su transacción. Comuníquese con $1 si tiene preguntas.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Cuota de gas"
-  },
   "gasLimit": {
     "message": "Límite de gas"
   },
@@ -3922,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "Cosas a tener en cuenta:"
-  },
-  "thisIsBasedOn": {
-    "message": "Esto se basa en información de "
   },
   "time": {
     "message": "Tiempo"

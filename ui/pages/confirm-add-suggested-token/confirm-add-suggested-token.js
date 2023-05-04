@@ -132,7 +132,7 @@ const ConfirmAddSuggestedToken = () => {
             token_contract_address: asset.address,
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
-            source: MetaMetricsTokenEventSource.Dapp,
+            source_connection_method: MetaMetricsTokenEventSource.Dapp,
             token_standard: TokenStandard.ERC20,
             asset_type: AssetType.token,
           },
