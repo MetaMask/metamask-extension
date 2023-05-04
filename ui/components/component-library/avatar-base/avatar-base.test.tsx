@@ -2,9 +2,15 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { Color, TextColor } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderColor,
+  Color,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 import { AvatarBase } from './avatar-base';
+import { AvatarBaseSize } from './avatar-base.types';
 
 describe('AvatarBase', () => {
   it('should render correctly', () => {
@@ -17,11 +23,11 @@ describe('AvatarBase', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <AvatarBase size="xs" data-testid="avatar-base-xs" />
-        <AvatarBase size="sm" data-testid="avatar-base-sm" />
-        <AvatarBase size="md" data-testid="avatar-base-md" />
-        <AvatarBase size="lg" data-testid="avatar-base-lg" />
-        <AvatarBase size="xl" data-testid="avatar-base-xl" />
+        <AvatarBase size={AvatarBaseSize.Xs} data-testid="avatar-base-xs" />
+        <AvatarBase size={AvatarBaseSize.Sm} data-testid="avatar-base-sm" />
+        <AvatarBase size={AvatarBaseSize.Md} data-testid="avatar-base-md" />
+        <AvatarBase size={AvatarBaseSize.Lg} data-testid="avatar-base-lg" />
+        <AvatarBase size={AvatarBaseSize.Xl} data-testid="avatar-base-xl" />
       </>,
     );
     expect(getByTestId('avatar-base-xs')).toHaveClass(
@@ -84,11 +90,11 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          backgroundColor={TextColor.successDefault}
+          backgroundColor={BackgroundColor.successDefault}
           data-testid={Color.successDefault}
         />
         <AvatarBase
-          backgroundColor={TextColor.errorDefault}
+          backgroundColor={BackgroundColor.errorDefault}
           data-testid={Color.errorDefault}
         />
       </>,
@@ -105,11 +111,11 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          borderColor={Color.successDefault}
+          borderColor={BorderColor.successDefault}
           data-testid={Color.successDefault}
         />
         <AvatarBase
-          borderColor={Color.errorDefault}
+          borderColor={BorderColor.errorDefault}
           data-testid={Color.errorDefault}
         />
       </>,
