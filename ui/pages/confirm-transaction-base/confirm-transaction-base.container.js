@@ -204,7 +204,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   let isNoteToTraderSupported = false;
-  if (state.metamask.custodyAccountDetails[fromChecksumHexAddress]) {
+  if (
+    state.metamask.custodyAccountDetails &&
+    state.metamask.custodyAccountDetails[fromChecksumHexAddress]
+  ) {
     const { custodianName } =
       state.metamask.custodyAccountDetails[fromChecksumHexAddress];
     isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
