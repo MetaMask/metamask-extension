@@ -2863,7 +2863,10 @@
     "message": "Open in block explorer"
   },
   "openSea": {
-    "message": "OpenSea (Beta)"
+    "message": "OpenSea + Blockaid (Beta)"
+  },
+  "blockaid": {
+    "message": "Blockaid"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4429,8 +4432,8 @@
   "thisCollection": {
     "message": "this collection"
   },
-  "thisIsBasedOn": {
-    "message": "This is based on information from "
+  "securityAlert": {
+    "message": "Security alert from $1 and $2"
   },
   "thisServiceIsExperimental": {
     "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
@@ -4617,7 +4620,7 @@
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSecurityCheck": {
-    "message": "Enable transaction security providers"
+    "message": "Enable security alerts"
   },
   "transactionSecurityCheckDescription": {
     "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
