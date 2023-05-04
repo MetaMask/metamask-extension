@@ -1,12 +1,10 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import {
-  tryReverseResolveAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  getMMIActions,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../../store/actions';
+import { tryReverseResolveAddress } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import {
   getAddressBook,
   getBlockExplorerLinkText,
@@ -75,7 +73,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const MMIActions = getMMIActions();
+  const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
   return {
     tryReverseResolveAddress: (address) => {
@@ -84,7 +82,7 @@ const mapDispatchToProps = (dispatch) => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     getCustodianTransactionDeepLink: (address, txId) => {
       return dispatch(
-        MMIActions.getCustodianTransactionDeepLink(address, txId),
+        mmiActions.getCustodianTransactionDeepLink(address, txId),
       );
     },
     ///: END:ONLY_INCLUDE_IN
