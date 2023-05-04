@@ -13,12 +13,12 @@
 @import 'contract-details-modal/index';
 @import 'hold-to-reveal-modal/index';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-@import '../../institutional/confirm-remove-jwt/index';
-@import '../../institutional/custody-confirm-link/index';
+@import '../../institutional/confirm-remove-jwt-modal/index';
+@import '../../institutional/custody-confirm-link-modal/index';
 @import '../../institutional/compliance-modal/index';
 @import '../../institutional/compliance-details-modal/index';
 @import '../../institutional/interactive-replacement-token-modal/index';
-@import '../../institutional/transaction-failed/index';
+@import '../../institutional/transaction-failed-modal/index';
 ///: END:ONLY_INCLUDE_IN
 @import 'eth-sign-modal/index';
 
