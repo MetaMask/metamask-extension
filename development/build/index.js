@@ -71,6 +71,7 @@ async function defineAndRunBuildTasks() {
     shouldLintFenceFiles,
     skipStats,
     version,
+    platform,
   } = await parseArgv();
 
   // scuttle on production/tests environment only
@@ -129,7 +130,7 @@ async function defineAndRunBuildTasks() {
     ],
   });
 
-  const browserPlatforms = ['firefox', 'chrome'];
+  const browserPlatforms = platform ? [platform] : ['firefox', 'chrome'];
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
 
@@ -147,6 +148,9 @@ async function defineAndRunBuildTasks() {
     browserPlatforms,
     browserVersionMap,
     buildType,
+    applyLavaMoat,
+    shouldIncludeSnow,
+    entryTask,
   });
 
   const styleTasks = createStyleTasks({ livereload });
@@ -308,6 +312,13 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           hidden: true,
           type: 'boolean',
         })
+        .option('platform', {
+          default: '',
+          description:
+            'Specify a single browser platform to build for. Either `chrome` or `firefox`',
+          hidden: true,
+          type: 'string',
+        })
         .check((args) => {
           if (!Number.isInteger(args.buildVersion)) {
             throw new Error(
@@ -332,6 +343,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     policyOnly,
     skipStats,
     task,
+    platform,
   } = argv;
 
   // Manually default this to `false` for dev builds only.
@@ -362,6 +374,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     shouldLintFenceFiles,
     skipStats,
     version,
+    platform,
   };
 }
 

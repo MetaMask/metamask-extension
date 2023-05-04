@@ -1432,9 +1432,6 @@
     "message": "このガス代は$1により提案されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1までお問い合わせください。",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "ガス代"
-  },
   "gasLimit": {
     "message": "ガスリミット"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask に確認を表示します。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask にダイアログウィンドウを表示します。",

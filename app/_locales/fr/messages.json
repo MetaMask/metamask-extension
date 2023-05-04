@@ -1432,9 +1432,6 @@
     "message": "Ce prix de carburant a été suggéré par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Frais de transaction"
-  },
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "Planifiez et exécutez des actions périodiques.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Afficher une confirmation dans MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Afficher les boîtes de dialogue dans MetaMask.",

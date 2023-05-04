@@ -1,0 +1,98 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { PopoverHeader } from './popover-header';
+
+# PopoverHeader
+
+PopoverHeader is built on top of [HeaderBase](/docs/components-componentlibrary-headerbase--default-story) component with the most common use case of a back button in the startAccessory position, title, and close button in the endAccessory position.
+
+<Canvas>
+  <Story id="components-componentlibrary-popoverheader--default-story" />
+</Canvas>
+
+## Props
+
+The `PopoverHeader` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={PopoverHeader} />
+
+### Children
+
+Wrapping string content in the `PopoverHeader` component will be rendered in the center of the header with the default title `Text` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-popoverheader--children" />
+</Canvas>
+
+```jsx
+import { PopoverHeader } from '../../component-library';
+
+<PopoverHeader>Title is sentence case no period</PopoverHeader>;
+```
+
+### onBack
+
+Use the onClick handler `onBack` prop to render the `ButtonIcon` back button in the startAccessory position.
+
+Use the `backButtonProps` prop to pass additional props to the `ButtonIcon` back button.
+
+<Canvas>
+  <Story id="components-componentlibrary-popoverheader--on-back" />
+</Canvas>
+
+```jsx
+import { PopoverHeader } from '../../component-library';
+
+<PopoverHeader onBack={() => console.log('Back button click')}>
+  OnBack Demo
+</PopoverHeader>;
+```
+
+### onClose
+
+Use the onClick handler `onClose` prop to render the `ButtonIcon` back button in the endAccessory position.
+
+Use the `backButtonProps` prop to pass additional props to the `ButtonIcon` back button.
+
+<Canvas>
+  <Story id="components-componentlibrary-popoverheader--on-close" />
+</Canvas>
+
+```jsx
+import { PopoverHeader } from '../../component-library';
+
+<PopoverHeader onClose={() => console.log('Back button click')}>
+  OnClose Demo
+</PopoverHeader>;
+```
+
+### startAccessory
+
+Use the `startAccessory` prop to render a component in the startAccessory position. This will override the default back `ButtonIcon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-popoverheader--start-accessory" />
+</Canvas>
+
+```jsx
+import { PopoverHeader, Button, BUTTON_SIZES } from '../../component-library';
+
+<PopoverHeader startAccessory={<Button size={BUTTON_SIZES.SM}>Demo</Button>}>
+  StartAccessory
+</PopoverHeader>;
+```
+
+### endAccessory
+
+Use the `endAccessory` prop to render a component in the endAccessory position. This will override the default close `ButtonIcon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-popoverheader--end-accessory" />
+</Canvas>
+
+```jsx
+import { PopoverHeader, Button, BUTTON_SIZES } from '../../component-library';
+
+<PopoverHeader endAccessory={<Button size={BUTTON_SIZES.SM}>Demo</Button>}>
+  EndAccessory
+</PopoverHeader>;
+```

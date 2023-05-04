@@ -1432,9 +1432,6 @@
     "message": "Diese Gasgebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gasgebühr"
-  },
   "gasLimit": {
     "message": "Gaslimit"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "Regelmäßige Transaktionen planen und ausführen.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Bestätigung in MetaMask anzeigen.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Dialogfenster in MetaMask anzeigen.",

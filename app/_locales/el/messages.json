@@ -1432,9 +1432,6 @@
     "message": "Αυτό το τέλος συναλλαγής έχει προταθεί από το $1. Η παράκαμψη μπορεί να προκαλέσει πρόβλημα με τη συναλλαγή σας. Εάν έχετε απορίες, επικοινωνήστε με $1.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Τέλη Συναλλαγής"
-  },
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "Προγραμματισμός και εκτέλεση περιοδικών ενεργειών.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Εμφάνιση επιβεβαίωσης στο MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Εμφάνιση παραθύρων διαλόγου στο MetaMask.",

@@ -6,6 +6,7 @@ import {
   BackgroundColor,
   BorderColor,
   TextColor,
+  IconColor,
   DISPLAY,
   JustifyContent,
   AlignItems,
@@ -81,7 +82,10 @@ AvatarBase.propTypes = {
    * The color of the text inside the AvatarBase
    * Defaults to TextColor.textDefault
    */
-  color: PropTypes.oneOf(Object.values(TextColor)),
+  color: PropTypes.oneOf([
+    ...Object.values(TextColor),
+    ...Object.values(IconColor),
+  ]),
   /**
    * Additional classNames to be added to the AvatarToken
    */

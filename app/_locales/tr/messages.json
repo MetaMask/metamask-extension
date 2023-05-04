@@ -1432,9 +1432,6 @@
     "message": "Bu gaz ücreti $1 tarafından önerilmiştir. Bu değerin başka bir değerle değiştirilmesi işleminizle ilgili bir soruna neden olabilir. Sorularınız olursa lütfen $1 ile iletişime geçin.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gaz ücreti"
-  },
   "gasLimit": {
     "message": "Gaz limiti"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "Periyodik eylemleri planla ve gerçekleştir.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask'te bir onay görüntüle.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask'te iletişim kutusu pencerelerini göster.",

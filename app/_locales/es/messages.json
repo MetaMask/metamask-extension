@@ -1432,9 +1432,6 @@
     "message": "Esta tarifa de gas ha sido sugerida por $1. Anularla puede causar un problema con su transacción. Comuníquese con $1 si tiene preguntas.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Cuota de gas"
-  },
   "gasLimit": {
     "message": "Límite de gas"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "Programar y ejecutar acciones periódicas.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Mostrar una confirmación en MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Mostrar ventanas de diálogo en MetaMask.",

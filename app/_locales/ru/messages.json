@@ -1432,9 +1432,6 @@
     "message": "Эта плата за газ была предложена $1. Ее переопредление может вызвать проблемы с вашей транзакцией. При наличии вопросов обратитесь к $1.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Плата за газ"
-  },
   "gasLimit": {
     "message": "Лимит газа"
   },
@@ -2693,10 +2690,6 @@
   "permission_cronjob": {
     "message": "Планируйте и выполняйте периодические действия.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Показать подтверждение в MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Отображение диалоговых окон в MetaMask.",
