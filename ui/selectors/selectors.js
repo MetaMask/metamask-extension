@@ -21,6 +21,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  AURORA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -1274,6 +1275,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
+    case CHAIN_IDS.AURORA:
+      return AURORA_DISPLAY_NAME;
     default:
       return '';
   }
