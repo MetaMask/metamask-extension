@@ -160,6 +160,9 @@
   "connectingToGoerli": {
     "message": "Povezuje se sa test mrežom Goerli "
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezuje se sa test mrežom Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
   },
@@ -408,6 +411,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
+  },
+  "lineatestnet": {
+    "message": "Test mreža Linea Goerli"
   },
   "links": {
     "message": "Veze"
@@ -663,12 +669,6 @@
   "settings": {
     "message": "Podešavanja"
   },
-  "showAdvancedGasInline": {
-    "message": "Napredne kontrole gasa"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izaberite ovo kako biste prikazali cenu gasa i kontrole limita direktno na ekranima za slanje i potvrđivanje."
-  },
   "showFiatConversionInTestnets": {
     "message": "Prikažite konverzije na Testnet"
   },
@@ -731,27 +731,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mora biti 11 znakova ili manje."
-  },
-  "syncWithMobile": {
-    "message": "Sinhronizacija sa mobilnim telefonom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Obratite pažnju da niko drugi ne gleda u vaš ekran kad skenirate ovaj kod"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaši podaci su uspešno sinhronizovani. Uživajte u mobilnoj aplikaciji MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Možete sinhronizovati vaše naloge i informacije sa svojim mobilnim uređajem. Otvorite mobilnu aplikaciju MetaMask, idite na \"Podešavanja\" i pritisnite \"Sinhronizuj iz ekstenzije za pregledač\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ako prvi put otvorite aplikaciju MetaMask Mobile, samo sledite korake u svom telefonu."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skenirajte ovaj kod uz pomoć svoje MetaMask mobilne aplikacije"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinhronizujte sa mobilnim uređajem"
   },
   "terms": {
     "message": "Uslovi korišćenja"

@@ -16,7 +16,7 @@ import Typography from '../../components/ui/typography';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import { openCustomProtocol } from '../../../shared/lib/deep-linking';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 export function renderDesktopError({
   type,
@@ -84,7 +84,7 @@ export function renderDesktopError({
               onClick();
               if (typeof trackEvent === 'function') {
                 trackEvent({
-                  category: EVENT.CATEGORIES.DESKTOP,
+                  category: MetaMetricsEventCategory.Desktop,
                   event: 'Desktop Button Clicked',
                   properties: {
                     button_action: action,
@@ -197,7 +197,7 @@ export function renderDesktopError({
       );
       break;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     // This route only exists on the Desktop App
     case EXTENSION_ERROR_PAGE_TYPES.ROUTE_NOT_FOUND:
       content = (

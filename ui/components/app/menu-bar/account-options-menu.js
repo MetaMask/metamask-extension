@@ -4,12 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 
-import {
-  showModal,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  getMMIActions,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../../store/actions';
+import { showModal } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import {
   CONNECTED_ROUTE,
   NETWORKS_ROUTE,
@@ -22,20 +20,24 @@ import {
   getCurrentKeyring,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
-import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { KeyringType } from '../../../../shared/constants/keyring';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ICON_NAMES } from '../../component-library';
+import { IconName } from '../../component-library';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext();
@@ -53,13 +55,13 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const trackEvent = useContext(MetaMetricsContext);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const isCustodial = /Custody/u.test(keyring.type);
-  const mmiActions = getMMIActions();
+  const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
 
-  const isRemovable = keyring.type !== HardwareKeyringTypes.hdKeyTree;
+  const isRemovable = keyring.type !== KeyringType.hdKeyTree;
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -67,10 +69,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
 
   const openBlockExplorer = () => {
     trackEvent({
-      event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
-      category: EVENT.CATEGORIES.NAVIGATION,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      category: MetaMetricsEventCategory.Navigation,
       properties: {
-        link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+        link_type: MetaMetricsEventLinkType.AccountTracker,
         location: 'Account Options',
         url_domain: getURLHostName(addressLink),
       },
@@ -100,7 +102,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             </span>
           ) : null
         }
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
       >
         {t(
           blockExplorerLinkText.firstPart,
@@ -113,8 +115,8 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         <MenuItem
           onClick={() => {
             trackEvent({
-              event: EVENT_NAMES.APP_WINDOW_EXPANDED,
-              category: EVENT.CATEGORIES.NAVIGATION,
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: 'Account Options',
               },
@@ -122,7 +124,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             global.platform.openExtensionInBrowser();
             onClose();
           }}
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
         >
           {t('expandView')}
         </MenuItem>
@@ -132,15 +134,15 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
           trackEvent({
-            event: EVENT_NAMES.NAV_ACCOUNT_DETAILS_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavAccountDetailsOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
           });
           onClose();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         {t('accountDetails')}
       </MenuItem>
@@ -148,8 +150,8 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         data-testid="account-options-menu__connected-sites"
         onClick={() => {
           trackEvent({
-            event: EVENT_NAMES.NAV_CONNECTED_SITES_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.NavConnectedSitesOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: 'Account Options',
             },
@@ -157,7 +159,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           history.push(CONNECTED_ROUTE);
           onClose();
         }}
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
       >
         {t('connectedSites')}
       </MenuItem>
@@ -173,13 +175,13 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             );
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           {t('removeAccount')}
         </MenuItem>
       ) : null}
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         isCustodial ? (
           <MenuItem
             data-testid="account-options-menu__remove-jwt"

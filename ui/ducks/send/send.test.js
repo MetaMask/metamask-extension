@@ -13,7 +13,7 @@ import {
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import {
   AssetType,
   TokenStandard,
@@ -1278,7 +1278,7 @@ describe('Send Slice', () => {
             identities: { '0xAddress': { address: '0xAddress' } },
             keyrings: [
               {
-                type: HardwareKeyringTypes.hdKeyTree,
+                type: KeyringType.hdKeyTree,
                 accounts: ['0xAddress'],
               },
             ],
@@ -1293,7 +1293,7 @@ describe('Send Slice', () => {
                 '0xAddress': '0x0',
               },
             },
-            provider: {
+            providerConfig: {
               chainId: '0x5',
             },
             useTokenDetection: true,
@@ -1425,7 +1425,7 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
           },
@@ -1478,7 +1478,7 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
           },
@@ -1530,7 +1530,7 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
           },
@@ -1575,7 +1575,7 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '',
           selectedAddress: '',
-          provider: {
+          providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
           cachedBalances: {
@@ -1711,7 +1711,6 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
-        process.env.NFTS_V1 = true;
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({ standard: 'ERC1155', balance: '0x1' }),
         );
@@ -1740,14 +1739,13 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
-        process.env.NFTS_V1 = false;
       });
     });
 
     describe('updateRecipientUserInput', () => {
       const updateRecipientUserInputState = {
         metamask: {
-          provider: {
+          providerConfig: {
             chainId: '',
           },
           tokens: [],
@@ -1884,7 +1882,7 @@ describe('Send Slice', () => {
           metamask: {
             addressBook: {},
             identities: {},
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
           },
@@ -1943,7 +1941,7 @@ describe('Send Slice', () => {
                 },
               ],
             },
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
           },
@@ -1994,7 +1992,7 @@ describe('Send Slice', () => {
             identities: {},
             blockGasLimit: '',
             selectedAddress: '',
-            provider: {
+            providerConfig: {
               chainId: '0x1',
             },
           },
@@ -2042,7 +2040,7 @@ describe('Send Slice', () => {
           metamask: {
             addressBook: {},
             identities: {},
-            provider: {
+            providerConfig: {
               chainId: '',
             },
             tokens: [],
@@ -2167,7 +2165,7 @@ describe('Send Slice', () => {
             userInputHexData: '',
           },
           metamask: {
-            provider: {
+            providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
           },
@@ -2216,7 +2214,7 @@ describe('Send Slice', () => {
             amountMode: AMOUNT_MODES.MAX,
           },
           metamask: {
-            provider: {
+            providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
           },
@@ -2374,7 +2372,7 @@ describe('Send Slice', () => {
           metamask: {
             gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
-            provider: {
+            providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
@@ -2509,7 +2507,7 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '0x3a98',
             selectedAddress: '',
-            provider: {
+            providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
@@ -2681,7 +2679,7 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
-          provider: {
+          providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
           tokens: [
@@ -2912,7 +2910,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -2925,7 +2923,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: '0x539' },
+                providerConfig: { chainId: '0x539' },
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -2938,7 +2936,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: initialState,
@@ -2950,7 +2948,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -2964,7 +2962,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -2978,7 +2976,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: {
@@ -3118,7 +3116,7 @@ describe('Send Slice', () => {
               ensResolutionsByAddress: {},
               identities: {},
               addressBook: {},
-              provider: {
+              providerConfig: {
                 chainId: '0x5',
               },
             },
@@ -3133,7 +3131,7 @@ describe('Send Slice', () => {
               ensResolutionsByAddress: {},
               addressBook: {},
               identities: {},
-              provider: {
+              providerConfig: {
                 chainId: '0x5',
               },
             },
@@ -3181,7 +3179,7 @@ describe('Send Slice', () => {
               ensResolutionsByAddress: {},
               identities: {},
               addressBook: {},
-              provider: {
+              providerConfig: {
                 chainId: '0x5',
               },
             },

@@ -12,6 +12,7 @@ import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
+import { getPortfolioUrl } from '../../../../helpers/utils/portfolio';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -24,16 +25,14 @@ export default class ConfirmPageContainerContent extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     insightComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
@@ -48,7 +47,6 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.bool,
     supportsEIP1559: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
@@ -57,12 +55,13 @@ export default class ConfirmPageContainerContent extends Component {
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     txData: PropTypes.object,
+    metaMetricsId: PropTypes.string,
   };
 
   renderContent() {
     const { detailsComponent, dataComponent } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const { insightComponent } = this.props;
 
     if (insightComponent && (detailsComponent || dataComponent)) {
@@ -76,7 +75,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       detailsComponent ||
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent ||
       ///: END:ONLY_INCLUDE_IN
       dataComponent
@@ -89,7 +88,7 @@ export default class ConfirmPageContainerContent extends Component {
       detailsComponent,
       dataComponent,
       dataHexComponent,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -123,7 +122,7 @@ export default class ConfirmPageContainerContent extends Component {
         )}
 
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           insightComponent
           ///: END:ONLY_INCLUDE_IN
         }
@@ -136,11 +135,9 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      title,
       image,
       titleComponent,
       subtitleComponent,
-      hideSubtitle,
       tokenAddress,
       nonce,
       detailsComponent,
@@ -156,7 +153,6 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
-      hideTitle,
       supportsEIP1559,
       hasTopBorder,
       nativeCurrency,
@@ -165,14 +161,13 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
       txData,
+      metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559 &&
-      (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+      (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -199,24 +194,23 @@ export default class ConfirmPageContainerContent extends Component {
               !detailsComponent || !dataComponent,
           })}
           action={action}
-          title={title}
           image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
-          hideSubtitle={hideSubtitle}
           tokenAddress={tokenAddress}
           nonce={nonce}
           origin={origin}
-          hideTitle={hideTitle}
           toAddress={toAddress}
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559 && (errorKey || errorMessage) && (
-          <div className="confirm-page-container-content__error-container">
-            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-          </div>
-        )}
+        {!supportsEIP1559 &&
+          !showInsuffienctFundsError &&
+          (errorKey || errorMessage) && (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+            </div>
+          )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
@@ -231,9 +225,12 @@ export default class ConfirmPageContainerContent extends Component {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          const portfolioUrl = process.env.PORTFOLIO_URL;
                           global.platform.openTab({
-                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                            url: getPortfolioUrl(
+                              'buy',
+                              'ext_buy_button',
+                              metaMetricsId,
+                            ),
                           });
                         }}
                         key={`${nativeCurrency}-buy-button`}

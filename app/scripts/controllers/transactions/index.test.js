@@ -10,7 +10,10 @@ import {
   getTestAccounts,
 } from '../../../../test/stub/provider';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsTransactionEventSource,
+} from '../../../../shared/constants/metametrics';
 import {
   TransactionStatus,
   TransactionType,
@@ -26,13 +29,18 @@ import {
   GasRecommendations,
 } from '../../../../shared/constants/gas';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
+import { NetworkStatus } from '../../../../shared/constants/network';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionController from '.';
 
 const noop = () => true;
 const currentNetworkId = '5';
 const currentChainId = '0x5';
+const currentNetworkStatus = NetworkStatus.Available;
 const providerConfig = {
   type: 'goerli',
 };
@@ -46,7 +54,9 @@ describe('Transaction Controller', function () {
     providerResultStub,
     fromAccount,
     fragmentExists,
-    networkStore;
+    networkStatusStore,
+    getCurrentChainId,
+    messengerMock;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -59,22 +69,28 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: currentNetworkId,
-      chainId: currentNetworkId,
+      chainId: parseInt(currentChainId, 16),
     }).provider;
 
-    networkStore = new ObservableStore(currentNetworkId);
+    networkStatusStore = new ObservableStore(currentNetworkStatus);
 
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
+
+    getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
+    messengerMock = { call: sinon.stub().returns(Promise.resolve()) };
+
     txController = new TransactionController({
       provider,
       getGasPrice() {
         return '0xee6b2800';
       },
-      getNetworkState: () => networkStore.getState(),
-      onNetworkStateChange: (listener) => networkStore.subscribe(listener),
+      getNetworkId: () => currentNetworkId,
+      getNetworkStatus: () => networkStatusStore.getState(),
+      onNetworkStateChange: (listener) =>
+        networkStatusStore.subscribe(listener),
       getCurrentNetworkEIP1559Compatibility: () => Promise.resolve(false),
       getCurrentAccountEIP1559Compatibility: () => false,
       txHistoryLimit: 10,
@@ -85,7 +101,7 @@ describe('Transaction Controller', function () {
         }),
       getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
-      getCurrentChainId: () => currentChainId,
+      getCurrentChainId,
       getParticipateInMetrics: () => false,
       trackMetaMetricsEvent: () => undefined,
       createEventFragment: () => undefined,
@@ -97,6 +113,7 @@ describe('Transaction Controller', function () {
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
       securityProviderRequest: () => undefined,
+      messenger: messengerMock,
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -467,8 +484,8 @@ describe('Transaction Controller', function () {
       );
     });
 
-    it('should fail if netId is loading', async function () {
-      networkStore.putState('loading');
+    it('should fail if the network status is not "available"', async function () {
+      networkStatusStore.putState(NetworkStatus.Unknown);
       await assert.rejects(
         () =>
           txController.addUnapprovedTransaction(undefined, {
@@ -477,6 +494,67 @@ describe('Transaction Controller', function () {
           }),
         { message: 'MetaMask is having trouble connecting to the network' },
       );
+    });
+
+    it('should create an approval request', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+      );
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(txMeta.id),
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: txMeta.id },
+          type: MESSAGE_TYPE.TRANSACTION,
+        },
+        true, // Show popup
+      ]);
+    });
+
+    it('should still create an approval request when called twice with same actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+        undefined,
+        undefined,
+        '12345',
+      );
+
+      const secondTxMeta = await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+
+      assert.equal(messengerMock.call.callCount, 2);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(secondTxMeta.id),
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: secondTxMeta.id },
+          type: MESSAGE_TYPE.TRANSACTION,
+        },
+        true, // Show popup
+      ]);
     });
   });
 
@@ -530,6 +608,8 @@ describe('Transaction Controller', function () {
         cancelTxMeta.id,
       );
       assert.deepEqual(cancelTxMeta, memTxMeta);
+      // One for the initial addUnapprovedTransaction, one for the approval
+      assert.equal(messengerMock.call.callCount, 2);
     });
 
     it('should add only 1 cancel transaction when called twice with same actionId', async function () {
@@ -986,9 +1066,11 @@ describe('Transaction Controller', function () {
   });
 
   describe('#approveTransaction', function () {
-    it('does not overwrite set values', async function () {
-      const originalValue = '0x01';
-      const txMeta = {
+    let originalValue, txMeta, signStub, pubStub;
+
+    beforeEach(function () {
+      originalValue = '0x01';
+      txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
         metamaskNetworkId: currentNetworkId,
@@ -1008,17 +1090,22 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_gasPrice = wrongValue;
       providerResultStub.eth_estimateGas = '0x5209';
 
-      const signStub = sinon
+      signStub = sinon
         .stub(txController, 'signTransaction')
         .callsFake(() => Promise.resolve());
 
-      const pubStub = sinon
-        .stub(txController, 'publishTransaction')
-        .callsFake(() => {
-          txController.setTxHash('1', originalValue);
-          txController.txStateManager.setTxStatusSubmitted('1');
-        });
+      pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
+        txController.setTxHash('1', originalValue);
+        txController.txStateManager.setTxStatusSubmitted('1');
+      });
+    });
 
+    afterEach(function () {
+      signStub.restore();
+      pubStub.restore();
+    });
+
+    it('does not overwrite set values', async function () {
       await txController.approveTransaction(txMeta.id);
       const result = txController.txStateManager.getTransaction(txMeta.id);
       const params = result.txParams;
@@ -1031,8 +1118,21 @@ describe('Transaction Controller', function () {
         TransactionStatus.submitted,
         'should have reached the submitted status.',
       );
-      signStub.restore();
-      pubStub.restore();
+    });
+
+    it('should accept the approval request', async function () {
+      await txController.approveTransaction(txMeta.id);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:acceptRequest',
+        txMeta.id,
+      ]);
+    });
+
+    it('should not throw if accepting approval request throws', async function () {
+      messengerMock.call.throws();
+      await txController.approveTransaction(txMeta.id);
     });
   });
 
@@ -1079,14 +1179,25 @@ describe('Transaction Controller', function () {
   });
 
   describe('#getChainId', function () {
-    it('returns 0 when the chainId is NaN', function () {
-      networkStore.putState('loading');
+    it('returns the chain ID of the network when it is available', function () {
+      networkStatusStore.putState(NetworkStatus.Available);
+      assert.equal(txController.getChainId(), 5);
+    });
+
+    it('returns 0 when the network is not available', function () {
+      networkStatusStore.putState('asdflsfadf');
+      assert.equal(txController.getChainId(), 0);
+    });
+
+    it('returns 0 when the chain ID cannot be parsed as a hex string', function () {
+      networkStatusStore.putState(NetworkStatus.Available);
+      getCurrentChainId.returns('$fdsjfldf');
       assert.equal(txController.getChainId(), 0);
     });
   });
 
   describe('#cancelTransaction', function () {
-    it('should emit a status change to rejected', function (done) {
+    beforeEach(function () {
       txController.txStateManager._addTransactionsToState([
         {
           id: 0,
@@ -1159,7 +1270,9 @@ describe('Transaction Controller', function () {
           history: [{}],
         },
       ]);
+    });
 
+    it('should emit a status change to rejected', function (done) {
       txController.once('tx:status-update', (txId, status) => {
         try {
           assert.equal(
@@ -1174,6 +1287,22 @@ describe('Transaction Controller', function () {
         }
       });
 
+      txController.cancelTransaction(0);
+    });
+
+    it('should reject the approval request', function () {
+      txController.cancelTransaction(0);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:rejectRequest',
+        '0',
+        new Error('Rejected'),
+      ]);
+    });
+
+    it('should not throw if rejecting approval request throws', async function () {
+      messengerMock.call.throws();
       txController.cancelTransaction(0);
     });
   });
@@ -1258,6 +1387,7 @@ describe('Transaction Controller', function () {
           type: TransactionType.retry,
         },
       );
+      assert.equal(messengerMock.call.callCount, 0);
     });
 
     it('should call this.approveTransaction with the id of the returned tx', async function () {
@@ -1740,6 +1870,9 @@ describe('Transaction Controller', function () {
             gas: '0x7b0d',
             gasPrice: '0x77359400',
           },
+          securityProviderResponse: {
+            flagAsDangerous: 0,
+          },
         };
       });
 
@@ -1750,7 +1883,7 @@ describe('Transaction Controller', function () {
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
           uniqueIdentifier: 'transaction-added-1',
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
             chain_id: '0x5',
@@ -1759,13 +1892,14 @@ describe('Transaction Controller', function () {
             gas_edit_type: 'none',
             network: '5',
             referrer: ORIGIN_METAMASK,
-            source: EVENT.SOURCE.TRANSACTION.USER,
+            source: MetaMetricsTransactionEventSource.User,
             transaction_type: TransactionType.simpleSend,
             account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1836,7 +1970,7 @@ describe('Transaction Controller', function () {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
             chain_id: '0x5',
@@ -1845,13 +1979,14 @@ describe('Transaction Controller', function () {
             gas_edit_type: 'none',
             network: '5',
             referrer: ORIGIN_METAMASK,
-            source: EVENT.SOURCE.TRANSACTION.USER,
+            source: MetaMetricsTransactionEventSource.User,
             transaction_type: TransactionType.simpleSend,
             account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1921,6 +2056,9 @@ describe('Transaction Controller', function () {
             gas: '0x7b0d',
             gasPrice: '0x77359400',
           },
+          securityProviderResponse: {
+            flagAsDangerous: 0,
+          },
         };
       });
 
@@ -1931,7 +2069,7 @@ describe('Transaction Controller', function () {
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
           uniqueIdentifier: 'transaction-added-1',
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
             chain_id: '0x5',
@@ -1940,13 +2078,14 @@ describe('Transaction Controller', function () {
             gas_edit_type: 'none',
             network: '5',
             referrer: 'other',
-            source: EVENT.SOURCE.TRANSACTION.DAPP,
+            source: MetaMetricsTransactionEventSource.Dapp,
             transaction_type: TransactionType.simpleSend,
             account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2019,7 +2158,7 @@ describe('Transaction Controller', function () {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
-          category: EVENT.CATEGORIES.TRANSACTIONS,
+          category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
             chain_id: '0x5',
@@ -2028,13 +2167,14 @@ describe('Transaction Controller', function () {
             gas_edit_type: 'none',
             network: '5',
             referrer: 'other',
-            source: EVENT.SOURCE.TRANSACTION.DAPP,
+            source: MetaMetricsTransactionEventSource.Dapp,
             transaction_type: TransactionType.simpleSend,
             account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2099,6 +2239,9 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: 0,
+        },
       };
 
       const expectedPayload = {
@@ -2106,7 +2249,7 @@ describe('Transaction Controller', function () {
         successEvent: 'Transaction Approved',
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         persist: true,
         properties: {
           chain_id: '0x5',
@@ -2115,13 +2258,14 @@ describe('Transaction Controller', function () {
           gas_edit_type: 'none',
           network: '5',
           referrer: 'other',
-          source: EVENT.SOURCE.TRANSACTION.DAPP,
+          source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
           account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
+          ui_customizations: null,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -2167,6 +2311,9 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: 0,
+        },
       };
       const expectedPayload = {
         actionId,
@@ -2175,11 +2322,11 @@ describe('Transaction Controller', function () {
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         properties: {
           network: '5',
           referrer: 'other',
-          source: EVENT.SOURCE.TRANSACTION.DAPP,
+          source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
           chain_id: '0x5',
           eip_1559_version: '0',
@@ -2190,6 +2337,155 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
+          ui_customizations: null,
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+          status: 'unapproved',
+        },
+      };
+
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.added,
+        actionId,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.equal(finalizeEventFragmentSpy.callCount, 0);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (extra params) when flagAsDangerous is malicious', async function () {
+      const txMeta = {
+        id: 1,
+        status: TransactionStatus.unapproved,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TransactionType.simpleSend,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: 1,
+        },
+      };
+      const expectedPayload = {
+        actionId,
+        initialEvent: 'Transaction Added',
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        persist: true,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          network: '5',
+          referrer: 'other',
+          source: MetaMetricsTransactionEventSource.Dapp,
+          transaction_type: TransactionType.simpleSend,
+          chain_id: '0x5',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          account_type: 'MetaMask',
+          asset_type: AssetType.native,
+          token_standard: TokenStandard.none,
+          device_model: 'N/A',
+          transaction_speed_up: false,
+          ui_customizations: ['flagged_as_malicious'],
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+          status: 'unapproved',
+        },
+      };
+
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.added,
+        actionId,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.equal(finalizeEventFragmentSpy.callCount, 0);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (extra params) when flagAsDangerous is unknown', async function () {
+      const txMeta = {
+        id: 1,
+        status: TransactionStatus.unapproved,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TransactionType.simpleSend,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: 2,
+        },
+      };
+      const expectedPayload = {
+        actionId,
+        initialEvent: 'Transaction Added',
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        persist: true,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          network: '5',
+          referrer: 'other',
+          source: MetaMetricsTransactionEventSource.Dapp,
+          transaction_type: TransactionType.simpleSend,
+          chain_id: '0x5',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          account_type: 'MetaMask',
+          asset_type: AssetType.native,
+          token_standard: TokenStandard.none,
+          device_model: 'N/A',
+          transaction_speed_up: false,
+          ui_customizations: ['flagged_as_safety_unknown'],
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2245,6 +2541,9 @@ describe('Transaction Controller', function () {
           maxFeePerGas: '0x77359400',
           maxPriorityFeePerGas: '0x77359400',
         },
+        securityProviderResponse: {
+          flagAsDangerous: 0,
+        },
       };
       const expectedPayload = {
         actionId,
@@ -2253,7 +2552,7 @@ describe('Transaction Controller', function () {
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         properties: {
           chain_id: '0x5',
           eip_1559_version: '2',
@@ -2261,13 +2560,14 @@ describe('Transaction Controller', function () {
           gas_edit_type: 'none',
           network: '5',
           referrer: 'other',
-          source: EVENT.SOURCE.TRANSACTION.DAPP,
+          source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
           account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
+          ui_customizations: null,
         },
         sensitiveProperties: {
           baz: 3.0,

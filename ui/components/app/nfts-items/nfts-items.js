@@ -30,7 +30,7 @@ import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import NftDefaultImage from '../nft-default-image';
 
 const width =
@@ -106,17 +106,19 @@ export default function NftsItems({
   };
 
   const updateNftDropDownStateKey = (key, isExpanded) => {
-    const currentAccountNftDropdownState =
-      nftsDropdownState[selectedAddress][chainId];
-
     const newCurrentAccountState = {
-      ...currentAccountNftDropdownState,
+      ...nftsDropdownState[selectedAddress][chainId],
       [key]: !isExpanded,
     };
 
-    nftsDropdownState[selectedAddress][chainId] = newCurrentAccountState;
+    const newState = {
+      ...nftsDropdownState,
+      [selectedAddress]: {
+        [chainId]: newCurrentAccountState,
+      },
+    };
 
-    dispatch(updateNftDropDownState(nftsDropdownState));
+    dispatch(updateNftDropDownState(newState));
   };
 
   const renderCollection = ({ nfts, collectionName, collectionImage, key }) => {
@@ -156,9 +158,7 @@ export default function NftsItems({
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
               <Icon
-                name={
-                  isExpanded ? ICON_NAMES.ARROW_DOWN : ICON_NAMES.ARROW_RIGHT
-                }
+                name={isExpanded ? IconName.ArrowDown : IconName.ArrowRight}
                 color={Color.iconDefault}
               />
             </Box>

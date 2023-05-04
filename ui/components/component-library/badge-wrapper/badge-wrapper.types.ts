@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-import Box from '../../ui/box';
 import type { BoxProps } from '../../ui/box/box.d';
 
 export enum BadgeWrapperPosition {
@@ -14,9 +12,7 @@ export enum BadgeWrapperAnchorElementShape {
   circular = 'circular',
 }
 
-export interface BadgeWrapperProps
-  extends PropTypes.InferProps<typeof Box.propTypes>,
-    React.HTMLAttributes<HTMLDivElement> {
+export interface BadgeWrapperProps extends BoxProps {
   /**
    * The element to be wrapped by the BadgeWrapper and for the badge to be positioned on top of
    */

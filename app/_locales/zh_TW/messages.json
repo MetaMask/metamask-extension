@@ -313,6 +313,9 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
+  "connectingToLineaTestnet": {
+    "message": "連線到 Linea Goerli 測試網路"
+  },
   "connectingToMainnet": {
     "message": "連線到 Ethereum 主網路"
   },
@@ -812,6 +815,9 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli 測試網路"
+  },
   "links": {
     "message": "連結"
   },
@@ -1239,12 +1245,6 @@
   "settings": {
     "message": "設定"
   },
-  "showAdvancedGasInline": {
-    "message": "顯示進階 gas 控制選項"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "選擇此項會在傳送或確認畫面顯示可微調 gas 價格以及 gas 上限的功能"
-  },
   "showFiatConversionInTestnets": {
     "message": "在測試網上顯示匯率"
   },
@@ -1386,27 +1386,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符號不得超過 11 個字元。"
-  },
-  "syncWithMobile": {
-    "message": "和行動裝置同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "掃描代碼時確保沒有其他人在看你的螢幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "你的資料已成功同步。開始活用 MetaMask 行動應用程式！"
-  },
-  "syncWithMobileDesc": {
-    "message": "你可以用行動裝置同步帳戶與資訊。開啟 MetaMask 行動應用程式，至「設定」並點擊「自瀏覽器擴充功能同步」"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是第一次開啟 MetaMask 行動應用程式，只要跟著手機上的指示操作即可。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "用您的 MetaMask 行動應用程式 掃描此條碼"
-  },
-  "syncWithMobileTitle": {
-    "message": "和行動裝置同步"
   },
   "terms": {
     "message": "使用條款"

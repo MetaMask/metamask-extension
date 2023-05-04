@@ -11,6 +11,14 @@ ignores:
   - 'punycode'
 
   #
+  # snaps flask deps
+  #
+  - '@metamask/rpc-methods-flask'
+  - '@metamask/snaps-controllers-flask'
+  - '@metamask/snaps-ui-flask'
+  - '@metamask/snaps-utils-flask'
+
+  #
   # dev deps
   #
 
@@ -46,6 +54,8 @@ ignores:
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - 'storybook-dark-mode'
+  - '@whitespace/storybook-addon-html'
+  - 'react-syntax-highlighter'
   - 'style-loader'
   - 'css-loader'
   - 'sass-loader'
