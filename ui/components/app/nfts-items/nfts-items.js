@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
-import Card from '../../ui/card';
 import {
   Color,
   TypographyVariant,
@@ -15,6 +14,8 @@ import {
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
+  BorderColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -22,6 +23,7 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedAddress,
+  getCurrentNetwork,
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -30,7 +32,13 @@ import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, IconName } from '../../component-library';
+import {
+  AvatarNetwork,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  Icon,
+  IconName,
+} from '../../component-library';
 import NftDefaultImage from '../nft-default-image';
 
 const width =
@@ -50,6 +58,7 @@ export default function NftsItems({
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
+  const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
 
   useEffect(() => {
@@ -181,10 +190,20 @@ export default function NftsItems({
                   key={`nft-${i}`}
                   className="nfts-items__item-wrapper"
                 >
-                  <Card
-                    padding={0}
-                    justifyContent={JustifyContent.center}
-                    className="nfts-items__item-wrapper__card"
+                  <BadgeWrapper
+                    badge={
+                      <AvatarNetwork
+                        size={Size.SM}
+                        name={currentChain.nickname}
+                        src={currentChain.rpcPrefs.imageUrl}
+                        borderColor={BorderColor.borderMuted}
+                        data-testid="nft-network-badge"
+                      />
+                    }
+                    anchorElementShape={
+                      BadgeWrapperAnchorElementShape.rectangular
+                    }
+                    positionObj={{ top: -2, right: -2 }}
                   >
                     {nftImage ? (
                       <button
@@ -208,7 +227,7 @@ export default function NftsItems({
                         handleImageClick={handleImageClick}
                       />
                     )}
-                  </Card>
+                  </BadgeWrapper>
                 </Box>
               );
             })}
