@@ -51,25 +51,6 @@ const Template: ComponentStory<typeof Popover> = (args) => {
     setIsOpen(!isOpen);
   };
 
-  // Example of how to use mouse events to open and close popover
-  // const handleMouseEnter = () => {
-  //   setIsOpen(true);
-  // };
-
-  // const handleMouseLeave = () => {
-  //   setIsOpen(false);
-  // };
-
-  // Example of how open popover with focus
-  // pair with onBlur (example using handleClose) to close popover
-  // const handleFocus = () => {
-  //   setIsOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setIsOpen(false);
-  // };
-
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       setIsOpen(false);
@@ -125,7 +106,7 @@ DefaultStory.args = {
   hasArrow: true,
 };
 
-export const ReferenceElement = ({ args }) => {
+export const ReferenceElement: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -152,7 +133,7 @@ export const ReferenceElement = ({ args }) => {
   );
 };
 
-export const Children = ({ args }) => {
+export const Children: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -181,7 +162,7 @@ export const Children = ({ args }) => {
   );
 };
 
-export const Position = ({ args }) => {
+export const Position: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [referenceAutoElement, setReferenceAutoElement] = useState();
 
@@ -373,47 +354,7 @@ export const Position = ({ args }) => {
   );
 };
 
-export const IsPortal = ({ args }) => {
-  const [referenceElement, setReferenceElement] = useState();
-
-  const setBoxRef = (ref) => {
-    setReferenceElement(ref);
-  };
-
-  return (
-    <>
-      <Box
-        ref={setBoxRef}
-        backgroundColor={BackgroundColor.primaryDefault}
-        style={{ width: 200, height: 200 }}
-        display={DISPLAY.FLEX}
-        color={Color.primaryInverse}
-        padding={4}
-      >
-        Inspect elements to see the difference
-      </Box>
-      <Popover
-        position={PopoverPosition.RightStart}
-        referenceElement={referenceElement}
-        isOpen={true}
-        {...args}
-      >
-        <Text>isPortal true</Text>
-      </Popover>
-      <Popover
-        position={PopoverPosition.RightEnd}
-        referenceElement={referenceElement}
-        isOpen={true}
-        isPortal={false}
-        {...args}
-      >
-        <Text>isPortal false</Text>
-      </Popover>
-    </>
-  );
-};
-
-export const HasArrow = ({ args }) => {
+export const HasArrow: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -448,7 +389,7 @@ export const HasArrow = ({ args }) => {
   );
 };
 
-export const IsOpen = ({ args }) => {
+export const IsOpen: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -497,7 +438,7 @@ export const IsOpen = ({ args }) => {
   );
 };
 
-export const Flip = ({ args }) => {
+export const Flip: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -544,7 +485,7 @@ export const Flip = ({ args }) => {
   );
 };
 
-export const PreventOverflow = ({ args }) => {
+export const PreventOverflow: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -592,7 +533,7 @@ export const PreventOverflow = ({ args }) => {
   );
 };
 
-export const ReferenceHidden = ({ args }) => {
+export const ReferenceHidden: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -639,7 +580,7 @@ export const ReferenceHidden = ({ args }) => {
   );
 };
 
-export const MatchWidth = ({ args }) => {
+export const MatchWidth: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -669,7 +610,7 @@ export const MatchWidth = ({ args }) => {
   );
 };
 
-export const Role = ({ args }) => {
+export const Role: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -715,7 +656,7 @@ export const Role = ({ args }) => {
   );
 };
 
-export const Offset = ({ args }) => {
+export const Offset: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -760,7 +701,7 @@ export const Offset = ({ args }) => {
   );
 };
 
-export const WithPopoverHeader = ({ args }) => {
+export const WithPopoverHeader: ComponentStory<typeof Popover> = (args) => {
   const [refTitleElement, setRefTitleElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -796,6 +737,128 @@ export const WithPopoverHeader = ({ args }) => {
         </PopoverHeader>
         Title should be short and concise. It should be sentence case and no
         period.
+      </Popover>
+    </>
+  );
+};
+
+export const MouseEventDemo: ComponentStory<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Set Popover Ref
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  // Example of how to use mouse events to open and close popover
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        backgroundColor={BackgroundColor.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={Color.primaryInverse}
+      >
+        Hover
+      </Box>
+      <Popover referenceElement={referenceElement} isOpen={isOpen} {...args}>
+        onMouseEnter and onMouseLeave
+      </Popover>
+    </>
+  );
+};
+
+export const OnFocusBlur: ComponentStory<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Set Popover Ref
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  // Example of how open popover with focus and pair with onBlur to close popover
+  const handleFocus = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        onFocus={handleFocus}
+        onBlur={handleClose}
+        backgroundColor={BackgroundColor.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={Color.primaryInverse}
+        as="button"
+      >
+        Focus to open
+      </Box>
+      <Popover referenceElement={referenceElement} isOpen={isOpen} {...args}>
+        onFocus to open and onBlur to close
+      </Popover>
+    </>
+  );
+};
+
+export const EscKeyDemo: ComponentStory<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Set Popover Ref
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  // Example of how to use keyboard events to close popover with escape key
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen]);
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        onClick={handleClick}
+        backgroundColor={BackgroundColor.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={Color.primaryInverse}
+        as="button"
+      >
+        Click to open
+      </Box>
+      <Popover referenceElement={referenceElement} isOpen={isOpen} {...args}>
+        Press esc key to close
       </Popover>
     </>
   );
