@@ -7,7 +7,7 @@ import {
   AlignItems,
   BLOCK_SIZES,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -67,7 +67,7 @@ const ModalHeader = () => (
       marginBottom={4}
     >
       <button>Back</button>
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Modal Header
       </Text>
       <button>Close</button>
