@@ -122,8 +122,8 @@ const ConfirmAddSuggestedToken = () => {
 
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
-      suggestedAssets.flatMap(({ asset, id }) => [
-        dispatch(resolvePendingApproval(id, null)),
+      suggestedAssets.map(async ({ asset, id }) => {
+        await dispatch(resolvePendingApproval(id, null));
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
           category: MetaMetricsEventCategory.Wallet,
@@ -136,22 +136,22 @@ const ConfirmAddSuggestedToken = () => {
             token_standard: TokenStandard.ERC20,
             asset_type: AssetType.token,
           },
-        }),
-      ]),
+        });
+      }),
     );
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
 
-  const handleCancelAddTokens = useCallback(async () => {
+  const handleCancelClick = useCallback(async () => {
     await Promise.all(
-      suggestedAssets.flatMap(({ id }) => [
+      suggestedAssets.map(({ id }) =>
         dispatch(
           rejectPendingApproval(
             id,
             serializeError(ethErrors.provider.userRejectedRequest()),
           ),
         ),
-      ]),
+      ),
     );
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, mostRecentOverviewPage, suggestedAssets]);
@@ -178,7 +178,6 @@ const ConfirmAddSuggestedToken = () => {
         {reusedTokenNameActionableMessage}
       </div>
       <div className="page-container__content">
-        flatMap
         <div className="confirm-add-suggested-token">
           <div className="confirm-add-suggested-token__header">
             <div className="confirm-add-suggested-token__token">
@@ -218,7 +217,7 @@ const ConfirmAddSuggestedToken = () => {
       <PageContainerFooter
         cancelText={t('cancel')}
         submitText={t('addToken')}
-        onCancel={handleCancelAddTokens}
+        onCancel={handleCancelClick}
         onSubmit={handleAddTokensClick}
         disabled={suggestedAssets.length === 0}
       />
