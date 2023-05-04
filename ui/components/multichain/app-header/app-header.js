@@ -328,7 +328,6 @@ export const AppHeader = ({ onClick }) => {
                     src={currentNetwork?.rpcPrefs?.imageUrl}
                     onClick={() => dispatch(toggleNetworkMenu())}
                     className="multichain-app-header__contents__network-picker"
-                    style={{ maxWidth: '100%' }}
                   />
                 </Box>
               )}
