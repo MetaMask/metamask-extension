@@ -5,7 +5,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../../components/ui/text-field';
 import { I18nContext } from '../../../../contexts/i18n';
 import SearchIcon from '../../../../components/ui/icon/search-icon';
-import { Icon, ICON_NAMES } from '../../../../components/component-library';
+import { Icon, IconName } from '../../../../components/component-library';
 
 export default function CustomContentSearch({
   onSearch,
@@ -58,10 +58,7 @@ export default function CustomContentSearch({
             position="end"
             onClick={() => handleSearch('')}
           >
-            <Icon
-              name={ICON_NAMES.CLOSE}
-              className="networks-tab__imageclose"
-            />
+            <Icon name={IconName.Close} className="networks-tab__imageclose" />
           </InputAdornment>
         )}
       </>

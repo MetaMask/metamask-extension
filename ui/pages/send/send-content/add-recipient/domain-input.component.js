@@ -11,8 +11,8 @@ import {
 import {
   ButtonIcon,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
@@ -107,12 +107,12 @@ export default class DomainInput extends Component {
           {hasSelectedAddress ? (
             <Icon
               className="ens-input__wrapper__status-icon"
-              name={ICON_NAMES.CHECK}
+              name={IconName.Check}
               color={IconColor.successDefault}
             />
           ) : (
             <Icon
-              name={ICON_NAMES.SEARCH}
+              name={IconName.Search}
               color={IconColor.iconMuted}
               className="ens-input__wrapper__status-icon"
             />
@@ -130,11 +130,11 @@ export default class DomainInput extends Component {
                 )}
               </div>
               <ButtonIcon
-                iconName={ICON_NAMES.CLOSE}
+                iconName={IconName.Close}
                 ariaLabel={t('close')}
                 onClick={this.props.onReset}
                 className="ens-input__wrapper__action-icon-button"
-                size={ICON_SIZES.SM}
+                size={IconSize.Sm}
               />
             </>
           ) : (
@@ -160,9 +160,7 @@ export default class DomainInput extends Component {
                     this.props.scanQrCode();
                   }
                 }}
-                iconName={
-                  userInput ? ICON_NAMES.CLOSE : ICON_NAMES.SCAN_BARCODE
-                }
+                iconName={userInput ? IconName.Close : IconName.ScanBarcode}
                 ariaLabel={t(userInput ? 'close' : 'scanQrCode')}
                 color={
                   userInput ? IconColor.iconDefault : IconColor.primaryDefault

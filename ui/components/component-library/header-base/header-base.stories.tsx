@@ -2,18 +2,19 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
 import {
-  ICON_NAMES,
+  IconName,
   Button,
-  ButtonIcon,
-  BUTTON_ICON_SIZES,
   BUTTON_SIZES,
+  ButtonIcon,
+  ButtonIconSize,
   Text,
 } from '..';
+
 import {
   AlignItems,
   BackgroundColor,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { HeaderBase } from './header-base';
 import README from './README.mdx';
@@ -36,21 +37,21 @@ export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   children: (
-    <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+    <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
       Title is sentence case no period
     </Text>
   ),
   startAccessory: (
     <ButtonIcon
-      size={BUTTON_ICON_SIZES.SM}
-      iconName={ICON_NAMES.ARROW_LEFT}
+      size={ButtonIconSize.Sm}
+      iconName={IconName.ArrowLeft}
       ariaLabel="back"
     />
   ),
   endAccessory: (
     <ButtonIcon
-      size={BUTTON_ICON_SIZES.SM}
-      iconName={ICON_NAMES.CLOSE}
+      size={ButtonIconSize.Sm}
+      iconName={IconName.Close}
       ariaLabel="close"
     />
   ),
@@ -61,7 +62,7 @@ DefaultStory.storyName = 'Default';
 export const Children = (args) => {
   return (
     <HeaderBase {...args}>
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Title is sentence case no period
       </Text>
     </HeaderBase>
@@ -74,14 +75,14 @@ export const StartAccessory = (args) => {
       marginBottom={4}
       startAccessory={
         <ButtonIcon
-          size={BUTTON_ICON_SIZES.SM}
-          iconName={ICON_NAMES.ARROW_LEFT}
+          size={ButtonIconSize.Sm}
+          iconName={IconName.ArrowLeft}
           ariaLabel="back"
         />
       }
       {...args}
     >
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Title is sentence case no period
       </Text>
     </HeaderBase>
@@ -94,14 +95,14 @@ export const EndAccessory = (args) => {
       marginBottom={4}
       endAccessory={
         <ButtonIcon
-          size={BUTTON_ICON_SIZES.SM}
-          iconName={ICON_NAMES.CLOSE}
+          size={ButtonIconSize.Sm}
+          iconName={IconName.Close}
           ariaLabel="close"
         />
       }
       {...args}
     >
-      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
         Title is sentence case no period
       </Text>
     </HeaderBase>
@@ -115,7 +116,7 @@ export const UseCaseDemos = (args) => (
       <HeaderBase marginBottom={4} {...args}>
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -129,8 +130,8 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -138,7 +139,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -152,8 +153,8 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.successAlternative}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.ARROW_LEFT}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.ArrowLeft}
             ariaLabel="back"
           />
         }
@@ -161,7 +162,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -175,16 +176,16 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.successAlternative}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.ARROW_LEFT}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.ArrowLeft}
             ariaLabel="back"
           />
         }
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -192,7 +193,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -215,8 +216,8 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -224,7 +225,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -242,8 +243,8 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.successAlternative}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }
@@ -259,7 +260,7 @@ export const UseCaseDemos = (args) => (
       >
         <Text
           variant={TextVariant.headingSm}
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
         >
           Title is sentence case no period
@@ -281,8 +282,8 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={BUTTON_ICON_SIZES.SM}
-            iconName={ICON_NAMES.CLOSE}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
             ariaLabel="close"
           />
         }

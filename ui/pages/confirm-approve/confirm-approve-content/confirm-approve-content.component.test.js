@@ -7,7 +7,7 @@ import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { provider: { chainId: '0x0' } },
+    metamask: { providerConfig: { chainId: '0x0' } },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
@@ -56,7 +56,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -119,7 +119,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -181,7 +181,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -239,7 +239,7 @@ describe('ConfirmApproveContent Component', () => {
         'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('Verify third-party details')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -324,5 +324,23 @@ describe('ConfirmApproveContent Component', () => {
     });
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render security provider response if transaction is malicious', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: 1,
+      reason:
+        'This has been flagged as potentially suspicious. If you sign, you could lose access to all of your NFTs and any funds or other assets in your wallet.',
+      reason_header: 'Warning',
+    };
+    const { getByText } = renderComponent({
+      ...props,
+      txData: {
+        ...props.txData,
+        securityProviderResponse,
+      },
+    });
+
+    expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
   });
 });

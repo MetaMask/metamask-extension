@@ -6,8 +6,9 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SEND_STAGES } from '../../../ducks/send';
+import { INSUFFICIENT_FUNDS_ERROR } from '../send.constants';
 
 export default class SendFooter extends Component {
   static propTypes = {
@@ -56,7 +57,7 @@ export default class SendFooter extends Component {
 
     Promise.resolve(promise).then(() => {
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
         properties: {
           action: 'Edit Screen',
@@ -78,7 +79,7 @@ export default class SendFooter extends Component {
       const errorMessage = sendErrors[errorField];
 
       trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Error',
         properties: {
           action: 'Edit Screen',
@@ -92,12 +93,14 @@ export default class SendFooter extends Component {
 
   render() {
     const { t } = this.context;
-    const { sendStage } = this.props;
+    const { sendStage, sendErrors } = this.props;
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
-        disabled={this.props.disabled}
+        disabled={
+          this.props.disabled && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR
+        }
         cancelText={sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
       />
     );

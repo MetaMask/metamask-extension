@@ -6,6 +6,7 @@ import {
   getTokenStandardAndDetails,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 import {
   getRpcPrefsForCurrentProvider,
   getIsTokenDetectionSupported,
@@ -23,11 +24,11 @@ const mapStateToProps = (state) => {
       identities,
       tokens,
       pendingTokens,
-      provider: { chainId },
       useTokenDetection,
       selectedAddress,
     },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
   const isTokenDetectionInactiveOnMainnet =
     getIsTokenDetectionInactiveOnMainnet(state);

@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { getAccountNameErrorMessage } from '../../helpers/utils/accounts';
 
 export default class NewAccountCreateForm extends Component {
@@ -27,20 +31,21 @@ export default class NewAccountCreateForm extends Component {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
           this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADDED,
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountAdded,
             properties: {
-              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+              account_type: MetaMetricsEventAccountType.Default,
+              location: 'Home',
             },
           });
           history.push(mostRecentOverviewPage);
         })
         .catch((e) => {
           this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountAddFailed,
             properties: {
-              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+              account_type: MetaMetricsEventAccountType.Default,
               error: e.message,
             },
           });

@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import { getCustodianIconForAddress } from '@codefi/mmi-sdk';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
   getShowBetaHeader,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -23,22 +23,22 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isUnlocked,
     isAccountMenuOpen,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
   } = metamask;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const custodianIcon = selectedAddress
     ? getCustodianIconForAddress(state, selectedAddress)
     : null;
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = getUnreadNotificationsCount(state);
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
   const showBetaHeader = getShowBetaHeader(state);
   ///: END:ONLY_INCLUDE_IN
 
@@ -47,14 +47,16 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isUnlocked,
     isAccountMenuOpen,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     unreadNotificationsCount,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(beta)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
     showBetaHeader,
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     custodianIcon,
     ///: END:ONLY_INCLUDE_IN
   };

@@ -2,6 +2,13 @@
   "DNS": {
     "resolution": ""
   },
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
+  },
   "appState": {
     "networkDropdownOpen": false,
     "gasIsLoading": false,
@@ -16,7 +23,8 @@
         "name": null
       }
     },
-    "warning": null
+    "warning": null,
+    "alertOpen": false
   },
   "confirmTransaction": {
     "txData": {
@@ -41,6 +49,10 @@
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
+  },
+  "invalidCustomNetwork": {
+    "state": "CLOSED",
+    "networkName": ""
   },
   "metamask": {
     "ipfsGateway": "",
@@ -88,6 +100,14 @@
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
     "isUnlocked": true,
+    "completedOnboarding": true,
+    "usedNetworks": {
+      "0x1": true,
+      "0x5": true,
+      "0x539": true
+    },
+    "showTestnetMessageInDropdown": true,
+    "networkConfigurations": {},
     "alertEnabledness": {
       "unconnectedAccount": true
     },
@@ -95,7 +115,7 @@
       "showIncomingTransactions": true
     },
     "network": "5",
-    "provider": {
+    "providerConfig": {
       "type": "rpc",
       "chainId": "0x5"
     },
@@ -1358,5 +1378,8 @@
       "balance": "0x4563918244f40000"
     },
     "stage": "DRAFT"
+  },
+  "unconnectedAccount": {
+    "state": "CLOSED"
   }
 }

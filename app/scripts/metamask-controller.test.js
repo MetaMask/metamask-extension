@@ -30,6 +30,9 @@ const browserPolyfillMock = {
     },
     getPlatformInfo: async () => 'mac',
   },
+  storage: {
+    session: {},
+  },
 };
 
 let loggerMiddlewareMock;
@@ -79,6 +82,10 @@ const MetaMaskController = proxyquire('./metamask-controller', {
   'ethjs-contract': MockEthContract,
 }).default;
 
+const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
+  '../../shared/modules/mv3.utils': { isManifestV3: true },
+}).default;
+
 const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
@@ -109,7 +116,7 @@ const MAINNET_CHAIN_ID = '0x1';
 const firstTimeState = {
   config: {},
   NetworkController: {
-    provider: {
+    providerConfig: {
       type: NETWORK_TYPES.RPC,
       rpcUrl: ALT_MAINNET_RPC_URL,
       chainId: MAINNET_CHAIN_ID,
@@ -168,10 +175,13 @@ describe('MetaMaskController', function () {
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
+  browserPolyfillMock.storage.session.set = sandbox.spy();
+
   before(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
     sinon.spy(MetaMaskController.prototype, 'resetStates');
+    sinon.spy(MetaMaskControllerMV3.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -224,6 +234,7 @@ describe('MetaMaskController', function () {
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
+      isFirstMetaMaskControllerSetup: true,
     });
 
     // add sinon method spies
@@ -247,14 +258,70 @@ describe('MetaMaskController', function () {
   });
 
   describe('should reset states on first time profile load', function () {
-    it('should reset state', function () {
-      assert(metamaskController.resetStates.calledOnce);
-      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    it('in mv2, it should reset state without attempting to call browser storage', function () {
+      assert.equal(metamaskController.resetStates.callCount, 1);
+      assert.equal(browserPolyfillMock.storage.session.set.callCount, 0);
     });
 
-    it('should not reset states if already set', function () {
-      // global.isFirstTime should also remain false
-      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    it('in mv3, it should reset state', function () {
+      MetaMaskControllerMV3.prototype.resetStates.resetHistory();
+      const metamaskControllerMV3 = new MetaMaskControllerMV3({
+        showUserConfirmation: noop,
+        encryptor: {
+          encrypt(_, object) {
+            this.object = object;
+            return Promise.resolve('mock-encrypted');
+          },
+          decrypt() {
+            return Promise.resolve(this.object);
+          },
+        },
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+      });
+      assert.equal(metamaskControllerMV3.resetStates.callCount, 1);
+      assert.equal(browserPolyfillMock.storage.session.set.callCount, 1);
+      assert.deepEqual(
+        browserPolyfillMock.storage.session.set.getCall(0).args[0],
+        {
+          isFirstMetaMaskControllerSetup: false,
+        },
+      );
+    });
+
+    it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
+      MetaMaskControllerMV3.prototype.resetStates.resetHistory();
+      browserPolyfillMock.storage.session.set.resetHistory();
+      const metamaskControllerMV3 = new MetaMaskControllerMV3({
+        showUserConfirmation: noop,
+        encryptor: {
+          encrypt(_, object) {
+            this.object = object;
+            return Promise.resolve('mock-encrypted');
+          },
+          decrypt() {
+            return Promise.resolve(this.object);
+          },
+        },
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: false,
+      });
+      assert.equal(metamaskControllerMV3.resetStates.callCount, 0);
+      assert.equal(browserPolyfillMock.storage.session.set.callCount, 0);
     });
   });
 
@@ -779,13 +846,13 @@ describe('MetaMaskController', function () {
         metamaskController.preferencesController,
         'getSelectedAddress',
       );
-      const getNetworkstub = sinon.stub(
+      const getNetworkIdStub = sinon.stub(
         metamaskController.txController.txStateManager,
-        'getNetworkState',
+        'getNetworkId',
       );
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-      getNetworkstub.returns(42);
+      getNetworkIdStub.returns(42);
 
       metamaskController.txController.txStateManager._addTransactionsToState([
         createTxMeta({
