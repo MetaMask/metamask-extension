@@ -1275,7 +1275,7 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === false) {
+    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === undefined) {
       const { serviceWorkerLastActiveTime } =
         this.appStateController.store.getState();
       const metametricsPayload = {
