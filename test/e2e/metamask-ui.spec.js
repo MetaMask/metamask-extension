@@ -11,7 +11,6 @@ const {
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
-const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -45,12 +44,6 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -84,6 +77,7 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', function () {
     it('clicks the "Create New Wallet" button on the welcome screen', async function () {
+      await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 
@@ -313,11 +307,10 @@ describe('MetaMask', function () {
         text: 'Transfer',
       });
 
-      const tokenAmount = await driver.findElement(
-        '.confirm-page-container-summary__title-text',
-      );
-      const tokenAmountText = await tokenAmount.getText();
-      assert.equal(tokenAmountText, '1 TST');
+      await driver.findElement({
+        tag: 'h1',
+        text: '1 TST',
+      });
 
       await driver.waitForSelector({
         tag: 'p',
@@ -347,13 +340,10 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
-          text: '-1 TST',
-        },
-        { timeout: 10000 },
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        text: '-1 TST',
+      });
 
       await driver.waitForSelector({
         css: '.list-item__heading',
@@ -381,13 +371,10 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
 
       await driver.findElements('.transaction-list__pending-transactions');
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list-item__primary-currency',
-          text: '-1.5 TST',
-        },
-        { timeout: 10000 },
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      });
       await driver.clickElement('.transaction-list-item__primary-currency');
       await driver.delay(regularDelayMs);
 
@@ -419,11 +406,10 @@ describe('MetaMask', function () {
     });
 
     it('submits the transaction', async function () {
-      const tokenAmount = await driver.findElement(
-        '.confirm-page-container-summary__title-text',
-      );
-      const tokenAmountText = await tokenAmount.getText();
-      assert.equal(tokenAmountText, '1.5 TST');
+      await driver.findElement({
+        tag: 'h1',
+        text: '1.5 TST',
+      });
 
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);

@@ -25,7 +25,8 @@ import {
   setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, TextField } from '../../../components/component-library';
+import { TextField } from '../../../components/component-library';
+import { Icon } from '../../../components/component-library/icon/deprecated';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import {
@@ -34,7 +35,10 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 import { Setting } from './setting';
 
@@ -56,7 +60,7 @@ export default function PrivacySettings() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const networks = useSelector(
-    (state) => state.metamask.frequentRpcListDetail || [],
+    (state) => state.metamask.networkConfigurations || {},
   );
 
   const handleSubmit = () => {
@@ -77,8 +81,8 @@ export default function PrivacySettings() {
     }
 
     trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.ONBOARDING_WALLET_ADVANCED_SETTINGS,
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
         show_incoming_tx: showIncomingTransactions,
         use_phising_detection: usePhishingDetection,
@@ -195,7 +199,7 @@ export default function PrivacySettings() {
                 ])}
 
                 <Box paddingTop={2}>
-                  {networks.length > 1 ? (
+                  {Object.values(networks).length > 1 ? (
                     <div className="privacy-settings__network">
                       <>
                         <NetworkDisplay
@@ -219,7 +223,7 @@ export default function PrivacySettings() {
                       </>
                     </div>
                   ) : null}
-                  {networks.length === 1 ? (
+                  {Object.values(networks).length === 1 ? (
                     <Button
                       type="secondary"
                       rounded
@@ -246,6 +250,7 @@ export default function PrivacySettings() {
                 <Box paddingTop={2}>
                   <TextField
                     style={{ width: '100%' }}
+                    inputProps={{ 'data-testid': 'ipfs-input' }}
                     onChange={(e) => {
                       handleIPFSChange(e.target.value);
                     }}

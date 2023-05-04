@@ -13,10 +13,10 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import CustodyIcon from '../../ui/mmi/icon/custody-icon.component';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import CustodyIcon from '../../institutional/icon/custody-icon.component';
 ///: END:ONLY_INCLUDE_IN
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
   TransactionStatus,
@@ -68,7 +68,7 @@ function TransactionListItemInner({
       event.stopPropagation();
       trackEvent({
         event: 'Clicked "Speed Up"',
-        category: EVENT.CATEGORIES.NAVIGATION,
+        category: MetaMetricsEventCategory.Navigation,
         properties: {
           action: 'Activity Log',
           legacy_event: true,
@@ -89,7 +89,7 @@ function TransactionListItemInner({
       event.stopPropagation();
       trackEvent({
         event: 'Clicked "Cancel"',
-        category: EVENT.CATEGORIES.NAVIGATION,
+        category: MetaMetricsEventCategory.Navigation,
         properties: {
           action: 'Activity Log',
           legacy_event: true,
@@ -128,7 +128,7 @@ function TransactionListItemInner({
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
   const isSwap = category === TransactionGroupCategory.swap;
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
   ///: END:ONLY_INCLUDE_IN
 
@@ -150,7 +150,7 @@ function TransactionListItemInner({
     setShowDetails((prev) => !prev);
   }, [isUnapproved, history, id]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const debugTransactionMeta = {
     'data-hash': transactionGroup.primaryTransaction.hash,
     ...(isCustodian
@@ -167,7 +167,7 @@ function TransactionListItemInner({
       return null;
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (isCustodian) {
       return null;
     }
@@ -190,14 +190,14 @@ function TransactionListItemInner({
     hasCancelled,
     retryTransaction,
     cancelTransaction,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     isCustodian,
     ///: END:ONLY_INCLUDE_IN
   ]);
 
   let showCancelButton = !hasCancelled && isPending && !isUnapproved;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   showCancelButton = showCancelButton && !isCustodian;
   const PENDING_COLOR = '#6A737D';
   const OK_COLOR = '#2F80ED';
@@ -223,7 +223,7 @@ function TransactionListItemInner({
         className={className}
         title={title}
         icon={
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isCustodian ? (
             <div style={{ position: 'relative' }}>
               <TransactionIcon
@@ -240,7 +240,7 @@ function TransactionListItemInner({
           ) : (
             ///: END:ONLY_INCLUDE_IN
             <TransactionIcon category={category} status={displayedStatusKey} />
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           )
           ///: END:ONLY_INCLUDE_IN
         }
@@ -252,7 +252,7 @@ function TransactionListItemInner({
               error={err}
               date={date}
               status={displayedStatusKey}
-              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
               custodyStatusDisplayText={
                 transactionGroup.primaryTransaction.custodyStatusDisplayText
@@ -295,7 +295,7 @@ function TransactionListItemInner({
           )}
         </div>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           <a {...debugTransactionMeta} className="test-transaction-meta" />
           ///: END:ONLY_INCLUDE_IN
         }
@@ -310,14 +310,14 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           showRetry={
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             !isCustodian &&
             ///: END:ONLY_INCLUDE_IN
             status === TransactionStatus.failed &&
             !isSwap
           }
           showSpeedUp={
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             !isCustodian &&
             ///: END:ONLY_INCLUDE_IN
             shouldShowSpeedUp
@@ -325,7 +325,7 @@ function TransactionListItemInner({
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             !isCustodian &&
             ///: END:ONLY_INCLUDE_IN
             isPending &&

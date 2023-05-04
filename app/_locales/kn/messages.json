@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
+  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -411,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "links": {
     "message": "ಲಿಂಕ್‌ಗಳು"
@@ -672,12 +678,6 @@
   "settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
   },
-  "showAdvancedGasInline": {
-    "message": "ಸುಧಾರಿತ ಗ್ಯಾಸ್ ನಿಯಂತ್ರಣಗಳು"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "ಕಳುಹಿಸುವ ಮತ್ತು ಖಚಿತಪಡಿಸುವ ಪರದೆಯ ಮೇಲೆ ನೇರವಾಗಿ ಗ್ಯಾಸ್ ಬೆಲೆ ಮತ್ತು ಮಿತಿಯ ನಿಯಂತ್ರಣಗಳನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ."
-  },
   "showFiatConversionInTestnets": {
     "message": "Testnets ನಲ್ಲಿ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಿ"
   },
@@ -740,27 +740,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "ಚಿಹ್ನೆಯು 0 ಮತ್ತು 12 ಅಕ್ಷರಗಳ ನಡುವೆ ಇರಬೇಕು."
-  },
-  "syncWithMobile": {
-    "message": "ಮೊಬೈಲ್‌ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಿ"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "ನೀವು ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡುತ್ತಿರುವಾಗ ಯಾರೂ ನಿಮ್ಮ ಪರದೆಯ ಕಡೆಗೆ ನೋಡುತ್ತಿಲ್ಲವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
-  },
-  "syncWithMobileComplete": {
-    "message": "ನಿಮ್ಮ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಸಿಂಕ್ ಆಗಿದೆ. MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಆನಂದಿಸಿ!"
-  },
-  "syncWithMobileDesc": {
-    "message": "ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಾಧನದೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಗಳು ಮತ್ತು ಮಾಹಿತಿಯನ್ನು ನೀವು ಸಿಂಕ್ ಮಾಡಬಹುದಾಗಿದೆ. MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ತೆರೆಯಿರಿ, \"ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ\" ಹೋಗಿ ಮತ್ತು \"ಬ್ರೌಸರ್ ವಿಸ್ತರಣೆಯಿಂದ ಸಿಂಕ್ ಮಾಡಿ\" ಟ್ಯಾಪ್ ಮಾಡಿ"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "ನೀವು ಮೊದಲ ಬಾರಿಗೆ MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ತೆರೆದರೆ, ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿರುವ ಹಂತಗಳನ್ನು ಅನುಸರಿಸಿ."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "ನಿಮ್ಮ MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಮೂಲಕ ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"
-  },
-  "syncWithMobileTitle": {
-    "message": "ಮೊಬೈಲ್‌ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಿ"
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"

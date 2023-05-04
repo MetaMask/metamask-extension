@@ -124,7 +124,7 @@ export default function TransactionList({
               {`${t('queue')} (${pendingTransactions.length})`}
             </div>
             {pendingTransactions
-              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               .sort(
                 (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
               )

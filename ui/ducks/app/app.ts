@@ -4,7 +4,6 @@ import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
-import { RPCDefinition } from '../../../shared/constants/network';
 import * as actionConstants from '../../store/actionConstants';
 
 interface AppState {
@@ -48,6 +47,7 @@ interface AppState {
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
+  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -56,15 +56,17 @@ interface AppState {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
-  newNetworkAdded: string;
   newNftAddedMessage: string;
   removeNftMessage: string;
+  newNetworkAddedName: string;
+  newNetworkAddedConfigurationId: string;
+  selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
-  newCustomNetworkAdded: RPCDefinition | Record<string, any>;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: number | null;
+  accountDetailsAddress: string;
 }
 
 interface AppSliceState {
@@ -109,6 +111,7 @@ const initialState: AppState = {
   openMetaMaskTabs: {},
   currentWindowTab: {},
   showWhatsNewPopup: true,
+  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
@@ -117,16 +120,18 @@ const initialState: AppState = {
   smartTransactionsErrorMessageDismissed: false,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
-  newNetworkAdded: '',
   newNftAddedMessage: '',
   removeNftMessage: '',
+  newNetworkAddedName: '',
+  newNetworkAddedConfigurationId: '',
+  selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
-  newCustomNetworkAdded: {},
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
+  accountDetailsAddress: '',
 };
 
 export default function reduceApp(
@@ -166,6 +171,13 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
+
+    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
+      return {
+        ...appState,
+        accountDetailsAddress: action.payload,
+      };
+    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -330,18 +342,20 @@ export default function reduceApp(
         isMouseUser: action.payload,
       };
 
-    case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
+    case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
-        networksTabSelectedRpcUrl: action.payload,
+        selectedNetworkConfigurationId: action.payload,
       };
 
-    case actionConstants.SET_NEW_NETWORK_ADDED:
+    case actionConstants.SET_NEW_NETWORK_ADDED: {
+      const { networkConfigurationId, nickname } = action.payload;
       return {
         ...appState,
-        newNetworkAdded: action.payload,
+        newNetworkAddedName: nickname,
+        newNetworkAddedConfigurationId: networkConfigurationId,
       };
-
+    }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
       return {
         ...appState,
@@ -409,11 +423,6 @@ export default function reduceApp(
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
-    case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
-      return {
-        ...appState,
-        newCustomNetworkAdded: action.payload,
-      };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
         ...appState,
@@ -456,13 +465,6 @@ export function setLedgerTransportStatus(
 
 export function toggleCurrencySwitch(): Action {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
-}
-
-export function setNewCustomNetworkAdded(
-  // can pass in a valid network or empty one
-  payload: RPCDefinition | Record<string, never>,
-): PayloadAction<RPCDefinition | Record<string, never>> {
-  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, payload };
 }
 
 export function setOnBoardedInThisUISession(

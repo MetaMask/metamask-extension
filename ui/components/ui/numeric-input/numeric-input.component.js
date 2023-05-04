@@ -20,6 +20,7 @@ export default function NumericInput({
   placeholder,
   id,
   name,
+  inputRef,
 }) {
   return (
     <div
@@ -48,6 +49,7 @@ export default function NumericInput({
         placeholder={placeholder}
         id={id}
         name={name}
+        ref={inputRef}
       />
       {detailText && (
         <Typography
@@ -80,4 +82,5 @@ NumericInput.propTypes = {
    * The id of the input element. Should be used with htmlFor with a label element.
    */
   id: PropTypes.string,
+  inputRef: PropTypes.object,
 };

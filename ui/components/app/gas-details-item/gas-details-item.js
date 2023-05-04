@@ -5,7 +5,12 @@ import { useSelector } from 'react-redux';
 
 import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getPreferences, getUseCurrencyRateCheck } from '../../../selectors';
+import {
+  getPreferences,
+  getUseCurrencyRateCheck,
+  transactionFeeSelector,
+} from '../../../selectors';
+import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -14,10 +19,20 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { useDraftTransactionGasValues } from '../../../hooks/useDraftTransactionGasValues';
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   const t = useI18nContext();
+  const draftTransaction = useSelector(getCurrentDraftTransaction);
+  const { transactionData } = useDraftTransactionGasValues();
+
+  const {
+    hexMinimumTransactionFee: draftHexMinimumTransactionFee,
+    hexMaximumTransactionFee: draftHexMaximumTransactionFee,
+  } = useSelector((state) => transactionFeeSelector(state, transactionData));
+
   const {
     estimateUsed,
     hasSimulationError,
@@ -37,11 +52,12 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
 
   return (
     <TransactionDetailItem
-      key="gas-item"
+      key="gas-details-item"
       detailTitle={<GasDetailsItemTitle />}
       detailTitleColor={TextColor.textDefault}
       detailText={
-        useCurrencyRateCheck && (
+        useCurrencyRateCheck &&
+        Object.keys(draftTransaction).length === 0 && (
           <div className="gas-details-item__currency-container">
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <UserPreferencedCurrencyDisplay
@@ -57,7 +73,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
           <LoadingHeartBeat estimateUsed={estimateUsed} />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={hexMinimumTransactionFee}
+            value={hexMinimumTransactionFee || draftHexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </div>
@@ -86,7 +102,9 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
-                value={hexMaximumTransactionFee}
+                value={
+                  hexMaximumTransactionFee || draftHexMaximumTransactionFee
+                }
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />
             </div>
@@ -95,8 +113,14 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       subTitle={
         <GasTiming
-          maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
-          maxFeePerGas={maxFeePerGas.toString()}
+          maxPriorityFeePerGas={(
+            maxPriorityFeePerGas ||
+            hexWEIToDecGWEI(transactionData.txParams.maxPriorityFeePerGas)
+          ).toString()}
+          maxFeePerGas={(
+            maxFeePerGas ||
+            hexWEIToDecGWEI(transactionData.txParams.maxFeePerGas)
+          ).toString()}
         />
       }
     />

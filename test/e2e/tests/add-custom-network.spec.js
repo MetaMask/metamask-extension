@@ -263,22 +263,22 @@ describe('Custom network', function () {
         assert.equal(
           await networkName.getText(),
           networkNAME,
-          'Network name is not correct displayed',
+          'Network name is not correctly displayed',
         );
         assert.equal(
           await networkUrl.getText(),
           networkURL,
-          'Network Url is not correct displayed',
+          'Network Url is not correctly displayed',
         );
         assert.equal(
           await chainIdElement.getText(),
           chainID.toString(),
-          'Chain Id is not correct displayed',
+          'Chain Id is not correctly displayed',
         );
         assert.equal(
           await currencySymbol.getText(),
           currencySYMBOL,
-          'Currency symbol is not correct displayed',
+          'Currency symbol is not correctly displayed',
         );
 
         await driver.clickElement({ tag: 'a', text: 'View all details' });
@@ -353,20 +353,21 @@ describe('Custom network', function () {
       },
     );
   });
+
   it('Add a custom network and then delete that same network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            frequentRpcListDetail: [
-              {
+          .withNetworkController({
+            networkConfigurations: {
+              networkConfigurationId: {
                 rpcUrl: networkURL,
                 chainId: chainID,
-                ticker: currencySYMBOL,
                 nickname: networkNAME,
+                ticker: currencySYMBOL,
                 rpcPrefs: {},
               },
-            ],
+            },
           })
           .build(),
         ganacheOptions,
@@ -391,7 +392,9 @@ describe('Custom network', function () {
           text: 'Delete',
         });
 
-        await driver.findElement('.modal-container__footer');
+        await driver.waitForSelector('.modal-container__footer', {
+          timeout: 15000,
+        });
         // should be deleted from the modal shown again to complete  deletion custom network
         await driver.clickElement({
           tag: 'button',

@@ -25,7 +25,7 @@ describe('Deploy contract and call contract methods', function () {
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
@@ -63,15 +63,11 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-4 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-4 ETH',
+        });
 
         // calls and confirms a contract method where ETH is received
         await driver.switchToWindow(dapp);
@@ -87,27 +83,20 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(extension);
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
-          { timeout: 10000 },
         );
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-0 ETH',
-          },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-0 ETH',
+        });
 
         // renders the correct ETH balance
         await driver.switchToWindow(extension);
-        const balance = await driver.waitForSelector(
-          {
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '21.',
-          },
-          { timeout: 10000 },
-        );
-        const tokenAmount = await balance.getText();
-        assert.ok(/^21.*\s*ETH.*$/u.test(tokenAmount));
+        const balance = await ganacheServer.getBalance();
+        const balanceElement = await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: balance,
+        });
+        assert.equal(`${balance}\nETH`, await balanceElement.getText());
       },
     );
   });

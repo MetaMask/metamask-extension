@@ -1,6 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountImportType,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { ButtonLink, Label, Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 import Dropdown from '../../../components/ui/dropdown';
@@ -43,27 +48,29 @@ export default function NewAccountImportForm() {
           navigateToMostRecentOverviewPage();
         } else {
           dispatch(actions.displayWarning(t('importAccountError')));
-          trackImportEvent(strategy, false);
         }
       })
-      .catch((error) => translateWarning(error.message));
+      .catch((error) => {
+        trackImportEvent(strategy, error.message);
+        translateWarning(error.message);
+      });
   }
 
   function trackImportEvent(strategy, wasSuccessful) {
     const accountImportType =
       strategy === 'Private Key'
-        ? EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY
-        : EVENT.ACCOUNT_IMPORT_TYPES.JSON;
+        ? MetaMetricsEventAccountImportType.PrivateKey
+        : MetaMetricsEventAccountImportType.Json;
 
     const event = wasSuccessful
-      ? EVENT_NAMES.ACCOUNT_ADDED
-      : EVENT_NAMES.ACCOUNT_ADD_FAILED;
+      ? MetaMetricsEventName.AccountAdded
+      : MetaMetricsEventName.AccountAddFailed;
 
     trackEvent({
-      category: EVENT.CATEGORIES.ACCOUNTS,
+      category: MetaMetricsEventCategory.Accounts,
       event,
       properties: {
-        account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+        account_type: MetaMetricsEventAccountType.Imported,
         account_import_type: accountImportType,
       },
     });

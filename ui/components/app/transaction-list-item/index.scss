@@ -1,4 +1,6 @@
 .transaction-list-item {
+  border-top: none;
+
   &__primary-currency {
     color: var(--color-text-default);
     overflow: hidden;
@@ -66,7 +68,7 @@
     white-space: nowrap;
   }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     &__icon-badge {
       position: absolute;
       top: 18px;

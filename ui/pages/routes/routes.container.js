@@ -18,10 +18,13 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
+  toggleAccountMenu,
+  toggleNetworkMenu,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -44,7 +47,7 @@ function mapStateToProps(state) {
     browserEnvironmentOs: state.metamask.browserEnvironment?.os,
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
     providerId: getNetworkIdentifier(state),
-    providerType: state.metamask.provider?.type,
+    providerType: getProviderConfig(state).type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
     isNetworkUsed: getIsNetworkUsed(state),
@@ -55,6 +58,9 @@ function mapStateToProps(state) {
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
+    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
+    isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
+    accountDetailsAddress: state.appState.accountDetailsAddress,
   };
 }
 
@@ -67,6 +73,8 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
+    toggleAccountMenu: () => dispatch(toggleAccountMenu()),
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 }
 

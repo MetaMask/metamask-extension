@@ -29,7 +29,7 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
@@ -43,7 +43,10 @@ import {
   DraftTransaction,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  getUnconnectedAccountAlertEnabledness,
+} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -51,7 +54,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  EVENT,
+  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -62,10 +65,9 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
-import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -87,6 +89,12 @@ import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-ma
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  checkForUnapprovedTypedMessages,
+  updateCustodyState,
+} from './institutional/institution-actions';
+///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
   callBackgroundMethod,
@@ -310,29 +318,6 @@ export function tryReverseResolveAddress(
           logErrorWithMessage(err);
         }
         resolve();
-      });
-    });
-  };
-}
-
-export function fetchInfoToSync(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchInfoToSync`);
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('fetchInfoToSync', [], (err, result) => {
-        if (err) {
-          if (isErrorWithMessage(err)) {
-            dispatch(displayWarning(err.message));
-          }
-          reject(err);
-          return;
-        }
-        resolve(result);
       });
     });
   };
@@ -714,6 +699,11 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -841,6 +831,11 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1257,7 +1252,7 @@ export function updateTransactionParams(txId: number, txParams: TxParams) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1350,6 +1345,9 @@ export function markNotificationsAsRead(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 
 export function setDesktopEnabled(desktopEnabled: boolean) {
   return async () => {
@@ -1770,13 +1768,15 @@ export function updateMetamaskState(
   newState: MetaMaskReduxState['metamask'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
-    const { metamask: currentState } = getState();
+    const state = getState();
+    const providerConfig = getProviderConfig(state);
+    const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress, provider } = currentState;
+    const { currentLocale, selectedAddress } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-      provider: newProvider,
+      providerConfig: newProviderConfig,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
@@ -1787,8 +1787,10 @@ export function updateMetamaskState(
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
-    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
+    const newAddressBook =
+      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
+    const oldAddressBook =
+      currentState.addressBook?.[providerConfig?.chainId] ?? {};
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
@@ -1837,10 +1839,10 @@ export function updateMetamaskState(
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
-    if (provider.chainId !== newProvider.chainId) {
+    if (providerConfig.chainId !== newProviderConfig.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
-        payload: newProvider.chainId,
+        payload: newProviderConfig.chainId,
       });
       // We dispatch this action to ensure that the send state stays up to date
       // after the chain changes. This async thunk will fail gracefully in the
@@ -1849,6 +1851,10 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    updateCustodyState(dispatch, newState, getState());
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -2457,47 +2463,75 @@ export function setProviderType(
   };
 }
 
-export function updateAndSetCustomRpc(
-  newRpcUrl: string,
-  chainId: string,
-  ticker: EtherDenomination,
-  nickname: string,
-  rpcPrefs: RPCDefinition['rpcPrefs'],
+export function upsertNetworkConfiguration(
+  {
+    rpcUrl,
+    chainId,
+    nickname,
+    rpcPrefs,
+    ticker = EtherDenomination.ETH,
+  }: {
+    rpcUrl: string;
+    chainId: string;
+    nickname: string;
+    rpcPrefs: RPCDefinition['rpcPrefs'];
+    ticker: string;
+  },
+  {
+    setActive,
+    source,
+  }: {
+    setActive: boolean;
+    source: string;
+  },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     log.debug(
-      `background.updateAndSetCustomRpc: ${newRpcUrl} ${chainId} ${
-        ticker ?? EtherDenomination.ETH
-      } ${nickname}`,
+      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
-
+    let networkConfigurationId;
     try {
-      await submitRequestToBackground('updateAndSetCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-        rpcPrefs,
-      ]);
+      networkConfigurationId = await submitRequestToBackground(
+        'upsertNetworkConfiguration',
+        [
+          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          { setActive, source, referrer: ORIGIN_METAMASK },
+        ],
+      );
     } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
+      log.error(error);
+      dispatch(displayWarning('Had a problem adding network!'));
     }
+    return networkConfigurationId;
   };
 }
 
-export function editRpc(
-  oldRpcUrl: string,
-  newRpcUrl: string,
-  chainId: string,
-  ticker: EtherDenomination,
-  nickname: string,
-  rpcPrefs: RPCDefinition['rpcPrefs'],
+export function editAndSetNetworkConfiguration(
+  {
+    networkConfigurationId,
+    rpcUrl,
+    chainId,
+    nickname,
+    rpcPrefs,
+    ticker = EtherDenomination.ETH,
+  }: {
+    networkConfigurationId: string;
+    rpcUrl: string;
+    chainId: string;
+    nickname: string;
+    rpcPrefs: RPCDefinition['rpcPrefs'];
+    ticker: string;
+  },
+  { source }: { source: string },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
+  return async (dispatch) => {
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
     try {
-      submitRequestToBackground('delCustomRpc', [oldRpcUrl]);
+      await submitRequestToBackground('removeNetworkConfiguration', [
+        networkConfigurationId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem removing network!'));
@@ -2505,12 +2539,15 @@ export function editRpc(
     }
 
     try {
-      await submitRequestToBackground('updateAndSetCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-        rpcPrefs,
+      await submitRequestToBackground('upsertNetworkConfiguration', [
+        {
+          rpcUrl,
+          chainId,
+          ticker,
+          nickname: nickname || rpcUrl,
+          rpcPrefs,
+        },
+        { setActive: true, referrer: ORIGIN_METAMASK, source },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2519,23 +2556,14 @@ export function editRpc(
   };
 }
 
-export function setRpcTarget(
-  newRpcUrl: string,
-  chainId: string,
-  ticker?: EtherDenomination,
-  nickname?: string,
+export function setActiveNetwork(
+  networkConfigurationId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(
-      `background.setRpcTarget: ${newRpcUrl} ${chainId} ${ticker} ${nickname}`,
-    );
-
+  return async (dispatch) => {
+    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
-      await submitRequestToBackground('setCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
+      await submitRequestToBackground('setActiveNetwork', [
+        networkConfigurationId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2560,21 +2588,27 @@ export function rollbackToPreviousProvider(): ThunkAction<
   };
 }
 
-export function delRpcTarget(
-  oldRpcUrl: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('delCustomRpc', [oldRpcUrl], (err) => {
-        if (err) {
-          logErrorWithMessage(err);
-          dispatch(displayWarning('Had a problem removing network!'));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
+export function removeNetworkConfiguration(
+  networkConfigurationId: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch) => {
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod(
+        'removeNetworkConfiguration',
+        [networkConfigurationId],
+        (err) => {
+          if (err) {
+            logErrorWithMessage(err);
+            dispatch(displayWarning('Had a problem removing network!'));
+            reject(err);
+            return;
+          }
+          resolve();
+        },
+      );
     });
   };
 }
@@ -2588,7 +2622,7 @@ export function addToAddressBook(
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getState().metamask.provider;
+    const { chainId } = getProviderConfig(getState());
 
     let set;
     try {
@@ -3072,6 +3106,19 @@ export async function forceUpdateMetamaskState(
 export function toggleAccountMenu() {
   return {
     type: actionConstants.TOGGLE_ACCOUNT_MENU,
+  };
+}
+
+export function toggleNetworkMenu() {
+  return {
+    type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
+export function setAccountDetailsAddress(address: string) {
+  return {
+    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
+    payload: address,
   };
 }
 
@@ -3649,6 +3696,7 @@ export function approvePermissionsRequest(
       if (err) {
         dispatch(displayWarning(err));
       }
+      forceUpdateMetamaskState(dispatch);
     });
   };
 }
@@ -3692,7 +3740,7 @@ export function removePermissionsFor(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.
  *
@@ -3784,21 +3832,25 @@ export function setFirstTimeFlowType(
   };
 }
 
-export function setSelectedSettingsRpcUrl(
-  newRpcUrl: string,
+export function setSelectedNetworkConfigurationId(
+  networkConfigurationId: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_SELECTED_SETTINGS_RPC_URL,
-    payload: newRpcUrl,
+    type: actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID,
+    payload: networkConfigurationId,
   };
 }
 
-export function setNewNetworkAdded(
-  newNetworkAdded: string,
-): PayloadAction<string> {
+export function setNewNetworkAdded({
+  networkConfigurationId,
+  nickname,
+}: {
+  networkConfigurationId: string;
+  nickname: string;
+}): PayloadAction<object> {
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
-    payload: newNetworkAdded,
+    payload: { networkConfigurationId, nickname },
   };
 }
 
@@ -3919,6 +3971,12 @@ export function setRecoveryPhraseReminderLastShown(
         }
       },
     );
+  };
+}
+
+export function setTermsOfUseLastAgreed(lastAgreed: number) {
+  return async () => {
+    await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
   };
 }
 
@@ -4298,7 +4356,7 @@ export async function setSmartTransactionsOptInStatus(
   trackMetaMetricsEvent({
     actionId: generateActionId(),
     event: 'STX OptIn',
-    category: EVENT.CATEGORIES.SWAPS,
+    category: MetaMetricsEventCategory.Swaps,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,
@@ -4519,16 +4577,19 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
+export function hideProductTour() {
+  return submitRequestToBackground('setShowProductTour', [false]);
+}
+
 // TODO: codeword NOT_A_THUNK @brad-decker
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
-      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4537,19 +4598,6 @@ export function setTransactionSecurityCheckEnabled(
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
-}
-
-export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    await submitRequestToBackground(
-      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
-    );
-  };
 }
 
 // QR Hardware Wallets
@@ -4592,36 +4640,41 @@ export function cancelQRHardwareSignRequest(): ThunkAction<
   };
 }
 
-export function addCustomNetwork(
-  customRpc: RPCDefinition,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function requestUserApproval({
+  origin,
+  type,
+  requestData,
+}: {
+  origin: string;
+  type: string;
+  requestData: object;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      dispatch(setNewCustomNetworkAdded(customRpc));
-      await submitRequestToBackground('addCustomNetwork', [
-        customRpc,
-        generateActionId(),
+      await submitRequestToBackground('requestUserApproval', [
+        {
+          origin,
+          type,
+          requestData,
+        },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
+      dispatch(displayWarning('Had trouble requesting user approval'));
     }
   };
 }
 
-export function requestAddNetworkApproval(
-  customRpc: RPCDefinition,
-  originIsMetaMask: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('requestAddNetworkApproval', [
-        customRpc,
-        originIsMetaMask,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
-  };
+export async function getCurrentNetworkEIP1559Compatibility(): Promise<
+  boolean | undefined
+> {
+  let networkEIP1559Compatibility;
+  try {
+    networkEIP1559Compatibility = await submitRequestToBackground<boolean>(
+      'getCurrentNetworkEIP1559Compatibility',
+    );
+  } catch (error) {
+    console.error(error);
+  }
+  return networkEIP1559Compatibility;
 }

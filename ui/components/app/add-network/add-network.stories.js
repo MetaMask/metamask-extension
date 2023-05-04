@@ -10,7 +10,6 @@ const BSC_IMAGE_URL = './images/bsc-filled.svg';
 
 export default {
   title: 'Components/App/AddNetwork',
-
   argTypes: {
     onBackClick: {
       action: 'onBackClick',

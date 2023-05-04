@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import {
   tryReverseResolveAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMMIActions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
@@ -16,7 +16,7 @@ import {
   getAccountName,
   getMetadataContractName,
   getMetaMaskIdentities,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedIdentity,
   getKnownMethodData,
   ///: END:ONLY_INCLUDE_IN
@@ -49,7 +49,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const isCustomNetwork = getIsCustomNetwork(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const data = ownProps.transactionGroup?.primaryTransaction?.txParams?.data;
   const methodData = getKnownMethodData(state, data) || {};
   const transactionNote =
@@ -65,7 +65,7 @@ const mapStateToProps = (state, ownProps) => {
     blockExplorerLinkText: getBlockExplorerLinkText(state),
     recipientName,
     recipientMetadataName,
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     methodData,
     transactionNote,
     selectedIdentity: getSelectedIdentity(state),
@@ -74,14 +74,14 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const MMIActions = getMMIActions();
   ///: END:ONLY_INCLUDE_IN
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     getCustodianTransactionDeepLink: (address, txId) => {
       return dispatch(
         MMIActions.getCustodianTransactionDeepLink(address, txId),

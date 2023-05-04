@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezovanje na testno omrežje Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
@@ -405,6 +408,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
+  },
+  "lineatestnet": {
+    "message": "Testno omrežje Linea Goerli"
   },
   "links": {
     "message": "Povezave"
@@ -660,12 +666,6 @@
   "settings": {
     "message": "Nastavitve"
   },
-  "showAdvancedGasInline": {
-    "message": "Napredno krmiljenje plina"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Izberite to možnost, če želite prikazati ceno plina in omejiti nadzor neposredno na zaslonih za pošiljanje in potrditev."
-  },
   "showFiatConversionInTestnets": {
     "message": "Pokažite pretvorbo na testnih omrežjih"
   },
@@ -728,27 +728,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mora biti največ 11 znakov ali manj."
-  },
-  "syncWithMobile": {
-    "message": "Sinhroniziraj z mobilnimi telefonom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Ko skenirate to kodo, naj nihče ne kuka na vaš zaslon"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaši podatki so uspešno sinhronizirani. Uživajte v mobilni aplikaciji MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Račune in podatke lahko sinhronizirate s svojo mobilno napravo. Odprite mobilno aplikacijo MetaMask, pojdite na \"Nastavitve\" in tapnite \"Sinhroniziraj z razširitvijo brskalnika\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Če ste sedaj prvič odprli aplikacijo MetaMask Mobile, samo sledite korakom v telefonu."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skenirajte to kodo z mobilno aplikacijo MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinhroniziraj z mobilnimi telefonom"
   },
   "terms": {
     "message": "Pogoji uporabe"
