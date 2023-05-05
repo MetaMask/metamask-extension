@@ -7,13 +7,20 @@ import {
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import {
+  AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
+  DISPLAY,
   IconColor,
-  Size,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { BadgeWrapper, Icon, IconName } from '../../component-library';
+import {
+  BadgeWrapper,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../component-library';
 import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
@@ -24,6 +31,7 @@ export const MultichainConnectedSiteMenu = ({
   globalMenuColor,
   status,
   text,
+  onClick,
 }) => {
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedIdentity);
@@ -31,6 +39,12 @@ export const MultichainConnectedSiteMenu = ({
     <Box
       className={classNames('multichain-connected-site-menu', className)}
       data-testid="connection-menu"
+      as="button"
+      onClick={onClick}
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Tooltip
         title={
@@ -69,7 +83,7 @@ export const MultichainConnectedSiteMenu = ({
         >
           <Icon
             name={IconName.Global}
-            size={Size.LG}
+            size={IconSize.Sm}
             color={IconColor.iconDefault}
           />
         </BadgeWrapper>
@@ -95,4 +109,8 @@ MultichainConnectedSiteMenu.propTypes = {
    * Connection status message
    */
   text: PropTypes.string,
+  /**
+   * onClick handler to be passed
+   */
+  onClick: PropTypes.func,
 };
