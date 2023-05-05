@@ -334,7 +334,6 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
       const hexPrefixedAddress = addHexPrefix(newAddress);
       if (addressIsNew(toAccounts, hexPrefixedAddress)) {
