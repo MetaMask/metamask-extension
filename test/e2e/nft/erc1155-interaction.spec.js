@@ -3,7 +3,7 @@ const {
   convertToHexValue,
   withFixtures,
   DAPP_URL,
-  connectToDApp,
+  openDapp,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -39,7 +39,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await connectToDApp(driver, contract);
+        await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Mint
@@ -96,7 +96,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver, contract);
+        await openDapp(driver, contract);
 
         await driver.fill('#batchTransferTokenIds', '1, 2, 3');
         await driver.fill('#batchTransferTokenAmounts', '1, 1, 1000000000000');
@@ -155,7 +155,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Create a set approval for all erc1155 token request in test dapp
-        await connectToDApp(driver, contract);
+        await openDapp(driver, contract);
         await driver.clickElement('#setApprovalForAllERC1155Button');
 
         // Wait for notification popup and check the displayed message
@@ -244,7 +244,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Create a revoke approval for all erc1155 token request in test dapp
-        await connectToDApp(driver, contract);
+        await openDapp(driver, contract);
         await driver.clickElement('#revokeERC1155Button');
 
         // Wait for notification popup and check the displayed message

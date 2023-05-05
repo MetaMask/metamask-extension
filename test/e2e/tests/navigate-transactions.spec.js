@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectToDApp,
-} = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Navigate transactions', function () {
@@ -134,7 +130,7 @@ describe('Navigate transactions', function () {
         );
 
         // add transaction
-        await connectToDApp(driver);
+        await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();

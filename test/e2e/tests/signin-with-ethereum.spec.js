@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
-  connectToDApp,
+  openDapp,
   DAPP_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -41,7 +41,7 @@ describe('Sign in with ethereum', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Create a signin with ethereum request in test dapp
-        await connectToDApp(driver);
+        await openDapp(driver);
         await driver.clickElement('#siwe');
 
         // Wait for signature request popup and check the message title

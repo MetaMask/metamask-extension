@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectToDApp,
-} = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const STALELIST_URL =
@@ -111,7 +107,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await connectToDApp(driver);
+        await openDapp(driver);
         await driver.clickElement({
           text: 'continue to the site.',
         });
@@ -212,7 +208,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -240,7 +236,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -280,7 +276,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 

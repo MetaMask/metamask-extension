@@ -3,7 +3,7 @@ const {
   convertToHexValue,
   getWindowHandles,
   withFixtures,
-  connectToDApp,
+  openDapp,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -207,7 +207,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open dapp and connect
-        await connectToDApp(driver);
+        await openDapp(driver);
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',

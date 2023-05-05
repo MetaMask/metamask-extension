@@ -3,7 +3,7 @@ const {
   convertToHexValue,
   withFixtures,
   regularDelayMs,
-  connectToDApp,
+  openDapp,
   DAPP_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -35,7 +35,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV4');
@@ -116,7 +116,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV3');
@@ -198,7 +198,7 @@ describe('Sign Typed Data Signature Request', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedData');

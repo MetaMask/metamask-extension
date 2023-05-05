@@ -8,7 +8,7 @@ const {
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
-  connectToDApp,
+  openDapp,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
@@ -178,7 +178,7 @@ describe('MetaMask', function () {
     let popup;
     let dapp;
     it('connects the dapp', async function () {
-      await connectToDApp(driver);
+      await openDapp(driver);
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Connect', tag: 'button' });

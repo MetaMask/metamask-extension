@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectToDApp,
-} = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Encrypt Decrypt', function () {
@@ -32,7 +28,7 @@ describe('Encrypt Decrypt', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // ------ Get Encryption key ------
         await driver.clickElement('#getEncryptionKeyButton');
@@ -113,7 +109,7 @@ describe('Encrypt Decrypt', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // ------ Get Encryption key and display ETH ------
         await driver.clickElement('#getEncryptionKeyButton');
@@ -157,7 +153,7 @@ describe('Encrypt Decrypt', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.account-menu__icon');
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // ------ Get Encryption key and display ETH ------
         await driver.clickElement('#getEncryptionKeyButton');

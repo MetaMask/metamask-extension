@@ -1,10 +1,6 @@
 const { strict: assert } = require('assert');
 const { errorCodes } = require('eth-rpc-errors');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectToDApp,
-} = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask', function () {
@@ -35,7 +31,7 @@ describe('MetaMask', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
         const networkDiv = await driver.waitForSelector({
           css: '#network',
           text: '1337',
@@ -87,7 +83,7 @@ describe('MetaMask', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
         for (const unsupportedMethod of ['eth_signTransaction']) {
           assert.equal(
             await driver.executeAsyncScript(`

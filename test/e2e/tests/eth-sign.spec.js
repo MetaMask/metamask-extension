@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
-  connectToDApp,
+  openDapp,
   DAPP_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -33,7 +33,7 @@ describe('Eth sign', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
         await driver.clickElement('#ethSign');
 
         await driver.delay(1000);
@@ -69,7 +69,7 @@ describe('Eth sign', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
         await driver.clickElement('#ethSign');
 
         // Wait for Signature request popup

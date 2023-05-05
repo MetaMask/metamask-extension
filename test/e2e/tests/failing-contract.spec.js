@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectToDApp,
-} = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -38,7 +34,7 @@ describe('Failing contract interaction ', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver, contractAddress);
+        await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
 
@@ -116,7 +112,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver, contractAddress);
+        await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         // waits for deployed contract and calls failing contract method

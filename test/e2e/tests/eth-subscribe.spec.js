@@ -1,7 +1,7 @@
 const {
   convertToHexValue,
   withFixtures,
-  connectToDApp,
+  openDapp,
   DAPP_ONE_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -33,7 +33,7 @@ describe('eth_subscribe', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         const setupSubscriptionListener = `
           const responseContainer = document.createElement('div');
@@ -68,7 +68,7 @@ describe('eth_subscribe', function () {
         await driver.findElement('[data-testid="eth-subscribe-response"]');
 
         // Switch to the second dapp
-        await connectToDApp(driver, null, DAPP_ONE_URL);
+        await openDapp(driver, null, DAPP_ONE_URL);
 
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);

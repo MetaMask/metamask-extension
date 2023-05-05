@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectToDApp,
-} = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MV3 - Dapp interactions', function () {
@@ -35,7 +31,7 @@ describe('MV3 - Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectToDApp(driver);
+        await openDapp(driver);
 
         // Terminate Service Worker
         await driver.openNewPage('chrome://inspect/#service-workers/');
