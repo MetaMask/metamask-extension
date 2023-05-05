@@ -12,7 +12,7 @@ describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
       networkConfigurations: {},
-      provider: {
+      providerConfig: {
         type: 'test',
       },
     },

@@ -783,11 +783,6 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
-    "@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/controllers>web3": {
       "globals": {
         "XMLHttpRequest": true
@@ -1379,6 +1374,11 @@
         "superstruct": true
       }
     },
+    "@metamask/rpc-methods-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/rpc-methods>@metamask/browser-passworder": {
       "globals": {
         "btoa": true,
@@ -1419,6 +1419,20 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/signature-controller": {
+      "globals": {
+        "console.info": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/message-manager": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-rpc-errors": true,
+        "ethereumjs-util": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -1490,6 +1504,11 @@
         "XMLHttpRequest": true,
         "define": true,
         "setTimeout": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {

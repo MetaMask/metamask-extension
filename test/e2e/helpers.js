@@ -10,7 +10,6 @@ const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
@@ -107,12 +106,7 @@ async function withFixtures(options, testSuite) {
     }
     const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 

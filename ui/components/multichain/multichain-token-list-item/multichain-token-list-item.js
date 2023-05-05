@@ -139,7 +139,7 @@ export const MultichainTokenListItem = ({
             </Text>
           </Box>
           <Text color={TextColor.textAlternative}>
-            {Number(primary).toFixed(3)} {tokenSymbol}{' '}
+            {primary} {tokenSymbol}{' '}
           </Text>
         </Box>
       </Box>
