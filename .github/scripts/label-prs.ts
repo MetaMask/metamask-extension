@@ -6,8 +6,6 @@ type GithubClient = InstanceType<typeof GitHub>;
 
 const token = process.env.GITHUB_TOKEN;
 
-console.log({ token });
-
 if (!token) {
   core.setFailed('GITHUB_TOKEN not found');
   process.exit(1);
@@ -112,6 +110,15 @@ function bailIfIsNotFeatureBranch(branchName: string): void {
 async function updateLabels(github: GithubClient, issueNumber: string, octokit: InstanceType<typeof GitHub>): Promise<void> {
   interface ILabel {
     name: string;
+    // value: string | {
+    //   id?: number | undefined;
+    //   node_id?: string | undefined;
+    //   url?: string | undefined;
+    //   name?: string | undefined;
+    //   description?: string | null | undefined;
+    //   color?: string | null | undefined;
+    //   default?: boolean | undefined;
+    // }
   };
 
   const owner = context.repo.owner;
@@ -123,36 +130,36 @@ async function updateLabels(github: GithubClient, issueNumber: string, octokit: 
     issue_number: Number(issueNumber),
   });
 
-  console.log({ labels: issue.data.labels })
+  const getNameFromLabel = (label: ILabel): string => label.name
 
-  // const issueLabels = issue.data.labels.map((label: ILabel): string => label.name);
+  const issueLabels = issue.data.labels.map(label => getNameFromLabel(label as ILabel));
 
-  // const prNumber = context.payload.number;
+  const prNumber = context.payload.number;
 
-  // const pr = await octokit.rest.issues.get({
-  //   owner: owner,
-  //   repo: repo,
-  //   issue_number: prNumber,
-  // });
+  const pr = await octokit.rest.issues.get({
+    owner: owner,
+    repo: repo,
+    issue_number: prNumber,
+  });
 
-  // const startingPRLabels = pr.data.labels.map((label: ILabel): string => label.name);
+  const startingPRLabels = pr.data.labels.map(label => getNameFromLabel(label as ILabel));
 
-  // const dedupedFinalPRLabels = [
-  //   ...new Set([...startingPRLabels, ...issueLabels]),
-  // ];
+  const dedupedFinalPRLabels = [
+    ...new Set([...startingPRLabels, ...issueLabels]),
+  ];
 
-  // const hasIssueAdditionalLabels = !sortedArrayEqual(
-  //   startingPRLabels,
-  //   dedupedFinalPRLabels,
-  // );
-  // if (hasIssueAdditionalLabels) {
-  //   await octokit.rest.issues.update({
-  //     owner,
-  //     repo,
-  //     issue_number: prNumber,
-  //     labels: dedupedFinalPRLabels,
-  //   });
-  // }
+  const hasIssueAdditionalLabels = !sortedArrayEqual(
+    startingPRLabels,
+    dedupedFinalPRLabels,
+  );
+  if (hasIssueAdditionalLabels) {
+    await octokit.rest.issues.update({
+      owner,
+      repo,
+      issue_number: prNumber,
+      labels: dedupedFinalPRLabels,
+    });
+  }
 }
 
 
