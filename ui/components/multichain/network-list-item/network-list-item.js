@@ -60,7 +60,6 @@ export const NetworkListItem = ({
 
   const networkAvatarColor = getAvatarNetworkColor(name);
 
-  console.log('networkAvatarColor is: ', networkAvatarColor, name);
 
   return (
     <Box
