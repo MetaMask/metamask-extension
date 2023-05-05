@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
@@ -19,6 +20,7 @@ export default class EditableLabel extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     defaultValue: PropTypes.string,
+    className: PropTypes.string,
     accounts: PropTypes.array,
   };
 
@@ -49,7 +51,11 @@ export default class EditableLabel extends Component {
     );
 
     return (
-      <Box display={DISPLAY.FLEX} gap={3}>
+      <Box
+        className={classnames('editable-label', this.props.className)}
+        display={DISPLAY.FLEX}
+        gap={3}
+      >
         <FormTextField
           required
           value={this.state.value}
