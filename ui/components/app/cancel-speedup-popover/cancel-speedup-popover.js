@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
-import { Text } from '../../component-library';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   AlignItems,
@@ -116,7 +115,7 @@ const CancelSpeedupPopover = () => {
             position="top"
             contentText={
               <>
-                <Text>
+                <Text variant={TextVariant.bodySm}>
                   {t('cancelSpeedUpTransactionTooltip', [
                     editGasMode === EditGasModes.cancel
                       ? t('cancel')
@@ -124,6 +123,7 @@ const CancelSpeedupPopover = () => {
                   ])}
                 </Text>
                 <ButtonLink
+                  variant={TextVariant.bodySm}
                   href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
                   target="_blank"
                 >
