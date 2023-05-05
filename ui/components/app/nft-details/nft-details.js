@@ -206,7 +206,6 @@ export default function NftDetails({ nft }) {
                 as="h4"
                 fontWeight={FontWeight.Bold}
                 marginBottom={2}
-                margin={0}
               >
                 {name}
               </Text>
