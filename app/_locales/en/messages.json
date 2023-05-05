@@ -358,6 +358,9 @@
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
+  "amlCompliance": {
+    "message": "AML/CFT Compliance"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -2342,6 +2345,10 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
+  },
+  "networkSwitchConnectionError": {
+    "message": "We can't connect to $1",
+    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Network URL"
