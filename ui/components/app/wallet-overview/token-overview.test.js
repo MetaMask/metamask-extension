@@ -28,7 +28,7 @@ let openTabSpy;
 describe('TokenOverview', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
@@ -110,7 +110,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.PALM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.PALM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -143,7 +143,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -163,7 +163,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -188,7 +188,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -208,7 +208,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -286,7 +286,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -307,7 +307,7 @@ describe('TokenOverview', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
           ),
         }),
       );
@@ -324,7 +324,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -350,7 +350,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

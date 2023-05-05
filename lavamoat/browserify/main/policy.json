@@ -687,6 +687,7 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.info": true,
         "console.log": true,
         "setInterval": true,
@@ -696,13 +697,13 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/utils": true,
         "browserify>events": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
@@ -715,7 +716,7 @@
     "@metamask/assets-controllers>@metamask/abi-utils": {
       "packages": {
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "superstruct": true
       }
     },
     "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
@@ -724,22 +725,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -761,30 +750,19 @@
     },
     "@metamask/controller-utils": {
       "globals": {
+        "URL": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controller-utils>@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -803,11 +781,6 @@
       "packages": {
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/controllers>web3": {
@@ -843,10 +816,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
@@ -891,10 +864,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-json-rpc-provider": {
@@ -1214,10 +1187,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/key-tree>@noble/ed25519": {
@@ -1339,7 +1312,12 @@
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "superstruct": true
+      }
+    },
+    "@metamask/rpc-methods-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/rpc-methods>@metamask/browser-passworder": {
@@ -1449,6 +1427,11 @@
         "setTimeout": true
       }
     },
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1465,10 +1448,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/utils>@ethereumjs/tx>@chainsafe/ssz": {
@@ -2681,10 +2664,10 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "semver": true
+        "semver": true,
+        "superstruct": true
       }
     },
     "eth-ens-namehash": {
@@ -2802,7 +2785,6 @@
         "@ethersproject/abi": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "browserify>process": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": true,
         "eth-lattice-keyring>gridplus-sdk>bech32": true,

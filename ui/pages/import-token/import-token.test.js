@@ -35,7 +35,7 @@ describe('Import Token', () => {
     const baseStore = {
       metamask: {
         tokens: [],
-        provider: { chainId: '0x1' },
+        providerConfig: { chainId: '0x1' },
         networkConfigurations: {},
         identities: {},
         selectedAddress: '0x1231231',

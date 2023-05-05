@@ -695,10 +695,6 @@
     "message": "$1 chưa được kết nối với bất kỳ trang web nào.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Snap $1 được kết nối với các trang web này. Các trang web này được phép sử dụng những quyền được liệt kê ở trên.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Đang kết nối..."
   },
@@ -1354,18 +1350,6 @@
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấn vào đây!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Xem chi tiết",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Đã thêm vào",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "từ",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
@@ -3227,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Không tìm thấy kết quả trùng khớp."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Hiển thị"
   },
@@ -3304,14 +3284,6 @@
   "smartTransaction": {
     "message": "Giao dịch thông minh"
   },
-  "snapAccess": {
-    "message": "Snap $1 có quyền truy cập vào:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Đã thêm vào $1 từ $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Nội dung này đến từ $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3347,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Quản lý Snap"
-  },
-  "snapsStatus": {
-    "message": "Trạng thái Snap tùy thuộc vào hoạt động."
   },
   "snapsToggle": {
     "message": "Snap chỉ hoạt động khi đã bật"
@@ -3950,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "Những điều cần lưu ý:"
-  },
-  "thisIsBasedOn": {
-    "message": "Điều này dựa trên thông tin từ "
   },
   "time": {
     "message": "Thời gian"

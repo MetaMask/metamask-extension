@@ -25,9 +25,9 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../components/component-library/icon/deprecated';
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
@@ -86,8 +86,8 @@ export default function SkipSRPBackup({ handleClose }) {
         margin={4}
       >
         <Icon
-          name={ICON_NAMES.DANGER}
-          size={ICON_SIZES.XL}
+          name={IconName.Danger}
+          size={IconSize.Xl}
           className="skip-srp-backup-popover__icon"
           color={IconColor.errorDefault}
         />

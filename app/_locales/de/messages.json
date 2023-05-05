@@ -695,10 +695,6 @@
     "message": "$1 ist mit keiner Site verbunden.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1-Snap ist mit diesen Sites verbunden. Sie haben Zugriff auf die oben aufgeführten Berechtigungen.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Verbinden..."
   },
@@ -1354,18 +1350,6 @@
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Details ansehen",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Hinzugefügt am",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "von",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "Sie sollten diese Erweiterung deinstallieren",
@@ -3227,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Keine passenden Ergebnisse gefunden."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Zeigen"
   },
@@ -3304,14 +3284,6 @@
   "smartTransaction": {
     "message": "Intelligente Transaktionen"
   },
-  "snapAccess": {
-    "message": "$1-Snap hat Zugriff auf:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Am $1 von $2 hinzugefügt",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Diese Inhalte stammen von $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3347,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Verwalten Sie Ihre Snaps"
-  },
-  "snapsStatus": {
-    "message": "Snap-Status ist von der Aktivität abhängig."
   },
   "snapsToggle": {
     "message": "Ein Snap wird nur ausgeführt, wenn er aktiviert ist"
@@ -3950,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "Was Sie beachten sollten:"
-  },
-  "thisIsBasedOn": {
-    "message": "Dies basiert auf Informationen von "
   },
   "time": {
     "message": "Zeit"

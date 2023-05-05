@@ -427,7 +427,7 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
@@ -694,10 +694,6 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 还没连接到任何网站。",
     "description": "$1 is the account name"
-  },
-  "connectedSnapSites": {
-    "message": "$1的snap已连接到这些站点。它们有上述的访问权限。",
-    "description": "$1 represents the name of the snap"
   },
   "connecting": {
     "message": "连接中……"
@@ -1354,18 +1350,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "查看详细信息",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "添加于",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "自",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -3227,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "没有找到匹配的结果."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "显示"
   },
@@ -3304,14 +3284,6 @@
   "smartTransaction": {
     "message": "智能交易"
   },
-  "snapAccess": {
-    "message": "$1的snap可以访问：",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "从 $2 添加到 $1",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3347,9 +3319,6 @@
   },
   "snapsSettingsDescription": {
     "message": "管理您的Snap"
-  },
-  "snapsStatus": {
-    "message": "Snap状态取决于活动。"
   },
   "snapsToggle": {
     "message": "Snap仅在启用后才会运行"
@@ -3950,9 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "注意事项:"
-  },
-  "thisIsBasedOn": {
-    "message": "所根据的信息是来自"
   },
   "time": {
     "message": "时间"

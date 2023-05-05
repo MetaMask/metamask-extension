@@ -4,11 +4,10 @@ import {
   Color,
   SEVERITIES,
   Size,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../.storybook/i18n';
-import { BannerAlert, ButtonLink } from '../../component-library';
-import Typography from '../../ui/typography/typography';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from './security-provider-banner-message.constants';
 
 export default function SecurityProviderBannerMessage({
@@ -54,17 +53,29 @@ export default function SecurityProviderBannerMessage({
       title={messageTitle}
       severity={severity}
     >
-      <Typography variant={TypographyVariant.H6}>{messageText}</Typography>
-      <Typography variant={TypographyVariant.H7} color={Color.textAlternative}>
-        {t('thisIsBasedOn')}
-        <ButtonLink
-          size={Size.inherit}
-          href="https://opensea.io/"
-          target="_blank"
-        >
-          {t('openSeaNew')}
-        </ButtonLink>
-      </Typography>
+      <Text variant={TextVariant.bodySm} as="h6">
+        {messageText}
+      </Text>
+      <Text variant={TextVariant.bodySm} as="h6" color={Color.textAlternative}>
+        {t('securityAlert', [
+          <ButtonLink
+            key="opensea_link"
+            size={Size.inherit}
+            href="https://opensea.io/"
+            target="_blank"
+          >
+            {t('openSeaNew')}
+          </ButtonLink>,
+          <ButtonLink
+            key="blockaid_link"
+            size={Size.inherit}
+            href="https://blockaid.io/"
+            target="_blank"
+          >
+            {t('blockaid')}
+          </ButtonLink>,
+        ])}
+      </Text>
     </BannerAlert>
   );
 }
