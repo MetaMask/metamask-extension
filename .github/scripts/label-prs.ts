@@ -162,53 +162,6 @@ async function updateLabels(github: GithubClient, issueNumber: string, octokit: 
   }
 }
 
-
-// async function updateLabels(github: GithubClient, issueNumber: string, octokit: InstanceType<typeof GitHub>): Promise<void> {
-//   interface ILabel {
-//     name: string;
-//   };
-
-//   const owner = context.repo.owner;
-//   const repo = context.repo.repo;
-
-//   const issue = await github.request(
-//     `GET /repos/${owner}/${repo}/issues/${issueNumber}`,
-//     { owner, repo, issue_number: issueNumber },
-//   );
-
-//   const issueLabels = issue.data.labels.map((label: ILabel): string => label.name);
-
-//   const prNumber = context.payload.number;
-
-//   const pr = await github.request(
-//     `GET /repos/${owner}/${repo}/issues/${prNumber}`,
-//     {
-//       owner,
-//       repo,
-//       issue_number: issueNumber,
-//     },
-//   );
-
-//   const startingPRLabels = pr.data.labels.map((label: ILabel): string => label.name);
-
-//   const dedupedFinalPRLabels = [
-//     ...new Set([...startingPRLabels, ...issueLabels]),
-//   ];
-
-//   const hasIssueAdditionalLabels = !sortedArrayEqual(
-//     startingPRLabels,
-//     dedupedFinalPRLabels,
-//   );
-//   if (hasIssueAdditionalLabels) {
-//     await octokit.rest.issues.update({
-//       owner,
-//       repo,
-//       issue_number: prNumber,
-//       labels: dedupedFinalPRLabels,
-//     });
-//   }
-// }
-
 function getIssueNumberFromBranchName(branchName: string): string {
   console.log('Checking if the branch name references an issue...');
 
