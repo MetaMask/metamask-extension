@@ -21,6 +21,8 @@ buildTypes:
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+    # Main build uses the default browser manifest
+    manifestOverrides: false
 
   beta:
     features:
@@ -34,7 +36,7 @@ buildTypes:
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
     # Folder which contains overrides to browser manifests
-    manifestOverrides: ./app/build-types/mmi/manifest/
+    manifestOverrides: ./app/build-types/beta/manifest/
 
   flask:
     # Code surrounded using code fences for that feature
@@ -53,6 +55,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
+    manifestOverrides: ./app/build-types/flask/manifest/
 
   desktop:
     features:
@@ -69,6 +72,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
+    manifestOverrides: ./app/build-types/desktop/manifest/
 
   mmi:
     features:
@@ -83,6 +87,7 @@ buildTypes:
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
+    manifestOverrides: ./app/build-types/mmi/manifest/
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
