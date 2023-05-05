@@ -206,7 +206,6 @@ export default function NftDetails({ nft }) {
                 as="h4"
                 fontWeight={FontWeight.Bold}
                 marginBottom={2}
-                margin={0}
               >
                 {name}
               </Text>
@@ -215,7 +214,6 @@ export default function NftDetails({ nft }) {
                 variant={TextVariant.bodyMd}
                 as="h5"
                 marginBottom={4}
-                margin={0}
                 overflowWrap={OverflowWrap.BreakWord}
               >
                 #{tokenId}
@@ -228,7 +226,6 @@ export default function NftDetails({ nft }) {
                   variant={TextVariant.bodySmBold}
                   as="h6"
                   marginBottom={2}
-                  margin={0}
                   className="nft-details__description"
                 >
                   {t('description')}
@@ -239,7 +236,6 @@ export default function NftDetails({ nft }) {
                   as="h6"
                   overflowWrap={OverflowWrap.BreakWord}
                   marginBottom={4}
-                  margin={0}
                 >
                   {description}
                 </Text>
@@ -258,7 +254,6 @@ export default function NftDetails({ nft }) {
                   as="h6"
                   marginBottom={4}
                   marginRight={2}
-                  margin={0}
                   className="nft-details__link-title"
                 >
                   {t('lastSold')}
@@ -274,7 +269,6 @@ export default function NftDetails({ nft }) {
                     as="h6"
                     overflowWrap={OverflowWrap.BreakWord}
                     marginBottom={4}
-                    margin={0}
                   >
                     {formattedTimestamp}
                   </Text>
@@ -287,7 +281,6 @@ export default function NftDetails({ nft }) {
                   as="h6"
                   marginBottom={4}
                   marginRight={2}
-                  margin={0}
                   className="nft-details__link-title"
                 >
                   {t('lastPriceSold')}
@@ -303,7 +296,6 @@ export default function NftDetails({ nft }) {
                     as="h6"
                     overflowWrap={OverflowWrap.BreakWord}
                     marginBottom={4}
-                    margin={0}
                   >
                     {`${Number(decWEIToDecETH(lastSale.total_price))} ${
                       lastSale.payment_token.symbol
@@ -319,7 +311,6 @@ export default function NftDetails({ nft }) {
               variant={TextVariant.bodySmBold}
               as="h6"
               marginBottom={4}
-              margin={0}
               marginRight={2}
               className="nft-details__link-title"
             >
@@ -329,7 +320,6 @@ export default function NftDetails({ nft }) {
               variant={TextVariant.bodySm}
               as="h6"
               marginBottom={4}
-              margin={0}
               className="nft-details__image-source"
               color={
                 isDataURI ? TextColor.textDefault : TextColor.primaryDefault
@@ -356,7 +346,6 @@ export default function NftDetails({ nft }) {
                 variant={TextVariant.bodySmBold}
                 as="h6"
                 marginBottom={4}
-                margin={0}
                 marginRight={2}
                 className="nft-details__link-title"
               >
@@ -366,7 +355,6 @@ export default function NftDetails({ nft }) {
                 variant={TextVariant.bodySm}
                 as="h6"
                 marginBottom={4}
-                margin={0}
                 className="nft-details__image-source"
                 color={
                   isDataURI ? TextColor.textDefault : TextColor.primaryDefault
@@ -389,7 +377,6 @@ export default function NftDetails({ nft }) {
               variant={TextVariant.bodySmBold}
               as="h6"
               marginBottom={4}
-              margin={0}
               marginRight={2}
               className="nft-details__link-title"
             >
@@ -406,7 +393,6 @@ export default function NftDetails({ nft }) {
                 as="h6"
                 overflowWrap={OverflowWrap.BreakWord}
                 marginBottom={4}
-                margin={0}
               >
                 {shortenAddress(address)}
               </Text>
