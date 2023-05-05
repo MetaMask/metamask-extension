@@ -23,7 +23,7 @@ const render = () => {
 };
 
 describe('Compliance Modal', function () {
-  it('closes', function () {
+  it('render correctly with the correct header', function () {
     const { getByText } = render();
 
     expect(getByText('AML/CFT Compliance')).toBeVisible();
