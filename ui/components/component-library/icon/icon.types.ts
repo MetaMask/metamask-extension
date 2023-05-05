@@ -1,5 +1,6 @@
 import type { BoxProps } from '../../ui/box/box.d';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
 
 export enum IconSize {
   Xs = 'xs',
@@ -178,7 +179,7 @@ export interface IconProps extends BoxProps {
    * Possible values could be IconSize.Xs (12px), IconSize.Sm (16px), IconSize.Md (20px), IconSize.Lg (24px), IconSize.Xl (32px), IconSize.Inherit (inherits font-size).
    * Default value is IconSize.Md (20px).
    */
-  size?: IconSize;
+  size?: IconSize | AvatarBaseSize;
   /**
    * The color of the icon.
    * Defaults to IconColor.inherit.
