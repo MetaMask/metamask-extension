@@ -3626,16 +3626,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^2.0.0, @metamask/approval-controller@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/approval-controller@npm:2.1.0"
+"@metamask/approval-controller@npm:^2.0.0, @metamask/approval-controller@npm:^2.1.0, @metamask/approval-controller@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@metamask/approval-controller@npm:2.1.1"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-    eth-rpc-errors: ^4.0.0
+    "@metamask/controller-utils": ^3.4.0
+    eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 207380e3ed0007aec3b9efcde62ac3ece9fa46cc7b9e6157c0d54271e0936b5a9a05e59adcfb1e47e3f3df397d2d2dc757f3b97745528695182e7c66a5207aca
+  checksum: 2e3798e67821660be7c7a35cbe5d001085fd2814fb58bc21e1525383fe2fba66ddb4074896c530de29407d929790ee3a036e180c5576962e3b50a85afe3fd9df
   languageName: node
   linkType: hard
 
@@ -4048,9 +4048,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "@metamask/message-manager@npm:3.1.1"
+"@metamask/message-manager@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/message-manager@npm:4.0.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
     "@metamask/controller-utils": ^3.4.0
@@ -4059,7 +4059,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: 5f2341a67826b04a2b9dafff1bd53f1a7d3748e9617da5360248549eb5c048aebe542d3c364e77a5d4263358f8dfac8109f0f5faaabf0630c3be7d5857ab881d
+  checksum: 9c3295a726eb59c2cc3f764b96010833edf2463e2dd3ee0a4d23ea6bf662615b3bd71110a5c6b60f253eac1de6c8b38af1edc0188ec766770a9d02c0f7401caa
   languageName: node
   linkType: hard
 
@@ -4312,6 +4312,21 @@ __metadata:
     "@noble/hashes": ~1.1.1
     "@scure/base": ~1.1.0
   checksum: 13e07f03077472e9b230f702cbba7848ecac752028396647ccdeedd7bc280ceb50ee15203e25603f05c4c6ca5d4dc7277825f7004beb113e1a415adc91f059f9
+  languageName: node
+  linkType: hard
+
+"@metamask/signature-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/signature-controller@npm:1.0.0"
+  dependencies:
+    "@metamask/approval-controller": ^2.1.1
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.4.0
+    "@metamask/message-manager": ^4.0.0
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    immer: ^9.0.6
+  checksum: 7efb738646a179db15c45d6e1654e17ce6c7a3e42b03fd27d365e50bb2e4287a1757f26efc0b3e99b3e5d320816f3f9e0c7038491289cf6071b7f886eaa0f27b
   languageName: node
   linkType: hard
 
@@ -23958,7 +23973,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^3.1.1
+    "@metamask/message-manager": ^4.0.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^2.0.0
     "@metamask/obs-store": ^8.1.0
@@ -23972,6 +23987,7 @@ __metadata:
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.32.2"
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/scure-bip39": ^2.0.3
+    "@metamask/signature-controller": ^1.0.0
     "@metamask/slip44": ^3.0.0
     "@metamask/smart-transactions-controller": ^3.1.0
     "@metamask/snaps-controllers": ^0.32.2

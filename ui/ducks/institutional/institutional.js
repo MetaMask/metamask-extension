@@ -40,7 +40,6 @@ export const getComplianceReportsInProgress = (state) =>
   state.metamask[name]?.reportsInProgress;
 export const getInstitutionalConnectRequests = (state) =>
   state.metamask[name]?.connectRequests;
-
 export const complianceActivated = (state) =>
   Boolean(state.metamask[name]?.complianceProjectId);
 

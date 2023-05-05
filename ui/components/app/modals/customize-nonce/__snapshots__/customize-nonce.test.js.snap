@@ -15,7 +15,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           class="customize-nonce-modal__main-header"
         >
           <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography customize-nonce-modal__main-title typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box mm-text customize-nonce-modal__main-title mm-text--heading-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
           >
             Edit nonce
           </h4>
@@ -33,7 +33,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           class="box box--margin-top-2 box--display-inline-flex box--flex-direction-row box--align-items-center"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--body-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
           >
             This is an advanced feature, use cautiously.
             <a
@@ -53,7 +53,8 @@ exports[`Customize Nonce should match snapshot 1`] = `
             class="box box--display-flex box--flex-direction-row box--align-items-center"
           >
             <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row box--width-5/6 typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+              boxprops="[object Object]"
+              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
             >
               Edit nonce
             </h6>
