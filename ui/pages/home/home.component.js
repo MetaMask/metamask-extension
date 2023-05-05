@@ -700,13 +700,14 @@ export default class Home extends PureComponent {
                 data-testid="home__asset-tab"
                 name={this.context.t('assets')}
                 tabKey="assets"
-                boxProps={{ marginBottom: 2 }}
               >
-                <AssetList
-                  onClickAsset={(asset) =>
-                    history.push(`${ASSET_ROUTE}/${asset}`)
-                  }
-                />
+                <Box marginTop={2}>
+                  <AssetList
+                    onClickAsset={(asset) =>
+                      history.push(`${ASSET_ROUTE}/${asset}`)
+                    }
+                  />
+                </Box>
               </Tab>
               <Tab
                 activeClassName="home__tab--active"
