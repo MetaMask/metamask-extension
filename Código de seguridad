@@ -1,0 +1,143 @@
+Documentos de GitHub
+Código de seguridad /Dependabot /Actualizaciones de la versión de Dependabot /Configurar actualizaciones de versión
+Configuración de actualizaciones de versión de Dependabot
+En este articulo
+Acerca de las actualizaciones de versión para las dependencias
+Habilitación de las actualizaciones de la versión de Dependabot
+Comprobación del estado de las actualizaciones de versión
+Deshabilitar las actualizaciones de la versión de Dependabot
+Puedes configurar tu repositorio para que Dependabot actualice automáticamente los paquetes que usas.
+
+Quién puede usar esta función
+Las personas con permisos de escritura en un repositorio pueden habilitar o deshabilitar las actualizaciones de la versión de Dependabot para el repositorio.
+
+Acerca de las actualizaciones de versión para las dependencias #
+Habilita las actualizaciones de la versión de Dependabot verificando un archivo de configuración dependabot.yml en el .githubdirectorio de su repositorio. Luego, Dependabot genera solicitudes de incorporación de cambios para mantener actualizadas las dependencias que configure. Para las dependencias de cada administrador de paquetes que desee actualizar, debe especificar la ubicación de los archivos de manifiesto del paquete y la frecuencia con la que buscará actualizaciones para las dependencias enumeradas en esos archivos. Para obtener información sobre cómo habilitar las actualizaciones de seguridad, consulte " Configuración de las actualizaciones de seguridad de Dependabot ".
+
+Cuando habilita las actualizaciones de versión por primera vez, es posible que tenga muchas dependencias que estén desactualizadas y algunas pueden tener muchas versiones detrás de la última versión. Dependabot busca dependencias desactualizadas tan pronto como se habilita. Es posible que vea nuevas solicitudes de extracción para actualizaciones de versión a los pocos minutos de agregar el archivo de configuración, según la cantidad de archivos de manifiesto para los que configure las actualizaciones. Dependabot también ejecutará una actualización sobre los cambios posteriores en el archivo de configuración.
+
+Dependabot también puede crear solicitudes de incorporación de cambios cuando cambia un archivo de manifiesto después de que haya fallado una actualización. Esto se debe a que los cambios en un manifiesto, como la eliminación de la dependencia que provocó el error de la actualización, pueden hacer que la actualización recién activada se realice correctamente.
+
+Para mantener las solicitudes de extracción manejables y fáciles de revisar, Dependabot genera un máximo de cinco solicitudes de extracción para comenzar a actualizar las dependencias a la última versión. Si fusiona algunas de estas primeras solicitudes de extracción antes de la próxima actualización programada, las solicitudes de extracción restantes se abrirán en la próxima actualización, hasta ese máximo. Puede cambiar el número máximo de solicitudes de extracción abiertas estableciendo la open-pull-requests-limitopción de configuración . Para obtener más información, consulte " Personalización de actualizaciones de dependencia ".
+
+De forma predeterminada, solo las dependencias directas que están explícitamente definidas en un manifiesto se mantienen actualizadas mediante las actualizaciones de la versión de Dependabot. Puede elegir recibir actualizaciones para dependencias indirectas definidas en archivos de bloqueo. Para obtener más información, consulte " Opciones de configuración del archivo dependabot.yml ".
+
+Al ejecutar actualizaciones de seguridad o de versión, algunos ecosistemas deben poder resolver todas las dependencias desde su origen para verificar que las actualizaciones se hayan realizado correctamente. Si sus archivos de manifiesto o bloqueo contienen dependencias privadas, Dependabot debe poder acceder a la ubicación en la que se alojan esas dependencias. Los propietarios de la organización pueden otorgar acceso a Dependabot a repositorios privados que contienen dependencias para un proyecto dentro de la misma organización. Para obtener más información, consulte " Administrar la configuración de seguridad y análisis para su organización ". Puede configurar el acceso a registros privados en el archivo de configuración dependabot.yml de un repositorio . Para obtener más información, consulte " Opciones de configuración para el archivo dependabot.yml." Además, Dependabot no admite dependencias privadas de GitHub para todos los administradores de paquetes. Para obtener más información, consulte " Acerca de las actualizaciones de la versión de Dependabot " y " Compatibilidad con el idioma de GitHub ".
+
+Habilitación de las actualizaciones de la versión de Dependabot #
+Habilite las actualizaciones de la versión de Dependabot enviando un archivo de configuración dependabot.yml a su repositorio. Si habilita la función en su página de configuración, GitHub crea un archivo básico que puede editar; de lo contrario, puede crear el archivo usando cualquier editor de archivos.
+
+En GitHub.com, navegue a la página principal del repositorio.
+
+Debajo de su nombre de repositorio, haga clic en  Configuración . Si no puede ver la pestaña "Configuración", seleccione el menú desplegable y luego haga clic en Configuración .
+
+Captura de pantalla de un encabezado de repositorio que muestra las pestañas.  La pestaña "Configuración" está resaltada con un contorno naranja oscuro.
+
+En la sección "Seguridad" de la barra lateral, haga clic en Seguridad y análisis del código .
+
+En "Seguridad y análisis del código", a la derecha de "Actualizaciones de la versión de Dependabot", haga clic en Habilitar para abrir un archivo de configuración básico de dependabot.yml en el .githubdirectorio de su repositorio.
+
+Agrega un version.
+
+Opcionalmente, si tiene dependencias en un registro privado, agregue una registriessección que contenga detalles de autenticación.
+
+Agrega una updatessección, con una entrada para cada administrador de paquetes que quieras que monitoree Dependabot.
+
+Para cada administrador de paquetes, use:
+
+package-ecosystempara especificar el administrador de paquetes.
+directorypara especificar la ubicación del manifiesto u otros archivos de definición.
+schedule.intervalpara especificar con qué frecuencia buscar nuevas versiones.
+Verifique el archivo de configuración dependabot.yml en el .githubdirectorio del repositorio.
+
+Para obtener información sobre todas las opciones de configuración, consulte " Opciones de configuración para el archivo dependabot.yml ".
+
+Ejemplo de archivo dependabot.yml #
+El archivo de ejemplo dependabot.yml a continuación configura las actualizaciones de versión para dos administradores de paquetes: npm y Docker. Cuando se registra este archivo, Dependabot verifica los archivos de manifiesto en la rama predeterminada en busca de dependencias obsoletas. Si encuentra dependencias desactualizadas, generará solicitudes de incorporación de cambios en la rama predeterminada para actualizar las dependencias.
+
+# Basic dependabot.yml file with
+# minimum configuration for two package managers
+
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    # Look for `package.json` and `lock` files in the `root` directory
+    directory: "/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "/"
+    # Check for updates once a week
+    schedule:
+      interval: "weekly"
+En el ejemplo anterior, si las dependencias de Docker estaban muy desactualizadas, es posible que desee comenzar con un dailycronograma hasta que las dependencias estén actualizadas y luego regresar a un cronograma semanal.
+
+Habilitación de actualizaciones de versión en bifurcaciones #
+Si desea habilitar las actualizaciones de versión en bifurcaciones, hay un paso adicional. Las actualizaciones de versión no se habilitan automáticamente en bifurcaciones cuando hay un archivo de configuración dependabot.yml presente. Esto garantiza que los propietarios de la bifurcación no habiliten involuntariamente las actualizaciones de versión cuando extraen cambios, incluido un archivo de configuración dependabot.yml del repositorio original.
+
+En una bifurcación, también debe habilitar explícitamente Dependabot.
+
+En GitHub.com, navegue a la página principal del repositorio.
+
+Debajo de su nombre de repositorio, haga clic en  Configuración . Si no puede ver la pestaña "Configuración", seleccione el menú desplegable y luego haga clic en Configuración .
+
+Captura de pantalla de un encabezado de repositorio que muestra las pestañas.  La pestaña "Configuración" está resaltada con un contorno naranja oscuro.
+
+En la sección "Seguridad" de la barra lateral, haga clic en Seguridad y análisis del código .
+
+En "Seguridad y análisis de código", a la derecha de "Actualizaciones de versión de Dependabot", haga clic en Habilitar para permitir que Dependabot inicie actualizaciones de versión.
+
+Comprobación del estado de las actualizaciones de versión #
+Después de habilitar las actualizaciones de versión, se completa la pestaña Dependabot en el gráfico de dependencia para el repositorio. Esta pestaña muestra qué administradores de paquetes Dependabot está configurado para monitorear y cuándo Dependabot verificó por última vez si hay nuevas versiones.
+
+Captura de pantalla de la página del gráfico de dependencia.  Una pestaña, titulada "Dependabot", está resaltada con un contorno naranja.
+
+Para obtener más información, consulte " Listado de dependencias configuradas para actualizaciones de versión ".
+
+Deshabilitar las actualizaciones de la versión de Dependabot #
+Puede deshabilitar las actualizaciones de versión por completo eliminando el archivo dependabot.yml de su repositorio. Por lo general, desea deshabilitar las actualizaciones temporalmente para una o más dependencias o administradores de paquetes.
+
+Administradores de paquetes: deshabilite configurando open-pull-requests-limit: 0o comentando lo relevante package-ecosystemen el archivo de configuración.
+Dependencias específicas: inhabilite agregando ignoreatributos para paquetes o aplicaciones que desea excluir de las actualizaciones.
+Cuando deshabilita las dependencias, puede usar comodines para hacer coincidir un conjunto de bibliotecas relacionadas. También puede especificar qué versiones excluir. Esto es particularmente útil si necesita bloquear las actualizaciones de una biblioteca, trabajo pendiente para admitir un cambio importante en su API, pero desea obtener correcciones de seguridad para la versión que usa.
+
+Ejemplo de deshabilitación de actualizaciones de versión para algunas dependencias #
+El archivo de ejemplo dependabot.yml a continuación incluye ejemplos de las diferentes formas de deshabilitar las actualizaciones de algunas dependencias, mientras permite que continúen otras actualizaciones.
+
+# dependabot.yml file with updates
+# disabled for Docker and limited for npm
+
+version: 2
+updates:
+  # Configuration for Dockerfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      # Disable all pull requests for Docker dependencies
+    open-pull-requests-limit: 0
+
+  # Configuration for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # Ignore updates to packages that start with 'aws'
+      # Wildcards match zero or more arbitrary characters
+      - dependency-name: "aws*"
+      # Ignore some updates to the 'express' package
+      - dependency-name: "express"
+        # Ignore only new versions for 4.x and 5.x
+        versions: ["4.x", "5.x"]
+      # For all packages, ignore all patch updates
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+Para obtener más información sobre cómo verificar las preferencias de ignorar existentes, consulte " Opciones de configuración para el archivo dependabot.yml ".
+
+Ayuda y apoyo
