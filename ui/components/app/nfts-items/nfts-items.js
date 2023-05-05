@@ -194,8 +194,8 @@ export default function NftsItems({
                     badge={
                       <AvatarNetwork
                         size={Size.SM}
-                        name={currentChain.nickname}
-                        src={currentChain.rpcPrefs.imageUrl}
+                        name={currentChain?.nickname}
+                        src={currentChain?.rpcPrefs?.imageUrl}
                         borderColor={BorderColor.borderMuted}
                         data-testid="nft-network-badge"
                       />
@@ -204,6 +204,7 @@ export default function NftsItems({
                       BadgeWrapperAnchorElementShape.rectangular
                     }
                     positionObj={{ top: -2, right: -2 }}
+                    display={DISPLAY.BLOCK}
                   >
                     {nftImage ? (
                       <button
