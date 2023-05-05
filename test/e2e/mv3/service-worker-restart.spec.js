@@ -1,5 +1,11 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  SERVICE_WORKER_URL,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
@@ -76,7 +82,7 @@ describe('MV3 - Service worker restart', function () {
 
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
-        await driver.openNewPage('chrome://inspect/#service-workers/');
+        await driver.openNewPage(SERVICE_WORKER_URL);
         await driver.clickElement({
           text: 'Service workers',
           tag: 'button',
@@ -159,7 +165,7 @@ describe('MV3 - Service worker restart', function () {
         // Restart service worker in a new window
         // Because if we stay in the same window we will lose the popup when opening a new tab
         await driver.switchToNewWindow();
-        await driver.openNewURL('chrome://inspect/#service-workers');
+        await driver.openNewURL(SERVICE_WORKER_URL);
         windowHandles = await driver.getAllWindowHandles();
         // MM expanded view, Dapp, Notification popup, console and service worker
         await driver.waitUntilXWindowHandles(5);

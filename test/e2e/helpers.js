@@ -391,10 +391,92 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
+const STALELIST_URL =
+  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
+
+const emptyHtmlPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+  </head>
+  <body>
+    Empty page
+  </body>
+</html>`;
+
+/**
+ * Setup fetch mocks for the phishing detection feature.
+ *
+ * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
+ * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
+ *
+ * @param {import('mockttp').Mockttp} mockServer - The mock server.
+ * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
+ * configuration lookup performed by the warning page.
+ */
+async function setupPhishingDetectionMocks(
+  mockServer,
+  metamaskPhishingConfigResponse,
+) {
+  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        version: 2,
+        tolerance: 2,
+        fuzzylist: [],
+        allowlist: [],
+        blocklist: ['127.0.0.1'],
+        lastUpdated: 0,
+      },
+    };
+  });
+
+  await mockServer
+    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage,
+      };
+    });
+  await mockServer
+    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage,
+      };
+    });
+
+  await mockServer
+    .forGet(
+      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
+    )
+    .thenCallback(() => metamaskPhishingConfigResponse);
+}
+
+function mockPhishingDetection(mockServer) {
+  setupPhishingDetectionMocks(mockServer, {
+    statusCode: 200,
+    json: {
+      version: 2,
+      tolerance: 2,
+      fuzzylist: [],
+      whitelist: [],
+      blacklist: ['127.0.0.1'],
+      lastUpdated: 0,
+    },
+  });
+}
+
+const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
+  SERVICE_WORKER_URL,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -410,4 +492,6 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  mockPhishingDetection,
+  setupPhishingDetectionMocks,
 };
