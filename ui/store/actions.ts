@@ -1776,7 +1776,7 @@ export function updateMetamaskState(
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-      provider: newProviderConfig,
+      providerConfig: newProviderConfig,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
@@ -3112,6 +3112,13 @@ export function toggleAccountMenu() {
 export function toggleNetworkMenu() {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
+export function setAccountDetailsAddress(address: string) {
+  return {
+    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
+    payload: address,
   };
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import SnapAuthorship from '.';
 
 export default {
-  title: 'Components/App/Flask/SnapAuthorship',
+  title: 'Components/App/Snaps/SnapAuthorship',
 
   component: SnapAuthorship,
   argTypes: {

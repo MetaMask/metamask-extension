@@ -31,7 +31,7 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = txData;
-  const provider = getProviderConfig(state);
+  const providerConfig = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -43,7 +43,7 @@ function mapStateToProps(state, ownProps) {
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
-    provider,
+    providerConfig,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
     chainId,
@@ -96,7 +96,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     nativeCurrency,
     currentCurrency,
     conversionRate,
-    provider,
+    providerConfig,
     subjectMetadata,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
@@ -149,7 +149,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     nativeCurrency,
     currentCurrency,
     conversionRate,
-    provider,
+    providerConfig,
     subjectMetadata,
     unapprovedMessagesCount,
     mostRecentOverviewPage,

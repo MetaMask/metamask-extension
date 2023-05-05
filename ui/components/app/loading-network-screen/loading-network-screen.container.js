@@ -9,8 +9,8 @@ const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
 
 const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
-  const provider = getProviderConfig(state);
-  const { rpcUrl, chainId, ticker, nickname, type } = provider;
+  const providerConfig = getProviderConfig(state);
+  const { rpcUrl, chainId, ticker, nickname, type } = providerConfig;
 
   const setProviderArgs =
     type === NETWORK_TYPES.RPC ? [rpcUrl, chainId, ticker, nickname] : [type];
@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
     isNetworkLoading: isNetworkLoading(state),
     loadingMessage,
     setProviderArgs,
-    provider,
+    providerConfig,
     providerId: getNetworkIdentifier(state),
     showDeprecatedRpcUrlWarning,
   };

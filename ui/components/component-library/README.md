@@ -10,22 +10,22 @@ All components are built on top of the `Box` component and accept all `Box` [com
 
 `component-library` components accept all utility props for layout
 
-```
-import { Text } from '../../component-library'
+```jsx
+import { Text } from '../../component-library';
 
-<Text marginBottom={4}>This text has a margin-bottom of 16px</Text>
+<Text marginBottom={4}>This text has a margin-bottom of 16px</Text>;
 ```
 
 #### Polymorphic `as` prop
 
 `component-library` components accept a polymorphic as prop to change the root html element of a component
 
-```
-import { Text } from '../../component-library'
+```jsx
+import { Text } from '../../component-library';
 
 <ul>
-<Text as="li">This renders as list item html element</Text>
-</ul>
+  <Text as="li">This renders as list item html element</Text>
+</ul>;
 ```
 
 ## TypeScript

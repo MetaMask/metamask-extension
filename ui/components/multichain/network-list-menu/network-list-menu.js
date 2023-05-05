@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -48,10 +48,21 @@ export const NetworkListMenu = ({ onClose }) => {
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
+  const showTestNetworksRef = useRef(showTestNetworks);
+  const networkListRef = useRef(null);
+
+  useEffect(() => {
+    if (showTestNetworks && !showTestNetworksRef.current) {
+      // Scroll to the bottom of the list
+      networkListRef.current.lastChild.scrollIntoView();
+    }
+    showTestNetworksRef.current = showTestNetworks;
+  }, [showTestNetworks, showTestNetworksRef]);
+
   return (
     <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
       <>
-        <Box className="multichain-network-list-menu">
+        <Box className="multichain-network-list-menu" ref={networkListRef}>
           {networks.map((network) => {
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
