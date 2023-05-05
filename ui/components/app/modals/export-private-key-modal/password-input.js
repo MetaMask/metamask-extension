@@ -10,7 +10,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TEXT_FIELD_TYPES, Text, TextField } from '../../../component-library';
+import { Label, TEXT_FIELD_TYPES, TextField } from '../../../component-library';
 
 const PasswordInput = ({ setPassword }) => {
   const t = useI18nContext();
@@ -24,14 +24,13 @@ const PasswordInput = ({ setPassword }) => {
       paddingLeft={5}
       paddingRight={5}
     >
-      <Text
-        as="span"
+      <Label
         color={Color.textDefault}
         marginBottom={2}
         variant={TextVariant.bodySm}
       >
         {t('typePassword')}
-      </Text>
+      </Label>
       <TextField
         width={BLOCK_SIZES.FULL}
         placeholder={t('enterPassword')}

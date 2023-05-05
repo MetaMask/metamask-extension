@@ -21,7 +21,7 @@ import {
   FLEX_DIRECTION,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text, ValidTag } from '../../../component-library';
+import { Label } from '../../../component-library';
 
 const PrivateKeyDisplay = ({ privateKey }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -37,14 +37,13 @@ const PrivateKeyDisplay = ({ privateKey }) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Text
-        as={ValidTag.Span}
+      <Label
         color={Color.textDefault}
         marginBottom={2}
         variant={TextVariant.bodySm}
       >
         {t('copyPrivateKey')}
-      </Text>
+      </Label>
       <Box
         className="export-private-key-modal__private-key-display"
         width={BLOCK_SIZES.FULL}

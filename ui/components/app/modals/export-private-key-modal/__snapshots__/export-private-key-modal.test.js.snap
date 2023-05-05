@@ -79,11 +79,11 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
       <div
         class="box box--padding-right-5 box--padding-left-5 box--display-flex box--flex-direction-column box--align-items-flex-start box--width-full"
       >
-        <span
-          class="box mm-text mm-text--body-sm box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+        <label
+          class="box mm-text mm-label mm-text--body-sm mm-text--font-weight-bold box--margin-bottom-2 box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
         >
           Type your MetaMask password
-        </span>
+        </label>
         <div
           class="box mm-text-field mm-text-field--size-md mm-text-field--truncate export-private-key-modal__password-input box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
           data-testid="password-input"
