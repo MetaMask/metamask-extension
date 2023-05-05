@@ -71,8 +71,8 @@ import { InstitutionalFeaturesController } from '@metamask-institutional/institu
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
-import { SignatureController } from '@metamask/signature-controller';
 ///: END:ONLY_INCLUDE_IN
+import { SignatureController } from '@metamask/signature-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 // eslint-disable-next-line import/order
