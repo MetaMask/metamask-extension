@@ -58,9 +58,6 @@ export const NetworkListItem = ({
     }
   }, [networkRef, selected]);
 
-  const networkAvatarColor = getAvatarNetworkColor(name);
-
-
   return (
     <Box
       onClick={onClick}
