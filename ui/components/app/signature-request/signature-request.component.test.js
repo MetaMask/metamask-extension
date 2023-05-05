@@ -291,9 +291,7 @@ describe('Signature Request Component', () => {
           'Because of an error, this request was not verified by the security provider. Proceed with caution.',
         ),
       ).toBeInTheDocument();
-      expect(
-        queryByText('This is based on information from'),
-      ).toBeInTheDocument();
+      expect(queryByText('OpenSea')).toBeInTheDocument();
     });
 
     it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
@@ -325,7 +323,7 @@ describe('Signature Request Component', () => {
           'Because of an error, this request was not verified by the security provider. Proceed with caution.',
         ),
       ).toBeNull();
-      expect(queryByText('This is based on information from')).toBeNull();
+      expect(queryByText('OpenSea')).toBeNull();
     });
 
     it('should render a warning when the selected account is not the one being used to sign', () => {
