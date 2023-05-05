@@ -22,7 +22,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { showModal } from '../../../store/actions';
+import { setAccountDetailsAddress, showModal } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 
@@ -101,7 +101,7 @@ export const AccountListItemMenu = ({
       </MenuItem>
       <MenuItem
         onClick={() => {
-          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+          dispatch(setAccountDetailsAddress(identity.address));
           trackEvent({
             event: MetaMetricsEventName.NavAccountDetailsOpened,
             category: MetaMetricsEventCategory.Navigation,
