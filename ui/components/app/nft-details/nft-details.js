@@ -296,7 +296,6 @@ export default function NftDetails({ nft }) {
                     as="h6"
                     overflowWrap={OverflowWrap.BreakWord}
                     marginBottom={4}
-                    margin={0}
                   >
                     {`${Number(decWEIToDecETH(lastSale.total_price))} ${
                       lastSale.payment_token.symbol
