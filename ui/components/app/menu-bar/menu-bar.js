@@ -3,7 +3,7 @@ import browser from 'webextension-polyfill';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getCustodianIconForAddress } from '@metamask-institutional/extension';
+import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
