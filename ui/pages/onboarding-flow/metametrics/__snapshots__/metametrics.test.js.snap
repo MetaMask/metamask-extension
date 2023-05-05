@@ -14,7 +14,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     </h2>
     <p
       align="center"
-      class="box mm-text onboarding-metametrics__desc mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="box mm-text onboarding-metametrics__desc mm-text--body-md box--margin-top-2 box--flex-direction-row box--color-text-default"
     >
       MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use.
     </p>
@@ -51,7 +51,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <p
-              class="box mm-text mm-text--body-md mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-inline-block box--flex-direction-row box--color-text-default"
             >
               Never
             </p>
@@ -72,7 +72,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <p
-              class="box mm-text mm-text--body-md mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-inline-block box--flex-direction-row box--color-text-default"
             >
               Never
             </p>
@@ -93,7 +93,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <p
-              class="box mm-text mm-text--body-md mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-inline-block box--flex-direction-row box--color-text-default"
             >
               Never
             </p>
