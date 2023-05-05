@@ -8,3 +8,11 @@ export function getMethodName(camelCase) {
     .replace(/([A-Z])([a-z])/gu, ' $1$2')
     .replace(/ +/gu, ' ');
 }
+
+export function formatAccountType(accountType) {
+  if (accountType === 'default') {
+    return 'metamask';
+  }
+
+  return accountType;
+}

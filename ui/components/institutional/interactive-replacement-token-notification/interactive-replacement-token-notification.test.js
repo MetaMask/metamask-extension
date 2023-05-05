@@ -49,7 +49,7 @@ describe('Interactive Replacement Token Notification', () => {
 
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       selectedAddress,

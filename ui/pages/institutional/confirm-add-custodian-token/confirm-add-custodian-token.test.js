@@ -7,7 +7,7 @@ import ConfirmAddCustodianToken from './confirm-add-custodian-token';
 describe('Confirm Add Custodian Token', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       preferences: {
@@ -61,7 +61,7 @@ describe('Confirm Add Custodian Token', () => {
   it('tries to connect to custodian with empty token', async () => {
     const customMockedStore = {
       metamask: {
-        provider: {
+        providerConfig: {
           type: 'test',
         },
         preferences: {

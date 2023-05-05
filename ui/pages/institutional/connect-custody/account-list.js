@@ -34,7 +34,7 @@ export default function CustodyAccountList({
   rawList,
   accounts,
   onAccountChange,
-  selectedAccounts,
+  selectedAccounts = {},
   onCancel,
   onAddAccounts,
   custody,
