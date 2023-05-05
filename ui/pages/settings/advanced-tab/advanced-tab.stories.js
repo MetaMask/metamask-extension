@@ -27,6 +27,9 @@ export default {
     showResetAccountConfirmationModal: {
       action: 'showResetAccountConfirmationModal',
     },
+    showEthSignModal: {
+      action: 'showEthSignModal',
+    },
   },
 };
 

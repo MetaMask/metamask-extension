@@ -48,7 +48,7 @@ interface TemporaryBackgroundState {
       name: string;
     }[];
   };
-  provider: {
+  providerConfig: {
     chainId: string;
   };
   currentNetworkTxList: TransactionMeta[];

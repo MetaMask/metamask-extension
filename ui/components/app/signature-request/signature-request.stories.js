@@ -77,7 +77,7 @@ DefaultStory.args = {
     },
   },
   fromAccount: MOCK_PRIMARY_IDENTITY,
-  provider: { name: 'Goerli ETH' },
+  providerConfig: { name: 'Goerli ETH' },
   selectedAccount: MOCK_PRIMARY_IDENTITY,
 };
 
