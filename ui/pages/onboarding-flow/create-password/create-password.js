@@ -252,11 +252,7 @@ export default function CreatePassword({
                 onClick={() => setTermsChecked(!termsChecked)}
                 checked={termsChecked}
               />
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h5"
-                boxProps={{ marginLeft: 3 }}
-              >
+              <Text variant={TextVariant.bodyMd} as="h5" marginLeft={3}>
                 {t('passwordTermsWarning', [
                   <a
                     onClick={(e) => e.stopPropagation()}
