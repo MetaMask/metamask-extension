@@ -3,7 +3,6 @@ const {
   convertToHexValue,
   withFixtures,
   connectToDApp,
-  DAPP_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -70,7 +69,7 @@ describe('Permissions', function () {
         });
         await driver.waitForSelector({
           css: '.connected-sites-list__subject-name',
-          text: DAPP_URL,
+          text: '127.0.0.1:8080',
         });
         const domains = await driver.findClickableElements(
           '.connected-sites-list__subject-name',

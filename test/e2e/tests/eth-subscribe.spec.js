@@ -2,6 +2,7 @@ const {
   convertToHexValue,
   withFixtures,
   connectToDApp,
+  DAPP_ONE_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -67,7 +68,7 @@ describe('eth_subscribe', function () {
         await driver.findElement('[data-testid="eth-subscribe-response"]');
 
         // Switch to the second dapp
-        await driver.openNewPage('http://127.0.0.1:8081/');
+        await connectToDApp(driver, null, DAPP_ONE_URL);
 
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);

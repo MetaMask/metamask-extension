@@ -4,6 +4,7 @@ const {
   withFixtures,
   connectToDApp,
   DAPP_URL,
+  DAPP_ONE_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -91,7 +92,7 @@ describe('Dapp interactions', function () {
         await driver.clickElement({ text: 'Lock', tag: 'button' });
 
         // Connect to Dapp1
-        await connectToDApp(driver);
+        await connectToDApp(driver, null, DAPP_ONE_URL);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(4);
         windowHandles = await driver.getAllWindowHandles();
@@ -120,7 +121,7 @@ describe('Dapp interactions', function () {
           tag: 'bdi',
         });
         const connectedDapp2 = await driver.isElementPresent({
-          text: 'http://127.0.0.1:8081',
+          text: DAPP_ONE_URL,
           tag: 'bdi',
         });
 

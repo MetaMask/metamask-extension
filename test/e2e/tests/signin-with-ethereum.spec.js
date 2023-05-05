@@ -74,7 +74,7 @@ describe('Sign in with ethereum', function () {
           '.signature-request-siwe-message__sub-text',
         );
         assert.equal(await message.getText(), expectedSigninMessage);
-        assert.equal(await url.getText(), DAPP_URL);
+        assert.equal(await url.getText(), 'https://127.0.0.1:8080');
         assert.equal(await version.getText(), '1');
         assert.equal(await chainId.getText(), '1');
 
