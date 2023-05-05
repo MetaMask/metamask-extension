@@ -254,7 +254,6 @@ export default function NftDetails({ nft }) {
                   as="h6"
                   marginBottom={4}
                   marginRight={2}
-                  margin={0}
                   className="nft-details__link-title"
                 >
                   {t('lastSold')}
