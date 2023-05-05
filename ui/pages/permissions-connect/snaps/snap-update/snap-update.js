@@ -97,7 +97,7 @@ export default function SnapUpdate({
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <SnapAuthorship snapId={targetSubjectMetadata.origin} />
-        {!hasError && (
+        {!isLoading && !hasError && (
           <Text
             paddingBottom={4}
             paddingTop={4}

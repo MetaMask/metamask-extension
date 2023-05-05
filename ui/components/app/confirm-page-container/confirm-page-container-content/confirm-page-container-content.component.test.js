@@ -150,9 +150,7 @@ describe('Confirm Page Container Content', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeInTheDocument();
-    expect(
-      queryByText('This is based on information from'),
-    ).toBeInTheDocument();
+    expect(queryByText('OpenSea')).toBeInTheDocument();
   });
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
@@ -171,7 +169,7 @@ describe('Confirm Page Container Content', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeNull();
-    expect(queryByText('This is based on information from')).toBeNull();
+    expect(queryByText('OpenSea')).toBeNull();
   });
 
   it('should show insufficient funds error for EIP-1559 network', () => {
