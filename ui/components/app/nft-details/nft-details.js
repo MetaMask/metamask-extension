@@ -406,7 +406,6 @@ export default function NftDetails({ nft }) {
                 as="h6"
                 overflowWrap={OverflowWrap.BreakWord}
                 marginBottom={4}
-                margin={0}
               >
                 {shortenAddress(address)}
               </Text>
