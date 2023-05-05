@@ -4,7 +4,7 @@ import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   SEVERITIES,
   TypographyVariant,
-  TEXT_ALIGN,
+  TextAlign,
   DISPLAY,
   FLEX_DIRECTION,
   AlignItems,
@@ -191,7 +191,7 @@ function getValues(pendingApproval, t, actions, history) {
         element: 'Box',
         key: 'network-box',
         props: {
-          textAlign: TEXT_ALIGN.CENTER,
+          textAlign: TextAlign.Center,
           display: DISPLAY.FLEX,
           justifyContent: JustifyContent.center,
           marginTop: 4,

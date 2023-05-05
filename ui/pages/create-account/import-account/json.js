@@ -12,7 +12,7 @@ import {
 import {
   Size,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -48,7 +48,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
 
   return (
     <>
-      <Text variant={TextVariant.bodyMd} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}

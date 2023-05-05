@@ -32,7 +32,7 @@ import {
   BorderColor,
   BLOCK_SIZES,
   TextColor,
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
@@ -322,13 +322,13 @@ const CustodyPage = () => {
   return (
     <Box>
       {connectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
+        <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {connectError}
         </Text>
       )}
 
       {selectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
+        <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {selectError}
         </Text>
       )}

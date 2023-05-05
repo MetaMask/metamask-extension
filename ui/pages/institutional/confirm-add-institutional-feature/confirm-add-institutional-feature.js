@@ -15,8 +15,8 @@ import {
 import {
   TextColor,
   TextVariant,
-  OVERFLOW_WRAP,
-  TEXT_ALIGN,
+  OverflowWrap,
+  TextAlign,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
@@ -150,7 +150,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
           marginRight={8}
           marginBottom={1}
           marginLeft={8}
-          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+          overflowWrap={OverflowWrap.BreakWord}
         >
           {connectRequest?.token?.projectName}
         </Text>
@@ -158,7 +158,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
           variant={TextVariant.bodyXs}
           marginRight={8}
           marginLeft={8}
-          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+          overflowWrap={OverflowWrap.BreakWord}
           color={TextColor.textMuted}
         >
           {t('id')}: {connectRequest?.token?.projectId}
@@ -166,7 +166,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
       </Box>
       {connectError && (
         <Text
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           marginTop={4}
           data-testid="connect-error-message"
         >

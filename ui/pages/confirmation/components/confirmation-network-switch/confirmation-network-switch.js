@@ -6,12 +6,12 @@ import SiteIcon from '../../../../components/ui/site-icon';
 import Typography from '../../../../components/ui/typography/typography';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
+  FontWeight,
   DISPLAY,
   JustifyContent,
   BLOCK_SIZES,
   AlignItems,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -49,8 +49,8 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         <Typography
           color={TextColor.textDefault}
           variant={TypographyVariant.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          align={TEXT_ALIGN.CENTER}
+          fontWeight={FontWeight.Normal}
+          align={TextAlign.Center}
           boxProps={{
             display: DISPLAY.FLEX,
             justifyContent: JustifyContent.center,
@@ -86,8 +86,8 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         <Typography
           color={TextColor.textDefault}
           variant={TypographyVariant.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          align={TEXT_ALIGN.CENTER}
+          fontWeight={FontWeight.Normal}
+          align={TextAlign.Center}
           boxProps={{
             display: DISPLAY.FLEX,
             justifyContent: JustifyContent.center,

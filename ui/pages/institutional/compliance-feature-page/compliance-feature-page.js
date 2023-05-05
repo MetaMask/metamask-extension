@@ -8,7 +8,7 @@ import {
   DISPLAY,
   AlignItems,
   TextColor,
-  TEXT_ALIGN,
+  TextAlign,
   BackgroundColor,
   Color,
   FLEX_DIRECTION,
@@ -74,7 +74,7 @@ const ComplianceFeaturePage = () => {
                   margin={[2, 2, 0, 2]}
                   color={TextColor.textMuted}
                   display={DISPLAY.FLEX}
-                  textAlign={TEXT_ALIGN.LEFT}
+                  textAlign={TextAlign.Left}
                   flexDirection={FLEX_DIRECTION.COLUMN}
                   justifyContent={JustifyContent.center}
                   className="feature-connect__label__text feature-connect__label__text--activated"

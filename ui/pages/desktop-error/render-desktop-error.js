@@ -8,7 +8,7 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   AlignItems,
-  TEXT_ALIGN,
+  TextAlign,
   FONT_WEIGHT,
 } from '../../helpers/constants/design-system';
 import { DEFAULT_ROUTE, SETTINGS_ROUTE } from '../../helpers/constants/routes';
@@ -259,7 +259,7 @@ export function renderDesktopError({
     <Box
       display={DISPLAY.FLEX}
       alignItems={AlignItems.center}
-      textAlign={TEXT_ALIGN.CENTER}
+      textAlign={TextAlign.Center}
       flexDirection={FLEX_DIRECTION.COLUMN}
       marginLeft={6}
       marginRight={6}

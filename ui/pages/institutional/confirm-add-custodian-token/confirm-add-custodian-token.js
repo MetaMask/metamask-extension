@@ -7,7 +7,7 @@ import {
   AlignItems,
   DISPLAY,
   TextColor,
-  TEXT_ALIGN,
+  TextAlign,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
@@ -170,7 +170,7 @@ const ConfirmAddCustodianToken = () => {
 
       {!complianceActivated && (
         <Box marginTop={4} data-testid="connect-custodian-token-error">
-          <Text data-testid="error-message" textAlign={TEXT_ALIGN.CENTER}>
+          <Text data-testid="error-message" textAlign={TextAlign.Center}>
             {connectError}
           </Text>
         </Box>
