@@ -2,25 +2,20 @@ import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
-type GithubClient = InstanceType<typeof GitHub>;
-
-const token = process.env.GITHUB_TOKEN;
-
-if (!token) {
-  core.setFailed('GITHUB_TOKEN not found');
-  process.exit(1);
-}
-
-const octokit = getOctokit(token);
-
-
 main().catch((error: Error): void => {
   console.error(error);
   process.exit(1);
 });
 
 async function main(): Promise<void> {
-  const github = new GitHub();
+  const token = process.env.GITHUB_TOKEN;
+
+  if (!token) {
+    core.setFailed('GITHUB_TOKEN not found');
+    process.exit(1);
+  }
+
+  const octokit = getOctokit(token);
 
   const headRef = context.payload.pull_request?.head.ref || '';
 
@@ -31,7 +26,7 @@ async function main(): Promise<void> {
     issueNumber = getIssueNumberFromBranchName(headRef);
   }
 
-  await updateLabels(github, issueNumber, octokit);
+  await updateLabels(octokit, issueNumber);
 }
 
 async function getIssueNumberFromPullRequestBody(): Promise<string> {
@@ -107,18 +102,9 @@ function bailIfIsNotFeatureBranch(branchName: string): void {
   }
 }
 
-async function updateLabels(github: GithubClient, issueNumber: string, octokit: InstanceType<typeof GitHub>): Promise<void> {
+async function updateLabels(octokit: InstanceType<typeof GitHub>, issueNumber: string): Promise<void> {
   interface ILabel {
     name: string;
-    // value: string | {
-    //   id?: number | undefined;
-    //   node_id?: string | undefined;
-    //   url?: string | undefined;
-    //   name?: string | undefined;
-    //   description?: string | null | undefined;
-    //   color?: string | null | undefined;
-    //   default?: boolean | undefined;
-    // }
   };
 
   const owner = context.repo.owner;
