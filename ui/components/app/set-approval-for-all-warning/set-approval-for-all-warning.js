@@ -63,11 +63,7 @@ const SetApproveForAllWarning = ({
           name={IconName.Danger}
           className="set-approval-for-all-warning__content__header__warning-icon"
         />
-        <Text
-          variant={TextVariant.headingSm}
-        >
-          {t('yourNFTmayBeAtRisk')}
-        </Text>
+        <Text variant={TextVariant.headingSm}>{t('yourNFTmayBeAtRisk')}</Text>
       </Box>
       <Box
         display={DISPLAY.FLEX}
