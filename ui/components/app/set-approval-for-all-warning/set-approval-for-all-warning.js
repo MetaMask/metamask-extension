@@ -92,8 +92,6 @@ const SetApproveForAllWarning = ({
       <Text
         color={TextColor.textAlternative}
         margin={4}
-        marginTop={4}
-        marginBottom={4}
         variant={TextVariant.bodySm}
         as="h6"
       >
