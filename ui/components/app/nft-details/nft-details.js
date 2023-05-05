@@ -226,7 +226,6 @@ export default function NftDetails({ nft }) {
                   variant={TextVariant.bodySmBold}
                   as="h6"
                   marginBottom={2}
-                  margin={0}
                   className="nft-details__description"
                 >
                   {t('description')}
