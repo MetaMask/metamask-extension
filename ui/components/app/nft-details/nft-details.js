@@ -214,7 +214,6 @@ export default function NftDetails({ nft }) {
                 variant={TextVariant.bodyMd}
                 as="h5"
                 marginBottom={4}
-                margin={0}
                 overflowWrap={OverflowWrap.BreakWord}
               >
                 #{tokenId}
