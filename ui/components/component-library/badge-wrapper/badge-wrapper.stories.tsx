@@ -19,7 +19,8 @@ import {
   AvatarNetwork,
   AvatarToken,
   Icon,
-  ICON_NAMES,
+  IconName,
+  IconSize,
   Tag,
 } from '..';
 import {
@@ -87,7 +88,7 @@ export const DefaultStory = Template.bind({});
 
 DefaultStory.storyName = 'Default';
 
-export const Children = () => (
+export const Children: ComponentStory<typeof BadgeWrapper> = () => (
   <Box display={DISPLAY.FLEX} gap={4}>
     <BadgeWrapper
       badge={
@@ -113,7 +114,7 @@ export const Children = () => (
     >
       <AvatarToken
         name="Eth"
-        src="./images/eth_logo.svg"
+        src="./images/eth_logo.png"
         borderColor={BorderColor.borderMuted}
       />
     </BadgeWrapper>
@@ -139,7 +140,7 @@ export const Children = () => (
   </Box>
 );
 
-export const Badge = () => (
+export const Badge: ComponentStory<typeof BadgeWrapper> = () => (
   <Box display={DISPLAY.FLEX} gap={4}>
     <BadgeWrapper
       badge={
@@ -165,8 +166,8 @@ export const Badge = () => (
       }
     >
       <Icon
-        name={ICON_NAMES.GLOBAL}
-        size={Size.XL}
+        name={IconName.Global}
+        size={IconSize.Xl}
         color={IconColor.iconAlternative}
       />
     </BadgeWrapper>
@@ -206,7 +207,7 @@ export const Badge = () => (
   </Box>
 );
 
-export const Position = () => (
+export const Position: ComponentStory<typeof BadgeWrapper> = () => (
   <Box display={DISPLAY.FLEX} gap={4}>
     <BadgeWrapper
       position={BadgeWrapperPosition.topLeft}
@@ -262,7 +263,7 @@ export const Position = () => (
   </Box>
 );
 
-export const PositionObj = () => (
+export const PositionObj: ComponentStory<typeof BadgeWrapper> = () => (
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={4}>
     <BadgeWrapper
       badge={
@@ -280,7 +281,7 @@ export const PositionObj = () => (
   </Box>
 );
 
-export const AnchorElementShape = () => (
+export const AnchorElementShape: ComponentStory<typeof BadgeWrapper> = () => (
   <Box display={DISPLAY.FLEX} gap={4}>
     <BadgeWrapper
       badge={

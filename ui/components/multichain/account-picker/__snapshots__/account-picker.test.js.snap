@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountPicker renders properly 1`] = `
+<div>
+  <button
+    class="box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md mm-text--ellipsis box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-transparent box--rounded-lg"
+  >
+    <span
+      class="box mm-text mm-text--inherit mm-text--ellipsis box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--color-primary-inverse"
+    >
+      <div
+        class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-background-default box--border-style-solid box--border-width-1"
+      >
+        <canvas
+          height="32"
+          style="display: none;"
+          width="32"
+        />
+        <img
+          alt=""
+          height="16"
+          src="data:image/png;base64,00"
+          style="border-radius: 50%;"
+          width="16"
+        />
+      </div>
+      <span
+        class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis box--flex-direction-row box--color-text-default"
+      >
+        Account 1
+      </span>
+      <span
+        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+        style="mask-image: url('./images/icons/arrow-down.svg');"
+      />
+    </span>
+  </button>
+</div>
+`;

@@ -18,8 +18,8 @@ const customTransaction = ({
     userFeeLevel: estimateUsed ? 'low' : 'medium',
     blockNumber: `${10902987 + i}`,
     id: 4678200543090545 + i,
-    metamaskNetworkId: testData?.metamask?.network,
-    chainId: testData?.metamask?.provider?.chainId,
+    metamaskNetworkId: testData?.metamask?.networkId,
+    chainId: testData?.metamask?.providerConfig?.chainId,
     status: 'confirmed',
     time: 1600654021000,
     txParams: {

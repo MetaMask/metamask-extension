@@ -8,7 +8,7 @@ import RecipientGroup from '../../../../components/app/contact-list/recipient-gr
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
 import Confusable from '../../../../components/ui/confusable';
-import { Icon, ICON_NAMES } from '../../../../components/component-library';
+import { Icon, IconName } from '../../../../components/component-library';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -181,7 +181,7 @@ export default class AddRecipient extends Component {
           className="send__select-recipient-wrapper__list__link"
           onClick={useContactListForRecipientSearch}
         >
-          <Icon name={ICON_NAMES.ARROW_LEFT} />
+          <Icon name={IconName.ArrowLeft} />
           {t('backToAll')}
         </Button>
         <RecipientGroup

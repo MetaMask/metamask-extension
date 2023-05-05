@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
@@ -36,9 +36,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.press('#password', driver.Key.ENTER);
 
         // create token
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
 
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -100,9 +98,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.press('#password', driver.Key.ENTER);
 
         // create token
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
 
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -119,16 +115,16 @@ describe('Create token, approve token and approve token without gas', function (
         );
 
         await driver.clickElement({
-          text: 'Verify contract details',
+          text: 'Verify third-party details',
           css: '.token-allowance-container__verify-link',
         });
 
         const modalTitle = await driver.waitForSelector({
-          text: 'Contract details',
+          text: 'Third-party details',
           tag: 'h5',
         });
 
-        assert.equal(await modalTitle.getText(), 'Contract details');
+        assert.equal(await modalTitle.getText(), 'Third-party details');
 
         await driver.clickElement({
           text: 'Got it',
@@ -226,9 +222,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.press('#password', driver.Key.ENTER);
 
         // create token
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
 
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -292,10 +286,13 @@ describe('Create token, approve token and approve token without gas', function (
         await gasLimitInput.fill('60001');
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
-        await driver.waitForSelector({
-          css: '.box--flex-direction-row > h6',
-          text: '0.0006 ETH',
-        });
+        await driver.waitForSelector(
+          {
+            css: '.box--flex-direction-row > h6',
+            text: '0.0006 ETH',
+          },
+          { timeout: 15000 },
+        );
 
         // editing spending cap
         await driver.clickElement({
@@ -369,10 +366,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.press('#password', driver.Key.ENTER);
 
         // create token
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
-
+        await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
 
@@ -455,9 +449,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
 

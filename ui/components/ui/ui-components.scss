@@ -61,8 +61,7 @@
 @import 'deprecated-test-networks/index.scss';
 @import 'nft-info/index.scss';
 @import 'nft-collection-image/index';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-@import 'mmi/custody-labels/index';
-@import 'mmi/drag-and-drop/index';
-@import 'mmi/note-to-trader/index';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+@import '../institutional/custody-labels/index';
+@import '../institutional//note-to-trader/index';
 ///: END:ONLY_INCLUDE_IN

@@ -10,7 +10,6 @@ const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
@@ -105,14 +104,9 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    await setupMocking(mockServer, testSpecificMock);
+    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
@@ -143,10 +137,10 @@ async function withFixtures(options, testSuite) {
 
     await testSuite({
       driver: driverProxy ?? driver,
-      mockServer,
       contractRegistry,
       ganacheServer,
       secondaryGanacheServer,
+      mockedEndpoint,
     });
   } catch (error) {
     failed = true;
@@ -222,6 +216,9 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -262,6 +259,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   seedPhrase,
   password,
 ) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -293,6 +293,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
@@ -342,6 +345,9 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
 };
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
+  // agree to terms of use
+  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -377,7 +383,18 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
+const DAPP_URL = 'http://127.0.0.1:8080';
+const DAPP_ONE_URL = 'http://127.0.0.1:8081';
+
+const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
+  contract
+    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
+    : await driver.openNewPage(dappURL);
+};
+
 module.exports = {
+  DAPP_URL,
+  DAPP_ONE_URL,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -392,4 +409,5 @@ module.exports = {
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
+  openDapp,
 };

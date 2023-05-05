@@ -17,9 +17,6 @@
 @import 'import-token/index';
 @import 'create-new-swap/index';
 @import 'view-on-block-explorer/index';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-@import 'mmi/compliance-row/index';
-///: END:ONLY_INCLUDE_IN
 
 .swaps {
   display: flex;

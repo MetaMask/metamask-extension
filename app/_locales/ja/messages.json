@@ -695,10 +695,6 @@
     "message": "$1はどのサイトとも接続されていません。",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 スナップはこれらのサイトに接続されており、上記のパーミッションにアクセスできます。",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "接続中..."
   },
@@ -1355,18 +1351,6 @@
     "message": "ファイルのインポートが機能していない場合ここをクリックしてください!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "詳細を表示",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "追加日",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "元",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "このガス代は$1により提案されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1までお問い合わせください。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "ガス代"
   },
   "gasLimit": {
     "message": "ガスリミット"
@@ -1601,11 +1582,11 @@
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
-    "message": "これは誰にも教えないでください。$1$2",
+    "message": "これは誰にも教えないでください。$1、$2",
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask サポートがこの情報を尋ねることはなく、",
+    "message": "MetaMask サポートがこの情報を尋ねることはなく",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2021,9 +2002,6 @@
   "missingToken": {
     "message": "トークンが見当たりませんか？"
   },
-  "mobileSyncWarning": {
-    "message": "「拡張機能と同期」機能は一時的に無効になっています。拡張ウォレットをMetaMaskモバイルで使用する場合は、モバイルアプリでウォレットの設定オプションに戻り、「シークレットリカバリーフレーズでインポート」オプションを選択します。拡張ウォレットのシークレットフレーズを使用して、ウォレットをモバイルにインポートします。"
-  },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
   },
@@ -2326,12 +2304,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
-  },
-  "notifications17ActionText": {
-    "message": "セキュリティおよびプライバシー設定を表示"
-  },
-  "notifications17Title": {
-    "message": "セキュリティおよびプライバシー設定"
   },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
@@ -2702,10 +2674,6 @@
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask に確認を表示します。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask にダイアログウィンドウを表示します。",
@@ -3243,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "表示"
   },
@@ -3320,14 +3284,6 @@
   "smartTransaction": {
     "message": "スマートトランザクション"
   },
-  "snapAccess": {
-    "message": "$1 スナップは次にアクセス可能です:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$1 に $2 から追加",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "このコンテンツは $1 からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3355,10 +3311,6 @@
   "snaps": {
     "message": "スナップ"
   },
-  "snapsInsightError": {
-    "message": "$1 でエラーが発生しました: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
   },
@@ -3368,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "スナップの管理"
   },
-  "snapsStatus": {
-    "message": "スナップのステータスはアクティビティによります。"
-  },
   "snapsToggle": {
     "message": "スナップは有効になっている場合にのみ実行されます"
   },
   "snapsUIError": {
-    "message": "スナップにより指定された UI が無効です。"
+    "message": "スナップにより指定された UI が無効です。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
@@ -3949,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "シンボルは11文字以下にする必要があります。"
   },
-  "syncFailed": {
-    "message": "同期に失敗しました"
-  },
-  "syncInProgress": {
-    "message": "同期中"
-  },
-  "syncWithMobile": {
-    "message": "モバイルと同期"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "このコードをスキャンするとき、画面を誰にも見られていないことを確認してください"
-  },
-  "syncWithMobileComplete": {
-    "message": "データの同期に成功しました。MetaMaskモバイルアプリをご活用ください!"
-  },
-  "syncWithMobileDesc": {
-    "message": "アカウントと情報を、モバイルデバイスと同期させることができます。MetaMaskモバイルアプリを開き、「設定」に進み、「ブラウザ拡張機能から同期」をタップします。"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "MetaMaskモバイルアプリを初めて開く場合は、スマートフォンを以下のステップに従って操作してください。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMaskモバイルアプリでこのコードをスキャンします"
-  },
-  "syncWithMobileTitle": {
-    "message": "モバイルと同期"
-  },
   "tenPercentIncreased": {
     "message": "10% の増加"
   },
@@ -3996,12 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "留意点:"
-  },
-  "thisIsBasedOn": {
-    "message": "これは次の情報源からの情報に基づくものです: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは実験段階です"
   },
   "time": {
     "message": "時間"

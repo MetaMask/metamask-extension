@@ -4,7 +4,11 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ACTION_QUEUE_METRICS_E2E_TEST,
+} = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { DAPP_URL } = require('./helpers');
 
 function defaultFixture() {
   return {
@@ -114,11 +118,21 @@ function defaultFixture() {
           16: {
             date: null,
             id: 16,
-            isShown: true,
+            isShown: false,
           },
           17: {
             date: null,
             id: 17,
+            isShown: false,
+          },
+          18: {
+            date: null,
+            id: 18,
+            isShown: true,
+          },
+          19: {
+            date: null,
+            id: 19,
             isShown: true,
           },
         },
@@ -127,6 +141,8 @@ function defaultFixture() {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
@@ -180,8 +196,9 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        network: '1337',
-        provider: {
+        networkId: '1337',
+        networkStatus: 'available',
+        providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
@@ -308,10 +325,12 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
-        network: '1337',
-        provider: {
+        networkId: '1337',
+        networkStatus: 'available',
+        providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
@@ -487,15 +506,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withNetworkControllerSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
-    return this;
-  }
-
   withNftController(data) {
     merge(
       this.fixture.data.NftController
@@ -585,13 +595,13 @@ class FixtureBuilder {
   withPermissionControllerConnectedToTestDapp() {
     return this.withPermissionController({
       subjects: {
-        'http://127.0.0.1:8080': {
-          origin: 'http://127.0.0.1:8080',
+        [DAPP_URL]: {
+          origin: DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
-              invoker: 'http://127.0.0.1:8080',
+              invoker: DAPP_URL,
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',

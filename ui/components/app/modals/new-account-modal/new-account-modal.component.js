@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../ui/button/button.component';
-import { ButtonIcon, ICON_NAMES } from '../../../component-library';
+import { ButtonIcon, IconName } from '../../../component-library';
 
 export default class NewAccountModal extends Component {
   static contextTypes = {
@@ -48,7 +48,7 @@ export default class NewAccountModal extends Component {
               className="new-account-modal__content__header-close"
               ariaLabel={t('close')}
               onClick={this.props.hideModal}
-              iconName={ICON_NAMES.CLOSE}
+              iconName={IconName.Close}
             />
           </div>
           <div className="new-account-modal__input-label">

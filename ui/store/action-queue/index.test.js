@@ -41,6 +41,7 @@ describe('ActionQueue', () => {
       expect(background.backgroundFunction.called).toStrictEqual(false);
     });
   });
+
   describe('submitRequestToBackground', () => {
     it('calls promisified background method if the stream is connected', async () => {
       const background = {
@@ -74,6 +75,7 @@ describe('ActionQueue', () => {
           readable: false,
         },
         backgroundFunction3: sinon.stub().yields(),
+        trackMetaMetricsEvent: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
       const requestPromise = submitRequestToBackground('backgroundFunction3');
@@ -133,6 +135,7 @@ describe('ActionQueue', () => {
           trace.secondStarted = Date.now();
           setTimeout(() => cb(null, 'second'), 10);
         },
+        trackMetaMetricsEvent: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
       const scheduled = Promise.all([
@@ -159,6 +162,7 @@ describe('ActionQueue', () => {
           trace.secondStarted = Date.now();
           setTimeout(() => cb(null, 'second'), 10);
         },
+        trackMetaMetricsEvent: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
       const scheduled = Promise.all([
@@ -189,6 +193,7 @@ describe('ActionQueue', () => {
           trace.secondStarted = Date.now();
           setTimeout(() => cb(null, 'second'), 10);
         },
+        trackMetaMetricsEvent: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
       const scheduled = Promise.all([
@@ -217,6 +222,7 @@ describe('ActionQueue', () => {
           }, 5);
         },
         second: sinon.stub().yields(),
+        trackMetaMetricsEvent: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
       const scheduled = Promise.race([
@@ -251,6 +257,7 @@ describe('ActionQueue', () => {
           setTimeout(() => cb(null, 'second'), 10);
         },
         third: sinon.stub().yields(),
+        trackMetaMetricsEvent: sinon.stub().yields(),
       };
       flowControl.triggerRaceCondition = () => {
         flowControl.waitFor = submitRequestToBackground('third');

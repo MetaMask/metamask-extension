@@ -695,10 +695,6 @@
     "message": "$1 계정은 어떤 사이트에도 연결되어 있지 않습니다.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "$1 스냅이 이 사이트에 연결되어 있습니다. 이 사이트는 위에 나열된 접근 권한이 있습니다.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "연결 중..."
   },
@@ -918,10 +914,10 @@
     "message": "소수점 이하 자릿수는 0 이상, 36 이하여야 합니다."
   },
   "decrypt": {
-    "message": "암호 해독"
+    "message": "복호화"
   },
   "decryptCopy": {
-    "message": "암호 해독된 메시지 복사"
+    "message": "복호화된 메시지 복사"
   },
   "decryptInlineError": {
     "message": "다음 오류 때문에 이 메시지를 해독할 수 없습니다: $1",
@@ -1355,18 +1351,6 @@
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "세부 정보 보기",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "추가하기",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "발신",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "$1에서 이 가스 요금을 제안했습니다. 이를 무시하면 거래에 문제가 발생할 수 있습니다. 질문이 있는 경우 $1에 문의하세요.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "가스 수수료"
   },
   "gasLimit": {
     "message": "가스 한도"
@@ -2021,9 +2002,6 @@
   "missingToken": {
     "message": "토큰이 보이지 않나요?"
   },
-  "mobileSyncWarning": {
-    "message": "'확장 프로그램과 동기화' 기능이 일시적으로 비활성화됩니다. MetaMask 모바일에서 확장 지갑을 사용하려면 모바일 앱에서 지갑 설정 옵션으로 돌아가 '비밀 복구 구문 가져오기' 옵션을 선택하세요. 확장 지갑의 비밀 구문을 사용하시면 지갑을 모바일로 가져올 수 있습니다."
-  },
   "moreComingSoon": {
     "message": "더 추가 예정..."
   },
@@ -2179,7 +2157,7 @@
     "message": "다음"
   },
   "nextNonceWarning": {
-    "message": "임시값이 권장 임시값인 $1보다 큽니다.",
+    "message": "논스값이 권장 논스값인 $1보다 큽니다.",
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftAddFailedMessage": {
@@ -2246,13 +2224,13 @@
     "message": "웹캠을 찾을 수 없음"
   },
   "nonce": {
-    "message": "임시값"
+    "message": "논스"
   },
   "nonceField": {
-    "message": "거래 임시값 맞춤화"
+    "message": "거래 논스 맞춤화"
   },
   "nonceFieldDescription": {
-    "message": "이 기능을 켜면 확인 화면에서 임시값(거래 번호)을 변경할 수 있습니다. 이는 고급 기능으로, 주의해서 사용해야 합니다."
+    "message": "이 기능을 켜면 확인 화면에서 논스(거래 번호)를 변경할 수 있습니다. 이는 고급 기능으로, 주의해서 사용해야 합니다."
   },
   "nonceFieldHeading": {
     "message": "커스텀 논스"
@@ -2327,12 +2305,6 @@
   "notifications15Title": {
     "message": "이더리움 머지가 완료되었습니다!"
   },
-  "notifications17ActionText": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
-  "notifications17Title": {
-    "message": "보안 및 개인정보 설정 표시"
-  },
   "notifications1Description": {
     "message": "MetaMask 모바일 사용자는 이제 모바일 지갑에서 토큰을 스왑할 수 있습니다. QR 코드를 스캔하여 모바일 앱을 설치하고 스왑을 시작하세요.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2358,7 +2330,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
   },
   "notifications4Description": {
-    "message": "토큰 스왑 최고가를 지갑에서 바로 이용하세요. MetaMask는 이제 바이낸스 스마트 체인의 여러 분산형 교환 애그리게이터 및 투자전문기관과 연결됩니다.",
+    "message": "토큰 스왑 최고가를 지갑에서 바로 이용하세요. MetaMask는 이제 바이낸스 스마트 체인의 여러 탈중앙화 거래소 애그리게이터 및 투자전문기관과 연결됩니다.",
     "description": "Description of a notification in the 'See What's New' popup."
   },
   "notifications4Title": {
@@ -2702,10 +2674,6 @@
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "MetaMask에 확인을 표시합니다.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
@@ -3243,10 +3211,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "검색 결과가 없습니다."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "보기"
   },
@@ -3300,7 +3264,7 @@
     "message": "본 메시지에 서명하는 행위는 위험의 가능성을 내포하고 있습니다. 본 서명을 통해 메시지 발신 당사자에게 귀하의 계정 및 모든 자산에 대해 완전한 권한을 부여할 수 있기 때문입니다. 이를 통해 계정의 모든 잔액을 인출할 수 있기도 하다는 뜻입니다. 주의하여 진행하세요. $1"
   },
   "signed": {
-    "message": "서명완료"
+    "message": "서명 완료"
   },
   "signin": {
     "message": "로그인"
@@ -3319,14 +3283,6 @@
   },
   "smartTransaction": {
     "message": "스마트 트랜잭션"
-  },
-  "snapAccess": {
-    "message": "$1 스냅이 접근할 수 있는 대상:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "$1에 $2에서 추가됨",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
   },
   "snapContent": {
     "message": "콘텐츠 출처: $1",
@@ -3355,10 +3311,6 @@
   "snaps": {
     "message": "스냅"
   },
-  "snapsInsightError": {
-    "message": "$1 관련 오류 발생: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "거래 인사이트를 가져오는 중..."
   },
@@ -3368,14 +3320,12 @@
   "snapsSettingsDescription": {
     "message": "스냅 관리"
   },
-  "snapsStatus": {
-    "message": "스냅 상태는 활동에 따라 달라집니다."
-  },
   "snapsToggle": {
     "message": "스냅은 활성화된 상태에서만 작동합니다."
   },
   "snapsUIError": {
-    "message": "스냅에서 지정한 UI가 올바르지 않습니다."
+    "message": "스냅에서 지정한 UI가 올바르지 않습니다.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "네트워크에 따라 보안이나 개인 정보 유출의 위험이 있을 수 있습니다. 네트워크 추가 및 사용 이전에 위험 요소를 파악하세요."
@@ -3625,7 +3575,7 @@
     "message": "보장 금액"
   },
   "swapAmountReceivedInfo": {
-    "message": "수신하는 최소 금액입니다. 슬리패지에 따라 추가 금액을 받을 수도 있습니다."
+    "message": "수신하는 최소 금액입니다. 슬리피지에 따라 추가 금액을 받을 수도 있습니다."
   },
   "swapApproval": {
     "message": "스왑을 위해 $1 승인",
@@ -3656,7 +3606,7 @@
     "message": "맞춤형"
   },
   "swapDecentralizedExchange": {
-    "message": "분산형 교환"
+    "message": "탈중앙화 거래소"
   },
   "swapDirectContract": {
     "message": "직접 계약"
@@ -3719,17 +3669,17 @@
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapHighSlippageWarning": {
-    "message": "슬리패지 금액이 아주 큽니다."
+    "message": "슬리피지 금액이 아주 큽니다."
   },
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapLowSlippageError": {
-    "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
+    "message": "거래가 실패할 수도 있습니다. 최대 슬리피지가 너무 낮습니다."
   },
   "swapMaxSlippage": {
-    "message": "최대 슬리패지"
+    "message": "최대 슬리피지"
   },
   "swapMetaMaskFee": {
     "message": "MetaMask 수수료"
@@ -3765,7 +3715,7 @@
     "message": "시장 가격 데이터가 부족하여 가격 영향을 파악할 수 없습니다. 스왑하기 전에 받게 될 토큰 수가 만족스러운지 확인하시기 바랍니다."
   },
   "swapPriceUnavailableTitle": {
-    "message": "진행하기 전에 요율 확인"
+    "message": "진행하기 전에 비율 확인"
   },
   "swapProcessing": {
     "message": "처리 중"
@@ -3777,25 +3727,25 @@
     "message": "견적 소스"
   },
   "swapQuotesExpiredErrorDescription": {
-    "message": "새 견적을 요청해 최신 요율을 확인하세요."
+    "message": "새 견적을 요청해 최신 비율을 확인하세요."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "견적 시간 초과"
   },
   "swapQuotesNotAvailableErrorDescription": {
-    "message": "금액 또는 슬리패지 설정을 조정한 후 다시 시도해 보세요."
+    "message": "금액 또는 슬리피지 설정을 조정한 후 다시 시도해 보세요."
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "사용 가능한 견적 없음"
   },
   "swapRate": {
-    "message": "요율"
+    "message": "비율"
   },
   "swapReceiving": {
     "message": "수신 중"
   },
   "swapReceivingInfoTooltip": {
-    "message": "이것은 예상치입니다. 정확한 금액은 슬리패지에 따라 달라집니다."
+    "message": "이것은 예상치입니다. 정확한 금액은 슬리피지에 따라 달라집니다."
   },
   "swapRequestForQuotation": {
     "message": "견적 요청"
@@ -3819,20 +3769,20 @@
     "message": "다음은 여러 유동성 소스에서 수집한 전체 견적입니다."
   },
   "swapSlippageNegative": {
-    "message": "슬리패지는 0보다 크거나 같아야 합니다."
+    "message": "슬리피지는 0보다 크거나 같아야 합니다."
   },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
   "swapSlippageTooltip": {
-    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
+    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리피지\"라고 합니다. 슬리피지가 \"최대 슬리피지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
   },
   "swapSource": {
     "message": "유동성 소스"
   },
   "swapSourceInfo": {
-    "message": "저희는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 요율과 최저 네트워크 수수료를 찾아드립니다."
+    "message": "저희는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 비율과 최저 네트워크 수수료를 찾아드립니다."
   },
   "swapSuggested": {
     "message": "제안 스왑"
@@ -3900,13 +3850,13 @@
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
   },
   "swapZeroSlippage": {
-    "message": "0% 슬리패지"
+    "message": "0% 슬리피지"
   },
   "swapsAdvancedOptions": {
     "message": "고급 옵션"
   },
   "swapsExcessiveSlippageWarning": {
-    "message": "슬리패지 금액이 너무 커서 전환율이 좋지 않습니다. 슬리패지 허용치를 15% 값 이하로 줄이세요."
+    "message": "슬리피지 금액이 너무 커서 전환율이 좋지 않습니다. 슬리피지 허용치를 15% 값 이하로 줄이세요."
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
@@ -3949,33 +3899,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
   },
-  "syncFailed": {
-    "message": "동기화 실패"
-  },
-  "syncInProgress": {
-    "message": "동기화 진행 중"
-  },
-  "syncWithMobile": {
-    "message": "모바일과 동기화"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "이 코드를 스캔할 때는 다른 사람이 화면을 보지 못하게 하세요"
-  },
-  "syncWithMobileComplete": {
-    "message": "데이터가 동기화되었습니다. MetaMask 모바일 앱을 마음껏 이용하세요!"
-  },
-  "syncWithMobileDesc": {
-    "message": "계정과 정보를 모바일 장치와 동기화할 수 있습니다. MetaMask 모바일 앱을 열고 \"설정\"으로 이동하여 \"브라우저 확장에서 동기화\"를 탭합니다."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "MetaMask 모바일 앱을 처음 여는 경우라면 휴대폰에 나타나는 지시사항을 따르세요."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "MetaMask 모바일 앱으로 이 코드를 스캔하세요"
-  },
-  "syncWithMobileTitle": {
-    "message": "모바일과 동기화"
-  },
   "tenPercentIncreased": {
     "message": "10% 인상"
   },
@@ -3996,12 +3919,6 @@
   },
   "thingsToKeep": {
     "message": "유의 사항:"
-  },
-  "thisIsBasedOn": {
-    "message": "다음에 기반한 정보입니다: "
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 서비스입니다"
   },
   "time": {
     "message": "시간"
@@ -4343,7 +4260,7 @@
     "message": "연락처 정보 인증"
   },
   "verifyThisTokenDecimalOn": {
-    "message": "토큰 십진수는 $1에서 찾을 수 있습니다.",
+    "message": "토큰 소수점은 $1에서 찾을 수 있습니다.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {

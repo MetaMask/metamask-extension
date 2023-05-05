@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import {
-  TypographyVariant,
+  TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Dropdown from '../../../components/ui/dropdown';
@@ -11,14 +11,14 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
-import Typography from '../../../components/ui/typography';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { Text } from '../../../components/component-library';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -195,12 +195,13 @@ export default class SettingsTab extends PureComponent {
         id="blockie-optin"
       >
         <div className="settings-page__content-item">
-          <Typography
-            variant={TypographyVariant.H5}
+          <Text
+            variant={TextVariant.bodyMd}
+            as="h5"
             color={TextColor.textDefault}
           >
             {t('accountIdenticon')}
-          </Typography>
+          </Text>
           <span className="settings-page__content-item__description">
             {t('jazzAndBlockies')}
           </span>
@@ -227,16 +228,17 @@ export default class SettingsTab extends PureComponent {
                   style={getIconStyles()}
                 />
               </div>
-              <Typography
+              <Text
                 color={TextColor.textDefault}
-                variant={TypographyVariant.H7}
+                variant={TextVariant.bodySm}
+                as="h6"
                 marginTop={0}
                 marginRight={12}
                 marginBottom={0}
                 marginLeft={3}
               >
                 {t('jazzicons')}
-              </Typography>
+              </Text>
             </button>
             <button
               data-testid="blockie_icon"
@@ -259,16 +261,17 @@ export default class SettingsTab extends PureComponent {
                   borderRadius="50%"
                 />
               </div>
-              <Typography
+              <Text
                 color={TextColor.textDefault}
-                variant={TypographyVariant.H7}
+                variant={TextVariant.bodySm}
+                as="h6"
                 marginTop={3}
                 marginRight={0}
                 marginBottom={3}
                 marginLeft={3}
               >
                 {t('blockies')}
-              </Typography>
+              </Text>
             </button>
           </div>
         </div>
@@ -356,7 +359,7 @@ export default class SettingsTab extends PureComponent {
 
     const onChange = (newTheme) => {
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.SETTINGS,
+        category: MetaMetricsEventCategory.Settings,
         event: 'Theme Changed',
         properties: {
           theme_selected: newTheme,

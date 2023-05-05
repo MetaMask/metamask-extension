@@ -22,12 +22,11 @@ import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
 import {
-  TypographyVariant,
+  TextVariant,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -82,7 +81,11 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -108,6 +111,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
+import { Text } from '../../../components/component-library';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -447,7 +451,7 @@ export default function BuildQuote({
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Build Quote Page Loaded',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
@@ -486,10 +490,10 @@ export default function BuildQuote({
         onClick={() => {
           /* istanbul ignore next */
           trackEvent({
-            event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
-            category: EVENT.CATEGORIES.SWAPS,
+            event: MetaMetricsEventName.ExternalLinkClicked,
+            category: MetaMetricsEventCategory.Swaps,
             properties: {
-              link_type: EVENT.EXTERNAL_LINK_TYPES.TOKEN_TRACKER,
+              link_type: MetaMetricsEventLinkType.TokenTracker,
               location: 'Swaps Confirmation',
               url_domain: getURLHostName(blockExplorerTokenLink),
             },
@@ -589,7 +593,7 @@ export default function BuildQuote({
                   {t('enableSmartTransactions')}
                 </Button>
                 <Box marginTop={1}>
-                  <Typography variant={TypographyVariant.H6}>
+                  <Text variant={TextVariant.bodySm} as="h6">
                     <Button
                       type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
@@ -597,7 +601,7 @@ export default function BuildQuote({
                     >
                       {t('noThanksVariant2')}
                     </Button>
-                  </Typography>
+                  </Text>
                 </Box>
               </>
             }
@@ -623,13 +627,13 @@ export default function BuildQuote({
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TypographyVariant.H7} marginTop={0}>
+              <Text variant={TextVariant.bodySm} as="h6" marginTop={0}>
                 {t('stxDescription')}
-              </Typography>
-              <Typography
+              </Text>
+              <Text
                 as="ul"
-                variant={TypographyVariant.H7}
-                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Bold}
                 marginTop={3}
               >
                 <li>{t('stxBenefit1')}</li>
@@ -637,30 +641,24 @@ export default function BuildQuote({
                 <li>{t('stxBenefit3')}</li>
                 <li>
                   {t('stxBenefit4')}
-                  <Typography
+                  <Text
                     as="span"
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    variant={TypographyVariant.H7}
+                    fontWeight={FontWeight.Normal}
+                    variant={TextVariant.bodySm}
                   >
                     {' *'}
-                  </Typography>
+                  </Text>
                 </li>
-              </Typography>
-              <Typography
-                variant={TypographyVariant.H8}
+              </Text>
+              <Text
+                variant={TextVariant.bodyXs}
+                as="h6"
                 color={TextColor.textAlternative}
-                boxProps={{ marginTop: 3 }}
+                marginTop={3}
               >
                 {t('stxSubDescription')}&nbsp;
-                <Typography
-                  as="span"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TypographyVariant.H8}
-                  color={TextColor.textAlternative}
-                >
-                  {t('stxYouCanOptOut')}&nbsp;
-                </Typography>
-              </Typography>
+                <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
+              </Text>
             </Box>
           </Popover>
         )}
@@ -819,7 +817,7 @@ export default function BuildQuote({
                         /* istanbul ignore next */
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
-                          category: EVENT.CATEGORIES.SWAPS,
+                          category: MetaMetricsEventCategory.Swaps,
                           properties: {
                             link_type: 'Token Tracker',
                             action: 'Swaps Confirmation',

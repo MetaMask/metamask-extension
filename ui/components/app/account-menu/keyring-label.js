@@ -7,7 +7,6 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 
 export default function KeyRingLabel({ keyring }) {
   const t = useI18nContext();
-
   let label = null;
 
   // Keyring value might take a while to get a value
@@ -33,7 +32,18 @@ export default function KeyRingLabel({ keyring }) {
       label = HardwareKeyringNames.lattice;
       break;
     default:
-      return null;
+      label = null;
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  if (type.startsWith('Custody') && /JSONRPC/u.test(type)) {
+    label = type.split(' - ')[1];
+    return null;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  if (label === null) {
+    return label;
   }
 
   return (

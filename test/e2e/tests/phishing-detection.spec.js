@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const STALELIST_URL =
@@ -107,7 +107,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await openDapp(driver);
         await driver.clickElement({
           text: 'continue to the site.',
         });
@@ -208,7 +208,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await openDapp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -236,7 +236,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await openDapp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -276,7 +276,7 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await openDapp(driver);
 
         await driver.clickElement({ text: 'report a detection problem.' });
 
@@ -286,6 +286,48 @@ describe('Phishing Detection', function () {
           await driver.getCurrentUrl(),
           `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%3A8080%2F`,
         );
+      },
+    );
+  });
+
+  it('should open a new extension expanded view when clicking back to safety button', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockPhishingDetection,
+        dapp: true,
+        dappPaths: ['mock-page-with-disallowed-iframe'],
+        dappOptions: {
+          numberOfDapps: 2,
+        },
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        await driver.openNewPage(
+          `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
+        );
+
+        const iframe = await driver.findElement('iframe');
+
+        await driver.switchToFrame(iframe);
+        await driver.clickElement({
+          text: 'Open this warning in a new tab',
+        });
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await driver.clickElement({
+          text: 'Back to safety',
+        });
+
+        // Ensure we're redirected to wallet home page
+        const homePage = await driver.findElement('.home__main-view');
+        const homePageDisplayed = await homePage.isDisplayed();
+
+        assert.equal(homePageDisplayed, true);
       },
     );
   });

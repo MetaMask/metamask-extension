@@ -4,9 +4,16 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../../shared/constants/metametrics';
 import { BannerAlert } from '../../component-library';
 
 export const DetectedTokensBanner = ({
@@ -22,14 +29,17 @@ export const DetectedTokensBanner = ({
     ({ address, symbol }) => `${symbol} - ${address}`,
   );
 
+  const chainId = useSelector(getCurrentChainId);
+
   const handleOnClick = () => {
     actionButtonOnClick();
     trackEvent({
-      event: EVENT_NAMES.TOKEN_IMPORT_CLICKED,
-      category: EVENT.CATEGORIES.WALLET,
+      event: MetaMetricsEventName.TokenImportClicked,
+      category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: EVENT.SOURCE.TOKEN.DETECTED,
+        source_connection_method: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
+        chain_id: chainId,
       },
     });
   };
