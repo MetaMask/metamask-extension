@@ -358,7 +358,6 @@ export default function NftDetails({ nft }) {
                 variant={TextVariant.bodySm}
                 as="h6"
                 marginBottom={4}
-                margin={0}
                 className="nft-details__image-source"
                 color={
                   isDataURI ? TextColor.textDefault : TextColor.primaryDefault
