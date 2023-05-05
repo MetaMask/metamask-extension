@@ -29,6 +29,10 @@
       width: $width-screen-lg-min;
     }
 
+    &__network-picker {
+      max-width: 200px;
+    }
+
     &--avatar-network {
       padding: 0; // TODO: Remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
     }
