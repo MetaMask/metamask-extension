@@ -11,7 +11,7 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   FONT_WEIGHT,
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
@@ -68,7 +68,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         </Typography>
       </div>
       <div className="import-srp__actions">
-        <Box textAlign={TEXT_ALIGN.LEFT}>
+        <Box textAlign={TextAlign.Left}>
           <SrpInput
             onChange={setSecretRecoveryPhrase}
             srpText={t('typeYourSRP')}

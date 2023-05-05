@@ -7,7 +7,7 @@ import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
 import {
   FONT_WEIGHT,
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   AlignItems,
 } from '../../../helpers/constants/design-system';
@@ -32,7 +32,7 @@ export default function CreationSuccessful() {
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER}>
+      <Box textAlign={TextAlign.Center}>
         <img src="./images/tada.png" />
         <Typography
           variant={TypographyVariant.H2}

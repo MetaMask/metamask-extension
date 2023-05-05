@@ -8,7 +8,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   JustifyContent,
   FONT_WEIGHT,
@@ -44,7 +44,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
       <Box
         justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         marginBottom={4}
       >
         <Typography
@@ -57,7 +57,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       </Box>
       <Box
         justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         marginBottom={4}
       >
         <Typography variant={TypographyVariant.H4}>
@@ -65,7 +65,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         </Typography>
       </Box>
       <Box
-        textAlign={TEXT_ALIGN.LEFT}
+        textAlign={TextAlign.Left}
         marginBottom={4}
         className="recovery-phrase__tips"
       >

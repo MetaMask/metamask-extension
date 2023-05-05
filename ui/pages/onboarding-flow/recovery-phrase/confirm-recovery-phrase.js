@@ -7,7 +7,7 @@ import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   JustifyContent,
   FONT_WEIGHT,
@@ -73,7 +73,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       />
       <Box
         justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         marginBottom={4}
       >
         <Typography
@@ -85,7 +85,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       </Box>
       <Box
         justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         marginBottom={4}
       >
         <Typography variant={TypographyVariant.H4}>

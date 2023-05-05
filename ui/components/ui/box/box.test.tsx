@@ -7,7 +7,7 @@ import {
   FLEX_WRAP,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   BLOCK_SIZES,
   BorderRadius,
   BorderColor,
@@ -772,11 +772,11 @@ describe('Box', () => {
     it('should render the Box with the textAlign auto class', () => {
       const { getByText } = render(
         <>
-          <Box textAlign={TEXT_ALIGN.LEFT}>Box left</Box>
-          <Box textAlign={TEXT_ALIGN.CENTER}>Box center</Box>
-          <Box textAlign={TEXT_ALIGN.RIGHT}>Box right</Box>
-          <Box textAlign={TEXT_ALIGN.JUSTIFY}>Box justify</Box>
-          <Box textAlign={TEXT_ALIGN.END}>Box end</Box>
+          <Box textAlign={TextAlign.Left}>Box left</Box>
+          <Box textAlign={TextAlign.Center}>Box center</Box>
+          <Box textAlign={TextAlign.Right}>Box right</Box>
+          <Box textAlign={TextAlign.Justify}>Box justify</Box>
+          <Box textAlign={TextAlign.End}>Box end</Box>
         </>,
       );
 
@@ -790,10 +790,10 @@ describe('Box', () => {
       const { getByText } = render(
         <Box
           textAlign={[
-            TEXT_ALIGN.LEFT,
-            TEXT_ALIGN.CENTER,
-            TEXT_ALIGN.RIGHT,
-            TEXT_ALIGN.JUSTIFY,
+            TextAlign.Left,
+            TextAlign.Center,
+            TextAlign.Right,
+            TextAlign.Justify,
           ]}
         >
           Box content

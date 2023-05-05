@@ -12,7 +12,7 @@ import {
   FONT_WEIGHT,
   JustifyContent,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -81,7 +81,7 @@ export default function SnapResult({
             >
               {t('snapResultSuccess')}
             </Text>
-            <Text textAlign={TEXT_ALIGN.CENTER}>
+            <Text textAlign={TextAlign.Center}>
               {t('snapResultSuccessDescription', [<b key="1">{snapName}</b>])}
             </Text>
           </Box>

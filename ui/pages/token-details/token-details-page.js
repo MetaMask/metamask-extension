@@ -19,7 +19,7 @@ import {
   TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
-  TEXT_ALIGN,
+  TextAlign,
   OVERFLOW_WRAP,
   TextColor,
   IconColor,
@@ -81,7 +81,7 @@ export default function TokenDetailsPage() {
         </Typography>
         <Box display={DISPLAY.FLEX} marginTop={4}>
           <Typography
-            align={TEXT_ALIGN.CENTER}
+            align={TextAlign.Center}
             fontWeight={FONT_WEIGHT.BOLD}
             margin={0}
             marginRight={5}

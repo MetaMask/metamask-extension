@@ -11,7 +11,7 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -122,7 +122,7 @@ export default function SnapInstall({
               paddingBottom={4}
               paddingLeft={4}
               paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
+              textAlign={TextAlign.Center}
             >
               {t('snapInstallRequestsPermission', [
                 <b key="1">{originMetadata?.hostname}</b>,
@@ -142,7 +142,7 @@ export default function SnapInstall({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Text textAlign={TEXT_ALIGN.CENTER}>
+            <Text textAlign={TextAlign.Center}>
               {t('snapInstallRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,

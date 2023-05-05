@@ -8,7 +8,7 @@ import {
   AlignItems,
   IconColor,
   Color,
-  TEXT_ALIGN,
+  TextAlign,
   FLEX_DIRECTION,
   Size,
 } from '../../../../helpers/constants/design-system';
@@ -85,7 +85,7 @@ const SnapListTab = () => {
             />
             <Text
               color={Color.textMuted}
-              align={TEXT_ALIGN.CENTER}
+              align={TextAlign.Center}
               marginTop={4}
             >
               {t('noSnaps')}

@@ -10,7 +10,7 @@ import CheckBox from '../../../components/ui/check-box';
 import Box from '../../../components/ui/box';
 import {
   FONT_WEIGHT,
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
   AlignItems,
 } from '../../../helpers/constants/design-system';
@@ -110,12 +110,12 @@ export default function OnboardingWelcome() {
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
+            textAlign={TextAlign.Center}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeToMetaMask')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
+          <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
             {t('welcomeToMetaMaskIntro')}
           </Text>
           <div className="onboarding-welcome__mascot">
@@ -130,12 +130,12 @@ export default function OnboardingWelcome() {
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
+            textAlign={TextAlign.Center}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeExploreTitle')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER}>
+          <Text textAlign={TextAlign.Center}>
             {t('welcomeExploreDescription')}
           </Text>
           <div className="onboarding-welcome__image">
@@ -151,12 +151,12 @@ export default function OnboardingWelcome() {
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
+            textAlign={TextAlign.Center}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('welcomeLoginTitle')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER}>
+          <Text textAlign={TextAlign.Center}>
             {t('welcomeLoginDescription')}
           </Text>
           <div className="onboarding-welcome__image">
