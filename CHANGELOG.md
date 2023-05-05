@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.30.1]
-### Uncategorized
-- Version v10.29.1
-- Version v10.30.0
-- Merge branch 'develop' into master-sync
-- Merge branch 'develop' into master-sync
-- Merge remote-tracking branch 'origin/develop' into master-sync
+### Fixed
+- Disable Flask RPC test to fix failing build ([#19011](https://github.com/MetaMask/metamask-extension/pull/19011))
 
 ## [10.30.0]
 ### Added
