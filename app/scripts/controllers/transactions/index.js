@@ -225,6 +225,10 @@ export default class TransactionController extends EventEmitter {
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock();
     this._onBootCleanUp();
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.transactionUpdateController = opts.transactionUpdateController;
+    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -1359,6 +1363,16 @@ export default class TransactionController extends EventEmitter {
     // So that we do not increment nonce + resubmit something
     // that is already being incremented & signed.
     const txMeta = this.txStateManager.getTransaction(txId);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta.custodyStatus) {
+      this.inProcessOfSigning.delete(txId);
+      await this.signTransaction(txId);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     if (this.inProcessOfSigning.has(txId)) {
       return;
     }
@@ -1512,7 +1526,25 @@ export default class TransactionController extends EventEmitter {
     const fromAddress = txParams.from;
     const common = await this.getCommonConfiguration(txParams.from);
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
-    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+    const signedEthTx = await this.signEthTx(
+      unsignedEthTx,
+      fromAddress,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      txMeta.custodyStatus ? txMeta : undefined,
+      ///: END:ONLY_INCLUDE_IN
+    );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (txMeta.custodyStatus) {
+      txMeta.custodyId = signedEthTx.custodian_transactionId;
+      txMeta.custodyStatus = signedEthTx.transactionStatus;
+
+      this.transactionUpdateController.addTransactionToWatchList(
+        txMeta.custodyId,
+        fromAddress,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
@@ -1876,9 +1908,18 @@ export default class TransactionController extends EventEmitter {
         },
       })
       .forEach((txMeta) => {
-        // Line below will try to publish transaction which is in
-        // APPROVED state at the time of controller bootup
-        this.approveTransaction(txMeta.id);
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        // If you create a Tx and its still inside the custodian waiting to be approved we don't want to approve it right away
+        if (!txMeta.custodyStatus) {
+          ///: END:ONLY_INCLUDE_IN
+
+          // Line below will try to publish transaction which is in
+          // APPROVED state at the time of controller bootup
+          this.approveTransaction(txMeta.id);
+
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        }
+        ///: END:ONLY_INCLUDE_IN
       });
   }
 
