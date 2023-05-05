@@ -6,18 +6,17 @@ import BigNumber from 'bignumber.js';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
-import Typography from '../../components/ui/typography/typography';
 import {
   AlignItems,
   BorderStyle,
   Color,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import { I18nContext } from '../../contexts/i18n';
 import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
@@ -61,10 +60,10 @@ import {
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { Icon, IconName } from '../../components/component-library';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { Text, Icon, IconName } from '../../components/component-library';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -294,24 +293,26 @@ export default function TokenAllowance({
         <Box>
           {!isFirstPage && (
             <Button type="inline" onClick={() => handleBackClick()}>
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textMuted}
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Bold}
               >
                 {'<'} {t('back')}
-              </Typography>
+              </Text>
             </Button>
           )}
         </Box>
-        <Box textAlign={TEXT_ALIGN.END}>
-          <Typography
-            variant={TypographyVariant.H7}
+        <Box textAlign={TextAlign.End}>
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textMuted}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
           >
             {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
-          </Typography>
+          </Text>
         </Box>
       </Box>
       <NetworkAccountBalanceHeader
@@ -349,22 +350,18 @@ export default function TokenAllowance({
             name={origin}
             url={siteImage}
           />
-          <Typography
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textAlternative}
-            boxProps={{ marginLeft: 1, marginTop: 2 }}
+            marginLeft={1}
           >
             {origin}
-          </Typography>
+          </Text>
         </Box>
       </Box>
       <Box marginLeft={4} marginRight={4}>
-        <Typography
-          variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
-          align={TEXT_ALIGN.CENTER}
-        >
+        <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
           {isFirstPage ? (
             t('setSpendingCap', [renderContractTokenValues])
           ) : (
@@ -379,7 +376,7 @@ export default function TokenAllowance({
               )}
             </Box>
           )}
-        </Typography>
+        </Text>
       </Box>
       <Box
         marginTop={1}
@@ -392,12 +389,13 @@ export default function TokenAllowance({
           onClick={() => setShowContractDetails(true)}
           className="token-allowance-container__verify-link"
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={Color.primaryDefault}
           >
             {t('verifyContractDetails')}
-          </Typography>
+          </Text>
         </Button>
       </Box>
       <Box margin={[4, 4, 3, 4]}>
@@ -480,13 +478,14 @@ export default function TokenAllowance({
           onClick={() => setShowFullTxDetails(!showFullTxDetails)}
           className="token-allowance-container__view-details"
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.primaryDefault}
             marginRight={1}
           >
             {t('viewDetails')}
-          </Typography>
+          </Text>
           {showFullTxDetails ? (
             <i className="fa fa-sm fa-angle-up" />
           ) : (

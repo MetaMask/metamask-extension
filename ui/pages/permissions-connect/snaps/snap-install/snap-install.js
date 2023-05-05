@@ -91,7 +91,7 @@ export default function SnapInstall({
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <SnapAuthorship snapId={targetSubjectMetadata.origin} />
-        {!hasError && (
+        {!isLoading && !hasError && (
           <Text
             variant={TextVariant.headingLg}
             paddingTop={4}
