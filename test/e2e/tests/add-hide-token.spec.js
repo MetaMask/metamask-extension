@@ -135,7 +135,7 @@ describe('Add token using wallet_watchAsset', function () {
     ],
   };
 
-  it('opens a notification to add a token when wallet_watchAsset is executed', async function () {
+  it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -188,6 +188,52 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.waitForSelector({
           css: '.asset-list-item__token-symbol',
           text: 'TST',
+        });
+      },
+    );
+  });
+
+  it('opens a notification that adds a token when wallet_watchAsset is executed, then rejects', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+
+        await driver.executeScript(`
+          window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                symbol: 'TST',
+                decimals: 4
+              },
+            }
+          })
+        `);
+
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
         });
       },
     );
