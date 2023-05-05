@@ -34,7 +34,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
-      provider: { chainId: 0x1, type: 'test' },
+      providerConfig: { chainId: 0x1, type: 'test' },
       mmiConfiguration: {
         portfolio: {
           enabled: true,

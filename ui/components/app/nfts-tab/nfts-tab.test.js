@@ -166,7 +166,7 @@ const render = ({
           [chainIdAsDecimal]: nftContracts,
         },
       },
-      provider: { chainId },
+      providerConfig: { chainId },
       selectedAddress,
       useNftDetection,
       nftsDropdownState,

@@ -14,7 +14,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 
 const mockStore = {
   metamask: {
-    provider: {
+    providerConfig: {
       type: 'test',
     },
     institutionalFeatures: {
