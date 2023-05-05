@@ -111,7 +111,7 @@ class RestoreVaultPage extends Component {
                 </Button>,
               ])}
             </Text>
-            <Text color={TextColor.textDefault} margin={0} marginBottom={4}>
+            <Text color={TextColor.textDefault} marginBottom={4}>
               {t('resetWalletWarning')}
             </Text>
             <CreateNewVault
