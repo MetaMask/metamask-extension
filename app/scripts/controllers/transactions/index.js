@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
-import Common from '@ethereumjs/common';
+import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
@@ -41,7 +41,6 @@ import {
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
-  HARDFORKS,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
   NetworkStatus,
@@ -275,7 +274,7 @@ export default class TransactionController extends EventEmitter {
     // This logic below will have to be updated each time a hardfork happens
     // that carries with it a new Transaction type. It is inconsequential for
     // hardforks that do not include new types.
-    const hardfork = supportsEIP1559 ? HARDFORKS.LONDON : HARDFORKS.BERLIN;
+    const hardfork = supportsEIP1559 ? Hardfork.London : Hardfork.Berlin;
 
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
@@ -295,7 +294,7 @@ export default class TransactionController extends EventEmitter {
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
 
-    const customChainParams = {
+    return Common.custom({
       name,
       chainId,
       // It is improbable for a transaction to be signed while the network
@@ -309,13 +308,8 @@ export default class TransactionController extends EventEmitter {
       // hardcoding networkId to 'loading'.
       networkId:
         networkStatus === NetworkStatus.Available ? parseInt(networkId, 10) : 0,
-    };
-
-    return Common.forCustomChain(
-      NETWORK_TYPES.MAINNET,
-      customChainParams,
       hardfork,
-    );
+    });
   }
 
   /**
@@ -1548,9 +1542,9 @@ export default class TransactionController extends EventEmitter {
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = bufferToHex(signedEthTx.r);
-    txMeta.s = bufferToHex(signedEthTx.s);
-    txMeta.v = bufferToHex(signedEthTx.v);
+    txMeta.r = addHexPrefix(signedEthTx.r.toString(16));
+    txMeta.s = addHexPrefix(signedEthTx.s.toString(16));
+    txMeta.v = addHexPrefix(signedEthTx.v.toString(16));
 
     this.txStateManager.updateTransaction(
       txMeta,
