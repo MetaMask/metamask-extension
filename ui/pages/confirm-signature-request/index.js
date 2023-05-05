@@ -182,7 +182,7 @@ const ConfirmTxScreen = ({ match }) => {
 
   const signMessage = (type) => (event) => {
     stopPropagation(event);
-    const params = txData.msgParams;
+    const params = { ...txData.msgParams };
     params.metamaskId = txData.id;
     let action;
     if (type === SIGN_MESSAGE_TYPE.MESSAGE) {
