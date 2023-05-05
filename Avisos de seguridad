@@ -1,0 +1,49 @@
+Documentos de GitHub
+Código de seguridad /Avisos de seguridad /Orientación sobre informes y redacción /Informes privados
+Informar de forma privada sobre una vulnerabilidad de seguridad
+En este articulo
+Acerca de informar de forma privada una vulnerabilidad de seguridad
+Informar de forma privada sobre una vulnerabilidad de seguridad
+Algunos repositorios públicos configuran avisos de seguridad para que cualquiera pueda informar las vulnerabilidades de seguridad de forma directa y privada a los mantenedores.
+
+Los propietarios y administradores de repositorios públicos pueden habilitar informes de vulnerabilidad privados en sus repositorios. Para obtener más información, consulte " Configuración de informes privados de vulnerabilidades para un repositorio ".
+
+Nota: si tiene permisos de administrador o de seguridad para un repositorio público, no necesita enviar un informe de vulnerabilidad. En su lugar, puede crear un borrador de aviso de seguridad directamente. Para obtener más información, consulte " Creación de un aviso de seguridad del repositorio ".
+
+Acerca de informar de forma privada una vulnerabilidad de seguridad #
+Los investigadores de seguridad a menudo se sienten responsables de alertar a los usuarios sobre una vulnerabilidad que podría explotarse. Si no hay instrucciones claras sobre cómo contactar a los mantenedores del repositorio que contiene la vulnerabilidad, es posible que los investigadores de seguridad no tengan otra opción que publicar sobre la vulnerabilidad en las redes sociales, enviar mensajes directos al mantenedor o incluso crear problemas públicos. Esta situación puede conducir potencialmente a una divulgación pública de los detalles de la vulnerabilidad.
+
+Los informes privados de vulnerabilidades facilitan que los investigadores de seguridad informen de vulnerabilidades directamente al mantenedor del repositorio mediante un formulario simple.
+
+Para los investigadores de seguridad, los beneficios de usar informes privados de vulnerabilidad son:
+
+Menos frustración y menos tiempo dedicado a averiguar cómo ponerse en contacto con el mantenedor.
+Un proceso más fluido para revelar y discutir los detalles de la vulnerabilidad.
+La oportunidad de discutir los detalles de la vulnerabilidad en privado con el mantenedor del repositorio.
+Nota: Si el repositorio no tiene habilitado el informe privado de vulnerabilidades, debe iniciar el proceso de informe siguiendo las instrucciones de la política de seguridad del repositorio o crear un problema solicitando a los mantenedores un contacto de seguridad preferido. Para obtener más información, consulte " Acerca de la divulgación coordinada de vulnerabilidades de seguridad ".
+
+Informar de forma privada una vulnerabilidad de seguridad #
+Si no tiene permisos de administrador o de seguridad para un repositorio público, aún puede informar de forma privada una vulnerabilidad de seguridad a los mantenedores del repositorio. También puede evaluar la seguridad general de un repositorio público y sugerir una política de seguridad. Para obtener más información, consulte " Evaluación de la configuración de seguridad de un repositorio ".
+
+En GitHub.com, navegue a la página principal del repositorio.
+
+Debajo del nombre del repositorio, haga clic en Seguridad . Si no puede ver la pestaña "Seguridad", seleccione el menú desplegable y luego haga clic en Seguridad .
+Captura de pantalla de un encabezado de repositorio que muestra las pestañas.  La pestaña "Seguridad" está resaltada con un contorno naranja oscuro.
+
+Haga clic en Reportar una vulnerabilidad para abrir el formulario de aviso.
+
+Rellene el formulario de detalles de asesoramiento.
+
+Sugerencia: en este formulario, solo el título y la descripción son obligatorios. (En el borrador general del formulario de aviso de seguridad, que inicia el mantenedor del repositorio, también se requiere especificar el ecosistema). Sin embargo, recomendamos que los investigadores de seguridad proporcionen la mayor cantidad de información posible en el formulario para que los mantenedores puedan tomar una decisión informada sobre el envío. informe. Puede adoptar la plantilla utilizada por nuestros investigadores de seguridad del laboratorio de seguridad de GitHub, que está disponible en el github/securitylabrepositorio ".
+
+Para obtener más información sobre los campos disponibles y orientación sobre cómo completar el formulario, consulte " Creación de un aviso de seguridad del repositorio " y " Prácticas recomendadas para redactar avisos de seguridad del repositorio ".
+
+En la parte inferior del formulario, haga clic en Enviar informe . GitHub mostrará un mensaje que le informará que los mantenedores han sido notificados y que tiene un crédito pendiente para este aviso de seguridad.
+
+Sugerencia: cuando se envía el informe, GitHub agrega automáticamente al informador de la vulnerabilidad como colaborador y como usuario acreditado en el aviso propuesto.
+
+Opcionalmente, haga clic en Iniciar una bifurcación privada temporal si desea comenzar a solucionar el problema. Tenga en cuenta que solo el mantenedor del repositorio puede fusionar los cambios de esa bifurcación privada en el repositorio principal.
+
+Captura de pantalla de la parte inferior de un aviso de seguridad.  Un botón, con la etiqueta "Iniciar una bifurcación temporal" está resaltado en naranja oscuro.
+
+Los siguientes pasos dependen de la acción que tome el mantenedor del repositorio. Para obtener más información, consulte " Gestión de vulnerabilidades de seguridad de las que se ha informado de forma privada ".
