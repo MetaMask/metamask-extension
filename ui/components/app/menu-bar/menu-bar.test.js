@@ -4,11 +4,14 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import mockState from '../../../../test/data/mock-state.json';
 import MenuBar from './menu-bar';
 
 const initState = {
+  ...mockState,
   activeTab: {},
   metamask: {
+    ...mockState.metamask,
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
     },
