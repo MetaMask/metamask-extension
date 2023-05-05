@@ -30,7 +30,8 @@ export const Copyable = ({ text }) => {
       paddingBottom={2}
     >
       <Text
-        variant={TextVariant.H6}
+        variant={TextVariant.bodySm}
+        as="h6"
         color={TextColor.textAlternative}
         marginRight={2}
         overflowWrap={OverflowWrap.Anywhere}
