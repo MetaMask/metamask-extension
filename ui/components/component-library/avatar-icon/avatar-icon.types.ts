@@ -7,7 +7,7 @@ import {
 import { IconName, IconProps } from '../icon';
 import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
 import { ValidTag } from '../text/text.types';
-import { BoxProps } from 'ui/components/ui/box/box';
+import type { BoxProps } from '../../ui/box/box.d';
 
 export interface AvatarIconProps extends BoxProps {
   /**

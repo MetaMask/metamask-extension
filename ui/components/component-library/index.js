@@ -13,7 +13,7 @@ export {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
-export { AvatarBase } from './avatar-base';
+export { AvatarBase, AvatarBaseSize} from './avatar-base';
 export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';

@@ -1,7 +1,6 @@
 import {
   BackgroundColor,
   BorderColor,
-  IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { TextProps } from '../text';
@@ -45,9 +44,4 @@ export interface AvatarBaseProps extends TextProps {
    * Additional classNames to be added to the AvatarBase
    */
   className?: string;
-  /**
-   * The color of the text inside the AvatarIcon
-   * Defaults to IconColor.inherit,
-   */
-  iconColor?: IconColor;
 }
