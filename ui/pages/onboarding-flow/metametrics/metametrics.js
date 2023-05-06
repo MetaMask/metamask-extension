@@ -164,7 +164,7 @@ export default function OnboardingMetametrics() {
             />
             {t('onboardingMetametricsNeverSellData', [
               <Text
-                display={DISPLAY.INLINE_BLOCK}
+         as="span"
                 variant={TextVariant.bodyMd}
                 key="never-sell"
                 fontWeight={FontWeight.Bold}
