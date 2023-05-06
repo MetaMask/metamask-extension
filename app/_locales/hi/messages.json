@@ -1570,9 +1570,6 @@
   "history": {
     "message": "इतिहास"
   },
-  "holdToReveal": {
-    "message": "SRP देखने के लिए होल्ड करें"
-  },
   "holdToRevealContent1": {
     "message": "आपका सीक्रेट रिकवरी फ्रेज $1 प्रदान करता है",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "लेकिन फिशर कर सकते हैं।",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "अपने SRP को सुरक्षित रखें"
   },
   "ignoreAll": {
     "message": "सभी को अनदेखा करें"
