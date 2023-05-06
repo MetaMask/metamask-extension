@@ -1,0 +1,1401 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..8498ab8366bd318cbae885539aab415d110192a4
+--- /dev/null
++++ b/dist/index.d.ts
+@@ -0,0 +1,3 @@
++export * from './trezor-keyring';
++export * from './trezor-bridge';
++export * from './trezor-connect-bridge';
+diff --git a/dist/index.js b/dist/index.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..7da3714a6d57ecffdb11affafbed253c20ad86f5
+--- /dev/null
++++ b/dist/index.js
+@@ -0,0 +1,20 @@
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    var desc = Object.getOwnPropertyDescriptor(m, k);
++    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
++      desc = { enumerable: true, get: function() { return m[k]; } };
++    }
++    Object.defineProperty(o, k2, desc);
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __exportStar = (this && this.__exportStar) || function(m, exports) {
++    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++__exportStar(require("./trezor-keyring"), exports);
++__exportStar(require("./trezor-bridge"), exports);
++__exportStar(require("./trezor-connect-bridge"), exports);
++//# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/dist/index.js.map b/dist/index.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..5a95e7037d483e094815528f74cd653431808f86
+--- /dev/null
++++ b/dist/index.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;AAAA,mDAAiC;AACjC,kDAAgC;AAChC,0DAAwC","sourcesContent":["export * from './trezor-keyring';\nexport * from './trezor-bridge';\nexport * from './trezor-connect-bridge';\n"]}
+\ No newline at end of file
+diff --git a/dist/trezor-bridge.d.ts b/dist/trezor-bridge.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..832df6c2f1012c7f4f90fbbd3946c66a65c60ed0
+--- /dev/null
++++ b/dist/trezor-bridge.d.ts
+@@ -0,0 +1,18 @@
++import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash } from '@trezor/connect-web';
++export interface TrezorBridge {
++    model?: string;
++    init(settings: {
++        manifest: Manifest;
++    } & Partial<ConnectSettings>): Promise<void>;
++    dispose(): Promise<void>;
++    getPublicKey(params: {
++        path: string;
++        coin: string;
++    }): Response<{
++        publicKey: string;
++        chainCode: string;
++    }>;
++    ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
++    ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
++    ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
++}
+diff --git a/dist/trezor-bridge.js b/dist/trezor-bridge.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..2a000fe874f35a3a3cba5e505927de8cd1688c86
+--- /dev/null
++++ b/dist/trezor-bridge.js
+@@ -0,0 +1,3 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++//# sourceMappingURL=trezor-bridge.js.map
+\ No newline at end of file
+diff --git a/dist/trezor-bridge.js.map b/dist/trezor-bridge.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..fdc913fbd89f9df75302fc04598e68460e9059ed
+--- /dev/null
++++ b/dist/trezor-bridge.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"trezor-bridge.js","sourceRoot":"","sources":["../src/trezor-bridge.ts"],"names":[],"mappings":"","sourcesContent":["import type {\n  ConnectSettings,\n  EthereumSignedTx,\n  Manifest,\n  PROTO,\n  Response,\n  Params,\n  EthereumSignMessage,\n  EthereumSignTransaction,\n  EthereumSignTypedDataTypes,\n  EthereumSignTypedHash,\n} from '@trezor/connect-web';\n\nexport interface TrezorBridge {\n  model?: string;\n\n  init(\n    settings: {\n      manifest: Manifest;\n    } & Partial<ConnectSettings>,\n  ): Promise<void>;\n\n  dispose(): Promise<void>;\n\n  // TrezorConnect.getPublicKey has two overloads\n  // It is not possible to extract them from the library using utility types\n  getPublicKey(params: {\n    path: string;\n    coin: string;\n  }): Response<{ publicKey: string; chainCode: string }>;\n\n  ethereumSignTransaction(\n    params: Params<EthereumSignTransaction>,\n  ): Response<EthereumSignedTx>;\n\n  ethereumSignMessage(\n    params: Params<EthereumSignMessage>,\n  ): Response<PROTO.MessageSignature>;\n\n  ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(\n    params: Params<EthereumSignTypedHash<T>>,\n  ): Response<PROTO.EthereumTypedDataSignature>;\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/trezor-connect-bridge.d.ts b/dist/trezor-connect-bridge.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..ba7b44a2adf7eb5bab8e5bd4ef339eac7c91fb18
+--- /dev/null
++++ b/dist/trezor-connect-bridge.d.ts
+@@ -0,0 +1,17 @@
++import type { Manifest, ConnectSettings, EthereumSignTransaction, Params, EthereumSignMessage, EthereumSignTypedDataTypes, EthereumSignTypedHash } from '@trezor/connect-web';
++import type { TrezorBridge } from './trezor-bridge';
++export declare class TrezorConnectBridge implements TrezorBridge {
++    model?: string;
++    trezorConnectInitiated: boolean;
++    init(settings: {
++        manifest: Manifest;
++    } & Partial<ConnectSettings>): Promise<void>;
++    dispose(): Promise<void>;
++    getPublicKey(params: {
++        path: string;
++        coin: string;
++    }): import("@trezor/connect-web").Response<import("@trezor/connect/lib/types/api/getPublicKey").HDNodeResponse>;
++    ethereumSignTransaction(params: Params<EthereumSignTransaction>): import("@trezor/connect-web").Response<import("@trezor/connect-web").EthereumSignedTx>;
++    ethereumSignMessage(params: Params<EthereumSignMessage>): import("@trezor/connect-web").Response<import("@trezor/transport/lib/types/messages").MessageSignature>;
++    ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): import("@trezor/connect-web").Response<import("@trezor/transport/lib/types/messages").EthereumTypedDataSignature>;
++}
+diff --git a/dist/trezor-connect-bridge.js b/dist/trezor-connect-bridge.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..936a2b038c868a0a6c47bd8a3aba349636b5a3ba
+--- /dev/null
++++ b/dist/trezor-connect-bridge.js
+@@ -0,0 +1,67 @@
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    var desc = Object.getOwnPropertyDescriptor(m, k);
++    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
++      desc = { enumerable: true, get: function() { return m[k]; } };
++    }
++    Object.defineProperty(o, k2, desc);
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++    Object.defineProperty(o, "default", { enumerable: true, value: v });
++}) : function(o, v) {
++    o["default"] = v;
++});
++var __importStar = (this && this.__importStar) || function (mod) {
++    if (mod && mod.__esModule) return mod;
++    var result = {};
++    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
++    __setModuleDefault(result, mod);
++    return result;
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.TrezorConnectBridge = void 0;
++const connect_web_1 = __importStar(require("@trezor/connect-web"));
++class TrezorConnectBridge {
++    constructor() {
++        this.trezorConnectInitiated = false;
++    }
++    async init(settings) {
++        connect_web_1.default.on(connect_web_1.DEVICE_EVENT, (event) => {
++            var _a;
++            if (event.type !== connect_web_1.DEVICE.CONNECT) {
++                return;
++            }
++            this.model = (_a = event.payload.features) === null || _a === void 0 ? void 0 : _a.model;
++        });
++        if (this.trezorConnectInitiated) {
++            return;
++        }
++        await connect_web_1.default.init(settings);
++        this.trezorConnectInitiated = true;
++    }
++    dispose() {
++        // This removes the Trezor Connect iframe from the DOM
++        // This method is not well documented, but the code it calls can be seen
++        // here: https://github.com/trezor/connect/blob/dec4a56af8a65a6059fb5f63fa3c6690d2c37e00/src/js/iframe/builder.js#L181
++        connect_web_1.default.dispose();
++        return Promise.resolve();
++    }
++    getPublicKey(params) {
++        return connect_web_1.default.getPublicKey(params);
++    }
++    ethereumSignTransaction(params) {
++        return connect_web_1.default.ethereumSignTransaction(params);
++    }
++    ethereumSignMessage(params) {
++        return connect_web_1.default.ethereumSignMessage(params);
++    }
++    ethereumSignTypedData(params) {
++        return connect_web_1.default.ethereumSignTypedData(params);
++    }
++}
++exports.TrezorConnectBridge = TrezorConnectBridge;
++//# sourceMappingURL=trezor-connect-bridge.js.map
+\ No newline at end of file
+diff --git a/dist/trezor-connect-bridge.js.map b/dist/trezor-connect-bridge.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..fa5188c6a004a9919ac5c71e1d7871c53b02f0c1
+--- /dev/null
++++ b/dist/trezor-connect-bridge.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"trezor-connect-bridge.js","sourceRoot":"","sources":["../src/trezor-connect-bridge.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;AAAA,mEAA0E;AAY1E,MAAa,mBAAmB;IAAhC;QAGE,2BAAsB,GAAG,KAAK,CAAC;IA+CjC,CAAC;IA7CC,KAAK,CAAC,IAAI,CACR,QAE4B;QAE5B,qBAAa,CAAC,EAAE,CAAC,0BAAY,EAAE,CAAC,KAAK,EAAE,EAAE;;YACvC,IAAI,KAAK,CAAC,IAAI,KAAK,oBAAM,CAAC,OAAO,EAAE;gBACjC,OAAO;aACR;YACD,IAAI,CAAC,KAAK,GAAG,MAAA,KAAK,CAAC,OAAO,CAAC,QAAQ,0CAAE,KAAK,CAAC;QAC7C,CAAC,CAAC,CAAC;QAEH,IAAI,IAAI,CAAC,sBAAsB,EAAE;YAC/B,OAAO;SACR;QAED,MAAM,qBAAa,CAAC,IAAI,CAAC,QAAQ,CAAC,CAAC;QACnC,IAAI,CAAC,sBAAsB,GAAG,IAAI,CAAC;IACrC,CAAC;IAED,OAAO;QACL,sDAAsD;QACtD,wEAAwE;QACxE,sHAAsH;QACtH,qBAAa,CAAC,OAAO,EAAE,CAAC;QACxB,OAAO,OAAO,CAAC,OAAO,EAAE,CAAC;IAC3B,CAAC;IAED,YAAY,CAAC,MAAsC;QACjD,OAAO,qBAAa,CAAC,YAAY,CAAC,MAAM,CAAC,CAAC;IAC5C,CAAC;IAED,uBAAuB,CAAC,MAAuC;QAC7D,OAAO,qBAAa,CAAC,uBAAuB,CAAC,MAAM,CAAC,CAAC;IACvD,CAAC;IAED,mBAAmB,CAAC,MAAmC;QACrD,OAAO,qBAAa,CAAC,mBAAmB,CAAC,MAAM,CAAC,CAAC;IACnD,CAAC;IAED,qBAAqB,CACnB,MAAwC;QAExC,OAAO,qBAAa,CAAC,qBAAqB,CAAC,MAAM,CAAC,CAAC;IACrD,CAAC;CACF;AAlDD,kDAkDC","sourcesContent":["import TrezorConnect, { DEVICE_EVENT, DEVICE } from '@trezor/connect-web';\nimport type {\n  Manifest,\n  ConnectSettings,\n  EthereumSignTransaction,\n  Params,\n  EthereumSignMessage,\n  EthereumSignTypedDataTypes,\n  EthereumSignTypedHash,\n} from '@trezor/connect-web';\nimport type { TrezorBridge } from './trezor-bridge';\n\nexport class TrezorConnectBridge implements TrezorBridge {\n  model?: string;\n\n  trezorConnectInitiated = false;\n\n  async init(\n    settings: {\n      manifest: Manifest;\n    } & Partial<ConnectSettings>,\n  ) {\n    TrezorConnect.on(DEVICE_EVENT, (event) => {\n      if (event.type !== DEVICE.CONNECT) {\n        return;\n      }\n      this.model = event.payload.features?.model;\n    });\n\n    if (this.trezorConnectInitiated) {\n      return;\n    }\n\n    await TrezorConnect.init(settings);\n    this.trezorConnectInitiated = true;\n  }\n\n  dispose() {\n    // This removes the Trezor Connect iframe from the DOM\n    // This method is not well documented, but the code it calls can be seen\n    // here: https://github.com/trezor/connect/blob/dec4a56af8a65a6059fb5f63fa3c6690d2c37e00/src/js/iframe/builder.js#L181\n    TrezorConnect.dispose();\n    return Promise.resolve();\n  }\n\n  getPublicKey(params: { path: string; coin: string }) {\n    return TrezorConnect.getPublicKey(params);\n  }\n\n  ethereumSignTransaction(params: Params<EthereumSignTransaction>) {\n    return TrezorConnect.ethereumSignTransaction(params);\n  }\n\n  ethereumSignMessage(params: Params<EthereumSignMessage>) {\n    return TrezorConnect.ethereumSignMessage(params);\n  }\n\n  ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(\n    params: Params<EthereumSignTypedHash<T>>,\n  ) {\n    return TrezorConnect.ethereumSignTypedData(params);\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/trezor-keyring.d.ts b/dist/trezor-keyring.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..fd228bb83fc329543bc9cb6c82200a89ea6612a6
+--- /dev/null
++++ b/dist/trezor-keyring.d.ts
+@@ -0,0 +1,111 @@
++/// <reference types="node" />
++import { EventEmitter } from 'events';
++import HDKey from 'hdkey';
++import type { TypedTransaction } from '@ethereumjs/tx';
++import type OldEthJsTransaction from 'ethereumjs-tx';
++import { TypedMessage, SignTypedDataVersion, MessageTypes } from '@metamask/eth-sig-util';
++import { TrezorBridge } from './trezor-bridge';
++declare const ALLOWED_HD_PATHS: {
++    readonly "m/44'/60'/0'/0": true;
++    readonly "m/44'/1'/0'/0": true;
++};
++export declare const TREZOR_CONNECT_MANIFEST: {
++    email: string;
++    appUrl: string;
++};
++export interface TrezorControllerOptions {
++    hdPath?: string;
++    accounts?: string[];
++    page?: number;
++    perPage?: number;
++}
++export interface TrezorControllerState {
++    hdPath: string;
++    accounts: readonly string[];
++    page: number;
++    paths: Record<string, number>;
++    perPage: number;
++    unlockedAccount: number;
++}
++export declare class TrezorKeyring extends EventEmitter {
++    #private;
++    static type: string;
++    readonly type: string;
++    accounts: readonly string[];
++    hdk: HDKey;
++    hdPath: string;
++    page: number;
++    perPage: number;
++    unlockedAccount: number;
++    paths: Record<string, number>;
++    bridge: TrezorBridge;
++    constructor({ bridge }: {
++        bridge: TrezorBridge;
++    });
++    /**
++     * Gets the model, if known.
++     * This may be `undefined` if the model hasn't been loaded yet.
++     *
++     * @returns
++     */
++    getModel(): string | undefined;
++    init(): Promise<void>;
++    dispose(): Promise<void>;
++    serialize(): Promise<TrezorControllerState>;
++    deserialize(opts?: TrezorControllerOptions): Promise<void>;
++    isUnlocked(): boolean;
++    unlock(): Promise<unknown>;
++    setAccountToUnlock(index: number | string): void;
++    addAccounts(n?: number): Promise<readonly string[]>;
++    getFirstPage(): Promise<{
++        address: string;
++        balance: number | null;
++        index: number;
++    }[]>;
++    getNextPage(): Promise<{
++        address: string;
++        balance: number | null;
++        index: number;
++    }[]>;
++    getPreviousPage(): Promise<{
++        address: string;
++        balance: number | null;
++        index: number;
++    }[]>;
++    getAccounts(): Promise<string[]>;
++    removeAccount(address: string): void;
++    /**
++     * Signs a transaction using Trezor.
++     *
++     * Accepts either an ethereumjs-tx or @ethereumjs/tx transaction, and returns
++     * the same type.
++     *
++     * @param address - Hex string address.
++     * @param tx - Instance of either new-style or old-style ethereumjs transaction.
++     * @returns The signed transaction, an instance of either new-style or old-style
++     * ethereumjs transaction.
++     */
++    signTransaction(address: string, tx: TypedTransaction | OldEthJsTransaction): Promise<TypedTransaction | OldEthJsTransaction>;
++    signMessage(withAccount: string, data: string): Promise<unknown>;
++    signPersonalMessage(withAccount: string, message: string): Promise<unknown>;
++    /**
++     * EIP-712 Sign Typed Data
++     */
++    signTypedData<T extends MessageTypes>(address: string, data: TypedMessage<T>, { version }: {
++        version: SignTypedDataVersion;
++    }): Promise<string>;
++    exportAccount(): Promise<never>;
++    forgetDevice(): void;
++    /**
++     * Set the HD path to be used by the keyring. Only known supported HD paths are allowed.
++     *
++     * If the given HD path is already the current HD path, nothing happens. Otherwise the new HD
++     * path is set, and the wallet state is completely reset.
++     *
++     * @throws {Error] Throws if the HD path is not supported.
++     *
++     * @param hdPath - The HD path to set.
++     */
++    setHdPath(hdPath: keyof typeof ALLOWED_HD_PATHS): void;
++}
++export {};
+diff --git a/dist/trezor-keyring.js b/dist/trezor-keyring.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..f4253e3a8d3f3ce4fac3f16c9b7cd1374a29c895
+--- /dev/null
++++ b/dist/trezor-keyring.js
+@@ -0,0 +1,468 @@
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    var desc = Object.getOwnPropertyDescriptor(m, k);
++    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
++      desc = { enumerable: true, get: function() { return m[k]; } };
++    }
++    Object.defineProperty(o, k2, desc);
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++    Object.defineProperty(o, "default", { enumerable: true, value: v });
++}) : function(o, v) {
++    o["default"] = v;
++});
++var __importStar = (this && this.__importStar) || function (mod) {
++    if (mod && mod.__esModule) return mod;
++    var result = {};
++    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
++    __setModuleDefault(result, mod);
++    return result;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++var _TrezorKeyring_instances, _TrezorKeyring_getPage, _TrezorKeyring_signTransaction, _TrezorKeyring_normalize, _TrezorKeyring_addressFromIndex, _TrezorKeyring_pathFromAddress;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.TrezorKeyring = exports.TREZOR_CONNECT_MANIFEST = void 0;
++const events_1 = require("events");
++const ethUtil = __importStar(require("@ethereumjs/util"));
++const hdkey_1 = __importDefault(require("hdkey"));
++const tx_1 = require("@ethereumjs/tx");
++const connect_plugin_ethereum_1 = require("@trezor/connect-plugin-ethereum");
++const hdPathString = `m/44'/60'/0'/0`;
++const SLIP0044TestnetPath = `m/44'/1'/0'/0`;
++const ALLOWED_HD_PATHS = {
++    [hdPathString]: true,
++    [SLIP0044TestnetPath]: true,
++};
++const keyringType = 'Trezor Hardware';
++const pathBase = 'm';
++const MAX_INDEX = 1000;
++const DELAY_BETWEEN_POPUPS = 1000;
++exports.TREZOR_CONNECT_MANIFEST = {
++    email: 'support@metamask.io',
++    appUrl: 'https://metamask.io',
++};
++async function wait(ms) {
++    return new Promise((resolve) => setTimeout(resolve, ms));
++}
++/**
++ * Check if the given transaction is made with ethereumjs-tx or @ethereumjs/tx
++ *
++ * Transactions built with older versions of ethereumjs-tx have a
++ * getChainId method that newer versions do not.
++ * Older versions are mutable
++ * while newer versions default to being immutable.
++ * Expected shape and type
++ * of data for v, r and s differ (Buffer (old) vs BN (new)).
++ *
++ * @param tx
++ * @returns Returns `true` if tx is an old-style ethereumjs-tx transaction.
++ */
++function isOldStyleEthereumjsTx(tx) {
++    return typeof tx.getChainId === 'function';
++}
++class TrezorKeyring extends events_1.EventEmitter {
++    constructor({ bridge }) {
++        super();
++        _TrezorKeyring_instances.add(this);
++        this.type = keyringType;
++        this.accounts = [];
++        this.hdk = new hdkey_1.default();
++        this.hdPath = hdPathString;
++        this.page = 0;
++        this.perPage = 5;
++        this.unlockedAccount = 0;
++        this.paths = {};
++        if (!bridge) {
++            throw new Error('Bridge is a required dependency for the keyring');
++        }
++        this.bridge = bridge;
++    }
++    /**
++     * Gets the model, if known.
++     * This may be `undefined` if the model hasn't been loaded yet.
++     *
++     * @returns
++     */
++    getModel() {
++        return this.bridge.model;
++    }
++    init() {
++        return this.bridge.init({
++            manifest: exports.TREZOR_CONNECT_MANIFEST,
++            lazyLoad: true,
++        });
++    }
++    dispose() {
++        return this.bridge.dispose();
++    }
++    async serialize() {
++        return Promise.resolve({
++            hdPath: this.hdPath,
++            accounts: this.accounts,
++            page: this.page,
++            paths: this.paths,
++            perPage: this.perPage,
++            unlockedAccount: this.unlockedAccount,
++        });
++    }
++    async deserialize(opts = {}) {
++        var _a, _b, _c, _d;
++        this.hdPath = (_a = opts.hdPath) !== null && _a !== void 0 ? _a : hdPathString;
++        this.accounts = (_b = opts.accounts) !== null && _b !== void 0 ? _b : [];
++        this.page = (_c = opts.page) !== null && _c !== void 0 ? _c : 0;
++        this.perPage = (_d = opts.perPage) !== null && _d !== void 0 ? _d : 5;
++        return Promise.resolve();
++    }
++    isUnlocked() {
++        var _a;
++        return Boolean((_a = this.hdk) === null || _a === void 0 ? void 0 : _a.publicKey);
++    }
++    async unlock() {
++        if (this.isUnlocked()) {
++            return Promise.resolve('already unlocked');
++        }
++        return new Promise((resolve, reject) => {
++            this.bridge
++                .getPublicKey({
++                path: this.hdPath,
++                coin: 'ETH',
++            })
++                .then((response) => {
++                var _a;
++                if (response.success) {
++                    this.hdk.publicKey = Buffer.from(response.payload.publicKey, 'hex');
++                    this.hdk.chainCode = Buffer.from(response.payload.chainCode, 'hex');
++                    resolve('just unlocked');
++                }
++                else {
++                    reject(new Error(((_a = response.payload) === null || _a === void 0 ? void 0 : _a.error) || 'Unknown error'));
++                }
++            })
++                .catch((e) => {
++                reject(new Error((e === null || e === void 0 ? void 0 : e.toString()) || 'Unknown error'));
++            });
++        });
++    }
++    setAccountToUnlock(index) {
++        this.unlockedAccount = parseInt(String(index), 10);
++    }
++    async addAccounts(n = 1) {
++        return new Promise((resolve, reject) => {
++            this.unlock()
++                .then((_) => {
++                const from = this.unlockedAccount;
++                const to = from + n;
++                for (let i = from; i < to; i++) {
++                    const address = __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_addressFromIndex).call(this, pathBase, i);
++                    if (!this.accounts.includes(address)) {
++                        this.accounts = [...this.accounts, address];
++                    }
++                    this.page = 0;
++                }
++                resolve(this.accounts);
++            })
++                .catch((e) => {
++                reject(e);
++            });
++        });
++    }
++    async getFirstPage() {
++        this.page = 0;
++        return __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_getPage).call(this, 1);
++    }
++    async getNextPage() {
++        return __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_getPage).call(this, 1);
++    }
++    async getPreviousPage() {
++        return __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_getPage).call(this, -1);
++    }
++    async getAccounts() {
++        return Promise.resolve(this.accounts.slice());
++    }
++    removeAccount(address) {
++        if (!this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())) {
++            throw new Error(`Address ${address} not found in this keyring`);
++        }
++        this.accounts = this.accounts.filter((a) => a.toLowerCase() !== address.toLowerCase());
++    }
++    /**
++     * Signs a transaction using Trezor.
++     *
++     * Accepts either an ethereumjs-tx or @ethereumjs/tx transaction, and returns
++     * the same type.
++     *
++     * @param address - Hex string address.
++     * @param tx - Instance of either new-style or old-style ethereumjs transaction.
++     * @returns The signed transaction, an instance of either new-style or old-style
++     * ethereumjs transaction.
++     */
++    async signTransaction(address, tx) {
++        if (isOldStyleEthereumjsTx(tx)) {
++            // In this version of ethereumjs-tx we must add the chainId in hex format
++            // to the initial v value. The chainId must be included in the serialized
++            // transaction which is only communicated to ethereumjs-tx in this
++            // value. In newer versions the chainId is communicated via the 'Common'
++            // object.
++            return __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_signTransaction).call(this, address, 
++            // @types/ethereumjs-tx and old ethereumjs-tx versions document
++            // this function return value as Buffer, but the actual
++            // Transaction._chainId will always be a number.
++            // See https://github.com/ethereumjs/ethereumjs-tx/blob/v1.3.7/index.js#L126
++            tx.getChainId(), tx, (payload) => {
++                tx.v = Buffer.from(payload.v, 'hex');
++                tx.r = Buffer.from(payload.r, 'hex');
++                tx.s = Buffer.from(payload.s, 'hex');
++                return tx;
++            });
++        }
++        return __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_signTransaction).call(this, address, Number(tx.common.chainId()), tx, (payload) => {
++            // Because tx will be immutable, first get a plain javascript object that
++            // represents the transaction. Using txData here as it aligns with the
++            // nomenclature of ethereumjs/tx.
++            const txData = tx.toJSON();
++            // The fromTxData utility expects a type to support transactions with a type other than 0
++            txData.type = tx.type;
++            // The fromTxData utility expects v,r and s to be hex prefixed
++            txData.v = ethUtil.addHexPrefix(payload.v);
++            txData.r = ethUtil.addHexPrefix(payload.r);
++            txData.s = ethUtil.addHexPrefix(payload.s);
++            // Adopt the 'common' option from the original transaction and set the
++            // returned object to be frozen if the original is frozen.
++            return tx_1.TransactionFactory.fromTxData(txData, {
++                common: tx.common,
++                freeze: Object.isFrozen(tx),
++            });
++        });
++    }
++    async signMessage(withAccount, data) {
++        return this.signPersonalMessage(withAccount, data);
++    }
++    // For personal_sign, we need to prefix the message:
++    async signPersonalMessage(withAccount, message) {
++        return new Promise((resolve, reject) => {
++            this.unlock()
++                .then((status) => {
++                setTimeout(() => {
++                    this.bridge
++                        .ethereumSignMessage({
++                        path: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_pathFromAddress).call(this, withAccount),
++                        message: ethUtil.stripHexPrefix(message),
++                        hex: true,
++                    })
++                        .then((response) => {
++                        var _a;
++                        if (response.success) {
++                            if (response.payload.address !==
++                                ethUtil.toChecksumAddress(withAccount)) {
++                                reject(new Error('signature doesnt match the right address'));
++                            }
++                            const signature = `0x${response.payload.signature}`;
++                            resolve(signature);
++                        }
++                        else {
++                            reject(new Error(((_a = response.payload) === null || _a === void 0 ? void 0 : _a.error) || 'Unknown error'));
++                        }
++                    })
++                        .catch((e) => {
++                        reject(new Error((e === null || e === void 0 ? void 0 : e.toString()) || 'Unknown error'));
++                    });
++                    // This is necessary to avoid popup collision
++                    // between the unlock & sign trezor popups
++                }, status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);
++            })
++                .catch((e) => {
++                reject(new Error((e === null || e === void 0 ? void 0 : e.toString()) || 'Unknown error'));
++            });
++        });
++    }
++    /**
++     * EIP-712 Sign Typed Data
++     */
++    async signTypedData(address, data, { version }) {
++        var _a, _b;
++        const dataWithHashes = (0, connect_plugin_ethereum_1.transformTypedData)(data, version === 'V4');
++        // set default values for signTypedData
++        // Trezor is stricter than @metamask/eth-sig-util in what it accepts
++        const { types, message = {}, domain = {}, primaryType, 
++        // snake_case since Trezor uses Protobuf naming conventions here
++        domain_separator_hash, // eslint-disable-line camelcase
++        message_hash, // eslint-disable-line camelcase
++         } = dataWithHashes;
++        // This is necessary to avoid popup collision
++        // between the unlock & sign trezor popups
++        const status = await this.unlock();
++        await wait(status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);
++        const response = await this.bridge.ethereumSignTypedData({
++            path: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_pathFromAddress).call(this, address),
++            data: {
++                types: Object.assign(Object.assign({}, types), { EIP712Domain: (_a = types.EIP712Domain) !== null && _a !== void 0 ? _a : [] }),
++                message,
++                domain,
++                primaryType,
++            },
++            metamask_v4_compat: true,
++            // Trezor 1 only supports blindly signing hashes
++            domain_separator_hash,
++            message_hash: message_hash !== null && message_hash !== void 0 ? message_hash : '', // eslint-disable-line camelcase
++        });
++        if (response.success) {
++            if (ethUtil.toChecksumAddress(address) !== response.payload.address) {
++                throw new Error('signature doesnt match the right address');
++            }
++            return response.payload.signature;
++        }
++        throw new Error(((_b = response.payload) === null || _b === void 0 ? void 0 : _b.error) || 'Unknown error');
++    }
++    async exportAccount() {
++        return Promise.reject(new Error('Not supported on this device'));
++    }
++    forgetDevice() {
++        this.accounts = [];
++        this.hdk = new hdkey_1.default();
++        this.page = 0;
++        this.unlockedAccount = 0;
++        this.paths = {};
++    }
++    /**
++     * Set the HD path to be used by the keyring. Only known supported HD paths are allowed.
++     *
++     * If the given HD path is already the current HD path, nothing happens. Otherwise the new HD
++     * path is set, and the wallet state is completely reset.
++     *
++     * @throws {Error] Throws if the HD path is not supported.
++     *
++     * @param hdPath - The HD path to set.
++     */
++    setHdPath(hdPath) {
++        if (!ALLOWED_HD_PATHS[hdPath]) {
++            throw new Error(`The setHdPath method does not support setting HD Path to ${hdPath}`);
++        }
++        // Reset HDKey if the path changes
++        if (this.hdPath !== hdPath) {
++            this.hdk = new hdkey_1.default();
++            this.accounts = [];
++            this.page = 0;
++            this.perPage = 5;
++            this.unlockedAccount = 0;
++            this.paths = {};
++        }
++        this.hdPath = hdPath;
++    }
++}
++exports.TrezorKeyring = TrezorKeyring;
++_TrezorKeyring_instances = new WeakSet(), _TrezorKeyring_getPage = async function _TrezorKeyring_getPage(increment) {
++    this.page += increment;
++    if (this.page <= 0) {
++        this.page = 1;
++    }
++    return new Promise((resolve, reject) => {
++        this.unlock()
++            .then((_) => {
++            const from = (this.page - 1) * this.perPage;
++            const to = from + this.perPage;
++            const accounts = [];
++            for (let i = from; i < to; i++) {
++                const address = __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_addressFromIndex).call(this, pathBase, i);
++                accounts.push({
++                    address,
++                    balance: null,
++                    index: i,
++                });
++                this.paths[ethUtil.toChecksumAddress(address)] = i;
++            }
++            resolve(accounts);
++        })
++            .catch((e) => {
++            reject(e);
++        });
++    });
++}, _TrezorKeyring_signTransaction = 
++/**
++ *
++ * @param address - Hex string address.
++ * @param chainId - Chain ID
++ * @param tx - Instance of either new-style or old-style ethereumjs transaction.
++ * @param handleSigning - Converts signed transaction
++ * to the same new-style or old-style ethereumjs-tx.
++ * @returns The signed transaction, an instance of either new-style or old-style
++ * ethereumjs transaction.
++ */
++async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSigning) {
++    var _a, _b;
++    let transaction;
++    if (isOldStyleEthereumjsTx(tx)) {
++        // legacy transaction from ethereumjs-tx package has no .toJSON() function,
++        // so we need to convert to hex-strings manually manually
++        transaction = {
++            to: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, tx.to),
++            value: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, tx.value),
++            data: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, tx.data),
++            chainId,
++            nonce: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, tx.nonce),
++            gasLimit: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, tx.gasLimit),
++            gasPrice: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, tx.gasPrice),
++        };
++    }
++    else {
++        // new-style transaction from @ethereumjs/tx package
++        // we can just copy tx.toJSON() for everything except chainId, which must be a number
++        transaction = Object.assign(Object.assign({}, tx.toJSON()), { chainId, to: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, ethUtil.toBuffer(tx.to)) });
++    }
++    try {
++        const status = await this.unlock();
++        await wait(status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);
++        const response = await this.bridge.ethereumSignTransaction({
++            path: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_pathFromAddress).call(this, address),
++            transaction,
++        });
++        if (response.success) {
++            const newOrMutatedTx = handleSigning(response.payload);
++            const addressSignedWith = ethUtil.toChecksumAddress(ethUtil.addHexPrefix(newOrMutatedTx.getSenderAddress().toString('hex')));
++            const correctAddress = ethUtil.toChecksumAddress(address);
++            if (addressSignedWith !== correctAddress) {
++                throw new Error("signature doesn't match the right address");
++            }
++            return newOrMutatedTx;
++        }
++        throw new Error(((_a = response.payload) === null || _a === void 0 ? void 0 : _a.error) || 'Unknown error');
++    }
++    catch (e) {
++        throw new Error((_b = e === null || e === void 0 ? void 0 : e.toString()) !== null && _b !== void 0 ? _b : 'Unknown error');
++    }
++}, _TrezorKeyring_normalize = function _TrezorKeyring_normalize(buf) {
++    return ethUtil.bufferToHex(buf).toString();
++}, _TrezorKeyring_addressFromIndex = function _TrezorKeyring_addressFromIndex(basePath, i) {
++    const dkey = this.hdk.derive(`${basePath}/${i}`);
++    const address = ethUtil
++        .publicToAddress(dkey.publicKey, true)
++        .toString('hex');
++    return ethUtil.toChecksumAddress(`0x${address}`);
++}, _TrezorKeyring_pathFromAddress = function _TrezorKeyring_pathFromAddress(address) {
++    const checksummedAddress = ethUtil.toChecksumAddress(address);
++    let index = this.paths[checksummedAddress];
++    if (typeof index === 'undefined') {
++        for (let i = 0; i < MAX_INDEX; i++) {
++            if (checksummedAddress === __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_addressFromIndex).call(this, pathBase, i)) {
++                index = i;
++                break;
++            }
++        }
++    }
++    if (typeof index === 'undefined') {
++        throw new Error('Unknown address');
++    }
++    return `${this.hdPath}/${index}`;
++};
++TrezorKeyring.type = keyringType;
++//# sourceMappingURL=trezor-keyring.js.map
+\ No newline at end of file
+diff --git a/dist/trezor-keyring.js.map b/dist/trezor-keyring.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..3fb51573e410d94181aed92c608b02fb17ff27e4
+--- /dev/null
++++ b/dist/trezor-keyring.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"trezor-keyring.js","sourceRoot":"","sources":["../src/trezor-keyring.ts"],"names":[],"mappings":"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","sourcesContent":["import { EventEmitter } from 'events';\nimport * as ethUtil from '@ethereumjs/util';\nimport HDKey from 'hdkey';\nimport type {\n  EthereumTransactionEIP1559,\n  EthereumSignedTx,\n  EthereumTransaction,\n} from '@trezor/connect-web';\nimport { TransactionFactory } from '@ethereumjs/tx';\nimport type { TypedTransaction, TxData } from '@ethereumjs/tx';\nimport type OldEthJsTransaction from 'ethereumjs-tx';\nimport { transformTypedData } from '@trezor/connect-plugin-ethereum';\nimport {\n  TypedMessage,\n  SignTypedDataVersion,\n  MessageTypes,\n} from '@metamask/eth-sig-util';\nimport { TrezorBridge } from './trezor-bridge';\n\nconst hdPathString = `m/44'/60'/0'/0`;\nconst SLIP0044TestnetPath = `m/44'/1'/0'/0`;\n\nconst ALLOWED_HD_PATHS = {\n  [hdPathString]: true,\n  [SLIP0044TestnetPath]: true,\n} as const;\n\nconst keyringType = 'Trezor Hardware';\nconst pathBase = 'm';\nconst MAX_INDEX = 1000;\nconst DELAY_BETWEEN_POPUPS = 1000;\nexport const TREZOR_CONNECT_MANIFEST = {\n  email: 'support@metamask.io',\n  appUrl: 'https://metamask.io',\n};\n\nexport interface TrezorControllerOptions {\n  hdPath?: string;\n  accounts?: string[];\n  page?: number;\n  perPage?: number;\n}\n\nexport interface TrezorControllerState {\n  hdPath: string;\n  accounts: readonly string[];\n  page: number;\n  paths: Record<string, number>;\n  perPage: number;\n  unlockedAccount: number;\n}\n\nasync function wait(ms: number) {\n  return new Promise((resolve) => setTimeout(resolve, ms));\n}\n\n/**\n * Check if the given transaction is made with ethereumjs-tx or @ethereumjs/tx\n *\n * Transactions built with older versions of ethereumjs-tx have a\n * getChainId method that newer versions do not.\n * Older versions are mutable\n * while newer versions default to being immutable.\n * Expected shape and type\n * of data for v, r and s differ (Buffer (old) vs BN (new)).\n *\n * @param tx\n * @returns Returns `true` if tx is an old-style ethereumjs-tx transaction.\n */\nfunction isOldStyleEthereumjsTx(\n  tx: TypedTransaction | OldEthJsTransaction,\n): tx is OldEthJsTransaction {\n  return typeof (tx as OldEthJsTransaction).getChainId === 'function';\n}\n\nexport class TrezorKeyring extends EventEmitter {\n  static type: string = keyringType;\n\n  readonly type: string = keyringType;\n\n  accounts: readonly string[] = [];\n\n  hdk: HDKey = new HDKey();\n\n  hdPath: string = hdPathString;\n\n  page = 0;\n\n  perPage = 5;\n\n  unlockedAccount = 0;\n\n  paths: Record<string, number> = {};\n\n  bridge: TrezorBridge;\n\n  constructor({ bridge }: { bridge: TrezorBridge }) {\n    super();\n\n    if (!bridge) {\n      throw new Error('Bridge is a required dependency for the keyring');\n    }\n\n    this.bridge = bridge;\n  }\n\n  /**\n   * Gets the model, if known.\n   * This may be `undefined` if the model hasn't been loaded yet.\n   *\n   * @returns\n   */\n  getModel(): string | undefined {\n    return this.bridge.model;\n  }\n\n  init() {\n    return this.bridge.init({\n      manifest: TREZOR_CONNECT_MANIFEST,\n      lazyLoad: true,\n    });\n  }\n\n  dispose() {\n    return this.bridge.dispose();\n  }\n\n  async serialize(): Promise<TrezorControllerState> {\n    return Promise.resolve({\n      hdPath: this.hdPath,\n      accounts: this.accounts,\n      page: this.page,\n      paths: this.paths,\n      perPage: this.perPage,\n      unlockedAccount: this.unlockedAccount,\n    });\n  }\n\n  async deserialize(opts: TrezorControllerOptions = {}) {\n    this.hdPath = opts.hdPath ?? hdPathString;\n    this.accounts = opts.accounts ?? [];\n    this.page = opts.page ?? 0;\n    this.perPage = opts.perPage ?? 5;\n    return Promise.resolve();\n  }\n\n  isUnlocked() {\n    return Boolean(this.hdk?.publicKey);\n  }\n\n  async unlock() {\n    if (this.isUnlocked()) {\n      return Promise.resolve('already unlocked');\n    }\n    return new Promise((resolve, reject) => {\n      this.bridge\n        .getPublicKey({\n          path: this.hdPath,\n          coin: 'ETH',\n        })\n        .then((response) => {\n          if (response.success) {\n            this.hdk.publicKey = Buffer.from(response.payload.publicKey, 'hex');\n            this.hdk.chainCode = Buffer.from(response.payload.chainCode, 'hex');\n            resolve('just unlocked');\n          } else {\n            reject(new Error(response.payload?.error || 'Unknown error'));\n          }\n        })\n        .catch((e) => {\n          reject(new Error(e?.toString() || 'Unknown error'));\n        });\n    });\n  }\n\n  setAccountToUnlock(index: number | string) {\n    this.unlockedAccount = parseInt(String(index), 10);\n  }\n\n  async addAccounts(n = 1): Promise<readonly string[]> {\n    return new Promise((resolve, reject) => {\n      this.unlock()\n        .then((_) => {\n          const from = this.unlockedAccount;\n          const to = from + n;\n\n          for (let i = from; i < to; i++) {\n            const address = this.#addressFromIndex(pathBase, i);\n            if (!this.accounts.includes(address)) {\n              this.accounts = [...this.accounts, address];\n            }\n            this.page = 0;\n          }\n          resolve(this.accounts);\n        })\n        .catch((e) => {\n          reject(e);\n        });\n    });\n  }\n\n  async getFirstPage() {\n    this.page = 0;\n    return this.#getPage(1);\n  }\n\n  async getNextPage() {\n    return this.#getPage(1);\n  }\n\n  async getPreviousPage() {\n    return this.#getPage(-1);\n  }\n\n  async #getPage(\n    increment: number,\n  ): Promise<{ address: string; balance: number | null; index: number }[]> {\n    this.page += increment;\n\n    if (this.page <= 0) {\n      this.page = 1;\n    }\n\n    return new Promise((resolve, reject) => {\n      this.unlock()\n        .then((_) => {\n          const from = (this.page - 1) * this.perPage;\n          const to = from + this.perPage;\n\n          const accounts = [];\n\n          for (let i = from; i < to; i++) {\n            const address = this.#addressFromIndex(pathBase, i);\n            accounts.push({\n              address,\n              balance: null,\n              index: i,\n            });\n            this.paths[ethUtil.toChecksumAddress(address)] = i;\n          }\n          resolve(accounts);\n        })\n        .catch((e) => {\n          reject(e);\n        });\n    });\n  }\n\n  async getAccounts() {\n    return Promise.resolve(this.accounts.slice());\n  }\n\n  removeAccount(address: string) {\n    if (\n      !this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())\n    ) {\n      throw new Error(`Address ${address} not found in this keyring`);\n    }\n\n    this.accounts = this.accounts.filter(\n      (a) => a.toLowerCase() !== address.toLowerCase(),\n    );\n  }\n\n  /**\n   * Signs a transaction using Trezor.\n   *\n   * Accepts either an ethereumjs-tx or @ethereumjs/tx transaction, and returns\n   * the same type.\n   *\n   * @param address - Hex string address.\n   * @param tx - Instance of either new-style or old-style ethereumjs transaction.\n   * @returns The signed transaction, an instance of either new-style or old-style\n   * ethereumjs transaction.\n   */\n  async signTransaction(\n    address: string,\n    tx: TypedTransaction | OldEthJsTransaction,\n  ) {\n    if (isOldStyleEthereumjsTx(tx)) {\n      // In this version of ethereumjs-tx we must add the chainId in hex format\n      // to the initial v value. The chainId must be included in the serialized\n      // transaction which is only communicated to ethereumjs-tx in this\n      // value. In newer versions the chainId is communicated via the 'Common'\n      // object.\n      return this.#signTransaction(\n        address,\n        // @types/ethereumjs-tx and old ethereumjs-tx versions document\n        // this function return value as Buffer, but the actual\n        // Transaction._chainId will always be a number.\n        // See https://github.com/ethereumjs/ethereumjs-tx/blob/v1.3.7/index.js#L126\n        tx.getChainId() as unknown as number,\n        tx,\n        (payload) => {\n          tx.v = Buffer.from(payload.v, 'hex');\n          tx.r = Buffer.from(payload.r, 'hex');\n          tx.s = Buffer.from(payload.s, 'hex');\n          return tx;\n        },\n      );\n    }\n    return this.#signTransaction(\n      address,\n      Number(tx.common.chainId()),\n      tx,\n      (payload) => {\n        // Because tx will be immutable, first get a plain javascript object that\n        // represents the transaction. Using txData here as it aligns with the\n        // nomenclature of ethereumjs/tx.\n        const txData: TxData = tx.toJSON();\n        // The fromTxData utility expects a type to support transactions with a type other than 0\n        txData.type = tx.type;\n        // The fromTxData utility expects v,r and s to be hex prefixed\n        txData.v = ethUtil.addHexPrefix(payload.v);\n        txData.r = ethUtil.addHexPrefix(payload.r);\n        txData.s = ethUtil.addHexPrefix(payload.s);\n        // Adopt the 'common' option from the original transaction and set the\n        // returned object to be frozen if the original is frozen.\n        return TransactionFactory.fromTxData(txData, {\n          common: tx.common,\n          freeze: Object.isFrozen(tx),\n        });\n      },\n    );\n  }\n\n  /**\n   *\n   * @param address - Hex string address.\n   * @param chainId - Chain ID\n   * @param tx - Instance of either new-style or old-style ethereumjs transaction.\n   * @param handleSigning - Converts signed transaction\n   * to the same new-style or old-style ethereumjs-tx.\n   * @returns The signed transaction, an instance of either new-style or old-style\n   * ethereumjs transaction.\n   */\n  async #signTransaction<T extends TypedTransaction | OldEthJsTransaction>(\n    address: string,\n    chainId: number,\n    tx: T,\n    handleSigning: (tx: EthereumSignedTx) => T,\n  ): Promise<T> {\n    let transaction: EthereumTransaction | EthereumTransactionEIP1559;\n    if (isOldStyleEthereumjsTx(tx)) {\n      // legacy transaction from ethereumjs-tx package has no .toJSON() function,\n      // so we need to convert to hex-strings manually manually\n      transaction = {\n        to: this.#normalize(tx.to),\n        value: this.#normalize(tx.value),\n        data: this.#normalize(tx.data),\n        chainId,\n        nonce: this.#normalize(tx.nonce),\n        gasLimit: this.#normalize(tx.gasLimit),\n        gasPrice: this.#normalize(tx.gasPrice),\n      };\n    } else {\n      // new-style transaction from @ethereumjs/tx package\n      // we can just copy tx.toJSON() for everything except chainId, which must be a number\n      transaction = {\n        ...tx.toJSON(),\n        chainId,\n        to: this.#normalize(ethUtil.toBuffer(tx.to)),\n      } as EthereumTransaction | EthereumTransactionEIP1559;\n    }\n\n    try {\n      const status = await this.unlock();\n      await wait(status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);\n      const response = await this.bridge.ethereumSignTransaction({\n        path: this.#pathFromAddress(address),\n        transaction,\n      });\n      if (response.success) {\n        const newOrMutatedTx = handleSigning(response.payload);\n\n        const addressSignedWith = ethUtil.toChecksumAddress(\n          ethUtil.addHexPrefix(\n            newOrMutatedTx.getSenderAddress().toString('hex'),\n          ),\n        );\n        const correctAddress = ethUtil.toChecksumAddress(address);\n        if (addressSignedWith !== correctAddress) {\n          throw new Error(\"signature doesn't match the right address\");\n        }\n\n        return newOrMutatedTx;\n      }\n      throw new Error(response.payload?.error || 'Unknown error');\n    } catch (e) {\n      throw new Error(e?.toString() ?? 'Unknown error');\n    }\n  }\n\n  async signMessage(withAccount: string, data: string) {\n    return this.signPersonalMessage(withAccount, data);\n  }\n\n  // For personal_sign, we need to prefix the message:\n  async signPersonalMessage(withAccount: string, message: string) {\n    return new Promise((resolve, reject) => {\n      this.unlock()\n        .then((status) => {\n          setTimeout(\n            () => {\n              this.bridge\n                .ethereumSignMessage({\n                  path: this.#pathFromAddress(withAccount),\n                  message: ethUtil.stripHexPrefix(message),\n                  hex: true,\n                })\n                .then((response) => {\n                  if (response.success) {\n                    if (\n                      response.payload.address !==\n                      ethUtil.toChecksumAddress(withAccount)\n                    ) {\n                      reject(\n                        new Error('signature doesnt match the right address'),\n                      );\n                    }\n                    const signature = `0x${response.payload.signature}`;\n                    resolve(signature);\n                  } else {\n                    reject(\n                      new Error(response.payload?.error || 'Unknown error'),\n                    );\n                  }\n                })\n                .catch((e) => {\n                  reject(new Error(e?.toString() || 'Unknown error'));\n                });\n              // This is necessary to avoid popup collision\n              // between the unlock & sign trezor popups\n            },\n            status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0,\n          );\n        })\n        .catch((e) => {\n          reject(new Error(e?.toString() || 'Unknown error'));\n        });\n    });\n  }\n\n  /**\n   * EIP-712 Sign Typed Data\n   */\n  async signTypedData<T extends MessageTypes>(\n    address: string,\n    data: TypedMessage<T>,\n    { version }: { version: SignTypedDataVersion },\n  ) {\n    const dataWithHashes = transformTypedData(data, version === 'V4');\n\n    // set default values for signTypedData\n    // Trezor is stricter than @metamask/eth-sig-util in what it accepts\n    const {\n      types,\n      message = {},\n      domain = {},\n      primaryType,\n      // snake_case since Trezor uses Protobuf naming conventions here\n      domain_separator_hash, // eslint-disable-line camelcase\n      message_hash, // eslint-disable-line camelcase\n    } = dataWithHashes;\n\n    // This is necessary to avoid popup collision\n    // between the unlock & sign trezor popups\n    const status = await this.unlock();\n    await wait(status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);\n\n    const response = await this.bridge.ethereumSignTypedData({\n      path: this.#pathFromAddress(address),\n      data: {\n        types: { ...types, EIP712Domain: types.EIP712Domain ?? [] },\n        message,\n        domain,\n        primaryType,\n      },\n      metamask_v4_compat: true, // eslint-disable-line camelcase\n      // Trezor 1 only supports blindly signing hashes\n      domain_separator_hash, // eslint-disable-line camelcase\n      message_hash: message_hash ?? '', // eslint-disable-line camelcase\n    });\n\n    if (response.success) {\n      if (ethUtil.toChecksumAddress(address) !== response.payload.address) {\n        throw new Error('signature doesnt match the right address');\n      }\n      return response.payload.signature;\n    }\n\n    throw new Error(response.payload?.error || 'Unknown error');\n  }\n\n  async exportAccount() {\n    return Promise.reject(new Error('Not supported on this device'));\n  }\n\n  forgetDevice() {\n    this.accounts = [];\n    this.hdk = new HDKey();\n    this.page = 0;\n    this.unlockedAccount = 0;\n    this.paths = {};\n  }\n\n  /**\n   * Set the HD path to be used by the keyring. Only known supported HD paths are allowed.\n   *\n   * If the given HD path is already the current HD path, nothing happens. Otherwise the new HD\n   * path is set, and the wallet state is completely reset.\n   *\n   * @throws {Error] Throws if the HD path is not supported.\n   *\n   * @param hdPath - The HD path to set.\n   */\n  setHdPath(hdPath: keyof typeof ALLOWED_HD_PATHS) {\n    if (!ALLOWED_HD_PATHS[hdPath]) {\n      throw new Error(\n        `The setHdPath method does not support setting HD Path to ${hdPath}`,\n      );\n    }\n\n    // Reset HDKey if the path changes\n    if (this.hdPath !== hdPath) {\n      this.hdk = new HDKey();\n      this.accounts = [];\n      this.page = 0;\n      this.perPage = 5;\n      this.unlockedAccount = 0;\n      this.paths = {};\n    }\n    this.hdPath = hdPath;\n  }\n\n  #normalize(buf: Buffer) {\n    return ethUtil.bufferToHex(buf).toString();\n  }\n\n  #addressFromIndex(basePath: string, i: number) {\n    const dkey = this.hdk.derive(`${basePath}/${i}`);\n    const address = ethUtil\n      .publicToAddress(dkey.publicKey, true)\n      .toString('hex');\n    return ethUtil.toChecksumAddress(`0x${address}`);\n  }\n\n  #pathFromAddress(address: string) {\n    const checksummedAddress = ethUtil.toChecksumAddress(address);\n    let index = this.paths[checksummedAddress];\n    if (typeof index === 'undefined') {\n      for (let i = 0; i < MAX_INDEX; i++) {\n        if (checksummedAddress === this.#addressFromIndex(pathBase, i)) {\n          index = i;\n          break;\n        }\n      }\n    }\n\n    if (typeof index === 'undefined') {\n      throw new Error('Unknown address');\n    }\n    return `${this.hdPath}/${index}`;\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/index.js b/index.js
+deleted file mode 100644
+index eca03ecf743fb30d6c5d73c8043329e28bce693e..0000000000000000000000000000000000000000
+--- a/index.js
++++ /dev/null
+@@ -1,524 +0,0 @@
+-const { EventEmitter } = require('events');
+-const ethUtil = require('@ethereumjs/util');
+-const HDKey = require('hdkey');
+-const TrezorConnect = require('@trezor/connect-web').default;
+-const { TransactionFactory } = require('@ethereumjs/tx');
+-const { transformTypedData } = require('@trezor/connect-plugin-ethereum');
+-
+-const hdPathString = `m/44'/60'/0'/0`;
+-const SLIP0044TestnetPath = `m/44'/1'/0'/0`;
+-
+-const ALLOWED_HD_PATHS = {
+-  [hdPathString]: true,
+-  [SLIP0044TestnetPath]: true,
+-};
+-
+-const keyringType = 'Trezor Hardware';
+-const pathBase = 'm';
+-const MAX_INDEX = 1000;
+-const DELAY_BETWEEN_POPUPS = 1000;
+-const TREZOR_CONNECT_MANIFEST = {
+-  email: 'support@metamask.io',
+-  appUrl: 'https://metamask.io',
+-};
+-
+-function wait(ms) {
+-  return new Promise((resolve) => setTimeout(resolve, ms));
+-}
+-
+-/**
+- * @typedef {import('@ethereumjs/tx').TypedTransaction} TypedTransaction
+- * @typedef {InstanceType<import("ethereumjs-tx")>} OldEthJsTransaction
+- */
+-
+-/**
+- * Check if the given transaction is made with ethereumjs-tx or @ethereumjs/tx
+- *
+- * Transactions built with older versions of ethereumjs-tx have a
+- * getChainId method that newer versions do not.
+- * Older versions are mutable
+- * while newer versions default to being immutable.
+- * Expected shape and type
+- * of data for v, r and s differ (Buffer (old) vs BN (new)).
+- *
+- * @param {TypedTransaction | OldEthJsTransaction} tx
+- * @returns {tx is OldEthJsTransaction} Returns `true` if tx is an old-style ethereumjs-tx transaction.
+- */
+-function isOldStyleEthereumjsTx(tx) {
+-  return typeof tx.getChainId === 'function';
+-}
+-
+-class TrezorKeyring extends EventEmitter {
+-  constructor(opts = {}) {
+-    super();
+-    this.type = keyringType;
+-    this.accounts = [];
+-    this.hdk = new HDKey();
+-    this.page = 0;
+-    this.perPage = 5;
+-    this.unlockedAccount = 0;
+-    this.paths = {};
+-    this.deserialize(opts);
+-    this.trezorConnectInitiated = false;
+-
+-    TrezorConnect.on('DEVICE_EVENT', (event) => {
+-      if (event && event.payload && event.payload.features) {
+-        this.model = event.payload.features.model;
+-      }
+-    });
+-
+-    if (!this.trezorConnectInitiated) {
+-      TrezorConnect.init({ manifest: TREZOR_CONNECT_MANIFEST, lazyLoad: true });
+-      this.trezorConnectInitiated = true;
+-    }
+-  }
+-
+-  /**
+-   * Gets the model, if known.
+-   * This may be `undefined` if the model hasn't been loaded yet.
+-   *
+-   * @returns {"T" | "1" | undefined}
+-   */
+-  getModel() {
+-    return this.model;
+-  }
+-
+-  dispose() {
+-    // This removes the Trezor Connect iframe from the DOM
+-    // This method is not well documented, but the code it calls can be seen
+-    // here: https://github.com/trezor/connect/blob/dec4a56af8a65a6059fb5f63fa3c6690d2c37e00/src/js/iframe/builder.js#L181
+-    TrezorConnect.dispose();
+-  }
+-
+-  serialize() {
+-    return Promise.resolve({
+-      hdPath: this.hdPath,
+-      accounts: this.accounts,
+-      page: this.page,
+-      paths: this.paths,
+-      perPage: this.perPage,
+-      unlockedAccount: this.unlockedAccount,
+-    });
+-  }
+-
+-  deserialize(opts = {}) {
+-    this.hdPath = opts.hdPath || hdPathString;
+-    this.accounts = opts.accounts || [];
+-    this.page = opts.page || 0;
+-    this.perPage = opts.perPage || 5;
+-    return Promise.resolve();
+-  }
+-
+-  isUnlocked() {
+-    return Boolean(this.hdk && this.hdk.publicKey);
+-  }
+-
+-  unlock() {
+-    if (this.isUnlocked()) {
+-      return Promise.resolve('already unlocked');
+-    }
+-    return new Promise((resolve, reject) => {
+-      TrezorConnect.getPublicKey({
+-        path: this.hdPath,
+-        coin: 'ETH',
+-      })
+-        .then((response) => {
+-          if (response.success) {
+-            this.hdk.publicKey = Buffer.from(response.payload.publicKey, 'hex');
+-            this.hdk.chainCode = Buffer.from(response.payload.chainCode, 'hex');
+-            resolve('just unlocked');
+-          } else {
+-            reject(
+-              new Error(
+-                (response.payload && response.payload.error) || 'Unknown error',
+-              ),
+-            );
+-          }
+-        })
+-        .catch((e) => {
+-          reject(new Error((e && e.toString()) || 'Unknown error'));
+-        });
+-    });
+-  }
+-
+-  setAccountToUnlock(index) {
+-    this.unlockedAccount = parseInt(index, 10);
+-  }
+-
+-  addAccounts(n = 1) {
+-    return new Promise((resolve, reject) => {
+-      this.unlock()
+-        .then((_) => {
+-          const from = this.unlockedAccount;
+-          const to = from + n;
+-
+-          for (let i = from; i < to; i++) {
+-            const address = this._addressFromIndex(pathBase, i);
+-            if (!this.accounts.includes(address)) {
+-              this.accounts.push(address);
+-            }
+-            this.page = 0;
+-          }
+-          resolve(this.accounts);
+-        })
+-        .catch((e) => {
+-          reject(e);
+-        });
+-    });
+-  }
+-
+-  getFirstPage() {
+-    this.page = 0;
+-    return this.__getPage(1);
+-  }
+-
+-  getNextPage() {
+-    return this.__getPage(1);
+-  }
+-
+-  getPreviousPage() {
+-    return this.__getPage(-1);
+-  }
+-
+-  __getPage(increment) {
+-    this.page += increment;
+-
+-    if (this.page <= 0) {
+-      this.page = 1;
+-    }
+-
+-    return new Promise((resolve, reject) => {
+-      this.unlock()
+-        .then((_) => {
+-          const from = (this.page - 1) * this.perPage;
+-          const to = from + this.perPage;
+-
+-          const accounts = [];
+-
+-          for (let i = from; i < to; i++) {
+-            const address = this._addressFromIndex(pathBase, i);
+-            accounts.push({
+-              address,
+-              balance: null,
+-              index: i,
+-            });
+-            this.paths[ethUtil.toChecksumAddress(address)] = i;
+-          }
+-          resolve(accounts);
+-        })
+-        .catch((e) => {
+-          reject(e);
+-        });
+-    });
+-  }
+-
+-  getAccounts() {
+-    return Promise.resolve(this.accounts.slice());
+-  }
+-
+-  removeAccount(address) {
+-    if (
+-      !this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())
+-    ) {
+-      throw new Error(`Address ${address} not found in this keyring`);
+-    }
+-
+-    this.accounts = this.accounts.filter(
+-      (a) => a.toLowerCase() !== address.toLowerCase(),
+-    );
+-  }
+-
+-  /**
+-   * Signs a transaction using Trezor.
+-   *
+-   * Accepts either an ethereumjs-tx or @ethereumjs/tx transaction, and returns
+-   * the same type.
+-   *
+-   * @template {TypedTransaction | OldEthJsTransaction} Transaction
+-   * @param {string} address - Hex string address.
+-   * @param {Transaction} tx - Instance of either new-style or old-style ethereumjs transaction.
+-   * @returns {Promise<Transaction>} The signed transaction, an instance of either new-style or old-style
+-   * ethereumjs transaction.
+-   */
+-  signTransaction(address, tx) {
+-    if (isOldStyleEthereumjsTx(tx)) {
+-      // In this version of ethereumjs-tx we must add the chainId in hex format
+-      // to the initial v value. The chainId must be included in the serialized
+-      // transaction which is only communicated to ethereumjs-tx in this
+-      // value. In newer versions the chainId is communicated via the 'Common'
+-      // object.
+-      return this._signTransaction(address, tx.getChainId(), tx, (payload) => {
+-        tx.v = Buffer.from(payload.v, 'hex');
+-        tx.r = Buffer.from(payload.r, 'hex');
+-        tx.s = Buffer.from(payload.s, 'hex');
+-        return tx;
+-      });
+-    }
+-    return this._signTransaction(
+-      address,
+-      Number(tx.common.chainId()),
+-      tx,
+-      (payload) => {
+-        // Because tx will be immutable, first get a plain javascript object that
+-        // represents the transaction. Using txData here as it aligns with the
+-        // nomenclature of ethereumjs/tx.
+-        const txData = tx.toJSON();
+-        // The fromTxData utility expects a type to support transactions with a type other than 0
+-        txData.type = tx.type;
+-        // The fromTxData utility expects v,r and s to be hex prefixed
+-        txData.v = ethUtil.addHexPrefix(payload.v);
+-        txData.r = ethUtil.addHexPrefix(payload.r);
+-        txData.s = ethUtil.addHexPrefix(payload.s);
+-        // Adopt the 'common' option from the original transaction and set the
+-        // returned object to be frozen if the original is frozen.
+-        return TransactionFactory.fromTxData(txData, {
+-          common: tx.common,
+-          freeze: Object.isFrozen(tx),
+-        });
+-      },
+-    );
+-  }
+-
+-  /**
+-   *
+-   * @template {TypedTransaction | OldEthJsTransaction} Transaction
+-   * @param {string} address - Hex string address.
+-   * @param {number} chainId - Chain ID
+-   * @param {Transaction} tx - Instance of either new-style or old-style ethereumjs transaction.
+-   * @param {(import('trezor-connect').EthereumSignedTx) => Transaction} handleSigning - Converts signed transaction
+-   * to the same new-style or old-style ethereumjs-tx.
+-   * @returns {Promise<Transaction>} The signed transaction, an instance of either new-style or old-style
+-   * ethereumjs transaction.
+-   */
+-  async _signTransaction(address, chainId, tx, handleSigning) {
+-    let transaction;
+-    if (isOldStyleEthereumjsTx(tx)) {
+-      // legacy transaction from ethereumjs-tx package has no .toJSON() function,
+-      // so we need to convert to hex-strings manually manually
+-      transaction = {
+-        to: this._normalize(tx.to),
+-        value: this._normalize(tx.value),
+-        data: this._normalize(tx.data),
+-        chainId,
+-        nonce: this._normalize(tx.nonce),
+-        gasLimit: this._normalize(tx.gasLimit),
+-        gasPrice: this._normalize(tx.gasPrice),
+-      };
+-    } else {
+-      // new-style transaction from @ethereumjs/tx package
+-      // we can just copy tx.toJSON() for everything except chainId, which must be a number
+-      transaction = {
+-        ...tx.toJSON(),
+-        chainId,
+-        to: this._normalize(tx.to),
+-      };
+-    }
+-
+-    try {
+-      const status = await this.unlock();
+-      await wait(status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);
+-      const response = await TrezorConnect.ethereumSignTransaction({
+-        path: this._pathFromAddress(address),
+-        transaction,
+-      });
+-      if (response.success) {
+-        const newOrMutatedTx = handleSigning(response.payload);
+-
+-        const addressSignedWith = ethUtil.toChecksumAddress(
+-          ethUtil.addHexPrefix(
+-            newOrMutatedTx.getSenderAddress().toString('hex'),
+-          ),
+-        );
+-        const correctAddress = ethUtil.toChecksumAddress(address);
+-        if (addressSignedWith !== correctAddress) {
+-          throw new Error("signature doesn't match the right address");
+-        }
+-
+-        return newOrMutatedTx;
+-      }
+-      throw new Error(
+-        (response.payload && response.payload.error) || 'Unknown error',
+-      );
+-    } catch (e) {
+-      throw new Error((e && e.toString()) || 'Unknown error');
+-    }
+-  }
+-
+-  signMessage(withAccount, data) {
+-    return this.signPersonalMessage(withAccount, data);
+-  }
+-
+-  // For personal_sign, we need to prefix the message:
+-  signPersonalMessage(withAccount, message) {
+-    return new Promise((resolve, reject) => {
+-      this.unlock()
+-        .then((status) => {
+-          setTimeout(
+-            (_) => {
+-              TrezorConnect.ethereumSignMessage({
+-                path: this._pathFromAddress(withAccount),
+-                message: ethUtil.stripHexPrefix(message),
+-                hex: true,
+-              })
+-                .then((response) => {
+-                  if (response.success) {
+-                    if (
+-                      response.payload.address !==
+-                      ethUtil.toChecksumAddress(withAccount)
+-                    ) {
+-                      reject(
+-                        new Error('signature doesnt match the right address'),
+-                      );
+-                    }
+-                    const signature = `0x${response.payload.signature}`;
+-                    resolve(signature);
+-                  } else {
+-                    reject(
+-                      new Error(
+-                        (response.payload && response.payload.error) ||
+-                          'Unknown error',
+-                      ),
+-                    );
+-                  }
+-                })
+-                .catch((e) => {
+-                  reject(new Error((e && e.toString()) || 'Unknown error'));
+-                });
+-              // This is necessary to avoid popup collision
+-              // between the unlock & sign trezor popups
+-            },
+-            status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0,
+-          );
+-        })
+-        .catch((e) => {
+-          reject(new Error((e && e.toString()) || 'Unknown error'));
+-        });
+-    });
+-  }
+-
+-  /**
+-   * EIP-712 Sign Typed Data
+-   */
+-  async signTypedData(address, data, { version }) {
+-    const dataWithHashes = transformTypedData(data, version === 'V4');
+-
+-    // set default values for signTypedData
+-    // Trezor is stricter than @metamask/eth-sig-util in what it accepts
+-    const {
+-      types: { EIP712Domain = [], ...otherTypes } = {},
+-      message = {},
+-      domain = {},
+-      primaryType,
+-      // snake_case since Trezor uses Protobuf naming conventions here
+-      domain_separator_hash, // eslint-disable-line camelcase
+-      message_hash, // eslint-disable-line camelcase
+-    } = dataWithHashes;
+-
+-    // This is necessary to avoid popup collision
+-    // between the unlock & sign trezor popups
+-    const status = await this.unlock();
+-    await wait(status === 'just unlocked' ? DELAY_BETWEEN_POPUPS : 0);
+-
+-    const response = await TrezorConnect.ethereumSignTypedData({
+-      path: this._pathFromAddress(address),
+-      data: {
+-        types: { EIP712Domain, ...otherTypes },
+-        message,
+-        domain,
+-        primaryType,
+-      },
+-      metamask_v4_compat: true,
+-      // Trezor 1 only supports blindly signing hashes
+-      domain_separator_hash,
+-      message_hash,
+-    });
+-
+-    if (response.success) {
+-      if (ethUtil.toChecksumAddress(address) !== response.payload.address) {
+-        throw new Error('signature doesnt match the right address');
+-      }
+-      return response.payload.signature;
+-    }
+-
+-    throw new Error(
+-      (response.payload && response.payload.error) || 'Unknown error',
+-    );
+-  }
+-
+-  exportAccount() {
+-    return Promise.reject(new Error('Not supported on this device'));
+-  }
+-
+-  forgetDevice() {
+-    this.accounts = [];
+-    this.hdk = new HDKey();
+-    this.page = 0;
+-    this.unlockedAccount = 0;
+-    this.paths = {};
+-  }
+-
+-  /**
+-   * Set the HD path to be used by the keyring. Only known supported HD paths are allowed.
+-   *
+-   * If the given HD path is already the current HD path, nothing happens. Otherwise the new HD
+-   * path is set, and the wallet state is completely reset.
+-   *
+-   * @throws {Error] Throws if the HD path is not supported.
+-   *
+-   * @param {string} hdPath - The HD path to set.
+-   */
+-  setHdPath(hdPath) {
+-    if (!ALLOWED_HD_PATHS[hdPath]) {
+-      throw new Error(
+-        `The setHdPath method does not support setting HD Path to ${hdPath}`,
+-      );
+-    }
+-
+-    // Reset HDKey if the path changes
+-    if (this.hdPath !== hdPath) {
+-      this.hdk = new HDKey();
+-      this.accounts = [];
+-      this.page = 0;
+-      this.perPage = 5;
+-      this.unlockedAccount = 0;
+-      this.paths = {};
+-    }
+-    this.hdPath = hdPath;
+-  }
+-
+-  /* PRIVATE METHODS */
+-
+-  _normalize(buf) {
+-    return ethUtil.bufferToHex(buf).toString();
+-  }
+-
+-  // eslint-disable-next-line no-shadow
+-  _addressFromIndex(pathBase, i) {
+-    const dkey = this.hdk.derive(`${pathBase}/${i}`);
+-    const address = ethUtil
+-      .publicToAddress(dkey.publicKey, true)
+-      .toString('hex');
+-    return ethUtil.toChecksumAddress(`0x${address}`);
+-  }
+-
+-  _pathFromAddress(address) {
+-    const checksummedAddress = ethUtil.toChecksumAddress(address);
+-    let index = this.paths[checksummedAddress];
+-    if (typeof index === 'undefined') {
+-      for (let i = 0; i < MAX_INDEX; i++) {
+-        if (checksummedAddress === this._addressFromIndex(pathBase, i)) {
+-          index = i;
+-          break;
+-        }
+-      }
+-    }
+-
+-    if (typeof index === 'undefined') {
+-      throw new Error('Unknown address');
+-    }
+-    return `${this.hdPath}/${index}`;
+-  }
+-}
+-
+-TrezorKeyring.type = keyringType;
+-module.exports = TrezorKeyring;
+diff --git a/package.json b/package.json
+index 7e400fddaa3388de000c54d4a7e29beec6869b92..19859c62c631f8e5a7d8b0b9a2a2f97224e1e52f 100644
+--- a/package.json
++++ b/package.json
+@@ -18,19 +18,27 @@
+   },
+   "license": "ISC",
+   "author": "Bruno Barbieri",
+-  "main": "index.js",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
+   "files": [
+-    "index.js"
++    "dist/"
+   ],
+   "scripts": {
+-    "lint": "yarn lint:eslint && yarn lint:misc --check",
++    "build": "tsc --project tsconfig.build.json",
++    "build:clean": "rimraf dist && yarn build",
++    "build:docs": "typedoc",
++    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:dependencies",
++    "lint:dependencies": "depcheck",
+     "lint:eslint": "eslint . --cache --ext js,ts",
+-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
++    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:dependencies",
+     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
+-    "test": "mocha"
++    "prepack": "./scripts/prepack.sh",
++    "test": "jest && jest-it-up",
++    "test:watch": "jest --watch"
+   },
+   "resolutions": {
+-    "mocha/mkdirp": "^0.5.1"
++    "@trezor/connect@9.0.6": "patch:@trezor/connect@npm%3A9.0.6#./.yarn/patches/@trezor-connect-npm-9.0.6-37abefdc3e.patch",
++    "@types/web": "0.0.69"
+   },
+   "dependencies": {
+     "@ethereumjs/tx": "^4.0.0",
+@@ -45,21 +53,35 @@
+     "@lavamoat/allow-scripts": "^2.3.0",
+     "@metamask/auto-changelog": "^3.0.0",
+     "@metamask/eslint-config": "^8.0.0",
+-    "@metamask/eslint-config-mocha": "^8.0.0",
++    "@metamask/eslint-config-jest": "^8.0.0",
+     "@metamask/eslint-config-nodejs": "^8.0.0",
+-    "chai": "^4.1.2",
+-    "chai-spies": "^1.0.0",
++    "@metamask/eslint-config-typescript": "^8.0.0",
++    "@types/ethereumjs-tx": "^1.0.1",
++    "@types/hdkey": "^2.0.1",
++    "@types/jest": "^28.1.6",
++    "@types/node": "^14.0.0",
++    "@types/sinon": "^9.0.10",
++    "@types/w3c-web-usb": "^1.0.6",
++    "@typescript-eslint/eslint-plugin": "^5.43.0",
++    "@typescript-eslint/parser": "^5.43.0",
++    "depcheck": "^1.4.3",
+     "eslint": "^7.26.0",
+     "eslint-config-prettier": "^8.3.0",
+     "eslint-plugin-import": "^2.22.1",
+-    "eslint-plugin-mocha": "^8.1.0",
++    "eslint-plugin-jest": "^24.1.5",
+     "eslint-plugin-node": "^11.1.0",
+     "eslint-plugin-prettier": "^3.4.0",
+     "ethereumjs-tx": "^1.3.4",
+-    "mocha": "^5.0.4",
++    "jest": "^28.1.3",
++    "jest-it-up": "^2.2.0",
+     "prettier": "^2.3.0",
+     "prettier-plugin-packagejson": "^2.2.12",
+-    "sinon": "^9.2.3"
++    "rimraf": "^4.1.2",
++    "sinon": "^9.2.3",
++    "ts-jest": "^28.0.7",
++    "ts-node": "^10.7.0",
++    "typedoc": "^0.23.15",
++    "typescript": "~4.8.4"
+   },
+   "packageManager": "yarn@3.3.1",
+   "engines": {

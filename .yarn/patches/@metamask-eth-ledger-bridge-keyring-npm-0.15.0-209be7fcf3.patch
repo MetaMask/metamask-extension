@@ -1,0 +1,1910 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..647f8df1a119e8015946a0b7eae7beeabda72a53
+--- /dev/null
++++ b/CHANGELOG.md
+@@ -0,0 +1,70 @@
++# Changelog
++All notable changes to this project will be documented in this file.
++
++The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
++and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
++
++## [Unreleased]
++
++## [0.15.0]
++### Changed
++- **BREAKING:** @ethereumjs/tx upgraded to major version 4, which includes a shift from storing numerical values as BNs to storing them as native BigInts. This is a breaking change for users of this keyring who access the values of the tx object, or that use those tx objects to interact with other libraries that depend on @ethereumsjs/tx versions under 4.0.0. ([#181](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/181))
++
++## [0.14.0]
++### Changed
++- **BREAKING:** The minimum version of Node.js required for this package has been bumped to v14. ([#169](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/169))
++
++### Fixed
++- Fix incorrect `v` for EIP-712 signatures and `personal_sign` ([#152](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/152))
++
++## [0.13.0]
++### Added
++- hdk.publicKey and hdk.chainCode should not be updated when unlocking using hdPath for an account.  ([#146](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/146))
++
++## [0.12.0]
++### Added
++- Add a new `destroy` method which will remove the `message` event listener from window.  ([#145](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/145))
++
++## [0.11.0]
++### Added
++- Add a new `isConnected` method which allows determining if the device is last known to be connected.  ([#131](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/131))
++
++### Changed
++- Messaging now runs off of message IDs instead of assuming the response received is from the last message sent, which will not always been true.  ([#132](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/132))
++
++## [0.10.0]
++### Added
++- Add a new `attemptMakeApp` method which allows clients to attempt a creation of the Ledger transport for the purposes of detecting/catching potential connection errors.  ([#126](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/126))
++
++## [0.9.0]
++### Changed
++- `updateTransportMethod` no longer defaults its parameter to false, and now names the param sent with the `'ledger-update-transport'` message `transportType`. This better is to support the use of an enum, instead of a boolean, for specifying transport preferences.  ([#114](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/114))
++
++## [0.8.0]
++### Added
++- Allow ledger-bridge iframe to connect Ledger wia WebHID, when it is supported by the current browser ([#107](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/107))
++
++### Changed
++- Reject with an Error object if unlocking is not successful  ([#104](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/104))
++- Ensure that logs of errors only have a single `Error:` string in the message ([#105](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/105))
++
++## [0.7.0]
++### Changed
++- Remove unused `events` and `ethereumjs-tx` dependencies ([#101](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/101), [#102](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/102))
++- Update eth-ledger-bridge-keyring to support EIP-1559 transactions ([#98](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/98), [#97](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/97), [#96](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/96))
++
++## [0.6.0]
++### Added
++- Support new versions of ethereumjs/tx ([#68](https://github.com/MetaMask/eth-ledger-bridge-keyring/pull/68))
++
++[Unreleased]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.15.0...HEAD
++[0.15.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.14.0...v0.15.0
++[0.14.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.13.0...v0.14.0
++[0.13.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.12.0...v0.13.0
++[0.12.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.11.0...v0.12.0
++[0.11.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.10.0...v0.11.0
++[0.10.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.9.0...v0.10.0
++[0.9.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.8.0...v0.9.0
++[0.8.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.7.0...v0.8.0
++[0.7.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/compare/v0.6.0...v0.7.0
++[0.6.0]: https://github.com/MetaMask/eth-ledger-bridge-keyring/releases/tag/v0.6.0
+diff --git a/README.md b/README.md
+index 5bb81a0da87a0d2d77812335acf0ad6d935a3b61..66c5ed0aa13ccde20f42befb1bfe8b6649c022b9 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,4 @@
+-eth-ledger-bridge-keyring [![CircleCI](https://circleci.com/gh/MetaMask/eth-ledger-bridge-keyring.svg?style=svg)](https://circleci.com/gh/MetaMask/eth-ledger-bridge-keyring)
+-==================
++# eth-ledger-bridge-keyring [![CircleCI](https://circleci.com/gh/MetaMask/eth-ledger-bridge-keyring.svg?style=svg)](https://circleci.com/gh/MetaMask/eth-ledger-bridge-keyring)
+ 
+ An implementation of MetaMask's [Keyring interface](https://github.com/MetaMask/eth-simple-keyring#the-keyring-class-protocol), that uses a Ledger hardware wallet for all cryptographic operations.
+ 
+@@ -16,17 +15,15 @@ device. However there are a number of differences:
+ 
+ - Because extensions have limited access to browser features, there's no easy way to interact wth the Ledger Hardware wallet from the MetaMask extension. This library implements a workaround to those restrictions by injecting (on demand) an iframe to the background page of the extension, (which is hosted [here](https://metamask.github.io/eth-ledger-bridge-keyring/index.html).
+ 
+-The iframe is allowed to interact with the Ledger device (since U2F requires SSL and the iframe is hosted under https) using the libraries from [LedgerJS](https://github.com/LedgerHQ/ledgerjs) *hw-app-eth* and *hw-transport-u2f* and establishes a two-way communication channel with the extension via postMessage.
++The iframe is allowed to interact with the Ledger device (since U2F requires SSL and the iframe is hosted under https) using the libraries from [LedgerJS](https://github.com/LedgerHQ/ledgerjs) _hw-app-eth_ and _hw-transport-u2f_ and establishes a two-way communication channel with the extension via postMessage.
+ 
+ The iframe code it's hosted in the same repo under the branch [gh-pages](https://github.com/MetaMask/eth-ledger-bridge-keyring/tree/gh-pages) and it's being served via github pages. In the future we might move it under the metamask.io domain.
+ 
+-Usage
+------
++## Usage
+ 
+ In addition to all the known methods from the [Keyring class protocol](https://github.com/MetaMask/eth-simple-keyring#the-keyring-class-protocol),
+ there are a few others:
+ 
+-
+ - **isUnlocked** : Returns true if we have the public key in memory, which allows to generate the list of accounts at any time
+ 
+ - **unlock** : Connects to the Ledger device and exports the extended public key, which is later used to read the available ethereum addresses inside the Ledger account.
+@@ -41,16 +38,12 @@ there are a few others:
+ 
+ - **forgetDevice** : removes all the device info from memory so the next interaction with the keyring will prompt the user to connect the Ledger device and export the account information
+ 
+-Testing
+--------
+-Run the following command:
++## Testing and Linting
+ 
+-```bash
+-yarn test
+-```
++Run `yarn test` to run the tests once. To run tests on file changes, run `yarn test:watch`.
+ 
++Run `yarn lint` to run the linter, or run `yarn lint:fix` to run the linter and fix any automatically fixable issues.
+ 
++## Attributions
+ 
+-Attributions
+--------
+ This code was inspired by [eth-ledger-keyring](https://github.com/jamespic/eth-ledger-keyring) and [eth-hd-keyring](https://github.com/MetaMask/eth-hd-keyring)
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..b08ff49212bc64b354fa761e57448c873d820b19
+--- /dev/null
++++ b/dist/index.d.ts
+@@ -0,0 +1,3 @@
++export * from './ledger-keyring';
++export * from './ledger-iframe-bridge';
++export * from './ledger-bridge';
+diff --git a/dist/index.js b/dist/index.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..743adcf571eea1840dc5f5ed6490fa12f3266d68
+--- /dev/null
++++ b/dist/index.js
+@@ -0,0 +1,20 @@
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    var desc = Object.getOwnPropertyDescriptor(m, k);
++    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
++      desc = { enumerable: true, get: function() { return m[k]; } };
++    }
++    Object.defineProperty(o, k2, desc);
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __exportStar = (this && this.__exportStar) || function(m, exports) {
++    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++__exportStar(require("./ledger-keyring"), exports);
++__exportStar(require("./ledger-iframe-bridge"), exports);
++__exportStar(require("./ledger-bridge"), exports);
++//# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/dist/index.js.map b/dist/index.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..de9eb8fb1d8cf0589f27981b7907231f941d6794
+--- /dev/null
++++ b/dist/index.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;AAAA,mDAAiC;AACjC,yDAAuC;AACvC,kDAAgC","sourcesContent":["export * from './ledger-keyring';\nexport * from './ledger-iframe-bridge';\nexport * from './ledger-bridge';\n"]}
+\ No newline at end of file
+diff --git a/dist/ledger-bridge.d.ts b/dist/ledger-bridge.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..decd586c3d6233f4232e851230acefa82183b774
+--- /dev/null
++++ b/dist/ledger-bridge.d.ts
+@@ -0,0 +1,34 @@
++import type LedgerHwAppEth from '@ledgerhq/hw-app-eth';
++export declare type GetPublicKeyParams = {
++    hdPath: string;
++};
++export declare type GetPublicKeyResponse = Awaited<ReturnType<LedgerHwAppEth['getAddress']>> & {
++    chainCode: string;
++};
++export declare type LedgerSignTransactionParams = {
++    hdPath: string;
++    tx: string;
++};
++export declare type LedgerSignTransactionResponse = Awaited<ReturnType<LedgerHwAppEth['signTransaction']>>;
++export declare type LedgerSignMessageParams = {
++    hdPath: string;
++    message: string;
++};
++export declare type LedgerSignMessageResponse = Awaited<ReturnType<LedgerHwAppEth['signPersonalMessage']>>;
++export declare type LedgerSignTypedDataParams = {
++    hdPath: string;
++    domainSeparatorHex: string;
++    hashStructMessageHex: string;
++};
++export declare type LedgerSignTypedDataResponse = Awaited<ReturnType<LedgerHwAppEth['signEIP712HashedMessage']>>;
++export interface LedgerBridge {
++    isDeviceConnected: boolean;
++    init(bridgeUrl: string): Promise<void>;
++    destroy(): Promise<void>;
++    attemptMakeApp(): Promise<boolean>;
++    updateTransportMethod(transportType: string): Promise<boolean>;
++    getPublicKey(params: GetPublicKeyParams): Promise<GetPublicKeyResponse>;
++    deviceSignTransaction(params: LedgerSignTransactionParams): Promise<LedgerSignTransactionResponse>;
++    deviceSignMessage(params: LedgerSignMessageParams): Promise<LedgerSignMessageResponse>;
++    deviceSignTypedData(params: LedgerSignTypedDataParams): Promise<LedgerSignTypedDataResponse>;
++}
+diff --git a/dist/ledger-bridge.js b/dist/ledger-bridge.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..3fb19a6652409e08e8a9d335c5ae034fd1df3502
+--- /dev/null
++++ b/dist/ledger-bridge.js
+@@ -0,0 +1,3 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++//# sourceMappingURL=ledger-bridge.js.map
+\ No newline at end of file
+diff --git a/dist/ledger-bridge.js.map b/dist/ledger-bridge.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..6756d9f8a61d2068ee55f6375421718e0db23306
+--- /dev/null
++++ b/dist/ledger-bridge.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"ledger-bridge.js","sourceRoot":"","sources":["../src/ledger-bridge.ts"],"names":[],"mappings":"","sourcesContent":["import type LedgerHwAppEth from '@ledgerhq/hw-app-eth';\n\nexport type GetPublicKeyParams = { hdPath: string };\nexport type GetPublicKeyResponse = Awaited<\n  ReturnType<LedgerHwAppEth['getAddress']>\n> & {\n  chainCode: string;\n};\n\nexport type LedgerSignTransactionParams = { hdPath: string; tx: string };\nexport type LedgerSignTransactionResponse = Awaited<\n  ReturnType<LedgerHwAppEth['signTransaction']>\n>;\n\nexport type LedgerSignMessageParams = { hdPath: string; message: string };\nexport type LedgerSignMessageResponse = Awaited<\n  ReturnType<LedgerHwAppEth['signPersonalMessage']>\n>;\n\nexport type LedgerSignTypedDataParams = {\n  hdPath: string;\n  domainSeparatorHex: string;\n  hashStructMessageHex: string;\n};\nexport type LedgerSignTypedDataResponse = Awaited<\n  ReturnType<LedgerHwAppEth['signEIP712HashedMessage']>\n>;\n\n// eslint-disable-next-line @typescript-eslint/consistent-type-definitions\nexport interface LedgerBridge {\n  isDeviceConnected: boolean;\n\n  init(bridgeUrl: string): Promise<void>;\n\n  destroy(): Promise<void>;\n\n  attemptMakeApp(): Promise<boolean>;\n\n  updateTransportMethod(transportType: string): Promise<boolean>;\n\n  getPublicKey(params: GetPublicKeyParams): Promise<GetPublicKeyResponse>;\n\n  deviceSignTransaction(\n    params: LedgerSignTransactionParams,\n  ): Promise<LedgerSignTransactionResponse>;\n\n  deviceSignMessage(\n    params: LedgerSignMessageParams,\n  ): Promise<LedgerSignMessageResponse>;\n\n  deviceSignTypedData(\n    params: LedgerSignTypedDataParams,\n  ): Promise<LedgerSignTypedDataResponse>;\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/ledger-iframe-bridge.d.ts b/dist/ledger-iframe-bridge.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..76b6a73c3efbc3cea3358b26000e33df9cde28b3
+--- /dev/null
++++ b/dist/ledger-iframe-bridge.d.ts
+@@ -0,0 +1,82 @@
++import { GetPublicKeyParams, GetPublicKeyResponse, LedgerBridge, LedgerSignMessageParams, LedgerSignMessageResponse, LedgerSignTransactionParams, LedgerSignTransactionResponse, LedgerSignTypedDataParams, LedgerSignTypedDataResponse } from './ledger-bridge';
++export declare enum IFrameMessageAction {
++    LedgerConnectionChange = "ledger-connection-change",
++    LedgerUnlock = "ledger-unlock",
++    LedgerMakeApp = "ledger-make-app",
++    LedgerUpdateTransport = "ledger-update-transport",
++    LedgerSignTransaction = "ledger-sign-transaction",
++    LedgerSignPersonalMessage = "ledger-sign-personal-message",
++    LedgerSignTypedData = "ledger-sign-typed-data"
++}
++declare type IFrameMessageResponse<TAction extends IFrameMessageAction> = {
++    action: TAction;
++    messageId: number;
++} & ({
++    action: IFrameMessageAction.LedgerConnectionChange;
++    payload: {
++        connected: boolean;
++    };
++} | ({
++    action: IFrameMessageAction.LedgerMakeApp;
++} & ({
++    success: true;
++} | {
++    success: false;
++    error?: unknown;
++})) | {
++    action: IFrameMessageAction.LedgerUpdateTransport;
++    success: boolean;
++} | ({
++    action: IFrameMessageAction.LedgerUnlock;
++} & ({
++    success: true;
++    payload: GetPublicKeyResponse;
++} | {
++    success: false;
++    payload: {
++        error: Error;
++    };
++})) | ({
++    action: IFrameMessageAction.LedgerSignTransaction;
++} & ({
++    success: true;
++    payload: LedgerSignTransactionResponse;
++} | {
++    success: false;
++    payload: {
++        error: Error;
++    };
++})) | ({
++    action: IFrameMessageAction.LedgerSignPersonalMessage | IFrameMessageAction.LedgerSignTypedData;
++} & ({
++    success: true;
++    payload: LedgerSignMessageResponse | LedgerSignTypedDataResponse;
++} | {
++    success: false;
++    payload: {
++        error: Error;
++    };
++})));
++export declare class LedgerIframeBridge implements LedgerBridge {
++    #private;
++    iframe?: HTMLIFrameElement;
++    iframeLoaded: boolean;
++    bridgeUrl: string;
++    isDeviceConnected: boolean;
++    currentMessageId: number;
++    messageCallbacks: Record<number, (response: IFrameMessageResponse<IFrameMessageAction>) => void>;
++    delayedPromise?: {
++        resolve: (value: boolean) => void;
++        reject: (error: unknown) => void;
++        transportType: string;
++    };
++    init(bridgeUrl: string): Promise<void>;
++    destroy(): Promise<void>;
++    attemptMakeApp(): Promise<boolean>;
++    updateTransportMethod(transportType: string): Promise<boolean>;
++    getPublicKey(params: GetPublicKeyParams): Promise<GetPublicKeyResponse>;
++    deviceSignTransaction(params: LedgerSignTransactionParams): Promise<LedgerSignTransactionResponse>;
++    deviceSignMessage(params: LedgerSignMessageParams): Promise<LedgerSignMessageResponse>;
++    deviceSignTypedData(params: LedgerSignTypedDataParams): Promise<LedgerSignTypedDataResponse>;
++}
++export {};
+diff --git a/dist/ledger-iframe-bridge.js b/dist/ledger-iframe-bridge.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..22abcc6c0c08521c01635c23491b91d874342ecd
+--- /dev/null
++++ b/dist/ledger-iframe-bridge.js
+@@ -0,0 +1,149 @@
++"use strict";
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var _LedgerIframeBridge_instances, _LedgerIframeBridge_deviceActionMessage, _LedgerIframeBridge_setupIframe, _LedgerIframeBridge_getOrigin, _LedgerIframeBridge_eventListener, _LedgerIframeBridge_sendMessage;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.LedgerIframeBridge = exports.IFrameMessageAction = void 0;
++const LEDGER_IFRAME_ID = 'LEDGER-IFRAME';
++var IFrameMessageAction;
++(function (IFrameMessageAction) {
++    IFrameMessageAction["LedgerConnectionChange"] = "ledger-connection-change";
++    IFrameMessageAction["LedgerUnlock"] = "ledger-unlock";
++    IFrameMessageAction["LedgerMakeApp"] = "ledger-make-app";
++    IFrameMessageAction["LedgerUpdateTransport"] = "ledger-update-transport";
++    IFrameMessageAction["LedgerSignTransaction"] = "ledger-sign-transaction";
++    IFrameMessageAction["LedgerSignPersonalMessage"] = "ledger-sign-personal-message";
++    IFrameMessageAction["LedgerSignTypedData"] = "ledger-sign-typed-data";
++})(IFrameMessageAction = exports.IFrameMessageAction || (exports.IFrameMessageAction = {}));
++class LedgerIframeBridge {
++    constructor() {
++        _LedgerIframeBridge_instances.add(this);
++        this.iframeLoaded = false;
++        this.bridgeUrl = '';
++        this.isDeviceConnected = false;
++        this.currentMessageId = 0;
++        this.messageCallbacks = {};
++    }
++    async init(bridgeUrl) {
++        this.bridgeUrl = bridgeUrl;
++        __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_setupIframe).call(this);
++        window.addEventListener('message', __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_eventListener).bind(this));
++    }
++    async destroy() {
++        window.removeEventListener('message', __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_eventListener).bind(this));
++    }
++    async attemptMakeApp() {
++        return new Promise((resolve, reject) => {
++            __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_sendMessage).call(this, {
++                action: IFrameMessageAction.LedgerMakeApp,
++            }, (response) => {
++                if (response.success) {
++                    resolve(true);
++                }
++                else {
++                    reject(response.error);
++                }
++            });
++        });
++    }
++    async updateTransportMethod(transportType) {
++        return new Promise((resolve, reject) => {
++            // If the iframe isn't loaded yet, let's store the desired transportType value and
++            // optimistically return a successful promise
++            if (!this.iframeLoaded) {
++                this.delayedPromise = {
++                    resolve,
++                    reject,
++                    transportType,
++                };
++                return;
++            }
++            __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_sendMessage).call(this, {
++                action: IFrameMessageAction.LedgerUpdateTransport,
++                params: { transportType },
++            }, ({ success }) => {
++                if (success) {
++                    return resolve(true);
++                }
++                return reject(new Error('Ledger transport could not be updated'));
++            });
++        });
++    }
++    async getPublicKey(params) {
++        return __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_deviceActionMessage).call(this, IFrameMessageAction.LedgerUnlock, params);
++    }
++    async deviceSignTransaction(params) {
++        return __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_deviceActionMessage).call(this, IFrameMessageAction.LedgerSignTransaction, params);
++    }
++    async deviceSignMessage(params) {
++        return __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_deviceActionMessage).call(this, IFrameMessageAction.LedgerSignPersonalMessage, params);
++    }
++    async deviceSignTypedData(params) {
++        return __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_deviceActionMessage).call(this, IFrameMessageAction.LedgerSignTypedData, params);
++    }
++}
++exports.LedgerIframeBridge = LedgerIframeBridge;
++_LedgerIframeBridge_instances = new WeakSet(), _LedgerIframeBridge_deviceActionMessage = async function _LedgerIframeBridge_deviceActionMessage(action, params) {
++    return new Promise((resolve, reject) => {
++        __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_sendMessage).call(this, {
++            action,
++            params,
++        }, ({ success, payload }) => {
++            if (success) {
++                return resolve(payload);
++            }
++            return reject(payload.error);
++        });
++    });
++}, _LedgerIframeBridge_setupIframe = function _LedgerIframeBridge_setupIframe() {
++    this.iframe = document.createElement('iframe');
++    this.iframe.src = this.bridgeUrl;
++    this.iframe.allow = `hid 'src'`;
++    this.iframe.onload = async () => {
++        // If the ledger live preference was set before the iframe is loaded,
++        // set it after the iframe has loaded
++        this.iframeLoaded = true;
++        if (this.delayedPromise) {
++            try {
++                const result = await this.updateTransportMethod(this.delayedPromise.transportType);
++                this.delayedPromise.resolve(result);
++            }
++            catch (error) {
++                this.delayedPromise.reject(error);
++            }
++            finally {
++                delete this.delayedPromise;
++            }
++        }
++    };
++    document.head.appendChild(this.iframe);
++}, _LedgerIframeBridge_getOrigin = function _LedgerIframeBridge_getOrigin() {
++    const tmp = this.bridgeUrl.split('/');
++    tmp.splice(-1, 1);
++    return tmp.join('/');
++}, _LedgerIframeBridge_eventListener = function _LedgerIframeBridge_eventListener(params) {
++    if (params.origin !== __classPrivateFieldGet(this, _LedgerIframeBridge_instances, "m", _LedgerIframeBridge_getOrigin).call(this)) {
++        return;
++    }
++    if (params.data) {
++        const messageCallback = this.messageCallbacks[params.data.messageId];
++        if (messageCallback) {
++            messageCallback(params.data);
++        }
++        else if (params.data.action === IFrameMessageAction.LedgerConnectionChange) {
++            this.isDeviceConnected = params.data.payload.connected;
++        }
++    }
++}, _LedgerIframeBridge_sendMessage = function _LedgerIframeBridge_sendMessage(message, callback) {
++    this.currentMessageId += 1;
++    const postMsg = Object.assign(Object.assign({}, message), { messageId: this.currentMessageId, target: LEDGER_IFRAME_ID });
++    this.messageCallbacks[this.currentMessageId] = callback;
++    if (!this.iframeLoaded || !this.iframe || !this.iframe.contentWindow) {
++        throw new Error('The iframe is not loaded yet');
++    }
++    this.iframe.contentWindow.postMessage(postMsg, '*');
++};
++//# sourceMappingURL=ledger-iframe-bridge.js.map
+\ No newline at end of file
+diff --git a/dist/ledger-iframe-bridge.js.map b/dist/ledger-iframe-bridge.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..500e5ba656cdfe520621fb7cbd2cfb8157d89b66
+--- /dev/null
++++ b/dist/ledger-iframe-bridge.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"ledger-iframe-bridge.js","sourceRoot":"","sources":["../src/ledger-iframe-bridge.ts"],"names":[],"mappings":"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","sourcesContent":["import {\n  GetPublicKeyParams,\n  GetPublicKeyResponse,\n  LedgerBridge,\n  LedgerSignMessageParams,\n  LedgerSignMessageResponse,\n  LedgerSignTransactionParams,\n  LedgerSignTransactionResponse,\n  LedgerSignTypedDataParams,\n  LedgerSignTypedDataResponse,\n} from './ledger-bridge';\n\nconst LEDGER_IFRAME_ID = 'LEDGER-IFRAME';\n\nexport enum IFrameMessageAction {\n  LedgerConnectionChange = 'ledger-connection-change',\n  LedgerUnlock = 'ledger-unlock',\n  LedgerMakeApp = 'ledger-make-app',\n  LedgerUpdateTransport = 'ledger-update-transport',\n  LedgerSignTransaction = 'ledger-sign-transaction',\n  LedgerSignPersonalMessage = 'ledger-sign-personal-message',\n  LedgerSignTypedData = 'ledger-sign-typed-data',\n}\n\ntype IFrameMessageResponse<TAction extends IFrameMessageAction> = {\n  action: TAction;\n  messageId: number;\n} & (\n  | {\n      action: IFrameMessageAction.LedgerConnectionChange;\n      payload: { connected: boolean };\n    }\n  | ({\n      action: IFrameMessageAction.LedgerMakeApp;\n    } & ({ success: true } | { success: false; error?: unknown }))\n  | {\n      action: IFrameMessageAction.LedgerUpdateTransport;\n      success: boolean;\n    }\n  | ({\n      action: IFrameMessageAction.LedgerUnlock;\n    } & (\n      | { success: true; payload: GetPublicKeyResponse }\n      | { success: false; payload: { error: Error } }\n    ))\n  | ({\n      action: IFrameMessageAction.LedgerSignTransaction;\n    } & (\n      | { success: true; payload: LedgerSignTransactionResponse }\n      | { success: false; payload: { error: Error } }\n    ))\n  | ({\n      action:\n        | IFrameMessageAction.LedgerSignPersonalMessage\n        | IFrameMessageAction.LedgerSignTypedData;\n    } & (\n      | {\n          success: true;\n          payload: LedgerSignMessageResponse | LedgerSignTypedDataResponse;\n        }\n      | { success: false; payload: { error: Error } }\n    ))\n);\n\ntype IFrameMessage<TAction extends IFrameMessageAction> = {\n  action: TAction;\n  params?: Readonly<Record<string, unknown>>;\n};\n\ntype IFramePostMessage<TAction extends IFrameMessageAction> =\n  IFrameMessage<TAction> & {\n    messageId: number;\n    target: typeof LEDGER_IFRAME_ID;\n  };\n\nexport class LedgerIframeBridge implements LedgerBridge {\n  iframe?: HTMLIFrameElement;\n\n  iframeLoaded = false;\n\n  bridgeUrl = '';\n\n  isDeviceConnected = false;\n\n  currentMessageId = 0;\n\n  messageCallbacks: Record<\n    number,\n    (response: IFrameMessageResponse<IFrameMessageAction>) => void\n  > = {};\n\n  delayedPromise?: {\n    resolve: (value: boolean) => void;\n    reject: (error: unknown) => void;\n    transportType: string;\n  };\n\n  async init(bridgeUrl: string) {\n    this.bridgeUrl = bridgeUrl;\n\n    this.#setupIframe();\n\n    window.addEventListener('message', this.#eventListener.bind(this));\n  }\n\n  async destroy() {\n    window.removeEventListener('message', this.#eventListener.bind(this));\n  }\n\n  async attemptMakeApp(): Promise<boolean> {\n    return new Promise((resolve, reject) => {\n      this.#sendMessage(\n        {\n          action: IFrameMessageAction.LedgerMakeApp,\n        },\n        (response) => {\n          if (response.success) {\n            resolve(true);\n          } else {\n            reject(response.error);\n          }\n        },\n      );\n    });\n  }\n\n  async updateTransportMethod(transportType: string): Promise<boolean> {\n    return new Promise((resolve, reject) => {\n      // If the iframe isn't loaded yet, let's store the desired transportType value and\n      // optimistically return a successful promise\n      if (!this.iframeLoaded) {\n        this.delayedPromise = {\n          resolve,\n          reject,\n          transportType,\n        };\n        return;\n      }\n\n      this.#sendMessage(\n        {\n          action: IFrameMessageAction.LedgerUpdateTransport,\n          params: { transportType },\n        },\n        ({ success }) => {\n          if (success) {\n            return resolve(true);\n          }\n          return reject(new Error('Ledger transport could not be updated'));\n        },\n      );\n    });\n  }\n\n  async getPublicKey(\n    params: GetPublicKeyParams,\n  ): Promise<GetPublicKeyResponse> {\n    return this.#deviceActionMessage(\n      IFrameMessageAction.LedgerUnlock,\n      params,\n    ) as Promise<GetPublicKeyResponse>;\n  }\n\n  async deviceSignTransaction(\n    params: LedgerSignTransactionParams,\n  ): Promise<LedgerSignTransactionResponse> {\n    return this.#deviceActionMessage(\n      IFrameMessageAction.LedgerSignTransaction,\n      params,\n    ) as Promise<LedgerSignTransactionResponse>;\n  }\n\n  async deviceSignMessage(\n    params: LedgerSignMessageParams,\n  ): Promise<LedgerSignMessageResponse> {\n    return this.#deviceActionMessage(\n      IFrameMessageAction.LedgerSignPersonalMessage,\n      params,\n    ) as Promise<LedgerSignMessageResponse>;\n  }\n\n  async deviceSignTypedData(\n    params: LedgerSignTypedDataParams,\n  ): Promise<LedgerSignTypedDataResponse> {\n    return this.#deviceActionMessage(\n      IFrameMessageAction.LedgerSignTypedData,\n      params,\n    ) as Promise<LedgerSignTypedDataResponse>;\n  }\n\n  async #deviceActionMessage(\n    action:\n      | IFrameMessageAction.LedgerUnlock\n      | IFrameMessageAction.LedgerSignTransaction\n      | IFrameMessageAction.LedgerSignPersonalMessage\n      | IFrameMessageAction.LedgerSignTypedData,\n    params:\n      | GetPublicKeyParams\n      | LedgerSignTransactionParams\n      | LedgerSignMessageParams\n      | LedgerSignTypedDataParams,\n  ) {\n    return new Promise((resolve, reject) => {\n      this.#sendMessage(\n        {\n          action,\n          params,\n        },\n        ({ success, payload }) => {\n          if (success) {\n            return resolve(payload);\n          }\n          return reject(payload.error);\n        },\n      );\n    });\n  }\n\n  #setupIframe() {\n    this.iframe = document.createElement('iframe');\n    this.iframe.src = this.bridgeUrl;\n    this.iframe.allow = `hid 'src'`;\n    this.iframe.onload = async () => {\n      // If the ledger live preference was set before the iframe is loaded,\n      // set it after the iframe has loaded\n      this.iframeLoaded = true;\n      if (this.delayedPromise) {\n        try {\n          const result = await this.updateTransportMethod(\n            this.delayedPromise.transportType,\n          );\n          this.delayedPromise.resolve(result);\n        } catch (error) {\n          this.delayedPromise.reject(error);\n        } finally {\n          delete this.delayedPromise;\n        }\n      }\n    };\n    document.head.appendChild(this.iframe);\n  }\n\n  #getOrigin() {\n    const tmp = this.bridgeUrl.split('/');\n    tmp.splice(-1, 1);\n    return tmp.join('/');\n  }\n\n  #eventListener(params: {\n    origin: string;\n    data: IFrameMessageResponse<IFrameMessageAction>;\n  }) {\n    if (params.origin !== this.#getOrigin()) {\n      return;\n    }\n\n    if (params.data) {\n      const messageCallback = this.messageCallbacks[params.data.messageId];\n      if (messageCallback) {\n        messageCallback(params.data);\n      } else if (\n        params.data.action === IFrameMessageAction.LedgerConnectionChange\n      ) {\n        this.isDeviceConnected = params.data.payload.connected;\n      }\n    }\n  }\n\n  #sendMessage<TAction extends IFrameMessageAction>(\n    message: IFrameMessage<TAction>,\n    callback: (response: IFrameMessageResponse<TAction>) => void,\n  ) {\n    this.currentMessageId += 1;\n\n    const postMsg: IFramePostMessage<TAction> = {\n      ...message,\n      messageId: this.currentMessageId,\n      target: LEDGER_IFRAME_ID,\n    };\n\n    this.messageCallbacks[this.currentMessageId] = callback as (\n      response: IFrameMessageResponse<IFrameMessageAction>,\n    ) => void;\n\n    if (!this.iframeLoaded || !this.iframe || !this.iframe.contentWindow) {\n      throw new Error('The iframe is not loaded yet');\n    }\n\n    this.iframe.contentWindow.postMessage(postMsg, '*');\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/ledger-keyring.d.ts b/dist/ledger-keyring.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..676036545afd84d17b7ffea4247dc873672ebf12
+--- /dev/null
++++ b/dist/ledger-keyring.d.ts
+@@ -0,0 +1,91 @@
++/// <reference types="node" />
++import { TypedTransaction } from '@ethereumjs/tx';
++import * as sigUtil from 'eth-sig-util';
++import type OldEthJsTransaction from 'ethereumjs-tx';
++import { EventEmitter } from 'events';
++import HDKey from 'hdkey';
++import { LedgerBridge } from './ledger-bridge';
++declare enum NetworkApiUrls {
++    Ropsten = "http://api-ropsten.etherscan.io",
++    Kovan = "http://api-kovan.etherscan.io",
++    Rinkeby = "https://api-rinkeby.etherscan.io",
++    Mainnet = "https://api.etherscan.io"
++}
++export declare type AccountDetails = {
++    index?: number;
++    bip44?: boolean;
++    hdPath?: string;
++};
++export declare type LedgerBridgeKeyringOptions = {
++    hdPath: string;
++    accounts: readonly string[];
++    accountDetails: Readonly<Record<string, AccountDetails>>;
++    accountIndexes: Readonly<Record<string, number>>;
++    bridgeUrl: string;
++    implementFullBIP44: boolean;
++};
++export declare class LedgerKeyring extends EventEmitter {
++    #private;
++    static type: string;
++    readonly type: string;
++    page: number;
++    perPage: number;
++    unlockedAccount: number;
++    accounts: readonly string[];
++    accountDetails: Record<string, AccountDetails>;
++    hdk: HDKey;
++    hdPath: string;
++    paths: Record<string, number>;
++    network: NetworkApiUrls;
++    implementFullBIP44: boolean;
++    bridgeUrl: string;
++    bridge: LedgerBridge;
++    constructor({ bridge }: {
++        bridge: LedgerBridge;
++    });
++    init(): Promise<void>;
++    destroy(): Promise<void>;
++    serialize(): Promise<{
++        hdPath: string;
++        accounts: readonly string[];
++        accountDetails: Record<string, AccountDetails>;
++        bridgeUrl: string;
++        implementFullBIP44: boolean;
++    }>;
++    deserialize(opts?: Partial<LedgerBridgeKeyringOptions>): Promise<void>;
++    isUnlocked(): boolean;
++    isConnected(): boolean;
++    setAccountToUnlock(index: number | string): void;
++    setHdPath(hdPath: string): void;
++    unlock(hdPath?: string, updateHdk?: boolean): Promise<string>;
++    addAccounts(amount?: number): Promise<string[]>;
++    getFirstPage(): Promise<{
++        address: string;
++        balance: number | null;
++        index: number;
++    }[]>;
++    getNextPage(): Promise<{
++        address: string;
++        balance: number | null;
++        index: number;
++    }[]>;
++    getPreviousPage(): Promise<{
++        address: string;
++        balance: number | null;
++        index: number;
++    }[]>;
++    getAccounts(): Promise<string[]>;
++    removeAccount(address: string): void;
++    attemptMakeApp(): Promise<boolean>;
++    updateTransportMethod(transportType: string): Promise<boolean>;
++    signTransaction(address: string, tx: TypedTransaction | OldEthJsTransaction): Promise<TypedTransaction | OldEthJsTransaction>;
++    signMessage(withAccount: string, data: string): Promise<string>;
++    signPersonalMessage(withAccount: string, message: string): Promise<string>;
++    unlockAccountByAddress(address: string): Promise<string | undefined>;
++    signTypedData(withAccount: string, data: sigUtil.EIP712TypedData, options?: {
++        version?: string;
++    }): Promise<string>;
++    exportAccount(): void;
++    forgetDevice(): void;
++}
++export {};
+diff --git a/dist/ledger-keyring.js b/dist/ledger-keyring.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..f389fa3eff0441c8d0cb9594096deb074a0b04eb
+--- /dev/null
++++ b/dist/ledger-keyring.js
+@@ -0,0 +1,531 @@
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    var desc = Object.getOwnPropertyDescriptor(m, k);
++    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
++      desc = { enumerable: true, get: function() { return m[k]; } };
++    }
++    Object.defineProperty(o, k2, desc);
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++    Object.defineProperty(o, "default", { enumerable: true, value: v });
++}) : function(o, v) {
++    o["default"] = v;
++});
++var __importStar = (this && this.__importStar) || function (mod) {
++    if (mod && mod.__esModule) return mod;
++    var result = {};
++    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
++    __setModuleDefault(result, mod);
++    return result;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++var _LedgerKeyring_instances, _LedgerKeyring_migrateAccountDetails, _LedgerKeyring_signTransaction, _LedgerKeyring_getPage, _LedgerKeyring_getAccountsBIP44, _LedgerKeyring_getAccountsLegacy, _LedgerKeyring_addressFromIndex, _LedgerKeyring_pathFromAddress, _LedgerKeyring_getPathForIndex, _LedgerKeyring_isLedgerLiveHdPath, _LedgerKeyring_toLedgerPath, _LedgerKeyring_hasPreviousTransactions, _LedgerKeyring_getApiUrl;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.LedgerKeyring = void 0;
++const tx_1 = require("@ethereumjs/tx");
++// eslint-disable-next-line import/no-nodejs-modules
++const buffer_1 = require("buffer");
++const sigUtil = __importStar(require("eth-sig-util"));
++const ethUtil = __importStar(require("ethereumjs-util"));
++// eslint-disable-next-line import/no-nodejs-modules
++const events_1 = require("events");
++const hdkey_1 = __importDefault(require("hdkey"));
++const pathBase = 'm';
++const hdPathString = `${pathBase}/44'/60'/0'`;
++const keyringType = 'Ledger Hardware';
++const BRIDGE_URL = 'https://metamask.github.io/eth-ledger-bridge-keyring';
++const MAX_INDEX = 1000;
++var NetworkApiUrls;
++(function (NetworkApiUrls) {
++    NetworkApiUrls["Ropsten"] = "http://api-ropsten.etherscan.io";
++    NetworkApiUrls["Kovan"] = "http://api-kovan.etherscan.io";
++    NetworkApiUrls["Rinkeby"] = "https://api-rinkeby.etherscan.io";
++    NetworkApiUrls["Mainnet"] = "https://api.etherscan.io";
++})(NetworkApiUrls || (NetworkApiUrls = {}));
++/**
++ * Check if the given transaction is made with ethereumjs-tx or @ethereumjs/tx
++ *
++ * Transactions built with older versions of ethereumjs-tx have a
++ * getChainId method that newer versions do not.
++ * Older versions are mutable
++ * while newer versions default to being immutable.
++ * Expected shape and type
++ * of data for v, r and s differ (Buffer (old) vs BN (new)).
++ *
++ * @param tx - Transaction to check, instance of either ethereumjs-tx or @ethereumjs/tx.
++ * @returns Returns `true` if tx is an old-style ethereumjs-tx transaction.
++ */
++function isOldStyleEthereumjsTx(tx) {
++    return 'getChainId' in tx && typeof tx.getChainId === 'function';
++}
++class LedgerKeyring extends events_1.EventEmitter {
++    constructor({ bridge }) {
++        super();
++        _LedgerKeyring_instances.add(this);
++        this.type = keyringType;
++        this.page = 0;
++        this.perPage = 5;
++        this.unlockedAccount = 0;
++        this.accounts = [];
++        this.accountDetails = {};
++        this.hdk = new hdkey_1.default();
++        this.hdPath = hdPathString;
++        this.paths = {};
++        this.network = NetworkApiUrls.Mainnet;
++        this.implementFullBIP44 = false;
++        this.bridgeUrl = BRIDGE_URL;
++        if (!bridge) {
++            throw new Error('Bridge is a required dependency for the keyring');
++        }
++        this.bridge = bridge;
++    }
++    async init() {
++        return this.bridge.init(this.bridgeUrl);
++    }
++    async destroy() {
++        return this.bridge.destroy();
++    }
++    async serialize() {
++        return {
++            hdPath: this.hdPath,
++            accounts: this.accounts,
++            accountDetails: this.accountDetails,
++            bridgeUrl: this.bridgeUrl,
++            implementFullBIP44: false,
++        };
++    }
++    async deserialize(opts = {}) {
++        var _a, _b, _c, _d, _e;
++        this.hdPath = (_a = opts.hdPath) !== null && _a !== void 0 ? _a : hdPathString;
++        this.bridgeUrl = (_b = opts.bridgeUrl) !== null && _b !== void 0 ? _b : BRIDGE_URL;
++        this.accounts = (_c = opts.accounts) !== null && _c !== void 0 ? _c : [];
++        this.accountDetails = (_d = opts.accountDetails) !== null && _d !== void 0 ? _d : {};
++        if (!opts.accountDetails) {
++            __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_migrateAccountDetails).call(this, opts);
++        }
++        this.implementFullBIP44 = (_e = opts.implementFullBIP44) !== null && _e !== void 0 ? _e : false;
++        // Remove accounts that don't have corresponding account details
++        this.accounts = this.accounts.filter((account) => Object.keys(this.accountDetails).includes(ethUtil.toChecksumAddress(account)));
++        return Promise.resolve();
++    }
++    isUnlocked() {
++        var _a;
++        return Boolean((_a = this.hdk) === null || _a === void 0 ? void 0 : _a.publicKey);
++    }
++    isConnected() {
++        return this.bridge.isDeviceConnected;
++    }
++    setAccountToUnlock(index) {
++        this.unlockedAccount =
++            typeof index === 'number' ? index : parseInt(index, 10);
++    }
++    setHdPath(hdPath) {
++        // Reset HDKey if the path changes
++        if (this.hdPath !== hdPath) {
++            this.hdk = new hdkey_1.default();
++        }
++        this.hdPath = hdPath;
++    }
++    async unlock(hdPath, updateHdk = true) {
++        if (this.isUnlocked() && !hdPath) {
++            return 'already unlocked';
++        }
++        const path = hdPath ? __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_toLedgerPath).call(this, hdPath) : this.hdPath;
++        let payload;
++        try {
++            payload = await this.bridge.getPublicKey({
++                hdPath: path,
++            });
++        }
++        catch (error) {
++            throw error instanceof Error ? error : new Error('Unknown error');
++        }
++        if (updateHdk && payload.chainCode) {
++            this.hdk.publicKey = buffer_1.Buffer.from(payload.publicKey, 'hex');
++            this.hdk.chainCode = buffer_1.Buffer.from(payload.chainCode, 'hex');
++        }
++        return payload.address;
++    }
++    async addAccounts(amount = 1) {
++        return new Promise((resolve, reject) => {
++            this.unlock()
++                .then(async (_) => {
++                const from = this.unlockedAccount;
++                const to = from + amount;
++                for (let i = from; i < to; i++) {
++                    const path = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, i);
++                    let address;
++                    if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)) {
++                        address = await this.unlock(path);
++                    }
++                    else {
++                        address = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_addressFromIndex).call(this, pathBase, i);
++                    }
++                    this.accountDetails[ethUtil.toChecksumAddress(address)] = {
++                        // TODO: consider renaming this property, as the current name is misleading
++                        // It's currently used to represent whether an account uses the Ledger Live path.
++                        bip44: __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this),
++                        hdPath: path,
++                    };
++                    if (!this.accounts.includes(address)) {
++                        this.accounts = [...this.accounts, address];
++                    }
++                    this.page = 0;
++                }
++                resolve(this.accounts.slice());
++            })
++                .catch(reject);
++        });
++    }
++    async getFirstPage() {
++        this.page = 0;
++        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPage).call(this, 1);
++    }
++    async getNextPage() {
++        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPage).call(this, 1);
++    }
++    async getPreviousPage() {
++        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPage).call(this, -1);
++    }
++    async getAccounts() {
++        return Promise.resolve(this.accounts.slice());
++    }
++    removeAccount(address) {
++        if (!this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())) {
++            throw new Error(`Address ${address} not found in this keyring`);
++        }
++        this.accounts = this.accounts.filter((a) => a.toLowerCase() !== address.toLowerCase());
++        delete this.accountDetails[ethUtil.toChecksumAddress(address)];
++    }
++    async attemptMakeApp() {
++        return this.bridge.attemptMakeApp();
++    }
++    async updateTransportMethod(transportType) {
++        return this.bridge.updateTransportMethod(transportType);
++    }
++    // tx is an instance of the ethereumjs-transaction class.
++    async signTransaction(address, tx) {
++        let rawTxHex;
++        // transactions built with older versions of ethereumjs-tx have a
++        // getChainId method that newer versions do not. Older versions are mutable
++        // while newer versions default to being immutable. Expected shape and type
++        // of data for v, r and s differ (Buffer (old) vs BN (new))
++        if (isOldStyleEthereumjsTx(tx)) {
++            // In this version of ethereumjs-tx we must add the chainId in hex format
++            // to the initial v value. The chainId must be included in the serialized
++            // transaction which is only communicated to ethereumjs-tx in this
++            // value. In newer versions the chainId is communicated via the 'Common'
++            // object.
++            // @ts-expect-error tx.v should be a Buffer but we are assigning a string
++            tx.v = ethUtil.bufferToHex(tx.getChainId());
++            // @ts-expect-error tx.r should be a Buffer but we are assigning a string
++            tx.r = '0x00';
++            // @ts-expect-error tx.s should be a Buffer but we are assigning a string
++            tx.s = '0x00';
++            rawTxHex = tx.serialize().toString('hex');
++            return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_signTransaction).call(this, address, rawTxHex, (payload) => {
++                tx.v = buffer_1.Buffer.from(payload.v, 'hex');
++                tx.r = buffer_1.Buffer.from(payload.r, 'hex');
++                tx.s = buffer_1.Buffer.from(payload.s, 'hex');
++                return tx;
++            });
++        }
++        // The below `encode` call is only necessary for legacy transactions, as `getMessageToSign`
++        // calls `rlp.encode` internally for non-legacy transactions. As per the "Transaction Execution"
++        // section of the ethereum yellow paper, transactions need to be "well-formed RLP, with no additional
++        // trailing bytes".
++        // Note also that `getMessageToSign` will return valid RLP for all transaction types, whereas the
++        // `serialize` method will not for any transaction type except legacy. This is because `serialize` includes
++        // empty r, s and v values in the encoded rlp. This is why we use `getMessageToSign` here instead of `serialize`.
++        const messageToSign = tx.getMessageToSign(false);
++        rawTxHex = buffer_1.Buffer.isBuffer(messageToSign)
++            ? messageToSign.toString('hex')
++            : ethUtil.rlp.encode(messageToSign).toString('hex');
++        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_signTransaction).call(this, address, rawTxHex, (payload) => {
++            // Because tx will be immutable, first get a plain javascript object that
++            // represents the transaction. Using txData here as it aligns with the
++            // nomenclature of ethereumjs/tx.
++            const txData = tx.toJSON();
++            // The fromTxData utility expects a type to support transactions with a type other than 0
++            txData.type = tx.type;
++            // The fromTxData utility expects v,r and s to be hex prefixed
++            txData.v = ethUtil.addHexPrefix(payload.v);
++            txData.r = ethUtil.addHexPrefix(payload.r);
++            txData.s = ethUtil.addHexPrefix(payload.s);
++            // Adopt the 'common' option from the original transaction and set the
++            // returned object to be frozen if the original is frozen.
++            return tx_1.TransactionFactory.fromTxData(txData, {
++                common: tx.common,
++                freeze: Object.isFrozen(tx),
++            });
++        });
++    }
++    async signMessage(withAccount, data) {
++        return this.signPersonalMessage(withAccount, data);
++    }
++    // For personal_sign, we need to prefix the message:
++    async signPersonalMessage(withAccount, message) {
++        const hdPath = await this.unlockAccountByAddress(withAccount);
++        if (!hdPath) {
++            throw new Error('Ledger: Unknown error while signing message');
++        }
++        let payload;
++        try {
++            payload = await this.bridge.deviceSignMessage({
++                hdPath,
++                message: ethUtil.stripHexPrefix(message),
++            });
++        }
++        catch (error) {
++            throw error instanceof Error
++                ? error
++                : new Error('Ledger: Unknown error while signing message');
++        }
++        let recoveryId = parseInt(String(payload.v), 10).toString(16);
++        if (recoveryId.length < 2) {
++            recoveryId = `0${recoveryId}`;
++        }
++        const signature = `0x${payload.r}${payload.s}${recoveryId}`;
++        const addressSignedWith = sigUtil.recoverPersonalSignature({
++            data: message,
++            // eslint-disable-next-line id-denylist
++            sig: signature,
++        });
++        if (ethUtil.toChecksumAddress(addressSignedWith) !==
++            ethUtil.toChecksumAddress(withAccount)) {
++            throw new Error('Ledger: The signature doesnt match the right address');
++        }
++        return signature;
++    }
++    async unlockAccountByAddress(address) {
++        const checksummedAddress = ethUtil.toChecksumAddress(address);
++        const accountDetails = this.accountDetails[checksummedAddress];
++        if (!accountDetails) {
++            throw new Error(`Ledger: Account for address '${checksummedAddress}' not found`);
++        }
++        const { hdPath } = accountDetails;
++        const unlockedAddress = await this.unlock(hdPath, false);
++        // unlock resolves to the address for the given hdPath as reported by the ledger device
++        // if that address is not the requested address, then this account belongs to a different device or seed
++        if (unlockedAddress.toLowerCase() !== address.toLowerCase()) {
++            throw new Error(`Ledger: Account ${address} does not belong to the connected device`);
++        }
++        return hdPath;
++    }
++    async signTypedData(withAccount, data, options = {}) {
++        const isV4 = options.version === 'V4';
++        if (!isV4) {
++            throw new Error('Ledger: Only version 4 of typed data signing is supported');
++        }
++        const { domain, types, primaryType, message } = sigUtil.TypedDataUtils.sanitizeData(data);
++        const domainSeparatorHex = sigUtil.TypedDataUtils.hashStruct('EIP712Domain', domain, types, 
++        // @ts-expect-error @types/eth-sig-util documents this function
++        // as taking three arguments, but it actually takes four.
++        // See: https://github.com/MetaMask/eth-sig-util/blob/v2.5.4/index.js#L174
++        isV4).toString('hex');
++        const hashStructMessageHex = sigUtil.TypedDataUtils.hashStruct(primaryType, message, types, 
++        // @ts-expect-error see comment above
++        isV4).toString('hex');
++        const hdPath = await this.unlockAccountByAddress(withAccount);
++        if (!hdPath) {
++            throw new Error('Ledger: Unknown error while signing message');
++        }
++        let payload;
++        try {
++            payload = await this.bridge.deviceSignTypedData({
++                hdPath,
++                domainSeparatorHex,
++                hashStructMessageHex,
++            });
++        }
++        catch (error) {
++            throw error instanceof Error
++                ? error
++                : new Error('Ledger: Unknown error while signing message');
++        }
++        let recoveryId = parseInt(String(payload.v), 10).toString(16);
++        if (recoveryId.length < 2) {
++            recoveryId = `0${recoveryId}`;
++        }
++        const signature = `0x${payload.r}${payload.s}${recoveryId}`;
++        // @ts-expect-error recoverTypedSignature_v4 is missing from
++        // @types/eth-sig-util.
++        // See: https://github.com/MetaMask/eth-sig-util/blob/v2.5.4/index.js#L464
++        const addressSignedWith = sigUtil.recoverTypedSignature_v4({
++            data,
++            // eslint-disable-next-line id-denylist
++            sig: signature,
++        });
++        if (ethUtil.toChecksumAddress(addressSignedWith) !==
++            ethUtil.toChecksumAddress(withAccount)) {
++            throw new Error('Ledger: The signature doesnt match the right address');
++        }
++        return signature;
++    }
++    exportAccount() {
++        throw new Error('Not supported on this device');
++    }
++    forgetDevice() {
++        this.accounts = [];
++        this.page = 0;
++        this.unlockedAccount = 0;
++        this.paths = {};
++        this.accountDetails = {};
++        this.hdk = new hdkey_1.default();
++    }
++}
++exports.LedgerKeyring = LedgerKeyring;
++_LedgerKeyring_instances = new WeakSet(), _LedgerKeyring_migrateAccountDetails = function _LedgerKeyring_migrateAccountDetails(opts) {
++    if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this) && opts.accountIndexes) {
++        for (const [account, index] of Object.entries(opts.accountIndexes)) {
++            this.accountDetails[account] = {
++                bip44: true,
++                hdPath: __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, index),
++            };
++        }
++    }
++    // try to migrate non-LedgerLive accounts too
++    if (!__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)) {
++        this.accounts
++            .filter((account) => !Object.keys(this.accountDetails).includes(ethUtil.toChecksumAddress(account)))
++            .forEach((account) => {
++            try {
++                this.accountDetails[ethUtil.toChecksumAddress(account)] = {
++                    bip44: false,
++                    hdPath: __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_pathFromAddress).call(this, account),
++                };
++            }
++            catch (error) {
++                console.log(`failed to migrate account ${account}`);
++            }
++        });
++    }
++}, _LedgerKeyring_signTransaction = async function _LedgerKeyring_signTransaction(address, rawTxHex, handleSigning) {
++    const hdPath = await this.unlockAccountByAddress(address);
++    if (!hdPath) {
++        throw new Error('Ledger: Unknown error while signing transaction');
++    }
++    let payload;
++    try {
++        payload = await this.bridge.deviceSignTransaction({
++            tx: rawTxHex,
++            hdPath,
++        });
++    }
++    catch (error) {
++        throw error instanceof Error
++            ? error
++            : new Error('Ledger: Unknown error while signing transaction');
++    }
++    const newOrMutatedTx = handleSigning(payload);
++    const valid = newOrMutatedTx.verifySignature();
++    if (valid) {
++        return newOrMutatedTx;
++    }
++    throw new Error('Ledger: The transaction signature is not valid');
++}, _LedgerKeyring_getPage = 
++/* PRIVATE METHODS */
++async function _LedgerKeyring_getPage(increment) {
++    this.page += increment;
++    if (this.page <= 0) {
++        this.page = 1;
++    }
++    const from = (this.page - 1) * this.perPage;
++    const to = from + this.perPage;
++    await this.unlock();
++    let accounts;
++    if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)) {
++        accounts = await __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getAccountsBIP44).call(this, from, to);
++    }
++    else {
++        accounts = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getAccountsLegacy).call(this, from, to);
++    }
++    return accounts;
++}, _LedgerKeyring_getAccountsBIP44 = async function _LedgerKeyring_getAccountsBIP44(from, to) {
++    const accounts = [];
++    for (let i = from; i < to; i++) {
++        const path = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, i);
++        const address = await this.unlock(path);
++        const valid = this.implementFullBIP44
++            ? await __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_hasPreviousTransactions).call(this, address)
++            : true;
++        accounts.push({
++            address,
++            balance: null,
++            index: i,
++        });
++        // PER BIP44
++        // "Software should prevent a creation of an account if
++        // a previous account does not have a transaction history
++        // (meaning none of its addresses have been used before)."
++        if (!valid) {
++            break;
++        }
++    }
++    return accounts;
++}, _LedgerKeyring_getAccountsLegacy = function _LedgerKeyring_getAccountsLegacy(from, to) {
++    const accounts = [];
++    for (let i = from; i < to; i++) {
++        const address = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_addressFromIndex).call(this, pathBase, i);
++        accounts.push({
++            address,
++            balance: null,
++            index: i,
++        });
++        this.paths[ethUtil.toChecksumAddress(address)] = i;
++    }
++    return accounts;
++}, _LedgerKeyring_addressFromIndex = function _LedgerKeyring_addressFromIndex(basePath, i) {
++    const dkey = this.hdk.derive(`${basePath}/${i}`);
++    const address = ethUtil
++        .publicToAddress(dkey.publicKey, true)
++        .toString('hex');
++    return ethUtil.toChecksumAddress(`0x${address}`);
++}, _LedgerKeyring_pathFromAddress = function _LedgerKeyring_pathFromAddress(address) {
++    const checksummedAddress = ethUtil.toChecksumAddress(address);
++    let index = this.paths[checksummedAddress];
++    if (typeof index === 'undefined') {
++        for (let i = 0; i < MAX_INDEX; i++) {
++            if (checksummedAddress === __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_addressFromIndex).call(this, pathBase, i)) {
++                index = i;
++                break;
++            }
++        }
++    }
++    if (typeof index === 'undefined') {
++        throw new Error('Unknown address');
++    }
++    return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, index);
++}, _LedgerKeyring_getPathForIndex = function _LedgerKeyring_getPathForIndex(index) {
++    // Check if the path is BIP 44 (Ledger Live)
++    return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)
++        ? `m/44'/60'/${index}'/0/0`
++        : `${this.hdPath}/${index}`;
++}, _LedgerKeyring_isLedgerLiveHdPath = function _LedgerKeyring_isLedgerLiveHdPath() {
++    return this.hdPath === `m/44'/60'/0'/0/0`;
++}, _LedgerKeyring_toLedgerPath = function _LedgerKeyring_toLedgerPath(path) {
++    return path.toString().replace('m/', '');
++}, _LedgerKeyring_hasPreviousTransactions = async function _LedgerKeyring_hasPreviousTransactions(address) {
++    const apiUrl = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getApiUrl).call(this);
++    const response = await window.fetch(`${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1&offset=1`);
++    const parsedResponse = await response.json();
++    if (parsedResponse.status !== '0' && parsedResponse.result.length > 0) {
++        return true;
++    }
++    return false;
++}, _LedgerKeyring_getApiUrl = function _LedgerKeyring_getApiUrl() {
++    return this.network;
++};
++LedgerKeyring.type = keyringType;
++//# sourceMappingURL=ledger-keyring.js.map
+\ No newline at end of file
+diff --git a/dist/ledger-keyring.js.map b/dist/ledger-keyring.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..ccf6f99265b24c6d41ba1af8a614e355d8db0695
+--- /dev/null
++++ b/dist/ledger-keyring.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"ledger-keyring.js","sourceRoot":"","sources":["../src/ledger-keyring.ts"],"names":[],"mappings":"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","sourcesContent":["import { TransactionFactory, TxData, TypedTransaction } from '@ethereumjs/tx';\n// eslint-disable-next-line import/no-nodejs-modules\nimport { Buffer } from 'buffer';\nimport * as sigUtil from 'eth-sig-util';\nimport type OldEthJsTransaction from 'ethereumjs-tx';\nimport * as ethUtil from 'ethereumjs-util';\n// eslint-disable-next-line import/no-nodejs-modules\nimport { EventEmitter } from 'events';\nimport HDKey from 'hdkey';\n\nimport { LedgerBridge } from './ledger-bridge';\n\nconst pathBase = 'm';\nconst hdPathString = `${pathBase}/44'/60'/0'`;\nconst keyringType = 'Ledger Hardware';\n\nconst BRIDGE_URL = 'https://metamask.github.io/eth-ledger-bridge-keyring';\n\nconst MAX_INDEX = 1000;\n\nenum NetworkApiUrls {\n  Ropsten = 'http://api-ropsten.etherscan.io',\n  Kovan = 'http://api-kovan.etherscan.io',\n  Rinkeby = 'https://api-rinkeby.etherscan.io',\n  Mainnet = 'https://api.etherscan.io',\n}\n\ntype SignTransactionPayload = Awaited<\n  ReturnType<LedgerBridge['deviceSignTransaction']>\n>;\n\nexport type AccountDetails = {\n  index?: number;\n  bip44?: boolean;\n  hdPath?: string;\n};\n\nexport type LedgerBridgeKeyringOptions = {\n  hdPath: string;\n  accounts: readonly string[];\n  accountDetails: Readonly<Record<string, AccountDetails>>;\n  accountIndexes: Readonly<Record<string, number>>;\n  bridgeUrl: string;\n  implementFullBIP44: boolean;\n};\n\n/**\n * Check if the given transaction is made with ethereumjs-tx or @ethereumjs/tx\n *\n * Transactions built with older versions of ethereumjs-tx have a\n * getChainId method that newer versions do not.\n * Older versions are mutable\n * while newer versions default to being immutable.\n * Expected shape and type\n * of data for v, r and s differ (Buffer (old) vs BN (new)).\n *\n * @param tx - Transaction to check, instance of either ethereumjs-tx or @ethereumjs/tx.\n * @returns Returns `true` if tx is an old-style ethereumjs-tx transaction.\n */\nfunction isOldStyleEthereumjsTx(\n  tx: TypedTransaction | OldEthJsTransaction,\n): tx is OldEthJsTransaction {\n  return 'getChainId' in tx && typeof tx.getChainId === 'function';\n}\n\nexport class LedgerKeyring extends EventEmitter {\n  static type: string = keyringType;\n\n  readonly type: string = keyringType;\n\n  page = 0;\n\n  perPage = 5;\n\n  unlockedAccount = 0;\n\n  accounts: readonly string[] = [];\n\n  accountDetails: Record<string, AccountDetails> = {};\n\n  hdk = new HDKey();\n\n  hdPath = hdPathString;\n\n  paths: Record<string, number> = {};\n\n  network: NetworkApiUrls = NetworkApiUrls.Mainnet;\n\n  implementFullBIP44 = false;\n\n  bridgeUrl: string = BRIDGE_URL;\n\n  bridge: LedgerBridge;\n\n  constructor({ bridge }: { bridge: LedgerBridge }) {\n    super();\n\n    if (!bridge) {\n      throw new Error('Bridge is a required dependency for the keyring');\n    }\n\n    this.bridge = bridge;\n  }\n\n  async init() {\n    return this.bridge.init(this.bridgeUrl);\n  }\n\n  async destroy() {\n    return this.bridge.destroy();\n  }\n\n  async serialize() {\n    return {\n      hdPath: this.hdPath,\n      accounts: this.accounts,\n      accountDetails: this.accountDetails,\n      bridgeUrl: this.bridgeUrl,\n      implementFullBIP44: false,\n    };\n  }\n\n  async deserialize(opts: Partial<LedgerBridgeKeyringOptions> = {}) {\n    this.hdPath = opts.hdPath ?? hdPathString;\n    this.bridgeUrl = opts.bridgeUrl ?? BRIDGE_URL;\n    this.accounts = opts.accounts ?? [];\n    this.accountDetails = opts.accountDetails ?? {};\n    if (!opts.accountDetails) {\n      this.#migrateAccountDetails(opts);\n    }\n\n    this.implementFullBIP44 = opts.implementFullBIP44 ?? false;\n\n    // Remove accounts that don't have corresponding account details\n    this.accounts = this.accounts.filter((account) =>\n      Object.keys(this.accountDetails).includes(\n        ethUtil.toChecksumAddress(account),\n      ),\n    );\n\n    return Promise.resolve();\n  }\n\n  #migrateAccountDetails(opts: Partial<LedgerBridgeKeyringOptions>) {\n    if (this.#isLedgerLiveHdPath() && opts.accountIndexes) {\n      for (const [account, index] of Object.entries(opts.accountIndexes)) {\n        this.accountDetails[account] = {\n          bip44: true,\n          hdPath: this.#getPathForIndex(index),\n        };\n      }\n    }\n\n    // try to migrate non-LedgerLive accounts too\n    if (!this.#isLedgerLiveHdPath()) {\n      this.accounts\n        .filter(\n          (account) =>\n            !Object.keys(this.accountDetails).includes(\n              ethUtil.toChecksumAddress(account),\n            ),\n        )\n        .forEach((account) => {\n          try {\n            this.accountDetails[ethUtil.toChecksumAddress(account)] = {\n              bip44: false,\n              hdPath: this.#pathFromAddress(account),\n            };\n          } catch (error) {\n            console.log(`failed to migrate account ${account}`);\n          }\n        });\n    }\n  }\n\n  isUnlocked() {\n    return Boolean(this.hdk?.publicKey);\n  }\n\n  isConnected() {\n    return this.bridge.isDeviceConnected;\n  }\n\n  setAccountToUnlock(index: number | string) {\n    this.unlockedAccount =\n      typeof index === 'number' ? index : parseInt(index, 10);\n  }\n\n  setHdPath(hdPath: string) {\n    // Reset HDKey if the path changes\n    if (this.hdPath !== hdPath) {\n      this.hdk = new HDKey();\n    }\n    this.hdPath = hdPath;\n  }\n\n  async unlock(hdPath?: string, updateHdk = true): Promise<string> {\n    if (this.isUnlocked() && !hdPath) {\n      return 'already unlocked';\n    }\n    const path = hdPath ? this.#toLedgerPath(hdPath) : this.hdPath;\n\n    let payload;\n    try {\n      payload = await this.bridge.getPublicKey({\n        hdPath: path,\n      });\n    } catch (error) {\n      throw error instanceof Error ? error : new Error('Unknown error');\n    }\n\n    if (updateHdk && payload.chainCode) {\n      this.hdk.publicKey = Buffer.from(payload.publicKey, 'hex');\n      this.hdk.chainCode = Buffer.from(payload.chainCode, 'hex');\n    }\n\n    return payload.address;\n  }\n\n  async addAccounts(amount = 1): Promise<string[]> {\n    return new Promise((resolve, reject) => {\n      this.unlock()\n        .then(async (_) => {\n          const from = this.unlockedAccount;\n          const to = from + amount;\n          for (let i = from; i < to; i++) {\n            const path = this.#getPathForIndex(i);\n            let address;\n            if (this.#isLedgerLiveHdPath()) {\n              address = await this.unlock(path);\n            } else {\n              address = this.#addressFromIndex(pathBase, i);\n            }\n\n            this.accountDetails[ethUtil.toChecksumAddress(address)] = {\n              // TODO: consider renaming this property, as the current name is misleading\n              // It's currently used to represent whether an account uses the Ledger Live path.\n              bip44: this.#isLedgerLiveHdPath(),\n              hdPath: path,\n            };\n\n            if (!this.accounts.includes(address)) {\n              this.accounts = [...this.accounts, address];\n            }\n            this.page = 0;\n          }\n          resolve(this.accounts.slice());\n        })\n        .catch(reject);\n    });\n  }\n\n  async getFirstPage() {\n    this.page = 0;\n    return this.#getPage(1);\n  }\n\n  async getNextPage() {\n    return this.#getPage(1);\n  }\n\n  async getPreviousPage() {\n    return this.#getPage(-1);\n  }\n\n  async getAccounts() {\n    return Promise.resolve(this.accounts.slice());\n  }\n\n  removeAccount(address: string) {\n    if (\n      !this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())\n    ) {\n      throw new Error(`Address ${address} not found in this keyring`);\n    }\n\n    this.accounts = this.accounts.filter(\n      (a) => a.toLowerCase() !== address.toLowerCase(),\n    );\n    delete this.accountDetails[ethUtil.toChecksumAddress(address)];\n  }\n\n  async attemptMakeApp() {\n    return this.bridge.attemptMakeApp();\n  }\n\n  async updateTransportMethod(transportType: string) {\n    return this.bridge.updateTransportMethod(transportType);\n  }\n\n  // tx is an instance of the ethereumjs-transaction class.\n  async signTransaction(\n    address: string,\n    tx: TypedTransaction | OldEthJsTransaction,\n  ): Promise<TypedTransaction | OldEthJsTransaction> {\n    let rawTxHex;\n    // transactions built with older versions of ethereumjs-tx have a\n    // getChainId method that newer versions do not. Older versions are mutable\n    // while newer versions default to being immutable. Expected shape and type\n    // of data for v, r and s differ (Buffer (old) vs BN (new))\n    if (isOldStyleEthereumjsTx(tx)) {\n      // In this version of ethereumjs-tx we must add the chainId in hex format\n      // to the initial v value. The chainId must be included in the serialized\n      // transaction which is only communicated to ethereumjs-tx in this\n      // value. In newer versions the chainId is communicated via the 'Common'\n      // object.\n      // @ts-expect-error tx.v should be a Buffer but we are assigning a string\n      tx.v = ethUtil.bufferToHex(tx.getChainId());\n      // @ts-expect-error tx.r should be a Buffer but we are assigning a string\n      tx.r = '0x00';\n      // @ts-expect-error tx.s should be a Buffer but we are assigning a string\n      tx.s = '0x00';\n\n      rawTxHex = tx.serialize().toString('hex');\n\n      return this.#signTransaction(address, rawTxHex, (payload) => {\n        tx.v = Buffer.from(payload.v, 'hex');\n        tx.r = Buffer.from(payload.r, 'hex');\n        tx.s = Buffer.from(payload.s, 'hex');\n        return tx;\n      });\n    }\n\n    // The below `encode` call is only necessary for legacy transactions, as `getMessageToSign`\n    // calls `rlp.encode` internally for non-legacy transactions. As per the \"Transaction Execution\"\n    // section of the ethereum yellow paper, transactions need to be \"well-formed RLP, with no additional\n    // trailing bytes\".\n\n    // Note also that `getMessageToSign` will return valid RLP for all transaction types, whereas the\n    // `serialize` method will not for any transaction type except legacy. This is because `serialize` includes\n    // empty r, s and v values in the encoded rlp. This is why we use `getMessageToSign` here instead of `serialize`.\n    const messageToSign = tx.getMessageToSign(false);\n\n    rawTxHex = Buffer.isBuffer(messageToSign)\n      ? messageToSign.toString('hex')\n      : ethUtil.rlp.encode(messageToSign).toString('hex');\n\n    return this.#signTransaction(address, rawTxHex, (payload) => {\n      // Because tx will be immutable, first get a plain javascript object that\n      // represents the transaction. Using txData here as it aligns with the\n      // nomenclature of ethereumjs/tx.\n      const txData: TxData = tx.toJSON();\n      // The fromTxData utility expects a type to support transactions with a type other than 0\n      txData.type = tx.type;\n      // The fromTxData utility expects v,r and s to be hex prefixed\n      txData.v = ethUtil.addHexPrefix(payload.v);\n      txData.r = ethUtil.addHexPrefix(payload.r);\n      txData.s = ethUtil.addHexPrefix(payload.s);\n      // Adopt the 'common' option from the original transaction and set the\n      // returned object to be frozen if the original is frozen.\n      return TransactionFactory.fromTxData(txData, {\n        common: tx.common,\n        freeze: Object.isFrozen(tx),\n      });\n    });\n  }\n\n  async #signTransaction(\n    address: string,\n    rawTxHex: string,\n    handleSigning: (\n      payload: SignTransactionPayload,\n    ) => TypedTransaction | OldEthJsTransaction,\n  ): Promise<TypedTransaction | OldEthJsTransaction> {\n    const hdPath = await this.unlockAccountByAddress(address);\n\n    if (!hdPath) {\n      throw new Error('Ledger: Unknown error while signing transaction');\n    }\n\n    let payload;\n    try {\n      payload = await this.bridge.deviceSignTransaction({\n        tx: rawTxHex,\n        hdPath,\n      });\n    } catch (error) {\n      throw error instanceof Error\n        ? error\n        : new Error('Ledger: Unknown error while signing transaction');\n    }\n\n    const newOrMutatedTx = handleSigning(payload);\n    const valid = newOrMutatedTx.verifySignature();\n    if (valid) {\n      return newOrMutatedTx;\n    }\n    throw new Error('Ledger: The transaction signature is not valid');\n  }\n\n  async signMessage(withAccount: string, data: string) {\n    return this.signPersonalMessage(withAccount, data);\n  }\n\n  // For personal_sign, we need to prefix the message:\n  async signPersonalMessage(withAccount: string, message: string) {\n    const hdPath = await this.unlockAccountByAddress(withAccount);\n\n    if (!hdPath) {\n      throw new Error('Ledger: Unknown error while signing message');\n    }\n\n    let payload;\n    try {\n      payload = await this.bridge.deviceSignMessage({\n        hdPath,\n        message: ethUtil.stripHexPrefix(message),\n      });\n    } catch (error) {\n      throw error instanceof Error\n        ? error\n        : new Error('Ledger: Unknown error while signing message');\n    }\n\n    let recoveryId = parseInt(String(payload.v), 10).toString(16);\n    if (recoveryId.length < 2) {\n      recoveryId = `0${recoveryId}`;\n    }\n    const signature = `0x${payload.r}${payload.s}${recoveryId}`;\n    const addressSignedWith = sigUtil.recoverPersonalSignature({\n      data: message,\n      // eslint-disable-next-line id-denylist\n      sig: signature,\n    });\n    if (\n      ethUtil.toChecksumAddress(addressSignedWith) !==\n      ethUtil.toChecksumAddress(withAccount)\n    ) {\n      throw new Error('Ledger: The signature doesnt match the right address');\n    }\n    return signature;\n  }\n\n  async unlockAccountByAddress(address: string) {\n    const checksummedAddress = ethUtil.toChecksumAddress(address);\n    const accountDetails = this.accountDetails[checksummedAddress];\n    if (!accountDetails) {\n      throw new Error(\n        `Ledger: Account for address '${checksummedAddress}' not found`,\n      );\n    }\n    const { hdPath } = accountDetails;\n    const unlockedAddress = await this.unlock(hdPath, false);\n\n    // unlock resolves to the address for the given hdPath as reported by the ledger device\n    // if that address is not the requested address, then this account belongs to a different device or seed\n    if (unlockedAddress.toLowerCase() !== address.toLowerCase()) {\n      throw new Error(\n        `Ledger: Account ${address} does not belong to the connected device`,\n      );\n    }\n    return hdPath;\n  }\n\n  async signTypedData(\n    withAccount: string,\n    data: sigUtil.EIP712TypedData,\n    options: { version?: string } = {},\n  ) {\n    const isV4 = options.version === 'V4';\n    if (!isV4) {\n      throw new Error(\n        'Ledger: Only version 4 of typed data signing is supported',\n      );\n    }\n\n    const { domain, types, primaryType, message } =\n      sigUtil.TypedDataUtils.sanitizeData(data);\n    const domainSeparatorHex = sigUtil.TypedDataUtils.hashStruct(\n      'EIP712Domain',\n      domain,\n      types,\n      // @ts-expect-error @types/eth-sig-util documents this function\n      // as taking three arguments, but it actually takes four.\n      // See: https://github.com/MetaMask/eth-sig-util/blob/v2.5.4/index.js#L174\n      isV4,\n    ).toString('hex');\n    const hashStructMessageHex = sigUtil.TypedDataUtils.hashStruct(\n      primaryType,\n      message,\n      types,\n      // @ts-expect-error see comment above\n      isV4,\n    ).toString('hex');\n\n    const hdPath = await this.unlockAccountByAddress(withAccount);\n\n    if (!hdPath) {\n      throw new Error('Ledger: Unknown error while signing message');\n    }\n\n    let payload;\n    try {\n      payload = await this.bridge.deviceSignTypedData({\n        hdPath,\n        domainSeparatorHex,\n        hashStructMessageHex,\n      });\n    } catch (error) {\n      throw error instanceof Error\n        ? error\n        : new Error('Ledger: Unknown error while signing message');\n    }\n\n    let recoveryId = parseInt(String(payload.v), 10).toString(16);\n    if (recoveryId.length < 2) {\n      recoveryId = `0${recoveryId}`;\n    }\n    const signature = `0x${payload.r}${payload.s}${recoveryId}`;\n    // @ts-expect-error recoverTypedSignature_v4 is missing from\n    // @types/eth-sig-util.\n    // See: https://github.com/MetaMask/eth-sig-util/blob/v2.5.4/index.js#L464\n    const addressSignedWith = sigUtil.recoverTypedSignature_v4({\n      data,\n      // eslint-disable-next-line id-denylist\n      sig: signature,\n    });\n    if (\n      ethUtil.toChecksumAddress(addressSignedWith) !==\n      ethUtil.toChecksumAddress(withAccount)\n    ) {\n      throw new Error('Ledger: The signature doesnt match the right address');\n    }\n    return signature;\n  }\n\n  exportAccount() {\n    throw new Error('Not supported on this device');\n  }\n\n  forgetDevice() {\n    this.accounts = [];\n    this.page = 0;\n    this.unlockedAccount = 0;\n    this.paths = {};\n    this.accountDetails = {};\n    this.hdk = new HDKey();\n  }\n\n  /* PRIVATE METHODS */\n  async #getPage(increment: number) {\n    this.page += increment;\n\n    if (this.page <= 0) {\n      this.page = 1;\n    }\n    const from = (this.page - 1) * this.perPage;\n    const to = from + this.perPage;\n\n    await this.unlock();\n    let accounts;\n    if (this.#isLedgerLiveHdPath()) {\n      accounts = await this.#getAccountsBIP44(from, to);\n    } else {\n      accounts = this.#getAccountsLegacy(from, to);\n    }\n    return accounts;\n  }\n\n  async #getAccountsBIP44(from: number, to: number) {\n    const accounts: {\n      address: string;\n      balance: number | null;\n      index: number;\n    }[] = [];\n\n    for (let i = from; i < to; i++) {\n      const path = this.#getPathForIndex(i);\n      const address = await this.unlock(path);\n      const valid = this.implementFullBIP44\n        ? await this.#hasPreviousTransactions(address)\n        : true;\n      accounts.push({\n        address,\n        balance: null,\n        index: i,\n      });\n\n      // PER BIP44\n      // \"Software should prevent a creation of an account if\n      // a previous account does not have a transaction history\n      // (meaning none of its addresses have been used before).\"\n      if (!valid) {\n        break;\n      }\n    }\n    return accounts;\n  }\n\n  #getAccountsLegacy(from: number, to: number) {\n    const accounts: {\n      address: string;\n      balance: number | null;\n      index: number;\n    }[] = [];\n\n    for (let i = from; i < to; i++) {\n      const address = this.#addressFromIndex(pathBase, i);\n      accounts.push({\n        address,\n        balance: null,\n        index: i,\n      });\n      this.paths[ethUtil.toChecksumAddress(address)] = i;\n    }\n    return accounts;\n  }\n\n  #addressFromIndex(basePath: string, i: number) {\n    const dkey = this.hdk.derive(`${basePath}/${i}`);\n    const address = ethUtil\n      .publicToAddress(dkey.publicKey, true)\n      .toString('hex');\n    return ethUtil.toChecksumAddress(`0x${address}`);\n  }\n\n  #pathFromAddress(address: string) {\n    const checksummedAddress = ethUtil.toChecksumAddress(address);\n    let index = this.paths[checksummedAddress];\n    if (typeof index === 'undefined') {\n      for (let i = 0; i < MAX_INDEX; i++) {\n        if (checksummedAddress === this.#addressFromIndex(pathBase, i)) {\n          index = i;\n          break;\n        }\n      }\n    }\n\n    if (typeof index === 'undefined') {\n      throw new Error('Unknown address');\n    }\n    return this.#getPathForIndex(index);\n  }\n\n  #getPathForIndex(index: number) {\n    // Check if the path is BIP 44 (Ledger Live)\n    return this.#isLedgerLiveHdPath()\n      ? `m/44'/60'/${index}'/0/0`\n      : `${this.hdPath}/${index}`;\n  }\n\n  #isLedgerLiveHdPath() {\n    return this.hdPath === `m/44'/60'/0'/0/0`;\n  }\n\n  #toLedgerPath(path: string) {\n    return path.toString().replace('m/', '');\n  }\n\n  async #hasPreviousTransactions(address: string) {\n    const apiUrl = this.#getApiUrl();\n    const response = await window.fetch(\n      `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1&offset=1`,\n    );\n    const parsedResponse = await response.json();\n    if (parsedResponse.status !== '0' && parsedResponse.result.length > 0) {\n      return true;\n    }\n    return false;\n  }\n\n  #getApiUrl() {\n    return this.network;\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/index.js b/index.js
+deleted file mode 100644
+index 9c11576c3fa9bdfb58ba6dc7bdca6c3ecf2da77e..0000000000000000000000000000000000000000
+--- a/index.js
++++ /dev/null
+@@ -1,651 +0,0 @@
+-const { EventEmitter } = require('events')
+-const HDKey = require('hdkey')
+-const ethUtil = require('ethereumjs-util')
+-const sigUtil = require('eth-sig-util')
+-const { TransactionFactory } = require('@ethereumjs/tx')
+-
+-const pathBase = 'm'
+-const hdPathString = `${pathBase}/44'/60'/0'`
+-const type = 'Ledger Hardware'
+-
+-const BRIDGE_URL = 'https://metamask.github.io/eth-ledger-bridge-keyring'
+-
+-const MAX_INDEX = 1000
+-const NETWORK_API_URLS = {
+-  ropsten: 'http://api-ropsten.etherscan.io',
+-  kovan: 'http://api-kovan.etherscan.io',
+-  rinkeby: 'https://api-rinkeby.etherscan.io',
+-  mainnet: 'https://api.etherscan.io',
+-}
+-
+-const CONNECTION_EVENT = 'ledger-connection-change'
+-
+-class LedgerBridgeKeyring extends EventEmitter {
+-  constructor (opts = {}) {
+-    super()
+-    this.accountDetails = {}
+-    this.bridgeUrl = null
+-    this.type = type
+-    this.page = 0
+-    this.perPage = 5
+-    this.unlockedAccount = 0
+-    this.hdk = new HDKey()
+-    this.paths = {}
+-    this.iframe = null
+-    this.network = 'mainnet'
+-    this.implementFullBIP44 = false
+-    this.deserialize(opts)
+-
+-    this.iframeLoaded = false
+-    this._setupIframe()
+-
+-    this.currentMessageId = 0
+-    this.messageCallbacks = {}
+-    this._setupListener()
+-  }
+-
+-  serialize () {
+-    return Promise.resolve({
+-      hdPath: this.hdPath,
+-      accounts: this.accounts,
+-      accountDetails: this.accountDetails,
+-      bridgeUrl: this.bridgeUrl,
+-      implementFullBIP44: false,
+-    })
+-  }
+-
+-  deserialize (opts = {}) {
+-    this.hdPath = opts.hdPath || hdPathString
+-    this.bridgeUrl = opts.bridgeUrl || BRIDGE_URL
+-    this.accounts = opts.accounts || []
+-    this.accountDetails = opts.accountDetails || {}
+-    if (!opts.accountDetails) {
+-      this._migrateAccountDetails(opts)
+-    }
+-
+-    this.implementFullBIP44 = opts.implementFullBIP44 || false
+-
+-    // Remove accounts that don't have corresponding account details
+-    this.accounts = this.accounts
+-      .filter((account) => Object.keys(this.accountDetails).includes(ethUtil.toChecksumAddress(account)))
+-
+-    return Promise.resolve()
+-  }
+-
+-  _migrateAccountDetails (opts) {
+-    if (this._isLedgerLiveHdPath() && opts.accountIndexes) {
+-      for (const account of Object.keys(opts.accountIndexes)) {
+-        this.accountDetails[account] = {
+-          bip44: true,
+-          hdPath: this._getPathForIndex(opts.accountIndexes[account]),
+-        }
+-      }
+-    }
+-
+-    // try to migrate non-LedgerLive accounts too
+-    if (!this._isLedgerLiveHdPath()) {
+-      this.accounts
+-        .filter((account) => !Object.keys(this.accountDetails).includes(ethUtil.toChecksumAddress(account)))
+-        .forEach((account) => {
+-          try {
+-            this.accountDetails[ethUtil.toChecksumAddress(account)] = {
+-              bip44: false,
+-              hdPath: this._pathFromAddress(account),
+-            }
+-          } catch (e) {
+-            console.log(`failed to migrate account ${account}`)
+-          }
+-        })
+-    }
+-  }
+-
+-  isUnlocked () {
+-    return Boolean(this.hdk && this.hdk.publicKey)
+-  }
+-
+-  isConnected () {
+-    return this.isDeviceConnected
+-  }
+-
+-  setAccountToUnlock (index) {
+-    this.unlockedAccount = parseInt(index, 10)
+-  }
+-
+-  setHdPath (hdPath) {
+-    // Reset HDKey if the path changes
+-    if (this.hdPath !== hdPath) {
+-      this.hdk = new HDKey()
+-    }
+-    this.hdPath = hdPath
+-  }
+-
+-  unlock (hdPath, updateHdk = true) {
+-    if (this.isUnlocked() && !hdPath) {
+-      return Promise.resolve('already unlocked')
+-    }
+-    const path = hdPath ? this._toLedgerPath(hdPath) : this.hdPath
+-    return new Promise((resolve, reject) => {
+-      this._sendMessage({
+-        action: 'ledger-unlock',
+-        params: {
+-          hdPath: path,
+-        },
+-      },
+-      ({ success, payload }) => {
+-        if (success) {
+-          if (updateHdk) {
+-            this.hdk.publicKey = Buffer.from(payload.publicKey, 'hex')
+-            this.hdk.chainCode = Buffer.from(payload.chainCode, 'hex')
+-          }
+-          resolve(payload.address)
+-        } else {
+-          reject(payload.error || new Error('Unknown error'))
+-        }
+-      })
+-    })
+-  }
+-
+-  addAccounts (n = 1) {
+-
+-    return new Promise((resolve, reject) => {
+-      this.unlock()
+-        .then(async (_) => {
+-          const from = this.unlockedAccount
+-          const to = from + n
+-          for (let i = from; i < to; i++) {
+-            const path = this._getPathForIndex(i)
+-            let address
+-            if (this._isLedgerLiveHdPath()) {
+-              address = await this.unlock(path)
+-            } else {
+-              address = this._addressFromIndex(pathBase, i)
+-            }
+-            this.accountDetails[ethUtil.toChecksumAddress(address)] = {
+-              // TODO: consider renaming this property, as the current name is misleading
+-              // It's currently used to represent whether an account uses the Ledger Live path.
+-              bip44: this._isLedgerLiveHdPath(),
+-              hdPath: path,
+-            }
+-
+-            if (!this.accounts.includes(address)) {
+-              this.accounts.push(address)
+-            }
+-            this.page = 0
+-          }
+-          resolve(this.accounts)
+-        })
+-        .catch(reject)
+-    })
+-  }
+-
+-  getFirstPage () {
+-    this.page = 0
+-    return this.__getPage(1)
+-  }
+-
+-  getNextPage () {
+-    return this.__getPage(1)
+-  }
+-
+-  getPreviousPage () {
+-    return this.__getPage(-1)
+-  }
+-
+-  getAccounts () {
+-    return Promise.resolve(this.accounts.slice())
+-  }
+-
+-  removeAccount (address) {
+-    if (!this.accounts.map((a) => a.toLowerCase()).includes(address.toLowerCase())) {
+-      throw new Error(`Address ${address} not found in this keyring`)
+-    }
+-    this.accounts = this.accounts.filter((a) => a.toLowerCase() !== address.toLowerCase())
+-    delete this.accountDetails[ethUtil.toChecksumAddress(address)]
+-  }
+-
+-  attemptMakeApp () {
+-    return new Promise((resolve, reject) => {
+-      this._sendMessage({
+-        action: 'ledger-make-app',
+-      }, ({ success, error }) => {
+-        if (success) {
+-          resolve(true)
+-        } else {
+-          reject(error)
+-        }
+-      })
+-    })
+-  }
+-
+-  updateTransportMethod (transportType) {
+-    return new Promise((resolve, reject) => {
+-      // If the iframe isn't loaded yet, let's store the desired transportType value and
+-      // optimistically return a successful promise
+-      if (!this.iframeLoaded) {
+-        this.delayedPromise = {
+-          resolve,
+-          reject,
+-          transportType,
+-        }
+-        return
+-      }
+-
+-      this._sendMessage({
+-        action: 'ledger-update-transport',
+-        params: { transportType },
+-      }, ({ success }) => {
+-        if (success) {
+-          resolve(true)
+-        } else {
+-          reject(new Error('Ledger transport could not be updated'))
+-        }
+-      })
+-    })
+-  }
+-
+-  // tx is an instance of the ethereumjs-transaction class.
+-  signTransaction (address, tx) {
+-    let rawTxHex
+-    // transactions built with older versions of ethereumjs-tx have a
+-    // getChainId method that newer versions do not. Older versions are mutable
+-    // while newer versions default to being immutable. Expected shape and type
+-    // of data for v, r and s differ (Buffer (old) vs BN (new))
+-    if (typeof tx.getChainId === 'function') {
+-      // In this version of ethereumjs-tx we must add the chainId in hex format
+-      // to the initial v value. The chainId must be included in the serialized
+-      // transaction which is only communicated to ethereumjs-tx in this
+-      // value. In newer versions the chainId is communicated via the 'Common'
+-      // object.
+-      tx.v = ethUtil.bufferToHex(tx.getChainId())
+-      tx.r = '0x00'
+-      tx.s = '0x00'
+-
+-      rawTxHex = tx.serialize().toString('hex')
+-
+-      return this._signTransaction(address, rawTxHex, (payload) => {
+-        tx.v = Buffer.from(payload.v, 'hex')
+-        tx.r = Buffer.from(payload.r, 'hex')
+-        tx.s = Buffer.from(payload.s, 'hex')
+-        return tx
+-      })
+-    }
+-
+-    // The below `encode` call is only necessary for legacy transactions, as `getMessageToSign`
+-    // calls `rlp.encode` internally for non-legacy transactions. As per the "Transaction Execution"
+-    // section of the ethereum yellow paper, transactions need to be "well-formed RLP, with no additional
+-    // trailing bytes".
+-
+-    // Note also that `getMessageToSign` will return valid RLP for all transaction types, whereas the
+-    // `serialize` method will not for any transaction type except legacy. This is because `serialize` includes
+-    // empty r, s and v values in the encoded rlp. This is why we use `getMessageToSign` here instead of `serialize`.
+-    const messageToSign = tx.getMessageToSign(false)
+-
+-    rawTxHex = Buffer.isBuffer(messageToSign)
+-      ? messageToSign.toString('hex')
+-      : ethUtil.rlp.encode(messageToSign).toString('hex')
+-
+-    return this._signTransaction(address, rawTxHex, (payload) => {
+-      // Because tx will be immutable, first get a plain javascript object that
+-      // represents the transaction. Using txData here as it aligns with the
+-      // nomenclature of ethereumjs/tx.
+-      const txData = tx.toJSON()
+-      // The fromTxData utility expects a type to support transactions with a type other than 0
+-      txData.type = tx.type
+-      // The fromTxData utility expects v,r and s to be hex prefixed
+-      txData.v = ethUtil.addHexPrefix(payload.v)
+-      txData.r = ethUtil.addHexPrefix(payload.r)
+-      txData.s = ethUtil.addHexPrefix(payload.s)
+-      // Adopt the 'common' option from the original transaction and set the
+-      // returned object to be frozen if the original is frozen.
+-      return TransactionFactory.fromTxData(txData, { common: tx.common, freeze: Object.isFrozen(tx) })
+-    })
+-  }
+-
+-  _signTransaction (address, rawTxHex, handleSigning) {
+-    return new Promise((resolve, reject) => {
+-      this.unlockAccountByAddress(address)
+-        .then((hdPath) => {
+-          this._sendMessage({
+-            action: 'ledger-sign-transaction',
+-            params: {
+-              tx: rawTxHex,
+-              hdPath,
+-            },
+-          },
+-          ({ success, payload }) => {
+-            if (success) {
+-
+-              const newOrMutatedTx = handleSigning(payload)
+-              const valid = newOrMutatedTx.verifySignature()
+-              if (valid) {
+-                resolve(newOrMutatedTx)
+-              } else {
+-                reject(new Error('Ledger: The transaction signature is not valid'))
+-              }
+-            } else {
+-              reject(payload.error || new Error('Ledger: Unknown error while signing transaction'))
+-            }
+-          })
+-        })
+-        .catch(reject)
+-    })
+-  }
+-
+-  signMessage (withAccount, data) {
+-    return this.signPersonalMessage(withAccount, data)
+-  }
+-
+-  // For personal_sign, we need to prefix the message:
+-  signPersonalMessage (withAccount, message) {
+-    return new Promise((resolve, reject) => {
+-      this.unlockAccountByAddress(withAccount)
+-        .then((hdPath) => {
+-          this._sendMessage({
+-            action: 'ledger-sign-personal-message',
+-            params: {
+-              hdPath,
+-              message: ethUtil.stripHexPrefix(message),
+-            },
+-          },
+-          ({ success, payload }) => {
+-            if (success) {
+-              let v = parseInt(payload.v, 10)
+-              v = v.toString(16)
+-              if (v.length < 2) {
+-                v = `0${v}`
+-              }
+-              const signature = `0x${payload.r}${payload.s}${v}`
+-              const addressSignedWith = sigUtil.recoverPersonalSignature({ data: message, sig: signature })
+-              if (ethUtil.toChecksumAddress(addressSignedWith) !== ethUtil.toChecksumAddress(withAccount)) {
+-                reject(new Error('Ledger: The signature doesnt match the right address'))
+-              }
+-              resolve(signature)
+-            } else {
+-              reject(payload.error || new Error('Ledger: Unknown error while signing message'))
+-            }
+-          })
+-        })
+-        .catch(reject)
+-    })
+-  }
+-
+-  async unlockAccountByAddress (address) {
+-    const checksummedAddress = ethUtil.toChecksumAddress(address)
+-    if (!Object.keys(this.accountDetails).includes(checksummedAddress)) {
+-      throw new Error(`Ledger: Account for address '${checksummedAddress}' not found`)
+-    }
+-    const { hdPath } = this.accountDetails[checksummedAddress]
+-    const unlockedAddress = await this.unlock(hdPath, false)
+-
+-    // unlock resolves to the address for the given hdPath as reported by the ledger device
+-    // if that address is not the requested address, then this account belongs to a different device or seed
+-    if (unlockedAddress.toLowerCase() !== address.toLowerCase()) {
+-      throw new Error(`Ledger: Account ${address} does not belong to the connected device`)
+-    }
+-    return hdPath
+-  }
+-
+-  async signTypedData (withAccount, data, options = {}) {
+-    const isV4 = options.version === 'V4'
+-    if (!isV4) {
+-      throw new Error('Ledger: Only version 4 of typed data signing is supported')
+-    }
+-
+-    const {
+-      domain,
+-      types,
+-      primaryType,
+-      message,
+-    } = sigUtil.TypedDataUtils.sanitizeData(data)
+-    const domainSeparatorHex = sigUtil.TypedDataUtils.hashStruct('EIP712Domain', domain, types, isV4).toString('hex')
+-    const hashStructMessageHex = sigUtil.TypedDataUtils.hashStruct(primaryType, message, types, isV4).toString('hex')
+-
+-    const hdPath = await this.unlockAccountByAddress(withAccount)
+-    const { success, payload } = await new Promise((resolve) => {
+-      this._sendMessage({
+-        action: 'ledger-sign-typed-data',
+-        params: {
+-          hdPath,
+-          domainSeparatorHex,
+-          hashStructMessageHex,
+-        },
+-      },
+-      (result) => resolve(result))
+-    })
+-
+-    if (success) {
+-      let v = parseInt(payload.v, 10)
+-      v = v.toString(16)
+-      if (v.length < 2) {
+-        v = `0${v}`
+-      }
+-      const signature = `0x${payload.r}${payload.s}${v}`
+-      const addressSignedWith = sigUtil.recoverTypedSignature_v4({
+-        data,
+-        sig: signature,
+-      })
+-      if (ethUtil.toChecksumAddress(addressSignedWith) !== ethUtil.toChecksumAddress(withAccount)) {
+-        throw new Error('Ledger: The signature doesnt match the right address')
+-      }
+-      return signature
+-    }
+-    throw payload.error || new Error('Ledger: Unknown error while signing message')
+-  }
+-
+-  exportAccount () {
+-    throw new Error('Not supported on this device')
+-  }
+-
+-  forgetDevice () {
+-    this.accounts = []
+-    this.page = 0
+-    this.unlockedAccount = 0
+-    this.paths = {}
+-    this.accountDetails = {}
+-    this.hdk = new HDKey()
+-  }
+-
+-  /* PRIVATE METHODS */
+-
+-  _setupIframe () {
+-    this.iframe = document.createElement('iframe')
+-    this.iframe.src = this.bridgeUrl
+-    this.iframe.allow = `hid 'src'`
+-    this.iframe.onload = async () => {
+-      // If the ledger live preference was set before the iframe is loaded,
+-      // set it after the iframe has loaded
+-      this.iframeLoaded = true
+-      if (this.delayedPromise) {
+-        try {
+-          const result = await this.updateTransportMethod(
+-            this.delayedPromise.transportType,
+-          )
+-          this.delayedPromise.resolve(result)
+-        } catch (e) {
+-          this.delayedPromise.reject(e)
+-        } finally {
+-          delete this.delayedPromise
+-        }
+-      }
+-    }
+-    document.head.appendChild(this.iframe)
+-  }
+-
+-  _getOrigin () {
+-    const tmp = this.bridgeUrl.split('/')
+-    tmp.splice(-1, 1)
+-    return tmp.join('/')
+-  }
+-
+-  _sendMessage (msg, cb) {
+-    msg.target = 'LEDGER-IFRAME'
+-
+-    this.currentMessageId += 1
+-    msg.messageId = this.currentMessageId
+-
+-    this.messageCallbacks[this.currentMessageId] = cb
+-    this.iframe.contentWindow.postMessage(msg, '*')
+-  }
+-
+-  _setupListener () {
+-    this._eventListener = ({ origin, data }) => {
+-      if (origin !== this._getOrigin()) {
+-        return false
+-      }
+-
+-      if (data) {
+-        if (this.messageCallbacks[data.messageId]) {
+-          this.messageCallbacks[data.messageId](data)
+-        } else if (data.action === CONNECTION_EVENT) {
+-          this.isDeviceConnected = data.payload.connected
+-        }
+-      }
+-
+-      return undefined
+-    }
+-    window.addEventListener('message', this._eventListener)
+-  }
+-
+-  destroy () {
+-    window.removeEventListener('message', this._eventListener)
+-  }
+-
+-  async __getPage (increment) {
+-
+-    this.page += increment
+-
+-    if (this.page <= 0) {
+-      this.page = 1
+-    }
+-    const from = (this.page - 1) * this.perPage
+-    const to = from + this.perPage
+-
+-    await this.unlock()
+-    let accounts
+-    if (this._isLedgerLiveHdPath()) {
+-      accounts = await this._getAccountsBIP44(from, to)
+-    } else {
+-      accounts = this._getAccountsLegacy(from, to)
+-    }
+-    return accounts
+-  }
+-
+-  async _getAccountsBIP44 (from, to) {
+-    const accounts = []
+-
+-    for (let i = from; i < to; i++) {
+-      const path = this._getPathForIndex(i)
+-      const address = await this.unlock(path)
+-      const valid = this.implementFullBIP44 ? await this._hasPreviousTransactions(address) : true
+-      accounts.push({
+-        address,
+-        balance: null,
+-        index: i,
+-      })
+-      // PER BIP44
+-      // "Software should prevent a creation of an account if
+-      // a previous account does not have a transaction history
+-      // (meaning none of its addresses have been used before)."
+-      if (!valid) {
+-        break
+-      }
+-    }
+-    return accounts
+-  }
+-
+-  _getAccountsLegacy (from, to) {
+-    const accounts = []
+-
+-    for (let i = from; i < to; i++) {
+-      const address = this._addressFromIndex(pathBase, i)
+-      accounts.push({
+-        address,
+-        balance: null,
+-        index: i,
+-      })
+-      this.paths[ethUtil.toChecksumAddress(address)] = i
+-    }
+-    return accounts
+-  }
+-
+-  _padLeftEven (hex) {
+-    return hex.length % 2 === 0 ? hex : `0${hex}`
+-  }
+-
+-  _normalize (buf) {
+-    return this._padLeftEven(ethUtil.bufferToHex(buf).toLowerCase())
+-  }
+-
+-  // eslint-disable-next-line no-shadow
+-  _addressFromIndex (pathBase, i) {
+-    const dkey = this.hdk.derive(`${pathBase}/${i}`)
+-    const address = ethUtil
+-      .publicToAddress(dkey.publicKey, true)
+-      .toString('hex')
+-    return ethUtil.toChecksumAddress(`0x${address}`)
+-  }
+-
+-  _pathFromAddress (address) {
+-    const checksummedAddress = ethUtil.toChecksumAddress(address)
+-    let index = this.paths[checksummedAddress]
+-    if (typeof index === 'undefined') {
+-      for (let i = 0; i < MAX_INDEX; i++) {
+-        if (checksummedAddress === this._addressFromIndex(pathBase, i)) {
+-          index = i
+-          break
+-        }
+-      }
+-    }
+-
+-    if (typeof index === 'undefined') {
+-      throw new Error('Unknown address')
+-    }
+-    return this._getPathForIndex(index)
+-  }
+-
+-  _toAscii (hex) {
+-    let str = ''
+-    let i = 0
+-    const l = hex.length
+-    if (hex.substring(0, 2) === '0x') {
+-      i = 2
+-    }
+-    for (; i < l; i += 2) {
+-      const code = parseInt(hex.substr(i, 2), 16)
+-      str += String.fromCharCode(code)
+-    }
+-
+-    return str
+-  }
+-
+-  _getPathForIndex (index) {
+-    // Check if the path is BIP 44 (Ledger Live)
+-    return this._isLedgerLiveHdPath() ? `m/44'/60'/${index}'/0/0` : `${this.hdPath}/${index}`
+-  }
+-
+-  _isLedgerLiveHdPath () {
+-    return this.hdPath === `m/44'/60'/0'/0/0`
+-  }
+-
+-  _toLedgerPath (path) {
+-    return path.toString().replace('m/', '')
+-  }
+-
+-  async _hasPreviousTransactions (address) {
+-    const apiUrl = this._getApiUrl()
+-    const response = await window.fetch(`${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1&offset=1`)
+-    const parsedResponse = await response.json()
+-    if (parsedResponse.status !== '0' && parsedResponse.result.length > 0) {
+-      return true
+-    }
+-    return false
+-  }
+-
+-  _getApiUrl () {
+-    return NETWORK_API_URLS[this.network] || NETWORK_API_URLS.mainnet
+-  }
+-
+-}
+-
+-LedgerBridgeKeyring.type = type
+-module.exports = LedgerBridgeKeyring
+diff --git a/package.json b/package.json
+index 826ad860e581c65937cc26cd41f1a6c23f7ac137..21b42b63a16edab9becfa7543de0fdb34e130bbf 100644
+--- a/package.json
++++ b/package.json
+@@ -2,40 +2,43 @@
+   "name": "@metamask/eth-ledger-bridge-keyring",
+   "version": "0.15.0",
+   "description": "A MetaMask compatible keyring, for ledger hardware wallets",
+-  "main": "index.js",
+-  "files": [
+-    "index.js"
+-  ],
+-  "engines": {
+-    "node": ">=14.0.0"
+-  },
+-  "scripts": {
+-    "test": "mocha",
+-    "lint": "eslint . --ext .js",
+-    "lint:fix": "eslint --fix . --ext .js"
+-  },
+-  "publishConfig": {
+-    "registry": "https://registry.npmjs.org/",
+-    "access": "public"
+-  },
+-  "repository": {
+-    "type": "git",
+-    "url": "git+https://github.com/MetaMask/eth-ledger-bridge-keyring.git"
+-  },
+   "keywords": [
+     "ethereum",
+     "keyring",
+     "ledger",
+     "metamask"
+   ],
+-  "author": "Bruno Barbieri",
+-  "license": "ISC",
++  "homepage": "https://github.com/MetaMask/eth-ledger-bridge-keyring#readme",
+   "bugs": {
+     "url": "https://github.com/MetaMask/eth-ledger-bridge-keyring/issues"
+   },
+-  "homepage": "https://github.com/MetaMask/eth-ledger-bridge-keyring#readme",
++  "repository": {
++    "type": "git",
++    "url": "https://github.com/MetaMask/eth-ledger-bridge-keyring.git"
++  },
++  "license": "ISC",
++  "author": "Bruno Barbieri",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
++  "files": [
++    "dist/"
++  ],
++  "scripts": {
++    "build": "tsc --project tsconfig.build.json",
++    "build:clean": "rimraf dist && yarn build",
++    "build:docs": "typedoc",
++    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:dependencies",
++    "lint:dependencies": "depcheck",
++    "lint:eslint": "eslint . --cache --ext js,ts",
++    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:dependencies",
++    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
++    "prepack": "./scripts/prepack.sh",
++    "test": "jest && jest-it-up",
++    "test:watch": "jest --watch"
++  },
+   "dependencies": {
+     "@ethereumjs/tx": "^4.1.1",
++    "@metamask/utils": "^5.0.0",
+     "eth-sig-util": "^2.0.0",
+     "ethereumjs-util": "^7.0.9",
+     "hdkey": "0.8.0"
+@@ -43,18 +46,47 @@
+   "devDependencies": {
+     "@ethereumjs/common": "^3.1.1",
+     "@lavamoat/allow-scripts": "^2.3.0",
+-    "@metamask/eslint-config": "^3.0.0",
+-    "babel-eslint": "^10.1.0",
+-    "chai": "^4.1.2",
+-    "chai-spies": "^1.0.0",
+-    "eslint": "^6.8.0",
+-    "eslint-plugin-import": "^2.20.1",
+-    "eslint-plugin-json": "^1.2.0",
+-    "eslint-plugin-mocha": "^6.2.2",
++    "@ledgerhq/hw-app-eth": "^6.32.0",
++    "@metamask/auto-changelog": "^3.1.0",
++    "@metamask/eslint-config": "^11.0.1",
++    "@metamask/eslint-config-browser": "^11.0.0",
++    "@metamask/eslint-config-jest": "^11.0.0",
++    "@metamask/eslint-config-nodejs": "^11.0.0",
++    "@metamask/eslint-config-typescript": "^11.0.0",
++    "@types/eth-sig-util": "^2.1.1",
++    "@types/ethereumjs-tx": "^1.0.1",
++    "@types/hdkey": "^2.0.1",
++    "@types/jest": "^28.1.6",
++    "@types/node": "^14.0.0",
++    "@typescript-eslint/eslint-plugin": "^5.43.0",
++    "@typescript-eslint/parser": "^5.43.0",
++    "depcheck": "^1.4.3",
++    "eslint": "^8.27.0",
++    "eslint-config-prettier": "^8.5.0",
++    "eslint-plugin-import": "^2.26.0",
++    "eslint-plugin-jest": "^27.1.5",
++    "eslint-plugin-jsdoc": "^39.6.2",
++    "eslint-plugin-node": "^11.1.0",
++    "eslint-plugin-prettier": "^4.2.1",
+     "ethereumjs-tx": "^1.3.4",
+-    "mocha": "^5.0.4"
++    "jest": "^28.1.3",
++    "jest-it-up": "^2.2.0",
++    "prettier": "^2.7.1",
++    "prettier-plugin-packagejson": "^2.2.12",
++    "rimraf": "^4.1.2",
++    "ts-jest": "^28.0.7",
++    "ts-node": "^10.7.0",
++    "typedoc": "^0.23.15",
++    "typescript": "~4.8.4"
+   },
+   "packageManager": "yarn@3.4.1",
++  "engines": {
++    "node": ">=14.0.0"
++  },
++  "publishConfig": {
++    "access": "public",
++    "registry": "https://registry.npmjs.org/"
++  },
+   "lavamoat": {
+     "allowScripts": {
+       "@lavamoat/preinstall-always-fail": false,

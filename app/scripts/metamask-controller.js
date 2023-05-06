@@ -15,8 +15,14 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import TrezorKeyring from '@metamask/eth-trezor-keyring';
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import {
+  TrezorKeyring,
+  TrezorConnectBridge,
+} from '@metamask/eth-trezor-keyring';
+import {
+  LedgerKeyring,
+  LedgerIframeBridge,
+} from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
@@ -712,15 +718,25 @@ export default class MetamaskController extends EventEmitter {
     if (this.canUseHardwareWallets()) {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
-      const additionalKeyringTypes = [
-        keyringOverrides?.trezor || TrezorKeyring,
-        keyringOverrides?.ledger || LedgerBridgeKeyring,
-        keyringOverrides?.lattice || LatticeKeyring,
-        QRHardwareKeyring,
+      const keyringBuilderFactoryWithBridge = (Keyring, Bridge) => {
+        const builder = () =>
+          new Keyring({
+            bridge: new Bridge(),
+          });
+        builder.type = Keyring.type;
+        return builder;
+      };
+
+      additionalKeyrings = [
+        keyringOverrides?.trezor
+          ? keyringBuilderFactory(keyringOverrides?.trezor)
+          : keyringBuilderFactoryWithBridge(TrezorKeyring, TrezorConnectBridge),
+        keyringOverrides?.ledger
+          ? keyringBuilderFactory(keyringOverrides?.ledger)
+          : keyringBuilderFactoryWithBridge(LedgerKeyring, LedgerIframeBridge),
+        keyringBuilderFactory(keyringOverrides?.lattice || LatticeKeyring),
+        keyringBuilderFactory(QRHardwareKeyring),
       ];
-      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
-        keyringBuilderFactory(keyringType),
-      );
     }
 
     this.keyringController = new KeyringController({
@@ -2785,11 +2801,10 @@ export default class MetamaskController extends EventEmitter {
     }
     switch (deviceName) {
       case HardwareDeviceNames.trezor:
-        keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        keyringName = TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringName =
-          keyringOverrides?.ledger?.type || LedgerBridgeKeyring.type;
+        keyringName = LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;
