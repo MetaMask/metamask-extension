@@ -144,7 +144,7 @@ export default function OnboardingMetametrics() {
             />
             {t('onboardingMetametricsNeverCollectIP', [
               <Text
-                display={DISPLAY.INLINE_BLOCK}
+                       as="span"
                 variant={TextVariant.bodyMd}
                 key="never-collect"
                 fontWeight={FontWeight.Bold}
