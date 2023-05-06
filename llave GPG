@@ -1,0 +1,39 @@
+Asociar un correo electrónico con tu llave GPG
+Tu llave GPG debe estar asociada con un correo electrónico verificado de GitHub que coincida con tu identidad de persona que confirma el cambio.
+
+Mac
+Windows
+Linux
+Si estás utilizando una clave GPG que coincide con tu identidad de confirmante y tu dirección de correo electrónico verificada asociada a tu cuenta de GitHub.com, entonces puedes comenzar a firmar confirmaciones y etiquetas.
+
+Abra Terminal. 1. Use el comando gpg --list-secret-keys --keyid-format=long para enumerar el formato largo de las claves de GPG para las que tiene una clave pública y privada. Se requiere una llave privada para registrar confirmaciones o etiquetas.
+
+Shell
+$ gpg --list-secret-keys --keyid-format=long
+Nota: Es posible que en algunas instalaciones de GPG en Linux sea necesario usar gpg2 --list-keys --keyid-format LONG para ver una lista de las claves existentes en su lugar. En este caso, también tendrá que configurar Git para que use gpg2 mediante la ejecución de git config --global gpg.program gpg2.
+
+1. Desde la lista de llaves GPG, compia la forma larga de la ID de la llave GPG que quieres utilizar. En este ejemplo, el id. de clave de GPG es `3AA5C34371567BD2`: ```shell{:copy} $ gpg --list-secret-keys --keyid-format=long /Users/hubot/.gnupg/secring.gpg ------------------------------------ sec 4096R/3AA5C34371567BD2 2016-03-10 [expires: 2017-03-10] uid Hubot ssb 4096R/4BB6D45482678BE3 2016-03-10 ```
+Escriba gpg --edit-key GPG key ID y sustituya el id. de la clave de GPG que quiera usar. En el ejemplo siguiente, el identificador de clave de GPG es 3AA5C34371567BD2:
+
+$ gpg --edit-key 3AA5C34371567BD2
+Escriba gpg> adduid para agregar los detalles del identificador de usuario.
+
+$ gpg> adduid
+Sigue las indicaciones para suminsitrar tu nombre real, dirección de correo electrónica o cualquier comentario. Puede modificar las entradas si elige N, Co E. Para mantener la privacidad de tu dirección de correo electrónico, puedes usar la dirección de correo electrónico no-reply proporcionada por GitHub. Para más información, consulte "Configurar tu dirección de correo electrónico de confirmación".
+
+Real Name: OCTOCAT
+Email address: "octocat@github.com"
+Comment: GITHUB-KEY
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit?
+Escriba O para confirmar las selecciones.
+
+Escribe la contraseña de tu llave.
+
+Escriba gpg> save para guardar los cambios.
+
+$ gpg> save
+Escriba gpg --armor --export GPG key ID y sustituya el id. de la clave de GPG que quiera usar. En el ejemplo siguiente, el identificador de clave de GPG es 3AA5C34371567BD2:
+
+$ gpg --armor --export 3AA5C34371567BD2
+# Prints the GPG key, in ASCII armor format
+Para cargar la clave de GPG, agréguela a la cuenta de GitHub.
