@@ -99,7 +99,8 @@ const CancelSpeedupPopover = () => {
           alignItems={AlignItems.center}
           display={DISPLAY.FLEX}
           variant={TextVariant.bodySm}
-          marginBottom={4}
+          marginBottom={2}
+          paddingBottom={2}
           className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
@@ -137,7 +138,7 @@ const CancelSpeedupPopover = () => {
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          marginTop={4}
+          marginTop={2}
         >
           <Box className="cancel-speedup-popover__edit-gas-button">
             {!appIsLoading && <EditGasFeeButton />}
