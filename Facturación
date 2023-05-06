@@ -1,0 +1,98 @@
+Documentación de GitHub
+Facturación y pagos/Acciones de GitHub/Facturación de Acciones de GitHub
+Acerca de la facturación para las Acciones de GitHub
+En este artículo
+Acerca de la facturación para GitHub Actions
+Calcular los gastos por minuto y por almacenamiento
+Acerca de los límites de gasto
+Si quieres utilizar GitHub Actions con más almacenamiento o minutos de los que se incluyen en tu cuenta, se te cobrará por estos recursos adicionales.
+
+Acerca de la facturación para GitHub Actions #
+El uso de GitHub Actions es gratuito para los ejecutores estándar de GitHub hospedados en repositorios públicos y para ejecutores autohospedados. Para los repositorios privados, cada cuenta GitHub recibe una cantidad determinada de minutos y almacenamiento gratuitos para usar con ejecutores hospedados GitHub dependiendo del producto que se utilice con la cuenta. Cualquier uso que supere las cantidades incluidas se controla mediante límites de gasto.
+
+Si eres un cliente que factura mensualmente, tu cuenta tendrá un límite de gastos predeterminado de 0 dólares Estadounidenses (USD), lo cual previene el uso adicional de minutos o almacenamiento para los repositorios privados más allá de las cantidades que se incluyen en tu cuenta. Si paga su cuenta mediante factura, la cuenta tendrá un límite de gasto predeterminado ilimitado. Para más información, vea "Acerca de los límites de gasto".
+
+Si eres propietario de una organización, puedes conectar un identificador de suscripción de Azure a la cuenta de organización para permitir y pagar por el uso de GitHub Actions más allá de los importes incluidos con tu cuenta. Para obtener más información, vea «Conexión de una suscripción de Azure».
+
+Los minutos se restablecen cada mes, mientras que el uso del almacenamiento no.
+
+Minutos y almacenamiento incluídos #
+Nota: Los minutos de derechos no se pueden usar para los ejecutores de Windows y Ubuntu de más de 2 núcleos. Estos ejecutores siempre se cobrarán, incluidos en repositorios públicos. Para obtener más información, vea «Acerca de la facturación para las Acciones de GitHub».
+
+Producto	Storage	Minutos (por mes)
+GitHub Free	500 MB	2.000
+GitHub Pro	1 GB	3,000
+GitHub Free para organizaciones	500 MB	2.000
+GitHub Team	2 GB	3,000
+GitHub Enterprise Cloud	50 GB	50.000
+Los jobs que se ejecutan en Windows y macOS y que se hospedan en GitHub consumen minutos en una proporción de 2 a 10 veces mayor que aquellos que se ejecutan en Linux. Por ejemplo, el uso de 1000 minutos de Windows consumirá 2000 de los minutos incluidos en su cuenta. El uso de 1000 minutos de macOS, consumirá 10 000 minutos incluidos en su cuenta.
+
+Multiplicadores de minutos #
+Sistema operativo	Multiplicador de minutos
+Linux	1
+Windows	2
+macOS	10
+El almacenamiento que utilza un repositorio es el total del almacenamiento utilizado por los artefactos de GitHub Actions y por GitHub Packages. El costo de almacenamiento es el uso total de todos los repositorios que pertenecen a su cuenta. Para más información sobre los precios de GitHub Packages, consulta "Acerca de la facturación para GitHub Packages".
+
+Si tu uso de la cuenta sobrepasa estos límites y has establecido un límite de gasto superior a 0 USD, pagarás 0,008 USD por GB de almacenamiento por día y por minuto de uso, en función del sistema operativo que utilice el ejecutor hospedado en GitHub. GitHub redondea al alza los minutos y minutos parciales que cada trabajo utiliza al siguiente minuto completo.
+
+Nota: Los multiplicadores de minutos no se aplican a las tasas por minuto que se muestran a continuación.
+
+Tasas por minuto #
+Sistema operativo	Núcleos	Tasa por minuto (USD)
+Linux	2	0,008 USD
+Linux	4	$0.016
+Linux	8	0,032 USD
+Linux	16	0,064 USD
+Linux	32	0,128 USD
+Linux	64	0,256 USD
+Windows	2	$0.016
+Windows	8	0,064 USD
+Windows	16	0,128 USD
+Windows	32	0,256 USD
+Windows	64	0,512 USD
+macOS	3	$0,08
+macOS	12	0,32 $
+La cantidad de jobs que puedes ejecutar simultáneamente a través de todos los repositorios que pertenezcan a tu cuenta de usuario u organización dependerá de tu plan de GitHub. Consulta "Límites de uso, facturación y administración" para información sobre los límites de uso de los ejecutores hospedados en GitHub y "Acerca de los ejecutores autohospedados" para información sobre los límites de uso de los ejecutores autohospedados.
+Debes administrar la configuración de facturación y las características de pago para cada una de tus cuentas, por separado. Puedes alternar entre la configuración de tu cuentas personales, organizacionales y empresariales utilizando el alternador de contexto en cada página de configuración. Para obtener más información, vea «Acerca de la facturación en GitHub».
+Para ejecutor más grande, no hay ningún costo adicional para las configuraciones que asignan direcciones IP estáticas públicas a un ejecutor más grande. Para más información sobre ejecutor más grandes, consulta "Uso de ejecutores más grandes".
+No se pueden usar minutos de derechos para ejecutor más grande.
+Un ejecutor más grande no es gratis para los repositorios públicos.
+Calcular los gastos por minuto y por almacenamiento #
+Para estimar los costos por servicios de consumo, puede usar la calculadora de precios de GitHub.
+
+Al final de cada mes, GitHub calcula el costo de los minutos y almacenamiento utilizados en comparación con lo que se incluye en tu cuenta.
+
+Ejemplo de cálculos de costo por minuto #
+Por ejemplo, si en la organización se usa GitHub Team y permite gastos ilimitados, el uso de 5000 minutos podría tener un costo de uso por encima del límite de almacenamiento y minutos total de 56 USD, en función de los sistemas operativos que se usen para ejecutar los trabajos.
+
+5,000 minutos (3,000 de Linux y 2,000 de Windows) = $56 USD ($24 USD + $32 USD).
+3,000 minutos de Linux a $0.008 USD por minuto = $24 USD.
+2,000 minutos de Windows a $0.016 USD por minuto = $32 USD.
+GitHub calcula tu uso de almacenamiento para cada mes basándose en el uso por hora durante el mismo mes.
+
+Muestra de cálculo de costos de almacenamiento #
+Por ejemplo, si usa 3 GB de almacenamiento durante 10 días de marzo y 12 GB durante 21 días de marzo, el uso del almacenamiento sería:
+
+3 GB x 10 días x (24 horas por día) = 720 GB-Horas
+12 GB x 21 días x (24 horas por día) = 6,048 GB-Horas
+720 GB-Horas + 6,048 GB-Horas = 6,768 GB-Horas
+6,768 GB-Horas/ (744 horas por mes) = 9.0967 GB-Meses
+Al final del mes, GitHub redondea tu almacenamiento al número de MB más cercano. Por lo tanto, el uso del almacenamiento para marzo sería de 9097 GB.
+
+Tu uso de GitHub Actions comparte la fecha de facturación, método de pago y recibo existente en tu cuenta. Para ver todas las suscripciones de tu cuenta en GitHub.com, consulta "Ver tus suscripciones y fecha de facturación".
+
+Acerca de los límites de gasto #
+Si eres un cliente que factura mensualmente, tu cuenta tendrá un límite de gastos predeterminado de 0 dólares Estadounidenses (USD), lo cual previene el uso adicional de minutos o almacenamiento para los repositorios privados más allá de las cantidades que se incluyen en tu cuenta. Si paga su cuenta mediante factura, la cuenta tendrá un límite de gasto predeterminado ilimitado.
+
+Si tu límite de gastos es ilimitado o lo configuraste en más de $0 USD, se te facturará por cualquier minuto o almacenamiento adicional que esté más allá de las cantidades que se incluyen en tu cuenta, lo cual también se conoce como excedentes. GitHub cobra el uso a la cuenta a la que pertenezca el repositorio en donde se ejecuta un flujo de trabajo. No podrán aplicarse los cupones que tenga tu cuenta para los excedentes de GitHub Actions.
+
+El uso por encima del límite siempre se factura mensualmente, independientemente del plazo de facturación (incluso si su cuenta se factura anualmente).
+
+Para información sobre la administración y el cambio del límite de gasto de tu cuenta, consulta "Administración del límite de gasto para las acciones de GitHub".
+
+Si su cuenta tiene cargos pendientes de pago:
+
+El almacenamiento o minutos que se incluyen en tu cuenta para GitHub Actions y GitHub Packages no se restablecerán hasta que se haya procesado exitosamente el pago.
+Para las cuentas que aún cuenten con minutos o almacenamiento libres para el periodo de facturación actual, GitHub Actions y GitHub Packages seguirán disponibles hasta que se alcance el límite de uso incluído.
+Para cuentas que han alcanzado el uso incluido para el periodo de facturación actual para GitHub Actions o GitHub Packages, se inhabilitará tanto GitHub Actions como GitHub Packages para prevenir cualquier uso excedente posterior.
