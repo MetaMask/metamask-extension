@@ -40,7 +40,7 @@ import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getCurrentChainId, getProvider } from '../../../selectors';
+import { getCurrentChainId } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
@@ -53,7 +53,6 @@ const CustodyPage = () => {
 
   const mmiActions = mmiActionsFactory();
   const currentChainId = useSelector(getCurrentChainId);
-  const provider = useSelector(getProvider);
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [selectedAccounts, setSelectedAccounts] = useState({});
@@ -493,7 +492,6 @@ const CustodyPage = () => {
 
               setSelectedAccounts(selectedAccounts);
             }}
-            provider={provider}
             selectedAccounts={selectedAccounts}
             onAddAccounts={async () => {
               try {

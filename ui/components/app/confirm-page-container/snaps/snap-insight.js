@@ -17,7 +17,7 @@ import { useTransactionInsightSnap } from '../../../../hooks/snaps/useTransactio
 import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
 import { SnapDelineator } from '../../snaps/snap-delineator';
-import { DelineatorType } from '../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';

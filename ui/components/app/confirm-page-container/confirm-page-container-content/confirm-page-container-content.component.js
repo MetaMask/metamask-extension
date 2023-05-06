@@ -12,6 +12,8 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import { Text } from '../../../component-library';
+import { getPortfolioUrl } from '../../../../helpers/utils/portfolio';
+
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -54,6 +56,7 @@ export default class ConfirmPageContainerContent extends Component {
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     txData: PropTypes.object,
+    metaMetricsId: PropTypes.string,
   };
 
   renderContent() {
@@ -159,14 +162,13 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
       txData,
+      metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559 &&
-      (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+      (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -203,11 +205,13 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559 && (errorKey || errorMessage) && (
-          <div className="confirm-page-container-content__error-container">
-            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-          </div>
-        )}
+        {!supportsEIP1559 &&
+          !showInsuffienctFundsError &&
+          (errorKey || errorMessage) && (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+            </div>
+          )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
@@ -222,9 +226,12 @@ export default class ConfirmPageContainerContent extends Component {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          const portfolioUrl = process.env.PORTFOLIO_URL;
                           global.platform.openTab({
-                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                            url: getPortfolioUrl(
+                              'buy',
+                              'ext_buy_button',
+                              metaMetricsId,
+                            ),
                           });
                         }}
                         key={`${nativeCurrency}-buy-button`}
