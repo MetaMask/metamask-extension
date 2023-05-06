@@ -57,14 +57,24 @@ export default function SecurityProviderBannerMessage({
         {messageText}
       </Text>
       <Text variant={TextVariant.bodySm} as="h6" color={Color.textAlternative}>
-        {t('thisIsBasedOn')}
-        <ButtonLink
-          size={Size.inherit}
-          href="https://opensea.io/"
-          target="_blank"
-        >
-          {t('openSeaNew')}
-        </ButtonLink>
+        {t('securityAlert', [
+          <ButtonLink
+            key="opensea_link"
+            size={Size.inherit}
+            href="https://opensea.io/"
+            target="_blank"
+          >
+            {t('openSeaNew')}
+          </ButtonLink>,
+          <ButtonLink
+            key="blockaid_link"
+            size={Size.inherit}
+            href="https://blockaid.io/"
+            target="_blank"
+          >
+            {t('blockaid')}
+          </ButtonLink>,
+        ])}
       </Text>
     </BannerAlert>
   );
