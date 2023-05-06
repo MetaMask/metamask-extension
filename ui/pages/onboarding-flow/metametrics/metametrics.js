@@ -123,7 +123,7 @@ export default function OnboardingMetametrics() {
             />
             {t('onboardingMetametricsNeverCollect', [
               <Text
-                display={DISPLAY.INLINE_BLOCK}
+                as="span"
                 variant={TextVariant.bodyMd}
                 key="never"
                 fontWeight={FontWeight.Bold}
