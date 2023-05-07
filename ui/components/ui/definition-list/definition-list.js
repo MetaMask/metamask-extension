@@ -11,7 +11,7 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 const MARGIN_MAP = {
   [Size.XS]: 0,
@@ -51,8 +51,8 @@ export default function DefinitionList({
                 containerClassName="definition-list__tooltip-wrapper"
               >
                 <Icon
-                  name={ICON_NAMES.INFO}
-                  size={ICON_SIZES.SM}
+                  name={IconName.Info}
+                  size={IconSize.Sm}
                   marginLeft={1}
                   color={IconColor.iconDefault}
                 />

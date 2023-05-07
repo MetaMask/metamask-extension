@@ -2,7 +2,7 @@ import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import README from './README.mdx';
 import TransactionDetail from '.';
 
@@ -28,7 +28,7 @@ const rows = [
       <>
         Estimated gas fee
         <InfoTooltip contentText="This is the tooltip text" position="top">
-          <Icon name={ICON_NAMES.INFO} />
+          <Icon name={IconName.Info} />
         </InfoTooltip>
       </>
     }

@@ -54,7 +54,7 @@ export default {
         key: 'experimental',
       },
       {
-        icon: <Icon name={ICON_NAMES.INFO} />,
+        icon: <Icon name={IconName.Info} />,
         content: 'About',
         key: 'about',
       },

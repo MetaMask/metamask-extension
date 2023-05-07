@@ -22,7 +22,7 @@ import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, ICON_NAMES } from '../../../component-library';
+import { Icon, IconName } from '../../../component-library';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
@@ -69,7 +69,7 @@ const UnconnectedAccountAlert = () => {
               title={t('alertDisableTooltip')}
               wrapperClassName="unconnected-account-alert__checkbox-label-tooltip"
             >
-              <Icon name={ICON_NAMES.INFO} />
+              <Icon name={IconName.Info} />
             </Tooltip>
           </label>
         </div>

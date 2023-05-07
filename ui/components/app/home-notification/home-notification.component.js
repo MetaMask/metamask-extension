@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import Checkbox from '../../ui/check-box';
 import Tooltip from '../../ui/tooltip';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 const HomeNotification = ({
@@ -41,7 +41,7 @@ const HomeNotification = ({
             title={infoText}
             wrapperClassName="home-notification__tooltip-wrapper"
           >
-            <Icon name={ICON_NAMES.INFO} color={IconColor.iconDefault} />
+            <Icon name={IconName.Info} color={IconColor.iconDefault} />
           </Tooltip>
         ) : null}
       </div>

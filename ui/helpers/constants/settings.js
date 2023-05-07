@@ -259,28 +259,28 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('metamaskVersion'),
     descriptionMessage: (t) => t('builtAroundTheWorld'),
     route: `${ABOUT_US_ROUTE}#version`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('links'),
     descriptionMessage: (t) => t('links'),
     route: `${ABOUT_US_ROUTE}#links`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('privacyMsg'),
     descriptionMessage: (t) => t('privacyMsg'),
     route: `${ABOUT_US_ROUTE}#privacy-policy`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('terms'),
     descriptionMessage: (t) => t('terms'),
     route: `${ABOUT_US_ROUTE}#terms`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
 
   {
@@ -288,7 +288,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('attributions'),
     descriptionMessage: (t) => t('attributions'),
     route: `${ABOUT_US_ROUTE}#attributions`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
 
   {
@@ -296,7 +296,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('supportCenter'),
     descriptionMessage: (t) => t('supportCenter'),
     route: `${ABOUT_US_ROUTE}#supportcenter`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
 
   {
@@ -304,7 +304,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('visitWebSite'),
     descriptionMessage: (t) => t('visitWebSite'),
     route: `${ABOUT_US_ROUTE}#visitwebsite`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
 
   {
@@ -312,14 +312,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contactUs'),
     descriptionMessage: (t) => t('contactUs'),
     route: `${ABOUT_US_ROUTE}#contactus`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('betaTerms'),
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
-    iconName: ICON_NAMES.INFO,
+    icon: 'fa fa-info-circle',
   },
   {
     tabMessage: (t) => t('experimental'),

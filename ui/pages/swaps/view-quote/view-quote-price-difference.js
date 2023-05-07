@@ -12,7 +12,7 @@ import {
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { GasRecommendations } from '../../../../shared/constants/gas';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -75,7 +75,7 @@ export default function ViewQuotePriceDifference(props) {
                   {priceDifferenceTitle}
                 </div>
                 <Tooltip position="bottom" title={t('swapPriceImpactTooltip')}>
-                  <Icon name={ICON_NAMES.INFO} />
+                  <Icon name={IconName.Info} />
                 </Tooltip>
               </Box>
               {priceDifferenceMessage}

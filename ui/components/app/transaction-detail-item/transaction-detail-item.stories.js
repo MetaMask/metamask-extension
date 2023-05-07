@@ -3,7 +3,7 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
 import { TextColor } from '../../../helpers/constants/design-system';
 
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import README from './README.mdx';
 import TransactionDetailItem from '.';
 
@@ -46,7 +46,7 @@ DefaultStory.args = {
     <>
       <strong>Estimated gas fee</strong>
       <InfoTooltip contentText="This is the tooltip text" position="top">
-        <Icon name={ICON_NAMES.INFO} />
+        <Icon name={IconName.Info} />
       </InfoTooltip>
     </>
   ),

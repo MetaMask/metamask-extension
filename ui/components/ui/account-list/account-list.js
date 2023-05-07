@@ -8,7 +8,7 @@ import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 const AccountList = ({
@@ -64,7 +64,7 @@ const AccountList = ({
               }
             >
               <Icon
-                name={ICON_NAMES.INFO}
+                name={IconName.Info}
                 color={IconColor.iconMuted}
                 className="info-circle"
               />
@@ -121,7 +121,7 @@ const AccountList = ({
                     }`}
                   >
                     <Icon
-                      name={ICON_NAMES.INFO}
+                      name={IconName.Info}
                       color={IconColor.iconMuted}
                       className="info-circle"
                     />

@@ -12,7 +12,7 @@ import { TypographyVariant } from '../../../../../../helpers/constants/design-sy
 
 import Button from '../../../../../ui/button';
 import Typography from '../../../../../ui/typography';
-import { Icon, ICON_NAMES } from '../../../../../component-library';
+import { Icon, IconName } from '../../../../../component-library';
 
 const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
@@ -56,7 +56,7 @@ const Accreditation = ({ fetchVia, address }) => {
   return (
     <div className="accreditation">
       <div className="accreditation__icon">
-        <Icon name={ICON_NAMES.INFO} />
+        <Icon name={IconName.Info} />
       </div>
       <div className="accreditation__info">
         <AccreditationLink />

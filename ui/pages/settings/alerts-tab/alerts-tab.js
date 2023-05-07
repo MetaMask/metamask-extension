@@ -9,7 +9,7 @@ import { setAlertEnabledness } from '../../../store/actions';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
 
 const AlertSettingsEntry = ({ alertId, description, title }) => {
   const t = useI18nContext();
@@ -32,7 +32,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
             wrapperClassName="alerts-tab__description"
           >
             <Icon
-              name={ICON_NAMES.INFO}
+              name={IconName.Info}
               className="alerts-tab__description__icon"
             />
           </Tooltip>

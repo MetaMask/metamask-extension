@@ -14,7 +14,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 
 export default function NftsDetectionNotice() {
   const t = useI18nContext();
@@ -26,7 +26,7 @@ export default function NftsDetectionNotice() {
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={1}>
             <Icon
-              name={ICON_NAMES.INFO}
+              name={IconName.Info}
               className="info-circle"
               color={IconColor.primaryDefault}
             />
