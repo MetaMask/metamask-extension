@@ -702,82 +702,82 @@ describe('MetaMaskController', function () {
   });
 
   // @TODO - fix fitness-function for mocha test (no mocha: sinon/assert)
-  // describe('isDeviceAccessible', function () {
-  //   let unlock;
-  //   let mockKeyrings = [];
+  describe('isDeviceAccessible', function () {
+    let unlock;
+    let mockKeyrings = [];
 
-  //   beforeEach(async function () {
-  //     // unlock = jest.fn();
-  //     unlock = _inon.stub();
-  //     mockKeyrings = [
-  //       {
-  //         type: HardwareKeyringType.ledger,
-  //         unlock,
-  //       },
-  //     ];
-  //     _inon
-  //       .stub(metamaskController.keyringController, 'getKeyringsByType')
-  //       .callsFake(() => mockKeyrings);
-  //     // jest
-  //     //   .spyOn(metamaskController.keyringController, 'getKeyringsByType')
-  //     //   .mockImplementation(() => mockKeyrings);
-  //   });
+    beforeEach(async function () {
+      // unlock = jest.fn();
+      unlock = sinon.stub();
+      mockKeyrings = [
+        {
+          type: HardwareKeyringType.ledger,
+          unlock,
+        },
+      ];
+      sinon
+        .stub(metamaskController.keyringController, 'getKeyringsByType')
+        .callsFake(() => mockKeyrings);
+      // jest
+      //   .spyOn(metamaskController.keyringController, 'getKeyringsByType')
+      //   .mockImplementation(() => mockKeyrings);
+    });
 
-  //   afterEach(function () {
-  //     metamaskController.keyringController.getKeyringsByType.restore();
-  //     unlock.resetHistory();
-  //     // jest.clearAllMocks();
-  //   });
+    afterEach(function () {
+      metamaskController.keyringController.getKeyringsByType.restore();
+      unlock.resetHistory();
+      // jest.clearAllMocks();
+    });
 
-  //   it('should call underlying keyring for ledger device and return false if inaccessible', async function () {
-  //     unlock.rejects();
-  //     // checking accessibility should invoke unlock
-  //     const status = await metamaskController.isDeviceAccessible(
-  //       HardwareDeviceNames.ledger,
-  //       `m/44/0'/0'`,
-  //     );
+    it('should call underlying keyring for ledger device and return false if inaccessible', async function () {
+      unlock.rejects();
+      // checking accessibility should invoke unlock
+      const status = await metamaskController.isDeviceAccessible(
+        HardwareDeviceNames.ledger,
+        `m/44/0'/0'`,
+      );
 
-  //     // unlock should have been called on the mock device
-  //     _ssert(unlock.calledOnce);
-  //     _ssert.equal(status, false);
-  //     // expect(unlock.mock.calls).toStrictEqual(1);
-  //     // expect(status).toStrictEqual(false);
-  //   });
+      // unlock should have been called on the mock device
+      assert(unlock.calledOnce);
+      assert.equal(status, false);
+      // expect(unlock.mock.calls).toStrictEqual(1);
+      // expect(status).toStrictEqual(false);
+    });
 
-  //   it('should call underlying keyring for ledger device and return true if accessible', async function () {
-  //     unlock.returns(
-  //       Promise.resolve('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'),
-  //     );
-  //     // checking accessibility should invoke unlock
-  //     const status = await metamaskController.isDeviceAccessible(
-  //       HardwareDeviceNames.ledger,
-  //       `m/44/0'/0'`,
-  //     );
-  //     _ssert(unlock.calledOnce);
-  //     _ssert.equal(status, true);
-  //     // expect(unlock.mock.calls).toStrictEqual(1);
-  //     // expect(status).toStrictEqual(true);
-  //   });
+    it('should call underlying keyring for ledger device and return true if accessible', async function () {
+      unlock.returns(
+        Promise.resolve('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'),
+      );
+      // checking accessibility should invoke unlock
+      const status = await metamaskController.isDeviceAccessible(
+        HardwareDeviceNames.ledger,
+        `m/44/0'/0'`,
+      );
+      assert(unlock.calledOnce);
+      assert.equal(status, true);
+      // expect(unlock.mock.calls).toStrictEqual(1);
+      // expect(status).toStrictEqual(true);
+    });
 
-  //   it('should not call underlying device for other devices', async function () {
-  //     mockKeyrings = [
-  //       {
-  //         type: HardwareKeyringType.trezor,
-  //         unlock,
-  //         getModel: () => 'mock trezor',
-  //         isUnlocked: () => false,
-  //       },
-  //     ];
-  //     const status = await metamaskController.isDeviceAccessible(
-  //       HardwareDeviceNames.trezor,
-  //       `m/44'/1'/0'/0`,
-  //     );
-  //     _ssert.equal(unlock.called, false);
-  //     _ssert.equal(status, false);
-  //     // expect(unlock.mock.calls).toStrictEqual(0);
-  //     // expect(status).toStrictEqual(false);
-  //   });
-  // });
+    it('should not call underlying device for other devices', async function () {
+      mockKeyrings = [
+        {
+          type: HardwareKeyringType.trezor,
+          unlock,
+          getModel: () => 'mock trezor',
+          isUnlocked: () => false,
+        },
+      ];
+      const status = await metamaskController.isDeviceAccessible(
+        HardwareDeviceNames.trezor,
+        `m/44'/1'/0'/0`,
+      );
+      assert.equal(unlock.called, false);
+      assert.equal(status, false);
+      // expect(unlock.mock.calls).toStrictEqual(0);
+      // expect(status).toStrictEqual(false);
+    });
+  });
 
   describe('forgetDevice', function () {
     it('should throw if it receives an unknown device name', async function () {
