@@ -6,13 +6,13 @@ import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
 import ActionableMessage from '../../ui/actionable-message';
 import Dropdown from '../../ui/dropdown';
-import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TypographyVariant,
+  FontWeight,
+  TextAlign,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const defaultNumberOfWords = 12;
@@ -129,13 +129,14 @@ export default function SrpInput({ onChange, srpText }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Typography
-          align={TEXT_ALIGN.LEFT}
-          variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
+        <Text
+          align={TextAlign.Left}
+          variant={TextVariant.headingSm}
+          as="h4"
+          fontWeight={FontWeight.Bold}
         >
           {srpText}
-        </Typography>
+        </Text>
       </label>
       <ActionableMessage
         className="import-srp__paste-tip"
@@ -170,7 +171,7 @@ export default function SrpInput({ onChange, srpText }) {
           return (
             <div key={index} className="import-srp__srp-word">
               <label htmlFor={id} className="import-srp__srp-word-label">
-                <Typography>{`${index + 1}.`}</Typography>
+                <Text>{`${index + 1}.`}</Text>
               </label>
               <TextField
                 id={id}
