@@ -1570,9 +1570,6 @@
   "history": {
     "message": "历史记录"
   },
-  "holdToReveal": {
-    "message": "按住以显示 SRP"
-  },
   "holdToRevealContent1": {
     "message": "您的助记词提供 $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "但网络钓鱼者可能会。",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "确保 SRP 的安全"
   },
   "ignoreAll": {
     "message": "忽略所有"
