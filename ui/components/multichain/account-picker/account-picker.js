@@ -19,7 +19,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 
-export const AccountPicker = ({ address, name, onClick }) => {
+export const AccountPicker = ({ address, name, onClick, disabled }) => {
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
 
   return (
@@ -34,6 +34,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
         gap: 2,
         alignItems: AlignItems.center,
       }}
+      disabled={disabled}
     >
       <AvatarAccount
         variant={
@@ -70,4 +71,8 @@ AccountPicker.propTypes = {
    * Action to perform when the account picker is clicked
    */
   onClick: PropTypes.func.isRequired,
+  /**
+   * Represents if the AccountPicker should be actionable
+   */
+  disabled: PropTypes.bool.isRequired,
 };
