@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -34,7 +34,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Click Transer
@@ -59,13 +59,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Send Token');
+        await driver.findElement({ text: 'Send TDC' });
       },
     );
   });
@@ -89,7 +86,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Click Approve
@@ -130,7 +127,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction
@@ -162,7 +158,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Enable Set approval for all
@@ -202,7 +198,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction
@@ -234,7 +229,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Open Dapp and wait for deployed contract
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
         // Disable Set approval for all
@@ -277,7 +272,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // Verify transaction

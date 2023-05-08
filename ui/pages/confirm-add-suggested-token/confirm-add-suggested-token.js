@@ -14,7 +14,11 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
 import {
   AssetType,
   TokenStandard,
@@ -118,14 +122,14 @@ const ConfirmAddSuggestedToken = () => {
         await dispatch(acceptWatchAsset(id));
 
         trackEvent({
-          event: EVENT_NAMES.TOKEN_ADDED,
-          category: EVENT.CATEGORIES.WALLET,
+          event: MetaMetricsEventName.TokenAdded,
+          category: MetaMetricsEventCategory.Wallet,
           sensitiveProperties: {
             token_symbol: asset.symbol,
             token_contract_address: asset.address,
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
-            source: EVENT.SOURCE.TOKEN.DAPP,
+            source_connection_method: MetaMetricsTokenEventSource.Dapp,
             token_standard: TokenStandard.ERC20,
             asset_type: AssetType.token,
           },

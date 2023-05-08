@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MV3 - Dapp interactions', function () {
@@ -12,6 +12,7 @@ describe('MV3 - Dapp interactions', function () {
         balance: convertToHexValue(25000000000000000000),
       },
     ],
+    concurrent: { port: 8546, chainId: 1338 },
   };
   it('should continue to support dapp interactions after service worker re-start', async function () {
     await withFixtures(
@@ -30,7 +31,7 @@ describe('MV3 - Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
 
         // Terminate Service Worker
         await driver.openNewPage('chrome://inspect/#service-workers/');

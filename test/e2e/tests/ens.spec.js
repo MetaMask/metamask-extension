@@ -9,8 +9,6 @@ describe('ENS', function () {
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
 
   async function mockInfura(mockServer) {
-    await mockServer.reset();
-    await mockServer.forAnyRequest().thenPassThrough();
     await mockServer
       .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_blockNumber' })
@@ -21,6 +19,34 @@ describe('ENS', function () {
             jsonrpc: '2.0',
             id: '1111111111111111',
             result: '0x1',
+          },
+        };
+      });
+
+    await mockServer
+      .forPost(infuraUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result: '0x1',
+          },
+        };
+      });
+
+    await mockServer
+      .forPost(infuraUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result: {},
           },
         };
       });
@@ -54,7 +80,7 @@ describe('ENS', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
-            provider: {
+            providerConfig: {
               chainId: '0x1',
               nickname: '',
               rpcUrl: '',
@@ -75,7 +101,7 @@ describe('ENS', function () {
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        await driver.fill(
+        await driver.pasteIntoField(
           'input[placeholder="Search, public address (0x), or ENS"]',
           sampleEnsDomain,
         );

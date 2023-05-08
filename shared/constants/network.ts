@@ -3,14 +3,14 @@ import { capitalize, pick } from 'lodash';
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
  */
-export type NetworkType = typeof NETWORK_TYPES[keyof typeof NETWORK_TYPES];
+export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
 
 /**
  * A union type of all possible hard-coded chain ids. This type is not
  * exhaustive and cannot be used for typing chainId in areas where the user or
  * dapp may specify any chainId.
  */
-export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
+export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 
 /**
  * A type that is a union type of all possible hardcoded currency symbols.
@@ -18,13 +18,13 @@ export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
  * or dapp may supply their own symbol.
  */
 export type CurrencySymbol =
-  typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
+  (typeof CURRENCY_SYMBOLS)[keyof typeof CURRENCY_SYMBOLS];
 /**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
 export type TestNetworkCurrencySymbol =
-  typeof TEST_NETWORK_TICKER_MAP[keyof typeof TEST_NETWORK_TICKER_MAP];
+  (typeof TEST_NETWORK_TICKER_MAP)[keyof typeof TEST_NETWORK_TICKER_MAP];
 
 /**
  * An object containing preferences for an RPC definition
@@ -221,7 +221,7 @@ export const CURRENCY_SYMBOLS = {
   OPTIMISM: 'OP',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
@@ -238,7 +238,7 @@ export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
-];
+] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.GOERLI,
@@ -482,27 +482,6 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
 };
 
-/**
- * Hardforks are points in the chain where logic is changed significantly
- * enough where there is a fork and the new fork becomes the active chain.
- * These constants are presented in chronological order starting with BERLIN
- * because when we first needed to track the hardfork we had launched support
- * for EIP-2718 (where transactions can have types and different shapes) and
- * EIP-2930 (optional access lists), which were included in BERLIN.
- *
- * BERLIN - forked at block number 12,244,000, included typed transactions and
- * optional access lists
- * LONDON - future, upcoming fork that introduces the baseFeePerGas, an amount
- * of the ETH transaction fees that will be burned instead of given to the
- * miner. This change necessitated the third type of transaction envelope to
- * specify maxFeePerGas and maxPriorityFeePerGas moving the fee bidding system
- * to a second price auction model.
- */
-export const HARDFORKS = {
-  BERLIN: 'berlin',
-  LONDON: 'london',
-} as const;
-
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
   [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
@@ -540,14 +519,11 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.MOONRIVER
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.LINEA_TESTNET
+    | typeof CHAIN_IDS.GOERLI
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.GOERLI]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.SEPOLIA]: {
@@ -689,3 +665,30 @@ export const FEATURED_RPCS: RPCDefinition[] = [
 
 export const SHOULD_SHOW_LINEA_TESTNET_NETWORK =
   new Date().getTime() > Date.UTC(2023, 2, 28, 8);
+
+/**
+ * Represents the availability state of the currently selected network.
+ */
+export enum NetworkStatus {
+  /**
+   * The network may or may not be able to receive requests, but either no
+   * attempt has been made to determine this, or an attempt was made but was
+   * unsuccessful.
+   */
+  Unknown = 'unknown',
+  /**
+   * The network is able to receive and respond to requests.
+   */
+  Available = 'available',
+  /**
+   * The network is unable to receive and respond to requests for unknown
+   * reasons.
+   */
+  Unavailable = 'unavailable',
+  /**
+   * The network is not only unavailable, but is also inaccessible for the user
+   * specifically based on their location. This state only applies to Infura
+   * networks.
+   */
+  Blocked = 'blocked',
+}

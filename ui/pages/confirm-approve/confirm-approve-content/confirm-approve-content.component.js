@@ -11,6 +11,8 @@ import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
+import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import {
   BLOCK_SIZES,
   JustifyContent,
@@ -21,17 +23,20 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
-import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
-  ICON_NAMES,
   ButtonIcon,
   Icon,
+  IconName,
   Text,
 } from '../../../components/component-library';
+import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -63,6 +68,7 @@ export default class ConfirmApproveContent extends Component {
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
     supportsEIP1559: PropTypes.bool,
     assetName: PropTypes.string,
@@ -75,6 +81,7 @@ export default class ConfirmApproveContent extends Component {
     setUserAcknowledgedGasMissing: PropTypes.func,
     renderSimulationFailureWarning: PropTypes.bool,
     useCurrencyRateCheck: PropTypes.bool,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   state = {
@@ -155,12 +162,14 @@ export default class ConfirmApproveContent extends Component {
       ethTransactionTotal,
       fiatTransactionTotal,
       hexTransactionTotal,
+      hexMinimumTransactionFee,
       txData,
       isMultiLayerFeeNetwork,
       supportsEIP1559,
       userAcknowledgedGasMissing,
       renderSimulationFailureWarning,
       useCurrencyRateCheck,
+      useNativeCurrencyAsPrimaryCurrency,
     } = this.props;
     if (
       !isMultiLayerFeeNetwork &&
@@ -168,7 +177,7 @@ export default class ConfirmApproveContent extends Component {
       !renderSimulationFailureWarning
     ) {
       return (
-        <GasDetailsItem
+        <ConfirmGasDisplay
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
         />
       );
@@ -177,10 +186,27 @@ export default class ConfirmApproveContent extends Component {
       <div className="confirm-approve-content__transaction-details-content">
         {isMultiLayerFeeNetwork ? (
           <div className="confirm-approve-content__transaction-details-extra-content">
-            <div className="confirm-approve-content__transaction-details-content__labelled-fee">
-              <span>{t('transactionDetailLayer2GasHeading')}</span>
-              {`${ethTransactionTotal} ${nativeCurrency}`}
-            </div>
+            <TransactionDetailItem
+              key="confirm-approve-content-min-tx-fee"
+              detailTitle={t('transactionDetailLayer2GasHeading')}
+              detailTotal={
+                <UserPreferencedCurrencyDisplay
+                  type={PRIMARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  numberOfDecimals={18}
+                />
+              }
+              detailText={
+                <UserPreferencedCurrencyDisplay
+                  type={SECONDARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                />
+              }
+              noBold
+              flexWidthValues
+            />
             <MultiLayerFeeMessage
               transaction={txData}
               layer2fee={hexTransactionTotal}
@@ -247,7 +273,7 @@ export default class ConfirmApproveContent extends Component {
               onClick={() => copyToClipboard(toAddress)}
               color={IconColor.iconDefault}
               iconName={
-                this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                this.state.copied ? IconName.CopySuccess : IconName.Copy
               }
               title={
                 this.state.copied
@@ -264,6 +290,11 @@ export default class ConfirmApproveContent extends Component {
   renderDataContent() {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { tokenAddress } = this.props;
+    ///: END:ONLY_INCLUDE_IN
+
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -274,6 +305,11 @@ export default class ConfirmApproveContent extends Component {
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <div className="confirm-approve-content__small-text">
             {`${t('parameters')}: ${isApprovalOrRejection}`}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              `${t('tokenContractAddress')}: ${tokenAddress}`
+              ///: END:ONLY_INCLUDE_IN
+            }
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
@@ -556,6 +592,15 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />
@@ -630,7 +675,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
           )}
           {this.renderApproveContentCard({
-            symbol: <Icon name={ICON_NAMES.TAG} />,
+            symbol: <Icon name={IconName.Tag} />,
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,

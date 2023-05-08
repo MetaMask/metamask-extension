@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Navigate transactions', function () {
@@ -130,19 +130,16 @@ describe('Navigate transactions', function () {
         );
 
         // add transaction
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         await driver.switchToWindow(extension);
-        navigationElement = await driver.waitForSelector(
-          {
-            css: '.confirm-page-container-navigation',
-            text: '2 of 5',
-          },
-          { timeout: 10000 },
-        );
+        navigationElement = await driver.waitForSelector({
+          css: '.confirm-page-container-navigation',
+          text: '2 of 5',
+        });
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('2 of 5'),
@@ -169,13 +166,10 @@ describe('Navigate transactions', function () {
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
-        const navigationElement = await driver.waitForSelector(
-          {
-            css: '.confirm-page-container-navigation',
-            text: '1 of 3',
-          },
-          { timeout: 10000 },
-        );
+        const navigationElement = await driver.waitForSelector({
+          css: '.confirm-page-container-navigation',
+          text: '1 of 3',
+        });
         const navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('1 of 3'),
@@ -202,13 +196,10 @@ describe('Navigate transactions', function () {
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        const navigationElement = await driver.waitForSelector(
-          {
-            css: '.confirm-page-container-navigation',
-            text: '1 of 3',
-          },
-          { timeout: 10000 },
-        );
+        const navigationElement = await driver.waitForSelector({
+          css: '.confirm-page-container-navigation',
+          text: '1 of 3',
+        });
         const navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('1 of 3'),

@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -34,9 +34,7 @@ describe('Failing contract interaction ', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
 
@@ -71,7 +69,6 @@ describe('Failing contract interaction ', function () {
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // display the transaction status
@@ -115,9 +112,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         // waits for deployed contract and calls failing contract method
@@ -157,7 +152,6 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // display the transaction status

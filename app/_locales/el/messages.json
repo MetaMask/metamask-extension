@@ -695,10 +695,6 @@
     "message": "$1 δεν είναι συνδεδεμένο με καμία τοποθεσία.",
     "description": "$1 is the account name"
   },
-  "connectedSnapSites": {
-    "message": "Το snap $1 συνδέεται με αυτούς τους ιστότοπους. Έχουν πρόσβαση στις παραπάνω άδειες.",
-    "description": "$1 represents the name of the snap"
-  },
   "connecting": {
     "message": "Σύνδεση..."
   },
@@ -1355,18 +1351,6 @@
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Προβολή λεπτομερειών",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Προστέθηκε στις",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "από",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "θα πρέπει να καταργήσετε την εγκατάσταση αυτής της επέκτασης",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "Αυτό το τέλος συναλλαγής έχει προταθεί από το $1. Η παράκαμψη μπορεί να προκαλέσει πρόβλημα με τη συναλλαγή σας. Εάν έχετε απορίες, επικοινωνήστε με $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Τέλη Συναλλαγής"
   },
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
@@ -1589,9 +1570,6 @@
   "history": {
     "message": "Ιστορικό"
   },
-  "holdToReveal": {
-    "message": "Κρατήστε πατημένο για αποκάλυψη της ΜΦΑ"
-  },
   "holdToRevealContent1": {
     "message": "Η Μυστική σας Φράση Ανάκτησης παρέχει $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1611,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "αλλά οι απατεώνες μπορεί να το κάνουν.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Κρατήστε τη ΜΦΑ σας ασφαλή"
   },
   "ignoreAll": {
     "message": "Αγνόηση όλων"
@@ -2021,9 +1996,6 @@
   "missingToken": {
     "message": "Δεν βλέπετε το token σας;"
   },
-  "mobileSyncWarning": {
-    "message": "Η λειτουργία 'Συγχρονισμός με επέκταση' είναι προσωρινά απενεργοποιημένη. Αν θέλετε να χρησιμοποιήσετε το πορτοφόλι της επέκτασής σας στο MetaMask mobile, τότε στην εφαρμογή για το κινητό σας: επιστρέψτε στις επιλογές εγκατάστασης του πορτοφολιού και επιλέξτε την επιλογή 'Εισαγωγή με Μυστική Φράση Ανάκτησης'. Χρησιμοποιήστε τη μυστική φράση του πορτοφολιού της επέκτασής σας για να εισαγάγετε το πορτοφόλι σας στο κινητό."
-  },
   "moreComingSoon": {
     "message": "Περισσότερα έρχονται σύντομα..."
   },
@@ -2326,12 +2298,6 @@
   },
   "notifications15Title": {
     "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
-  },
-  "notifications17ActionText": {
-    "message": "Εμφάνιση ρυθμίσεων Ασφάλειας & Απορρήτου"
-  },
-  "notifications17Title": {
-    "message": "Ρυθμίσεις Ασφάλειας & Απορρήτου"
   },
   "notifications1Description": {
     "message": "Οι χρήστες του MetaMask Mobile μπορούν τώρα να ανταλλάξουν tokens μέσα στο κινητό τους πορτοφόλι. Σαρώστε τον κωδικό QR για να πάρετε την εφαρμογή για κινητά και να αρχίσετε να ανταλλάζετε.",
@@ -2702,10 +2668,6 @@
   "permission_cronjob": {
     "message": "Προγραμματισμός και εκτέλεση περιοδικών ενεργειών.",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "Εμφάνιση επιβεβαίωσης στο MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "Εμφάνιση παραθύρων διαλόγου στο MetaMask.",
@@ -3243,10 +3205,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Δε βρέθηκαν αποτελέσματα που να ταιριάζουν."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Εμφάνιση"
   },
@@ -3320,14 +3278,6 @@
   "smartTransaction": {
     "message": "Έξυπνη Συναλλαγή"
   },
-  "snapAccess": {
-    "message": "Το snap $1 έχει πρόσβαση σε:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Προστέθηκε στις $1 από $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3355,10 +3305,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightError": {
-    "message": "Παρουσιάστηκε ένα σφάλμα με $1: $2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "Φόρτωση πληροφοριών συναλλαγών..."
   },
@@ -3368,14 +3314,12 @@
   "snapsSettingsDescription": {
     "message": "Διαχειριστείτε τα Snaps σας"
   },
-  "snapsStatus": {
-    "message": "Η κατάσταση του Snap εξαρτάται από τη δραστηριότητα."
-  },
   "snapsToggle": {
     "message": "Ένα snap θα εκτελεστεί μόνο εάν είναι ενεργοποιημένο"
   },
   "snapsUIError": {
-    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη."
+    "message": "Η Διεπαφή Χρήστη (UI) που καθορίζεται από το στιγμιότυπο δεν είναι έγκυρη.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Ορισμένα δίκτυα ενδέχεται να ενέχουν κινδύνους για την ασφάλεια ή/και το απόρρητο. Ενημερωθείτε για τους κινδύνους πριν προσθέσετε και χρησιμοποιήσετε ένα δίκτυο."
@@ -3949,33 +3893,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Το σύμβολο πρέπει να είναι τουλάχιστον 11 χαρακτήρες."
   },
-  "syncFailed": {
-    "message": "Ο συγχρονισμός απέτυχε"
-  },
-  "syncInProgress": {
-    "message": "Συγχρονισμός σε εξέλιξη"
-  },
-  "syncWithMobile": {
-    "message": "Συγχρονισμός με κινητό"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Σιγουρευτείτε ότι κανένας δεν κοιτάζει στην οθόνη σας όταν κάνετε σάρωση αυτού του κωδικού"
-  },
-  "syncWithMobileComplete": {
-    "message": "Τα δεδομένα σας έχουν συγχρονιστεί με επιτυχία. Απολαύστε την εφαρμογή MetaMask για κινητά!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Μπορείτε να συγχρονίσετε τους λογαριασμούς και τις πληροφορίες σας με την κινητή συσκευή σας. Ανοίξτε την εφαρμογή MetaMask για κινητά, μεταβείτε στην ενότητα \"Ρυθμίσεις\" και πατήστε \"Συγχρονισμός από Επέκταση Προγράμματος Περιήγησης\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Εάν απλά ανοίξετε την εφαρμογή MetaMask Mobile για πρώτη φορά, απλώς ακολουθήστε τα βήματα στο τηλέφωνό σας."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Σαρώστε αυτόν τον κώδικα με την εφαρμογή MetaMask για κινητά"
-  },
-  "syncWithMobileTitle": {
-    "message": "Συγχρονισμός με κινητό"
-  },
   "tenPercentIncreased": {
     "message": "10% αύξηση"
   },
@@ -3996,12 +3913,6 @@
   },
   "thingsToKeep": {
     "message": "Πράγματα που πρέπει να έχετε υπόψη σας:"
-  },
-  "thisIsBasedOn": {
-    "message": "Αυτό βασίζεται σε πληροφορίες από"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική"
   },
   "time": {
     "message": "Ώρα"

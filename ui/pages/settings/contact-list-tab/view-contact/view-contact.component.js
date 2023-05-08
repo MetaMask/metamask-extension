@@ -4,10 +4,11 @@ import { Redirect } from 'react-router-dom';
 
 import Identicon from '../../../../components/ui/identicon';
 import Button from '../../../../components/ui/button/button.component';
+
 import {
   ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
+  ButtonIconSize,
+  IconName,
 } from '../../../../components/component-library';
 
 import Tooltip from '../../../../components/ui/tooltip';
@@ -73,8 +74,8 @@ function ViewContact({
                 onClick={() => {
                   handleCopy(checkSummedAddress);
                 }}
-                iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-                size={ICON_SIZES.LG}
+                iconName={copied ? IconName.CopySuccess : IconName.Copy}
+                size={ButtonIconSize.Lg}
                 color={IconColor.primaryDefault}
               />
             </Tooltip>

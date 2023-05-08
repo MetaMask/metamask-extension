@@ -20,11 +20,14 @@ import Box from '../../ui/box/box';
 import {
   Color,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import {
   DetectedTokensBanner,
@@ -32,7 +35,7 @@ import {
   MultichainImportTokenLink,
 } from '../../multichain';
 import { Text } from '../../component-library';
-import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
+import DetectedTokensLink from './detected-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
@@ -110,8 +113,8 @@ const AssetList = ({ onClickAsset }) => {
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
           trackEvent({
-            event: EVENT_NAMES.TOKEN_SCREEN_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               token_symbol: primaryCurrencyProperties.suffix,
               location: 'Home',
@@ -143,7 +146,7 @@ const AssetList = ({ onClickAsset }) => {
               color={Color.textAlternative}
               variant={TextVariant.bodySm}
               as="h6"
-              textAlign={TEXT_ALIGN.CENTER}
+              textAlign={TextAlign.Center}
             >
               {t('missingToken')}
             </Text>

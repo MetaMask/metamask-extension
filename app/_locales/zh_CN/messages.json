@@ -427,7 +427,7 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
@@ -694,10 +694,6 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 还没连接到任何网站。",
     "description": "$1 is the account name"
-  },
-  "connectedSnapSites": {
-    "message": "$1的snap已连接到这些站点。它们有上述的访问权限。",
-    "description": "$1 represents the name of the snap"
   },
   "connecting": {
     "message": "连接中……"
@@ -1355,18 +1351,6 @@
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "查看详细信息",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "添加于",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "自",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1415,6 @@
   "gasDisplayDappWarning": {
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "燃料费"
   },
   "gasLimit": {
     "message": "燃料上限"
@@ -1589,9 +1570,6 @@
   "history": {
     "message": "历史记录"
   },
-  "holdToReveal": {
-    "message": "按住以显示 SRP"
-  },
   "holdToRevealContent1": {
     "message": "您的助记词提供 $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1611,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "但网络钓鱼者可能会。",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "确保 SRP 的安全"
   },
   "ignoreAll": {
     "message": "忽略所有"
@@ -2021,9 +1996,6 @@
   "missingToken": {
     "message": "没有看到您的代币？"
   },
-  "mobileSyncWarning": {
-    "message": "“与扩展程序同步”功能暂时被禁用。如果您想要在 MetaMask 移动设备上使用您的扩展程序钱包，那么在您的移动应用程序上：返回钱包设置选项并选择“使用账户助记词导入”选项。使用您的扩展程序钱包的助记词来将您的钱包导入移动设备。"
-  },
   "moreComingSoon": {
     "message": "更多即将到来……"
   },
@@ -2326,12 +2298,6 @@
   },
   "notifications15Title": {
     "message": "以太坊合并来了！"
-  },
-  "notifications17ActionText": {
-    "message": "显示安全和隐私设置"
-  },
-  "notifications17Title": {
-    "message": "安全和隐私设置"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
@@ -2702,10 +2668,6 @@
   "permission_cronjob": {
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
-  },
-  "permission_customConfirmation": {
-    "message": "在MetaMask中显示确认。",
-    "description": "The description for the `snap_confirm` permission"
   },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
@@ -3243,10 +3205,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "没有找到匹配的结果."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "显示"
   },
@@ -3320,14 +3278,6 @@
   "smartTransaction": {
     "message": "智能交易"
   },
-  "snapAccess": {
-    "message": "$1的snap可以访问：",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "从 $2 添加到 $1",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3355,10 +3305,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightError": {
-    "message": "$1 发生错误：$2",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
-  },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
   },
@@ -3368,14 +3314,12 @@
   "snapsSettingsDescription": {
     "message": "管理您的Snap"
   },
-  "snapsStatus": {
-    "message": "Snap状态取决于活动。"
-  },
   "snapsToggle": {
     "message": "Snap仅在启用后才会运行"
   },
   "snapsUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap指定的用户界面无效。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
   "someNetworksMayPoseSecurity": {
     "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
@@ -3949,33 +3893,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
   },
-  "syncFailed": {
-    "message": "同步失败"
-  },
-  "syncInProgress": {
-    "message": "同步进行中"
-  },
-  "syncWithMobile": {
-    "message": "与移动设备同步"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "扫描此代码时，请确保附近没有其他人在看您的屏幕"
-  },
-  "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 MetaMask 移动应用程序吧！"
-  },
-  "syncWithMobileDesc": {
-    "message": "您可以将您的账户和信息与您的移动设备同步。打开 MetaMask 移动应用程序，进入“设置”，点击“从浏览器扩展程序同步”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 MetaMask 移动应用程序，请通过个人手机完成如下操作。"
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "使用 MetaMask 移动应用程序扫描此代码"
-  },
-  "syncWithMobileTitle": {
-    "message": "与移动设备同步"
-  },
   "tenPercentIncreased": {
     "message": "增加10%"
   },
@@ -3996,12 +3913,6 @@
   },
   "thingsToKeep": {
     "message": "注意事项:"
-  },
-  "thisIsBasedOn": {
-    "message": "所根据的信息是来自"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的"
   },
   "time": {
     "message": "时间"
