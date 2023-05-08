@@ -2618,6 +2618,8 @@ export function addToAddressBook(
   recipient: string,
   nickname = '',
   memo = '',
+  tags = [],
+  source = '',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addToAddressBook`);
 
@@ -2631,6 +2633,9 @@ export function addToAddressBook(
         nickname,
         chainId,
         memo,
+        '',
+        tags,
+        source,
       ]);
     } catch (error) {
       logErrorWithMessage(error);

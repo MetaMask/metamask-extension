@@ -1,0 +1,22 @@
+diff --git a/dist/AddressBookController.js b/dist/AddressBookController.js
+index 7c1e3b1072303500cdf99818a102535c326dea2b..f3c9e9ea8adb070ce96c74311f71360ccc3f7dab 100644
+--- a/dist/AddressBookController.js
++++ b/dist/AddressBookController.js
+@@ -66,7 +66,7 @@ class AddressBookController extends base_controller_1.BaseController {
+      * @param addressType - Contact's address type.
+      * @returns Boolean indicating if the address was successfully set.
+      */
+-    set(address, name, chainId = '1', memo = '', addressType) {
++    set(address, name, chainId = '1', memo = '', addressType, tags, source) {
+         address = (0, controller_utils_1.toChecksumHexAddress)(address);
+         if (!(0, controller_utils_1.isValidHexAddress)(address)) {
+             return false;
+@@ -78,6 +78,8 @@ class AddressBookController extends base_controller_1.BaseController {
+             memo,
+             name,
+             addressType,
++            tags,
++            source
+         };
+         const ensName = (0, controller_utils_1.normalizeEnsName)(name);
+         if (ensName) {
