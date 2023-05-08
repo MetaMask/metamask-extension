@@ -3672,7 +3672,8 @@
       },
       "packages": {
         "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": true,
-        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>websocket-extensions": true
+        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>websocket-extensions": true,
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": {
