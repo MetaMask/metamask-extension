@@ -26,8 +26,6 @@ import {
 } from '../../helpers/utils/transactions.util';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import Box from '../../components/ui/box';
-import { DISPLAY, FLEX_DIRECTION } from '../../helpers/constants/design-system';
 import NoteToTrader from '../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IN
 
@@ -511,29 +509,6 @@ export default class ConfirmTransactionBase extends Component {
     return <ConfirmData txData={txData} dataComponent={dataComponent} />;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  renderNote() {
-    const { t } = this.context;
-    const { isNoteToTraderSupported } = this.props;
-    if (!isNoteToTraderSupported) {
-      return null;
-    }
-    return (
-      <Box className="confirm-page-container-content__data">
-        <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-          <NoteToTrader
-            maxLength="280"
-            placeholder={t('notePlaceholder')}
-            onChange={(value) => this.setState({ noteText: value })}
-            noteText={this.state.noteText}
-            labelText={t('transactionNote')}
-          />
-        </Box>
-      </Box>
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
-
   renderDataHex() {
     const { txData, dataHexComponent } = this.props;
     const {
@@ -859,6 +834,9 @@ export default class ConfirmTransactionBase extends Component {
       isApprovalOrRejection,
       assetStandard,
       title,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      isNoteToTraderSupported,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
       submitting,
@@ -927,7 +905,17 @@ export default class ConfirmTransactionBase extends Component {
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          noteComponent={this.renderNote()}
+          noteComponent={
+            isNoteToTraderSupported && (
+              <NoteToTrader
+                maxLength="280"
+                placeholder={t('notePlaceholder')}
+                onChange={(value) => this.setState({ noteText: value })}
+                noteText={this.state.noteText}
+                labelText={t('transactionNote')}
+              />
+            )
+          }
           ///: END:ONLY_INCLUDE_IN
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
