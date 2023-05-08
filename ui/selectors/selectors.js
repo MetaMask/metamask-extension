@@ -28,6 +28,8 @@ import {
   GOERLI_DISPLAY_NAME,
   ETH_TOKEN_IMAGE_URL,
   LINEA_TESTNET_DISPLAY_NAME,
+  CURRENCY_SYMBOLS,
+  TEST_NETWORK_TICKER_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1175,13 +1177,18 @@ export function getAllNetworks(state) {
       imageUrl: ETH_TOKEN_IMAGE_URL,
     },
     providerType: NETWORK_TYPES.MAINNET,
+    ticker: CURRENCY_SYMBOLS.ETH,
   });
   // Custom networks added
   networks.push(
     ...Object.entries(networkConfigurations)
       .filter(
         ([, network]) =>
-          !localhostFilter(network) && network.chainId !== CHAIN_IDS.MAINNET,
+          !localhostFilter(network) &&
+          network.chainId !== CHAIN_IDS.MAINNET &&
+          // Linea gets added as a custom network configuration so
+          // we must ignore it here to display in test networks
+          network.chainId !== CHAIN_IDS.LINEA_TESTNET,
       )
       .map(([, network]) => network),
   );
@@ -1193,18 +1200,20 @@ export function getAllNetworks(state) {
         nickname: GOERLI_DISPLAY_NAME,
         rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
         providerType: NETWORK_TYPES.GOERLI,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
       },
       {
         chainId: CHAIN_IDS.SEPOLIA,
         nickname: SEPOLIA_DISPLAY_NAME,
         rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
         providerType: NETWORK_TYPES.SEPOLIA,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
       },
       {
         chainId: CHAIN_IDS.LINEA_TESTNET,
         nickname: LINEA_TESTNET_DISPLAY_NAME,
         rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-        provderType: NETWORK_TYPES.LINEA_TESTNET,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
       },
     ], // Localhosts
     ...Object.entries(networkConfigurations)
