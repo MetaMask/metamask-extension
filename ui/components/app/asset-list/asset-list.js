@@ -20,7 +20,7 @@ import Box from '../../ui/box/box';
 import {
   Color,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -146,7 +146,7 @@ const AssetList = ({ onClickAsset }) => {
               color={Color.textAlternative}
               variant={TextVariant.bodySm}
               as="h6"
-              textAlign={TEXT_ALIGN.CENTER}
+              textAlign={TextAlign.Center}
             >
               {t('missingToken')}
             </Text>

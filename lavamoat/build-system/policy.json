@@ -1301,6 +1301,122 @@
         "gulp-sass>picocolors": true
       }
     },
+    "babel-plugin-module-resolver": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.cwd": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>find-babel-config": true,
+        "babel-plugin-module-resolver>glob": true,
+        "babel-plugin-module-resolver>pkg-up": true,
+        "babel-plugin-module-resolver>reselect": true,
+        "brfs>resolve": true
+      }
+    },
+    "babel-plugin-module-resolver>find-babel-config": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "depcheck>json5": true,
+        "nyc>find-up>path-exists": true
+      }
+    },
+    "babel-plugin-module-resolver>glob": {
+      "builtin": {
+        "assert": true,
+        "events.EventEmitter": true,
+        "fs": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.resolve": true,
+        "util": true
+      },
+      "globals": {
+        "console.error": true,
+        "process.cwd": true,
+        "process.nextTick": true,
+        "process.platform": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>glob>minimatch": true,
+        "nyc>glob>fs.realpath": true,
+        "nyc>glob>inflight": true,
+        "pump>once": true,
+        "pumpify>inherits": true
+      }
+    },
+    "babel-plugin-module-resolver>glob>minimatch": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>glob>minimatch>brace-expansion": true
+      }
+    },
+    "babel-plugin-module-resolver>glob>minimatch>brace-expansion": {
+      "packages": {
+        "stylelint>balanced-match": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up": {
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up": {
+      "builtin": {
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path": {
+      "builtin": {
+        "path.resolve": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate": true,
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path>path-exists": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate": {
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate>p-limit": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate>p-limit": {
+      "packages": {
+        "nyc>find-up>locate-path>p-locate>p-limit>p-try": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path>path-exists": {
+      "builtin": {
+        "fs.access": true,
+        "fs.accessSync": true
+      }
+    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -1419,7 +1535,7 @@
         "process.getuid": true,
         "process.nextTick": true,
         "process.platform": true,
-        "process.versions": true
+        "process.versions.pnp": true
       },
       "packages": {
         "brfs>resolve>path-parse": true,
@@ -6429,14 +6545,12 @@
         "Element": true,
         "HTMLElement": true,
         "Intl": true,
-        "PerformanceObserver": true,
         "SVGElement": true,
         "WorkerGlobalScope": true,
         "YAML_SILENCE_DEPRECATION_WARNINGS": true,
         "YAML_SILENCE_WARNINGS": true,
         "__dirname": true,
         "__filename": true,
-        "__magic__": true,
         "assertDoc": true,
         "atob": true,
         "btoa": true,
@@ -6444,8 +6558,6 @@
         "console": true,
         "define": true,
         "document": true,
-        "globalThis": "write",
-        "localStorage": true,
         "location": true,
         "navigator": true,
         "new": true,

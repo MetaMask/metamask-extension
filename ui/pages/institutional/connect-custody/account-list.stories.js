@@ -24,7 +24,6 @@ export default {
     selectedAccounts: {},
     onAddAccounts: () => undefined,
     onCancel: () => undefined,
-    provider: 'Test',
     rawList: false,
   },
 };
