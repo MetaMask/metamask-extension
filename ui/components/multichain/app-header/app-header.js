@@ -161,13 +161,18 @@ export const AppHeader = ({ onClick }) => {
                 onClick={networkOpenCallback}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
               />
-              <PickerNetwork
-                label={currentNetwork?.nickname}
-                src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={networkOpenCallback}
-                display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
-                className="multichain-app-header__contents__network-picker"
-              />
+              {popupStatus ? null : (
+                <div>
+                  <PickerNetwork
+                    margin={2}
+                    label={currentNetwork?.nickname}
+                    src={currentNetwork?.rpcPrefs?.imageUrl}
+                    onClick={networkOpenCallback}
+                    display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+                    className="multichain-app-header__contents__network-picker"
+                  />
+                </div>
+              )}
               {showProductTour &&
               popupStatus &&
               multichainProductTourStep === 1 ? (
@@ -316,12 +321,16 @@ export const AppHeader = ({ onClick }) => {
               padding={2}
               gap={2}
             >
-              <PickerNetwork
-                label={currentNetwork?.nickname}
-                src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={() => dispatch(toggleNetworkMenu())}
-                className="multichain-app-header__contents__network-picker"
-              />
+              {popupStatus ? null : (
+                <div>
+                  <PickerNetwork
+                    label={currentNetwork?.nickname}
+                    src={currentNetwork?.rpcPrefs?.imageUrl}
+                    onClick={() => dispatch(toggleNetworkMenu())}
+                    className="multichain-app-header__contents__network-picker"
+                  />
+                </div>
+              )}
               <MetafoxLogo
                 unsetIconHeight
                 onClick={async () => {
