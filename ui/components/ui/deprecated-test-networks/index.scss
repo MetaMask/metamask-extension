@@ -5,9 +5,6 @@
   z-index: 1050;
 
   &__content {
-    &__icon {
-      font-size: 16px;
-    }
 
     &__inline-link {
       @include H7;

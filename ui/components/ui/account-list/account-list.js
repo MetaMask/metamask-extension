@@ -67,6 +67,7 @@ const AccountList = ({
                 name={IconName.Info}
                 color={IconColor.iconMuted}
                 className="info-circle"
+                marginInlineStart={2}
               />
             </Tooltip>
           </div>
@@ -124,6 +125,7 @@ const AccountList = ({
                       name={IconName.Info}
                       color={IconColor.iconMuted}
                       className="info-circle"
+                      marginInlineStart={2}
                     />
                   </Tooltip>
                 ) : null}
