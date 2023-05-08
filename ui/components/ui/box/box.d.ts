@@ -290,7 +290,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    * Use TEXT_ALIGN const from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  textAlign?: BoxTextAlign | BoxTextAlignArray;
+  textAlign?: BoxTextAlign | BoxTextAlignArray | TextAlign;
   /**
    * The display of the Box component.
    * Use DISPLAY const from '../../../helpers/constants/design-system';

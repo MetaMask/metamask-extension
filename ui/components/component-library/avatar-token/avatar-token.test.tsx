@@ -122,9 +122,11 @@ describe('AvatarToken', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLDivElement>();
     render(<AvatarToken ref={ref} />);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    if (ref.current) {
+      expect(ref.current.nodeName).toBe('DIV');
+    }
   });
 });

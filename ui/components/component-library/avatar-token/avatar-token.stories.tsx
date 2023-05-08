@@ -1,6 +1,6 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
-  Size,
   DISPLAY,
   AlignItems,
   TextColor,
@@ -18,14 +18,13 @@ import {
   Text,
 } from '..';
 
+import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
 import README from './README.mdx';
 
 import { AvatarToken } from './avatar-token';
-import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
-
   component: AvatarToken,
   parameters: {
     docs: {
@@ -35,7 +34,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(AVATAR_TOKEN_SIZES),
+      options: Object.values(AvatarBaseSize),
     },
     color: {
       options: Object.values(TextColor),
@@ -62,19 +61,19 @@ export default {
   args: {
     name: 'eth',
     src: './images/eth_logo.png',
-    size: Size.MD,
+    size: AvatarBaseSize.Md,
     showHalo: false,
   },
-};
+} as ComponentMeta<typeof AvatarToken>;
 
-const Template = (args) => {
+const Template: ComponentStory<typeof AvatarToken> = (args) => {
   return <AvatarToken {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => (
+export const SizeStory: ComponentStory<typeof AvatarToken> = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
@@ -82,11 +81,11 @@ export const SizeStory = (args) => (
       gap={2}
       marginBottom={4}
     >
-      <AvatarToken {...args} size={Size.XS} />
-      <AvatarToken {...args} size={Size.SM} />
-      <AvatarToken {...args} size={Size.MD} />
-      <AvatarToken {...args} size={Size.LG} />
-      <AvatarToken {...args} size={Size.XL} />
+      <AvatarToken {...args} size={AvatarBaseSize.Xs} />
+      <AvatarToken {...args} size={AvatarBaseSize.Sm} />
+      <AvatarToken {...args} size={AvatarBaseSize.Md} />
+      <AvatarToken {...args} size={AvatarBaseSize.Lg} />
+      <AvatarToken {...args} size={AvatarBaseSize.Xl} />
     </Box>
     <Box
       display={DISPLAY.FLEX}
@@ -94,11 +93,11 @@ export const SizeStory = (args) => (
       gap={2}
       marginBottom={4}
     >
-      <AvatarToken {...args} src="" size={Size.XS} />
-      <AvatarToken {...args} src="" size={Size.SM} />
-      <AvatarToken {...args} src="" size={Size.MD} />
-      <AvatarToken {...args} src="" size={Size.LG} />
-      <AvatarToken {...args} src="" size={Size.XL} />
+      <AvatarToken {...args} src="" size={AvatarBaseSize.Xs} />
+      <AvatarToken {...args} src="" size={AvatarBaseSize.Sm} />
+      <AvatarToken {...args} src="" size={AvatarBaseSize.Md} />
+      <AvatarToken {...args} src="" size={AvatarBaseSize.Lg} />
+      <AvatarToken {...args} src="" size={AvatarBaseSize.Xl} />
     </Box>
     <Text marginBottom={4}>
       Sizes with{' '}
@@ -128,65 +127,65 @@ export const SizeStory = (args) => (
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.XS} />
+        <AvatarToken {...args} name="ETH" size={AvatarBaseSize.Xs} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.SM} />
+        <AvatarToken {...args} name="ETH" size={AvatarBaseSize.Sm} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.MD} />
+        <AvatarToken {...args} name="ETH" size={AvatarBaseSize.Md} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.LG} />
+        <AvatarToken {...args} name="ETH" size={AvatarBaseSize.Lg} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.SM}
+            size={AvatarBaseSize.Sm}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.XL} />
+        <AvatarToken {...args} name="ETH" size={AvatarBaseSize.Xl} />
       </BadgeWrapper>
     </Box>
     <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={2}>
@@ -194,7 +193,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -204,7 +203,7 @@ export const SizeStory = (args) => (
           {...args}
           src=""
           name="ETH"
-          size={Size.XS}
+          size={AvatarBaseSize.Xs}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -213,7 +212,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -223,7 +222,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.SM}
+          size={AvatarBaseSize.Sm}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -232,7 +231,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -242,7 +241,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.MD}
+          size={AvatarBaseSize.Md}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -251,7 +250,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarBaseSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -261,7 +260,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.LG}
+          size={AvatarBaseSize.Lg}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -270,7 +269,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.SM}
+            size={AvatarBaseSize.Sm}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -280,7 +279,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.XL}
+          size={AvatarBaseSize.Xl}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -295,7 +294,7 @@ Name.args = {
   src: '',
 };
 
-export const Src = (args) => (
+export const Src: ComponentStory<typeof AvatarToken> = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken {...args} src="./images/eth_logo.png" />
     <AvatarToken {...args} src="./images/arbitrum.svg" />
@@ -324,7 +323,9 @@ ShowHalo.args = {
   showHalo: true,
 };
 
-export const ColorBackgroundColorAndBorderColor = (args) => (
+export const ColorBackgroundColorAndBorderColor: ComponentStory<
+  typeof AvatarToken
+> = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken
       {...args}
