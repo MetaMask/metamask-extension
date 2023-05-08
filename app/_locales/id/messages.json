@@ -1570,9 +1570,6 @@
   "history": {
     "message": "Riwayat"
   },
-  "holdToReveal": {
-    "message": "Tahan untuk mengungkap FPR"
-  },
   "holdToRevealContent1": {
     "message": "Frasa Pemulihan Rahasia memberikan $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "tetapi penipu akan mencoba memintanya.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Jaga keamanan FPR Anda"
   },
   "ignoreAll": {
     "message": "Abaikan semua"
@@ -3922,9 +3916,6 @@
   },
   "thingsToKeep": {
     "message": "Hal-hal yang perlu diingat:"
-  },
-  "thisIsBasedOn": {
-    "message": "Hal ini berdasarkan informasi dari "
   },
   "time": {
     "message": "Waktu"

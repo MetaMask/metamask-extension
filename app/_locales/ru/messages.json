@@ -1570,9 +1570,6 @@
   "history": {
     "message": "История"
   },
-  "holdToReveal": {
-    "message": "Удерживайте для отображения СВФ"
-  },
   "holdToRevealContent1": {
     "message": "Ваша секретная фраза для восстановления дает $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "но злоумышленники-фишеры могут.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Обеспечьте безопасность своей СВФ"
   },
   "ignoreAll": {
     "message": "Игнорировать все"
@@ -3922,9 +3916,6 @@
   },
   "thingsToKeep": {
     "message": "Что нужно помнить:"
-  },
-  "thisIsBasedOn": {
-    "message": "Это основано на информации от "
   },
   "time": {
     "message": "Время"
