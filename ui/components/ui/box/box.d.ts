@@ -19,7 +19,7 @@ import {
 export type BoxChildren = React.ReactNode | ((...args: any[]) => any);
 
 export type BoxFlexDirection =
-  | (typeof FLEX_DIRECTION)[keyof typeof FLEX_DIRECTION]
+  | typeof FLEX_DIRECTION[keyof typeof FLEX_DIRECTION]
   | null;
 export type BoxFlexDirectionArray = [
   BoxFlexDirection,
@@ -28,7 +28,7 @@ export type BoxFlexDirectionArray = [
   BoxFlexDirection?,
 ];
 
-export type BoxFlexWrap = (typeof FLEX_WRAP)[keyof typeof FLEX_WRAP] | null;
+export type BoxFlexWrap = typeof FLEX_WRAP[keyof typeof FLEX_WRAP] | null;
 export type BoxFlexWrapArray = [
   BoxFlexWrap,
   BoxFlexWrap?,
@@ -36,7 +36,7 @@ export type BoxFlexWrapArray = [
   BoxFlexWrap?,
 ];
 
-export type BoxTextAlign = (typeof TEXT_ALIGN)[keyof typeof TEXT_ALIGN] | null;
+export type BoxTextAlign = typeof TEXT_ALIGN[keyof typeof TEXT_ALIGN] | null;
 export type BoxTextAlignArray = [
   BoxTextAlign,
   BoxTextAlign?,
@@ -44,7 +44,7 @@ export type BoxTextAlignArray = [
   BoxTextAlign?,
 ];
 
-export type BoxDisplay = (typeof DISPLAY)[keyof typeof DISPLAY] | null;
+export type BoxDisplay = typeof DISPLAY[keyof typeof DISPLAY] | null;
 export type BoxDisplayArray = [
   BoxDisplay,
   BoxDisplay?,
@@ -52,10 +52,10 @@ export type BoxDisplayArray = [
   BoxDisplay?,
 ];
 
-export type BoxWidth = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
+export type BoxWidth = typeof BLOCK_SIZES[keyof typeof BLOCK_SIZES] | null;
 export type BoxWidthArray = [BoxWidth, BoxWidth?, BoxWidth?, BoxWidth?];
 
-export type BoxHeight = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
+export type BoxHeight = typeof BLOCK_SIZES[keyof typeof BLOCK_SIZES] | null;
 export type BoxHeightArray = [BoxHeight, BoxHeight?, BoxHeight?, BoxHeight?];
 
 export type SizeNumber =

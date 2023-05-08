@@ -1,6 +1,6 @@
-import type { BoxProps } from '../../ui/box/box.d';
 import { AvatarBaseSize } from '../avatar-base';
 import { ValidTag } from '../text';
+import type { BoxProps } from '../../ui/box/box.d';
 import {
   BackgroundColor,
   BorderColor,
@@ -48,7 +48,7 @@ export interface AvatarTokenProps extends BoxProps {
    * Additional classNames to be added to the AvatarToken
    */
   className?: string;
-    /**
+  /**
    * Changes the root html element tag of the Text component.
    */
   as?: ValidTag;
