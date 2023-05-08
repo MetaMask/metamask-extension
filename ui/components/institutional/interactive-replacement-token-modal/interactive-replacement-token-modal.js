@@ -15,8 +15,8 @@ import {
   FLEX_WRAP,
   FLEX_DIRECTION,
   BorderRadius,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   AlignItems,
 } from '../../../helpers/constants/design-system';
 
@@ -53,7 +53,7 @@ const InteractiveReplacementTokenModal = () => {
           alignItems={AlignItems.center}
           paddingTop={5}
         >
-          <Box display={DISPLAY.BLOCK} textAlign={TEXT_ALIGN.CENTER}>
+          <Box display={DISPLAY.BLOCK} textAlign={TextAlign.Center}>
             <img
               src={custodian.iconUrl}
               width={45}
@@ -64,7 +64,7 @@ const InteractiveReplacementTokenModal = () => {
       );
     } else {
       img = (
-        <Box display={DISPLAY.BLOCK} textAlign={TEXT_ALIGN.CENTER}>
+        <Box display={DISPLAY.BLOCK} textAlign={TextAlign.Center}>
           <Text>{custodian.displayName}</Text>
         </Box>
       );
@@ -76,8 +76,8 @@ const InteractiveReplacementTokenModal = () => {
         <Text
           as="h4"
           paddingTop={4}
-          textAlign={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
+          textAlign={TextAlign.Center}
+          fontWeight={FontWeight.Bold}
         >
           {t('custodyRefreshTokenModalTitle')}
         </Text>
@@ -85,18 +85,18 @@ const InteractiveReplacementTokenModal = () => {
           as="p"
           paddingTop={4}
           paddingBottom={6}
-          textAlign={TEXT_ALIGN.LEFT}
+          textAlign={TextAlign.Left}
         >
           {t('custodyRefreshTokenModalDescription', [custodian.displayName])}
         </Text>
-        <Text as="p" fontWeight={FONT_WEIGHT.MEDIUM}>
+        <Text as="p" fontWeight={FontWeight.Medium}>
           {t('custodyRefreshTokenModalSubtitle')}
         </Text>
         <Text
           as="p"
           paddingTop={4}
           paddingBottom={6}
-          textAlign={TEXT_ALIGN.LEFT}
+          textAlign={TextAlign.Left}
         >
           {t('custodyRefreshTokenModalDescription1')}
         </Text>
@@ -105,7 +105,7 @@ const InteractiveReplacementTokenModal = () => {
           marginTop={4}
           paddingTop={4}
           paddingBottom={6}
-          textAlign={TEXT_ALIGN.LEFT}
+          textAlign={TextAlign.Left}
         >
           {t('custodyRefreshTokenModalDescription2')}
         </Text>
