@@ -2693,6 +2693,7 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils": {
       "builtin": {
+        "assert": true,
         "path": true
       },
       "packages": {
@@ -2702,11 +2703,12 @@
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true,
+        "eslint>@eslint-community/eslint-utils": true,
         "eslint>eslint-scope": true,
         "eslint>eslint-utils": true,
+        "semver": true,
         "webpack>eslint-scope": true
       }
     },
@@ -2729,7 +2731,9 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
       "packages": {
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true,
+        "eslint>@eslint-community/eslint-utils": true,
+        "semver": true
       }
     },
     "eslint-plugin-jsdoc": {
