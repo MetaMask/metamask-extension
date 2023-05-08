@@ -4,7 +4,12 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
-import { IconName, ButtonLink, TextFieldSearch, Text } from '../../component-library';
+import {
+  IconName,
+  ButtonLink,
+  TextFieldSearch,
+  Text,
+} from '../../component-library';
 import { AccountListItem } from '..';
 import {
   BLOCK_SIZES,
