@@ -576,7 +576,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     chainId: CHAIN_IDS.AURORA,
     nickname: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.ETH,
+    ticker: CURRENCY_SYMBOLS.AURORA_ETH,
     rpcPrefs: {
       blockExplorerUrl: 'https://aurorascan.dev/',
       imageUrl: AURORA_TOKEN_IMAGE_URL,
