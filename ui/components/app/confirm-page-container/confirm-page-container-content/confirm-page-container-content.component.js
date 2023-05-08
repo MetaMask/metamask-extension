@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import Button from '../../../ui/button';
+///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
@@ -18,6 +20,9 @@ import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
@@ -55,6 +60,9 @@ export default class ConfirmPageContainerContent extends Component {
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     txData: PropTypes.object,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     metaMetricsId: PropTypes.string,
   };
 
@@ -65,6 +73,14 @@ export default class ConfirmPageContainerContent extends Component {
     const { insightComponent } = this.props;
 
     if (insightComponent && (detailsComponent || dataComponent)) {
+      return this.renderTabs();
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { noteComponent } = this.props;
+
+    if (noteComponent) {
       return this.renderTabs();
     }
     ///: END:ONLY_INCLUDE_IN
@@ -91,6 +107,9 @@ export default class ConfirmPageContainerContent extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      noteComponent,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     return (
@@ -102,6 +121,25 @@ export default class ConfirmPageContainerContent extends Component {
         >
           {detailsComponent}
         </Tab>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          noteComponent && (
+            <Tab
+              className="confirm-page-container-content__tab"
+              name={t('note')}
+              pillText={t('new')}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: 'Note to trader',
+                  event: 'Clicked on Notes tab on a transaction window',
+                });
+              }}
+            >
+              {noteComponent}
+            </Tab>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         {dataComponent && (
           <Tab
             className="confirm-page-container-content__tab"
@@ -221,6 +259,7 @@ export default class ConfirmPageContainerContent extends Component {
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -237,6 +276,7 @@ export default class ConfirmPageContainerContent extends Component {
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
+                      ///: END:ONLY_INCLUDE_IN
                     ])}
                   </Typography>
                 ) : (

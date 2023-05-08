@@ -2516,6 +2516,12 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "note": {
+    "message": "Note"
+  },
+  "notePlaceholder": {
+    "message": "The approver will see this note when approving the transaction at the custodian."
+  },
   "notifications": {
     "message": "Notifications"
   },
@@ -4671,6 +4677,9 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionNote": {
+    "message": "Transaction note"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
