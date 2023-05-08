@@ -19,7 +19,7 @@ describe('AvatarNetwork', () => {
 
   it('should render correctly', () => {
     const { getByTestId, container } = render(
-      <AvatarNetwork data-testid="avatar-network" />,
+      <AvatarNetwork {...args} data-testid="avatar-network" />,
     );
     expect(getByTestId('avatar-network')).toBeDefined();
     expect(container).toMatchSnapshot();
@@ -56,7 +56,11 @@ describe('AvatarNetwork', () => {
   // className
   it('should render with custom className', () => {
     const { getByTestId } = render(
-      <AvatarNetwork data-testid="avatar-network" className="test-class" />,
+      <AvatarNetwork
+        {...args}
+        data-testid="avatar-network"
+        className="test-class"
+      />,
     );
     expect(getByTestId('avatar-network')).toHaveClass('test-class');
   });
@@ -65,10 +69,12 @@ describe('AvatarNetwork', () => {
     const { getByTestId } = render(
       <>
         <AvatarNetwork
+          {...args}
           color={TextColor.successDefault}
           data-testid={TextColor.successDefault}
         />
         <AvatarNetwork
+          {...args}
           color={TextColor.errorDefault}
           data-testid={TextColor.errorDefault}
         />
@@ -86,10 +92,12 @@ describe('AvatarNetwork', () => {
     const { getByTestId } = render(
       <>
         <AvatarNetwork
+          {...args}
           backgroundColor={BackgroundColor.successDefault}
           data-testid={BackgroundColor.successDefault}
         />
         <AvatarNetwork
+          {...args}
           backgroundColor={BackgroundColor.errorDefault}
           data-testid={BackgroundColor.errorDefault}
         />
@@ -107,10 +115,12 @@ describe('AvatarNetwork', () => {
     const { getByTestId } = render(
       <>
         <AvatarNetwork
+          {...args}
           borderColor={BorderColor.successDefault}
           data-testid={BorderColor.successDefault}
         />
         <AvatarNetwork
+          {...args}
           borderColor={BorderColor.errorDefault}
           data-testid={BorderColor.errorDefault}
         />
@@ -124,9 +134,11 @@ describe('AvatarNetwork', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
-    render(<AvatarNetwork ref={ref} />);
+    const ref = React.createRef<HTMLDivElement>();
+    render(<AvatarNetwork {...args} ref={ref} />);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    if (ref.current) {
+      expect(ref.current.nodeName).toBe('DIV');
+    }
   });
 });
