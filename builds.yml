@@ -162,6 +162,9 @@ env:
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
 
+  # builds fail unless this is set
+  - EDITOR_URL: http://localhost:9090
+
   ###
   # API keys to 3rd party services
   ###
