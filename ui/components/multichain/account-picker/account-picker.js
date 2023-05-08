@@ -14,7 +14,7 @@ import {
   BackgroundColor,
   BorderRadius,
   DISPLAY,
-  FONT_WEIGHT,
+  FontWeight,
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -45,7 +45,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
         size={Size.XS}
         borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
-      <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
+      <Text as="span" fontWeight={FontWeight.Bold} ellipsis>
         {name}
       </Text>
       <Icon
