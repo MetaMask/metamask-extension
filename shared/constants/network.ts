@@ -3,14 +3,14 @@ import { capitalize, pick } from 'lodash';
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
  */
-export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+export type NetworkType = typeof NETWORK_TYPES[keyof typeof NETWORK_TYPES];
 
 /**
  * A union type of all possible hard-coded chain ids. This type is not
  * exhaustive and cannot be used for typing chainId in areas where the user or
  * dapp may specify any chainId.
  */
-export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 
 /**
  * A type that is a union type of all possible hardcoded currency symbols.
@@ -18,13 +18,13 @@ export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
  * or dapp may supply their own symbol.
  */
 export type CurrencySymbol =
-  (typeof CURRENCY_SYMBOLS)[keyof typeof CURRENCY_SYMBOLS];
+  typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
 /**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
 export type TestNetworkCurrencySymbol =
-  (typeof TEST_NETWORK_TICKER_MAP)[keyof typeof TEST_NETWORK_TICKER_MAP];
+  typeof TEST_NETWORK_TICKER_MAP[keyof typeof TEST_NETWORK_TICKER_MAP];
 
 /**
  * An object containing preferences for an RPC definition
