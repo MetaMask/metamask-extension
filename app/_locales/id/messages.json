@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Simbol harus terdiri dari 100 karakter atau kurang."
+  "invalidSymbolLength": {
+    "message": "Simbol harus terdiri dari $1 karakter atau kurang."
   },
   "tenPercentIncreased": {
     "message": "Meningkat 10%"

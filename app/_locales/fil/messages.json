@@ -656,8 +656,8 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Ang simbolo ay dapat na 100 character o mas kaunti."
+  "invalidSymbolLength": {
+    "message": "Ang simbolo ay dapat na $1 character o mas kaunti."
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"

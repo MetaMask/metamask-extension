@@ -729,8 +729,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Simbol mora biti 100 znakova ili manje."
+  "invalidSymbolLength": {
+    "message": "Simbol mora biti $1 znakova ili manje."
   },
   "terms": {
     "message": "Uslovi korišćenja"

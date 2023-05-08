@@ -4419,8 +4419,8 @@
   "symbol": {
     "message": "Symbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbol must be 100 characters or fewer."
+  "invalidSymbolLength": {
+    "message": "Symbol must be $1 characters or fewer."
   },
   "tenPercentIncreased": {
     "message": "10% increase"

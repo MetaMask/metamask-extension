@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "Σύμβολο"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Το σύμβολο πρέπει να είναι τουλάχιστον 100 χαρακτήρες."
+  "invalidSymbolLength": {
+    "message": "Το σύμβολο πρέπει να είναι τουλάχιστον $1 χαρακτήρες."
   },
   "tenPercentIncreased": {
     "message": "10% αύξηση"

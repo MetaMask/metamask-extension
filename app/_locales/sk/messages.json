@@ -707,8 +707,8 @@
   "switchNetworks": {
     "message": "Prepnúť siete"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbol musí být mezi 0 a 12 znaky."
+  "invalidSymbolLength": {
+    "message": "Symbol musí mít $1 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"

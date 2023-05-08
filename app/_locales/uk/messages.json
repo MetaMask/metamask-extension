@@ -738,8 +738,8 @@
   "symbol": {
     "message": "Символ"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Символ повинен містити 100 символів або менше."
+  "invalidSymbolLength": {
+    "message": "Символ повинен містити $1 символів або менше."
   },
   "terms": {
     "message": "Умови використання"

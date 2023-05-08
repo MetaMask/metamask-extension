@@ -713,8 +713,8 @@
   "switchNetworks": {
     "message": "Skift Netværk"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbolet skal være mindst 100 tegn."
+  "invalidSymbolLength": {
+    "message": "Symbolet skal være mindst $1 tegn."
   },
   "terms": {
     "message": "Brugsbetingelser"

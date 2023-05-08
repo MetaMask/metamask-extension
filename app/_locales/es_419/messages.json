@@ -2531,8 +2531,8 @@
   "symbol": {
     "message": "Símbolo"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "El símbolo debe tener 100 caracteres o menos."
+  "invalidSymbolLength": {
+    "message": "El símbolo debe tener $1 caracteres o menos."
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"

@@ -725,8 +725,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Simbolul trebuie să fie de 100 caractere sau mai puțin."
+  "invalidSymbolLength": {
+    "message": "Simbolul trebuie să fie de $1 caractere sau mai puțin."
   },
   "terms": {
     "message": "Termeni și condiții"

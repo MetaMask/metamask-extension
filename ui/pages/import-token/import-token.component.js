@@ -25,7 +25,7 @@ import {
 } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import { TokenStandard } from '../../../shared/constants/transaction';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
+import { STATIC_MAINNET_TOKEN_LIST, VALID_SYMBOL_LENGTH, } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 
@@ -367,8 +367,8 @@ class ImportToken extends Component {
     const symbolLength = customSymbol.length;
     let customSymbolError = null;
 
-    if (symbolLength === 0 || symbolLength >= 100) {
-      customSymbolError = this.context.t('symbolBetweenZeroHundred');
+    if (symbolLength < VALID_SYMBOL_LENGTH.min || symbolLength >= VALID_SYMBOL_LENGTH.max) {
+      customSymbolError = this.context.t('invalidSymbolLength').replace(' $1', VALID_SYMBOL_LENGTH.max);
     }
 
     this.setState({ customSymbol, customSymbolError });

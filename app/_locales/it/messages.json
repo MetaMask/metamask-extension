@@ -1763,8 +1763,8 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Il simbolo deve essere lungo tra 0 e 12 caratteri."
+  "invalidSymbolLength": {
+    "message": "Il simbolo deve contenere un massimo di $1 caratteri."
   },
   "terms": {
     "message": "Termini di Uso"

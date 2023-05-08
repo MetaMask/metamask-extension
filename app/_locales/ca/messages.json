@@ -716,8 +716,8 @@
   "symbol": {
     "message": "Símbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "El símbol ha de tenir com a mínim 100 caràcters."
+  "invalidSymbolLength": {
+    "message": "El símbol ha de tenir com a mínim $1 caràcters."
   },
   "terms": {
     "message": "Condicions d'ús"

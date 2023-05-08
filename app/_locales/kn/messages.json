@@ -738,8 +738,8 @@
   "symbol": {
     "message": "ಚಿಹ್ನೆ"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "ಚಿಹ್ನೆಯು 0 ಮತ್ತು 12 ಅಕ್ಷರಗಳ ನಡುವೆ ಇರಬೇಕು."
+  "invalidSymbolLength": {
+    "message": "ಚಿಹ್ನೆಯು $1 ಅಥವಾ ಅದಕ್ಕಿಂತ ಕಡಿಮೆ ಅಕ್ಷರಗಳಾಗಿರಬೇಕು."
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"

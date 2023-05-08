@@ -716,8 +716,8 @@
   "switchNetworks": {
     "message": "Bytt nettverk "
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbolet må være 100 tegn eller færre."
+  "invalidSymbolLength": {
+    "message": "Symbolet må være $1 tegn eller færre."
   },
   "terms": {
     "message": "Brukervilkår"

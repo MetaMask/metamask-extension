@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "Symbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Das Symbol darf maximal 100 Zeichen lang sein."
+  "invalidSymbolLength": {
+    "message": "Das Symbol darf maximal $1 Zeichen lang sein."
   },
   "tenPercentIncreased": {
     "message": "10% Erhöhung"

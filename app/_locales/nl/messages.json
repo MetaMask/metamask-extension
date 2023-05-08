@@ -298,8 +298,8 @@
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbool moet 100 tekens of minder zijn."
+  "invalidSymbolLength": {
+    "message": "Symbool moet $1 tekens of minder zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"

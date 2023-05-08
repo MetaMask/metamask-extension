@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "Ký hiệu"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Ký hiệu không được dài quá 100 ký tự."
+  "invalidSymbolLength": {
+    "message": "Ký hiệu không được dài quá $1 ký tự."
   },
   "tenPercentIncreased": {
     "message": "Tăng 10%"

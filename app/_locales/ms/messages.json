@@ -718,8 +718,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Simbol mestilah 100 aksara atau kurang."
+  "invalidSymbolLength": {
+    "message": "Simbol mestilah $1 aksara atau kurang."
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"

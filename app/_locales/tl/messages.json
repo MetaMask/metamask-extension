@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Dapat ay 100 character o mas kaunti ang simbolo."
+  "invalidSymbolLength": {
+    "message": "Dapat ay $1 character o mas kaunti ang simbolo."
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"

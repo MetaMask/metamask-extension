@@ -719,8 +719,8 @@
   "switchNetworks": {
     "message": "Växla nätverk"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbolen måste vara 100 tecken eller färre."
+  "invalidSymbolLength": {
+    "message": "Symbolen måste vara $1 tecken eller färre."
   },
   "terms": {
     "message": "Användarvillkor"

@@ -343,8 +343,8 @@
   "supportCenter": {
     "message": "Navštivte naše centrum podpory"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbol musí mít 100 nebo méně znaků."
+  "invalidSymbolLength": {
+    "message": "Symbol musí mít $1 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"

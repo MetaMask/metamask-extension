@@ -732,8 +732,8 @@
   "symbol": {
     "message": "প্রতীক"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "প্রতীকটি 100 টি অক্ষর বা তার চেয়ে কম হতে হবে।"
+  "invalidSymbolLength": {
+    "message": "প্রতীকটি $1 টি অক্ষর বা তার চেয়ে কম হতে হবে।"
   },
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"

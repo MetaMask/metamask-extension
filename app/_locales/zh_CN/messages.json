@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "符号"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "符号不得超过11个字符。"
+  "invalidSymbolLength": {
+    "message": "符号不得超过$1个字符。"
   },
   "tenPercentIncreased": {
     "message": "增加10%"

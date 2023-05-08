@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "シンボル"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "シンボルは11文字以下にする必要があります。"
+  "invalidSymbolLength": {
+    "message": "シンボルは $1文字以下にする必要があります。"
   },
   "tenPercentIncreased": {
     "message": "10% の増加"

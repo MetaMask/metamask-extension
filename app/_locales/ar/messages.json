@@ -735,8 +735,8 @@
   "symbol": {
     "message": "رمز"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "يجب أن يكون الرمز 100 حرفًا أو أقل."
+  "invalidSymbolLength": {
+    "message": "يجب أن يكون الرمز $1 حرفًا أو أقل."
   },
   "terms": {
     "message": "شروط الاستخدام"

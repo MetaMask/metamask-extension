@@ -728,8 +728,8 @@
   "symbol": {
     "message": "Sümbol"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Sümbol peab olema 100 tähemärki või vähem."
+  "invalidSymbolLength": {
+    "message": "Sümbol peab olema $1 tähemärki või vähem."
   },
   "terms": {
     "message": "Teenusetingimused"

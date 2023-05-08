@@ -731,8 +731,8 @@
   "symbol": {
     "message": "Szimbólum"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "A szimbólum 0 és 12 karakter között kell legyen."
+  "invalidSymbolLength": {
+    "message": "A szimbólum legfeljebb $1 karakterből állhat."
   },
   "terms": {
     "message": "Használati feltételek"

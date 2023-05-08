@@ -735,8 +735,8 @@
   "symbol": {
     "message": "Symboli"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Symbolin on oltava 100 merkkiä tai vähemmän."
+  "invalidSymbolLength": {
+    "message": "Symbolin on oltava $1 merkkiä tai vähemmän."
   },
   "terms": {
     "message": "Käyttöehdot"

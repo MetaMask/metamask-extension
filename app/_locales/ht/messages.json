@@ -524,8 +524,8 @@
   "supportCenter": {
     "message": "Vizite Sant Sipò Nou"
   },
-  "symbolBetweenZeroHundred": {
-    "message": "Senbòl yo dwe 100 karaktè oswa mwens."
+  "invalidSymbolLength": {
+    "message": "Senbòl yo dwe $1 karaktè oswa mwens."
   },
   "terms": {
     "message": "Tèm pou itilize"
