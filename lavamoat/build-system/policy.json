@@ -6545,14 +6545,12 @@
         "Element": true,
         "HTMLElement": true,
         "Intl": true,
-        "PerformanceObserver": true,
         "SVGElement": true,
         "WorkerGlobalScope": true,
         "YAML_SILENCE_DEPRECATION_WARNINGS": true,
         "YAML_SILENCE_WARNINGS": true,
         "__dirname": true,
         "__filename": true,
-        "__magic__": true,
         "assertDoc": true,
         "atob": true,
         "btoa": true,
@@ -6560,8 +6558,6 @@
         "console": true,
         "define": true,
         "document": true,
-        "globalThis": "write",
-        "localStorage": true,
         "location": true,
         "navigator": true,
         "new": true,
@@ -7371,7 +7367,7 @@
     },
     "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": {
       "packages": {
-        "stylelint>postcss-html>htmlparser2>domutils>dom-serializer>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
         "stylelint>postcss-html>htmlparser2>entities": true
       }
     },

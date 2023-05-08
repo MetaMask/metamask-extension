@@ -1570,9 +1570,6 @@
   "history": {
     "message": "기록"
   },
-  "holdToReveal": {
-    "message": "눌러서 SRP 확인"
-  },
   "holdToRevealContent1": {
     "message": "비밀 복구 구문이 있으면 $1 기능을 사용할 수 있습니다",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "오히려 피싱 사기꾼들이 요구할 수 있으니 주의가 필요합니다.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "SRP를 안전하게 보관하세요"
   },
   "ignoreAll": {
     "message": "모두 무시"
