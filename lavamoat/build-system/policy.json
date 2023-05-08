@@ -3564,7 +3564,8 @@
     },
     "gulp-livereload>event-stream>stream-combiner": {
       "packages": {
-        "debounce-stream>duplexer": true
+        "debounce-stream>duplexer": true,
+        "debounce-stream>through": true
       }
     },
     "gulp-livereload>tiny-lr": {
