@@ -93,7 +93,9 @@
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\"",
     "githooks:install": "husky install",
     "fitness-functions": "ts-node development/fitness-functions/index.ts",
-    "generate-beta-commit": "node ./development/generate-beta-commit.js"
+    "generate-beta-commit": "node ./development/generate-beta-commit.js",
+    "validate-branch-name": "validate-branch-name",
+    "label-prs": "ts-node ./.github/scripts/label-prs.ts"
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
@@ -211,6 +213,8 @@
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
@@ -319,6 +323,7 @@
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
     "human-standard-token-abi": "^2.0.0",
+    "husky": "^8.0.3",
     "immer": "^9.0.6",
     "is-retry-allowed": "^2.2.0",
     "jest-junit": "^14.0.1",
@@ -362,6 +367,7 @@
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
+    "validate-branch-name": "^1.3.0",
     "web3-stream-provider": "^4.0.0",
     "zxcvbn": "^4.4.2"
   },
