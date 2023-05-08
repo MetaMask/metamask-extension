@@ -1,0 +1,32 @@
+name: Add release label to PR and linked issues when PR gets merged
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  add_release_label:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Add release label to PR and linked issues
+        id: add_release_label_to_pr_and_linked_issues
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          NEXT_RELEASE_CUT_NUMBER: ${{ vars.NEXT_RELEASE_CUT_NUMBER }}
+        run: npm run add_release_label_to_pr_and_linked_issues
