@@ -1754,9 +1754,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "Hold to reveal SRP"
-  },
   "holdToRevealContent1": {
     "message": "Your Secret Recovery Phrase provides $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1777,9 +1774,28 @@
     "message": "but phishers might.",
     "description": "The text link in 'holdToRevealContent3'"
   },
-  "holdToRevealTitle": {
+  "holdToRevealContentPrivateKey1": {
+    "message": "Your Private Key provides $1",
+    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
+  },
+  "holdToRevealContentPrivateKey2": {
+    "message": "full access to your wallet and funds.",
+    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
+  },
+  "holdToRevealLockedLabel": { "message": "hold to reveal circle locked" },
+  "holdToRevealPrivateKey": {
+    "message": "Hold to reveal Private Key"
+  },
+  "holdToRevealPrivateKeyTitle": {
+    "message": "Keep your private key safe"
+  },
+  "holdToRevealSRP": {
+    "message": "Hold to reveal SRP"
+  },
+  "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
   },
+  "holdToRevealUnlockedLabel": { "message": "hold to reveal circle unlocked" },
   "id": {
     "message": "Id"
   },
@@ -2345,6 +2361,10 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
+  },
+  "networkSwitchConnectionError": {
+    "message": "We can't connect to $1",
+    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Network URL"

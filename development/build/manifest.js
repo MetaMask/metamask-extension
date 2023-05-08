@@ -176,7 +176,7 @@ async function getBuildModifications(buildType, platform) {
   }
 
   const overridesPath = buildConfig.buildTypes[buildType].manifestOverrides;
-  if (overridesPath === undefined) {
+  if (!overridesPath) {
     return {};
   }
 
