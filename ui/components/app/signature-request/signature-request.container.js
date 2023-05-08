@@ -27,7 +27,7 @@ import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
-  setTypedMsgInProgress,
+  setTypedMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 ///: END:ONLY_INCLUDE_IN
@@ -102,7 +102,7 @@ function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    setMsgInProgress: (msgId) => dispatch(setTypedMsgInProgress(msgId)),
+    setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
     showCustodianDeepLink: ({
       custodyId,
       fromAddress,

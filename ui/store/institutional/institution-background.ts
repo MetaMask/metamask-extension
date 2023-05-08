@@ -36,11 +36,11 @@ export function showInteractiveReplacementTokenBanner({
   };
 }
 
-export function setTypedMsgInProgress(msgId: string) {
+export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: any) => {
     dispatch(showLoadingIndication());
     try {
-      await submitRequestToBackground('setTypedMsgInProgress', [msgId]);
+      await submitRequestToBackground('setTypedMessageInProgress', [msgId]);
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
