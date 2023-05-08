@@ -8,8 +8,8 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
-import { AvatarBase } from '../avatar-base';
+import { AvatarBase, AvatarBaseSize } from '../avatar-base';
+
 import { AvatarNetworkProps } from './avatar-network.types';
 
 export const AvatarNetwork = React.forwardRef(

@@ -1,6 +1,6 @@
+import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
+import { ValidTag } from '../text/text.types';
 import type { BoxProps } from '../../ui/box/box.d';
-import { AvatarBaseSize } from '../avatar-base';
-import { ValidTag } from '../text';
 import {
   BackgroundColor,
   BorderColor,
