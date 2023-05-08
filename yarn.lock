@@ -11628,6 +11628,7 @@ __metadata:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001400, caniuse-lite@npm:^1.0.30001426":
   version: 1.0.30001482
   resolution: "caniuse-lite@npm:1.0.30001482"
@@ -11635,20 +11636,32 @@ __metadata:
 =======
 =======
 >>>>>>> ab5ec8b77 (fix lint)
+=======
+=======
+>>>>>>> 7f3cb3989 (devDeps: react-devtools@4.16.0->4.27.6 (#18869))
+>>>>>>> c2bdbce05 (devDeps: react-devtools@4.16.0->4.27.6 (#18869))
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001426, caniuse-lite@npm:^1.0.30001449":
   version: 1.0.30001481
   resolution: "caniuse-lite@npm:1.0.30001481"
   checksum: 8200a043c191b4fd4fe0beda37a58fd61869c895ab93f87bdd0420e5927453f48434d716ce9da8552ff6c3ecc4dcd1366354cda3a134f3cc844af741574a7cab
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 37b481f30 (devDeps: react-devtools@4.16.0->4.27.6 (#18869))
 =======
+=======
+>>>>>>> c2bdbce05 (devDeps: react-devtools@4.16.0->4.27.6 (#18869))
 =======
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001400, caniuse-lite@npm:^1.0.30001426":
   version: 1.0.30001482
   resolution: "caniuse-lite@npm:1.0.30001482"
   checksum: a5f7681c860a29736f29350ebd81041c40b6aa7b2f94c50ed27284a0507e46dc79536dcfc05432504cfc80a0bf2070e4ad6fa704a9c0f3f32d47bed9059e98c2
 >>>>>>> dc7686af9 (fix lint)
+<<<<<<< HEAD
 >>>>>>> ab5ec8b77 (fix lint)
+=======
+=======
+>>>>>>> 7f3cb3989 (devDeps: react-devtools@4.16.0->4.27.6 (#18869))
+>>>>>>> c2bdbce05 (devDeps: react-devtools@4.16.0->4.27.6 (#18869))
   languageName: node
   linkType: hard
 
