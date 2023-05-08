@@ -1,6 +1,6 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
-  Size,
   DISPLAY,
   AlignItems,
   TextColor,
@@ -22,11 +22,10 @@ import {
 import README from './README.mdx';
 
 import { AvatarToken } from './avatar-token';
-import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
+import { AvatarTokenSize } from './avatar-token.types';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
-
   component: AvatarToken,
   parameters: {
     docs: {
@@ -36,7 +35,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(AVATAR_TOKEN_SIZES),
+      options: Object.values(AvatarTokenSize),
     },
     color: {
       options: Object.values(TextColor),
@@ -63,19 +62,19 @@ export default {
   args: {
     name: 'eth',
     src: './images/eth_logo.png',
-    size: Size.MD,
+    size: AvatarTokenSize.Md,
     showHalo: false,
   },
-};
+} as ComponentMeta<typeof AvatarToken>;
 
-const Template = (args) => {
+const Template: ComponentStory<typeof AvatarToken> = (args) => {
   return <AvatarToken {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => (
+export const SizeStory: ComponentStory<typeof AvatarToken> = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
@@ -83,11 +82,11 @@ export const SizeStory = (args) => (
       gap={2}
       marginBottom={4}
     >
-      <AvatarToken {...args} size={Size.XS} />
-      <AvatarToken {...args} size={Size.SM} />
-      <AvatarToken {...args} size={Size.MD} />
-      <AvatarToken {...args} size={Size.LG} />
-      <AvatarToken {...args} size={Size.XL} />
+      <AvatarToken {...args} size={AvatarTokenSize.Xs} />
+      <AvatarToken {...args} size={AvatarTokenSize.Sm} />
+      <AvatarToken {...args} size={AvatarTokenSize.Md} />
+      <AvatarToken {...args} size={AvatarTokenSize.Lg} />
+      <AvatarToken {...args} size={AvatarTokenSize.Xl} />
     </Box>
     <Box
       display={DISPLAY.FLEX}
@@ -95,11 +94,11 @@ export const SizeStory = (args) => (
       gap={2}
       marginBottom={4}
     >
-      <AvatarToken {...args} src="" size={Size.XS} />
-      <AvatarToken {...args} src="" size={Size.SM} />
-      <AvatarToken {...args} src="" size={Size.MD} />
-      <AvatarToken {...args} src="" size={Size.LG} />
-      <AvatarToken {...args} src="" size={Size.XL} />
+      <AvatarToken {...args} src="" size={AvatarTokenSize.Xs} />
+      <AvatarToken {...args} src="" size={AvatarTokenSize.Sm} />
+      <AvatarToken {...args} src="" size={AvatarTokenSize.Md} />
+      <AvatarToken {...args} src="" size={AvatarTokenSize.Lg} />
+      <AvatarToken {...args} src="" size={AvatarTokenSize.Xl} />
     </Box>
     <Text marginBottom={4}>
       Sizes with{' '}
@@ -135,7 +134,7 @@ export const SizeStory = (args) => (
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.XS} />
+        <AvatarToken {...args} name="ETH" size={AvatarTokenSize.Xs} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
@@ -148,7 +147,7 @@ export const SizeStory = (args) => (
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.SM} />
+        <AvatarToken {...args} name="ETH" size={AvatarTokenSize.Sm} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
@@ -161,7 +160,7 @@ export const SizeStory = (args) => (
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.MD} />
+        <AvatarToken {...args} name="ETH" size={AvatarTokenSize.Md} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
@@ -174,7 +173,7 @@ export const SizeStory = (args) => (
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.LG} />
+        <AvatarToken {...args} name="ETH" size={AvatarTokenSize.Lg} />
       </BadgeWrapper>
       <BadgeWrapper
         badge={
@@ -187,7 +186,7 @@ export const SizeStory = (args) => (
           />
         }
       >
-        <AvatarToken {...args} name="ETH" size={Size.XL} />
+        <AvatarToken {...args} name="ETH" size={AvatarTokenSize.Xl} />
       </BadgeWrapper>
     </Box>
     <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={2}>
@@ -205,7 +204,7 @@ export const SizeStory = (args) => (
           {...args}
           src=""
           name="ETH"
-          size={Size.XS}
+          size={AvatarTokenSize.Xs}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -224,7 +223,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.SM}
+          size={AvatarTokenSize.Sm}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -243,7 +242,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.MD}
+          size={AvatarTokenSize.Md}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -262,7 +261,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.LG}
+          size={AvatarTokenSize.Lg}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -281,7 +280,7 @@ export const SizeStory = (args) => (
           {...args}
           name="ETH"
           src=""
-          size={Size.XL}
+          size={AvatarTokenSize.Xl}
           borderColor={BorderColor.borderDefault}
           borderSize={2}
         />
@@ -296,7 +295,7 @@ Name.args = {
   src: '',
 };
 
-export const Src = (args) => (
+export const Src: ComponentStory<typeof AvatarToken> = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken {...args} src="./images/eth_logo.png" />
     <AvatarToken {...args} src="./images/arbitrum.svg" />
@@ -325,7 +324,9 @@ ShowHalo.args = {
   showHalo: true,
 };
 
-export const ColorBackgroundColorAndBorderColor = (args) => (
+export const ColorBackgroundColorAndBorderColor: ComponentStory<
+  typeof AvatarToken
+> = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken
       {...args}
