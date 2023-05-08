@@ -4,8 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
-import { ButtonLink, TextFieldSearch, Text } from '../../component-library';
-import { IconName } from '../../component-library';
+import { IconName, ButtonLink, TextFieldSearch, Text } from '../../component-library';
 import { AccountListItem } from '..';
 import {
   BLOCK_SIZES,
@@ -37,6 +36,10 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   NEW_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CUSTODY_ACCOUNT_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
