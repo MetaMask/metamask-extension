@@ -726,7 +726,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.signController.hub.on(
+  controller.signatureController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -785,7 +785,9 @@ export function setupController(
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
+    controller.signatureController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE_SIG,
+    );
     controller.decryptMessageController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE,
     );
