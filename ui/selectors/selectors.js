@@ -1170,7 +1170,7 @@ export function getAllEnabledNetworks(state) {
 
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
-  const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
+  const localhostFilter = (chainId) => chainId === CHAIN_IDS.LOCALHOST;
 
   const networks = [];
   // Mainnet always first
@@ -1186,16 +1186,14 @@ export function getAllNetworks(state) {
   });
   // Custom networks added
   networks.push(
-    ...Object.entries(networkConfigurations)
-      .filter(
-        ([, network]) =>
-          !localhostFilter(network) &&
-          network.chainId !== CHAIN_IDS.MAINNET &&
-          // Linea gets added as a custom network configuration so
-          // we must ignore it here to display in test networks
-          network.chainId !== CHAIN_IDS.LINEA_TESTNET,
-      )
-      .map(([, network]) => network),
+    ...Object.values(networkConfigurations).filter(
+      ({ chainId }) =>
+        !localhostFilter(chainId) &&
+        chainId !== CHAIN_IDS.MAINNET &&
+        // Linea gets added as a custom network configuration so
+        // we must ignore it here to display in test networks
+        chainId !== CHAIN_IDS.LINEA_TESTNET,
+    ),
   );
   // Test networks
   networks.push(
@@ -1221,9 +1219,9 @@ export function getAllNetworks(state) {
         ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
       },
     ], // Localhosts
-    ...Object.entries(networkConfigurations)
-      .filter(([, network]) => localhostFilter(network))
-      .map(([, network]) => network),
+    ...Object.values(networkConfigurations).filter(({ chainId }) =>
+      localhostFilter(chainId),
+    ),
   );
 
   return networks;
