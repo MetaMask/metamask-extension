@@ -10,8 +10,18 @@
     }
   }
 
+  &--connected {
+    .multichain-account-list-item__asset {
+      max-width: 167px;
+    }
+
+    .multichain-account-list-item__asset {
+      max-width: calc(163px - 24px);
+    }
+  }
+
   &__account-name {
-    min-width: 40%;
+    max-width: 188px;
 
     &__button {
       &:hover,
@@ -21,8 +31,8 @@
     }
   }
 
-  &____asset {
-    max-width: 60%;
+  &__asset {
+    max-width: calc(101px - 24px);
   }
 
   &__selected-indicator {

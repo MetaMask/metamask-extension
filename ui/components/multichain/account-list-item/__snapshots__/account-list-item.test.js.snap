@@ -3,10 +3,10 @@
 exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance 1`] = `
 <div>
   <div
-    class="box multichain-account-list-item box--padding-4 box--display-flex box--gap-2 box--flex-direction-row box--background-color-transparent"
+    class="box multichain-account-list-item box--padding-4 box--display-flex box--flex-direction-row box--background-color-transparent"
   >
     <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--margin-inline-end-2 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
         class="mm-avatar-account__jazzicon"
@@ -55,10 +55,10 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         class="box box--display-flex box--flex-direction-column"
       >
         <div
-          class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between"
+          class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
         >
           <div
-            class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+            class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--margin-inline-end-2 box--flex-direction-row box--color-text-default"
           >
             <button
               class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"

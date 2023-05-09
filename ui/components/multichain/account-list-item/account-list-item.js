@@ -93,10 +93,10 @@ export const AccountListItem = ({
     <Box
       display={DISPLAY.FLEX}
       padding={4}
-      gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
+        'multichain-account-list-item--connected': Boolean(connectedAvatar),
       })}
       onClick={() => {
         // Without this check, the account will be selected after
@@ -122,6 +122,7 @@ export const AccountListItem = ({
             ? AvatarAccountVariant.Blockies
             : AvatarAccountVariant.Jazzicon
         }
+        marginInlineEnd={2}
       ></AvatarAccount>
       <Box
         display={DISPLAY.FLEX}
@@ -132,12 +133,12 @@ export const AccountListItem = ({
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
-            gap={2}
           >
             <Text
               ellipsis
               as="div"
               className="multichain-account-list-item__account-name"
+              marginInlineEnd={2}
             >
               <ButtonLink
                 onClick={(e) => {
