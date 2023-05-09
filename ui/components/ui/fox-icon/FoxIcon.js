@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { fillInFoxColor } from '../../../helpers/utils/generative-color';
 
-const FoxIcon = ({ size = 24, address }) => {
+const FoxIcon = ({ size = 240, address }) => {
   const colorSchema = fillInFoxColor(address);
   const {
     earBaseColor,
@@ -17,8 +17,8 @@ const FoxIcon = ({ size = 24, address }) => {
   } = colorSchema;
   return (
     <svg
-      width="471"
-      height="433"
+      width={size}
+      height={size}
       viewBox="0 0 471 433"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -260,9 +260,6 @@ const FoxIcon = ({ size = 24, address }) => {
 };
 
 FoxIcon.propTypes = {
-  /**
-   * The size of the Icon follows an 8px grid 2 = 16px, 3 = 24px etc
-   */
   size: PropTypes.number,
   address: PropTypes.string,
 };
