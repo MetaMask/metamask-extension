@@ -6,8 +6,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { getSelectedIdentity } from '../../../selectors';
 import { AddressCopyButton } from '../../multichain';
 import Box from '../../ui/box/box';
-import FoxIcon from '../../ui/fox-icon/FoxIcon';
-import { FOX_COLOR_PALETTE } from '../../../helpers/utils/generative-color';
 
 const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
   const selectedIdentity = useSelector(getSelectedIdentity);
@@ -25,7 +23,6 @@ const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
         {balance}
       </div>
       <div className="wallet-overview__buttons">{buttons}</div>
-      <FoxIcon colorSchema={FOX_COLOR_PALETTE} />
     </div>
   );
 };
