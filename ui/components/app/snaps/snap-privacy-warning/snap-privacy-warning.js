@@ -23,7 +23,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-export default function SnapPrivacyWarning({ onOk }) {
+export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
   const t = useI18nContext();
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
@@ -97,15 +97,30 @@ export default function SnapPrivacyWarning({ onOk }) {
             </>
           )}
         </Box>
-        <Box className="snap-privacy-warning__ok-button" marginTop={6}>
+        <Box
+          className="snap-privacy-warning__ok-button"
+          marginTop={6}
+          display={DISPLAY.FLEX}
+        >
+          <Button
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_PRIMARY_SIZES.LG}
+            width={BLOCK_SIZES.FULL}
+            className="snap-privacy-warning__cancel-button"
+            onClick={onCanceled}
+            marginRight={2}
+          >
+            {t('cancel')}
+          </Button>
           <Button
             variant={BUTTON_VARIANT.PRIMARY}
             size={BUTTON_PRIMARY_SIZES.LG}
             width={BLOCK_SIZES.FULL}
             className="snap-privacy-warning__ok-button"
-            onClick={onOk}
+            onClick={onAccepted}
+            marginLeft={2}
           >
-            {t('ok').toUpperCase()}
+            {t('accept')}
           </Button>
         </Box>
       </Box>
@@ -115,7 +130,11 @@ export default function SnapPrivacyWarning({ onOk }) {
 
 SnapPrivacyWarning.propTypes = {
   /**
-   * onOk handler
+   * onAccepted handler
    */
-  onOk: PropTypes.func,
+  onAccepted: PropTypes.func.isRequired,
+  /**
+   * onCanceled handler
+   */
+  onCanceled: PropTypes.func.isRequired,
 };

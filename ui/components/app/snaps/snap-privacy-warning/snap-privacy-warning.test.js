@@ -4,10 +4,13 @@ import { renderWithProvider } from '../../../../../test/jest';
 import SnapPrivacyWarning from './snap-privacy-warning';
 
 describe('Snap Privacy Warning Popover', () => {
-  it('renders snaps privacy warning popover', () => {
-    const mockOnOkCallback = jest.fn();
+  it('renders snaps privacy warning popover and works with accept flow', () => {
+    const mockOnAcceptCallback = jest.fn();
     const { getByTestId } = renderWithProvider(
-      <SnapPrivacyWarning onOk={mockOnOkCallback} />,
+      <SnapPrivacyWarning
+        onAccepted={mockOnAcceptCallback}
+        onCanceled={jest.fn()}
+      />,
     );
 
     expect(screen.getByText('Third party software')).toBeInTheDocument();
@@ -36,14 +39,39 @@ describe('Snap Privacy Warning Popover', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: /OK/iu,
+        name: /Accept/iu,
       }),
     ).toBeInTheDocument();
     screen
       .getByRole('button', {
-        name: /OK/iu,
+        name: /Accept/iu,
       })
       .click();
-    expect(mockOnOkCallback).toHaveBeenCalled();
+    expect(mockOnAcceptCallback).toHaveBeenCalled();
+  });
+
+  it('renders snaps privacy warning popover and works with cancel flow', () => {
+    const mockOnAcceptCallback = jest.fn();
+    const mockOnCanceledCallback = jest.fn();
+    renderWithProvider(
+      <SnapPrivacyWarning
+        onAccepted={mockOnAcceptCallback}
+        onCanceled={mockOnCanceledCallback}
+      />,
+    );
+
+    expect(screen.getByText('Third party software')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: /Cancel/iu,
+      }),
+    ).toBeInTheDocument();
+    screen
+      .getByRole('button', {
+        name: /Cancel/iu,
+      })
+      .click();
+    expect(mockOnCanceledCallback).toHaveBeenCalled();
+    expect(mockOnAcceptCallback).not.toHaveBeenCalled();
   });
 });
