@@ -1044,6 +1044,48 @@ export function updateTransactionGasFees(
   };
 }
 
+
+export async function exportContactList(): Promise<{
+  filename: string;
+  data: string;
+}> {
+  let exportedContactList;
+  try {
+    exportedContactList = await submitRequestToBackground<{
+      filename: string;
+      data: string;
+    }>('exportContactList');
+
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+
+  return exportedContactList;
+}
+
+export async function importContactList(jsonString: Json): Promise<true> {
+  try {
+    await submitRequestToBackground('importContactList', [jsonString]);
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+
+  return true;
+}
+
+export async function clearContactList(): Promise<true> {
+  try {
+    await submitRequestToBackground('clearContactList');
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+
+  return true;
+}
+
 // TODO: codeword: NOT_A_THUNK @brad-decker
 export function updateSwapTransaction(
   txId: number,

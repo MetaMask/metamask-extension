@@ -1,25 +1,33 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ContactList from '../../../components/app/contact-list';
 import {
-  CONTACT_ADD_ROUTE,
-  CONTACT_VIEW_ROUTE,
-} from '../../../helpers/constants/routes';
-import Button from '../../../components/ui/button';
-import {
-  getNumberOfSettingsInSection,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-import {
+  BUTTON_VARIANT,
+  BannerAlert,
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
-import EditContact from './edit-contact';
+import { Button } from '../../../components/component-library/button/button';
+import {
+  IconColor,
+  SEVERITIES,
+} from '../../../helpers/constants/design-system';
+import {
+  CONTACT_ADD_ROUTE,
+  CONTACT_VIEW_ROUTE,
+} from '../../../helpers/constants/routes';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
+import {
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 import AddContact from './add-contact';
+import EditContact from './edit-contact';
 import ViewContact from './view-contact';
+
+const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
 export default class ContactListTab extends Component {
   static contextTypes = {
@@ -35,6 +43,15 @@ export default class ContactListTab extends Component {
     addingContact: PropTypes.bool,
     showContactContent: PropTypes.bool,
     hideAddressBook: PropTypes.bool,
+    exportContactList: PropTypes.func.isRequired,
+    importContactList: PropTypes.func.isRequired,
+    clearContactList: PropTypes.func.isRequired,
+  };
+
+  state = {
+    isVisibleResultMessage: false,
+    isImportSuccessful: true,
+    importMessage: null,
   };
 
   settingsRefs = Array(
@@ -53,6 +70,142 @@ export default class ContactListTab extends Component {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('contacts'), this.settingsRefs);
+  }
+
+  async getTextFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new window.FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        resolve(text);
+      };
+
+      reader.onerror = (e) => {
+        reject(e);
+      };
+
+      reader.readAsText(file);
+    });
+  }
+
+  async importContactList(event) {
+    /**
+     * we need this to be able to access event.target after
+     * the event handler has been called. [Synthetic Event Pooling, pre React 17]
+     *
+     * @see https://fb.me/react-event-pooling
+     */
+    event.persist();
+    const file = event.target.files[0];
+    const jsonString = await this.getTextFromFile(file);
+    /**
+     * so that we can restore same file again if we want to.
+     * chrome blocks uploading same file twice.
+     */
+    event.target.value = '';
+
+    try {
+      const result = await this.props.importContactList(jsonString);
+
+      // TODO Pedro
+      // - turn off update overrides.
+      // - validation if two addresses are sent at same time.
+      // - validation if properties that are needed are not there.
+      // - validation if extra properties that are not needed are there.
+
+      this.setState({
+        isVisibleResultMessage: true,
+        isImportSuccessful: result,
+        importMessage: null,
+      });
+    } catch (e) {
+      if (e.message.match(/Unexpected.+JSON/iu)) {
+        this.setState({
+          isVisibleResultMessage: true,
+          isImportSuccessful: false,
+          importMessage: CORRUPT_JSON_FILE,
+        });
+      }
+    }
+  }
+
+  async exportContactList() {
+    const { fileName, data } = await this.props.exportContactList();
+
+    exportAsFile(fileName, data);
+
+    this.context.trackEvent({
+      event: 'Contact list exported',
+      category: 'Backup',
+      properties: {},
+    });
+  }
+
+  async clearContactList() {
+    await this.props.clearContactList();
+  }
+
+  renderImportExportButtons() {
+    const { isVisibleResultMessage, isImportSuccessful, importMessage } =
+      this.state;
+
+    const defaultImportMessage = isImportSuccessful
+      ? 'Contact list import successful'
+      : 'Contact list import failed';
+
+    const restoreMessageToRender =
+      importMessage === CORRUPT_JSON_FILE
+        ? 'Contact list seems corrupt'
+        : defaultImportMessage;
+
+    return (
+      <>
+        <div className="btn-wrapper">
+          <Button
+            data-testid="export-contacts"
+            variant={BUTTON_VARIANT.PRIMARY}
+            onClick={() => this.exportContactList()}
+          >
+            Export contact list
+          </Button>
+          <label
+            htmlFor="import-contact-list"
+            className="button btn btn--rounded btn-secondary btn--large settings-page__button import-btn"
+          >
+            Import contact list
+          </label>
+          <input
+            id="import-contact-list"
+            data-testid="import-contact-list"
+            type="file"
+            accept=".json"
+            onChange={(e) => this.importContactList(e)}
+          />
+          {isVisibleResultMessage && (
+            <BannerAlert
+              severity={
+                isImportSuccessful ? SEVERITIES.SUCCESS : SEVERITIES.DANGER
+              }
+              description={restoreMessageToRender}
+              onClose={() => {
+                this.setState({
+                  isVisibleResultMessage: false,
+                  isImportSuccessful: true,
+                  importMessage: null,
+                });
+              }}
+            />
+          )}
+          <Button
+            data-testid="clear-contacts"
+            variant={BUTTON_VARIANT.LINK}
+            onClick={() => this.clearContactList()}
+          >
+            Clear contact list
+          </Button>
+        </div>
+      </>
+    );
   }
 
   renderAddresses() {
@@ -160,6 +313,7 @@ export default class ContactListTab extends Component {
       return (
         <div ref={this.settingsRefs[0]} className="address-book">
           {this.renderAddresses()}
+          {this.renderImportExportButtons()}
         </div>
       );
     }

@@ -1,5 +1,9 @@
 import { prependZero } from '../../../shared/modules/string-utils';
 
+const UPDATE_STRATEGY = Object.freeze({
+  MERGE: false,
+  OVERWRITE: true,
+});
 export default class BackupController {
   constructor(opts = {}) {
     const {
@@ -75,5 +79,71 @@ export default class BackupController {
     )}_${prefixZero(date.getDay())}.json`;
 
     return { fileName: userDataFileName, data: result };
+  }
+
+  async exportContactList() {
+    /*
+    * YYYY_MM_DD_HH_mm_SS e.g 2022_01_13_13_45_56
+    * */
+    const date = new Date();
+    const prefixZero = (num) => prependZero(num, 2);
+
+    const timestamp = `${date.getFullYear()}_${prefixZero(
+      date.getMonth() + 1,
+    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+      date.getMinutes(),
+    )}_${prefixZero(date.getDay())}`;
+
+    const contactList = { ...this.addressBookController.state }.addressBook
+
+    function deleteKeys(obj, keysToDelete) {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (typeof obj[key] === 'object') {
+            deleteKeys(obj[key], keysToDelete);
+          } else if (keysToDelete.includes(key)) {
+            delete obj[key];
+          }
+        }
+      }
+    }
+
+    const keysToDelete = ['isEns', 'addressType', 'source'];
+    deleteKeys(contactList, keysToDelete);
+
+    return {
+      fileName: `MetaMask_contact_list_${timestamp}.json`,
+      data: JSON.stringify(contactList, null, 2),
+    };
+  }
+
+  async importContactList(jsonString) {
+    const addressBook = JSON.parse(jsonString);
+
+    if (addressBook) {
+      this.addressBookController.update({ addressBook }, UPDATE_STRATEGY.MERGE);
+    }
+
+    if (addressBook) {
+      this._trackMetaMetricsEvent({
+        event: 'Contact list imported',
+        category: 'Backup',
+      });
+    }
+  }
+
+  async clearContactList() {
+    console.log('clearContactList on backup.js');
+    this.addressBookController.update(
+      {
+        addressBook: {},
+      },
+      UPDATE_STRATEGY.OVERWRITE,
+    );
+
+    this._trackMetaMetricsEvent({
+      event: 'Contact list cleared',
+      category: 'Backup',
+    });
   }
 }
