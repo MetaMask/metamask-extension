@@ -21,7 +21,6 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
-
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
@@ -31,7 +30,6 @@ import {
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 ///: END:ONLY_INCLUDE_IN
-
 import {
   MESSAGE_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
