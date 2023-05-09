@@ -29,6 +29,7 @@ export default class PreferencesController {
       disabledRpcMethodPreferences: {
         eth_sign: false,
       },
+      lockedAssets: {},
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
@@ -501,6 +502,33 @@ export default class PreferencesController {
     });
   }
 
+  async lockAsset(assetToLock) {
+    console.log('Locking Asset');
+    const { tokenAddress, setLocked, tokenId, tokenStandard, chainId } =
+      assetToLock;
+    const lockedAssetIdentifier = this._lockedAssetIdentifier({
+      tokenStandard,
+      tokenAddress,
+      tokenId,
+      chainId,
+    });
+
+    const { lockedAssets, selectedAddress } = this.store.getState();
+
+    const updatedLockedAssets = {
+      ...lockedAssets,
+      [selectedAddress]: {
+        [lockedAssetIdentifier]: setLocked,
+      },
+    };
+
+    console.log('Locked state is now, ', updatedLockedAssets);
+
+    this.store.updateState({
+      lockedAssets: updatedLockedAssets,
+    });
+  }
+
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
@@ -533,5 +561,25 @@ export default class PreferencesController {
     }
 
     this.store.updateState({ infuraBlocked: isBlocked });
+  }
+
+  /**
+   *
+   * @param {opts} opts
+   * @param {string} opts.tokenStandard - The token standard of the asset to lock
+   * @param {string} opts.tokenAddress - The token address of the asset to lock
+   * @param {string} opts.tokenId - The token id of the asset to lock
+   * @param {string} opts.chainId - The chain id of the asset to lock
+   * @param {string} opts.eip - The EIP standard this follows
+   * @returns {string}
+   */
+  _lockedAssetIdentifier({
+    tokenStandard,
+    tokenAddress,
+    tokenId,
+    chainId,
+    eip = 'eip155',
+  }) {
+    return `${eip}:${chainId}/${tokenStandard}:${tokenAddress}/${tokenId}`;
   }
 }
