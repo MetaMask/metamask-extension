@@ -133,7 +133,6 @@ export default function SrpInput({ onChange, srpText }) {
           align={TextAlign.Left}
           variant={TextVariant.headingSm}
           as="h4"
-          fontWeight={FontWeight.Bold}
         >
           {srpText}
         </Text>
