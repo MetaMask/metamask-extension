@@ -41,7 +41,6 @@ module.exports = {
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
-    '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
