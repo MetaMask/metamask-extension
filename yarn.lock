@@ -4093,6 +4093,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/message-manager@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/message-manager@npm:5.0.0"
+  dependencies:
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.4.0
+    "@types/uuid": ^8.3.0
+    eth-sig-util: ^3.0.0
+    ethereumjs-util: ^7.0.10
+    jsonschema: ^1.2.4
+    uuid: ^8.3.2
+  checksum: 078c7eeca03975c3a899dcaa7485ce7aaff6d97b53c2a8e8563ec4e17791b836914fbc0f57a64cbf263be231609e0ffc77eabbe9a98fdcc1240af09a733ba574
+  languageName: node
+  linkType: hard
+
 "@metamask/metamask-eth-abis@npm:3.0.0, @metamask/metamask-eth-abis@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/metamask-eth-abis@npm:3.0.0"
@@ -4345,18 +4360,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/signature-controller@npm:1.0.0"
+"@metamask/signature-controller@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/signature-controller@npm:2.0.0"
   dependencies:
     "@metamask/approval-controller": ^2.1.1
     "@metamask/base-controller": ^2.0.0
     "@metamask/controller-utils": ^3.4.0
-    "@metamask/message-manager": ^4.0.0
+    "@metamask/message-manager": ^5.0.0
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: 7efb738646a179db15c45d6e1654e17ce6c7a3e42b03fd27d365e50bb2e4287a1757f26efc0b3e99b3e5d320816f3f9e0c7038491289cf6071b7f886eaa0f27b
+  checksum: aa7a37079cb108bd9dcb23292f82690b6796b3cde5a2b841db7f636fa9f19a5eaaa8eea7461d757dcfd664d1a6a5da3af8ea25a402c6fe575c3204390ff3964f
   languageName: node
   linkType: hard
 
@@ -24094,7 +24109,7 @@ __metadata:
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.32.2"
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/scure-bip39": ^2.0.3
-    "@metamask/signature-controller": ^1.0.0
+    "@metamask/signature-controller": 2.0.0
     "@metamask/slip44": ^3.0.0
     "@metamask/smart-transactions-controller": ^3.1.0
     "@metamask/snaps-controllers": ^0.32.2
