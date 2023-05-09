@@ -2383,11 +2383,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       setCustodianNewRefreshToken:
         this.mmiController.setCustodianNewRefreshToken.bind(this),
-      // Not yet in there
-      // showInteractiveReplacementTokenBanner:
-      //   appStateController.showInteractiveReplacementTokenBanner.bind(
-      //     appStateController,
-      //   ),
       ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
