@@ -1570,9 +1570,6 @@
   "history": {
     "message": "Historique"
   },
-  "holdToReveal": {
-    "message": "Appuyez longuement pour révéler la PSR"
-  },
   "holdToRevealContent1": {
     "message": "Votre phrase secrète de récupération donne $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1589,6 @@
   "holdToRevealContent5": {
     "message": "mais les hameçonneurs pourraient le faire.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Conservez votre PSR en lieu sûr"
   },
   "ignoreAll": {
     "message": "Ignorer tout"
