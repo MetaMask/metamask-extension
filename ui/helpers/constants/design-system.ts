@@ -164,6 +164,7 @@ export enum IconColor {
   lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
+  transparent = 'transparent',
 }
 
 export enum TypographyVariant {

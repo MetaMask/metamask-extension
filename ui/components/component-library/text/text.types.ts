@@ -3,7 +3,6 @@ import {
   FontWeight,
   FontStyle,
   TextVariant,
-  TextAlign,
   TextTransform,
   OverflowWrap,
 } from '../../../helpers/constants/design-system';
@@ -52,6 +51,8 @@ export enum ValidTag {
   Label = 'label',
   Input = 'input',
   Header = 'header',
+  A = 'a',
+  Button = 'button',
 }
 
 export type ValidTagType =
@@ -72,7 +73,9 @@ export type ValidTagType =
   | 'ul'
   | 'label'
   | 'input'
-  | 'header';
+  | 'header'
+  | 'a'
+  | 'button';
 
 export interface TextStyleUtilityProps extends StyleUtilityProps {
   /**
@@ -117,11 +120,6 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * ./ui/helpers/constants/design-system.js
    */
   textTransform?: TextTransform;
-  /**
-   * The text-align of the Text component. Should use the TextAlign enum from
-   * ./ui/helpers/constants/design-system.js
-   */
-  textAlign?: TextAlign;
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
