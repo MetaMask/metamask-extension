@@ -1747,19 +1747,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@consensys/on-ramp-sdk@npm:1.12.0":
-  version: 1.12.0
-  resolution: "@consensys/on-ramp-sdk@npm:1.12.0"
-  dependencies:
-    async: ^3.2.3
-    axios: ^0.21.0
-    axios-retry: ^3.1.2
-    crypto-js: ^4.1.1
-    uuid: ^9.0.0
-  checksum: eedb19132074d241eab62c9a642b61beb22f211dc20a51cc8e9ae11d51e53f33a9056a81f8b36ecfe1f7e8f62d66965a93a6135b9a00555cf5dce0fb82d7f75f
-  languageName: node
-  linkType: hard
-
 "@cspotcode/source-map-consumer@npm:0.8.0":
   version: 0.8.0
   resolution: "@cspotcode/source-map-consumer@npm:0.8.0"
@@ -9988,17 +9975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-retry@npm:^3.1.2":
-  version: 3.4.0
-  resolution: "axios-retry@npm:3.4.0"
-  dependencies:
-    "@babel/runtime": ^7.15.4
-    is-retry-allowed: ^2.2.0
-  checksum: fae18aeef220cfde22f93ed663d644e1a913a5cfc9760904ffd7a7e5ec8c7fbd53a58e1be461b6b30de19dce178823630655bcb77a487e17000f5e977ef94a2e
-  languageName: node
-  linkType: hard
-
-"axios@npm:^0.21.0, axios@npm:^0.21.1":
+"axios@npm:^0.21.1":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
   dependencies:
@@ -13188,13 +13165,6 @@ __metadata:
     randombytes: ^2.0.0
     randomfill: ^1.0.3
   checksum: c1609af82605474262f3eaa07daa0b2140026bd264ab316d4bf1170272570dbe02f0c49e29407fe0d3634f96c507c27a19a6765fb856fed854a625f9d15618e2
-  languageName: node
-  linkType: hard
-
-"crypto-js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "crypto-js@npm:4.1.1"
-  checksum: b3747c12ee3a7632fab3b3e171ea50f78b182545f0714f6d3e7e2858385f0f4101a15f2517e033802ce9d12ba50a391575ff4638c9de3dd9b2c4bc47768d5425
   languageName: node
   linkType: hard
 
@@ -24190,7 +24160,6 @@ __metadata:
     "@babel/preset-typescript": ^7.16.7
     "@babel/register": ^7.5.5
     "@babel/runtime": ^7.5.5
-    "@consensys/on-ramp-sdk": 1.12.0
     "@download/blockies": ^1.0.3
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^3.1.1

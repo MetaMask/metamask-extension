@@ -216,7 +216,6 @@
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
     "@babel/runtime": "^7.5.5",
-    "@consensys/on-ramp-sdk": "1.12.0",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",

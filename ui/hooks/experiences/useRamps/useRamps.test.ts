@@ -1,8 +1,7 @@
 import { cloneDeep } from 'lodash';
-import { AggregatorNetwork } from '@consensys/on-ramp-sdk/dist/API';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import SDK from './OnRampSDK';
+import OnRampAPI from './OnRampAPI';
 import useRamps from './useRamps';
 import {
   buyPath,
@@ -10,9 +9,10 @@ import {
   entryParamValue,
   portfolioUrl,
 } from './useRamps.constants';
+import { AggregatorNetwork } from './useRamps.types';
 
-jest.mock('./OnRampSDK');
-const mockedSDK = SDK as jest.Mocked<typeof SDK>;
+jest.mock('./OnRampAPI');
+const mockedAPI = OnRampAPI as jest.Mocked<typeof OnRampAPI>;
 
 const mockedNetworks = [
   {
@@ -126,7 +126,7 @@ describe('useRamps', () => {
   });
 
   beforeEach(() => {
-    mockedSDK.getNetworks.mockImplementation(() =>
+    mockedAPI.getNetworks.mockImplementation(() =>
       Promise.resolve(mockedNetworks),
     );
   });
@@ -148,7 +148,7 @@ describe('useRamps', () => {
     await waitForNextUpdate();
   });
 
-  it('should call SDK getNetworks method', async () => {
+  it('should call OnRampAPI getNetworks method', async () => {
     const { waitForNextUpdate } = renderHookWithProvider(
       () => useRamps(),
       storeWithChainId(CHAIN_IDS.MAINNET),
@@ -156,7 +156,7 @@ describe('useRamps', () => {
 
     await waitForNextUpdate();
 
-    expect(SDK.getNetworks).toHaveBeenCalledTimes(1);
+    expect(OnRampAPI.getNetworks).toHaveBeenCalledTimes(1);
   });
 
   it('should update values for active and supported native token network', async () => {
@@ -175,7 +175,7 @@ describe('useRamps', () => {
   });
 
   it('should update values for active and unsupported native token network', async () => {
-    mockedSDK.getNetworks.mockImplementation(() =>
+    mockedAPI.getNetworks.mockImplementation(() =>
       Promise.resolve(
         updateOrAddNetwork({
           active: true,
@@ -201,7 +201,7 @@ describe('useRamps', () => {
   });
 
   it('should update values for inactive and supported native token network', async () => {
-    mockedSDK.getNetworks.mockImplementation(() =>
+    mockedAPI.getNetworks.mockImplementation(() =>
       Promise.resolve(
         updateOrAddNetwork({
           active: false,
@@ -227,7 +227,7 @@ describe('useRamps', () => {
   });
 
   it('should update values for network not found', async () => {
-    mockedSDK.getNetworks.mockImplementation(() =>
+    mockedAPI.getNetworks.mockImplementation(() =>
       Promise.resolve(
         updateOrAddNetwork({
           active: false,
@@ -251,8 +251,8 @@ describe('useRamps', () => {
     expect(result.current.isNativeTokenBuyableChain).toBe(false);
   });
 
-  it('should update values when SDK getNetworks method throws', async () => {
-    mockedSDK.getNetworks.mockImplementation(() => {
+  it('should update values when OnRampAPI getNetworks method throws', async () => {
+    mockedAPI.getNetworks.mockImplementation(() => {
       throw new Error();
     });
     const { result } = renderHookWithProvider(
@@ -263,14 +263,14 @@ describe('useRamps', () => {
     expect(result.current.isBuyableChain).toBe(false);
     expect(result.current.isNativeTokenBuyableChain).toBe(false);
 
-    expect(SDK.getNetworks).toThrow();
+    expect(OnRampAPI.getNetworks).toThrow();
 
     expect(result.current.isBuyableChain).toBe(false);
     expect(result.current.isNativeTokenBuyableChain).toBe(false);
   });
 
   it('should update values for manually active networks', async () => {
-    mockedSDK.getNetworks.mockImplementation(() => {
+    mockedAPI.getNetworks.mockImplementation(() => {
       return Promise.resolve(
         updateOrAddNetwork({
           active: false,

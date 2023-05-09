@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
-import { AggregatorNetwork } from '@consensys/on-ramp-sdk/dist/API';
 import { ChainId, CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../selectors';
-import SDK from './OnRampSDK';
+import { AggregatorNetwork } from './useRamps.types';
+import SDK from './OnRampAPI';
 import {
   buyPath,
   entryParam,
