@@ -21,12 +21,15 @@ async function main(): Promise<void> {
 
   let issueNumber = await getIssueNumberFromPullRequestBody();
   if (issueNumber === "") {
-    bailIfIsBranchNameInvalid(headRef);
-    bailIfIsNotFeatureBranch(headRef);
+    // Disabling the below two validations until we agree on conventions
+    // bailIfIsBranchNameInvalid(headRef);
+    // bailIfIsNotFeatureBranch(headRef);
     issueNumber = getIssueNumberFromBranchName(headRef);
   }
 
-  await updateLabels(octokit, issueNumber);
+  if (issueNumber) {
+    await updateLabels(octokit, issueNumber);
+  }
 }
 
 async function getIssueNumberFromPullRequestBody(): Promise<string> {
