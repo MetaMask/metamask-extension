@@ -345,6 +345,7 @@
     "qrcode.react": "^1.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-focus-lock": "^2.9.4",
     "react-idle-timer": "^4.2.5",
     "react-inspector": "^2.3.0",
     "react-markdown": "^6.0.3",
