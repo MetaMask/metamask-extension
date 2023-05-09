@@ -9,6 +9,15 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import CheckBox from '../../../../components/ui/check-box';
+import { Label, Text } from '../../../../components/component-library';
+import {
+  AlignItems,
+  FLEX_DIRECTION,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import Box from '../../../../components/ui/box';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -25,19 +34,70 @@ export default class EditContact extends PureComponent {
     memo: PropTypes.string,
     viewRoute: PropTypes.string,
     listRoute: PropTypes.string,
+    tags: PropTypes.array,
   };
 
   static defaultProps = {
     name: '',
     memo: '',
+    tags: [],
   };
 
   state = {
     newName: this.props.name,
     newAddress: this.props.address,
     newMemo: this.props.memo,
+    newTags: this.props.tags,
     error: '',
   };
+
+  addAllowList() {
+    if (this.state.newTags.length === 0) {
+      this.setState({
+        newTags: [...this.state.newTags, 'allowList'],
+      });
+    }
+    if (this.state.newTags.length > 0) {
+      if (this.state.newTags.includes('blockList')) {
+        this.setState(
+          {
+            newTags: [],
+          },
+          () => {
+            this.setState({
+              newTags: [...this.state.newTags, 'allowList'],
+            });
+          },
+        );
+      } else {
+        this.setState({ newTags: [] });
+      }
+    }
+  }
+
+  addBlockList() {
+    if (this.state.newTags.length === 0) {
+      this.setState({
+        newTags: [...this.state.newTags, 'blockList'],
+      });
+    }
+    if (this.state.newTags.length > 0) {
+      if (this.state.newTags.includes('allowList')) {
+        this.setState(
+          {
+            newTags: [],
+          },
+          () => {
+            this.setState({
+              newTags: [...this.state.newTags, 'blockList'],
+            });
+          },
+        );
+      } else {
+        this.setState({ newTags: [] });
+      }
+    }
+  }
 
   render() {
     const { t } = this.context;
@@ -49,10 +109,10 @@ export default class EditContact extends PureComponent {
       listRoute,
       memo,
       name,
+      tags,
       removeFromAddressBook,
       viewRoute,
     } = this.props;
-
     if (!address) {
       return <Redirect to={{ pathname: listRoute }} />;
     }
@@ -130,6 +190,55 @@ export default class EditContact extends PureComponent {
               }}
             />
           </div>
+          <Box
+            flexDirection={FLEX_DIRECTION.ROW}
+            alignItems={AlignItems.flexStart}
+            padding={6}
+            gap={2}
+          >
+            <CheckBox
+              value={this.state.newTags}
+              onClick={() => {
+                this.addAllowList();
+              }}
+              id="allow-list-checkbox"
+              checked={this.state.newTags.includes('allowList')}
+            />
+            <Label htmlFor="allow-list-checkbox">
+              <Text
+                variant={TextVariant.bodyMdBold}
+                as="span"
+                color={TextColor.successDefault}
+              >
+                Allow List
+              </Text>
+            </Label>
+          </Box>
+          <Box
+            flexDirection={FLEX_DIRECTION.ROW}
+            alignItems={AlignItems.flexStart}
+            paddingLeft={6}
+            paddingRight={6}
+            gap={2}
+          >
+            <CheckBox
+              id="block-list-checkbox"
+              value={this.state.newTags}
+              onClick={() => {
+                this.addBlockList();
+              }}
+              checked={this.state.newTags.includes('blockList')}
+            />
+            <Label htmlFor="block-list-checkbox">
+              <Text
+                variant={TextVariant.bodyMdBold}
+                as="span"
+                color={TextColor.errorDefault}
+              >
+                Block List
+              </Text>
+            </Label>
+          </Box>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
@@ -150,6 +259,7 @@ export default class EditContact extends PureComponent {
                   this.state.newAddress,
                   this.state.newName || name,
                   this.state.newMemo || memo,
+                  this.state.newTags || tags,
                 );
                 history.push(listRoute);
               } else {
@@ -161,6 +271,7 @@ export default class EditContact extends PureComponent {
                 address,
                 this.state.newName || name,
                 this.state.newMemo || memo,
+                this.state.newTags || tags,
               );
               history.push(listRoute);
             }
@@ -172,7 +283,8 @@ export default class EditContact extends PureComponent {
           disabled={
             (this.state.newName === name &&
               this.state.newAddress === address &&
-              this.state.newMemo === memo) ||
+              this.state.newMemo === memo &&
+              this.state.newTags === tags) ||
             !this.state.newName.trim()
           }
         />

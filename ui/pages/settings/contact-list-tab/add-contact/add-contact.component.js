@@ -12,6 +12,15 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../send/send.constants';
+import CheckBox from '../../../../components/ui/check-box';
+import { Label, Text } from '../../../../components/component-library';
+import {
+  AlignItems,
+  FLEX_DIRECTION,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import Box from '../../../../components/ui/box';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -35,6 +44,7 @@ export default class AddContact extends PureComponent {
     ethAddress: '',
     error: '',
     input: '',
+    newTags: [],
   };
 
   constructor(props) {
@@ -77,6 +87,36 @@ export default class AddContact extends PureComponent {
     this.dValidate(input);
   };
 
+  addAllowList() {
+    this.state.newTags.length === 0
+      ? this.setState({ newTags: [...this.state.newTags, 'allowList'] })
+      : this.setState(
+          {
+            newTags: [],
+          },
+          () => {
+            this.setState({
+              newTags: [...this.state.newTags, 'allowList'],
+            });
+          },
+        );
+  }
+
+  addBlockList() {
+    this.state.newTags.length === 0
+      ? this.setState({ newTags: [...this.state.newTags, 'blockList'] })
+      : this.setState(
+          {
+            newTags: [],
+          },
+          () => {
+            this.setState({
+              newTags: [...this.state.newTags, 'blockList'],
+            });
+          },
+        );
+  }
+
   renderInput() {
     return (
       <DomainInput
@@ -101,7 +141,6 @@ export default class AddContact extends PureComponent {
     const { t } = this.context;
     const { history, addToAddressBook, domainError, domainResolution } =
       this.props;
-
     const errorToRender = domainError || this.state.error;
 
     return (
@@ -140,6 +179,61 @@ export default class AddContact extends PureComponent {
               </div>
             )}
           </div>
+          <Box
+            flexDirection={FLEX_DIRECTION.ROW}
+            alignItems={AlignItems.flexStart}
+            padding={6}
+            gap={2}
+          >
+            <CheckBox
+              value="allowList"
+              onClick={() => {
+                this.addAllowList();
+              }}
+              id="allow-list-checkbox"
+              checked={
+                this.state.newTags.length > 0 &&
+                this.state.newTags.includes('allowList')
+              }
+            />
+            <Label htmlFor="allow-list-checkbox">
+              <Text
+                variant={TextVariant.bodyMdBold}
+                as="span"
+                color={TextColor.successDefault}
+              >
+                Allow List
+              </Text>
+            </Label>
+          </Box>
+          <Box
+            flexDirection={FLEX_DIRECTION.ROW}
+            alignItems={AlignItems.flexStart}
+            paddingLeft={6}
+            paddingRight={6}
+            gap={2}
+          >
+            <CheckBox
+              id="block-list-checkbox"
+              value="blockList"
+              onClick={() => {
+                this.addBlockList();
+              }}
+              checked={
+                this.state.newTags.length > 0 &&
+                this.state.newTags.includes('blockList')
+              }
+            />
+            <Label htmlFor="block-list-checkbox">
+              <Text
+                variant={TextVariant.bodyMdBold}
+                as="span"
+                color={TextColor.errorDefault}
+              >
+                Block List
+              </Text>
+            </Label>
+          </Box>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
@@ -152,6 +246,7 @@ export default class AddContact extends PureComponent {
             await addToAddressBook(
               domainResolution || this.state.ethAddress,
               this.state.newName,
+              this.state.newTags,
             );
             history.push(CONTACT_LIST_ROUTE);
           }}
