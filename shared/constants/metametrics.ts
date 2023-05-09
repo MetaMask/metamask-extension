@@ -584,6 +584,9 @@ export enum MetaMetricsEventName {
   WalletCreated = 'Wallet Created',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   UserClickedDeepLink = 'User clicked deeplink',
+  UserClickedConnectCustodialAccount = 'Clicked Connect custodial account',
+  UserClickedPortfolioButton = 'Clicked Portfolio Button',
+  UserClickedCompliance = 'Clicked Compliance',
   ///: END:ONLY_INCLUDE_IN
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',

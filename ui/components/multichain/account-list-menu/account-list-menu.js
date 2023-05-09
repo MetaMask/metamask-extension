@@ -233,8 +233,8 @@ export const AccountListMenu = ({ onClose }) => {
                   onClick={() => {
                     dispatch(toggleAccountMenu());
                     trackEvent({
-                      category: 'Main Menu',
-                      event: 'Clicked Connect custodial account',
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.UserClickedConnectCustodialAccount,
                     });
                     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
                       global.platform.openExtensionInBrowser(
@@ -254,8 +254,8 @@ export const AccountListMenu = ({ onClose }) => {
                     onClick={() => {
                       dispatch(toggleAccountMenu());
                       trackEvent({
-                        category: 'Navigation',
-                        event: 'Clicked Portfolio Button',
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.UserClickedPortfolioButton,
                       });
                       window.open(mmiPortfolioUrl, '_blank');
                     }}
@@ -269,8 +269,8 @@ export const AccountListMenu = ({ onClose }) => {
                   onClick={() => {
                     dispatch(toggleAccountMenu());
                     trackEvent({
-                      category: 'Navigation',
-                      event: 'Clicked Compliance',
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.UserClickedCompliance,
                     });
                     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
                       global.platform.openExtensionInBrowser(
