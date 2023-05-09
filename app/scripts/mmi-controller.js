@@ -110,7 +110,7 @@ export default class MMIController extends EventEmitter {
   }
 
   async onSubmitPassword() {
-    // MMI: Create a keyring for each custodian type
+    // Create a keyring for each custodian type
     let addresses = [];
     const custodyTypes = this.custodyController.getAllCustodyTypes();
     for (const type of custodyTypes) {
@@ -275,14 +275,10 @@ export default class MMIController extends EventEmitter {
 
     const allAccounts = await this.keyringController.getAccounts();
 
-    // TODO: explain why we need to do this
-
     this.preferencesController.setAddresses(allAccounts);
     const accountsToTrack = [
       ...new Set(oldAccounts.concat(allAccounts.map((a) => a.toLowerCase()))),
     ];
-
-    // TODO: explain why we need to do this
 
     allAccounts.forEach((address) => {
       if (!oldAccounts.includes(address.toLowerCase())) {
@@ -460,8 +456,6 @@ export default class MMIController extends EventEmitter {
     const keyrings = await this.keyringController.getKeyringsByType(
       `Custody - ${custodian.type}`,
     );
-
-    // TODO This would be better at home in the SDK because it has some implementation details
 
     for (const address of addresses) {
       for (const keyring of keyrings) {
