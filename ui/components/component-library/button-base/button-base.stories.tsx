@@ -1,15 +1,15 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   AlignItems,
-  Color,
+  BackgroundColor,
   DISPLAY,
   FLEX_DIRECTION,
-  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { TextDirection, IconName } from '..';
+import { TextDirection, IconName, ValidTag } from '..';
 
-import { BUTTON_BASE_SIZES } from './button-base.constants';
+import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
 
@@ -70,7 +70,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_BASE_SIZES),
+      options: Object.values(ButtonBaseSize),
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -96,13 +96,15 @@ export default {
   args: {
     children: 'Button Base',
   },
-};
+} as ComponentMeta<typeof ButtonBase>;
 
-export const DefaultStory = (args) => <ButtonBase {...args} />;
+export const DefaultStory: ComponentStory<typeof ButtonBase> = (args) => (
+  <ButtonBase {...args} />
+);
 
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => (
+export const SizeStory: ComponentStory<typeof ButtonBase> = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
@@ -110,13 +112,13 @@ export const SizeStory = (args) => (
       gap={1}
       marginBottom={2}
     >
-      <ButtonBase {...args} size={Size.SM}>
+      <ButtonBase {...args} size={ButtonBaseSize.Sm}>
         Button SM
       </ButtonBase>
-      <ButtonBase {...args} size={Size.MD}>
+      <ButtonBase {...args} size={ButtonBaseSize.Md}>
         Button MD
       </ButtonBase>
-      <ButtonBase {...args} size={Size.LG}>
+      <ButtonBase {...args} size={ButtonBaseSize.Lg}>
         Button LG
       </ButtonBase>
     </Box>
@@ -125,7 +127,7 @@ export const SizeStory = (args) => (
 
 SizeStory.storyName = 'Size';
 
-export const Block = (args) => (
+export const Block: ComponentStory<typeof ButtonBase> = (args) => (
   <>
     <ButtonBase {...args} marginBottom={2}>
       Default Button
@@ -136,22 +138,24 @@ export const Block = (args) => (
   </>
 );
 
-export const As = (args) => (
+export const As: ComponentStory<typeof ButtonBase> = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
     <ButtonBase {...args}>Button Element</ButtonBase>
-    <ButtonBase as="a" href="#" {...args}>
+    <ButtonBase as={ValidTag.A} href="#" {...args}>
       Anchor Element
     </ButtonBase>
   </Box>
 );
 
-export const Href = (args) => <ButtonBase {...args}>Anchor Element</ButtonBase>;
+export const Href: ComponentStory<typeof ButtonBase> = (args) => (
+  <ButtonBase {...args}>Anchor Element</ButtonBase>
+);
 
 Href.args = {
   href: '/metamask',
 };
 
-export const ExternalLink = (args) => (
+export const ExternalLink: ComponentStory<typeof ButtonBase> = (args) => (
   <ButtonBase {...args}>Anchor element with external link</ButtonBase>
 );
 
@@ -160,7 +164,7 @@ ExternalLink.args = {
   externalLink: true,
 };
 
-export const Disabled = (args) => (
+export const Disabled: ComponentStory<typeof ButtonBase> = (args) => (
   <ButtonBase {...args}>Disabled Button</ButtonBase>
 );
 
@@ -168,7 +172,7 @@ Disabled.args = {
   disabled: true,
 };
 
-export const Loading = (args) => (
+export const Loading: ComponentStory<typeof ButtonBase> = (args) => (
   <ButtonBase {...args}>Loading Button</ButtonBase>
 );
 
@@ -176,19 +180,19 @@ Loading.args = {
   loading: true,
 };
 
-export const StartIconName = (args) => (
+export const StartIconName: ComponentStory<typeof ButtonBase> = (args) => (
   <ButtonBase {...args} startIconName={IconName.AddSquare}>
     Button
   </ButtonBase>
 );
 
-export const EndIconName = (args) => (
+export const EndIconName: ComponentStory<typeof ButtonBase> = (args) => (
   <ButtonBase {...args} endIconName={IconName.Arrow2Right}>
     Button
   </ButtonBase>
 );
 
-export const Rtl = (args) => (
+export const Rtl: ComponentStory<typeof ButtonBase> = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
     <ButtonBase
       {...args}
@@ -208,8 +212,8 @@ export const Rtl = (args) => (
   </Box>
 );
 
-export const Ellipsis = (args) => (
-  <Box backgroundColor={Color.iconMuted} style={{ width: 150 }}>
+export const Ellipsis: ComponentStory<typeof ButtonBase> = (args) => (
+  <Box backgroundColor={BackgroundColor.primaryMuted} style={{ width: 150 }}>
     <ButtonBase {...args}>Example without ellipsis</ButtonBase>
     <ButtonBase {...args} ellipsis>
       Example with ellipsis

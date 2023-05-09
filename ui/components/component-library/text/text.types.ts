@@ -50,6 +50,8 @@ export enum ValidTag {
   Label = 'label',
   Input = 'input',
   Header = 'header',
+  A = 'a',
+  Button = 'button',
 }
 
 export type ValidTagType =
@@ -140,4 +142,13 @@ export interface TextProps extends BoxProps {
    * Additional className to assign the Text component
    */
   className?: string;
+  /**
+   * Optional href prop enables rendering of an anchor 'a' tag
+   */
+  href?: string;
+  /**
+   * Optional disabled prop enablesdds styling to indicate
+   * non-clickability.
+   */
+  disabled?: boolean;
 }
