@@ -479,7 +479,8 @@ export default class AccountMenu extends Component {
                 toggleAccountMenu();
                 trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.UserClickedConnectCustodialAccount,
+                  event:
+                    MetaMetricsEventName.UserClickedConnectCustodialAccount,
                 });
                 if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
                   global.platform.openExtensionInBrowser(CUSTODY_ACCOUNT_ROUTE);
