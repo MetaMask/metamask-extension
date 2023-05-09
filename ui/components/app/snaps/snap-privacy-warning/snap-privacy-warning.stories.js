@@ -4,11 +4,13 @@ import SnapPrivacyWarning from '.';
 
 export default {
   title: 'Components/App/snaps/SnapPrivacyWarning',
-
   component: SnapPrivacyWarning,
   argTypes: {
-    onOk: {
-      action: 'onOk',
+    onAccepted: {
+      action: 'onAccepted',
+    },
+    onCanceled: {
+      action: 'onCanceled',
     },
   },
 };

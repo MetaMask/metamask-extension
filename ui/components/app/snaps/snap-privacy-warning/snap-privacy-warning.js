@@ -6,6 +6,7 @@ import Popover from '../../../ui/popover';
 import {
   AvatarIcon,
   Button,
+  BUTTON_LINK_SIZES,
   BUTTON_PRIMARY_SIZES,
   BUTTON_VARIANT,
   ButtonLink,
@@ -72,8 +73,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
               >
                 {t('click')}
                 <ButtonLink
-                  className="snap-privacy-warning__more-details__link"
-                  padding={0}
+                  size={BUTTON_LINK_SIZES.INHERIT}
                   onClick={handleReadMoreClick}
                   data-testid="snapsPrivacyPopup_readMoreButton"
                 >
