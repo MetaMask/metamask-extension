@@ -13016,7 +13016,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.0.8, copy-to-clipboard@npm:^3.3.3":
+"copy-to-clipboard@npm:^3.3.1, copy-to-clipboard@npm:^3.3.3":
   version: 3.3.3
   resolution: "copy-to-clipboard@npm:3.3.3"
   dependencies:
@@ -24386,7 +24386,7 @@ __metadata:
     chromedriver: ^114.0.0
     classnames: ^2.2.6
     concurrently: ^7.6.0
-    copy-to-clipboard: ^3.0.8
+    copy-to-clipboard: ^3.3.3
     copy-webpack-plugin: ^6.0.3
     cross-spawn: ^7.0.3
     css-loader: ^2.1.1

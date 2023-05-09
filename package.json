@@ -294,7 +294,7 @@
     "bn.js": "^4.11.7",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",
-    "copy-to-clipboard": "^3.0.8",
+    "copy-to-clipboard": "^3.3.3",
     "currency-formatter": "^1.4.2",
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
