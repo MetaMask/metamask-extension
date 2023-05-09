@@ -10,6 +10,8 @@ export function getAccountNameErrorMessage(
     (item) => item.name === newAccountName,
   );
 
+  const isEmptyAccountName = newAccountName === '';
+
   const localizedWordForAccount = context
     .t('newAccountNumberName')
     .replace(' $1', '');
@@ -24,7 +26,7 @@ export function getAccountNameErrorMessage(
 
   const isValidAccountName =
     newAccountName === defaultAccountName || // What is written in the text field is the same as the placeholder
-    (!isDuplicateAccountName && !isReservedAccountName);
+    (!isDuplicateAccountName && !isReservedAccountName && !isEmptyAccountName);
 
   let errorMessage;
   if (isValidAccountName) {
@@ -33,6 +35,8 @@ export function getAccountNameErrorMessage(
     errorMessage = context.t('accountNameDuplicate');
   } else if (isReservedAccountName) {
     errorMessage = context.t('accountNameReserved');
+  } else if (isEmptyAccountName) {
+    errorMessage = context.t('required');
   }
 
   return { isValidAccountName, errorMessage };
