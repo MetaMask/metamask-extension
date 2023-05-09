@@ -16,7 +16,6 @@ import {
 } from '@metamask-institutional/sdk';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { IN_PROGRESS_TRANSACTION_STATUSES } from '../../shared/constants/transaction';
-import { CONNECT_HARDWARE_ROUTE } from '../../ui/helpers/constants/routes';
 
 export default class MMIController extends EventEmitter {
   constructor(opts) {
@@ -526,11 +525,5 @@ export default class MMIController extends EventEmitter {
       apiUrl,
       keyring,
     });
-  }
-
-  async handleMmiOpenAddHardwareWallet() {
-    await this.appStateController.getUnlockPromise(true);
-    this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
-    return true;
   }
 }

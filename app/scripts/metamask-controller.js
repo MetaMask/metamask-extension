@@ -83,7 +83,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { BUILD_QUOTE_ROUTE } from '../../ui/helpers/constants/routes';
+import {
+  BUILD_QUOTE_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
+} from '../../ui/helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -3016,6 +3019,12 @@ export default class MetamaskController extends EventEmitter {
   async handleMmiOpenSwaps(origin, address, chainId) {
     await this.setAccountAndNetwork(origin, address, chainId);
     this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+    return true;
+  }
+
+  async handleMmiOpenAddHardwareWallet() {
+    await this.appStateController.getUnlockPromise(true);
+    this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
     return true;
   }
   ///: END:ONLY_INCLUDE_IN
