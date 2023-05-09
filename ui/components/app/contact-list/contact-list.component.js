@@ -91,6 +91,7 @@ export default class ContactList extends PureComponent {
         items={myAccounts}
         onSelect={this.props.selectRecipient}
         selectedAddress={this.props.selectedAddress}
+        areRecipientsMyAccounts
       />
     );
   }

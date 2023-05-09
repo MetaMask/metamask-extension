@@ -62,8 +62,7 @@ function imageElFor(tokenMetadata = {}) {
   return img;
 }
 
-function jsNumberForAddress(address) {
-  const addr = address.slice(2, 10);
-  const seed = parseInt(addr, 16);
+export function jsNumberForAddress(slicedAddress) {
+  const seed = parseInt(slicedAddress, 36);
   return seed;
 }

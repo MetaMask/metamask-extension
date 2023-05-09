@@ -142,7 +142,11 @@ export default class AddRecipient extends Component {
         className="send__select-recipient-wrapper__group-item"
         onClick={() => this.selectRecipient(address, name, type)}
       >
-        <Identicon address={address} diameter={28} />
+        <Identicon
+          address={address}
+          diameter={28}
+          customizedFox="test-string"
+        />
         <div className="send__select-recipient-wrapper__group-item__content">
           <div className="send__select-recipient-wrapper__group-item__title">
             {name ? <Confusable input={name} /> : ellipsify(address)}
@@ -190,6 +194,7 @@ export default class AddRecipient extends Component {
           onSelect={(address, name) =>
             this.selectRecipient(address, name, 'my accounts')
           }
+          areRecipientsMyAccounts
         />
       </div>
     );

@@ -324,7 +324,11 @@ export function getMetaMaskIdentities(state) {
 }
 
 export function getMetaMaskAccountsRaw(state) {
-  return state.metamask.accounts;
+  const { accounts } = state.metamask;
+  for (const account in accounts) {
+    accounts[account]['hex'] = 'test-hex';
+  }
+  return accounts;
 }
 
 export function getMetaMaskCachedBalances(state) {

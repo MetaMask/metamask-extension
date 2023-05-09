@@ -54,7 +54,11 @@ const Address = ({
       }}
     >
       <div className="tx-insight-component-address__sender-icon">
-        <Identicon address={checksummedRecipientAddress} diameter={18} />
+        <Identicon
+          address={checksummedRecipientAddress}
+          diameter={18}
+          customizedFox="string"
+        />
       </div>
 
       <div

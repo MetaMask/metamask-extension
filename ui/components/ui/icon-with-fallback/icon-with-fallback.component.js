@@ -19,7 +19,13 @@ const IconWithFallback = ({
   };
 
   return (
-    <div className={classnames(wrapperClassName)}>
+    <div
+      className={classnames(wrapperClassName)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
       {!iconError && icon ? (
         <img
           onError={handleOnError}

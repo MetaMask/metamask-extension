@@ -51,7 +51,11 @@ export default function NetworkAccountBalanceHeader({
           flexDirection={FLEX_DIRECTION.ROW}
           alignItems={AlignItems.center}
         >
-          <Identicon address={accountAddress} diameter={32} />
+          <Identicon
+            address={accountAddress}
+            diameter={32}
+            customizedFox="sting-fox"
+          />
           <IconWithFallback
             name={networkName}
             size={16}

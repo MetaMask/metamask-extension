@@ -61,6 +61,7 @@ function SenderAddress({
         <Identicon
           address={toChecksumHexAddress(senderAddress)}
           diameter={24}
+          customizedFox="testString"
         />
       </div>
       <Tooltip
@@ -140,7 +141,11 @@ export function RecipientWithAddress({
         }}
       >
         <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksummedRecipientAddress} diameter={24} />
+          <Identicon
+            address={checksummedRecipientAddress}
+            diameter={24}
+            customizedFox="testString"
+          />
         </div>
         <Tooltip
           position="bottom"

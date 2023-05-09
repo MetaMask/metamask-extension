@@ -6,6 +6,8 @@ import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
+import SiteIcon from '../site-icon';
+import IconWithFallback from '../icon-with-fallback';
 
 const getStyles = (diameter) => ({
   height: diameter,
@@ -57,6 +59,7 @@ export default class Identicon extends Component {
      * User preferred IPFS gateway
      */
     ipfsGateway: PropTypes.string,
+    customizedFox: PropTypes.string,
   };
 
   state = {
@@ -131,6 +134,15 @@ export default class Identicon extends Component {
     );
   }
 
+  renderCustomizedFox() {
+    return (
+      <IconWithFallback
+        icon="/images/logo/metamask-fox.svg"
+        size={this.props.diameter}
+      />
+    );
+  }
+
   renderBlockieOrJazzIcon() {
     const { useBlockie } = this.props;
     return useBlockie ? this.renderBlockie() : this.renderJazzicon();
@@ -142,7 +154,8 @@ export default class Identicon extends Component {
   }
 
   render() {
-    const { address, image, addBorder, diameter, tokenList } = this.props;
+    const { address, image, addBorder, diameter, tokenList, customizedFox } =
+      this.props;
     const { imageLoadingError } = this.state;
     const size = diameter + 8;
 
@@ -159,6 +172,10 @@ export default class Identicon extends Component {
         return this.renderJazzicon();
       }
 
+      if (customizedFox) {
+        return this.renderCustomizedFox();
+      }
+
       return (
         <div
           className={classnames({ 'identicon__address-wrapper': addBorder })}
@@ -170,10 +187,7 @@ export default class Identicon extends Component {
     }
 
     return (
-      <div
-        style={getStyles(diameter)}
-        className="identicon__image-border"
-      ></div>
+      <div style={getStyles(diameter)} className="identicon__image-border" />
     );
   }
 }

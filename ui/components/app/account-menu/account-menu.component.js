@@ -230,7 +230,11 @@ export default class AccountMenu extends Component {
               />
             ) : null}
           </div>
-          <Identicon address={identity.address} diameter={24} />
+          <Identicon
+            address={identity.address}
+            diameter={32}
+            customizedFox="testString"
+          />
           <div className="account-menu__account-info">
             <div className="account-menu__name">{identity.name || ''}</div>
             <UserPreferencedCurrencyDisplay
