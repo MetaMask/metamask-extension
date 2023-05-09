@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   DISPLAY,
+  FontWeight,
   SEVERITIES,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -56,19 +56,10 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         value={password}
         variant={TextVariant.bodySm}
         type="password"
-        inputProps={{
-          onKeyPress: handleKeyPress,
-        }}
+        inputProps={{ onKeyPress: handleKeyPress }}
+        labelProps={{ fontWeight: FontWeight.Medium }}
+        autoFocus
       />
-      {warning ? (
-        <Text
-          marginTop={1}
-          color={TextColor.errorDefault}
-          variant={TextVariant.bodySm}
-        >
-          {warning}
-        </Text>
-      ) : null}
       <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
