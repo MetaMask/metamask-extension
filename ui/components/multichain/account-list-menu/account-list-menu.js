@@ -66,7 +66,7 @@ export const AccountListMenu = ({ onClose }) => {
   // Focus on the search box when the popover is opened
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.rootNode.querySelector('input[type=search]').focus();
+      inputRef.current.rootNode.querySelector('input[type=search]')?.focus();
     }
   }, [inputRef]);
 
