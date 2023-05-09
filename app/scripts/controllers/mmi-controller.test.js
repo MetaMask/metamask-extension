@@ -4,9 +4,9 @@ import { MmiConfigurationController } from '@metamask-institutional/custody-keyr
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 
 import MMIController from './mmi-controller';
-import TransactionController from './controllers/transactions';
-import PreferencesController from './controllers/preferences';
-import AppStateController from './controllers/app-state';
+import TransactionController from './transactions';
+import PreferencesController from './preferences';
+import AppStateController from './app-state';
 
 describe('MMIController', function () {
   let mmiController;

@@ -14,8 +14,8 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { IN_PROGRESS_TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { IN_PROGRESS_TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
 export default class MMIController extends EventEmitter {
   constructor(opts) {
