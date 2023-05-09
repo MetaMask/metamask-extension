@@ -12,7 +12,6 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
-  FontWeight,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -196,7 +195,6 @@ export default function ApproveContentCard({
                     <Box>
                       <Text
                         variant={TextVariant.bodySm}
-                        fontWeight={FontWeight.Normal}
                         color={TextColor.textMuted}
                         as="h6"
                       >
