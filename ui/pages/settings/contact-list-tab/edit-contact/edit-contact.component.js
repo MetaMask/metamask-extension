@@ -210,7 +210,7 @@ export default class EditContact extends PureComponent {
                 as="span"
                 color={TextColor.successDefault}
               >
-                Allow List
+                Add to Allow List
               </Text>
             </Label>
           </Box>
@@ -235,7 +235,7 @@ export default class EditContact extends PureComponent {
                 as="span"
                 color={TextColor.errorDefault}
               >
-                Block List
+                Add to Block List
               </Text>
             </Label>
           </Box>
