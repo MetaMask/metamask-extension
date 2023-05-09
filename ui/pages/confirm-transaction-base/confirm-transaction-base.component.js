@@ -802,6 +802,7 @@ export default class ConfirmTransactionBase extends Component {
       isApprovalOrRejection,
       assetStandard,
       title,
+      isBuyableChain,
     } = this.props;
     const {
       submitting,
@@ -900,6 +901,7 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
+          isBuyableChain={isBuyableChain}
         />
       </TransactionModalContextProvider>
     );
