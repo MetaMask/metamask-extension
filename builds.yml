@@ -220,4 +220,3 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
-
