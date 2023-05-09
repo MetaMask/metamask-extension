@@ -2,7 +2,14 @@ import MersenneTwister from '../../../node_modules/mersenne-twister';
 import Rainbow from '@indot/rainbowvis';
 
 import { jsNumberForAddress } from './icon-factory';
-import { hexToHsl, hslToHex, getRainbowColor, WHITE_HEX } from './color-util';
+import {
+  hexToHsl,
+  hslToHex,
+  getRainbowColor,
+  WHITE_HEX,
+  rgbToHex,
+  hexToRgb,
+} from './color-util';
 
 export const FOX_COLOR_PALETTE = {
   mouthBaseColor: '#D5BFB2', // mouth
@@ -30,11 +37,11 @@ const generateColorBasedOnAddress = (
   return hslToHex(`hsl(${Math.abs(hash) % 360},${saturation}%,${lightness}%)`);
 };
 
-const generateColorIndex = (slicedAddress) => {
+const getRandomIndex = (slicedAddress, options) => {
   const seed = jsNumberForAddress(slicedAddress);
   const generator = new MersenneTwister(seed);
   const randomIndex = Math.floor(
-    generator.random() * Object.values(FOX_COLOR_PALETTE).length,
+    generator.random() * Object.values(options).length,
   );
   return randomIndex;
 };
@@ -69,15 +76,14 @@ export const generateColorPurelyOnAddress = (address) => {
 
   // Insert the 1 color randomly inside array of 5
   colorsFromAddress.splice(
-    generateColorIndex(slicedAddress),
+    getRandomIndex(slicedAddress, FOX_COLOR_PALETTE),
     0,
     colorFromAddressString,
   );
   return colorsFromAddress;
 };
 
-export const fillInFoxColor = (address) => {
-  const colorArray = generateColorPurelyOnAddress(address);
+export const fillInFoxColor = (colorArray) => {
   const mouthColors = getRainbowColor(colorArray[0], WHITE_HEX, 3);
   // primaryShadow, secondaryShadow, tertiaryShadow, baseSkinTone
   const skinColors = getRainbowColor(colorArray[4], colorArray[5], 5);
@@ -93,3 +99,45 @@ export const fillInFoxColor = (address) => {
     baseSkinTone: hexToHsl(skinColors[3]), // base skin tone
   };
 };
+
+// AI generated color
+// http://colormind.io/api-access/
+export async function generateColorsFromAI(address) {
+  const slicedAddress = address.slice(2, 10);
+  const colorFromAddressString = generateColorBasedOnAddress(slicedAddress); // 1 color
+  const colorToRGB = hexToRgb(colorFromAddressString);
+  let model, colorsArray;
+
+  await fetch('http://colormind.io/list/')
+    .then((response) => response.json())
+    .then((data) => {
+      model = data.result;
+    });
+
+  const selectedModelIndex = getRandomIndex(slicedAddress, model);
+  await fetch('http://colormind.io/api/', {
+    method: 'POST',
+    body: JSON.stringify({
+      input: [colorToRGB, 'N', 'N', 'N', 'N'],
+      model: model[selectedModelIndex],
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => (colorsArray = data.result)); // 5 in total
+
+  colorsArray.forEach((color, index) => {
+    colorsArray[index] = rgbToHex(color);
+  });
+
+  // TODO: Danica If user are not happy with the generated one
+  // they can shuffle to a different set until they are happy
+  shuffleArray(colorsArray);
+
+  // Insert the 1 color randomly inside array of 5
+  colorsArray.splice(
+    getRandomIndex(slicedAddress, FOX_COLOR_PALETTE),
+    0,
+    colorFromAddressString,
+  );
+  return colorsArray;
+}

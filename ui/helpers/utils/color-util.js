@@ -1,6 +1,14 @@
 import Rainbow from '@indot/rainbowvis';
 
 export const WHITE_HEX = '#ffffff';
+
+export function rgbToHex(array) {
+  const [red, green, blue] = array;
+  // eslint-disable-next-line no-bitwise
+  const rgb = (red << 16) | (green << 8) | (blue << 0);
+  return `#${(0x1000000 + rgb).toString(16).slice(1)}`;
+}
+
 export function hexToRgb(color) {
   let hex = color[0] === '#' ? color.slice(1) : color;
   let c;

@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { fillInFoxColor } from '../../../helpers/utils/generative-color';
+import {
+  fillInFoxColor,
+  FOX_COLOR_PALETTE,
+  generateColorPurelyOnAddress,
+  generateColorsFromAI,
+} from '../../../helpers/utils/generative-color';
 
-const FoxIcon = ({ size = 240, address }) => {
-  const colorSchema = fillInFoxColor(address);
+export const COLOR_PALETTE_TYPE = {
+  generative: 'generative',
+  ai: 'ai',
+  predefined: 'predefined',
+};
+
+const FoxIcon = ({
+  size = 240,
+  address,
+  colorPaletteType = COLOR_PALETTE_TYPE.generative,
+}) => {
+  const [colorSchema, setColorSchema] = useState(
+    fillInFoxColor(generateColorPurelyOnAddress(address)),
+  );
+
+  useEffect(() => {
+    if (colorPaletteType === COLOR_PALETTE_TYPE.ai) {
+      async function fetchAISchema() {
+        const colorsFromGenerative = await generateColorsFromAI(address);
+        setColorSchema(fillInFoxColor(colorsFromGenerative));
+      }
+      fetchAISchema();
+    }
+  }, [address, colorPaletteType]);
+
   const {
     earBaseColor,
     eyesColor,
@@ -262,6 +290,7 @@ const FoxIcon = ({ size = 240, address }) => {
 FoxIcon.propTypes = {
   size: PropTypes.number,
   address: PropTypes.string,
+  colorPaletteType: PropTypes.string,
 };
 
 export default FoxIcon;
