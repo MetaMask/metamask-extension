@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   fillInFoxColor,
-  FOX_COLOR_PALETTE,
   generateColorPurelyOnAddress,
   generateColorsFromAI,
 } from '../../../helpers/utils/generative-color';
+
+import { PREDEFINED_COLOR_PALETTES } from '../../../helpers/constants/color-palette';
 
 export const COLOR_PALETTE_TYPE = {
   generative: 'generative',
@@ -17,20 +18,34 @@ const FoxIcon = ({
   size = 240,
   address,
   colorPaletteType = COLOR_PALETTE_TYPE.generative,
+  predefinedColorSchema = null,
 }) => {
   const [colorSchema, setColorSchema] = useState(
     fillInFoxColor(generateColorPurelyOnAddress(address)),
   );
 
   useEffect(() => {
-    if (colorPaletteType === COLOR_PALETTE_TYPE.ai) {
-      async function fetchAISchema() {
-        const colorsFromGenerative = await generateColorsFromAI(address);
-        setColorSchema(fillInFoxColor(colorsFromGenerative));
-      }
-      fetchAISchema();
+    switch (colorPaletteType) {
+      case COLOR_PALETTE_TYPE.generative:
+        setColorSchema(fillInFoxColor(generateColorPurelyOnAddress(address)));
+        break;
+      case COLOR_PALETTE_TYPE.ai:
+        async function fetchAISchema() {
+          const colorsFromAI = await generateColorsFromAI(address);
+          setColorSchema(fillInFoxColor(colorsFromAI));
+        }
+        fetchAISchema();
+        break;
+      case COLOR_PALETTE_TYPE.predefined:
+        setColorSchema(
+          fillInFoxColor(PREDEFINED_COLOR_PALETTES[predefinedColorSchema - 1]),
+        );
+        break;
+      default:
+        setColorSchema(fillInFoxColor(generateColorPurelyOnAddress(address)));
+        break;
     }
-  }, [address, colorPaletteType]);
+  }, [address, colorPaletteType, predefinedColorSchema]);
 
   const {
     earBaseColor,
@@ -291,6 +306,7 @@ FoxIcon.propTypes = {
   size: PropTypes.number,
   address: PropTypes.string,
   colorPaletteType: PropTypes.string,
+  predefinedColorSchema: PropTypes.number,
 };
 
 export default FoxIcon;

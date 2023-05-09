@@ -1,6 +1,5 @@
 import React from 'react';
 import FoxIcon, { COLOR_PALETTE_TYPE } from './FoxIcon';
-import { generateColorsFromAI } from '../../../helpers/utils/generative-color';
 
 const ADDRESS_LIBRARY = [
   '0xFa14fc33c8E73ebC526502f0A783c0cDe2740f96',
@@ -22,6 +21,11 @@ export default {
       name: 'Preferred result generator',
       options: Object.values(COLOR_PALETTE_TYPE),
     },
+    predefinedColorSchema: {
+      control: 'select',
+      name: 'Choose pre-definied when you are not happy with current result',
+      options: [1, 2, 3, 4, 5],
+    },
     address: {
       control: 'select',
       name: 'Sample address',
@@ -40,4 +44,5 @@ DefaultStory.args = {
   colorPaletteType: COLOR_PALETTE_TYPE.generative,
   address: '0xFa14fc33c8E73ebC526502f0A783c0cDe2740f96',
   size: '240',
+  predefinedColorSchema: 0,
 };
