@@ -7,12 +7,12 @@ import {
   BorderColor,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
   Size,
   TextColor,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -121,7 +121,7 @@ export const MultichainTokenListItem = ({
                 theme={dataTheme === 'light' ? 'dark' : 'light'}
               >
                 <Text
-                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
@@ -130,10 +130,10 @@ export const MultichainTokenListItem = ({
               </Tooltip>
             </Box>
             <Text
-              fontWeight={FONT_WEIGHT.MEDIUM}
+              fontWeight={FontWeight.Medium}
               variant={TextVariant.bodyMd}
               width={[BLOCK_SIZES.TWO_THIRD]}
-              textAlign={TEXT_ALIGN.END}
+              textAlign={TextAlign.End}
             >
               {secondary}
             </Text>
