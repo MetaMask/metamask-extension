@@ -48,7 +48,6 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/subject-metadata-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';

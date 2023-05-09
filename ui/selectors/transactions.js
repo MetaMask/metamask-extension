@@ -18,10 +18,7 @@ import {
   deprecatedGetCurrentNetworkId,
   getSelectedAddress,
 } from './selectors';
-import {
-  hasPendingApprovalsSelector,
-  getApprovalRequestsByType,
-} from './approvals';
+import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -556,15 +553,17 @@ const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
   return filteredUnapprovedTxInCurrentNetwork.length > 0;
 };
 
+const TRANSACTION_APPROVAL_TYPES = [
+  ApprovalType.EthDecrypt,
+  ApprovalType.EthGetEncryptionPublicKey,
+  ApprovalType.EthSign,
+  ApprovalType.EthSignTypedData,
+  ApprovalType.PersonalSign,
+];
+
 export function hasTransactionPendingApprovals(state) {
   return (
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
-    [
-      ApprovalType.EthDecrypt,
-      ApprovalType.EthGetEncryptionPublicKey,
-      ApprovalType.EthSign,
-      ApprovalType.EthSignTypedData,
-      ApprovalType.PersonalSign,
-    ].some((type) => hasPendingApprovalsSelector(state, type))
+    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
   );
 }

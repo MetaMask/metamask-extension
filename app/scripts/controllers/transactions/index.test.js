@@ -3030,7 +3030,7 @@ describe('Transaction Controller', function () {
           id: firstTxId,
           origin: ORIGIN_METAMASK,
           requestData: { txId: firstTxId },
-          type: MESSAGE_TYPE.TRANSACTION,
+          type: ApprovalType.Transaction,
         },
         false,
       ]);
@@ -3040,7 +3040,7 @@ describe('Transaction Controller', function () {
           id: secondTxId,
           origin: ORIGIN_METAMASK,
           requestData: { txId: secondTxId },
-          type: MESSAGE_TYPE.TRANSACTION,
+          type: ApprovalType.Transaction,
         },
         false,
       ]);

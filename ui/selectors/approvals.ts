@@ -22,7 +22,7 @@ export const getApprovalRequestsByType = (
   return pendingApprovalRequests;
 };
 
-export function hasPendingApprovalsSelector(
+export function hasPendingApprovals(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
 ) {
