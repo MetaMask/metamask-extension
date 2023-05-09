@@ -15,7 +15,7 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import TrezorKeyring from 'eth-trezor-keyring';
+import TrezorKeyring from '@metamask/eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
@@ -62,6 +62,8 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import { SignatureController } from '@metamask/signature-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   AssetType,
   TransactionStatus,
@@ -93,7 +95,6 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
-  MESSAGE_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
@@ -160,7 +161,6 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
-import SignController from './controllers/sign';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 
 import {
@@ -256,9 +256,13 @@ export default class MetamaskController extends EventEmitter {
       }),
       showApprovalRequest: opts.showUserConfirmation,
       typesExcludedFromRateLimiting: [
-        MESSAGE_TYPE.ETH_SIGN,
-        MESSAGE_TYPE.PERSONAL_SIGN,
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+        ApprovalType.EthSign,
+        ApprovalType.PersonalSign,
+        ApprovalType.EthSignTypedData,
+        ApprovalType.Transaction,
+        ApprovalType.WatchAsset,
+        ApprovalType.EthGetEncryptionPublicKey,
+        ApprovalType.EthDecrypt,
       ],
     });
 
@@ -1191,9 +1195,9 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.signController = new SignController({
+    this.signatureController = new SignatureController({
       messenger: this.controllerMessenger.getRestricted({
-        name: 'SignController',
+        name: 'SignatureController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
@@ -1201,12 +1205,22 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       keyringController: this.keyringController,
-      preferencesController: this.preferencesController,
-      getState: this.getState.bind(this),
+      isEthSignEnabled: () =>
+        this.preferencesController.store.getState()
+          ?.disabledRpcMethodPreferences?.eth_sign,
+      getAllState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
+    });
+
+    this.signatureController.hub.on('cancelWithReason', (message, reason) => {
+      this.metaMetricsController.trackEvent({
+        event: reason,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          action: 'Sign Request',
+          type: message.type,
+        },
+      });
     });
 
     this.swapsController = new SwapsController({
@@ -1271,11 +1285,11 @@ export default class MetamaskController extends EventEmitter {
         this.txController.txStateManager.clearUnapprovedTxs();
         this.encryptionPublicKeyController.clearUnapproved();
         this.decryptMessageController.clearUnapproved();
-        this.signController.clearUnapproved();
+        this.signatureController.clearUnapproved();
       },
     );
 
-    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === false) {
+    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === undefined) {
       const { serviceWorkerLastActiveTime } =
         this.appStateController.store.getState();
       const metametricsPayload = {
@@ -1319,21 +1333,24 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
-      processEthSignMessage: this.signController.newUnsignedMessage.bind(
-        this.signController,
+      processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
+        this.signatureController,
       ),
-      processTypedMessage: this.signController.newUnsignedTypedMessage.bind(
-        this.signController,
-      ),
-      processTypedMessageV3: this.signController.newUnsignedTypedMessage.bind(
-        this.signController,
-      ),
-      processTypedMessageV4: this.signController.newUnsignedTypedMessage.bind(
-        this.signController,
-      ),
+      processTypedMessage:
+        this.signatureController.newUnsignedTypedMessage.bind(
+          this.signatureController,
+        ),
+      processTypedMessageV3:
+        this.signatureController.newUnsignedTypedMessage.bind(
+          this.signatureController,
+        ),
+      processTypedMessageV4:
+        this.signatureController.newUnsignedTypedMessage.bind(
+          this.signatureController,
+        ),
       processPersonalMessage:
-        this.signController.newUnsignedPersonalMessage.bind(
-          this.signController,
+        this.signatureController.newUnsignedPersonalMessage.bind(
+          this.signatureController,
         ),
       processEncryptionPublicKey:
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
@@ -1366,7 +1383,7 @@ export default class MetamaskController extends EventEmitter {
       TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
-      SignController: this.signController,
+      SignatureController: this.signatureController,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
@@ -1456,7 +1473,7 @@ export default class MetamaskController extends EventEmitter {
       this.encryptionPublicKeyController.resetState.bind(
         this.encryptionPublicKeyController,
       ),
-      this.signController.resetState.bind(this.signController),
+      this.signatureController.resetState.bind(this.signatureController),
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
@@ -2142,22 +2159,25 @@ export default class MetamaskController extends EventEmitter {
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
 
-      // signController
-      signMessage: this.signController.signMessage.bind(this.signController),
-      cancelMessage: this.signController.cancelMessage.bind(
-        this.signController,
+      // signatureController
+      signMessage: this.signatureController.signMessage.bind(
+        this.signatureController,
       ),
-      signPersonalMessage: this.signController.signPersonalMessage.bind(
-        this.signController,
+      cancelMessage: this.signatureController.cancelMessage.bind(
+        this.signatureController,
       ),
-      cancelPersonalMessage: this.signController.cancelPersonalMessage.bind(
-        this.signController,
+      signPersonalMessage: this.signatureController.signPersonalMessage.bind(
+        this.signatureController,
       ),
-      signTypedMessage: this.signController.signTypedMessage.bind(
-        this.signController,
+      cancelPersonalMessage:
+        this.signatureController.cancelPersonalMessage.bind(
+          this.signatureController,
+        ),
+      signTypedMessage: this.signatureController.signTypedMessage.bind(
+        this.signatureController,
       ),
-      cancelTypedMessage: this.signController.cancelTypedMessage.bind(
-        this.signController,
+      cancelTypedMessage: this.signatureController.cancelTypedMessage.bind(
+        this.signatureController,
       ),
 
       // decryptMessageController
