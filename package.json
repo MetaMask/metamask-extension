@@ -366,7 +366,6 @@
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
-    "validate-branch-name": "^1.3.0",
     "web3-stream-provider": "^4.0.0",
     "zxcvbn": "^4.4.2"
   },
