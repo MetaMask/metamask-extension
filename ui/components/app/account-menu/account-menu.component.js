@@ -380,6 +380,22 @@ export default class AccountMenu extends Component {
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AccountAddSelected,
               properties: {
+                account_type: MetaMetricsEventAccountType.Default,
+                location: 'Main Menu',
+              },
+            });
+            history.push(NEW_ACCOUNT_ROUTE);
+          }}
+          icon={<Icon name={IconName.Add} color={IconColor.iconAlternative} />}
+          text={'Create AA Account'}
+        />
+        <AccountMenuItem
+          onClick={() => {
+            toggleAccountMenu();
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AccountAddSelected,
+              properties: {
                 account_type: MetaMetricsEventAccountType.Imported,
                 location: 'Main Menu',
               },

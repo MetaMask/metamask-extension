@@ -5,6 +5,7 @@
     "baseUrl": ".",
     "inlineSources": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "jsx": "react",
     "lib": ["dom", "es2020"],
     "moduleResolution": "node",

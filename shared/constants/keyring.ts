@@ -6,6 +6,7 @@ import { HardwareKeyringType } from './hardware-wallets';
 export enum InternalKeyringType {
   hdKeyTree = 'HD Key Tree',
   imported = 'Simple Key Pair',
+  accountAbstraction = 'Account Abstraction',
 }
 
 /**

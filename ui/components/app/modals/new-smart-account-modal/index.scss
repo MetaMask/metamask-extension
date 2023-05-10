@@ -1,0 +1,61 @@
+.new-account-modal {
+  display: flex;
+  flex-flow: column nowrap;
+  background-color: var(--color-background-default);
+  border-radius: 10px;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+
+  &__content {
+    @extend %col-nowrap;
+
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    &__header {
+      @include H4;
+
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__header-close {
+      @include H4;
+
+      color: var(--color-icon-default);
+      background: none;
+    }
+  }
+
+  &__input-label {
+    color: var(--color-text-alternative);
+    margin-top: 1.25rem;
+  }
+
+  &__input {
+    @include H4;
+
+    background: var(--color-background-default);
+    border: 1px solid var(--color-border-muted);
+    color: var(--color-text-default);
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 0.625rem 0.75rem;
+    margin-top: 0.75rem;
+
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+  }
+
+  &__footer {
+    @extend %row-nowrap;
+
+    padding: 1rem;
+
+    button + button {
+      margin-left: 1rem;
+    }
+  }
+}

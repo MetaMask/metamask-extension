@@ -19,6 +19,7 @@ buildTypes:
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
+      - EDITOR_URL: ''
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
     # Main build uses the default browser manifest
@@ -30,6 +31,7 @@ buildTypes:
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
+      - EDITOR_URL: ''
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
     # Modifies how the version is displayed.
@@ -48,6 +50,7 @@ buildTypes:
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
+      - EDITOR_URL: ''
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc

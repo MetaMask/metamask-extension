@@ -180,6 +180,7 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+import SmartContractKeyring from './smart-contract-keyring';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3182,11 +3183,20 @@ export default class MetamaskController extends EventEmitter {
    * @param {any} args - The data required by that strategy to import an account.
    */
   async importAccountWithStrategy(strategy, args) {
-    const privateKey = await accountImporter.importAccount(strategy, args);
-    const keyring = await this.keyringController.addNewKeyring(
-      KeyringType.imported,
-      [privateKey],
-    );
+    let keyring;
+    if (args.isAA) {
+      keyring = await this.keyringController.addNewKeyring(
+        KeyringType.accountAbstraction,
+        [args.privateKey, args.scAddress],
+      );
+    } else {
+      const privateKey = await accountImporter.importAccount(strategy, args);
+      keyring = await this.keyringController.addNewKeyring(
+        KeyringType.imported,
+        [privateKey],
+      );
+    }
+
     const [firstAccount] = await keyring.getAccounts();
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts();
