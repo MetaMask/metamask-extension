@@ -623,12 +623,14 @@ export class NetworkController extends EventEmitter {
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
-      if (isErrorWithCode(error) && isErrorWithMessage(error)) {
+      if (isErrorWithCode(error)) {
         let responseBody;
-        try {
-          responseBody = JSON.parse(error.message);
-        } catch {
-          // error.message must not be JSON
+        if (isInfura && isErrorWithMessage(error)) {
+          try {
+            responseBody = JSON.parse(error.message);
+          } catch {
+            // error.message must not be JSON
+          }
         }
 
         if (
