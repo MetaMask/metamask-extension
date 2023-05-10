@@ -10,7 +10,8 @@ const DEVELOPMENT_URL =
 
 const isNotDevelopment =
   process.env.METAMASK_ENVIRONMENT !== 'development' &&
-  process.env.METAMASK_ENVIRONMENT !== 'testing';
+  process.env.METAMASK_ENVIRONMENT !== 'testing' &&
+  process.env.METAMASK_ENVIRONMENT !== 'test';
 
 const url = isNotDevelopment ? PRODUCTION_URL : DEVELOPMENT_URL;
 
