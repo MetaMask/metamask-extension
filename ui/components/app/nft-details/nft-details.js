@@ -96,7 +96,6 @@ export default function NftDetails({ nft }) {
   });
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
-  // const [completedLongPress, setCompletedLongPress] = useState(false);
 
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
     isEqualCaseInsensitive(contractAddress, address),
@@ -142,7 +141,7 @@ export default function NftDetails({ nft }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== TokenStandard.ERC721;
+  const sendDisabled = standard !== TokenStandard.ERC721 || isLockedAsset;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
@@ -188,6 +187,10 @@ export default function NftDetails({ nft }) {
     if (isCurrentlyOwned === false) {
       return <div style={{ height: '30px' }} />;
     }
+
+    const sendDisabledToolTip = isLockedAsset
+      ? 'sendingLocked'
+      : 'sendingDisabled';
     return (
       <Box
         display={DISPLAY.FLEX}
@@ -203,8 +206,9 @@ export default function NftDetails({ nft }) {
         >
           {t('send')}
         </Button>
+
         {sendDisabled ? (
-          <InfoTooltip position="top" contentText={t('sendingDisabled')} />
+          <InfoTooltip position="top" contentText={t(sendDisabledToolTip)} />
         ) : null}
         <LockAssetButton isLocked={isLockedAsset} onClick={onLockToggle} />
       </Box>

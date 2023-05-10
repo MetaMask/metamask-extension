@@ -3666,6 +3666,9 @@
   "sendingDisabled": {
     "message": "Sending of ERC-1155 NFT assets is not yet supported."
   },
+  "sendingLocked": {
+    "message": "Sending is Locked, Unlock this asset before attempting to send it."
+  },
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
