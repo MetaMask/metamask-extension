@@ -4,9 +4,9 @@ import { AggregatorNetwork } from './useRamps.types';
 const fetchWithTimeout = getFetchWithTimeout();
 
 const PRODUCTION_URL =
-  'https://on-ramp-content.metaswap.codefi.network/regions/networks';
+  'https://on-ramp-content.metaswap.codefi.network/regions/networks?context=extension';
 const DEVELOPMENT_URL =
-  'https://on-ramp.dev.mmcx.codefi.network/regions/networks';
+  'https://on-ramp.dev.mmcx.codefi.network/regions/networks?context=extension';
 
 const isNotDevelopment =
   process.env.METAMASK_ENVIRONMENT !== 'development' &&

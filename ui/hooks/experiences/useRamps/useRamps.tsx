@@ -5,7 +5,7 @@ import log from 'loglevel';
 import { ChainId, CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../selectors';
 import { AggregatorNetwork } from './useRamps.types';
-import SDK from './OnRampAPI';
+import OnRampAPI from './OnRampAPI';
 import {
   buyPath,
   entryParam,
@@ -53,8 +53,8 @@ const useRamps = (): IUseRamps => {
         return;
       }
       try {
-        const sdkNetworks = await SDK.getNetworks();
-        setNetworks(sdkNetworks);
+        const apiNetworks = await OnRampAPI.getNetworks();
+        setNetworks(apiNetworks);
       } catch (error) {
         log.error('useRamps::SDK.getNetworks failed', error);
       }
