@@ -35,22 +35,6 @@ export function showInteractiveReplacementTokenBanner({
     }
   };
 }
-
-export function setTypedMsgInProgress(msgId: string) {
-  return async (dispatch: any) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('setTypedMsgInProgress', [msgId]);
-    } catch (error: any) {
-      log.error(error);
-      dispatch(displayWarning(error.message));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 /**
  * A factory that contains all MMI actions ready to use
  * Example usage:
@@ -65,7 +49,7 @@ export function mmiActionsFactory() {
     loadingText?: string,
   ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
     log.debug(`background.${name}`);
-    return async (dispatch: any) => {
+    return async (dispatch) => {
       if (loadingText) {
         dispatch(showLoadingIndication(loadingText));
       }

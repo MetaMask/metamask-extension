@@ -6799,9 +6799,6 @@
       }
     },
     "semver": {
-      "builtin": {
-        "util.inspect": true
-      },
       "globals": {
         "console.error": true,
         "process": true
@@ -7993,7 +7990,14 @@
       },
       "globals": {
         "console.warn": true,
-        "process.env": true,
+        "process.env.BROWSERSLIST": true,
+        "process.env.BROWSERSLIST_CONFIG": true,
+        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
+        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
+        "process.env.BROWSERSLIST_ENV": true,
+        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
+        "process.env.BROWSERSLIST_STATS": true,
+        "process.env.NODE_ENV": true,
         "process.versions.node": true
       },
       "packages": {
