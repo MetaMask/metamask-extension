@@ -50,7 +50,9 @@ import {
   determineTransactionContractCode,
   determineTransactionType,
   isEIP1559Transaction,
+  parseStandardTokenTransactionData,
 } from '../../../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   ORIGIN_METAMASK,
   MESSAGE_TYPE,
@@ -65,6 +67,12 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+
+function getTokenAddressParam(tokenData = {}) {
+  const value =
+    tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
+  return value?.toString().toLowerCase();
+}
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
@@ -136,6 +144,7 @@ export default class TransactionController extends EventEmitter {
     this.getNetworkId = opts.getNetworkId;
     this.getNetworkStatus = opts.getNetworkStatus;
     this._getCurrentChainId = opts.getCurrentChainId;
+    this._getAddressBook = opts.getAddressBook;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
       opts.getCurrentNetworkEIP1559Compatibility;
@@ -378,6 +387,14 @@ export default class TransactionController extends EventEmitter {
               return reject(
                 cleanErrorStack(
                   ethErrors.rpc.internal(finishedTxMeta.err.message),
+                ),
+              );
+            case TransactionStatus.blocked:
+              return reject(
+                cleanErrorStack(
+                  ethErrors.provider.userRejectedRequest(
+                    'MetaMask Tx Signature: User denied transaction signature.',
+                  ),
                 ),
               );
             default:
@@ -869,6 +886,28 @@ export default class TransactionController extends EventEmitter {
       );
 
       txMeta.securityProviderResponse = securityProviderResponse;
+    }
+
+    const tokenData = txMeta.txParams.data && parseStandardTokenTransactionData(txMeta.txParams.data);
+    const tokenToAddress = txMeta.txParams.data && getTokenAddressParam(tokenData);
+
+    let toAddress = txMeta.txParams.to;
+    if (txMeta.type !== TransactionType.simpleSend) {
+      toAddress = tokenToAddress || toAddress;
+    }
+
+    const addressBookState = this._getAddressBook() || {};
+    const addressBook = addressBookState.addressBook || {};
+    const addressesForChain = addressBook[txMeta.chainId] || {};
+    const addressBookEntry = addressesForChain[toAddress?.toLowerCase()] || addressesForChain[toChecksumHexAddress(toAddress)];
+    const addressTags = addressBookEntry?.tags || [];
+    const addressIsBlocked = addressTags.includes('blockList');
+    if (addressIsBlocked) {
+      txMeta.toAddress = toAddress;
+      txMeta.status = TransactionStatus.blocked;
+      this.txStateManager.setTxStatusBlocked(txMeta.txId);
+      this.emit('rejected-newUnapprovedTx', txMeta);
+      return txMeta;
     }
 
     this.addTransaction(txMeta);

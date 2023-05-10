@@ -122,6 +122,8 @@ export enum TransactionStatus {
    * The user has rejected the transaction in the MetaMask UI
    */
   rejected = 'rejected',
+
+  blocked = 'blocked',
   /**
    * The transaction has been signed
    */

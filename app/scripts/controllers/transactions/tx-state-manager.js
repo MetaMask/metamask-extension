@@ -536,6 +536,10 @@ export default class TransactionStateManager extends EventEmitter {
     this._setTransactionStatus(txId, TransactionStatus.approved);
   }
 
+  setTxStatusBlocked(txId) {
+    this._setTransactionStatus(txId, TransactionStatus.blocked);
+  }
+
   /**
    * Update status of the TransactionMeta with provided id to 'signed'
    *
@@ -690,6 +694,7 @@ export default class TransactionStateManager extends EventEmitter {
           TransactionStatus.submitted,
           TransactionStatus.rejected,
           TransactionStatus.failed,
+          TransactionStatus.blocked,
         ].includes(status)
       ) {
         this.emit(`${txMeta.id}:finished`, txMeta);

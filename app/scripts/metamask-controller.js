@@ -1058,7 +1058,16 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
         ],
       }),
+      getAddressBook: () => this.addressBookController.state,
     });
+
+    this.txController.on(`rejected-newUnapprovedTx`, async (txMeta) => {
+      try {
+        await this.platform.showTransactionNotification(txMeta);
+      } catch (error) {
+        log.error('Failed to create transaction notification', error);
+      }
+    })
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (

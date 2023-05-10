@@ -137,6 +137,8 @@ export default class ExtensionPlatform {
         : await this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TransactionStatus.failed) {
       await this._showFailedTransaction(txMeta);
+    } else if (status === TransactionStatus.blocked) {
+      await this._showBlockedTransaction(txMeta);
     }
   }
 
@@ -199,6 +201,13 @@ export default class ExtensionPlatform {
       message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
     }
     ///: END:ONLY_INCLUDE_IN
+    await this._showNotification(title, message);
+  }
+
+  async _showBlockedTransaction(txMeta, errorMessage) {
+    const title = 'Blocked transaction';
+    let message = `Transaction blocked! Recipient ${txMeta.toAddress} is in your blocked list!`;
+
     await this._showNotification(title, message);
   }
 
