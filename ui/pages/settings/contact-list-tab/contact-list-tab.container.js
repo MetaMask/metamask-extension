@@ -3,17 +3,17 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getAddressBook } from '../../../selectors';
-
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
+import withModalProps from '../../../helpers/higher-order-components/with-modal-props/with-modal-props';
+import { getAddressBook } from '../../../selectors';
 import {
-  clearContactList,
   exportContactList,
   importContactList,
+  showModal,
 } from '../../../store/actions';
 import ContactListTab from './contact-list-tab.component';
 
@@ -44,17 +44,17 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = () => {
+export const mapDispatchToProps = (dispatch) => {
   return {
-    importContactList: (json) => {
-      return importContactList(json);
-    },
+    importContactList: (json, fileName) => importContactList(json, fileName),
     exportContactList: () => exportContactList(),
-    clearContactList: () => clearContactList(),
+    showClearContactListModal: () =>
+      dispatch(showModal({ name: 'CONFIRM_CLEAR_CONTACT_LIST' })),
   };
 };
 
 export default compose(
   withRouter,
+  withModalProps,
   connect(mapStateToProps, mapDispatchToProps),
 )(ContactListTab);

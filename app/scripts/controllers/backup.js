@@ -1,9 +1,6 @@
+import { merge } from 'lodash';
 import { prependZero } from '../../../shared/modules/string-utils';
 
-const UPDATE_STRATEGY = Object.freeze({
-  MERGE: false,
-  OVERWRITE: true,
-});
 export default class BackupController {
   constructor(opts = {}) {
     const {
@@ -81,19 +78,22 @@ export default class BackupController {
     return { fileName: userDataFileName, data: result };
   }
 
-  async exportContactList() {
-    /*
-    * YYYY_MM_DD_HH_mm_SS e.g 2022_01_13_13_45_56
-    * */
-    const date = new Date();
+  /*
+   * YYYY_MM_DD_HH_mm_SS e.g 2022_01_13_13_45_56
+   * */
+  getTimestamp(date = new Date()) {
     const prefixZero = (num) => prependZero(num, 2);
 
-    const timestamp = `${date.getFullYear()}_${prefixZero(
+    const timestamp = `${date.getFullYear()}-${prefixZero(
       date.getMonth() + 1,
-    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+    )}-${prefixZero(date.getDay())} ${prefixZero(date.getHours())}:${prefixZero(
       date.getMinutes(),
-    )}_${prefixZero(date.getDay())}`;
+    )}:${prefixZero(date.getDay())}`;
 
+    return timestamp;
+  }
+
+  async exportContactList() {
     const contactList = { ...this.addressBookController.state }.addressBook
 
     function deleteKeys(obj, keysToDelete) {
@@ -108,8 +108,13 @@ export default class BackupController {
       }
     }
 
-    const keysToDelete = ['isEns', 'addressType', 'source'];
+    const keysToDelete = ['isEns', 'addressType'];
     deleteKeys(contactList, keysToDelete);
+
+    const timestamp = this.getTimestamp()
+      .replaceAll(':', '_')
+      .replaceAll('-', '_')
+      .replaceAll(' ', '_');
 
     return {
       fileName: `MetaMask_contact_list_${timestamp}.json`,
@@ -117,14 +122,35 @@ export default class BackupController {
     };
   }
 
-  async importContactList(jsonString) {
-    const addressBook = JSON.parse(jsonString);
+  async importContactList(jsonString, fileName) {
+    const newState = JSON.parse(jsonString);
+    console.log({ jsonString, newState });
 
-    if (addressBook) {
-      this.addressBookController.update({ addressBook }, UPDATE_STRATEGY.MERGE);
+    function addSourceToEntries(obj, source) {
+      for (let chainId in obj) {
+          for (let address in obj[chainId]) {
+              obj[chainId][address].source = source;
+          }
+      }
+      return obj;
     }
 
-    if (addressBook) {
+    const timestamp = this.getTimestamp();
+
+    const newStateWithSource = addSourceToEntries(
+      newState,
+      `Bulk imported from file '${fileName}' on ${timestamp}.`,
+    );
+
+    if (newStateWithSource) {
+      const previousState = this.addressBookController.state.addressBook;
+      const mergedState = merge({}, previousState, newStateWithSource);
+
+      // overwrite on `update` only does shallow merge
+      this.addressBookController.update({ addressBook: mergedState }, false);
+    }
+
+    if (newStateWithSource) {
       this._trackMetaMetricsEvent({
         event: 'Contact list imported',
         category: 'Backup',
@@ -133,12 +159,11 @@ export default class BackupController {
   }
 
   async clearContactList() {
-    console.log('clearContactList on backup.js');
     this.addressBookController.update(
       {
         addressBook: {},
       },
-      UPDATE_STRATEGY.OVERWRITE,
+      true,
     );
 
     this._trackMetaMetricsEvent({

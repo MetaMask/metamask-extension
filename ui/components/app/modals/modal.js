@@ -28,6 +28,7 @@ import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 
 import EthSignModal from './eth-sign-modal/eth-sign-modal';
+import ConfirmClearContactListModal from './confirm-clear-contact-list';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -280,6 +281,19 @@ const MODALS = {
 
   CUSTOMIZE_NONCE: {
     contents: <CustomizeNonceModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_CLEAR_CONTACT_LIST: {
+    contents: <ConfirmClearContactListModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

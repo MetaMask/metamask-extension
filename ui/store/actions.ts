@@ -1064,9 +1064,15 @@ export async function exportContactList(): Promise<{
   return exportedContactList;
 }
 
-export async function importContactList(jsonString: Json): Promise<true> {
+export async function importContactList(
+  jsonString: Json,
+  fileName: string,
+): Promise<true> {
   try {
-    await submitRequestToBackground('importContactList', [jsonString]);
+    await submitRequestToBackground('importContactList', [
+      jsonString,
+      fileName,
+    ]);
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
