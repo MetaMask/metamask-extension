@@ -121,6 +121,7 @@ import { isMain, isFlask } from '../../shared/constants/environment';
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+import { SCKeyring } from './sca-keyring';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -713,6 +714,7 @@ export default class MetamaskController extends EventEmitter {
         keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
+        SCKeyring,
       ];
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
@@ -3114,10 +3116,9 @@ export default class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
-    const keyring = await this.keyringController.addNewKeyring(
-      KeyringType.imported,
-      [privateKey],
-    );
+    const keyring = await this.keyringController.addNewKeyring(SCKeyring.type, [
+      privateKey,
+    ]);
     const [firstAccount] = await keyring.getAccounts();
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts();

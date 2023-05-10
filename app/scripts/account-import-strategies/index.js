@@ -31,27 +31,27 @@ const accountImporter = {
 
       const trimmedPrivateKey = privateKey.replace(/\s+/gu, ''); // Remove all whitespace
 
-      const prefixedPrivateKey = addHexPrefix(trimmedPrivateKey);
-      let buffer;
-      try {
-        buffer = toBuffer(prefixedPrivateKey);
-      } catch (e) {
-        throw new Error(`t('importAccountErrorNotHexadecimal')`);
-      }
+      // const prefixedPrivateKey = addHexPrefix(trimmedPrivateKey);
+      // let buffer;
+      // try {
+      //   buffer = toBuffer(prefixedPrivateKey);
+      // } catch (e) {
+      //   throw new Error(`t('importAccountErrorNotHexadecimal')`);
+      // }
 
-      try {
-        if (
-          !isValidPrivate(buffer) ||
-          getBinarySize(prefixedPrivateKey) !== 64 + '0x'.length // Fixes issue #17719 -- isValidPrivate() will let a key of 63 hex digits through without complaining, this line ensures 64 hex digits + '0x' = 66 digits
-        ) {
-          throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
-        }
-      } catch (e) {
-        throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
-      }
+      // try {
+      //   if (
+      //     !isValidPrivate(buffer) ||
+      //     getBinarySize(prefixedPrivateKey) !== 64 + '0x'.length // Fixes issue #17719 -- isValidPrivate() will let a key of 63 hex digits through without complaining, this line ensures 64 hex digits + '0x' = 66 digits
+      //   ) {
+      //     throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
+      //   }
+      // } catch (e) {
+      //   throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
+      // }
 
-      const strippedPrivateKey = stripHexPrefix(prefixedPrivateKey);
-      return strippedPrivateKey;
+      // const strippedPrivateKey = stripHexPrefix(prefixedPrivateKey);
+      return trimmedPrivateKey;
     },
     'JSON File': (input, password) => {
       let wallet;

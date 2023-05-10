@@ -38,7 +38,6 @@ export class SCKeyring implements Keyring<string[]> {
 
   constructor(privateKey: string) {
     this.#wallets = [];
-    console.log('Private keys:', privateKey);
 
     /* istanbul ignore next: It's not possible to write a unit test for this, because a constructor isn't allowed
      * to be async. Jest can't await the constructor, and when the error gets thrown, Jest can't catch it. */
@@ -48,15 +47,20 @@ export class SCKeyring implements Keyring<string[]> {
   }
 
   async serialize() {
-    return this.#wallets.map((a) => a.privateKey.toString('hex'));
+    return this.#wallets.map(
+      (wallet) => `${wallet.privateKey.toString('hex')},${wallet.address}`,
+    );
   }
 
   async deserialize(privateKeys: string[]) {
-    this.#wallets = privateKeys.map((pkAndAddress) => {
-      const [hexPrivateKey, address] = pkAndAddress.split(',', 1);
-      const privateKey = Buffer.from(stripHexPrefix(hexPrivateKey), 'hex');
-      return { privateKey, address };
-    });
+    this.#wallets = privateKeys
+      .map((pkAndAddress) => {
+        const [hexPrivateKey, address] = pkAndAddress.split(',', 2);
+        const privateKey = Buffer.from(stripHexPrefix(hexPrivateKey), 'hex');
+        return { privateKey, address };
+      })
+      .filter((wallet) => wallet.address && wallet.privateKey);
+    console.log('deserialize wallets:', this.#wallets);
   }
 
   async addAccounts(numAccounts = 1) {
@@ -74,10 +78,7 @@ export class SCKeyring implements Keyring<string[]> {
   }
 
   async getAccounts() {
-    return ['0x252f4a2eDf7917c4fb04cf9402Fb5724A8B5085f'];
-    // return this.#wallets.map(({ publicKey }) =>
-    //   add0x(bufferToHex(publicToAddress(publicKey))),
-    // );
+    return this.#wallets.map(({ address }) => add0x(address));
   }
 
   async signTransaction(

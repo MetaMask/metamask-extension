@@ -347,7 +347,7 @@ export default class PreferencesController {
     const { identities } = this.store.getState();
     const selectedIdentity = identities[address];
     if (!selectedIdentity) {
-      throw new Error(`Identity for '${address} not found`);
+      throw new Error(`Identity for '${address}' not found`);
     }
 
     selectedIdentity.lastSelected = Date.now();
