@@ -8,7 +8,7 @@ import { KeyringController as MetaMaskKeyringController } from '@metamask/eth-ke
 KeyringController = MetaMaskKeyringController;
 ///: END:ONLY_INCLUDE_IN
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import CodefiKeyringController from '@codefi/eth-keyring-controller';
 KeyringController = CodefiKeyringController;
 ///: END:ONLY_INCLUDE_IN

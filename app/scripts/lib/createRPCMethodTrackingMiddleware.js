@@ -121,7 +121,7 @@ export default function createRPCMethodTrackingMiddleware({
 }) {
   let finalRateLimitSeconds = rateLimitSeconds;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   finalRateLimitSeconds ||= 60 * 5;
   ///: END:ONLY_INCLUDE_IN
 

@@ -7,7 +7,7 @@ import sendMetadata from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset from './watch-asset';
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import mmiSupported from './mmi/mmi-supported';
 import mmiAuthenticate from './mmi/mmi-authenticate';
 import mmiPortfolio from './mmi/mmi-portfolio';
@@ -25,7 +25,7 @@ const handlers = [
   sendMetadata,
   switchEthereumChain,
   watchAsset,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   mmiAuthenticate,
   mmiSupported,
   mmiPortfolio,
