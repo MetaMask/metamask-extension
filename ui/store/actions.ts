@@ -3920,6 +3920,22 @@ export function setDisabledRpcMethodPreference(
   };
 }
 
+interface LockableAssetOpts {
+  tokenAddress: string;
+  setLocked: boolean;
+  tokenStandard: string;
+  tokenId: string | '*';
+  chainId: string;
+}
+
+export function setAssetLock(options: LockableAssetOpts) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('lockAsset', [options]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function getRpcMethodPreferences(): ThunkAction<
   void,
   MetaMaskReduxState,

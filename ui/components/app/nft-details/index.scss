@@ -6,6 +6,12 @@ $spacer-break-small: 16px;
 .nft-details {
   padding: 0 $spacer-break-small;
 
+  &__lock-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
   @include screen-sm-min {
     padding: 0 $spacer-break-large;
   }
@@ -40,6 +46,8 @@ $spacer-break-small: 16px;
   &__card {
     overflow: hidden;
     margin-bottom: $spacer-break-small;
+    position: relative;
+    display: inline-block;
 
     @include screen-sm-min {
       margin-right: $spacer-break-large;

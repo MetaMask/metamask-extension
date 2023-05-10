@@ -15,6 +15,7 @@ import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
 import HoldToRevealModal from './hold-to-reveal-modal';
+import HoldToLockNFTModal from './hold-to-lock-nft-modal';
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
 import TransactionConfirmed from './transaction-confirmed';
@@ -121,6 +122,18 @@ const MODALS = {
 
   HOLD_TO_REVEAL_SRP: {
     contents: <HoldToRevealModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+  LOCK_NFT: {
+    contents: <HoldToLockNFTModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
