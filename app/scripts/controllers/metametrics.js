@@ -561,7 +561,7 @@ export default class MetaMetricsController {
             ...payload.properties,
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             accountAddress: this.selectedAddress,
-            ///: END:ONLY_INCLUDE_IN }
+            ///: END:ONLY_INCLUDE_IN
           },
         }),
         options,
