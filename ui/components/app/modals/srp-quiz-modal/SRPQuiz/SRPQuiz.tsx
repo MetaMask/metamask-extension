@@ -311,7 +311,7 @@ const SRPQuiz = (props: any) => {
     wrongAnswerQuestionTwo,
   ]);
 
-  return <Box>{quizPage()}</Box>;
+  return <Box margin={3}>{quizPage()}</Box>;
 };
 
 export default withModalProps(SRPQuiz);

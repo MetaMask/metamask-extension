@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
 import { Tag } from '../../../component-library/tag';
 import { ellipsify } from '../../../../pages/send/send.utils';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();
@@ -17,7 +18,9 @@ function renderTags(tags) {
       <Tag
         label="AllowList"
         labelProps={{ color: 'primary-inverse' }}
+        labelSize="bodyXs"
         backgroundColor="success-default"
+        boxPadding={3}
       />
     );
   } else if (tags.includes('blockList')) {
@@ -25,7 +28,9 @@ function renderTags(tags) {
       <Tag
         label="BlockList"
         labelProps={{ color: 'primary-inverse' }}
+        labelSize="bodyXs"
         backgroundColor="error-default"
+        boxPadding={3}
       />
     );
   }

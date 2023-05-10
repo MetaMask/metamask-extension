@@ -8,11 +8,15 @@ import {
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../components/component-library';
 import { Button } from '../../../components/component-library/button/button';
+import Box from '../../../components/ui/box';
 import {
   IconColor,
   SEVERITIES,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   CONTACT_ADD_ROUTE,
@@ -150,7 +154,7 @@ export default class ContactListTab extends Component {
 
     return (
       <>
-        <div className="btn-wrapper">
+        <Box className="btn-wrapper" display="flex" flexDirection="column">
           <Button
             data-testid="export-contacts"
             variant={BUTTON_VARIANT.PRIMARY}
@@ -161,6 +165,7 @@ export default class ContactListTab extends Component {
           <label
             htmlFor="import-contact-list"
             className="button btn btn--rounded btn-secondary btn--large settings-page__button import-btn"
+            style={{ marginTop: '16px', marginBottom: '16px' }}
           >
             Import contact list
           </label>
@@ -193,7 +198,7 @@ export default class ContactListTab extends Component {
           >
             Clear contact list
           </Button>
-        </div>
+        </Box>
       </>
     );
   }
@@ -255,12 +260,18 @@ export default class ContactListTab extends Component {
             'address-book-add-button__button--hidden':
               viewingContact || editingContact,
           })}
-          type="secondary"
+          type="primary"
           onClick={() => {
             history.push(CONTACT_ADD_ROUTE);
           }}
         >
-          {this.context.t('addContact')}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
+            color={TextColor.overlayInverse}
+          >
+            {this.context.t('addContact')}
+          </Text>
         </Button>
       </div>
     );

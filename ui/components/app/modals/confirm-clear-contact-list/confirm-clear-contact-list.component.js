@@ -22,7 +22,7 @@ const ConfirmClearContactList = ({ clearContactList, hideModal }) => {
         clearContactList();
         hideModal();
       }}
-      submitText="Clear contact list"
+      submitText="Clear"
       onCancel={() => hideModal()}
       cancelText="Cancel"
       submitType="danger-primary"

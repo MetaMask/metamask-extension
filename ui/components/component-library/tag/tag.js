@@ -13,7 +13,14 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-export const Tag = ({ label, className, labelProps, ...props }) => {
+export const Tag = ({
+  label,
+  className,
+  labelProps,
+  labelSize,
+  boxPadding,
+  ...props
+}) => {
   return (
     <Box
       className={classnames('mm-tag', className)}
@@ -22,13 +29,13 @@ export const Tag = ({ label, className, labelProps, ...props }) => {
       borderWidth={1}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
-      paddingLeft={1}
-      paddingRight={1}
+      paddingLeft={boxPadding || 1}
+      paddingRight={boxPadding || 1}
       borderRadius={BorderRadius.pill}
       display={DISPLAY.INLINE_BLOCK}
       {...props}
     >
-      <Text variant={TextVariant.bodySm} {...labelProps}>
+      <Text variant={TextVariant[labelSize || 'sm']} {...labelProps}>
         {label}
       </Text>
     </Box>

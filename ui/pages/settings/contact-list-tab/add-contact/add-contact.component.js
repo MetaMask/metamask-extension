@@ -198,7 +198,7 @@ export default class AddContact extends PureComponent {
             />
             <Label htmlFor="allow-list-checkbox">
               <Text
-                variant={TextVariant.bodyMdBold}
+                variant={TextVariant.bodyMd}
                 as="span"
                 color={TextColor.successDefault}
               >
@@ -226,7 +226,7 @@ export default class AddContact extends PureComponent {
             />
             <Label htmlFor="block-list-checkbox">
               <Text
-                variant={TextVariant.bodyMdBold}
+                variant={TextVariant.bodyMd}
                 as="span"
                 color={TextColor.errorDefault}
               >
