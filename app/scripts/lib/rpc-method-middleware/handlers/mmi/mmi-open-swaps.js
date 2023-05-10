@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { RPC_ALLOWED_ORIGINS } from '@codefi/mmi-sdk';
+import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 const mmiOpenSwaps = {

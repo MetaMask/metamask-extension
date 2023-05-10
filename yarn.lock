@@ -3626,6 +3626,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-institutional/rpc-allowlist@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@metamask-institutional/rpc-allowlist@npm:0.1.1"
+  checksum: b10d6c7092cebed3c8f174f192110302f82807a14a0429b48e7a62d04290527fd6ce6f301ba8322af38f0db5ceb9e396c44a903e9c8c965380cdc7fc9db5ffeb
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^1.1.0":
   version: 1.1.1
   resolution: "@metamask/abi-utils@npm:1.1.1"
@@ -24052,6 +24059,7 @@ __metadata:
     "@lavamoat/snow": ^1.5.0
     "@material-ui/core": ^4.11.0
     "@metamask-institutional/portfolio-dashboard": 1.1.2
+    "@metamask-institutional/rpc-allowlist": ^0.1.1
     "@metamask/address-book-controller": ^2.0.0
     "@metamask/announcement-controller": ^3.0.0
     "@metamask/approval-controller": ^2.1.0

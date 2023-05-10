@@ -4293,6 +4293,7 @@
       },
       "packages": {
         "browserify>process": true,
+        "browserify>util": true,
         "semver>lru-cache": true
       }
     },
