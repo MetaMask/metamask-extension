@@ -213,6 +213,8 @@ const mapStateToProps = (state, ownProps) => {
     isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
       (custodian) => custodian.name === custodianName,
     )?.isNoteToTraderSupported;
+
+    console.log(isNoteToTraderSupported)
   }
   ///: END:ONLY_INCLUDE_IN
 
