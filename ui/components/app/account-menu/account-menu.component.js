@@ -235,7 +235,10 @@ export default class AccountMenu extends Component {
             diameter={32}
             customizedFox="testString"
           />
-          <div className="account-menu__account-info">
+          <div
+            className="account-menu__account-info"
+            style={{ marginLeft: '8px' }}
+          >
             <div className="account-menu__name">{identity.name || ''}</div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"

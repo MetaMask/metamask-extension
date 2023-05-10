@@ -107,21 +107,30 @@ export default class AppHeader extends PureComponent {
             }
           }}
         >
-          <Identicon
-            address={selectedAddress}
-            diameter={32}
-            addBorder
-            customizedFox="test-string"
-          />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-            unreadNotificationsCount > 0 && (
-              <div className="account-menu__icon__notification-count">
-                {unreadNotificationsCount}
-              </div>
-            )
-            ///: END:ONLY_INCLUDE_IN
-          }
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              border: '1px solid var(--color-text-alternative)',
+            }}
+          >
+            <Identicon
+              address={selectedAddress}
+              diameter={32}
+              addBorder
+              customizedFox="test-string"
+            />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+              unreadNotificationsCount > 0 && (
+                <div className="account-menu__icon__notification-count">
+                  {unreadNotificationsCount}
+                </div>
+              )
+              ///: END:ONLY_INCLUDE_IN
+            }
+          </div>
         </button>
       )
     );

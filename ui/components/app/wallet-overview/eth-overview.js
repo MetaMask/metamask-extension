@@ -16,6 +16,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
+  CUSTOMIZE_ROUTE,
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -370,6 +371,21 @@ const EthOverview = ({ className }) => {
             />
             ///: END:ONLY_INCLUDE_IN
           }
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon
+                name={IconName.ColorPalette}
+                color={IconColor.primaryInverse}
+              />
+            }
+            label="Customize"
+            data-testid="token-overview-buy"
+            onClick={() => {
+              history.push(CUSTOMIZE_ROUTE);
+            }}
+            disabled={false}
+          />
         </>
       }
       className={className}

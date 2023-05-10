@@ -8,6 +8,7 @@ import IdleTimer from 'react-idle-timer';
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
+import CustomizeFoxComponent from '../customize-fox';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
@@ -70,6 +71,7 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
+  CUSTOMIZE_ROUTE,
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
@@ -263,6 +265,11 @@ export default class Routes extends Component {
         <Authenticated
           path={SEND_ROUTE}
           component={SendTransactionScreen}
+          exact
+        />
+        <Authenticated
+          path={CUSTOMIZE_ROUTE}
+          component={CustomizeFoxComponent}
           exact
         />
         <Authenticated

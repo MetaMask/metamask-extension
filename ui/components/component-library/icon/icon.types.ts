@@ -165,6 +165,7 @@ export enum IconName {
   Upload = 'upload',
   Usb = 'usb',
   Wifi = 'wifi',
+  ColorPalette = 'color-palette',
 }
 
 export interface IconProps extends BoxProps {
