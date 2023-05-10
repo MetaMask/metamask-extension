@@ -989,9 +989,9 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: [],
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        [MetaMetricsUserTrait.MmiExtensionId]: null,
-        [MetaMetricsUserTrait.MmiAccountAddress]: false,
-        [MetaMetricsUserTrait.MmiIsCustodian]: 'testid',
+        [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
+        [MetaMetricsUserTrait.MmiAccountAddress]: null,
+        [MetaMetricsUserTrait.MmiIsCustodian]: false,
         ///: END:ONLY_INCLUDE_IN
       });
     });
