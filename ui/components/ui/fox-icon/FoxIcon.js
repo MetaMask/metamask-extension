@@ -2,29 +2,36 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   fillInFoxColor,
+  FOX_COLOR_PALETTE,
   generateColorPurelyOnAddress,
   generateColorsFromAI,
 } from '../../../helpers/utils/generative-color';
 
 import { PREDEFINED_COLOR_PALETTES } from '../../../helpers/constants/color-palette';
+import useDidMountEffect from '../../../helpers/utils/useDidMountEffect';
 
 export const COLOR_PALETTE_TYPE = {
   generative: 'generative',
   ai: 'ai',
-  predefined: 'predefined',
+  editorSelection: 'editorSelection',
+  previousSelected: 'previousSelected',
+  default: 'default',
 };
 
 const FoxIcon = ({
   size = 240,
   address,
   colorPaletteType = COLOR_PALETTE_TYPE.generative,
-  predefinedColorSchema = null,
+  editorSelection = null,
+  settledColorSchema,
+  handleNewColorSettled,
 }) => {
   const [colorSchema, setColorSchema] = useState(
-    fillInFoxColor(generateColorPurelyOnAddress(address)),
+    settledColorSchema || fillInFoxColor(generateColorPurelyOnAddress(address)),
   );
 
-  useEffect(() => {
+  // doesnt run when component is loaded
+  useDidMountEffect(() => {
     switch (colorPaletteType) {
       case COLOR_PALETTE_TYPE.generative:
         setColorSchema(fillInFoxColor(generateColorPurelyOnAddress(address)));
@@ -36,28 +43,38 @@ const FoxIcon = ({
         }
         fetchAISchema();
         break;
-      case COLOR_PALETTE_TYPE.predefined:
+      case COLOR_PALETTE_TYPE.editorSelection:
         setColorSchema(
-          fillInFoxColor(PREDEFINED_COLOR_PALETTES[predefinedColorSchema - 1]),
+          fillInFoxColor(PREDEFINED_COLOR_PALETTES[editorSelection - 1]),
         );
+        break;
+      case COLOR_PALETTE_TYPE.previousSelected:
+        setColorSchema(settledColorSchema);
+        break;
+      case COLOR_PALETTE_TYPE.default:
+        setColorSchema(Object.values(FOX_COLOR_PALETTE));
         break;
       default:
         setColorSchema(fillInFoxColor(generateColorPurelyOnAddress(address)));
         break;
     }
-  }, [address, colorPaletteType, predefinedColorSchema]);
+  }, [address, colorPaletteType, editorSelection]);
 
-  const {
-    earBaseColor,
-    eyesColor,
-    noseColor,
+  useEffect(() => {
+    handleNewColorSettled(colorSchema);
+  }, [colorSchema]);
+
+  const [
     mouthBaseColor,
     mouthShadow,
-    baseSkinTone,
+    eyesColor,
+    noseColor,
+    earBaseColor,
     primaryShadow,
     secondaryShadow,
     tertiaryShadow,
-  } = colorSchema;
+    baseSkinTone,
+  ] = colorSchema;
   return (
     <svg
       width={size}
@@ -306,7 +323,9 @@ FoxIcon.propTypes = {
   size: PropTypes.number,
   address: PropTypes.string,
   colorPaletteType: PropTypes.string,
-  predefinedColorSchema: PropTypes.number,
+  editorSelection: PropTypes.number,
+  settledColorSchema: PropTypes.array,
+  handleNewColorSettled: PropTypes.func,
 };
 
 export default FoxIcon;

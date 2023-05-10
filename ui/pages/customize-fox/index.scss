@@ -1,0 +1,49 @@
+.customize-fox-page {
+  position: relative;
+  background: var(--color-background-default);
+  display: flex;
+  flex-flow: column nowrap;
+
+  &__header {
+    padding: 8px 24px 8px 24px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @include screen-sm-max {
+      background: var(--color-background-alternative);
+    }
+
+    &__title {
+      @include H3;
+      display: flex;
+      align-items: center;
+
+
+      @include screen-sm-max {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 250px;
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    height: 100%;
+    overflow: auto;
+    border-top: 1px solid var(--color-border-muted);
+    padding: 16px;
+
+    &__description {
+      @include H6;
+
+      margin-top: 8px;
+      margin-bottom: 12px;
+      color: var(--color-text-default);
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+}

@@ -87,17 +87,17 @@ export const fillInFoxColor = (colorArray) => {
   const mouthColors = getRainbowColor(colorArray[0], WHITE_HEX, 3);
   // primaryShadow, secondaryShadow, tertiaryShadow, baseSkinTone
   const skinColors = getRainbowColor(colorArray[4], colorArray[5], 5);
-  return {
-    mouthBaseColor: hexToHsl(mouthColors[0]), // mouth
-    mouthShadow: hexToHsl(mouthColors[1]), // mouth shadow
-    eyesColor: hexToHsl(colorArray[1]), // eyes
-    noseColor: hexToHsl(colorArray[2]), // nose
-    earBaseColor: hexToHsl(colorArray[3]), // ear base color
-    primaryShadow: hexToHsl(skinColors[0]), // darkest shadow
-    secondaryShadow: hexToHsl(skinColors[1]), // 2nd shadow
-    tertiaryShadow: hexToHsl(skinColors[2]), // 3rd shadow
-    baseSkinTone: hexToHsl(skinColors[3]), // base skin tone
-  };
+  return [
+    hexToHsl(mouthColors[0]), // mouth
+    hexToHsl(mouthColors[1]), // mouth shadow
+    hexToHsl(colorArray[1]), // eyes
+    hexToHsl(colorArray[2]), // nose
+    hexToHsl(colorArray[3]), // ear base color
+    hexToHsl(skinColors[0]), // darkest shadow
+    hexToHsl(skinColors[1]), // 2nd shadow
+    hexToHsl(skinColors[2]), // 3rd shadow
+    hexToHsl(skinColors[3]), // base skin tone
+  ];
 };
 
 // AI generated color

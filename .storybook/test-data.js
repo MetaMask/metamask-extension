@@ -615,6 +615,17 @@ const state = {
       '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
         address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
         balance: '0x2d3142f5000',
+        colorSchema: [
+          'hsl(353,69%,97%)',
+          'hsl(340,60%,99%)',
+          'hsl(232,31%,24%)',
+          'hsl(261,25%,60%)',
+          'hsl(334,61%,77%)',
+          'hsl(287,32%,67%)',
+          'hsl(262,31%,76%)',
+          'hsl(218,39%,82%)',
+          'hsl(202,49%,87%)',
+        ],
       },
       '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',

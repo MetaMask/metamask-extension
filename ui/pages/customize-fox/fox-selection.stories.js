@@ -6,7 +6,7 @@ import configureStore from '../../store/store';
 
 import mockState from '../../../.storybook/test-data';
 
-import CustomizeFox from '.';
+import FoxSelection from './fox-selection.component';
 
 const store = configureStore({
   metamask: {
@@ -15,9 +15,9 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Pages/CustomizeFox',
+  title: 'Pages/FoxSelection',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const DefaultStory = () => <CustomizeFox />;
+export const DefaultStory = () => <FoxSelection />;
 DefaultStory.storyName = 'Default';
