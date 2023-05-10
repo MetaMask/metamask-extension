@@ -213,6 +213,8 @@ env:
   # if it's not inside process.env
   # Also see DEBUG and METAMASK_DEBUG
   - NODE_DEBUG: ''
+  # Used by react-devtools-core
+  - EDITOR_URL: ''
 
   ###
   # Meta variables
