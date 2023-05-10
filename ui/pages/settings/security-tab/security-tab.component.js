@@ -129,7 +129,7 @@ export default class SecurityTab extends PureComponent {
                     location: 'Settings',
                   },
                 });
-                history.push(REVEAL_SEED_ROUTE);
+                this.props.showSrpQuizModal();
               }}
             >
               {t('revealSeedWords')}

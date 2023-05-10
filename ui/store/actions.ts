@@ -4660,6 +4660,10 @@ export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
 
+export function setUserCompletedSRPQuiz(chainId: string) {
+  return submitRequestToBackground('setUserCompletedSRPQuiz', [chainId]);
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor: Hex) {
   await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);

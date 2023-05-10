@@ -26,6 +26,7 @@ import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
+import SRPQuiz from './srp-quiz-modal/SRPQuiz';
 
 import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import ConfirmClearContactListModal from './confirm-clear-contact-list';
@@ -122,6 +123,19 @@ const MODALS = {
 
   HOLD_TO_REVEAL_SRP: {
     contents: <HoldToRevealModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  SRP_QUIZ: {
+    contents: <SRPQuiz />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

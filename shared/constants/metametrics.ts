@@ -568,6 +568,20 @@ export enum MetaMetricsEventName {
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
+
+  // TODO: rename these to be in line with the other extension MetaMetrics events
+  SRP_REVEAL_QUIZ_PROMPT_SEEN = 'SRP reveal quiz prompt seen',
+  SRP_REVEAL_START_CTA_SELECTED = 'SRP reveal get started CTA selected',
+  SRP_REVEAL_FIRST_QUESTION_SEEN = 'SRP reveal first question seen',
+  SRP_REVEAL_FIRST_QUESTION_WRONG_ANSWER = 'SRP reveal first question answered incorrectly',
+  SRP_REVEAL_FIRST_QUESTION_RIGHT_ASNWER = 'SRP reveal first question answered correctly',
+  SRP_REVEAL_SECOND_QUESTION_SEEN = 'SRP reveal second question seen',
+  SRP_REVEAL_SECOND_QUESTION_WRONG_ANSWER = 'SRP reveal second question answered incorrectly',
+  SRP_REVEAL_SECOND_QUESTION_RIGHT_ASNWER = 'SRP reveal second question answered correctly',
+  REVEAL_SRP = 'Reveal SRP',
+  SRP_COPIED = 'SRP copied',
+  //
+
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',

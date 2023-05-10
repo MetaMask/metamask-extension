@@ -9,6 +9,7 @@ import {
   setIpfsGateway,
   setUseMultiAccountBalanceChecker,
   setUseCurrencyRateCheck,
+  showModal,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -55,6 +56,13 @@ const mapDispatchToProps = (dispatch) => {
     },
     setUseMultiAccountBalanceChecker: (value) => {
       return dispatch(setUseMultiAccountBalanceChecker(value));
+    },
+    showSrpQuizModal: () => {
+      dispatch(
+        showModal({
+          name: 'SRP_QUIZ',
+        }),
+      );
     },
   };
 };

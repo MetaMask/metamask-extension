@@ -58,6 +58,7 @@ export default class AppStateController extends EventEmitter {
         '0x539': true,
       },
       serviceWorkerLastActiveTime: 0,
+      userCompletedSRPQuiz: false,
     });
     this.timer = null;
 
@@ -265,6 +266,10 @@ export default class AppStateController extends EventEmitter {
    */
   setBrowserEnvironment(os, browser) {
     this.store.updateState({ browserEnvironment: { os, browser } });
+  }
+
+  setUserCompletedSRPQuiz(userCompletedSRPQuiz) {
+    this.store.updateState({ userCompletedSRPQuiz })
   }
 
   /**

@@ -2125,7 +2125,7 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
-
+      setUserCompletedSRPQuiz: appStateController.setUserCompletedSRPQuiz.bind(appStateController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -3681,6 +3681,7 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
+
         handleWatchAssetRequest: this.tokensController.watchAsset.bind(
           this.tokensController,
         ),

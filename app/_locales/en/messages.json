@@ -3924,6 +3924,57 @@
     "message": "This word is being shown",
     "description": "Explains that a word in the secret recovery phrase is being shown"
   },
+  "srpSecurityQuizGetStarted": {
+    "message": "Get started"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "If you lose your Secret Recovery Phrase, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Can’t help you"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Write it down, engrave it on metal, or keep it in multiple secret spots so you never lose it. If you lose it, it’s gone forever."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Right! No one can help get your Secret Recovery Phrase back"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Can get it back for you"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "If you lose your Secret Recovery Phrase, it’s gone forever. No one can help you get it back, no matter what they might say."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Wrong! No one can help get your Secret Recovery Phrase back"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "If anyone, even a support agent, asks for your Secret Recovery Phrase..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "You’re being scammed"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Anyone claiming to need your Secret Recovery Phrase is lying to you. If you share it with them, they will steal your assets."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Correct! Sharing your Secret Recovery Phrase is never a good idea"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "You should give it to them"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Anyone claiming to need your Secret Recovery Phrase is lying to you. If you share it with them, they will steal your assets."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Nope! Never share your Secret Recovery Phrase with anyone, ever"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Security quiz"
+  },
   "stable": {
     "message": "Stable"
   },
