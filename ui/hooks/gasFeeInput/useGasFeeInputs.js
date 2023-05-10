@@ -168,6 +168,30 @@ export function useGasFeeInputs(
         setEstimateUsed(transaction?.userFeeLevel);
         setInternalEstimateToUse(transaction?.userFeeLevel);
       }
+
+      if (
+        transaction &&
+        transaction.dappSuggestedGasFees !== undefined &&
+        transaction.dappSuggestedGasFees !== null &&
+        Object.keys(transaction.dappSuggestedGasFees).length > 0 &&
+        transaction.dappSuggestedGasFees.maxPriorityFeePerGas !== undefined
+      ) {
+        const dappMaxFeePerGas = Number(
+          hexToDecimal(transaction.dappSuggestedGasFees.maxPriorityFeePerGas),
+        );
+
+        let highGasFees = 2;
+        if (gasFeeEstimates.high !== undefined) {
+          highGasFees = Number(
+            gasFeeEstimates.high.suggestedMaxPriorityFeePerGas,
+          );
+        }
+
+        if (dappMaxFeePerGas > highGasFees) {
+          setEstimateUsed(PriorityLevels.dappSuggestedHigh);
+        }
+      }
+
       setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
     }
   }, [

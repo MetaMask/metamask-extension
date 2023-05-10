@@ -94,13 +94,16 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
             key="editGasSubTextFeeLabel"
             display="inline-flex"
             className={classNames('gas-details-item__gasfee-label', {
-              'gas-details-item__gas-fee-warning': estimateUsed === 'high',
+              'gas-details-item__gas-fee-warning':
+                estimateUsed === 'high' || estimateUsed === 'dappSuggestedHigh',
             })}
           >
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <Box marginRight={1}>
               <strong>
-                {estimateUsed === 'high' && '⚠ '}
+                {(estimateUsed === 'high' ||
+                  estimateUsed === 'dappSuggestedHigh') &&
+                  '⚠ '}
                 {t('editGasSubTextFeeLabel')}
               </strong>
             </Box>

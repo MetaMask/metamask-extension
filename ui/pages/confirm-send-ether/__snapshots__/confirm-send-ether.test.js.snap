@@ -349,37 +349,13 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 <span
                   class="edit-gas-fee-button__label"
                 >
-                  Site suggested
+                  Site suggested high gas estimate
                 </span>
                 <span
                   class="box mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-primary-default"
                   style="mask-image: url('./images/icons/arrow-right.svg');"
                 />
               </button>
-              <div
-                class="info-tooltip"
-              >
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-2"
-                    class="info-tooltip__tooltip-container"
-                    data-original-title="null"
-                    data-tooltipped=""
-                    style="display: inline;"
-                    tabindex="0"
-                  >
-                    <svg
-                      viewBox="0 0 10 10"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-                        fill="var(--color-icon-alternative)"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <div
@@ -501,12 +477,13 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
                 >
                   <div
-                    class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+                    class="box gas-details-item__gasfee-label gas-details-item__gas-fee-warning box--display-inline-flex box--flex-direction-row"
                   >
                     <div
                       class="box box--margin-right-1 box--flex-direction-row"
                     >
                       <strong>
+                        ⚠ 
                         Max fee:
                       </strong>
                     </div>
