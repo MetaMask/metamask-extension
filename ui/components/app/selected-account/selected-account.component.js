@@ -120,22 +120,13 @@ class SelectedAccount extends Component {
                 <div className="selected-account__copy">
                   <Icon
                     name={
-                      this.state.copied ? IconName.COPY_SUCCESS : IconName.COPY
+                      this.state.copied ? IconName.CopySuccess : IconName.Copy
                     }
-                    size={IconSize.SM}
+                    size={IconSize.Sm}
                     color={IconColor.iconAlternative}
                   />
                 </div>
               )}
-              <div className="selected-account__copy">
-                <Icon
-                  name={
-                    this.state.copied ? IconName.CopySuccess : IconName.Copy
-                  }
-                  size={IconSize.Sm}
-                  color={IconColor.iconAlternative}
-                />
-              </div>
             </div>
           </button>
         </Tooltip>
