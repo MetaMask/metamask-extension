@@ -72,6 +72,7 @@ import {
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
   CUSTOMIZE_ROUTE,
+  CUSTOMIZE_FOX_ROUTE,
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
@@ -116,6 +117,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import FoxSelection from '../customize-fox/fox-selection.component';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -270,6 +272,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CUSTOMIZE_ROUTE}
           component={CustomizeFoxComponent}
+          exact
+        />
+        <Authenticated
+          path={CUSTOMIZE_FOX_ROUTE}
+          component={FoxSelection}
           exact
         />
         <Authenticated

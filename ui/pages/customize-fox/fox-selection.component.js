@@ -187,7 +187,7 @@ export default function FoxSelection() {
                 <Dropdown
                   options={EditorSelectionOptions}
                   selectedOption={editorSelection}
-                  style={{ width: '160px', marginLeft: '24px' }}
+                  style={{ width: '220px', marginLeft: '24px' }}
                   onChange={(option) => setEditorSelection(option)}
                 />
               )}
