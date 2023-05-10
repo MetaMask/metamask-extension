@@ -174,7 +174,7 @@ describe('Confirm Transaction Base', () => {
         details: 'details',
         custodyType: 'testCustody - Saturn',
         custodianName: 'saturn-dev',
-      }
+      },
     };
 
     baseStore.metamask.mmiConfiguration = {
