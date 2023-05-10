@@ -3,7 +3,7 @@
 
 let KeyringController;
 
-///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { KeyringController as MetaMaskKeyringController } from '@metamask/eth-keyring-controller';
 KeyringController = MetaMaskKeyringController;
 ///: END:ONLY_INCLUDE_IN
