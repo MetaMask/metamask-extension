@@ -31,6 +31,7 @@ export default function FoxSelection() {
   // internal state
   const [selectedAccountIndex, setSelectedAccountIndex] = useState('0');
 
+  const [shouldShuffle, setShouldShuffle] = useState(false);
   const [accountOptions, setAccountOptions] = useState([]);
   const [editorSelection, setEditorSelection] = useState('1');
   const [foxColorSchema, setFoxColorSchema] = useState(
@@ -97,6 +98,10 @@ export default function FoxSelection() {
 
   const handleSaveSelection = () => {
     console.log(foxColorSchema);
+  };
+
+  const handleShuffle = () => {
+    setShouldShuffle(!shouldShuffle);
   };
 
   return (
@@ -171,7 +176,12 @@ export default function FoxSelection() {
                 options={polishOptions}
                 selectedOption={polishOption}
                 style={{ width: '200px' }}
-                onChange={(option) => setPolishOption(option)}
+                onChange={(option) => {
+                  setPolishOption(option);
+                  if (polishOption !== 'editorSelection') {
+                    setEditorSelection('1');
+                  }
+                }}
               />
               {polishOption === 'editorSelection' && (
                 <Dropdown
@@ -200,6 +210,7 @@ export default function FoxSelection() {
               colorPaletteType={polishOption}
               editorSelection={Number(editorSelection)}
               handleNewColorSettled={handleNewColorSettled}
+              shouldShuffle={shouldShuffle}
             />
           </div>
 
@@ -211,7 +222,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.primaryDefault}
                 >
-                  Reset to my previous selection
+                  Reset to my previous selection 🙏🏻
                 </Text>
               </Button>
             )}
@@ -222,7 +233,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.primaryDefault}
                 >
-                  Cancel and I will choose another time
+                  Cancel and I will choose another time 👋
                 </Text>
               </Button>
               <Text variant={TextVariant.bodyXs} color={TextColor.textMuted}>
@@ -230,6 +241,19 @@ export default function FoxSelection() {
                 fox)
               </Text>
             </Box>
+            {(polishOption === 'generative' || polishOption === 'ai') && (
+              <Box marginTop={4}>
+                <Button type="tertiary" onClick={() => handleShuffle()}>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    color={TextColor.overlayInverse}
+                  >
+                    Shuffle to see more ✨
+                  </Text>
+                </Button>
+              </Box>
+            )}
             <Box marginTop={4}>
               <Button type="primary" onClick={() => handleSaveSelection()}>
                 <Text
@@ -237,7 +261,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.overlayInverse}
                 >
-                  Save this fox for me
+                  Save this fox for me 😗
                 </Text>
               </Button>
             </Box>

@@ -25,6 +25,7 @@ const FoxIcon = ({
   editorSelection = null,
   settledColorSchema,
   handleNewColorSettled,
+  shouldShuffle,
 }) => {
   const [colorSchema, setColorSchema] = useState(
     settledColorSchema || fillInFoxColor(generateColorPurelyOnAddress(address)),
@@ -38,9 +39,13 @@ const FoxIcon = ({
         break;
       case COLOR_PALETTE_TYPE.ai:
         async function fetchAISchema() {
-          const colorsFromAI = await generateColorsFromAI(address);
+          const colorsFromAI = await generateColorsFromAI(
+            address,
+            shouldShuffle,
+          );
           setColorSchema(fillInFoxColor(colorsFromAI));
         }
+
         fetchAISchema();
         break;
       case COLOR_PALETTE_TYPE.editorSelection:
@@ -63,6 +68,19 @@ const FoxIcon = ({
   useEffect(() => {
     handleNewColorSettled(colorSchema);
   }, [colorSchema]);
+
+  // shuffle flagggg
+  useEffect(() => {
+    if (colorPaletteType === COLOR_PALETTE_TYPE.generative) {
+      setColorSchema(fillInFoxColor(generateColorPurelyOnAddress(address)));
+    } else if (colorPaletteType === COLOR_PALETTE_TYPE.ai) {
+      async function fetchAISchema() {
+        const colorsFromAI = await generateColorsFromAI(address, shouldShuffle);
+        setColorSchema(fillInFoxColor(colorsFromAI));
+      }
+      fetchAISchema();
+    }
+  }, [shouldShuffle, address]);
 
   const [
     mouthBaseColor,
@@ -326,6 +344,7 @@ FoxIcon.propTypes = {
   editorSelection: PropTypes.number,
   settledColorSchema: PropTypes.array,
   handleNewColorSettled: PropTypes.func,
+  shouldShuffle: PropTypes.bool,
 };
 
 export default FoxIcon;

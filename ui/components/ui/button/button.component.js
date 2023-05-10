@@ -9,11 +9,13 @@ const CLASSNAME_RAISED = 'btn-raised';
 const CLASSNAME_LARGE = 'btn--large';
 const CLASSNAME_ROUNDED = 'btn--rounded';
 const CLASSNAME_INLINE = 'btn--inline';
+const CLASSNAME_TERTIARY = 'btn-tertiary';
 
 const typeHash = {
   default: CLASSNAME_DEFAULT,
   primary: CLASSNAME_PRIMARY,
   secondary: CLASSNAME_SECONDARY,
+  tertiary: CLASSNAME_TERTIARY,
   warning: 'btn-warning',
   danger: 'btn-danger',
   'danger-primary': 'btn-danger-primary',

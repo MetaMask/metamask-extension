@@ -159,6 +159,22 @@
   }
 }
 
+.btn-tertiary {
+  color: var(--color-primary-inverse);
+  border: 1px solid var(--color-flask-default);
+  background-color: var(--color-flask-default);
+
+  &:hover {
+    border-color: var(--color-network-sepolia-default);
+    background-color: var(--color-network-sepolia-default);
+  }
+
+  &:active {
+    background: var(--color-network-sepolia-default);
+    border-color: var(--color-network-sepolia-default);
+  }
+}
+
 .btn-link {
   @include H4;
 
