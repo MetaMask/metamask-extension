@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
-
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -40,6 +39,7 @@ import {
   setRemoveNftMessage,
   setNewNftAddedMessage,
   setAssetLock,
+  showModal,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -96,6 +96,7 @@ export default function NftDetails({ nft }) {
   });
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
+  // const [completedLongPress, setCompletedLongPress] = useState(false);
 
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
     isEqualCaseInsensitive(contractAddress, address),
@@ -156,15 +157,31 @@ export default function NftDetails({ nft }) {
 
   const onLockToggle = useCallback(() => {
     dispatch(
-      setAssetLock({
-        tokenAddress: address,
-        setLocked: !isLockedAsset,
-        tokenStandard: standard,
-        tokenId,
-        chainId: currentNetwork,
+      showModal({
+        name: 'LOCK_NFT',
+        nft,
+        onLongPressed: () => {
+          dispatch(
+            setAssetLock({
+              tokenAddress: address,
+              setLocked: !isLockedAsset,
+              tokenStandard: standard,
+              tokenId,
+              chainId: currentNetwork,
+            }),
+          );
+        },
       }),
     );
-  }, [dispatch, address, tokenId, standard, isLockedAsset, currentNetwork]);
+  }, [
+    dispatch,
+    nft,
+    address,
+    tokenId,
+    standard,
+    isLockedAsset,
+    currentNetwork,
+  ]);
 
   const renderActionButton = () => {
     if (isCurrentlyOwned === false) {

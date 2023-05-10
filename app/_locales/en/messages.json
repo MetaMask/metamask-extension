@@ -1774,6 +1774,11 @@
     "message": "but phishers might.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToLockNftTitle": {
+    "message": "Lock: $1",
+    "description": "$1 is the name and tokenId of the NFT"
+  },
+
   "holdToRevealContentPrivateKey1": {
     "message": "Your Private Key provides $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
@@ -1791,6 +1796,9 @@
   },
   "holdToRevealSRP": {
     "message": "Hold to reveal SRP"
+  },
+  "holdToLockNft": {
+    "message": "Hold to Lock NFT"
   },
   "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
