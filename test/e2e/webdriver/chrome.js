@@ -13,9 +13,9 @@ const HTTPS_PROXY_HOST = '127.0.0.1:8000';
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ responsive, port }) {
+  static async build({ openDevToolsForTabs, port }) {
     const args = [`load-extension=dist/chrome`];
-    if (responsive) {
+    if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }
 

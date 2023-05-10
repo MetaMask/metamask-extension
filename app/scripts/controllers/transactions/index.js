@@ -3,8 +3,9 @@ import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
-import Common from '@ethereumjs/common';
+import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
+import { ApprovalType } from '@metamask/controller-utils';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
@@ -41,7 +42,6 @@ import {
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
-  HARDFORKS,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
   NetworkStatus,
@@ -52,10 +52,7 @@ import {
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
-import {
-  ORIGIN_METAMASK,
-  MESSAGE_TYPE,
-} from '../../../../shared/constants/app';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
@@ -225,6 +222,10 @@ export default class TransactionController extends EventEmitter {
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock();
     this._onBootCleanUp();
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.transactionUpdateController = opts.transactionUpdateController;
+    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -271,7 +272,7 @@ export default class TransactionController extends EventEmitter {
     // This logic below will have to be updated each time a hardfork happens
     // that carries with it a new Transaction type. It is inconsequential for
     // hardforks that do not include new types.
-    const hardfork = supportsEIP1559 ? HARDFORKS.LONDON : HARDFORKS.BERLIN;
+    const hardfork = supportsEIP1559 ? Hardfork.London : Hardfork.Berlin;
 
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
@@ -291,7 +292,7 @@ export default class TransactionController extends EventEmitter {
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
 
-    const customChainParams = {
+    return Common.custom({
       name,
       chainId,
       // It is improbable for a transaction to be signed while the network
@@ -305,13 +306,8 @@ export default class TransactionController extends EventEmitter {
       // hardcoding networkId to 'loading'.
       networkId:
         networkStatus === NetworkStatus.Available ? parseInt(networkId, 10) : 0,
-    };
-
-    return Common.forCustomChain(
-      NETWORK_TYPES.MAINNET,
-      customChainParams,
       hardfork,
-    );
+    });
   }
 
   /**
@@ -1248,7 +1244,9 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId);
+    await this.approveTransaction(newTxMeta.id, actionId, {
+      hasApprovalRequest: false,
+    });
     return newTxMeta;
   }
 
@@ -1306,7 +1304,9 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId);
+    await this.approveTransaction(newTxMeta.id, actionId, {
+      hasApprovalRequest: false,
+    });
     return newTxMeta;
   }
 
@@ -1345,14 +1345,26 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {number} txId - the tx's Id
    * @param {string} actionId - actionId passed from UI
+   * @param opts - options object
+   * @param opts.hasApprovalRequest - whether the transaction has an approval request
    */
-  async approveTransaction(txId, actionId) {
+  async approveTransaction(txId, actionId, { hasApprovalRequest = true } = {}) {
     // TODO: Move this safety out of this function.
     // Since this transaction is async,
     // we need to keep track of what is currently being signed,
     // So that we do not increment nonce + resubmit something
     // that is already being incremented & signed.
     const txMeta = this.txStateManager.getTransaction(txId);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta.custodyStatus) {
+      this.inProcessOfSigning.delete(txId);
+      await this.signTransaction(txId);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     if (this.inProcessOfSigning.has(txId)) {
       return;
     }
@@ -1361,7 +1373,9 @@ export default class TransactionController extends EventEmitter {
     try {
       // approve
       this.txStateManager.setTxStatusApproved(txId);
-      this._acceptApproval(txMeta);
+      if (hasApprovalRequest) {
+        this._acceptApproval(txMeta);
+      }
       // get next nonce
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
@@ -1504,13 +1518,31 @@ export default class TransactionController extends EventEmitter {
     const fromAddress = txParams.from;
     const common = await this.getCommonConfiguration(txParams.from);
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
-    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+    const signedEthTx = await this.signEthTx(
+      unsignedEthTx,
+      fromAddress,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      txMeta.custodyStatus ? txMeta : undefined,
+      ///: END:ONLY_INCLUDE_IN
+    );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (txMeta.custodyStatus) {
+      txMeta.custodyId = signedEthTx.custodian_transactionId;
+      txMeta.custodyStatus = signedEthTx.transactionStatus;
+
+      this.transactionUpdateController.addTransactionToWatchList(
+        txMeta.custodyId,
+        fromAddress,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = bufferToHex(signedEthTx.r);
-    txMeta.s = bufferToHex(signedEthTx.s);
-    txMeta.v = bufferToHex(signedEthTx.v);
+    txMeta.r = addHexPrefix(signedEthTx.r.toString(16));
+    txMeta.s = addHexPrefix(signedEthTx.s.toString(16));
+    txMeta.v = addHexPrefix(signedEthTx.v.toString(16));
 
     this.txStateManager.updateTransaction(
       txMeta,
@@ -1868,9 +1900,18 @@ export default class TransactionController extends EventEmitter {
         },
       })
       .forEach((txMeta) => {
-        // Line below will try to publish transaction which is in
-        // APPROVED state at the time of controller bootup
-        this.approveTransaction(txMeta.id);
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        // If you create a Tx and its still inside the custodian waiting to be approved we don't want to approve it right away
+        if (!txMeta.custodyStatus) {
+          ///: END:ONLY_INCLUDE_IN
+
+          // Line below will try to publish transaction which is in
+          // APPROVED state at the time of controller bootup
+          this.approveTransaction(txMeta.id);
+
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        }
+        ///: END:ONLY_INCLUDE_IN
       });
   }
 
@@ -2608,7 +2649,7 @@ export default class TransactionController extends EventEmitter {
   _requestApproval(txMeta) {
     const id = this._getApprovalId(txMeta);
     const { origin } = txMeta;
-    const type = MESSAGE_TYPE.TRANSACTION;
+    const type = ApprovalType.Transaction;
     const requestData = { txId: txMeta.id };
 
     this.messagingSystem

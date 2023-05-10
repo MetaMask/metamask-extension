@@ -24,7 +24,7 @@ describe('Account Details Modal', () => {
   global.platform = { openTab: jest.fn() };
 
   it('should set account label when changing default account label', () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, getByPlaceholderText } = renderWithProvider(
       <AccountDetailsModal />,
       mockStore,
     );
@@ -35,7 +35,7 @@ describe('Account Details Modal', () => {
     fireEvent.click(editButton);
     expect(queryByTestId('editable-input')).toBeInTheDocument();
 
-    const editableInput = queryByTestId('editable-input');
+    const editableInput = getByPlaceholderText('Account name');
     const newAccountLabel = 'New Label';
 
     fireEvent.change(editableInput, {
@@ -86,7 +86,7 @@ describe('Account Details Modal', () => {
             },
           },
         },
-        provider: {
+        providerConfig: {
           chainId: '0x99',
         },
       },

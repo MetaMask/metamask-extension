@@ -14,7 +14,7 @@ import {
 describe('Institutional selectors', () => {
   const state = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: '1',
       },
