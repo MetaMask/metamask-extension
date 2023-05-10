@@ -25,6 +25,7 @@ import {
   SETTINGS_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
+  IMPORT_AA_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -380,11 +381,11 @@ export default class AccountMenu extends Component {
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AccountAddSelected,
               properties: {
-                account_type: MetaMetricsEventAccountType.Default,
+                account_type: MetaMetricsEventAccountType.Imported,
                 location: 'Main Menu',
               },
             });
-            history.push(NEW_ACCOUNT_ROUTE);
+            history.push(IMPORT_AA_ACCOUNT_ROUTE);
           }}
           icon={<Icon name={IconName.Add} color={IconColor.iconAlternative} />}
           text={'Create AA Account'}

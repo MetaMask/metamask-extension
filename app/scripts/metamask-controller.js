@@ -712,7 +712,10 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.CachedBalancesController,
     });
 
-    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
+    let additionalKeyrings = [
+      keyringBuilderFactory(QRHardwareKeyring),
+      keyringBuilderFactory(SmartContractKeyring),
+    ];
 
     if (this.canUseHardwareWallets()) {
       const keyringOverrides = this.opts.overrides?.keyrings;
@@ -721,6 +724,7 @@ export default class MetamaskController extends EventEmitter {
         keyringOverrides?.trezor || TrezorKeyring,
         keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
+        SmartContractKeyring,
         QRHardwareKeyring,
       ];
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
@@ -2912,6 +2916,8 @@ export default class MetamaskController extends EventEmitter {
       case KeyringType.qr:
       case KeyringType.ledger:
         return 'hardware';
+      case KeyringType.accountAbstraction:
+        return 'Smart Contract';
       case KeyringType.imported:
         return 'imported';
       default:
@@ -3184,16 +3190,20 @@ export default class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy(strategy, args) {
     let keyring;
-    if (args.isAA) {
+    console.log(args);
+    const [privateKey, scAddress, isAA] = args;
+
+    if (isAA) {
+      console.log('in isAA');
       keyring = await this.keyringController.addNewKeyring(
         KeyringType.accountAbstraction,
-        [args.privateKey, args.scAddress],
+        [{ privateKey, scAddress }],
       );
     } else {
-      const privateKey = await accountImporter.importAccount(strategy, args);
+      const privateKey2 = await accountImporter.importAccount(strategy, args);
       keyring = await this.keyringController.addNewKeyring(
         KeyringType.imported,
-        [privateKey],
+        [privateKey2],
       );
     }
 

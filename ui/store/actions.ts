@@ -395,6 +395,8 @@ export function importNewAccount(
 
     dispatch(showLoadingIndication(loadingMessage));
 
+    console.log(strategy, args);
+
     try {
       log.debug(`background.importAccountWithStrategy`);
       await submitRequestToBackground('importAccountWithStrategy', [

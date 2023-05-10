@@ -30,7 +30,7 @@ type KeyringOpt = {
   version?: SignTypedDataVersion | string;
 };
 
-const TYPE = 'Smart Contract';
+const TYPE = 'Account Abstraction';
 
 export default class SmartContractKeyring implements Keyring<string[]> {
   #wallets: { privateKey: Buffer; publicKey: Buffer }[];
@@ -39,7 +39,12 @@ export default class SmartContractKeyring implements Keyring<string[]> {
 
   static type: string = TYPE;
 
-  constructor(privateKeys: string[] = []) {
+  constructor(
+    privateKeys: {
+      privateKey: string;
+      scAddress: string;
+    }[] = [],
+  ) {
     this.#wallets = [];
 
     /* istanbul ignore next: It's not possible to write a unit test for this, because a constructor isn't allowed
@@ -53,12 +58,18 @@ export default class SmartContractKeyring implements Keyring<string[]> {
     return this.#wallets.map((a) => a.privateKey.toString('hex'));
   }
 
-  async deserialize(privateKeys: string[]) {
-    this.#wallets = privateKeys.map((hexPrivateKey) => {
-      const strippedHexPrivateKey = stripHexPrefix(hexPrivateKey);
-      const privateKey = Buffer.from(strippedHexPrivateKey, 'hex');
-      const publicKey = privateToPublic(privateKey);
-      return { privateKey, publicKey };
+  async deserialize(
+    privateKeys: {
+      privateKey: string;
+      scAddress: string;
+    }[],
+  ) {
+    this.#wallets = privateKeys.map((account) => {
+      const { privateKey, scAddress } = account;
+      return {
+        privateKey: Buffer.from(privateKey, 'hex'),
+        publicKey: Buffer.from(scAddress, 'hex'),
+      };
     });
   }
 
@@ -67,22 +78,22 @@ export default class SmartContractKeyring implements Keyring<string[]> {
     for (let i = 0; i < numAccounts; i++) {
       const privateKey = generateKey();
       const publicKey = privateToPublic(privateKey);
-      const provider = new ethers.providers.JsonRpcProvider(
-        'https://polygon-mumbai.infura.io/v3/{apiKey}',
-      );
+      // const provider = new ethers.providers.JsonRpcProvider(
+      //   'https://polygon-mumbai.infura.io/v3/{apiKey}',
+      // );
 
-      const signer = new ethers.Wallet(privateKey, provider);
-      const factory = new ethers.Contract(
-        '0x665cf455371e12EA5D49a7bA295cD060f436D95e',
-        factoryAbi.abi,
-        signer,
-      );
+      // const signer = new ethers.Wallet(privateKey, provider);
+      // const factory = new ethers.Contract(
+      //   '0x665cf455371e12EA5D49a7bA295cD060f436D95e',
+      //   factoryAbi.abi,
+      //   signer,
+      // );
 
-      const salt = new Date().getTime();
-      const aaAddress = await factory.getAddress(
-        publicKey.toString('hex'),
-        salt,
-      );
+      // const salt = new Date().getTime();
+      // const aaAddress = await factory.getAddress(
+      //   publicKey.toString('hex'),
+      //   salt,
+      // );
       // const aaAccount = await factory.createAccount(
       //   publicKey.toString('hex'),
       //   salt,
@@ -92,7 +103,7 @@ export default class SmartContractKeyring implements Keyring<string[]> {
       newWallets.push({
         privateKey,
         publicKeyEOA: publicKey,
-        publicKey: Buffer.from(aaAddress, 'hex'),
+        publicKey: '', //Buffer.from(aaAddress, 'hex'),
       });
     }
 
@@ -115,6 +126,9 @@ export default class SmartContractKeyring implements Keyring<string[]> {
     opts: KeyringOpt = {},
   ): Promise<TypedTransaction> {
     const privKey = this.#getPrivateKeyFor(address, opts);
+
+    const userOps = {};
+
     const signedTx = transaction.sign(privKey);
     // Newer versions of Ethereumjs-tx are immutable and return a new tx object
     return signedTx === undefined ? transaction : signedTx;

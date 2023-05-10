@@ -27,6 +27,7 @@ const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
+const IMPORT_AA_ACCOUNT_ROUTE = '/new-account/import-aa';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
@@ -130,6 +131,7 @@ const PATH_NAME_MAP = {
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
+  [IMPORT_AA_ACCOUNT_ROUTE]: 'New AA Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
@@ -195,6 +197,7 @@ export {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
+  IMPORT_AA_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   TOKEN_DETAILS,
