@@ -3,15 +3,18 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, matchPath } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  BUILD_QUOTE_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   DEFAULT_ROUTE,
+  SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
 
 import {
@@ -53,8 +56,9 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getSendStage, SEND_STAGES } from '../../../ducks/send';
 
-export const AppHeader = ({ onClick }) => {
+export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
@@ -87,6 +91,33 @@ export const AppHeader = ({ onClick }) => {
     .querySelector('[dir]')
     ?.getAttribute('dir');
 
+  // Disable the network and account pickers if the user is in
+  // a critical flow
+  const sendStage = useSelector(getSendStage);
+  const isConfirmationPage = Boolean(
+    matchPath(location.pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE,
+      exact: false,
+    }),
+  );
+  const isTransactionEditPage = [
+    SEND_STAGES.EDIT,
+    SEND_STAGES.DRAFT,
+    SEND_STAGES.ADD_RECIPIENT,
+  ].includes(sendStage);
+  const isSwapsPage = Boolean(
+    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+  );
+  const isSwapsBuildQuotePage = Boolean(
+    matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
+  );
+
+  const disablePickers =
+    isConfirmationPage ||
+    isTransactionEditPage ||
+    (isSwapsPage && !isSwapsBuildQuotePage);
+  const disableNetworkPicker = isSwapsPage || disablePickers;
+
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
     dispatch(toggleNetworkMenu());
@@ -113,12 +144,7 @@ export const AppHeader = ({ onClick }) => {
         >
           <MetafoxLogo
             unsetIconHeight
-            onClick={async () => {
-              if (onClick) {
-                await onClick();
-              }
-              history.push(DEFAULT_ROUTE);
-            }}
+            onClick={async () => history.push(DEFAULT_ROUTE)}
           />
         </Box>
       ) : null}
@@ -160,6 +186,7 @@ export const AppHeader = ({ onClick }) => {
                 size={Size.SM}
                 onClick={networkOpenCallback}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
+                disabled={disableNetworkPicker}
               />
               {popupStatus ? null : (
                 <div>
@@ -170,6 +197,7 @@ export const AppHeader = ({ onClick }) => {
                     onClick={networkOpenCallback}
                     display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
                     className="multichain-app-header__contents__network-picker"
+                    disabled={disableNetworkPicker}
                   />
                 </div>
               )}
@@ -205,6 +233,7 @@ export const AppHeader = ({ onClick }) => {
                     },
                   });
                 }}
+                disabled={disablePickers}
               />
               <Box
                 display={DISPLAY.FLEX}
@@ -321,22 +350,17 @@ export const AppHeader = ({ onClick }) => {
               padding={2}
               gap={2}
             >
-              {popupStatus ? null : (
-                <div>
-                  <PickerNetwork
-                    label={currentNetwork?.nickname}
-                    src={currentNetwork?.rpcPrefs?.imageUrl}
-                    onClick={() => dispatch(toggleNetworkMenu())}
-                    className="multichain-app-header__contents__network-picker"
-                  />
-                </div>
-              )}
+              <div>
+                <PickerNetwork
+                  label={currentNetwork?.nickname}
+                  src={currentNetwork?.rpcPrefs?.imageUrl}
+                  onClick={() => dispatch(toggleNetworkMenu())}
+                  className="multichain-app-header__contents__network-picker"
+                />
+              </div>
               <MetafoxLogo
                 unsetIconHeight
                 onClick={async () => {
-                  if (onClick) {
-                    await onClick();
-                  }
                   history.push(DEFAULT_ROUTE);
                 }}
               />
@@ -350,7 +374,7 @@ export const AppHeader = ({ onClick }) => {
 
 AppHeader.propTypes = {
   /**
-   * The onClick handler to be passed to the MetaMask Logo in the App Header
+   * The location object for the application
    */
-  onClick: PropTypes.func,
+  location: PropTypes.object,
 };
