@@ -87,16 +87,17 @@ export default function ComplianceRow({ address, rowClick, inProgress }) {
           {t('generatingAmlReport')}: {reportsInProgress[0].progress}%
         </Text>
       )}
-      {(!reportsInProgress || reportsInProgress.length === 0) && progressText && (
-        <Text
-          as="p"
-          variant={TextVariant.bodyXs}
-          marginBottom={2}
-          textAlign={TextAlign.Center}
-        >
-          {progressText}
-        </Text>
-      )}
+      {(!reportsInProgress || reportsInProgress.length === 0) &&
+        progressText && (
+          <Text
+            as="p"
+            variant={TextVariant.bodyXs}
+            marginBottom={2}
+            textAlign={TextAlign.Center}
+          >
+            {progressText}
+          </Text>
+        )}
     </Box>
   ) : (
     <Box
