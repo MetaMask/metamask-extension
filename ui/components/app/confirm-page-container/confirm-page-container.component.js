@@ -140,7 +140,7 @@ const ConfirmPageContainer = (props) => {
       fromAddress,
       global.ethereumProvider,
     );
-    setCollectionBalance(tokenBalance.toString(10) || 0);
+    setCollectionBalance(tokenBalance || 0);
   }, [fromAddress, tokenAddress]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
