@@ -1,5 +1,7 @@
 import addEthereumChain from './add-ethereum-chain';
+import addToAddressBook from './add-to-address-book';
 import ethAccounts from './eth-accounts';
+import getAddressBook from './get-address-book';
 import getProviderState from './get-provider-state';
 import logWeb3ShimUsage from './log-web3-shim-usage';
 import requestAccounts from './request-accounts';
@@ -16,5 +18,7 @@ const handlers = [
   sendMetadata,
   switchEthereumChain,
   watchAsset,
+  addToAddressBook,
+  getAddressBook,
 ];
 export default handlers;

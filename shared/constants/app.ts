@@ -45,6 +45,8 @@ export const MESSAGE_TYPE = {
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
+  ADD_TO_ADDRESS_BOOK: 'wallet_addToAddressBook',
+  GET_ADDRESS_BOOK: 'wallet_getAddressBook',
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,

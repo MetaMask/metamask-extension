@@ -272,6 +272,8 @@ export const unrestrictedMethods = Object.freeze([
   'personal_ecRecover',
   'personal_sign',
   'wallet_watchAsset',
+  'wallet_addToAddressBook',
+  'wallet_getAddressBook',
   'web3_clientVersion',
   'web3_sha3',
 ]);
