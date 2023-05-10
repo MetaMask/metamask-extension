@@ -9,7 +9,6 @@ import {
   TextAlign,
   TextVariant,
   JustifyContent,
-  FontWeight,
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
@@ -189,13 +188,14 @@ export default function CreatePassword({
           marginBottom={4}
         />
       )}
-      <Text
-        variant={TextVariant.headingLg}
-        as="h2"
-      >
+      <Text variant={TextVariant.headingLg} as="h2">
         {t('createPassword')}
       </Text>
-      <Text variant={TextVariant.headingSm} as="h4" align={TextAlign.Center}>
+      <Text
+        variant={TextVariant.headingSm}
+        as="h4"
+        textAlign={TextAlign.Center}
+      >
         {t('passwordSetupDetails')}
       </Text>
       <Box justifyContent={JustifyContent.center} marginTop={3}>

@@ -49,7 +49,7 @@ export default function CreationSuccessful() {
       <Text
         variant={TextVariant.headingSm}
         as="h4"
-        boxProps={{ align: AlignItems.flexStart }}
+        align={AlignItems.flexStart}
         marginLeft={12}
       >
         {t('remember')}
