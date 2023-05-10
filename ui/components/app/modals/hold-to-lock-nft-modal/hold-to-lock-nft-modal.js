@@ -10,17 +10,18 @@ import {
   BUTTON_VARIANT,
   ButtonIcon,
   IconName,
+  Icon,
+  IconSize,
 } from '../../../component-library';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  FontStyle,
-  FontWeight,
   JustifyContent,
   Size,
   TextVariant,
   TextAlign,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 
 import HoldToRevealButton from '../../hold-to-reveal-button';
@@ -35,6 +36,7 @@ import {
 
 const HoldToLockNFTModal = ({
   nft,
+  action,
   onLongPressed,
   hideModal,
   willHide = true,
@@ -43,6 +45,7 @@ const HoldToLockNFTModal = ({
 
   const trackEvent = useContext(MetaMetricsContext);
 
+  const lockingAction = action === 'lock';
   const unlock = () => {
     onLongPressed();
     if (willHide) {
@@ -69,18 +72,25 @@ const HoldToLockNFTModal = ({
         justifyContent={JustifyContent.spaceBetween}
         marginBottom={6}
       >
-        <Box
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          className="hold-to-lock-nft__lock-icon-container"
-        >
-          <img
-            src="images/lock-icon.svg"
-            alt={t('padlock')}
-            className="hold-to-lock-nft-button__lock-icon"
-          />
-        </Box>
+        <Icon
+          name={lockingAction ? IconName.Lock : IconName.LockSlash}
+          color={IconColor.iconDefault}
+          size={IconSize.Lg}
+          marginInlineStart={2}
+        />
+
+        <Text variant={TextVariant.bodyMdBold}>
+          {t(lockingAction ? 'holdToLockNftTitle' : 'holdToUnlockNftTitle', [
+            <Text
+              key="hold-to-lock-nft-2"
+              variant={TextVariant.bodyMdBold}
+              as="span"
+            >
+              {`${nft.name} #${nft.tokenId}`}
+            </Text>,
+          ])}
+        </Text>
+
         {willHide && (
           <ButtonIcon
             className="hold-to-lock-nft-modal__close"
@@ -101,25 +111,7 @@ const HoldToLockNFTModal = ({
           />
         )}
       </Box>
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-        marginBottom={6}
-      >
-        <Text variant={TextVariant.bodyMdBold}>
-          {t('holdToLockNftTitle', [
-            <Text
-              key="hold-to-lock-nft-2"
-              variant={TextVariant.bodyMdBold}
-              as="span"
-            >
-              {`${nft.name} #${nft.tokenId}`}
-            </Text>,
-          ])}
-        </Text>
-      </Box>
+
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.COLUMN}
@@ -128,12 +120,18 @@ const HoldToLockNFTModal = ({
         alignItems={AlignItems.center}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-          You are about to lock this asset. This asset cannot be transferred
-          unless you unlock it again.
+          {t(
+            lockingAction
+              ? 'holdToLockNftDescription'
+              : 'holdToUnlockNftDescription',
+          )}
         </Text>
       </Box>
       <HoldToRevealButton
-        buttonText={t('holdToLockNft')}
+        buttonText={t('holdToToggleLock', [
+          lockingAction ? 'Lock' : 'Unlock',
+          'NFT',
+        ])}
         onLongPressed={unlock}
         marginLeft="auto"
         marginRight="auto"
@@ -144,6 +142,7 @@ const HoldToLockNFTModal = ({
 
 HoldToLockNFTModal.propTypes = {
   nft: PropTypes.object.isRequired,
+  action: PropTypes.string.isRequired,
   // The function to be executed after the hold to reveal long press has been completed
   onLongPressed: PropTypes.func.isRequired,
   hideModal: PropTypes.func,

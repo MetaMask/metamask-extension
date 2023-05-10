@@ -160,6 +160,7 @@ export default function NftDetails({ nft }) {
       showModal({
         name: 'LOCK_NFT',
         nft,
+        action: isLockedAsset ? 'unlock' : 'lock',
         onLongPressed: () => {
           dispatch(
             setAssetLock({
@@ -241,16 +242,18 @@ export default function NftDetails({ nft }) {
             className="nft-details__card"
           >
             {nftImage}
-            <span className="nft-details__lock-icon">
-              <Box backgroundColor={BackgroundColor.backgroundDefault}>
-                <Icon
-                  name={IconName.Lock}
-                  color={IconColor.iconDefault}
-                  size={IconSize.Lg}
-                  marginInlineStart={2}
-                />
-              </Box>
-            </span>
+            {isLockedAsset && (
+              <span className="nft-details__lock-icon">
+                <Box backgroundColor={BackgroundColor.backgroundDefault}>
+                  <Icon
+                    name={IconName.Lock}
+                    color={IconColor.iconDefault}
+                    size={IconSize.Lg}
+                    marginInlineStart={2}
+                  />
+                </Box>
+              </span>
+            )}
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}

@@ -1778,6 +1778,18 @@
     "message": "Lock: $1",
     "description": "$1 is the name and tokenId of the NFT"
   },
+  "holdToUnlockNftTitle": {
+    "message": "Unlock: $1",
+    "description": "$1 is the name and tokenId of the NFT"
+  },
+  "holdToLockNftDescription": {
+    "message": "You are about to lock this asset. This asset cannot be transferred unless you unlock it again.",
+    "description": "Description for the hold to lock NFT feature"
+  },
+  "holdToUnlockNftDescription": {
+    "message": "Unlock this asset to allow it to be transferred or sold.",
+    "description": "Description for the hold to unlock NFT feature"
+  },
 
   "holdToRevealContentPrivateKey1": {
     "message": "Your Private Key provides $1",
@@ -1797,8 +1809,11 @@
   "holdToRevealSRP": {
     "message": "Hold to reveal SRP"
   },
-  "holdToLockNft": {
-    "message": "Hold to Lock NFT"
+
+  "holdToToggleLock": {
+    "message": "Hold to $1 $2",
+    "description": "$1 is the action (lock/unlock) and $2 is the name of the asset NFT/Token"
+
   },
   "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
