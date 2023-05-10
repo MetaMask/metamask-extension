@@ -8,7 +8,6 @@ import ActionableMessage from '../../ui/actionable-message';
 import Dropdown from '../../ui/dropdown';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
-  FontWeight,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -129,11 +128,7 @@ export default function SrpInput({ onChange, srpText }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Text
-          align={TextAlign.Left}
-          variant={TextVariant.headingSm}
-          as="h4"
-        >
+        <Text align={TextAlign.Left} variant={TextVariant.headingSm} as="h4">
           {srpText}
         </Text>
       </label>
