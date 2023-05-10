@@ -8,6 +8,7 @@ const { generateIconNames } = require('../development/generate-icon-names');
 module.exports = {
   core: {
     builder: 'webpack5',
+    disableTelemetry: true,
   },
   features: { buildStoriesJson: true },
   stories: [
