@@ -8,6 +8,7 @@ exports[`AccountMismatchWarning should match snapshot of mismatch address warnin
     <div
       aria-describedby="tippy-tooltip-1"
       class="account-mismatch-warning__tooltip-container"
+      data-original-title="null"
       data-tooltipped=""
       style="display: inline;"
       tabindex="0"
