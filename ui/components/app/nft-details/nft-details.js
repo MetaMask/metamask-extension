@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -15,6 +15,7 @@ import {
   OverflowWrap,
   DISPLAY,
   BLOCK_SIZES,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -27,6 +28,7 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedIdentity,
+  getAssetLockedStatus,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getNftContracts } from '../../../ducks/metamask/metamask';
@@ -36,6 +38,7 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
   setNewNftAddedMessage,
+  setAssetLock,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -52,9 +55,16 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import NftDefaultImage from '../nft-default-image';
-import { ButtonIcon, IconName, Text } from '../../component-library';
+import {
+  ButtonIcon,
+  IconName,
+  Text,
+  IconSize,
+  Icon,
+} from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
+import { LockAssetButton } from './lock-asset-button';
 
 export default function NftDetails({ nft }) {
   const {
@@ -75,6 +85,15 @@ export default function NftDetails({ nft }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftContracts = useSelector(getNftContracts);
   const currentNetwork = useSelector(getCurrentChainId);
+
+  // @ellul PULL OUT THE ID GENERATING LOGIC INTO A SHARED FUNCTION
+  const isLockedAsset = useSelector((state) => {
+    const assetIdentifier = `eip155:${currentNetwork}/${standard}:${address}/${tokenId}`;
+    const { lockedAssets, selectedAddress } = state.metamask;
+
+    return Boolean(lockedAssets?.[selectedAddress]?.[assetIdentifier]);
+  });
+
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
@@ -134,7 +153,19 @@ export default function NftDetails({ nft }) {
     history.push(SEND_ROUTE);
   };
 
-  const renderSendButton = () => {
+  const onLockToggle = useCallback(() => {
+    dispatch(
+      setAssetLock({
+        tokenAddress: address,
+        setLocked: !isLockedAsset,
+        tokenStandard: standard,
+        tokenId,
+        chainId: currentNetwork,
+      }),
+    );
+  }, [dispatch, address, tokenId, standard, isLockedAsset, currentNetwork]);
+
+  const renderActionButton = () => {
     if (isCurrentlyOwned === false) {
       return <div style={{ height: '30px' }} />;
     }
@@ -156,9 +187,16 @@ export default function NftDetails({ nft }) {
         {sendDisabled ? (
           <InfoTooltip position="top" contentText={t('sendingDisabled')} />
         ) : null}
+        <LockAssetButton isLocked={isLockedAsset} onClick={onLockToggle} />
       </Box>
     );
   };
+
+  const nftImage = image ? (
+    <img className="nft-details__image" src={nftImageURL} alt={nftImageAlt} />
+  ) : (
+    <NftDefaultImage name={name} tokenId={tokenId} />
+  );
 
   return (
     <>
@@ -184,15 +222,17 @@ export default function NftDetails({ nft }) {
             justifyContent={JustifyContent.center}
             className="nft-details__card"
           >
-            {image ? (
-              <img
-                className="nft-details__image"
-                src={nftImageURL}
-                alt={nftImageAlt}
-              />
-            ) : (
-              <NftDefaultImage name={name} tokenId={tokenId} />
-            )}
+            {nftImage}
+            <span className="nft-details__lock-icon">
+              <Box backgroundColor={BackgroundColor.backgroundDefault}>
+                <Icon
+                  name={IconName.Lock}
+                  color={IconColor.iconDefault}
+                  size={IconSize.Lg}
+                  marginInlineStart={2}
+                />
+              </Box>
+            </span>
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
@@ -241,7 +281,7 @@ export default function NftDetails({ nft }) {
                 </Text>
               </div>
             ) : null}
-            {inPopUp ? null : renderSendButton()}
+            {inPopUp ? null : renderActionButton()}
           </Box>
         </div>
         <Box marginBottom={2}>
@@ -418,7 +458,7 @@ export default function NftDetails({ nft }) {
               </Tooltip>
             </Box>
           </Box>
-          {inPopUp ? renderSendButton() : null}
+          {inPopUp ? renderActionButton() : null}
           <Text
             color={TextColor.textAlternative}
             variant={TextVariant.bodySm}
