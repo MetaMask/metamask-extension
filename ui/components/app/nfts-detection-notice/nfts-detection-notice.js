@@ -9,10 +9,12 @@ import {
   FONT_WEIGHT,
   DISPLAY,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { Icon, IconName } from '../../component-library';
 
 export default function NftsDetectionNotice() {
   const t = useI18nContext();
@@ -23,12 +25,10 @@ export default function NftsDetectionNotice() {
       <Dialog type="message" className="nfts-detection-notice__message">
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={1}>
-            <i
-              style={{
-                fontSize: '1rem',
-                color: 'var(--color-primary-default)',
-              }}
-              className="fa fa-info-circle"
+            <Icon
+              name={IconName.Info}
+              className="info-circle"
+              color={IconColor.primaryDefault}
             />
           </Box>
           <Box paddingLeft={2}>

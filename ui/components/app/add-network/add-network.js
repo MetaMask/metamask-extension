@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import {
@@ -26,7 +27,6 @@ import {
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
-  MESSAGE_TYPE,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
 import { requestUserApproval } from '../../../store/actions';
@@ -66,7 +66,7 @@ const AddNetwork = () => {
       unapprovedConfirmations?.find((confirmation) => {
         return (
           confirmation.origin === 'metamask' &&
-          confirmation.type === MESSAGE_TYPE.ADD_ETHEREUM_CHAIN
+          confirmation.type === ApprovalType.AddEthereumChain
         );
       });
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
@@ -258,7 +258,7 @@ const AddNetwork = () => {
                       await dispatch(
                         requestUserApproval({
                           origin: ORIGIN_METAMASK,
-                          type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+                          type: ApprovalType.AddEthereumChain,
                           requestData: {
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl,
