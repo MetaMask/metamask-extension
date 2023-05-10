@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
+import { ApprovalType } from '@metamask/controller-utils';
 import sinon from 'sinon';
 
 import {
@@ -29,10 +30,7 @@ import {
   GasRecommendations,
 } from '../../../../shared/constants/gas';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import {
-  MESSAGE_TYPE,
-  ORIGIN_METAMASK,
-} from '../../../../shared/constants/app';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionController from '.';
@@ -513,7 +511,7 @@ describe('Transaction Controller', function () {
           id: String(txMeta.id),
           origin: ORIGIN_METAMASK,
           requestData: { txId: txMeta.id },
-          type: MESSAGE_TYPE.TRANSACTION,
+          type: ApprovalType.Transaction,
         },
         true, // Show popup
       ]);
@@ -551,7 +549,7 @@ describe('Transaction Controller', function () {
           id: String(secondTxMeta.id),
           origin: ORIGIN_METAMASK,
           requestData: { txId: secondTxMeta.id },
-          type: MESSAGE_TYPE.TRANSACTION,
+          type: ApprovalType.Transaction,
         },
         true, // Show popup
       ]);
@@ -1152,7 +1150,7 @@ describe('Transaction Controller', function () {
       );
       const rawTx = await txController.signTransaction('1');
       const ethTx = TransactionFactory.fromSerializedData(toBuffer(rawTx));
-      assert.equal(ethTx.common.chainIdBN().toNumber(), 5);
+      assert.equal(Number(ethTx.common.chainId()), 5);
     });
   });
 
