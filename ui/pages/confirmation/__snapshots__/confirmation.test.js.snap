@@ -84,8 +84,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 1`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -108,8 +109,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 1`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -132,8 +134,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 1`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -156,8 +159,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 1`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -287,8 +291,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 2`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -311,8 +316,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 2`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -335,8 +341,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 2`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -359,8 +366,9 @@ exports[`Confirmation add-ethereum-chain should match snapshot 2`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fas fa-info-circle"
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
