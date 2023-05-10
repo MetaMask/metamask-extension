@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+
 import {
   TokenStandard,
   TransactionType,
@@ -18,6 +20,7 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
+import TemporaryAllowListPopover from '../temporary-allow-list-popover'
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
@@ -99,6 +102,7 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    showTemporaryAllowListModal,
   } = props;
 
   const t = useI18nContext();
@@ -120,6 +124,8 @@ const ConfirmPageContainer = (props) => {
   );
 
   const metaMetricsId = useSelector(getMetaMetricsId);
+
+  const { openModal, currentModal } = useTransactionModalContext();
 
   // TODO: Move useRamps hook to the confirm-transaction-base parent component.
   // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
@@ -164,6 +170,17 @@ const ConfirmPageContainer = (props) => {
     fetchCollectionBalance,
     collectionBalance,
   ]);
+
+  useEffect(() => {
+    if (showTemporaryAllowListModal && currentModal !== 'temporaryAllowList') {
+      openModal('temporaryAllowList')
+    }
+  }, [
+    showTemporaryAllowListModal,
+    currentModal,
+    openModal,
+  ]);
+
 
   return (
     <GasFeeContextProvider transaction={currentTransaction}>
@@ -347,6 +364,7 @@ const ConfirmPageContainer = (props) => {
             <AdvancedGasFeePopover />
           </>
         )}
+        <TemporaryAllowListPopover />
       </div>
     </GasFeeContextProvider>
   );

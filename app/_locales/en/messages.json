@@ -281,6 +281,12 @@
   "address": {
     "message": "Address"
   },
+  "addressIsBlocked": {
+    "message": "Address is on your block list"
+  },
+  "addressNotInAllowList": {
+    "message": "Address is not in your allowed list. Grant temporary exception?"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -5005,6 +5011,9 @@
   },
   "yes": {
     "message": "Yes"
+  },
+  "no": {
+    "message": "No"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",

@@ -15,7 +15,7 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../ducks/send';
-import { isCustomPriceExcessive } from '../../selectors';
+import { isCustomPriceExcessive, getAddressBookEntry } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -50,6 +50,11 @@ export default function SendTransactionScreen() {
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
   }, [dispatch]);
+
+  const addressBookEntry = useSelector((state) => getAddressBookEntry(state, recipient?.address));
+  const addressIsBlocked = recipient?.error === 'addressIsBlocked';
+  const addressTags = addressBookEntry?.tags || [];
+  const addressNotInAllow = recipient?.address && !addressTags.includes('allowList');
 
   /**
    * It is possible to route to this page directly, either by typing in the url
@@ -145,6 +150,8 @@ export default function SendTransactionScreen() {
           });
           dispatch(showQrScanner());
         }}
+        addressIsBlocked={addressIsBlocked}
+        addressNotInAllow={addressNotInAllow}
       />
       {content}
     </div>

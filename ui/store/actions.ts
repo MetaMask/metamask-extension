@@ -2994,6 +2994,13 @@ export function showSendTokenPage(): Action {
   };
 }
 
+export function grantTemporaryAllowList(txData): Action {
+  return {
+    type: actionConstants.GRANT_TEMPORARY_ALLOW_LIST,
+    payload: txData,
+  }
+}
+
 // TODO: Lift to shared folder when it makes sense
 interface TemporaryFeatureFlagDef {
   [feature: string]: boolean;

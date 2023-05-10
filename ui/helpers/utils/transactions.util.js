@@ -10,6 +10,9 @@ import {
 } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { keccak, toBuffer } from 'ethereumjs-util';
+
 
 /**
  * @typedef EthersContractCall
@@ -214,4 +217,13 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
       throw new Error(`Unrecognized transaction type: ${type}`);
     }
   }
+}
+
+export function generateTxAllowIdentifier(txData) {
+  const txId = txData?.id || '';
+  const to = stripHexPrefix(txData?.txParams?.to || '');
+  const data = stripHexPrefix(txData?.txParams?.data || '');
+  const rawTxAllowIdentifier = txId + to + data;
+  const txAllowIdentifierHash = keccak(toBuffer(addHexPrefix(rawTxAllowIdentifier || '1'), 'hex')).toString('hex');
+  return txAllowIdentifierHash;
 }

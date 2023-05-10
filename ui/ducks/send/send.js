@@ -39,6 +39,7 @@ import {
   getEnsResolutionByAddress,
   getSelectedAccount,
   getSelectedAddress,
+  getAddressBookEntry,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -1112,7 +1113,7 @@ const slice = createSlice({
     updateRecipient: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      draftTransaction.recipient.error = null;
+      draftTransaction.recipient.error = action.payload.error || null;
       state.recipientInput = '';
       draftTransaction.recipient.address = action.payload.address ?? '';
       draftTransaction.recipient.nickname = action.payload.nickname ?? '';
@@ -1327,7 +1328,9 @@ const slice = createSlice({
         state.draftTransactions[state.currentTransactionUUID];
 
       if (draftTransaction) {
-        if (
+        if (action.payload.isOnBlockList) {
+          draftTransaction.recipient.error = 'addressIsBlocked';
+        } else if (
           state.recipientMode === RECIPIENT_SEARCH_MODES.MY_ACCOUNTS ||
           state.recipientInput === '' ||
           state.recipientInput === null
@@ -1406,6 +1409,12 @@ const slice = createSlice({
       });
       if (draftTransaction) {
         switch (true) {
+          case draftTransaction.recipient.error === 'addressIsBlocked':
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because recipient is on block list`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case Boolean(draftTransaction.amount.error):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Amount is in error ${draftTransaction.amount.error}`,
@@ -1879,10 +1888,13 @@ export function updateRecipient({ address, nickname }) {
     const state = getState();
     const nicknameFromAddressBookEntryOrAccountName =
       getAddressBookEntryOrAccountName(state, address) ?? '';
+    const addressBookEntry = getAddressBookEntry(state, address);
+    const isOnBlockList = addressBookEntry?.tags?.includes('blockList');
     await dispatch(
       actions.updateRecipient({
         address,
         nickname: nickname || nicknameFromAddressBookEntryOrAccountName,
+        error: isOnBlockList ? 'addressIsBlocked' : null,
       }),
     );
     await dispatch(computeEstimatedGasLimit());
@@ -1914,6 +1926,8 @@ export function updateRecipientUserInput(userInput) {
     const useTokenDetection = getUseTokenDetection(state);
     const tokenMap = getTokenList(state);
     const tokenAddressList = Object.keys(tokenMap);
+    const addressBookEntry = getAddressBookEntry(state, userInput);
+    const isOnBlockList = addressBookEntry?.tags?.includes('blockList');
 
     const inputIsValidHexAddress = isValidHexAddress(userInput);
     let isProbablyAnAssetContract = false;
@@ -1950,6 +1964,7 @@ export function updateRecipientUserInput(userInput) {
           useTokenDetection,
           tokenAddressList,
           isProbablyAnAssetContract,
+          isOnBlockList,
         },
         resolve,
       );
@@ -2690,6 +2705,7 @@ export function getSendErrors(state) {
   return {
     gasFee: getCurrentDraftTransaction(state).gas?.error,
     amount: getCurrentDraftTransaction(state).amount?.error,
+    recipient: getCurrentDraftTransaction(state).recipient?.error,
   };
 }
 

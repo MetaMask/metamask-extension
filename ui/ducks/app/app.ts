@@ -4,6 +4,7 @@ import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
+import { generateTxAllowIdentifier } from '../../helpers/utils/transactions.util'
 import * as actionConstants from '../../store/actionConstants';
 
 interface AppState {
@@ -132,6 +133,7 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  temporaryAllowList: {},
 };
 
 export default function reduceApp(
@@ -433,6 +435,11 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    case actionConstants.GRANT_TEMPORARY_ALLOW_LIST:
+      return {
+        ...appState,
+        temporaryAllowList: { [generateTxAllowIdentifier(action.payload)]: true  }
+      }
     default:
       return appState;
   }
@@ -487,6 +494,10 @@ export function getQrCodeData(state: AppSliceState): {
 
 export function getGasLoadingAnimationIsShowing(state: AppSliceState): boolean {
   return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getTemporaryAllowList(state: AppSliceState): boolean {
+  return state.appState.temporaryAllowList;
 }
 
 export function getLedgerWebHidConnectedStatus(

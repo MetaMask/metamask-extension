@@ -9,6 +9,9 @@ import { usePrevious } from './usePrevious';
 import { useTokenTracker } from './useTokenTracker';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
+  if (!tokenAddress || !userAddress || !transactionData) {
+    return {};
+  }
   const dispatch = useDispatch();
   // state selectors
   const nfts = useSelector(getNfts);

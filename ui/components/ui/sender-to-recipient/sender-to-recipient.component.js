@@ -227,9 +227,10 @@ export default function SenderToRecipient({
   variant,
   warnUserOnAccountMismatch,
   recipientIsOwnedAccount,
+  hideSender = false,
 }) {
   const t = useI18nContext();
-  const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
+  const checksummedSenderAddress = !hideSender && toChecksumHexAddress(senderAddress);
   const checksummedRecipientAddress = toChecksumHexAddress(recipientAddress);
 
   return (
@@ -237,15 +238,15 @@ export default function SenderToRecipient({
       className={classnames('sender-to-recipient', variantHash[variant])}
       data-testid="sender-to-recipient"
     >
-      <SenderAddress
+      {!hideSender ? (<SenderAddress
         checksummedSenderAddress={checksummedSenderAddress}
         addressOnly={addressOnly}
         senderName={senderName}
         onSenderClick={onSenderClick}
         senderAddress={senderAddress}
         warnUserOnAccountMismatch={warnUserOnAccountMismatch}
-      />
-      <Arrow variant={variant} />
+      />) : null}
+      {!hideSender ? (<Arrow variant={variant} />) : null }
       {recipientAddress ? (
         <RecipientWithAddress
           checksummedRecipientAddress={checksummedRecipientAddress}

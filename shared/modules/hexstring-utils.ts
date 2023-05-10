@@ -76,7 +76,7 @@ export function toChecksumHexAddress(address: string) {
 }
 
 export function stripHexPrefix(str: string) {
-  if (typeof str !== 'string') {
+  if (typeof str !== 'string' || !str) {
     return str;
   }
   return isHexPrefixed(str) ? str.slice(2) : str;

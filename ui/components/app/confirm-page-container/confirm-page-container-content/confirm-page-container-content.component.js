@@ -6,7 +6,7 @@ import Button from '../../../ui/button';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
-import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import { INSUFFICIENT_FUNDS_ERROR_KEY, ADDRESS_NOT_IN_ALLOW_LIST_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
 import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
@@ -162,12 +162,16 @@ export default class ConfirmPageContainerContent extends Component {
       isBuyableChain,
       txData,
       metaMetricsId,
+      temporaryAllowListAccept,
+      temporaryAllowListReject,
     } = this.props;
 
     const { t } = this.context;
 
     const showInsuffienctFundsError =
       (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+
+    const showAddressAllowListError = errorKey === ADDRESS_NOT_IN_ALLOW_LIST_ERROR_KEY;
 
     return (
       <div
@@ -204,8 +208,7 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559 &&
-          !showInsuffienctFundsError &&
+        {!showInsuffienctFundsError && !showAddressAllowListError &&
           (errorKey || errorMessage) && (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />

@@ -8,6 +8,7 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+  ADDRESS_NOT_IN_ALLOW_LIST_ERROR_KEY,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 
@@ -219,7 +220,16 @@ export default class ConfirmTransactionBase extends Component {
       customGas,
       noGasPrice,
       gasFeeIsCustom,
+      addressIsNotInAllowedList,
+      userGrantedTemporaryAllowList,
     } = this.props;
+
+    if (addressIsNotInAllowedList && !this.props.userGrantedTemporaryAllowList) {
+      return {
+        valid: false,
+        errorKey: ADDRESS_NOT_IN_ALLOW_LIST_ERROR_KEY,
+      };
+    }
 
     const insufficientBalance =
       balance &&
@@ -802,6 +812,7 @@ export default class ConfirmTransactionBase extends Component {
       isApprovalOrRejection,
       assetStandard,
       title,
+      addressIsNotInAllowedList,
     } = this.props;
     const {
       submitting,
@@ -877,6 +888,7 @@ export default class ConfirmTransactionBase extends Component {
           hasSimulationError={hasSimulationError}
           warning={submitWarning}
           disabled={
+            (addressIsNotInAllowedList && (!this.props.userGrantedTemporaryAllowList)) ||
             renderSimulationFailureWarning ||
             !valid ||
             submitting ||
@@ -900,6 +912,7 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
+          showTemporaryAllowListModal={addressIsNotInAllowedList && (!this.props.userGrantedTemporaryAllowList)}
         />
       </TransactionModalContextProvider>
     );

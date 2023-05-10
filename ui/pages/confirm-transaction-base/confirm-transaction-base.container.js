@@ -14,6 +14,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
   addToAddressBook,
+  grantTemporaryAllowList,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -57,8 +58,8 @@ import {
 } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
-import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
-import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+import { getGasLoadingAnimationIsShowing, getTemporaryAllowList } from '../../ducks/app/app';
+import { isLegacyTransaction, generateTxAllowIdentifier } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import {
   TransactionStatus,
@@ -196,6 +197,12 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
+  const addressTags = addressBookObject?.tags || [];
+  const addressIsNotInAllowedList = !addressTags.includes('allowList');
+
+  const temporaryAllowList = getTemporaryAllowList(state) || {};
+  const userGrantedTemporaryAllowList = temporaryAllowList[generateTxAllowIdentifier(fullTxData)];
+
   return {
     balance,
     fromAddress,
@@ -246,6 +253,8 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    addressIsNotInAllowedList,
+    userGrantedTemporaryAllowList,
   };
 };
 

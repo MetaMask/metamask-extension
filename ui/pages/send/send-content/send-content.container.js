@@ -12,6 +12,7 @@ import {
   getRecipient,
   acknowledgeRecipientWarning,
   getRecipientWarningAcknowledgement,
+  getSendErrors,
 } from '../../../ducks/send';
 import SendContent from './send-content.component';
 
@@ -19,6 +20,8 @@ function mapStateToProps(state) {
   const recipient = getRecipient(state);
   const recipientWarningAcknowledged =
     getRecipientWarningAcknowledgement(state);
+  const sendErrors = getSendErrors(state);
+  const recipientError = sendErrors.recipient;
 
   return {
     isEthGasPrice: getIsEthGasPriceFetched(state),
@@ -31,6 +34,7 @@ function mapStateToProps(state) {
     recipient,
     recipientWarningAcknowledged,
     isMultiLayerFeeNetwork: getIsMultiLayerFeeNetwork(state),
+    error: recipientError,
   };
 }
 

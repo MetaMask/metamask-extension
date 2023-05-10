@@ -14,6 +14,7 @@ import {
   IconName,
   IconSize,
 } from '../../../../components/component-library';
+import Tooltip from '../../../../components/ui/tooltip';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
@@ -89,11 +90,39 @@ export default class DomainInput extends Component {
     return null;
   };
 
+
   render() {
     const { t } = this.context;
-    const { className, selectedAddress, selectedName, userInput } = this.props;
+    const { className, selectedAddress, selectedName, userInput, addressIsBlocked, addressNotInAllow } = this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
+
+    let selectedAddressIcon;
+    if (addressIsBlocked) {
+      selectedAddressIcon = <Icon
+        className="ens-input__wrapper__status-icon"
+        name={IconName.Danger}
+        color={IconColor.errorDefault}
+      />;
+    } else if (addressNotInAllow) {
+      selectedAddressIcon = <Tooltip title={'Address is not in your allow list'} position="right" arrow><Icon
+        className="ens-input__wrapper__status-icon"
+        name={IconName.Question}
+        color={IconColor.warningDefault}
+      /></Tooltip>;
+    } else if (hasSelectedAddress) {
+      selectedAddressIcon = <Icon
+        className="ens-input__wrapper__status-icon"
+        name={IconName.Check}
+        color={IconColor.successDefault}
+      />;
+    } else {
+      selectedAddressIcon = <Icon
+        name={IconName.Search}
+        color={IconColor.iconMuted}
+        className="ens-input__wrapper__status-icon"
+      />;
+    }
 
     return (
       <div className={classnames('ens-input', className)}>
@@ -104,19 +133,7 @@ export default class DomainInput extends Component {
             'ens-input__wrapper--valid': hasSelectedAddress,
           })}
         >
-          {hasSelectedAddress ? (
-            <Icon
-              className="ens-input__wrapper__status-icon"
-              name={IconName.Check}
-              color={IconColor.successDefault}
-            />
-          ) : (
-            <Icon
-              name={IconName.Search}
-              color={IconColor.iconMuted}
-              className="ens-input__wrapper__status-icon"
-            />
-          )}
+          {selectedAddressIcon}
           {hasSelectedAddress ? (
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">

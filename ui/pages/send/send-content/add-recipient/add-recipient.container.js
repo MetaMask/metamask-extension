@@ -34,7 +34,8 @@ function mapStateToProps(state) {
     addressBookEntryName = addressBookEntry.name;
   }
 
-  const addressBook = getAddressBook(state);
+  let addressBook = getAddressBook(state);
+  addressBook = addressBook.filter((entry) => !entry.tags.includes('blockList'))
 
   const txList = [...currentNetworkTxListSelector(state)].reverse();
 
