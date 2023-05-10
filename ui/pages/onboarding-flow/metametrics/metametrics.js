@@ -80,7 +80,7 @@ export default function OnboardingMetametrics() {
       <Text
         variant={TextVariant.headingLg}
         as="h2"
-        align={TextAlign.Center}
+        textAlign={TextAlign.Center}
         fontWeight={FontWeight.Bold}
       >
         {t('onboardingMetametricsTitle')}
