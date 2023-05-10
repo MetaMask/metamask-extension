@@ -64,16 +64,10 @@ export default {
     accountMinWidth: {
       control: 'text',
     },
-    accountWidth: {
-      control: 'text',
-    },
     assetMaxWidth: {
       control: 'text',
     },
     assetMinWidth: {
-      control: 'text',
-    },
-    assetWidth: {
       control: 'text',
     },
   },

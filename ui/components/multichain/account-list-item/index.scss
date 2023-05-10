@@ -35,6 +35,10 @@
     /* max-width: calc(101px - 24px); */
   }
 
+  &__avatar {
+    margin-inline-end: 2px;
+  }
+
   &__selected-indicator {
     width: 4px;
     height: calc(100% - 8px);
@@ -56,5 +60,9 @@
     text-overflow: ellipsis;
     overflow: hidden;
     display: inline;
+
+    &__prefix {
+      padding-right: unset;
+    }
   }
 }

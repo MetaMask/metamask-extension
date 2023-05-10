@@ -74,9 +74,7 @@ export const AccountListItem = ({
   connectedAvatarName,
   accountMaxWidth,
   accountMinWidth,
-  accountWidth,
   assetMaxWidth,
-  assetWidth,
   assetMinWidth,
 }) => {
   const t = useI18nContext();
@@ -145,7 +143,6 @@ export const AccountListItem = ({
               as="div"
               className="multichain-account-list-item__account-name"
               style={{
-                width: `${accountWidth}px`,
                 maxWidth: `${accountMaxWidth}px`,
                 minWidth: `${accountMinWidth}px`,
               }}
@@ -177,7 +174,6 @@ export const AccountListItem = ({
               as="div"
               className="multichain-account-list-item__asset"
               style={{
-                width: `${assetWidth}px`,
                 maxWidth: `${assetMaxWidth}px`,
                 minWidth: `${assetMinWidth}px`,
               }}
@@ -192,7 +188,7 @@ export const AccountListItem = ({
                   size={Size.XS}
                   src={connectedAvatar}
                   name={connectedAvatarName}
-                  marginInlineEnd={2}
+                  className="multichain-account-list-item__avatar"
                 />
               ) : null}
               <UserPreferencedCurrencyDisplay
@@ -297,10 +293,8 @@ AccountListItem.propTypes = {
   connectedAvatarName: PropTypes.string,
 
   accountMaxWidth: PropTypes.number,
-  accountWidth: PropTypes.number,
   accountMinWidth: PropTypes.number,
   assetMaxWidth: PropTypes.number,
-  assetWidth: PropTypes.number,
   assetMinWidth: PropTypes.number,
 };
 
