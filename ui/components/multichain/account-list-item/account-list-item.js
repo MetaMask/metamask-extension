@@ -72,6 +72,12 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
+  accountMaxWidth,
+  accountMinWidth,
+  accountWidth,
+  assetMaxWidth,
+  assetWidth,
+  assetMinWidth,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -138,6 +144,11 @@ export const AccountListItem = ({
               ellipsis
               as="div"
               className="multichain-account-list-item__account-name"
+              style={{
+                width: `${accountWidth}px`,
+                maxWidth: `${accountMaxWidth}px`,
+                minWidth: `${accountMinWidth}px`,
+              }}
               marginInlineEnd={2}
             >
               <ButtonLink
@@ -165,6 +176,11 @@ export const AccountListItem = ({
             <Text
               as="div"
               className="multichain-account-list-item__asset"
+              style={{
+                width: `${assetWidth}px`,
+                maxWidth: `${assetMaxWidth}px`,
+                minWidth: `${assetMinWidth}px`,
+              }}
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
               alignItems={AlignItems.center}
@@ -279,6 +295,13 @@ AccountListItem.propTypes = {
    * Text used as the avatar alt text
    */
   connectedAvatarName: PropTypes.string,
+
+  accountMaxWidth: PropTypes.number,
+  accountWidth: PropTypes.number,
+  accountMinWidth: PropTypes.number,
+  assetMaxWidth: PropTypes.number,
+  assetWidth: PropTypes.number,
+  assetMinWidth: PropTypes.number,
 };
 
 AccountListItem.displayName = 'AccountListItem';

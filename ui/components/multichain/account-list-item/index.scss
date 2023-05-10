@@ -12,16 +12,16 @@
 
   &--connected {
     .multichain-account-list-item__asset {
-      max-width: 167px;
+      /* max-width: 167px; */
     }
 
     .multichain-account-list-item__asset {
-      max-width: calc(163px - 24px);
+      /* max-width: calc(163px - 24px); */
     }
   }
 
   &__account-name {
-    max-width: 188px;
+    /* max-width: 188px; */
 
     &__button {
       &:hover,
@@ -32,7 +32,7 @@
   }
 
   &__asset {
-    max-width: calc(101px - 24px);
+    /* max-width: calc(101px - 24px); */
   }
 
   &__selected-indicator {
