@@ -10,12 +10,14 @@ import {
   IconColor,
   TextVariant,
   FontWeight,
+  AlignItems,
   JustifyContent,
   FLEX_DIRECTION,
   OverflowWrap,
   DISPLAY,
   BLOCK_SIZES,
   BackgroundColor,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -247,8 +249,36 @@ export default function NftDetails({ nft }) {
           >
             {nftImage}
             {isLockedAsset && (
+              <Box as="span" className="nft-details__lock-icon">
+                <Box
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  borderRadius={[
+                    BorderRadius.none,
+                    BorderRadius.none,
+                    BorderRadius.none,
+                    BorderRadius.MD,
+                  ]}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon
+                    name={IconName.Lock}
+                    color={IconColor.iconDefault}
+                    size={IconSize.Lg}
+                    marginLeft={2}
+                    marginRight={2}
+                    marginTop={1}
+                    marginBottom={1}
+                  />
+                </Box>
+              </Box>
+            )}
+            {/* {isLockedAsset && (
               <span className="nft-details__lock-icon">
-                <Box backgroundColor={BackgroundColor.backgroundDefault}>
+                <Box
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  borderRadius={['6px', 0, 0, '6px']}
+                  alignItems={AlignItems.center}
+                >
                   <Icon
                     name={IconName.Lock}
                     color={IconColor.iconDefault}
@@ -257,7 +287,7 @@ export default function NftDetails({ nft }) {
                   />
                 </Box>
               </span>
-            )}
+            )} */}
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
