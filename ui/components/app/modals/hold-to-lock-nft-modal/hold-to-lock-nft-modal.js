@@ -69,18 +69,18 @@ const HoldToLockNFTModal = ({
         justifyContent={JustifyContent.spaceBetween}
         marginBottom={6}
       >
-        <Text variant={TextVariant.bodyMdBold}>
-          {t('holdToLockNftTitle', [
-            <Text
-              key="hold-to-lock-nft-2"
-              variant={TextVariant.bodyMdBold}
-              as="span"
-            >
-              {`${nft.name} #${nft.tokenId}`}
-            </Text>,
-          ])}
-        </Text>
-
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          className="hold-to-lock-nft__lock-icon-container"
+        >
+          <img
+            src="images/lock-icon.svg"
+            alt={t('padlock')}
+            className="hold-to-lock-nft-button__lock-icon"
+          />
+        </Box>
         {willHide && (
           <ButtonIcon
             className="hold-to-lock-nft-modal__close"
@@ -100,6 +100,25 @@ const HoldToLockNFTModal = ({
             ariaLabel={t('close')}
           />
         )}
+      </Box>
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+        marginBottom={6}
+      >
+        <Text variant={TextVariant.bodyMdBold}>
+          {t('holdToLockNftTitle', [
+            <Text
+              key="hold-to-lock-nft-2"
+              variant={TextVariant.bodyMdBold}
+              as="span"
+            >
+              {`${nft.name} #${nft.tokenId}`}
+            </Text>,
+          ])}
+        </Text>
       </Box>
       <Box
         display={DISPLAY.FLEX}
