@@ -2992,4 +2992,58 @@ describe('Transaction Controller', function () {
       assert.equal(result.type, TransactionType.simpleSend);
     });
   });
+
+  describe('initApprovals', function () {
+    it('adds unapprovedTxs as approvals', async function () {
+      const firstTxId = '1';
+      txController.addTransaction(
+        {
+          id: firstTxId,
+          origin: ORIGIN_METAMASK,
+          status: TransactionStatus.unapproved,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+        },
+        noop,
+      );
+      const secondTxId = '2';
+      txController.addTransaction(
+        {
+          id: secondTxId,
+          origin: ORIGIN_METAMASK,
+          status: TransactionStatus.unapproved,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+        },
+        noop,
+      );
+      await txController.initApprovals();
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:addRequest',
+        {
+          id: firstTxId,
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: firstTxId },
+          type: ApprovalType.Transaction,
+        },
+        false,
+      ]);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: secondTxId,
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: secondTxId },
+          type: ApprovalType.Transaction,
+        },
+        false,
+      ]);
+    });
+  });
 });
