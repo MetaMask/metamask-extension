@@ -50,6 +50,20 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     return null;
   }
 
+  const maxPriorityFeePerGasToRender = (
+    maxPriorityFeePerGas === undefined
+      ? hexWEIToDecGWEI(
+          transactionData?.txParams?.maxPriorityFeePerGas ?? '0x0',
+        )
+      : maxPriorityFeePerGas
+  ).toString();
+
+  const maxFeePerGasToRender = (
+    maxFeePerGas === undefined
+      ? hexWEIToDecGWEI(transactionData?.txParams?.maxFeePerGas ?? '0x0')
+      : maxFeePerGas
+  ).toString();
+
   return (
     <TransactionDetailItem
       key="gas-details-item"
@@ -113,14 +127,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       subTitle={
         <GasTiming
-          maxPriorityFeePerGas={(
-            maxPriorityFeePerGas ||
-            hexWEIToDecGWEI(transactionData.txParams.maxPriorityFeePerGas)
-          ).toString()}
-          maxFeePerGas={(
-            maxFeePerGas ||
-            hexWEIToDecGWEI(transactionData.txParams.maxFeePerGas)
-          ).toString()}
+          maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
+          maxFeePerGas={maxFeePerGasToRender}
         />
       }
     />
