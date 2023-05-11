@@ -65,17 +65,17 @@ function documentElementCheck() {
  */
 function blockedDomainCheck() {
   const blockedDomains = [
-    'execution.metamask.io',
-    'uscourts.gov',
-    'dropbox.com',
-    'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
-    'adyen.com',
-    'gravityforms.com',
-    'harbourair.com',
-    'ani.gamer.com.tw',
-    'blueskybooking.com',
-    'sharefile.com',
+    'execution\.metamask\.io',
+    'uscourts\.gov',
+    'dropbox\.com',
+    'webbyawards\.com',
+    'cdn\.shopify\.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'adyen\.com',
+    'gravityforms\.com',
+    'harbourair\.com',
+    'ani\.gamer\.com\.tw',
+    'blueskybooking\.com',
+    'sharefile\.com',
   ];
   const currentUrl = window.location.href;
   let currentRegex;
