@@ -78,6 +78,13 @@ export default function CustomizeFoxComponent() {
           ariaLabel={t('close')}
         />
       </Box>
+      <Text variant={TextVariant.bodyMd}>
+        {isDisabled
+          ? `Bravo! You have completed all the steps. Your unique fox is just a click away!`
+          : `Increase the security of your wallet by completing the following
+          steps and customize your very own MetaMask fox! Your unique fox icon
+          will be visible whenever you interact with your MetaMask wallet.`}
+      </Text>
       <Box marginTop={4} marginBottom={4}>
         {seedPhraseBackedUp ? (
           <BannerAlert
