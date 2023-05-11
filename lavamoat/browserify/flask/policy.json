@@ -1829,23 +1829,11 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/signature-controller>@metamask/message-manager": true,
+        "@metamask/message-manager": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-rpc-errors": true,
         "ethereumjs-util": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/message-manager": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/message-manager>jsonschema": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "eth-sig-util": true,
-        "ethereumjs-util": true,
-        "uuid": true
       }
     },
     "@metamask/smart-transactions-controller": {
