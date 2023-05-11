@@ -1,3 +1,4 @@
+import { IconName } from '../../components/component-library';
 import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 import {
   ALERTS_ROUTE,
@@ -131,7 +132,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    icon: ICON_NAMES.BOOK,
+    iconName: ICON_NAMES.BOOK,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
@@ -139,7 +140,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('snaps'),
     descriptionMessage: (t) => t('snaps'),
     route: SNAPS_LIST_ROUTE,
-    icon: 'fa fa-flask',
+    iconName: ICON_NAMES.SNAPS,
   },
   ///: END:ONLY_INCLUDE_IN
   {
@@ -259,28 +260,28 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('metamaskVersion'),
     descriptionMessage: (t) => t('builtAroundTheWorld'),
     route: `${ABOUT_US_ROUTE}#version`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('links'),
     descriptionMessage: (t) => t('links'),
     route: `${ABOUT_US_ROUTE}#links`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('privacyMsg'),
     descriptionMessage: (t) => t('privacyMsg'),
     route: `${ABOUT_US_ROUTE}#privacy-policy`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('terms'),
     descriptionMessage: (t) => t('terms'),
     route: `${ABOUT_US_ROUTE}#terms`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -288,7 +289,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('attributions'),
     descriptionMessage: (t) => t('attributions'),
     route: `${ABOUT_US_ROUTE}#attributions`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -296,7 +297,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('supportCenter'),
     descriptionMessage: (t) => t('supportCenter'),
     route: `${ABOUT_US_ROUTE}#supportcenter`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -304,7 +305,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('visitWebSite'),
     descriptionMessage: (t) => t('visitWebSite'),
     route: `${ABOUT_US_ROUTE}#visitwebsite`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -312,14 +313,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contactUs'),
     descriptionMessage: (t) => t('contactUs'),
     route: `${ABOUT_US_ROUTE}#contactus`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('betaTerms'),
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('experimental'),

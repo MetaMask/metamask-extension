@@ -66,7 +66,7 @@ export const AccountListMenu = ({ onClose }) => {
   // Focus on the search box when the popover is opened
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.rootNode.querySelector('input[type=search]').focus();
+      inputRef.current.rootNode.querySelector('input[type=search]')?.focus();
     }
   }, [inputRef]);
 
@@ -79,15 +79,26 @@ export const AccountListMenu = ({ onClose }) => {
     >
       <Box className="multichain-account-menu">
         {/* Search box */}
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <TextFieldSearch
-            size={Size.SM}
-            width={BLOCK_SIZES.FULL}
-            placeholder={t('searchAccounts')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </Box>
+        {accounts.length > 1 ? (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+          >
+            <TextFieldSearch
+              size={Size.SM}
+              width={BLOCK_SIZES.FULL}
+              placeholder={t('searchAccounts')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              clearButtonOnClick={() => setSearchQuery('')}
+              clearButtonProps={{
+                size: Size.SM,
+              }}
+            />
+          </Box>
+        ) : null}
         {/* Account list block */}
         <Box className="multichain-account-menu__list">
           {searchResults.length === 0 && searchQuery !== '' ? (

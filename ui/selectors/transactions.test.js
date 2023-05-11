@@ -1,3 +1,4 @@
+import { ApprovalType } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import {
@@ -7,6 +8,7 @@ import {
   nonceSortedPendingTransactionsSelector,
   nonceSortedCompletedTransactionsSelector,
   submittedPendingTransactionsSelector,
+  hasTransactionPendingApprovals,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -29,7 +31,7 @@ describe('Transaction Selectors', () => {
           unapprovedMsgs: {
             1: msg,
           },
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
         },
@@ -59,7 +61,7 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: msg,
           },
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
         },
@@ -90,7 +92,7 @@ describe('Transaction Selectors', () => {
           unapprovedTypedMessages: {
             1: msg,
           },
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
         },
@@ -107,7 +109,7 @@ describe('Transaction Selectors', () => {
     it('selects the currentNetworkTxList', () => {
       const state = {
         metamask: {
-          provider: {
+          providerConfig: {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
@@ -171,7 +173,7 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
-          provider: {
+          providerConfig: {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
@@ -255,7 +257,7 @@ describe('Transaction Selectors', () => {
 
     const state = {
       metamask: {
-        provider: {
+        providerConfig: {
           nickname: 'mainnet',
           chainId: CHAIN_IDS.MAINNET,
         },
@@ -328,5 +330,79 @@ describe('Transaction Selectors', () => {
         expectedResult,
       );
     });
+  });
+
+  describe('hasTransactionPendingApprovals', () => {
+    const mockNetworkId = 'mockNetworkId';
+    const mockedState = {
+      metamask: {
+        providerConfig: {
+          chainId: mockNetworkId,
+        },
+        pendingApprovalCount: 2,
+        pendingApprovals: {
+          1: {
+            id: '1',
+            origin: 'origin',
+            time: Date.now(),
+            type: ApprovalType.WatchAsset,
+            requestData: {},
+            requestState: null,
+          },
+          2: {
+            id: '2',
+            origin: 'origin',
+            time: Date.now(),
+            type: ApprovalType.Transaction,
+            requestData: {},
+            requestState: null,
+          },
+        },
+        unapprovedTxs: {
+          2: {
+            id: '2',
+            chainId: mockNetworkId,
+          },
+        },
+      },
+    };
+
+    it('should return true if there is a pending transaction on same network', () => {
+      const result = hasTransactionPendingApprovals(mockedState);
+      expect(result).toBe(true);
+    });
+    it('should return false if there is a pending transaction on different network', () => {
+      mockedState.metamask.unapprovedTxs['2'].chainId = 'differentNetworkId';
+      const result = hasTransactionPendingApprovals(mockedState);
+      expect(result).toBe(false);
+    });
+    it.each([
+      [ApprovalType.EthDecrypt],
+      [ApprovalType.EthGetEncryptionPublicKey],
+      [ApprovalType.EthSign],
+      [ApprovalType.EthSignTypedData],
+      [ApprovalType.PersonalSign],
+    ])(
+      'should return true if there is a pending transaction of %s type',
+      (type) => {
+        const result = hasTransactionPendingApprovals({
+          ...mockedState,
+          metamask: {
+            ...mockedState.metamask,
+            pendingApprovals: {
+              2: {
+                id: '2',
+                origin: 'origin',
+                time: Date.now(),
+                type,
+                requestData: {},
+                requestState: null,
+              },
+            },
+          },
+        });
+        expect(result).toBe(true);
+      },
+    );
   });
 });
