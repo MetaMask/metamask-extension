@@ -102,11 +102,9 @@ export default function CustomizeFoxComponent() {
             }}
           >
             Your Secret Recovery Phrase (SRP) is a unique 12-word phrase that is
-            generated when you first set up MetaMask. Your funds are connected
-            to that phrase. Not even the team at MetaMask can help you recover
-            your wallet and its accounts if you lose your SRP, so write it down
-            on paper and hide it somewhere, put it in a safety deposit box, or
-            use a secure password manager.
+            generated when you first set up MetaMask. Not even the team at
+            MetaMask can help you recover your wallet and its accounts if you
+            lose your SRP. Learn more and back up your SRP now.
           </BannerAlert>
         )}
       </Box>
@@ -137,12 +135,12 @@ export default function CustomizeFoxComponent() {
         {isTags.length ? (
           <BannerAlert
             severity="success"
-            title="You have contacts in Allow List and Block List &#127942;"
+            title="You have contacts in Allow or Block Lists &#127942;"
           />
         ) : (
           <BannerAlert
             severity="info"
-            title="Add your contacts in allow list and block list"
+            title="Add contacts to Allow and Block Lists"
             actionButtonLabel="Add now"
             actionButtonProps={{
               endIconName: IconName.Arrow2Right,
@@ -156,13 +154,12 @@ export default function CustomizeFoxComponent() {
               }
             }}
           >
-            Limit your exposure to bad actors by adding contacts to an Allow
-            List or a Block List. Any transaction confirmation that interacts
-            with an address on your Block List will be blocked by default and
-            you will be notified. Transaction confirmations with addresses on
-            your Allow List proceed without friction. Any interaction with an
-            address that is not on the Allow List nor the Block List will
-            require a quick verification step before it can proceed.
+            Limit exposure to bad actors by adding contacts to an Allow List or
+            a Block List. Any transaction confirmation with an address on your
+            Block List will be blocked by default and you'll be notified.
+            Transaction confirmations with addresses on your Allow List are
+            frictionless. Interactions with addresses that are on neither list
+            require a quick verification step before they can proceed.
           </BannerAlert>
         )}
       </Box>

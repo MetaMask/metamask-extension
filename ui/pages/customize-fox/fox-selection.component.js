@@ -15,10 +15,10 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { Text } from '../../components/component-library';
-import { EditorSelectionOptions, POLISH_OPTIONS } from './constants';
 import Button from '../../components/ui/button';
 import { FOX_COLOR_PALETTE } from '../../helpers/utils/generative-color';
 import { setAccountColor } from '../../store/actions';
+import { EditorSelectionOptions, POLISH_OPTIONS } from './constants';
 
 const checkValueExists = (arr, val) => {
   return arr.some((option) => option.value === val);
@@ -112,7 +112,7 @@ export default function FoxSelection() {
     <div className={classnames('main-container customize-fox-page')}>
       <div className="customize-fox-page__header">
         <div className="customize-fox-page__header__title">
-          You are rewarded to color the address with an unique fox
+          Celebrate with a custom fox
           <img src="./images/empower.svg" alt="" />
         </div>
         <div
@@ -142,7 +142,7 @@ export default function FoxSelection() {
               color={TextColor.textMuted}
               marginBottom={1}
             >
-              Select an address you want to have a customized fox with:
+              Select the account for your customized fox:
             </Text>
           </div>
           <Dropdown
@@ -226,7 +226,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.primaryDefault}
                 >
-                  Reset to my previous selection 🙏🏻
+                  Reset to previous selection 🙏🏻
                 </Text>
               </Button>
             )}
@@ -237,12 +237,11 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.primaryDefault}
                 >
-                  Cancel and I will choose another time 👋
+                  Do this later 👋
                 </Text>
               </Button>
               <Text variant={TextVariant.bodyXs} color={TextColor.textMuted}>
-                (This will give you default fox look or your previous selected
-                fox)
+                (Your fox will be the same as it was before.)
               </Text>
             </Box>
             {(polishOption === 'generative' || polishOption === 'ai') && (
@@ -265,7 +264,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.overlayInverse}
                 >
-                  Save this fox for me 😗
+                  Save my custom fox 😗
                 </Text>
               </Button>
             </Box>
