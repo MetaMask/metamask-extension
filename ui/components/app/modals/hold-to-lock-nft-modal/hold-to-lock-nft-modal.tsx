@@ -119,11 +119,9 @@ const HoldToLockNFTModal = ({
         alignItems={AlignItems.center}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-          {t(
-            lockingAction
-              ? 'holdToLockNftDescription'
-              : 'holdToUnlockNftDescription',
-          )}
+          {lockingAction
+            ? t('holdToLockNftDescription')
+            : t('holdToUnlockNftDescription')}
         </Text>
       </Box>
       <HoldToRevealButton
