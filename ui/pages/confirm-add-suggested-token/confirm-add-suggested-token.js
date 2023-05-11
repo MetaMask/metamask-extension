@@ -124,9 +124,9 @@ const ConfirmAddSuggestedToken = () => {
 
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
-      suggestedAssets.flatMap(({ asset, id }) => [
-        dispatch(resolvePendingApproval(id, null)),
-        dispatch(acceptWatchAsset(id)),
+      suggestedAssets.map(async ({ asset, id }) => {
+        await dispatch(acceptWatchAsset(id));
+        await dispatch(resolvePendingApproval(id, null));
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
           category: MetaMetricsEventCategory.Wallet,
@@ -139,23 +139,23 @@ const ConfirmAddSuggestedToken = () => {
             token_standard: TokenStandard.ERC20,
             asset_type: AssetType.token,
           },
-        }),
-      ]),
+        });
+      }),
     );
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
 
   const handleCancelClick = useCallback(async () => {
     await Promise.all(
-      suggestedAssets.flatMap(({ id }) => [
-        dispatch(
+      suggestedAssets.map(async ({ id }) => {
+        await dispatch(rejectWatchAsset(id));
+        await dispatch(
           rejectPendingApproval(
             id,
             serializeError(ethErrors.provider.userRejectedRequest()),
           ),
-        ),
-        dispatch(rejectWatchAsset(id)),
-      ]),
+        );
+      }),
     );
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, mostRecentOverviewPage, suggestedAssets]);
