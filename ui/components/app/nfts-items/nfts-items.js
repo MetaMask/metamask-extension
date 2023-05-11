@@ -22,10 +22,12 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedAddress,
+  getLockedAssets,
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
+import { isLockedAsset } from '../../../helpers/utils/soft-lock';
 import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
@@ -86,6 +88,8 @@ export default function NftsItems({
   ]);
 
   const ipfsGateway = useSelector(getIpfsGateway);
+  const lockedAssets = useSelector(getLockedAssets);
+
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
@@ -127,6 +131,7 @@ export default function NftsItems({
     }
 
     const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
+
     return (
       <div className="nfts-items__collection" key={`collection-${key}`}>
         <button
@@ -173,7 +178,11 @@ export default function NftsItems({
               const nftImageAlt = getNftImageAlt(nft);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
-
+              // const isLocked = isLockedAsset({
+              //   lockedAssets,
+              //   address,
+              //   tokenId,
+              // }); WIP
               return (
                 <Box
                   data-testid="nft-wrapper"

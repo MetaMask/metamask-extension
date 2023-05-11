@@ -203,9 +203,9 @@ const mapStateToProps = (state, ownProps) => {
     transactionData,
     chainId,
   });
-  // // eslint-disable-next-line no-debugger
-  // debugger;
+
   return {
+    isLockedAsset,
     balance,
     fromAddress,
     fromName,

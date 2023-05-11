@@ -61,6 +61,7 @@ export default class ConfirmTransactionBase extends Component {
     // react-router props
     history: PropTypes.object,
     // Redux props
+    isLockedAsset: PropTypes.bool,
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
     cancelAllTransactions: PropTypes.func,
@@ -802,6 +803,7 @@ export default class ConfirmTransactionBase extends Component {
       isApprovalOrRejection,
       assetStandard,
       title,
+      isLockedAsset,
     } = this.props;
     const {
       submitting,
@@ -881,7 +883,8 @@ export default class ConfirmTransactionBase extends Component {
             !valid ||
             submitting ||
             hardwareWalletRequiresConnection ||
-            (gasIsLoading && !gasFeeIsCustom)
+            (gasIsLoading && !gasFeeIsCustom) ||
+            isLockedAsset
           }
           onEdit={() => this.handleEdit()}
           onCancelAll={() => this.handleCancelAll()}
