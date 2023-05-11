@@ -18,7 +18,12 @@ import {
   isAddressLedger,
   getNativeCurrency,
   getProviderConfig,
+  checkIfLockedAsset,
 } from '../../../ducks/metamask/metamask';
+import {
+  unapprovedPersonalMsgsSelector,
+  unapprovedTypedMessagesSelector,
+} from '../../../selectors/transactions';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { cancelMsgs, showModal } from '../../../store/actions';
@@ -41,6 +46,9 @@ function mapStateToProps(state, ownProps) {
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+
+  const unapprovedPersonalMsgs = unapprovedPersonalMsgsSelector(state);
+  const unapprovedTypedMsgs = unapprovedPersonalMsgsSelector(state);
 
   return {
     providerConfig,

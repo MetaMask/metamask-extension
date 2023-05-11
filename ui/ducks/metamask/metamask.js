@@ -1,4 +1,5 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { EVM } from 'signature-inspection/typescript';
 import * as actionConstants from '../../store/actionConstants';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
@@ -378,6 +379,7 @@ export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
 }
 
+export function checkSignatureForLockedAsset(state) {}
 export function checkIfLockedAsset(state, txData) {
   const { selectedAddress, lockedAssets } = state.metamask;
   const { chainId, fromAddress, tokenAddress, transactionData } = txData;

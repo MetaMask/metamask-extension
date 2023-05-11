@@ -525,6 +525,7 @@ export function getTotalUnapprovedMessagesCount(state) {
 }
 
 export function getTotalUnapprovedSignatureRequestCount(state) {
+  // s
   const {
     unapprovedMsgCount = 0,
     unapprovedPersonalMsgCount = 0,

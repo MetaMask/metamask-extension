@@ -96,6 +96,7 @@ export default class SignatureRequest extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
+    isLockedAsset: PropTypes.bool,
     selectedAccount: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -187,6 +188,7 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      isLockedAsset,
     } = this.props;
 
     const { t, trackEvent } = this.context;
