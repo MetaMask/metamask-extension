@@ -46,6 +46,7 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  ADD_TO_ADDRESS_BOOK_ROUTE,
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
@@ -107,6 +108,7 @@ export default class Home extends PureComponent {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     hasWatchAssetPendingApprovals: PropTypes.bool,
+    hasAddToAddressBookPendingApprovals: PropTypes.bool,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -196,6 +198,7 @@ export default class Home extends PureComponent {
       isNotification,
       showAwaitingSwapScreen,
       hasWatchAssetPendingApprovals,
+      hasAddToAddressBookPendingApprovals,
       swapsFetchParams,
       unconfirmedTransactionsCount,
     } = this.props;
@@ -207,6 +210,7 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId ||
       unconfirmedTransactionsCount > 0 ||
       hasWatchAssetPendingApprovals ||
+      hasAddToAddressBookPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
@@ -269,6 +273,7 @@ export default class Home extends PureComponent {
       history,
       isNotification,
       hasWatchAssetPendingApprovals,
+      hasAddToAddressBookPendingApprovals,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
@@ -292,6 +297,8 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (hasWatchAssetPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
+    } else if (hasAddToAddressBookPendingApprovals) {
+      history.push(ADD_TO_ADDRESS_BOOK_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }

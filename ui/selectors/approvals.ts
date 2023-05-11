@@ -7,6 +7,10 @@ type ApprovalsMetaMaskState = {
   };
 };
 
+export function getPendingApprovals(state: ApprovalsMetaMaskState) {
+  return Object.values(state.metamask.pendingApprovals);
+}
+
 export function hasPendingApprovalsSelector(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,

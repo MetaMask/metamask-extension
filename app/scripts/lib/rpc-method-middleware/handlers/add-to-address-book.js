@@ -1,12 +1,10 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const addToAddressBook = {
   methodNames: [MESSAGE_TYPE.ADD_TO_ADDRESS_BOOK],
   implementation: addToAddressBookHandler,
-  hookNames: {
-    addToAddressBookRequest: true,
-  },
+  hookNames: { requestUserApproval: true },
 };
 export default addToAddressBook;
 
@@ -15,7 +13,7 @@ async function addToAddressBookHandler(
   res,
   _next,
   end,
-  { addToAddressBookRequest },
+  { requestUserApproval },
 ) {
   if (!req.params || typeof req.params !== 'object') {
     return end(
@@ -27,31 +25,41 @@ async function addToAddressBookHandler(
     );
   }
 
+  const { origin } = req;
   const {
     address,
     name,
     chainId = '0x1',
     memo = '',
-    addressType,
+    addressType = '',
     tags = [],
     source = '',
   } = req.params;
 
   try {
-    const handleAddToAddressBookResult = await addToAddressBookRequest(
-      address,
-      name,
-      chainId,
-      memo,
-      addressType,
-      tags,
-      source,
-    );
-    await handleAddToAddressBookResult.result;
+    const requestUserApprovalResult = await requestUserApproval({
+      origin,
+      type: MESSAGE_TYPE.ADD_TO_ADDRESS_BOOK,
+      requestData: {
+        address,
+        name,
+        chainId,
+        memo,
+        addressType,
+        tags,
+        source,
+      },
+    });
+    await requestUserApprovalResult.result;
     res.result = true;
     return end();
   } catch (error) {
-    console.log('Error adding to address book', error);
-    return end(error);
+    // For the purposes of this method, it does not matter if the user
+    // declines to add to address book. However, other errors indicate
+    // that something is wrong.
+    if (error.code !== errorCodes.provider.userRejectedRequest) {
+      return end(error);
+    }
+    return end();
   }
 }
