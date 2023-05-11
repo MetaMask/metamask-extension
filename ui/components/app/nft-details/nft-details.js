@@ -251,13 +251,8 @@ export default function NftDetails({ nft }) {
             {isLockedAsset && (
               <Box as="span" className="nft-details__lock-icon">
                 <Box
+                  className="nft-details__lock-icon-bg"
                   backgroundColor={BackgroundColor.backgroundDefault}
-                  borderRadius={[
-                    BorderRadius.none,
-                    BorderRadius.none,
-                    BorderRadius.none,
-                    BorderRadius.MD,
-                  ]}
                   alignItems={AlignItems.center}
                 >
                   <Icon

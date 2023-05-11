@@ -15,6 +15,8 @@ import {
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
+  IconColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -32,7 +34,7 @@ import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import NftDefaultImage from '../nft-default-image';
 
 const width =
@@ -52,6 +54,7 @@ export default function NftsItems({
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
+  const lockedAssets = useSelector(getLockedAssets);
   const t = useI18nContext();
 
   useEffect(() => {
@@ -88,7 +91,6 @@ export default function NftsItems({
   ]);
 
   const ipfsGateway = useSelector(getIpfsGateway);
-  const lockedAssets = useSelector(getLockedAssets);
 
   const history = useHistory();
 
@@ -178,11 +180,12 @@ export default function NftsItems({
               const nftImageAlt = getNftImageAlt(nft);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
-              // const isLocked = isLockedAsset({
-              //   lockedAssets,
-              //   address,
-              //   tokenId,
-              // }); WIP
+              const isLocked = isLockedAsset({
+                lockedAssets,
+                nft,
+                selectedAddress,
+                currentNetwork: chainId,
+              });
               return (
                 <Box
                   data-testid="nft-wrapper"
@@ -209,6 +212,27 @@ export default function NftsItems({
                           src={nftImage}
                           alt={nftImageAlt}
                         />
+                        {isLocked && (
+                          <Box className="nfts-items__item-lock">
+                            <Box
+                              className="nfts-items__item-lock-bg"
+                              backgroundColor={
+                                BackgroundColor.backgroundDefault
+                              }
+                              alignItems={AlignItems.center}
+                            >
+                              <Icon
+                                name={IconName.Lock}
+                                color={IconColor.iconDefault}
+                                size={IconSize.Lg}
+                                marginLeft={1.5}
+                                marginRight={1.5}
+                                marginTop={0.75}
+                                marginBottom={0.75}
+                              />
+                            </Box>
+                          </Box>
+                        )}
                       </button>
                     ) : (
                       <NftDefaultImage

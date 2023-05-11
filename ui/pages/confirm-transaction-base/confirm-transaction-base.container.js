@@ -203,7 +203,6 @@ const mapStateToProps = (state, ownProps) => {
     transactionData,
     chainId,
   });
-
   return {
     isLockedAsset,
     balance,

@@ -10,6 +10,10 @@ $spacer-break-small: 16px;
     position: absolute;
     top: 0;
     right: 0;
+
+    &-bg {
+      border-radius: 0 0 0 4px;
+    }
   }
 
   @include screen-sm-min {
