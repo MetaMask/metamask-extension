@@ -2040,9 +2040,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setDisabledRpcMethodPreference.bind(
           preferencesController,
         ),
-      lockAsset: preferencesController.lockAsset.bind(
-        preferencesController,
-      ),
+      lockAsset: preferencesController.lockAsset.bind(preferencesController),
       getRpcMethodPreferences:
         preferencesController.getRpcMethodPreferences.bind(
           preferencesController,

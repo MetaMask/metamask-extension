@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,7 +30,6 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedIdentity,
-  getAssetLockedStatus,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getNftContracts } from '../../../ducks/metamask/metamask';
