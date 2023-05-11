@@ -23,7 +23,10 @@ import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
 import { useDraftTransactionGasValues } from '../../../hooks/useDraftTransactionGasValues';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
+const GasDetailsItem = ({
+  userAcknowledgedGasMissing = false,
+  isEligibleToEarnMask,
+}) => {
   const t = useI18nContext();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const { transactionData } = useDraftTransactionGasValues();
@@ -73,7 +76,11 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
           <LoadingHeartBeat estimateUsed={estimateUsed} />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={hexMinimumTransactionFee || draftHexMinimumTransactionFee}
+            value={
+              isEligibleToEarnMask
+                ? 0
+                : hexMinimumTransactionFee || draftHexMinimumTransactionFee
+            }
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </div>
@@ -103,7 +110,9 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
                 value={
-                  hexMaximumTransactionFee || draftHexMaximumTransactionFee
+                  isEligibleToEarnMask
+                    ? 0
+                    : hexMinimumTransactionFee || draftHexMinimumTransactionFee
                 }
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />

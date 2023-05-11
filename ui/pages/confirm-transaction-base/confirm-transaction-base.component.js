@@ -50,6 +50,7 @@ import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
+import { BannerAlert, Text } from '../../components/component-library';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -430,6 +431,7 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    const isEligibleToEarnMask = true; //[].includes(this.props.toAddress);
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -442,6 +444,16 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
         />
+        {isEligibleToEarnMask && (
+          <BannerAlert marginTop={2}>
+            This transaction is eligible to earn MASK. <a href="">Learn more</a>
+          </BannerAlert>
+        )}
+        {isEligibleToEarnMask && (
+          <BannerAlert marginTop={2}>
+            This transaction is currently gas free! You have 4 MASK left to use.
+          </BannerAlert>
+        )}
         <TransactionDetail
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -453,6 +465,7 @@ export default class ConfirmTransactionBase extends Component {
             !renderSimulationFailureWarning && (
               <ConfirmGasDisplay
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                isEligibleToEarnMask
               />
             ),
             !isMultiLayerFeeNetwork && (

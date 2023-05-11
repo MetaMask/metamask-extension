@@ -12,7 +12,10 @@ import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 import { ConfirmLegacyGasDisplay } from './confirm-legacy-gas-display';
 
-const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
+const ConfirmGasDisplay = ({
+  userAcknowledgedGasMissing = false,
+  isEligibleToEarnMask,
+}) => {
   const { txParams } = useSelector((state) => txDataSelector(state));
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
@@ -30,7 +33,10 @@ const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
   const supportsEIP1559 = networkAndAccountSupports1559 && !isLegacyTxn;
 
   return supportsEIP1559 ? (
-    <GasDetailsItem userAcknowledgedGasMissing={userAcknowledgedGasMissing} />
+    <GasDetailsItem
+      userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+      isEligibleToEarnMask
+    />
   ) : (
     <ConfirmLegacyGasDisplay />
   );

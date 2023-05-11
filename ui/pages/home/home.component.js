@@ -25,6 +25,7 @@ import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
+import SwapActionTokenPopup from '../../components/app/swap-action-token-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -184,6 +185,7 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    showGasToken: true,
   };
 
   constructor(props) {
@@ -723,6 +725,8 @@ export default class Home extends PureComponent {
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
+    // const { showGasToken } = this.state;
+
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
     } else if (this.state.notificationClosing || this.state.redirecting) {
@@ -762,6 +766,13 @@ export default class Home extends PureComponent {
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
+          {this.state.showGasToken && (
+            <SwapActionTokenPopup
+              onAccept={() => {
+                this.setState({ showGasToken: false });
+              }}
+            />
+          )}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
