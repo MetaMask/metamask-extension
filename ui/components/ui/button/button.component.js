@@ -35,9 +35,9 @@ const typeHash = {
 const Button = ({
   type,
   submit = false,
-  large,
+  large = undefined,
   children,
-  icon,
+  icon = undefined,
   className,
   rounded = true,
   ...buttonProps

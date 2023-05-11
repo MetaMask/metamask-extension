@@ -1,38 +1,41 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { log } from 'loglevel';
+import React from 'react';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
 import {
   Text,
-  Button,
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
   ButtonIcon,
   IconName,
   Icon,
   IconSize,
+  ButtonIconSize,
+  ValidTag,
 } from '../../../component-library';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
-  Size,
   TextVariant,
   TextAlign,
   IconColor,
+  OverflowWrap,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
 
 import HoldToRevealButton from '../../hold-to-reveal-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+interface Props {
+  nft: {
+    name: string;
+    tokenId: string;
+  };
+  action: string;
+  onLongPressed: () => void;
+  hideModal: () => void;
+  willHide?: boolean;
+}
 
 const HoldToLockNFTModal = ({
   nft,
@@ -40,10 +43,8 @@ const HoldToLockNFTModal = ({
   onLongPressed,
   hideModal,
   willHide = true,
-}) => {
+}: Props) => {
   const t = useI18nContext();
-
-  const trackEvent = useContext(MetaMetricsContext);
 
   const lockingAction = action === 'lock';
   const unlock = () => {
@@ -57,6 +58,11 @@ const HoldToLockNFTModal = ({
     hideModal();
   };
 
+  const nftTitle = truncate(`${nft.name} #${nft.tokenId}`, {
+    charsToKeep: 50,
+    showTrailingChars: true,
+  });
+
   return (
     <Box
       className="hold-to-lock-nft-modal"
@@ -64,6 +70,7 @@ const HoldToLockNFTModal = ({
       flexDirection={FLEX_DIRECTION.COLUMN}
       justifyContent={JustifyContent.flexStart}
       padding={6}
+      onScroll={(event) => event.preventDefault()}
     >
       <Box
         display={DISPLAY.FLEX}
@@ -71,6 +78,7 @@ const HoldToLockNFTModal = ({
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         marginBottom={6}
+        height={BLOCK_SIZES.FULL}
       >
         <Icon
           name={lockingAction ? IconName.Lock : IconName.LockSlash}
@@ -84,9 +92,10 @@ const HoldToLockNFTModal = ({
             <Text
               key="hold-to-lock-nft-2"
               variant={TextVariant.bodyMdBold}
-              as="span"
+              as={ValidTag.Span}
+              overflowWrap={OverflowWrap.Anywhere}
             >
-              {`${nft.name} #${nft.tokenId}`}
+              {nftTitle}
             </Text>,
           ])}
         </Text>
@@ -95,18 +104,8 @@ const HoldToLockNFTModal = ({
           <ButtonIcon
             className="hold-to-lock-nft-modal__close"
             iconName={IconName.Close}
-            size={Size.SM}
-            onClick={() => {
-              // TODO: track event
-              // trackEvent({
-              //   category: MetaMetricsEventCategory.Keys,
-              //   event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
-              //   properties: {
-              //     key_type: MetaMetricsEventKeyType.Srp,
-              //   },
-              // });
-              handleCancel();
-            }}
+            size={ButtonIconSize.Sm}
+            onClick={handleCancel}
             ariaLabel={t('close')}
           />
         )}
@@ -120,25 +119,37 @@ const HoldToLockNFTModal = ({
         alignItems={AlignItems.center}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-          {t(
-            lockingAction
-              ? 'holdToLockNftDescription'
-              : 'holdToUnlockNftDescription',
-          )}
+          {lockingAction
+            ? t('holdToLockNftDescription')
+            : t('holdToUnlockNftDescription')}
         </Text>
       </Box>
       <HoldToRevealButton
         buttonText={t('holdToToggleLock', [
-          lockingAction ? 'Lock' : 'Unlock',
-          'NFT',
+          lockingAction ? t('lock') : t('unlock'),
+          t('nft'),
         ])}
         onLongPressed={unlock}
-        marginLeft="auto"
-        marginRight="auto"
       />
     </Box>
   );
 };
+
+function truncate(
+  string: string,
+  {
+    charsToKeep,
+    showTrailingChars,
+  }: { charsToKeep: number; showTrailingChars: boolean },
+) {
+  if (string.length < charsToKeep) {
+    return string;
+  }
+  if (showTrailingChars) {
+    return `${string.slice(0, charsToKeep - 3)}...${string.slice(-3)}`;
+  }
+  return `${string.slice(0, charsToKeep)}...`;
+}
 
 HoldToLockNFTModal.propTypes = {
   nft: PropTypes.object.isRequired,
