@@ -12,13 +12,11 @@
 @import 'convert-token-to-nft-modal/index';
 @import 'contract-details-modal/index';
 @import 'hold-to-reveal-modal/index';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import '../../institutional/confirm-remove-jwt-modal/index';
 @import '../../institutional/custody-confirm-link-modal/index';
 @import '../../institutional/compliance-modal/index';
 @import '../../institutional/compliance-details/index';
 @import '../../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IN
 @import 'eth-sign-modal/index';
 
 .modal {
