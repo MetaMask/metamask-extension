@@ -512,12 +512,13 @@ export default class PreferencesController {
       tokenId,
       chainId,
     });
-
     const { lockedAssets, selectedAddress } = this.store.getState();
 
+    const selectedAddressLockedAssets = lockedAssets[selectedAddress] || {};
     const updatedLockedAssets = {
       ...lockedAssets,
       [selectedAddress]: {
+        ...selectedAddressLockedAssets,
         [lockedAssetIdentifier]: setLocked,
       },
     };

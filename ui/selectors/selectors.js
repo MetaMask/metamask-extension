@@ -690,6 +690,9 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
   return state.metamask.web3ShimUsageOrigins[origin];
 }
 
+export function getLockedAssets(state) {
+  return state.metamask.lockedAssets;
+}
 /**
  * @typedef {object} SwapsEthToken
  * @property {string} symbol - The symbol for ETH, namely "ETH"
