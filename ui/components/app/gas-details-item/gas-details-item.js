@@ -51,17 +51,13 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   }
 
   const maxPriorityFeePerGasToRender = (
-    maxPriorityFeePerGas === undefined
-      ? hexWEIToDecGWEI(
-          transactionData?.txParams?.maxPriorityFeePerGas ?? '0x0',
-        )
-      : maxPriorityFeePerGas
+    maxPriorityFeePerGas ??
+    hexWEIToDecGWEI(transactionData?.txParams?.maxPriorityFeePerGas ?? '0x0')
   ).toString();
 
   const maxFeePerGasToRender = (
-    maxFeePerGas === undefined
-      ? hexWEIToDecGWEI(transactionData?.txParams?.maxFeePerGas ?? '0x0')
-      : maxFeePerGas
+    maxFeePerGas ??
+    hexWEIToDecGWEI(transactionData?.txParams?.maxFeePerGas ?? '0x0')
   ).toString();
 
   return (
