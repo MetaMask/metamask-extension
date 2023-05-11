@@ -16,7 +16,7 @@ export function LockAssetButton({ onClick, isLocked }: Props) {
         type="primary"
         onClick={onClick}
         className="nft-details__send-button"
-        data-testid="nft-send-button"
+        data-testid="nft-lock-button"
       >
         {isLocked ? t('unlock') : t('lock')}
       </Button>
