@@ -1350,12 +1350,6 @@ export default class TransactionController extends EventEmitter {
    * @param opts.hasApprovalRequest - whether the transaction has an approval request
    */
   async approveTransaction(txId, actionId, { hasApprovalRequest = true } = {}) {
-    try {
-      this._failTransaction(txId, 'Locked asset', actionId);
-      return;
-    } catch (err2) {
-      log.error(err2);
-    }
     // TODO: Move this safety out of this function.
     // Since this transaction is async,
     // we need to keep track of what is currently being signed,
