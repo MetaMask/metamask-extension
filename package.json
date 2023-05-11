@@ -385,7 +385,6 @@
     "@storybook/addon-mdx-gfm": "^7.0.10",
     "@storybook/addons": "^7.0.10",
     "@storybook/api": "^7.0.10",
-    "@storybook/cli": "^7.0.10",
     "@storybook/client-api": "^7.0.10",
     "@storybook/components": "^7.0.10",
     "@storybook/core-events": "^7.0.10",

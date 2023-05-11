@@ -14,7 +14,7 @@ module.exports = {
     buildStoriesJson: true
   },
   stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx', '../ui/**/*.stories.mdx', './*.stories.mdx'],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-actions', '@storybook/addon-a11y', '@storybook/addon-knobs', './i18n-party-addon/register.js', 'storybook-dark-mode', '@whitespace/storybook-addon-html'],
+  addons: ['@storybook/addon-essentials', '@storybook/addon-actions', '@storybook/addon-a11y', '@storybook/addon-knobs', './i18n-party-addon/register.js', 'storybook-dark-mode', '@whitespace/storybook-addon-html', '@storybook/addon-mdx-gfm'],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async options => ({
