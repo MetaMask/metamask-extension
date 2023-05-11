@@ -49,7 +49,6 @@ export default function CreationSuccessful() {
       <Text
         variant={TextVariant.headingSm}
         as="h4"
-        align={AlignItems.flexStart}
         marginLeft={12}
       >
         {t('remember')}
