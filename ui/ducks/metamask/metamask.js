@@ -383,15 +383,17 @@ export function checkIfLockedAsset(state, txData) {
     const { selectedAddress, lockedAssets } = state.metamask;
     const { chainId, tokenAddress, transactionData } = txData;
 
-    const tokenId = transactionData?.args?._tokenId.toString();
+    const tokenId = transactionData?.args?._tokenId?.toString();
+
     const regex = new RegExp(
-      `^eip155:${chainId}/ERC\\d+:${tokenAddress}/${tokenId}$`,
+      `^eip155:${chainId}/ERC\\d+:${tokenAddress}/${tokenId || '\\d+'}$`,
       'iu',
     );
 
     const lockedAssetEntries = lockedAssets[selectedAddress];
     const assetKey = Object.keys(lockedAssetEntries).find((assetId) => {
-      return regex.test(assetId);
+      const res = regex.test(assetId);
+      return res;
     });
     if (!assetKey) {
       return false;
