@@ -10,7 +10,7 @@ import { getUnapprovedTransactions } from '../selectors';
  *
  * @returns {object} The transaction data
  */
-export const useDraftTransactionGasValues = () => {
+export const useDraftTransactionWithTxParams = () => {
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 

@@ -23,7 +23,7 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { useDraftTransactionGasValues } from '../../../../hooks/useDraftTransactionGasValues';
+import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
 import { Icon, IconName } from '../../../component-library';
@@ -41,7 +41,7 @@ const ConfirmLegacyGasDisplay = () => {
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const nativeCurrency = useSelector(getNativeCurrency);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const transactionData = useDraftTransactionGasValues();
+  const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
   const { id: transactionId, dappSuggestedGasFees } = txData;
   const transaction = Object.keys(transactionData).length

@@ -20,13 +20,13 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
-import { useDraftTransactionGasValues } from '../../../hooks/useDraftTransactionGasValues';
+import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   const t = useI18nContext();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
-  const transactionData = useDraftTransactionGasValues();
+  const transactionData = useDraftTransactionWithTxParams();
 
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
