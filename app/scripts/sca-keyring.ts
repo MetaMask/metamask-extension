@@ -1,11 +1,8 @@
-import { TypedTransaction } from '@ethereumjs/tx';
+import { TypedTransaction, TxData } from '@ethereumjs/tx';
 import {
-  arrToBufArr,
-  bufferToHex,
   ecsign,
+  isValidAddress,
   isValidPrivate,
-  privateToPublic,
-  publicToAddress,
   stripHexPrefix,
   toBuffer,
 } from '@ethereumjs/util';
@@ -19,8 +16,6 @@ import {
   SignTypedDataVersion,
 } from '@metamask/eth-sig-util';
 import { add0x, Eip1024EncryptedData, Hex, Keyring } from '@metamask/utils';
-import { keccak256 } from 'ethereum-cryptography/keccak';
-import randombytes from 'randombytes';
 
 type KeyringOpt = {
   withAppKeyOrigin?: string;
@@ -57,6 +52,12 @@ export class SCKeyring implements Keyring<string[]> {
       .map((pkAndAddress) => {
         const [hexPrivateKey, address] = pkAndAddress.split(',', 2);
         const privateKey = Buffer.from(stripHexPrefix(hexPrivateKey), 'hex');
+        if (!isValidPrivate(privateKey)) {
+          throw new Error('Invalid private key');
+        }
+        if (!isValidAddress(address)) {
+          throw new Error(`Invalid address: ${address}`);
+        }
         return { privateKey, address };
       })
       .filter((wallet) => wallet.address && wallet.privateKey);
@@ -64,17 +65,8 @@ export class SCKeyring implements Keyring<string[]> {
   }
 
   async addAccounts(numAccounts = 1) {
-    const newWallets = [];
-    for (let i = 0; i < numAccounts; i++) {
-      const privateKey = generateKey();
-      const publicKey = privateToPublic(privateKey);
-      newWallets.push({ privateKey, publicKey });
-    }
-    this.#wallets = this.#wallets.concat(newWallets);
-    const hexWallets = newWallets.map(({ publicKey }) =>
-      add0x(bufferToHex(publicToAddress(publicKey))),
-    );
-    return hexWallets;
+    // FIXME: Add support for adding random accounts
+    throw new Error('Adding accounts is not supported');
   }
 
   async getAccounts() {
@@ -84,9 +76,9 @@ export class SCKeyring implements Keyring<string[]> {
   async signTransaction(
     address: Hex,
     transaction: TypedTransaction,
-    opts: KeyringOpt = {},
-  ): Promise<TypedTransaction> {
-    const privKey = this.#getPrivateKeyFor(address, opts);
+    options?: Record<string, unknown>,
+  ): Promise<TxData> {
+    const privKey = this.#getPrivateKeyFor(address, options);
     const signedTx = transaction.sign(privKey);
     // Newer versions of Ethereumjs-tx are immutable and return a new tx object
     return signedTx === undefined ? transaction : signedTx;
@@ -156,14 +148,8 @@ export class SCKeyring implements Keyring<string[]> {
 
   // returns an address specific to an app
   async getAppKeyAddress(address: Hex, origin: string) {
-    if (!origin || typeof origin !== 'string') {
-      throw new Error(`'origin' must be a non-empty string`);
-    }
-    const wallet = this.#getWalletForAccount(address, {
-      withAppKeyOrigin: origin,
-    });
-    const appKeyAddress = add0x(bufferToHex(publicToAddress(wallet.publicKey)));
-    return appKeyAddress;
+    // FIXME: add missing support to app key
+    throw new Error('App key address is not supported');
   }
 
   // exportAccount should return a hex-encoded private key:
@@ -174,46 +160,21 @@ export class SCKeyring implements Keyring<string[]> {
 
   removeAccount(account: string) {
     this.#wallets = this.#wallets.filter(
-      ({ address }) => account.toLowerCase() === address.toLowerCase(),
+      ({ address }) => account.toLowerCase() !== address.toLowerCase(),
     );
   }
 
-  #getWalletForAccount(rawAccount: string | number, opts: KeyringOpt = {}) {
+  #getWalletForAccount(rawAccount: string | number, _opts: KeyringOpt = {}) {
+    // FIXME: support opts.withAppKeyOrigin
     const account = normalize(rawAccount);
-    let wallet = this.#wallets.find(
+    const wallet = this.#wallets.find(
       ({ address }) => account?.toLowerCase() === address.toLowerCase(),
     );
     if (!wallet) {
       throw new Error('Simple Keyring - Unable to find matching address.');
     }
-
-    if (opts.withAppKeyOrigin) {
-      const { privateKey } = wallet;
-      const appKeyOriginBuffer = Buffer.from(opts.withAppKeyOrigin, 'utf8');
-      const appKeyBuffer = Buffer.concat([privateKey, appKeyOriginBuffer]);
-      const appKeyPrivateKey = arrToBufArr(keccak256(appKeyBuffer));
-      const appKeyPublicKey = privateToPublic(appKeyPrivateKey);
-      wallet = { privateKey: appKeyPrivateKey, publicKey: appKeyPublicKey };
-    }
-
     return wallet;
   }
-}
-
-/**
- * Generate and validate a new random key of 32 bytes.
- *
- * @returns Buffer The generated key.
- */
-function generateKey(): Buffer {
-  const privateKey = randombytes(32);
-
-  if (!isValidPrivate(privateKey)) {
-    throw new Error(
-      'Private key does not satisfy the curve requirements (ie. it is invalid)',
-    );
-  }
-  return privateKey;
 }
 
 /**
