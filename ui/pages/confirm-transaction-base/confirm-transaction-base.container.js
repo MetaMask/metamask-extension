@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 
@@ -47,6 +47,7 @@ import {
   getNativeCurrency,
   getSendToAccounts,
   getProviderConfig,
+  checkIfLockedAsset,
 } from '../../ducks/metamask/metamask';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 
@@ -196,6 +197,14 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
+  const isLockedAsset = checkIfLockedAsset(state, {
+    tokenAddress: txParamsToAddress,
+    fromAddress,
+    transactionData,
+    chainId,
+  });
+  // // eslint-disable-next-line no-debugger
+  // debugger;
   return {
     balance,
     fromAddress,

@@ -378,6 +378,35 @@ export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
 }
 
+export function checkIfLockedAsset(state, txData) {
+  const { selectedAddress, lockedAssets } = state.metamask;
+  const { chainId, fromAddress, tokenAddress, transactionData } = txData;
+
+  if (fromAddress !== selectedAddress) {
+    return false;
+  }
+  const tokenId = transactionData.args?._tokenId.toString();
+  const lockedAssetEntries = lockedAssets[selectedAddress];
+  const isLocked = Object.keys(lockedAssetEntries).find((assetId) => {
+    const [lockedChainId, asset, lockedTokenId] = assetId
+      .replace('eip155:', '')
+      .split('/');
+    const [, lockedTokenAddress] = asset.split(':');
+
+    if (chainId !== lockedChainId) {
+      return false;
+    }
+    if (tokenId !== lockedTokenId) {
+      return false;
+    }
+    if (tokenAddress.toLowerCase() !== lockedTokenAddress.toLowerCase()) {
+      return false;
+    }
+    return true;
+  });
+  return Boolean(isLocked);
+}
+
 /**
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
