@@ -43,6 +43,8 @@ export default function CustomizeFoxComponent() {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const addressBook = useSelector(getAddressBook);
   const isTags = addressBook.filter((item) => item.tags.length);
+  const isDisabled =
+    seedPhraseBackedUp && userCompletedSRPQuiz && isTags.length;
 
   const showSRPQuizModal = () => {
     dispatch(
@@ -170,6 +172,7 @@ export default function CustomizeFoxComponent() {
         block
         marginTop={4}
         marginBottom={6}
+        disabled={!isDisabled}
       >
         Customize fox
       </ButtonPrimary>
