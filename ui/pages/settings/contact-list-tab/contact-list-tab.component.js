@@ -216,8 +216,9 @@ export default class ContactListTab extends Component {
 
   renderAddresses() {
     const { addressBook, history, selectedAddress } = this.props;
-    const filteredOptions = Object.keys(this.types).map((text) => ({
-      value: text,
+    const filteredOptions = Object.keys(this.types).map((value) => ({
+      value,
+      name: this.types[value],
     }));
     const filteredAddress =
       this.state.filterType === 'showAll'
