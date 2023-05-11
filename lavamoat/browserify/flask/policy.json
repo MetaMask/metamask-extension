@@ -1088,7 +1088,6 @@
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/eth-keyring-controller>obs-store": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
-        "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>events": true
       }
     },
