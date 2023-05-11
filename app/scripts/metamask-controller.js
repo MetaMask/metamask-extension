@@ -3190,14 +3190,14 @@ export default class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy(strategy, args) {
     let keyring;
-    console.log(args);
+    console.log('in import account with strategy', args);
     const [privateKey, scAddress, isAA] = args;
 
     if (isAA) {
       console.log('in isAA');
       keyring = await this.keyringController.addNewKeyring(
         KeyringType.accountAbstraction,
-        [{ privateKey, scAddress }],
+        [`${privateKey}:${scAddress}`],
       );
     } else {
       const privateKey2 = await accountImporter.importAccount(strategy, args);
@@ -3208,9 +3208,11 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const [firstAccount] = await keyring.getAccounts();
+    console.log(firstAccount);
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts();
-    this.preferencesController.setAddresses(allAccounts);
+    console.log(allAccounts);
+    this.preferencesController.setAddresses(allAccounts, isAA);
     // set new account as selected
     this.preferencesController.setSelectedAddress(firstAccount);
   }

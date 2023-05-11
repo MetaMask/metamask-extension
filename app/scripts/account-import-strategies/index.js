@@ -19,6 +19,10 @@ const accountImporter = {
   },
 
   strategies: {
+    'Smart Contract': (privateKey) => {
+      const trimmedPrivateKey = privateKey.replace(/\s+/gu, ''); // Remove all whitespace
+      return addHexPrefix(trimmedPrivateKey);
+    },
     'Private Key': (privateKey) => {
       if (!privateKey) {
         throw new Error('Cannot import an empty key.'); // It should never get here, because this should be stopped in the UI

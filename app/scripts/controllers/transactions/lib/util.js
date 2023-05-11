@@ -224,6 +224,8 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
         validateInputData(value);
         ensureFieldIsString(txParams, 'data');
         break;
+      case 'userOp':
+        break;
       default:
         ensureFieldIsString(txParams, key);
     }

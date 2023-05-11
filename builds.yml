@@ -22,6 +22,7 @@ buildTypes:
       - EDITOR_URL: ''
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+
     # Main build uses the default browser manifest
     manifestOverrides: false
 
@@ -216,6 +217,16 @@ env:
   # if it's not inside process.env
   # Also see DEBUG and METAMASK_DEBUG
   - NODE_DEBUG: ''
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - ENTRYPOINT_ADDRESS
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - PAYMASTER_ADDRESS
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - ACTION_TOKEN_ADDRESS
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - ROUTER_WRAPPER_ADDRESS
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - BUNDLER_URL
 
   ###
   # Meta variables

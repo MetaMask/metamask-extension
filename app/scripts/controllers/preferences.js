@@ -236,12 +236,18 @@ export default class PreferencesController {
    *
    * @param {string[]} addresses - An array of hex addresses
    */
-  setAddresses(addresses) {
+  setAddresses(addresses, isSmartContract) {
     const oldIdentities = this.store.getState().identities;
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {};
-      ids[address] = { name: `Account ${index + 1}`, address, ...oldId };
+      ids[address] = isSmartContract
+        ? {
+            name: `Account Abstraction ${index + 1}`,
+            address,
+            ...oldId,
+          }
+        : { name: `Account ${index + 1}`, address, ...oldId };
       return ids;
     }, {});
 

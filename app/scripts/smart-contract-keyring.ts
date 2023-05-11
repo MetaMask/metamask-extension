@@ -23,7 +23,16 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 // @ts-ignore
 import randombytes from 'randombytes';
 import { ethers } from 'ethers';
-import factoryAbi from './MimoWalletFactory.json';
+import factoryAbi from './ddMimoWalletFactory.json';
+import entryPointAbi from './EntryPoint.json';
+import accountAbstractionAbi from './AccountAbstraction.json';
+import {
+  UserOperation,
+  fillAndSign,
+  fillUserOpDefaults,
+  getUserOpHash,
+} from './smart-contract-keyring-helper';
+import { hexConcat, hexZeroPad, hexlify, parseEther } from 'ethers/lib/utils';
 
 type KeyringOpt = {
   withAppKeyOrigin?: string;
@@ -33,19 +42,15 @@ type KeyringOpt = {
 const TYPE = 'Account Abstraction';
 
 export default class SmartContractKeyring implements Keyring<string[]> {
-  #wallets: { privateKey: Buffer; publicKey: Buffer }[];
+  #wallets: { privateKey: Buffer; publicKey: string }[];
 
   readonly type: string = TYPE;
 
   static type: string = TYPE;
 
-  constructor(
-    privateKeys: {
-      privateKey: string;
-      scAddress: string;
-    }[] = [],
-  ) {
+  constructor(privateKeys: string[] = []) {
     this.#wallets = [];
+    console.log('constructor', privateKeys);
 
     /* istanbul ignore next: It's not possible to write a unit test for this, because a constructor isn't allowed
      * to be async. Jest can't await the constructor, and when the error gets thrown, Jest can't catch it. */
@@ -55,22 +60,24 @@ export default class SmartContractKeyring implements Keyring<string[]> {
   }
 
   async serialize() {
-    return this.#wallets.map((a) => a.privateKey.toString('hex'));
+    return this.#wallets.map(
+      (a) => `${a.privateKey.toString('hex')}:${a.publicKey}`,
+    );
   }
 
-  async deserialize(
-    privateKeys: {
-      privateKey: string;
-      scAddress: string;
-    }[],
-  ) {
+  async deserialize(privateKeys: string[]) {
+    console.log('in deserialize method');
+    console.log(privateKeys);
+    console.log('env vars', process.env);
     this.#wallets = privateKeys.map((account) => {
-      const { privateKey, scAddress } = account;
+      const [privateKey, scAddress] = account.split(':');
+      console.log(privateKey, scAddress);
       return {
         privateKey: Buffer.from(privateKey, 'hex'),
-        publicKey: Buffer.from(scAddress, 'hex'),
+        publicKey: scAddress,
       };
     });
+    console.log(this.#wallets);
   }
 
   async addAccounts(numAccounts = 1) {
@@ -99,39 +106,109 @@ export default class SmartContractKeyring implements Keyring<string[]> {
       //   salt,
       //   [],
       // );
+      console.log("in add account method, shouldn't be here");
 
       newWallets.push({
         privateKey,
         publicKeyEOA: publicKey,
-        publicKey: '', //Buffer.from(aaAddress, 'hex'),
+        publicKey: '0xmimo', // Buffer.from(aaAddress, 'hex'),
       });
     }
 
     this.#wallets = this.#wallets.concat(newWallets);
-    const hexWallets = newWallets.map(({ publicKey }) =>
-      add0x(bufferToHex(publicToAddress(publicKey))),
-    );
+    const hexWallets = newWallets.map(({ publicKey }) => add0x(publicKey));
     return hexWallets;
   }
 
   async getAccounts() {
-    return this.#wallets.map(({ publicKey }) =>
-      add0x(bufferToHex(publicToAddress(publicKey))),
-    );
+    console.log('in get accounts method');
+    console.log(this.#wallets);
+    const addresses = this.#wallets.map(({ publicKey }) => {
+      console.log(add0x(publicKey));
+      return add0x(publicKey);
+    });
+    return addresses;
   }
 
   async signTransaction(
     address: Hex,
     transaction: TypedTransaction,
     opts: KeyringOpt = {},
-  ): Promise<TypedTransaction> {
+  ): Promise<UserOperation> {
+    console.log('in sign transaction method');
     const privKey = this.#getPrivateKeyFor(address, opts);
+    const aaAddress = this.#wallets.find(
+      (wallet) => wallet.privateKey.toString('hex') === privKey.toString('hex'),
+    )?.publicKey;
 
-    const userOps = {};
+    console.log('aaddress', aaAddress);
 
-    const signedTx = transaction.sign(privKey);
+    const provider = new ethers.providers.JsonRpcProvider(
+      `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+    );
+
+    const chainId = await provider.getNetwork().then((net) => net.chainId);
+    console.log('chainId', chainId);
+
+    const signer = new ethers.Wallet(privKey, provider);
+    const entryPoint = new ethers.Contract(
+      process.env.ENTRYPOINT_ADDRESS!,
+      entryPointAbi.abi,
+      provider,
+    );
+    const accountAbstractionInstance = new ethers.Contract(
+      aaAddress!,
+      accountAbstractionAbi.abi,
+      signer,
+    );
+
+    // console.log('nonce', await accountAbstractionInstance.getNonce());
+
+    console.log('nonce', await accountAbstractionInstance.nonce());
+
+    console.log('before fillAndSign');
+    console.log(transaction);
+    const userOp = await fillAndSign(
+      fillUserOpDefaults({
+        sender: address,
+        callData: accountAbstractionInstance.interface.encodeFunctionData(
+          'execute',
+          [
+            transaction.to ?? ethers.constants.AddressZero,
+            transaction.value,
+            transaction.data,
+          ],
+        ),
+        paymasterAndData: opts.usePaymaster
+          ? hexConcat([
+              process.env.PAYMASTER_ADDRESS!,
+              hexZeroPad(process.env.ACTION_TOKEN_ADDRESS!, 32),
+              hexZeroPad(hexlify(1), 32),
+            ])
+          : '0x',
+        nonce: (await accountAbstractionInstance.nonce()).toHexString(),
+        callGasLimit: hexlify(2000000),
+        verificationGasLimit: hexlify(1000000),
+        maxFeePerGas: hexlify(3e9),
+      }),
+      signer,
+      entryPoint,
+    );
+
+    const userOpHash = getUserOpHash(
+      userOp,
+      process.env.ENTRYPOINT_ADDRESS,
+      chainId,
+    );
+
+    console.log('finished signing transaction');
+    console.log(userOp, userOpHash);
+
+    return { ...transaction, userOp, userOpHash };
+
+    // const signedTx = transaction.sign(privKey);
     // Newer versions of Ethereumjs-tx are immutable and return a new tx object
-    return signedTx === undefined ? transaction : signedTx;
+    // return signedTx === undefined ? transaction : signedTx;
   }
 
   // For eth_sign, we need to sign arbitrary data:
@@ -227,15 +304,14 @@ export default class SmartContractKeyring implements Keyring<string[]> {
 
     this.#wallets = this.#wallets.filter(
       ({ publicKey }) =>
-        bufferToHex(publicToAddress(publicKey)).toLowerCase() !==
-        address.toLowerCase(),
+        bufferToHex(publicKey).toLowerCase() !== address.toLowerCase(),
     );
   }
 
   #getWalletForAccount(account: string | number, opts: KeyringOpt = {}) {
     const address = normalize(account);
     let wallet = this.#wallets.find(
-      ({ publicKey }) => bufferToHex(publicToAddress(publicKey)) === address,
+      ({ publicKey }) => bufferToHex(publicKey) === address,
     );
     if (!wallet) {
       throw new Error('Simple Keyring - Unable to find matching address.');

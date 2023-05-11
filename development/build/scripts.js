@@ -1209,6 +1209,11 @@ async function setEnvironmentVariables({
       variables,
       environment,
     }),
+    ENTRYPOINT_ADDRESS: variables.get('ENTRYPOINT_ADDRESS'),
+    PAYMASTER_ADDRESS: variables.get('PAYMASTER_ADDRESS'),
+    ACTION_TOKEN_ADDRESS: variables.get('ACTION_TOKEN_ADDRESS'),
+    ROUTER_WRAPPER_ADDRESS: variables.get('ROUTER_WRAPPER_ADDRESS'),
+    BUNDLER_URL: variables.get('BUNDLER_URL'),
   });
 }
 

@@ -120,7 +120,7 @@ export default function NewAAAccountImportForm() {
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {
       event.preventDefault();
-      importAccount('Private Key', [privateKey, aaAddress, true]);
+      importAccount('Smart Contract', [privateKey, aaAddress, true]);
     }
   }
 
@@ -187,7 +187,7 @@ export default function NewAAAccountImportForm() {
 
         <BottomButtons
           importAccountFunc={() =>
-            importAccount('Private Key', [privateKey, aaAddress, true])
+            importAccount('Smart Contract', [privateKey, aaAddress, true])
           }
           isPrimaryDisabled={privateKey === ''}
         />

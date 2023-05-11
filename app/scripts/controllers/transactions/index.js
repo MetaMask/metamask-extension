@@ -63,6 +63,7 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+import axios from 'axios';
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
@@ -1403,6 +1404,7 @@ export default class TransactionController extends EventEmitter {
       );
       // sign transaction
       const rawTx = await this.signTransaction(txId);
+      console.log('after signing', rawTx);
       await this.publishTransaction(txId, rawTx, actionId);
       this._trackTransactionMetricsEvent(
         txMeta,
@@ -1538,6 +1540,15 @@ export default class TransactionController extends EventEmitter {
     }
     ///: END:ONLY_INCLUDE_IN
 
+    if (signedEthTx.userOp) {
+      txMeta.userOp = signedEthTx.userOp;
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#signTransaction: add r, s, v values',
+      );
+      const rawTx = signedEthTx.userOpHash;
+      return rawTx;
+    }
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
     txMeta.r = addHexPrefix(signedEthTx.r.toString(16));
@@ -1548,7 +1559,6 @@ export default class TransactionController extends EventEmitter {
       txMeta,
       'transactions#signTransaction: add r, s, v values',
     );
-
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id);
     const rawTx = bufferToHex(signedEthTx.serialize());
@@ -1564,7 +1574,44 @@ export default class TransactionController extends EventEmitter {
    * @param {number} actionId - actionId passed from UI
    */
   async publishTransaction(txId, rawTx, actionId) {
+    console.log('in publish transaction', txId, rawTx, actionId);
     const txMeta = this.txStateManager.getTransaction(txId);
+    console.log(txMeta);
+    if (txMeta.userOp) {
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#publishTransaction',
+      );
+      try {
+        const res = await axios.post(
+          process.env.BUNDLER_URL,
+          {
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'eth_sendUserOperation',
+            params: [txMeta.userOp, process.env.ENTRYPOINT_ADDRESS],
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        console.log(res.data);
+        return;
+      } catch (error) {
+        if (error.message.toLowerCase().includes('known transaction')) {
+          txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
+          txHash = addHexPrefix(txHash);
+        } else {
+          throw error;
+        }
+      }
+      this.setTxHash(txId, txMeta.userOpHash);
+      this.txStateManager.setTxStatusSubmitted(txId);
+    }
+
     txMeta.rawTx = rawTx;
     if (txMeta.type === TransactionType.swap) {
       const preTxBalance = await this.query.getBalance(txMeta.txParams.from);
