@@ -362,6 +362,7 @@
     "remove-trailing-slash": "^0.1.1",
     "reselect": "^3.0.1",
     "ses": "^0.18.4",
+    "signature-inspection": "github:MetaMask/signature-inspection#main",
     "single-call-balance-checker-abi": "^1.0.0",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",

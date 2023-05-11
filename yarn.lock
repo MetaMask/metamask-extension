@@ -24353,6 +24353,7 @@ __metadata:
     semver: ^7.3.5
     serve-handler: ^6.1.2
     ses: ^0.18.4
+    signature-inspection: "github:MetaMask/signature-inspection#main"
     single-call-balance-checker-abi: ^1.0.0
     sinon: ^9.0.0
     source-map: ^0.7.2
@@ -30870,6 +30871,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"signature-inspection@github:MetaMask/signature-inspection#main":
+  version: 1.0.0
+  resolution: "signature-inspection@https://github.com/MetaMask/signature-inspection.git#commit=1e01f6bee56c69dfc116cc9a6ca123b76e2bd2e0"
+  dependencies:
+    typescript: ^5.0.4
+  checksum: a80b316001eb007c64357a311a43af17552ab7f27c30baa622ee0dce5207d39b57fdf3e2ee3f2d30900167c058f02245fd1a4f13273a5c06e1a0d0bc0ffa4d01
+  languageName: node
+  linkType: hard
+
 "simple-concat@npm:^1.0.0":
   version: 1.0.0
   resolution: "simple-concat@npm:1.0.0"
@@ -33280,6 +33290,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "typescript@npm:5.0.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 82b94da3f4604a8946da585f7d6c3025fff8410779e5bde2855ab130d05e4fd08938b9e593b6ebed165bda6ad9292b230984f10952cf82f0a0ca07bbeaa08172
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@^3.9.5#~builtin<compat/typescript>, typescript@patch:typescript@^3.9.7#~builtin<compat/typescript>":
   version: 3.9.10
   resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=701156"
@@ -33287,6 +33307,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: dc7141ab555b23a8650a6787f98845fc11692063d02b75ff49433091b3af2fe3d773650dea18389d7c21f47d620fb3b110ea363dab4ab039417a6ccbbaf96fc2
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>":
+  version: 5.0.4
+  resolution: "typescript@patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=701156"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 6a1fe9a77bb9c5176ead919cc4a1499ee63e46b4e05bf667079f11bf3a8f7887f135aa72460a4c3b016e6e6bb65a822cb8689a6d86cbfe92d22cc9f501f09213
   languageName: node
   linkType: hard
 
