@@ -790,7 +790,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-jsx@npm:^7.21.4, @babel/plugin-syntax-jsx@npm:^7.7.2":
+"@babel/plugin-syntax-jsx@npm:^7.18.6, @babel/plugin-syntax-jsx@npm:^7.7.2":
+  version: 7.18.6
+  resolution: "@babel/plugin-syntax-jsx@npm:7.18.6"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.18.6
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 6d37ea972970195f1ffe1a54745ce2ae456e0ac6145fae9aa1480f297248b262ea6ebb93010eddb86ebfacb94f57c05a1fc5d232b9a67325b09060299d515c67
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-syntax-jsx@npm:^7.21.4":
   version: 7.21.4
   resolution: "@babel/plugin-syntax-jsx@npm:7.21.4"
   dependencies:
@@ -1211,7 +1222,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-react-jsx@npm:^7.18.6, @babel/plugin-transform-react-jsx@npm:^7.19.0":
+"@babel/plugin-transform-react-jsx@npm:^7.18.6":
+  version: 7.18.6
+  resolution: "@babel/plugin-transform-react-jsx@npm:7.18.6"
+  dependencies:
+    "@babel/helper-annotate-as-pure": ^7.18.6
+    "@babel/helper-module-imports": ^7.18.6
+    "@babel/helper-plugin-utils": ^7.18.6
+    "@babel/plugin-syntax-jsx": ^7.18.6
+    "@babel/types": ^7.18.6
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 46129eaf1ab7a7a73e3e8c9d9859b630f5b381c5e19fb1559e2db7b943a7825b6715ad950623fb03fe7bd31ed618ce1d0bd539b13fa030a50c39d5a873a5ba00
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-transform-react-jsx@npm:^7.19.0":
   version: 7.21.5
   resolution: "@babel/plugin-transform-react-jsx@npm:7.21.5"
   dependencies:
@@ -6977,7 +7003,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:^7.0.0":
   version: 7.20.0
   resolution: "@types/babel__core@npm:7.20.0"
   dependencies:
@@ -6987,6 +7013,19 @@ __metadata:
     "@types/babel__template": "*"
     "@types/babel__traverse": "*"
   checksum: 49b601a0a7637f1f387442c8156bd086cfd10ff4b82b0e1994e73a6396643b5435366fb33d6b604eade8467cca594ef97adcbc412aede90bb112ebe88d0ad6df
+  languageName: node
+  linkType: hard
+
+"@types/babel__core@npm:^7.1.14":
+  version: 7.1.19
+  resolution: "@types/babel__core@npm:7.1.19"
+  dependencies:
+    "@babel/parser": ^7.1.0
+    "@babel/types": ^7.0.0
+    "@types/babel__generator": "*"
+    "@types/babel__template": "*"
+    "@types/babel__traverse": "*"
+  checksum: 8c9fa87a1c2224cbec251683a58bebb0d74c497118034166aaa0491a4e2627998a6621fc71f8a60ffd27d9c0c52097defedf7637adc6618d0331c15adb302338
   languageName: node
   linkType: hard
 
@@ -7200,10 +7239,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/estree@npm:*, @types/estree@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "@types/estree@npm:1.0.1"
-  checksum: e9aa175eacb797216fafce4d41e8202c7a75555bc55232dee0f9903d7171f8f19f0ae7d5191bb1a88cb90e65468be508c0df850a9fb81b4433b293a5a749899d
+"@types/estree@npm:*":
+  version: 1.0.0
+  resolution: "@types/estree@npm:1.0.0"
+  checksum: 910d97fb7092c6738d30a7430ae4786a38542023c6302b95d46f49420b797f21619cdde11fa92b338366268795884111c2eb10356e4bd2c8ad5b92941e9e6443
   languageName: node
   linkType: hard
 
@@ -7218,6 +7257,13 @@ __metadata:
   version: 0.0.51
   resolution: "@types/estree@npm:0.0.51"
   checksum: e56a3bcf759fd9185e992e7fdb3c6a5f81e8ff120e871641607581fb3728d16c811702a7d40fa5f869b7f7b4437ab6a87eb8d98ffafeee51e85bbe955932a189
+  languageName: node
+  linkType: hard
+
+"@types/estree@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@types/estree@npm:1.0.1"
+  checksum: e9aa175eacb797216fafce4d41e8202c7a75555bc55232dee0f9903d7171f8f19f0ae7d5191bb1a88cb90e65468be508c0df850a9fb81b4433b293a5a749899d
   languageName: node
   linkType: hard
 
@@ -7755,7 +7801,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-transition-group@npm:^4.2.0, @types/react-transition-group@npm:^4.4.0":
+"@types/react-transition-group@npm:^4.2.0":
+  version: 4.4.0
+  resolution: "@types/react-transition-group@npm:4.4.0"
+  dependencies:
+    "@types/react": "*"
+  checksum: ba44361d7b055922b60a557389a68d5320a190785cd80173839ef8c096aeb0808bd9c35fc9a70badbfe959dc668fdb1b82211e4914140a5edc9ed87d760c9812
+  languageName: node
+  linkType: hard
+
+"@types/react-transition-group@npm:^4.4.0":
   version: 4.4.6
   resolution: "@types/react-transition-group@npm:4.4.6"
   dependencies:
@@ -7764,7 +7819,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16":
+"@types/react@npm:*, @types/react@npm:^16.9.53":
+  version: 16.9.53
+  resolution: "@types/react@npm:16.9.53"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^3.0.2
+  checksum: 858b53f1b9c09a8eb65826c9bef0d61cfab8befb968745777fe18a1b32eb707ffaa70fdb6c1a5697251a530dfe5b0b926e5d7a033fddcb6952bc67291eb175a8
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:>=16":
   version: 18.2.6
   resolution: "@types/react@npm:18.2.6"
   dependencies:
@@ -7772,16 +7837,6 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: dea9d232d8df7ac357367a69dcb557711ab3d5501807ffa77cebeee73d49ee94d095f298e36853c63ed47cce097eee4c7eae2aaa8c02fac3f0171ec1b523a819
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^16.9.53":
-  version: 16.9.53
-  resolution: "@types/react@npm:16.9.53"
-  dependencies:
-    "@types/prop-types": "*"
-    csstype: ^3.0.2
-  checksum: 858b53f1b9c09a8eb65826c9bef0d61cfab8befb968745777fe18a1b32eb707ffaa70fdb6c1a5697251a530dfe5b0b926e5d7a033fddcb6952bc67291eb175a8
   languageName: node
   linkType: hard
 
@@ -7828,7 +7883,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.4":
+"@types/semver@npm:^7.3.12":
+  version: 7.3.13
+  resolution: "@types/semver@npm:7.3.13"
+  checksum: 00c0724d54757c2f4bc60b5032fe91cda6410e48689633d5f35ece8a0a66445e3e57fa1d6e07eb780f792e82ac542948ec4d0b76eb3484297b79bd18b8cf1cb0
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.4":
   version: 7.5.0
   resolution: "@types/semver@npm:7.5.0"
   checksum: 0a64b9b9c7424d9a467658b18dd70d1d781c2d6f033096a6e05762d20ebbad23c1b69b0083b0484722aabf35640b78ccc3de26368bcae1129c87e9df028a22e2
