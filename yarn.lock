@@ -1627,15 +1627,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.13":
-  version: 7.21.0
-  resolution: "@babel/runtime@npm:7.21.0"
-  dependencies:
-    regenerator-runtime: ^0.13.11
-  checksum: 7b33e25bfa9e0e1b9e8828bb61b2d32bdd46b41b07ba7cb43319ad08efc6fda8eb89445193e67d6541814627df0ca59122c0ea795e412b99c5183a0540d338ab
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch::locator=metamask-crx%40workspace%3A.":
   version: 7.18.9
   resolution: "@babel/runtime@patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch::version=7.18.9&hash=918bda&locator=metamask-crx%40workspace%3A."
@@ -24153,14 +24144,14 @@ __metadata:
     "@actions/core": ^1.10.0
     "@actions/github": ^5.1.1
     "@babel/code-frame": ^7.12.13
-    "@babel/core": ^7.12.1
+    "@babel/core": ^7.21.5
     "@babel/eslint-parser": ^7.13.14
     "@babel/eslint-plugin": ^7.12.1
     "@babel/preset-env": ^7.5.5
     "@babel/preset-react": ^7.0.0
     "@babel/preset-typescript": ^7.16.7
     "@babel/register": ^7.5.5
-    "@babel/runtime": ^7.5.5
+    "@babel/runtime": ^7.18.9
     "@download/blockies": ^1.0.3
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^3.1.1
@@ -29244,7 +29235,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.11, regenerator-runtime@npm:^0.13.9":
+"regenerator-runtime@npm:^0.13.9":
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11"
   checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
