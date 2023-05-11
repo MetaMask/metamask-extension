@@ -5922,7 +5922,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/cli@npm:7.0.12":
+"@storybook/cli@npm:7.0.12, @storybook/cli@npm:^7.0.10":
   version: 7.0.12
   resolution: "@storybook/cli@npm:7.0.12"
   dependencies:
@@ -7769,7 +7769,6 @@ __metadata:
   resolution: "@types/react@npm:16.9.53"
   dependencies:
     "@types/prop-types": "*"
-    "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 858b53f1b9c09a8eb65826c9bef0d61cfab8befb968745777fe18a1b32eb707ffaa70fdb6c1a5697251a530dfe5b0b926e5d7a033fddcb6952bc67291eb175a8
   languageName: node
@@ -7799,13 +7798,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 19eb71acc4b0d7db2170732a51ad18a34007021f42069652a5be8a3e3a448a470d2f970b9e85f734d1896bf3a25e48fb5132b4a989c101eb5df21cc171d426c5
-  languageName: node
-  linkType: hard
-
-"@types/scheduler@npm:*":
-  version: 0.16.3
-  resolution: "@types/scheduler@npm:0.16.3"
-  checksum: 2b0aec39c24268e3ce938c5db2f2e77f5c3dd280e05c262d9c2fe7d890929e4632a6b8e94334017b66b45e4f92a5aa42ba3356640c2a1175fa37bef2f5200767
   languageName: node
   linkType: hard
 
@@ -23671,6 +23663,7 @@ __metadata:
     "@storybook/addon-mdx-gfm": ^7.0.10
     "@storybook/addons": ^7.0.10
     "@storybook/api": ^7.0.10
+    "@storybook/cli": ^7.0.10
     "@storybook/client-api": ^7.0.10
     "@storybook/components": ^7.0.10
     "@storybook/core-events": ^7.0.10
