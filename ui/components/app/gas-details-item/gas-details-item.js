@@ -26,7 +26,7 @@ import GasDetailsItemTitle from './gas-details-item-title';
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   const t = useI18nContext();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
-  const { transactionData } = useDraftTransactionGasValues();
+  const transactionData = useDraftTransactionGasValues();
 
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,

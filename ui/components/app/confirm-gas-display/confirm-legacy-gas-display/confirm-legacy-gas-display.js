@@ -41,7 +41,7 @@ const ConfirmLegacyGasDisplay = () => {
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const nativeCurrency = useSelector(getNativeCurrency);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const { transactionData } = useDraftTransactionGasValues();
+  const transactionData = useDraftTransactionGasValues();
   const txData = useSelector((state) => txDataSelector(state));
   const { id: transactionId, dappSuggestedGasFees } = txData;
   const transaction = Object.keys(transactionData).length
