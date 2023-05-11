@@ -384,6 +384,17 @@ export default class PreferencesController {
     return label;
   }
 
+  async setAccountColor(address, colorSchema) {
+    if (!address) {
+      throw new Error(
+        `setAccountColor requires a valid address, got undefined}`,
+      );
+    }
+    const { identities } = this.store.getState();
+    identities[address].colorSchema = colorSchema;
+    this.store.updateState({ identities });
+  }
+
   /**
    * Updates the `featureFlags` property, which is an object. One property within that object will be set to a boolean.
    *

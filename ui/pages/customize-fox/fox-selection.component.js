@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { getMetaMaskAccountsOrdered } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import FoxIcon from '../../components/ui/fox-icon/FoxIcon';
@@ -18,6 +18,7 @@ import { Text } from '../../components/component-library';
 import { EditorSelectionOptions, POLISH_OPTIONS } from './constants';
 import Button from '../../components/ui/button';
 import { FOX_COLOR_PALETTE } from '../../helpers/utils/generative-color';
+import { setAccountColor } from '../../store/actions';
 
 const checkValueExists = (arr, val) => {
   return arr.some((option) => option.value === val);
@@ -25,6 +26,7 @@ const checkValueExists = (arr, val) => {
 
 export default function FoxSelection() {
   const history = useHistory();
+  const dispatch = useDispatch();
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const state = useSelector((state) => state);
 
@@ -97,7 +99,9 @@ export default function FoxSelection() {
   };
 
   const handleSaveSelection = () => {
-    console.log(foxColorSchema);
+    dispatch(
+      setAccountColor(accounts[selectedAccountIndex].address, foxColorSchema),
+    );
   };
 
   const handleShuffle = () => {

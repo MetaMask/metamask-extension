@@ -105,6 +105,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { SELECTED_ACCOUNT_COLOR_CHANGED } from './actionConstants';
 
 export function goHome() {
   return {
@@ -1044,7 +1045,6 @@ export function updateTransactionGasFees(
   };
 }
 
-
 export async function exportContactList(): Promise<{
   filename: string;
   data: string;
@@ -1055,7 +1055,6 @@ export async function exportContactList(): Promise<{
       filename: string;
       data: string;
     }>('exportContactList');
-
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
@@ -2988,6 +2987,34 @@ export function setAccountLabel(
   };
 }
 
+export function setAccountColor(
+  address: string,
+  coloSchema: [string, string, string, string, string, string],
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setAccountColor`);
+
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod('setAccountColor', [address, coloSchema], (err) => {
+        dispatch(hideLoadingIndication());
+
+        if (err) {
+          dispatch(displayWarning(err));
+          reject(err);
+          return;
+        }
+
+        dispatch({
+          type: actionConstants.SELECTED_ACCOUNT_COLOR_CHANGED,
+          value: { address, coloSchema },
+        });
+        resolve(address);
+      });
+    });
+  };
+}
+
 export function clearAccountDetails(): Action {
   return {
     type: actionConstants.CLEAR_ACCOUNT_DETAILS,
@@ -3004,7 +3031,7 @@ export function grantTemporaryAllowList(txData): Action {
   return {
     type: actionConstants.GRANT_TEMPORARY_ALLOW_LIST,
     payload: txData,
-  }
+  };
 }
 
 // TODO: Lift to shared folder when it makes sense

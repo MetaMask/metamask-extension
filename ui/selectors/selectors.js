@@ -325,12 +325,7 @@ export function getMetaMaskIdentities(state) {
 
 export function getMetaMaskAccountsRaw(state) {
   const { accounts } = state.metamask;
-  const clone = JSON.parse(JSON.stringify(accounts));
-  const newAccounts = { ...clone };
-  for (const account in newAccounts) {
-    newAccounts[account]['hsl'] = ['testh', 'tests', 'testl'];
-  }
-  return newAccounts;
+  return accounts;
 }
 
 export function getMetaMaskCachedBalances(state) {

@@ -269,7 +269,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   setUserCompletedSRPQuiz(userCompletedSRPQuiz) {
-    this.store.updateState({ userCompletedSRPQuiz })
+    this.store.updateState({ userCompletedSRPQuiz });
   }
 
   /**

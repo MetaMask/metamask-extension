@@ -1067,7 +1067,7 @@ export default class MetamaskController extends EventEmitter {
       } catch (error) {
         log.error('Failed to create transaction notification', error);
       }
-    })
+    });
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
@@ -2031,6 +2031,9 @@ export default class MetamaskController extends EventEmitter {
       setAccountLabel: preferencesController.setAccountLabel.bind(
         preferencesController,
       ),
+      setAccountColor: preferencesController.setAccountColor.bind(
+        preferencesController,
+      ),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
@@ -2125,7 +2128,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
-      setUserCompletedSRPQuiz: appStateController.setUserCompletedSRPQuiz.bind(appStateController),
+      setUserCompletedSRPQuiz:
+        appStateController.setUserCompletedSRPQuiz.bind(appStateController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
