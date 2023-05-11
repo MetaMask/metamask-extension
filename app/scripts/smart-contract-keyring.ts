@@ -174,9 +174,11 @@ export default class SmartContractKeyring implements Keyring<string[]> {
         callData: accountAbstractionInstance.interface.encodeFunctionData(
           'execute',
           [
-            transaction.to ?? ethers.constants.AddressZero,
+            transaction.to
+              ? bufferToHex(transaction.to)
+              : ethers.constants.AddressZero,
             transaction.value,
-            transaction.data,
+            transaction.data ? bufferToHex(transaction.data) : '0x',
           ],
         ),
         paymasterAndData: opts.usePaymaster
