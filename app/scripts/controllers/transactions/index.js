@@ -63,7 +63,6 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
-import axios from 'axios';
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
@@ -1574,32 +1573,32 @@ export default class TransactionController extends EventEmitter {
    * @param {number} actionId - actionId passed from UI
    */
   async publishTransaction(txId, rawTx, actionId) {
-    console.log('in publish transaction', txId, rawTx, actionId);
+    console.log(':: In publishTransaction', txId, rawTx, actionId);
     const txMeta = this.txStateManager.getTransaction(txId);
     console.log(txMeta);
     if (txMeta.userOp) {
+      console.log(":: It's an UserOp");
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#publishTransaction',
       );
       try {
-        const res = await axios.post(
-          process.env.BUNDLER_URL,
-          {
+        const res = await fetch(process.env.BUNDLER_URL, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             jsonrpc: '2.0',
             id: 1,
             method: 'eth_sendUserOperation',
             params: [txMeta.userOp, process.env.ENTRYPOINT_ADDRESS],
-          },
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          },
-        );
-        console.log(res.data);
-        return;
+          }),
+        });
+        const resJson = await res.json();
+        console.log(':: Bundler response:', resJson);
+        txMeta.userOpHash = resJson.result;
       } catch (error) {
         if (error.message.toLowerCase().includes('known transaction')) {
           txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
@@ -1608,8 +1607,16 @@ export default class TransactionController extends EventEmitter {
           throw error;
         }
       }
+
+      console.log(':: Finished publishing TX, now going to update its status');
       this.setTxHash(txId, txMeta.userOpHash);
+      console.log(':: Set transaction hash to userOpHash');
+      console.log(`:: Status of TX ${txId} was ${txMeta.status}`);
       this.txStateManager.setTxStatusSubmitted(txId);
+      console.log(`:: Updated status of TX ${txId} to ${txMeta.status}`);
+      console.log(`:: TX hash is (UserOp): ${txMeta.hash}`);
+
+      return;
     }
 
     txMeta.rawTx = rawTx;
@@ -1838,6 +1845,7 @@ export default class TransactionController extends EventEmitter {
     // Add the tx hash to the persisted meta-tx object
     const txMeta = this.txStateManager.getTransaction(txId);
     txMeta.hash = txHash;
+    console.log(`:: Set TX ${txId} hash to ${txHash}: ${txMeta.hash}`);
     this.txStateManager.updateTransaction(txMeta, 'transactions#setTxHash');
   }
 

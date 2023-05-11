@@ -293,6 +293,7 @@
     "@zxing/browser": "^0.0.10",
     "@zxing/library": "0.8.0",
     "await-semaphore": "^0.1.1",
+    "axios": "^1.4.0",
     "base32-encode": "^1.2.0",
     "base64-js": "^1.5.1",
     "bignumber.js": "^4.1.0",

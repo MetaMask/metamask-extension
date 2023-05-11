@@ -1,6 +1,5 @@
 import { TypedTransaction } from '@ethereumjs/tx';
 import {
-  arrToBufArr,
   bufferToHex,
   ecsign,
   isValidPrivate,
@@ -19,11 +18,8 @@ import {
   SignTypedDataVersion,
 } from '@metamask/eth-sig-util';
 import { add0x, Eip1024EncryptedData, Hex, Keyring } from '@metamask/utils';
-import { keccak256 } from 'ethereum-cryptography/keccak';
-// @ts-ignore
-import randombytes from 'randombytes';
 import { ethers } from 'ethers';
-import factoryAbi from './ddMimoWalletFactory.json';
+import { hexConcat, hexZeroPad, hexlify } from 'ethers/lib/utils';
 import entryPointAbi from './EntryPoint.json';
 import accountAbstractionAbi from './AccountAbstraction.json';
 import {
@@ -32,7 +28,6 @@ import {
   fillUserOpDefaults,
   getUserOpHash,
 } from './smart-contract-keyring-helper';
-import { hexConcat, hexZeroPad, hexlify, parseEther } from 'ethers/lib/utils';
 
 type KeyringOpt = {
   withAppKeyOrigin?: string;
@@ -42,7 +37,7 @@ type KeyringOpt = {
 const TYPE = 'Account Abstraction';
 
 export default class SmartContractKeyring implements Keyring<string[]> {
-  #wallets: { privateKey: Buffer; publicKey: string }[];
+  #wallets: { privateKey: Buffer; scAddress: string }[];
 
   readonly type: string = TYPE;
 
@@ -61,73 +56,24 @@ export default class SmartContractKeyring implements Keyring<string[]> {
 
   async serialize() {
     return this.#wallets.map(
-      (a) => `${a.privateKey.toString('hex')}:${a.publicKey}`,
+      (wallet) => `${wallet.privateKey.toString('hex')}:${wallet.scAddress}`,
     );
   }
 
   async deserialize(privateKeys: string[]) {
-    console.log('in deserialize method');
-    console.log(privateKeys);
-    console.log('env vars', process.env);
     this.#wallets = privateKeys.map((account) => {
-      const [privateKey, scAddress] = account.split(':');
-      console.log(privateKey, scAddress);
-      return {
-        privateKey: Buffer.from(privateKey, 'hex'),
-        publicKey: scAddress,
-      };
+      const [hexPrivateKey, scAddress] = account.trim().split(':');
+      const privateKey = Buffer.from(hexPrivateKey, 'hex');
+      return { privateKey, scAddress };
     });
-    console.log(this.#wallets);
   }
 
   async addAccounts(numAccounts = 1) {
-    const newWallets = [];
-    for (let i = 0; i < numAccounts; i++) {
-      const privateKey = generateKey();
-      const publicKey = privateToPublic(privateKey);
-      // const provider = new ethers.providers.JsonRpcProvider(
-      //   'https://polygon-mumbai.infura.io/v3/{apiKey}',
-      // );
-
-      // const signer = new ethers.Wallet(privateKey, provider);
-      // const factory = new ethers.Contract(
-      //   '0x665cf455371e12EA5D49a7bA295cD060f436D95e',
-      //   factoryAbi.abi,
-      //   signer,
-      // );
-
-      // const salt = new Date().getTime();
-      // const aaAddress = await factory.getAddress(
-      //   publicKey.toString('hex'),
-      //   salt,
-      // );
-      // const aaAccount = await factory.createAccount(
-      //   publicKey.toString('hex'),
-      //   salt,
-      //   [],
-      // );
-      console.log("in add account method, shouldn't be here");
-
-      newWallets.push({
-        privateKey,
-        publicKeyEOA: publicKey,
-        publicKey: '0xmimo', // Buffer.from(aaAddress, 'hex'),
-      });
-    }
-
-    this.#wallets = this.#wallets.concat(newWallets);
-    const hexWallets = newWallets.map(({ publicKey }) => add0x(publicKey));
-    return hexWallets;
+    throw new Error('Method "addAccounts" is not supported');
   }
 
   async getAccounts() {
-    console.log('in get accounts method');
-    console.log(this.#wallets);
-    const addresses = this.#wallets.map(({ publicKey }) => {
-      console.log(add0x(publicKey));
-      return add0x(publicKey);
-    });
-    return addresses;
+    return this.#wallets.map((wallet) => add0x(wallet.scAddress));
   }
 
   async signTransaction(
@@ -137,14 +83,16 @@ export default class SmartContractKeyring implements Keyring<string[]> {
   ): Promise<UserOperation> {
     console.log('in sign transaction method');
     const privKey = this.#getPrivateKeyFor(address, opts);
+    console.log(privKey ? 'Found private key' : 'Did not find private key');
     const aaAddress = this.#wallets.find(
       (wallet) => wallet.privateKey.toString('hex') === privKey.toString('hex'),
-    )?.publicKey;
+    )?.scAddress;
 
-    console.log('aaddress', aaAddress);
+    console.log('address', aaAddress);
 
     const provider = new ethers.providers.JsonRpcProvider(
-      `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+      'https://polygon-mumbai.infura.io/v3/{apiKey}',
+      // `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
     );
 
     const chainId = await provider.getNetwork().then((net) => net.chainId);
@@ -152,7 +100,8 @@ export default class SmartContractKeyring implements Keyring<string[]> {
 
     const signer = new ethers.Wallet(privKey, provider);
     const entryPoint = new ethers.Contract(
-      process.env.ENTRYPOINT_ADDRESS!,
+      '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
+      // process.env.ENTRYPOINT_ADDRESS!,
       entryPointAbi.abi,
       provider,
     );
@@ -183,8 +132,10 @@ export default class SmartContractKeyring implements Keyring<string[]> {
         ),
         paymasterAndData: opts.usePaymaster
           ? hexConcat([
-              process.env.PAYMASTER_ADDRESS!,
-              hexZeroPad(process.env.ACTION_TOKEN_ADDRESS!, 32),
+              '0x1Fc92037a8236AfFB3328cbEf71dd986c4a373dD',
+              // process.env.PAYMASTER_ADDRESS!,
+              hexZeroPad('0x3de9210F3D577272Cdb8404Cd5276C4B5dBC5b91', 32),
+              // hexZeroPad(process.env.ACTION_TOKEN_ADDRESS!, 32),
               hexZeroPad(hexlify(1), 32),
             ])
           : '0x',
@@ -199,7 +150,8 @@ export default class SmartContractKeyring implements Keyring<string[]> {
 
     const userOpHash = getUserOpHash(
       userOp,
-      process.env.ENTRYPOINT_ADDRESS,
+      '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
+      // process.env.ENTRYPOINT_ADDRESS,
       chainId,
     );
 
@@ -267,11 +219,15 @@ export default class SmartContractKeyring implements Keyring<string[]> {
     return publicKey;
   }
 
-  #getPrivateKeyFor(address: Hex, opts: KeyringOpt = { withAppKeyOrigin: '' }) {
+  #getPrivateKeyFor(address: Hex, opts?: KeyringOpt) {
+    console.log('In "getPrivateKeyFor"');
     if (!address) {
+      console.log('No address was provided');
       throw new Error('Must specify address.');
     }
+    console.log('Going to get wallet');
     const wallet = this.#getWalletForAccount(address, opts);
+    console.log('Found wallet:', wallet);
     return wallet.privateKey;
   }
 
@@ -283,69 +239,45 @@ export default class SmartContractKeyring implements Keyring<string[]> {
     const wallet = this.#getWalletForAccount(address, {
       withAppKeyOrigin: origin,
     });
-    const appKeyAddress = add0x(bufferToHex(publicToAddress(wallet.publicKey)));
+    const appKeyAddress = add0x(bufferToHex(publicToAddress(wallet.scAddress)));
     return appKeyAddress;
   }
 
   // exportAccount should return a hex-encoded private key:
   async exportAccount(address: Hex, opts = { withAppKeyOrigin: '' }) {
     const wallet = this.#getWalletForAccount(address, opts);
-    return wallet.privateKey.toString('hex');
+    return wallet?.privateKey.toString('hex');
   }
 
   removeAccount(address: string) {
-    if (
-      !this.#wallets
-        .map(({ publicKey }) =>
-          bufferToHex(publicToAddress(publicKey)).toLowerCase(),
-        )
-        .includes(address.toLowerCase())
-    ) {
+    if (!this.#getWalletForAccount(address)) {
       throw new Error(`Address ${address} not found in this keyring`);
     }
 
     this.#wallets = this.#wallets.filter(
-      ({ publicKey }) =>
-        bufferToHex(publicKey).toLowerCase() !== address.toLowerCase(),
+      ({ scAddress }) => scAddress.toLowerCase() !== address.toLowerCase(),
     );
   }
 
-  #getWalletForAccount(account: string | number, opts: KeyringOpt = {}) {
+  #getWalletForAccount(account: string | number, opts?: KeyringOpt) {
     const address = normalize(account);
-    let wallet = this.#wallets.find(
-      ({ publicKey }) => bufferToHex(publicKey) === address,
+    const wallet = this.#wallets.find(
+      ({ scAddress }) =>
+        scAddress.toLowerCase() === address?.toLocaleLowerCase(),
     );
+
     if (!wallet) {
+      console.log('No wallet found for:', address);
       throw new Error('Simple Keyring - Unable to find matching address.');
     }
 
-    if (opts.withAppKeyOrigin) {
-      const { privateKey } = wallet;
-      const appKeyOriginBuffer = Buffer.from(opts.withAppKeyOrigin, 'utf8');
-      const appKeyBuffer = Buffer.concat([privateKey, appKeyOriginBuffer]);
-      const appKeyPrivateKey = arrToBufArr(keccak256(appKeyBuffer));
-      const appKeyPublicKey = privateToPublic(appKeyPrivateKey);
-      wallet = { privateKey: appKeyPrivateKey, publicKey: appKeyPublicKey };
+    if (opts?.withAppKeyOrigin) {
+      console.log('withAppKeyOrigin is present');
+      throw new Error('App key is not supported');
     }
 
     return wallet;
   }
-}
-
-/**
- * Generate and validate a new random key of 32 bytes.
- *
- * @returns Buffer The generated key.
- */
-function generateKey(): Buffer {
-  const privateKey = randombytes(32);
-
-  if (!isValidPrivate(privateKey)) {
-    throw new Error(
-      'Private key does not satisfy the curve requirements (ie. it is invalid)',
-    );
-  }
-  return privateKey;
 }
 
 /**

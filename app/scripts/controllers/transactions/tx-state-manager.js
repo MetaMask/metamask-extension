@@ -188,11 +188,14 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getPendingTransactions(address) {
+    console.log(':: In "getPendingTransactions"');
     const searchCriteria = { status: TransactionStatus.submitted };
     if (address) {
       searchCriteria.from = address;
     }
-    return this.getTransactions({ searchCriteria });
+    const txs = this.getTransactions({ searchCriteria });
+    console.log(':: Pending TXs:', txs);
+    return txs;
   }
 
   /**
@@ -584,6 +587,9 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {Error} err - error object
    */
   setTxStatusFailed(txId, err) {
+    console.log(`:: Setting TX ${txId} as failed`);
+    console.trace();
+
     const error = err || new Error('Internal metamask failure');
 
     const txMeta = this.getTransaction(txId);
