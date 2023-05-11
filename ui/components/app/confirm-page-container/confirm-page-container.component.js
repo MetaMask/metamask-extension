@@ -102,7 +102,7 @@ const ConfirmPageContainer = (props) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [collectionBalance, setCollectionBalance] = useState(0);
+  const [collectionBalance, setCollectionBalance] = useState('0');
 
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
@@ -140,7 +140,7 @@ const ConfirmPageContainer = (props) => {
       fromAddress,
       global.ethereumProvider,
     );
-    setCollectionBalance(tokenBalance || 0);
+    setCollectionBalance(tokenBalance.toString(10) || '0');
   }, [fromAddress, tokenAddress]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
