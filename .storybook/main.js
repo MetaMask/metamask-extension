@@ -8,7 +8,6 @@ const {
 } = require('../development/generate-icon-names');
 module.exports = {
   core: {
-    builder: 'webpack5',
     disableTelemetry: true
   },
   features: {
@@ -81,5 +80,9 @@ module.exports = {
   },
   docs: {
     autodocs: true
+  },
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {}
   }
 };
