@@ -12,8 +12,12 @@ import {
 } from '../../../components/component-library';
 import { Button } from '../../../components/component-library/button/button';
 import Box from '../../../components/ui/box';
+import Dropdown from '../../../components/ui/dropdown';
 import {
+  AlignItems,
+  DISPLAY,
   IconColor,
+  JustifyContent,
   SEVERITIES,
   TextColor,
   TextVariant,
@@ -56,6 +60,13 @@ export default class ContactListTab extends Component {
     isVisibleResultMessage: false,
     isImportSuccessful: true,
     importMessage: null,
+    filterType: 'showAll',
+  };
+
+  types = {
+    showAll: 'Show All Contacts',
+    allowList: 'Allow List Contacts',
+    blockList: 'Block List Contacts',
   };
 
   settingsRefs = Array(
@@ -205,13 +216,82 @@ export default class ContactListTab extends Component {
 
   renderAddresses() {
     const { addressBook, history, selectedAddress } = this.props;
-    const contacts = addressBook.filter(({ name }) => Boolean(name));
-    const nonContacts = addressBook.filter(({ name }) => !name);
+    const filteredOptions = Object.keys(this.types).map((text) => ({
+      value: text,
+    }));
+    const filteredAddress =
+      this.state.filterType === 'showAll'
+        ? addressBook
+        : addressBook.filter((item) =>
+            item.tags.includes(this.state.filterType),
+          );
+    const contacts = filteredAddress.filter(({ name }) => Boolean(name));
+    const nonContacts = filteredAddress.filter(({ name }) => !name);
     const { t } = this.context;
 
-    if (addressBook.length) {
+    if (filteredAddress.length) {
       return (
         <div>
+          <Box
+            marginTop={4}
+            marginBottom={4}
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            gap={4}
+            marginRight={6}
+            justifyContent={JustifyContent.flexEnd}
+          >
+            <Text>Filter By</Text>
+            <Dropdown
+              className=""
+              options={filteredOptions}
+              onChange={(e) => {
+                this.setState({ filterType: e });
+              }}
+              selectedOption={this.state.filterType}
+            />
+          </Box>
+          <ContactList
+            searchForContacts={() => contacts}
+            searchForRecents={() => nonContacts}
+            selectRecipient={(address) => {
+              history.push(`${CONTACT_VIEW_ROUTE}/${address}`);
+            }}
+            selectedAddress={selectedAddress}
+          />
+        </div>
+      );
+    }
+    if (addressBook.length > 0 && filteredAddress.length < 1) {
+      return (
+        <div>
+          <Box
+            marginTop={4}
+            marginBottom={4}
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            gap={4}
+            marginRight={6}
+            justifyContent={JustifyContent.flexEnd}
+          >
+            <Text>Filter By</Text>
+            <Dropdown
+              className=""
+              options={filteredOptions}
+              onChange={(e) => {
+                this.setState({ filterType: e });
+              }}
+              selectedOption={this.state.filterType}
+            />
+          </Box>
+          <BannerAlert
+            severity="warning"
+            title="Warning"
+            marginBottom={4}
+            marginTop={4}
+          >
+            No matching accounts for this filter
+          </BannerAlert>
           <ContactList
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
