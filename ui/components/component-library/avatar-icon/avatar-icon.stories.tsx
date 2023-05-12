@@ -1,4 +1,5 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   Size,
   AlignItems,
@@ -13,7 +14,7 @@ import { Box } from '../box';
 import { IconName } from '..';
 
 import README from './README.mdx';
-import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
+import { AvatarIcon, AvatarIconSize } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -48,7 +49,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(AVATAR_ICON_SIZES),
+      options: Object.values(AvatarIconSize),
     },
     backgroundColor: {
       control: 'select',
@@ -83,12 +84,12 @@ export default {
     },
   },
   args: {
-    size: Size.MD,
+    size: AvatarIconSize.Md,
   },
-};
+} as ComponentMeta<typeof AvatarIcon>;
 
-const Template = (args) => {
-  return <AvatarIcon iconName={IconName.SwapHorizontal} {...args} />;
+const Template: ComponentStory<typeof AvatarIcon> = (args) => {
+  return <AvatarIcon {...args} iconName={IconName.SwapHorizontal} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -114,32 +115,32 @@ export const IconNameStory = (args) => (
     <AvatarIcon
       color={IconColor.primaryDefault}
       backgroundColor={BackgroundColor.primaryMuted}
-      iconName={IconName.SwapHorizontal}
       {...args}
+      iconName={IconName.SwapHorizontal}
     />
     <AvatarIcon
       color={IconColor.successDefault}
       backgroundColor={BackgroundColor.successMuted}
-      iconName={IconName.Confirmation}
       {...args}
+      iconName={IconName.Confirmation}
     />
     <AvatarIcon
       color={IconColor.infoDefault}
       backgroundColor={BackgroundColor.infoMuted}
-      iconName={IconName.Info}
       {...args}
+      iconName={IconName.Info}
     />
     <AvatarIcon
       color={IconColor.warningDefault}
       backgroundColor={BackgroundColor.warningMuted}
-      iconName={IconName.Warning}
       {...args}
+      iconName={IconName.Warning}
     />
     <AvatarIcon
       color={IconColor.errorDefault}
       backgroundColor={BackgroundColor.errorMuted}
-      iconName={IconName.Danger}
       {...args}
+      iconName={IconName.Danger}
     />
   </Box>
 );
@@ -151,38 +152,38 @@ export const ColorAndBackgroundColor = (args) => (
     <AvatarIcon
       color={IconColor.primaryDefault}
       backgroundColor={BackgroundColor.primaryMuted}
-      iconName={IconName.SwapHorizontal}
       {...args}
+      iconName={IconName.SwapHorizontal}
     />
     <AvatarIcon
       color={IconColor.primaryInverse}
       backgroundColor={BackgroundColor.primaryDefault}
-      iconName={IconName.SwapHorizontal}
       {...args}
+      iconName={IconName.SwapHorizontal}
     />
     <AvatarIcon
       color={IconColor.successDefault}
       backgroundColor={BackgroundColor.successMuted}
-      iconName={IconName.Confirmation}
       {...args}
+      iconName={IconName.Confirmation}
     />
     <AvatarIcon
       color={IconColor.infoDefault}
       backgroundColor={BackgroundColor.infoMuted}
-      iconName={IconName.Info}
       {...args}
+      iconName={IconName.Info}
     />
     <AvatarIcon
       color={IconColor.warningDefault}
       backgroundColor={BackgroundColor.warningMuted}
-      iconName={IconName.Warning}
       {...args}
+      iconName={IconName.Warning}
     />
     <AvatarIcon
       color={IconColor.errorDefault}
       backgroundColor={BackgroundColor.errorMuted}
-      iconName={IconName.Danger}
       {...args}
+      iconName={IconName.Danger}
     />
   </Box>
 );
