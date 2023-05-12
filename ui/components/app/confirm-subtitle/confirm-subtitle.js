@@ -20,7 +20,8 @@ const ConfirmSubTitle = ({
 }) => {
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const { isNftTransfer } = useTransactionInfo(txData);
-
+  // eslint-disable-next-line no-debugger
+  debugger;
   if (!shouldShowFiat && !isNftTransfer) {
     return null;
   }

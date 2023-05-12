@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -50,6 +50,8 @@ import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
+
+import { BannerAlert } from '../../components/component-library';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -104,6 +106,7 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
+    tokenId: PropTypes.string,
     image: PropTypes.string,
     type: PropTypes.string,
     getNextNonce: PropTypes.func,
@@ -804,6 +807,8 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
       title,
       isLockedAsset,
+      history,
+      tokenId,
     } = this.props;
     const {
       submitting,
@@ -851,6 +856,22 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
+    const warning = isLockedAsset ? (
+      <BannerAlert
+        severity="warning"
+        title={t('lockedAssetTxWarning1')}
+        actionButtonLabel={t('lockedAssetTxWarning3')}
+        actionButtonOnClick={() =>
+          history.push(
+            `${ASSET_ROUTE}/${tokenAddress}${tokenId ? `/${tokenId}` : ''}`,
+          )
+        }
+      >
+        {t('lockedAssetTxWarning2')}
+      </BannerAlert>
+    ) : (
+      submitWarning
+    );
     return (
       <TransactionModalContextProvider>
         <ConfirmPageContainer
@@ -877,7 +898,7 @@ export default class ConfirmTransactionBase extends Component {
           errorMessage={submitError}
           errorKey={errorKey}
           hasSimulationError={hasSimulationError}
-          warning={submitWarning}
+          warning={warning}
           disabled={
             renderSimulationFailureWarning ||
             !valid ||
