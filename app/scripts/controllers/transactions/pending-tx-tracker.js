@@ -235,7 +235,6 @@ export default class PendingTransactionTracker extends EventEmitter {
       const resJson = await res.json();
       console.log('eth_getUserOperationReceipt result:', resJson);
       if (resJson.result.success) {
-        // TODO: set tx hash
         const { receipt } = resJson.result;
         const { baseFeePerGas, timestamp } = await this.query.getBlockByHash(
           receipt.blockHash,
