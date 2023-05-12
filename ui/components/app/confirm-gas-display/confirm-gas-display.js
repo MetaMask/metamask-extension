@@ -17,7 +17,6 @@ const ConfirmGasDisplay = ({
   isEligibleToEarnMask,
 }) => {
   const { txParams } = useSelector((state) => txDataSelector(state));
-  console.log(isEligibleToEarnMask);
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionType = draftTransaction?.transactionType;

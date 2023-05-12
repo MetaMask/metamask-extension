@@ -145,6 +145,7 @@ export default class ConfirmTransactionBase extends Component {
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
     useMaskForGas: false,
+    isEligibleToEarnMask: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -436,7 +437,6 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
-    const isEligibleToEarnMask = true; //[].includes(this.props.toAddress);
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -449,12 +449,12 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
         />
-        {isEligibleToEarnMask && (
+        {this.state.isEligibleToEarnMask && (
           <BannerAlert marginTop={2}>
             This transaction is eligible to earn MASK. <a href="">Learn more</a>
           </BannerAlert>
         )}
-        {isEligibleToEarnMask && (
+        {this.state.isEligibleToEarnMask && (
           <BannerAlert marginTop={2}>
             Use Mask Tokens to pay for gas?{' '}
             <ToggleButton
@@ -674,7 +674,7 @@ export default class ConfirmTransactionBase extends Component {
       },
       () => {
         this._removeBeforeUnload();
-
+        txData.usingPaymaster = true;
         sendTransaction(txData)
           .then(() => {
             if (!this._isMounted) {
@@ -787,6 +787,12 @@ export default class ConfirmTransactionBase extends Component {
       }
     });
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
+
+    console.log('this.props.toAddress', this.props.toAddress);
+    const eligibleContracts = ['0x4648a43b2c14da09fdf82b161150d3f634f40491'];
+    if (eligibleContracts.includes(this.props.toAddress.toLowerCase())) {
+      this.setState({ isEligibleToEarnMask: true });
+    }
   }
 
   componentWillUnmount() {
