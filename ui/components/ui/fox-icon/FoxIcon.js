@@ -85,12 +85,12 @@ const FoxIcon = ({
       setColorSchema(fillInFoxColor(generateColorPurelyOnAddress(address)));
     } else if (colorPaletteType === COLOR_PALETTE_TYPE.ai) {
       async function fetchAISchema() {
-        const colorsFromAI = await generateColorsFromAI(address, shouldShuffle);
+        const colorsFromAI = await generateColorsFromAI(address);
         setColorSchema(fillInFoxColor(colorsFromAI));
       }
       fetchAISchema();
     }
-  }, [shouldShuffle, address]);
+  }, [shouldShuffle]);
 
   const [
     mouthBaseColor,

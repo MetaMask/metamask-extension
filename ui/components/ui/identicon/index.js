@@ -39,8 +39,6 @@ export default function Identicon({
 
   const [colorSchema, setColorSchema] = useState(undefined);
 
-  console.log({ colorSchema, address, accounts, identities });
-
   useEffect(() => {
     const currentIndex = accounts.findIndex(
       (account) => account.address === address?.toLowerCase(),
