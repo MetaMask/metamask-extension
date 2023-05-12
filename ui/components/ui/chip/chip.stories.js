@@ -11,7 +11,7 @@ import {
 
 import ApproveIcon from '../icon/approve-icon.component';
 import InfoIcon from '../icon/info-icon.component';
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import { ChipWithInput } from './chip-with-input';
 
 import README from './README.mdx';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ import Button from '../../components/ui/button';
 import { FOX_COLOR_PALETTE } from '../../helpers/utils/generative-color';
 import { setAccountColor } from '../../store/actions';
 import { EditorSelectionOptions, POLISH_OPTIONS } from './constants';
+import { downloadBlob } from '../../helpers/utils/color-util';
 
 const checkValueExists = (arr, val) => {
   return arr.some((option) => option.value === val);
@@ -130,6 +131,15 @@ export default function FoxSelection() {
   const handleShuffle = () => {
     setShouldShuffle(!shouldShuffle);
   };
+
+  const svgRef = useRef();
+
+  const handleDownSvg = useCallback(() => {
+    const svg = svgRef.current.innerHTML;
+    const currentAccount = accounts[selectedAccountIndex];
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    downloadBlob(blob, `${currentAccount.address}.svg`);
+  }, [accounts, selectedAccountIndex]);
 
   return (
     <div className={classnames('main-container customize-fox-page')}>
@@ -239,6 +249,7 @@ export default function FoxSelection() {
             editorSelection={Number(editorSelection)}
             handleNewColorSettled={handleNewColorSettled}
             shouldShuffle={shouldShuffle}
+            svgRef={svgRef}
           />
 
           <Box
@@ -289,6 +300,17 @@ export default function FoxSelection() {
                   color={TextColor.overlayInverse}
                 >
                   Save this fox 😗
+                </Text>
+              </Button>
+            </Box>
+            <Box marginTop={4}>
+              <Button type="primary" onClick={() => handleDownSvg()}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={TextColor.overlayInverse}
+                >
+                  Download my fox ✅
                 </Text>
               </Button>
             </Box>
