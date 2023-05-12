@@ -10,18 +10,14 @@
     }
   }
 
-  &--connected {
-    .multichain-account-list-item__asset {
-      /* max-width: 167px; */
-    }
-
-    .multichain-account-list-item__asset {
-      /* max-width: calc(163px - 24px); */
-    }
-  }
-
   &__account-name {
-    /* max-width: 188px; */
+    // max-width: 120px;
+    // min-width: 67px;
+    font-size: 14px !important;
+
+    * {
+      font-size: 14px !important;
+    }
 
     &__button {
       &:hover,
@@ -32,7 +28,9 @@
   }
 
   &__asset {
-    /* max-width: calc(101px - 24px); */
+    //max-width: 164px;
+    //min-width: 36px;
+    font-size: 14px !important;
   }
 
   &__avatar {
@@ -63,6 +61,10 @@
 
     &__prefix {
       padding-right: unset;
+    }
+
+    &__suffix {
+      font-size: 12px !important;
     }
   }
 }

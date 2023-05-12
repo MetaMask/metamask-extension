@@ -59,7 +59,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         >
           <div
             class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--margin-inline-end-2 box--flex-direction-row box--color-text-default"
-            style="max-width: undefinedpx; min-width: undefinedpx;"
+            style="min-width: undefinedpx; max-width: undefinedpx;"
           >
             <button
               class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
@@ -73,7 +73,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           </div>
           <div
             class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
-            style="max-width: undefinedpx; min-width: undefinedpx;"
+            style="min-width: undefinedpx; max-width: undefinedpx;"
           >
             <div
               class="currency-display-component"
@@ -99,11 +99,15 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
       <div
         class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
       >
-        <p
-          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+        <div
+          class="box box--display-flex box--flex-direction-row box--align-items-center"
         >
-          0x0dc...e7bc
-        </p>
+          <p
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+          >
+            0x0dc...e7bc
+          </p>
+        </div>
         <div
           class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
         >

@@ -143,8 +143,15 @@ export const AccountListItem = ({
               as="div"
               className="multichain-account-list-item__account-name"
               style={{
-                maxWidth: `${accountMaxWidth}px`,
                 minWidth: `${accountMinWidth}px`,
+                maxWidth: `${accountMaxWidth}px`,
+                background: `repeating-linear-gradient(
+                  -45deg,
+                  #555,
+                  #555 5px,
+                  #444 5px,
+                  #444 10px
+                )`,
               }}
               marginInlineEnd={2}
             >
@@ -173,24 +180,23 @@ export const AccountListItem = ({
             <Text
               as="div"
               className="multichain-account-list-item__asset"
-              style={{
-                maxWidth: `${assetMaxWidth}px`,
-                minWidth: `${assetMinWidth}px`,
-              }}
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
               alignItems={AlignItems.center}
               ellipsis
               textAlign={TextAlign.End}
+              style={{
+                minWidth: `${assetMinWidth}px`,
+                maxWidth: `${assetMaxWidth}px`,
+                background: `repeating-linear-gradient(
+                  -45deg,
+                  #555,
+                  #555 5px,
+                  #444 5px,
+                  #444 10px
+                )`,
+              }}
             >
-              {connectedAvatar ? (
-                <AvatarFavicon
-                  size={Size.XS}
-                  src={connectedAvatar}
-                  name={connectedAvatarName}
-                  className="multichain-account-list-item__avatar"
-                />
-              ) : null}
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={identity.balance}
@@ -203,9 +209,19 @@ export const AccountListItem = ({
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.spaceBetween}
         >
-          <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-            {shortenAddress(identity.address)}
-          </Text>
+          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+            {connectedAvatar ? (
+              <AvatarFavicon
+                size={Size.XS}
+                src={connectedAvatar}
+                name={connectedAvatarName}
+                className="multichain-account-list-item__avatar"
+              />
+            ) : null}
+            <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+              {shortenAddress(identity.address)}
+            </Text>
+          </Box>
           <Text
             variant={TextVariant.bodySm}
             color={Color.textAlternative}
