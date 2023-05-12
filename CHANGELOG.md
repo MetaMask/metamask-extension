@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.30.2]
+
 ## [10.30.1]
 ### Fixed
 - Disable Flask RPC test to fix failing build ([#19011](https://github.com/MetaMask/metamask-extension/pull/19011))
@@ -3711,7 +3713,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.30.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.30.2...HEAD
+[10.30.2]: https://github.com/MetaMask/metamask-extension/compare/v10.30.1...v10.30.2
 [10.30.1]: https://github.com/MetaMask/metamask-extension/compare/v10.30.0...v10.30.1
 [10.30.0]: https://github.com/MetaMask/metamask-extension/compare/v10.29.0...v10.30.0
 [10.29.0]: https://github.com/MetaMask/metamask-extension/compare/v10.28.3...v10.29.0
