@@ -51,6 +51,7 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import { BannerAlert, Text } from '../../components/component-library';
+import ToggleButton from '../../components/ui/toggle-button';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -143,6 +144,7 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
+    useMaskForGas: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -334,7 +336,10 @@ export default class ConfirmTransactionBase extends Component {
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             key="total-max-amount"
-            value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
+            value={addHexes(
+              txData.txParams.value,
+              this.state.useMaskForGas ? 0 : hexMaximumTransactionFee,
+            )}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         );
@@ -451,7 +456,13 @@ export default class ConfirmTransactionBase extends Component {
         )}
         {isEligibleToEarnMask && (
           <BannerAlert marginTop={2}>
-            This transaction is currently gas free! You have 4 MASK left to use.
+            Use Mask Tokens to pay for gas?{' '}
+            <ToggleButton
+              onToggle={() =>
+                this.setState({ useMaskForGas: !this.state.useMaskForGas })
+              }
+              value={this.state.useMaskForGas}
+            ></ToggleButton>
           </BannerAlert>
         )}
         <TransactionDetail
@@ -465,7 +476,7 @@ export default class ConfirmTransactionBase extends Component {
             !renderSimulationFailureWarning && (
               <ConfirmGasDisplay
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-                isEligibleToEarnMask
+                isEligibleToEarnMask={this.state.useMaskForGas}
               />
             ),
             !isMultiLayerFeeNetwork && (

@@ -53,6 +53,8 @@ const GasDetailsItem = ({
     return null;
   }
 
+  console.log('in gas', isEligibleToEarnMask);
+
   return (
     <TransactionDetailItem
       key="gas-details-item"

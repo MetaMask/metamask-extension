@@ -17,6 +17,7 @@ const ConfirmGasDisplay = ({
   isEligibleToEarnMask,
 }) => {
   const { txParams } = useSelector((state) => txDataSelector(state));
+  console.log(isEligibleToEarnMask);
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionType = draftTransaction?.transactionType;
@@ -35,7 +36,7 @@ const ConfirmGasDisplay = ({
   return supportsEIP1559 ? (
     <GasDetailsItem
       userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-      isEligibleToEarnMask
+      isEligibleToEarnMask={isEligibleToEarnMask}
     />
   ) : (
     <ConfirmLegacyGasDisplay />

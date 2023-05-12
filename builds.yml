@@ -227,6 +227,8 @@ env:
   - ROUTER_WRAPPER_ADDRESS
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - BUNDLER_URL
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - AA_FACTORY_ADDRESS
 
   ###
   # Meta variables
