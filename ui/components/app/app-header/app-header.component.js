@@ -115,12 +115,7 @@ export default class AppHeader extends PureComponent {
               border: '1px solid var(--color-text-alternative)',
             }}
           >
-            <Identicon
-              address={selectedAddress}
-              diameter={32}
-              addBorder
-              customizedFox="test-string"
-            />
+            <Identicon address={selectedAddress} diameter={32} addBorder />
             {
               ///: BEGIN:ONLY_INCLUDE_IN(snaps)
               unreadNotificationsCount > 0 && (

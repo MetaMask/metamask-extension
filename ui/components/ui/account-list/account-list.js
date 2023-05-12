@@ -94,11 +94,7 @@ const AccountList = ({
                     className="choose-account-list__list-check-box"
                     checked={isSelectedAccount}
                   />
-                  <Identicon
-                    diameter={34}
-                    address={address}
-                    customizedFox="test-string"
-                  />
+                  <Identicon diameter={34} address={address} />
                   <div className="choose-account-list__account__info">
                     <div className="choose-account-list__account__label">
                       {addressLabel}

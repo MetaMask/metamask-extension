@@ -20,11 +20,7 @@ export default function AccountModalContainer(props, context) {
     >
       <div className="account-modal__container">
         <div>
-          <Identicon
-            address={selectedIdentity.address}
-            diameter={64}
-            customizedFox="testString"
-          />
+          <Identicon address={selectedIdentity.address} diameter={64} />
         </div>
         {showBackButton && (
           <div className="account-modal__back" onClick={backButtonAction}>

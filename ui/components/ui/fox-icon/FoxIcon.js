@@ -21,7 +21,7 @@ export const COLOR_PALETTE_TYPE = {
 const FoxIcon = ({
   size = 240,
   address,
-  colorPaletteType = COLOR_PALETTE_TYPE.generative,
+  colorPaletteType,
   editorSelection = null,
   settledColorSchema,
   handleNewColorSettled,
@@ -66,8 +66,18 @@ const FoxIcon = ({
   }, [address, colorPaletteType, editorSelection]);
 
   useEffect(() => {
-    handleNewColorSettled(colorSchema);
-  }, [colorSchema]);
+    if (handleNewColorSettled) {
+      handleNewColorSettled(colorSchema);
+    }
+  }, [colorSchema, handleNewColorSettled]);
+
+  useEffect(() => {
+    console.log(colorPaletteType);
+    if (!colorPaletteType) {
+      console.log('inside, ', settledColorSchema[0]);
+      setColorSchema(settledColorSchema);
+    }
+  }, [colorPaletteType, settledColorSchema]);
 
   // shuffle flagggg
   useEffect(() => {

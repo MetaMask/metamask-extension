@@ -61,7 +61,6 @@ function SenderAddress({
         <Identicon
           address={toChecksumHexAddress(senderAddress)}
           diameter={24}
-          customizedFox="testString"
         />
       </div>
       <Tooltip
@@ -141,11 +140,7 @@ export function RecipientWithAddress({
         }}
       >
         <div className="sender-to-recipient__sender-icon">
-          <Identicon
-            address={checksummedRecipientAddress}
-            diameter={24}
-            customizedFox="testString"
-          />
+          <Identicon address={checksummedRecipientAddress} diameter={24} />
         </div>
         <Tooltip
           position="bottom"
@@ -230,7 +225,8 @@ export default function SenderToRecipient({
   hideSender = false,
 }) {
   const t = useI18nContext();
-  const checksummedSenderAddress = !hideSender && toChecksumHexAddress(senderAddress);
+  const checksummedSenderAddress =
+    !hideSender && toChecksumHexAddress(senderAddress);
   const checksummedRecipientAddress = toChecksumHexAddress(recipientAddress);
 
   return (
@@ -238,15 +234,17 @@ export default function SenderToRecipient({
       className={classnames('sender-to-recipient', variantHash[variant])}
       data-testid="sender-to-recipient"
     >
-      {!hideSender ? (<SenderAddress
-        checksummedSenderAddress={checksummedSenderAddress}
-        addressOnly={addressOnly}
-        senderName={senderName}
-        onSenderClick={onSenderClick}
-        senderAddress={senderAddress}
-        warnUserOnAccountMismatch={warnUserOnAccountMismatch}
-      />) : null}
-      {!hideSender ? (<Arrow variant={variant} />) : null }
+      {!hideSender ? (
+        <SenderAddress
+          checksummedSenderAddress={checksummedSenderAddress}
+          addressOnly={addressOnly}
+          senderName={senderName}
+          onSenderClick={onSenderClick}
+          senderAddress={senderAddress}
+          warnUserOnAccountMismatch={warnUserOnAccountMismatch}
+        />
+      ) : null}
+      {!hideSender ? <Arrow variant={variant} /> : null}
       {recipientAddress ? (
         <RecipientWithAddress
           checksummedRecipientAddress={checksummedRecipientAddress}

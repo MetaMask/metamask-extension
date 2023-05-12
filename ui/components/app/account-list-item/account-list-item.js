@@ -24,7 +24,6 @@ export default function AccountListItem({
           address={address}
           className="account-list-item__identicon"
           diameter={18}
-          customizedFox="test-string"
         />
         <div className="account-list-item__account-name">{name || address}</div>
         {icon ? (

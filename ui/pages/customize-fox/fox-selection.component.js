@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMetaMaskAccountsOrdered } from '../../selectors';
+import {
+  getMetaMaskAccountsOrdered,
+  getSelectedAddress,
+} from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import FoxIcon from '../../components/ui/fox-icon/FoxIcon';
 import Dropdown from '../../components/ui/dropdown';
@@ -30,8 +33,18 @@ export default function FoxSelection() {
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const state = useSelector((state) => state);
 
+  const selectedAddress = useSelector(getSelectedAddress);
+  const initialSelectedIndex = accounts.findIndex(
+    (account) => account.address === selectedAddress,
+  );
   // internal state
-  const [selectedAccountIndex, setSelectedAccountIndex] = useState('0');
+  const [selectedAccountIndex, setSelectedAccountIndex] = useState(
+    initialSelectedIndex.toString(),
+  );
+
+  useEffect(() => {
+    setSelectedAccountIndex(initialSelectedIndex.toString());
+  }, [initialSelectedIndex]);
 
   const [shouldShuffle, setShouldShuffle] = useState(false);
   const [accountOptions, setAccountOptions] = useState([]);
@@ -56,6 +69,14 @@ export default function FoxSelection() {
       ? 'previousSelected'
       : 'generative',
   );
+
+  useEffect(() => {
+    setPolishOption(
+      accounts[Number(selectedAccountIndex)].colorSchema
+        ? 'previousSelected'
+        : 'generative',
+    );
+  }, [selectedAccountIndex, accounts]);
 
   const [polishOptions, setPolishOptions] = useState(POLISH_OPTIONS);
 

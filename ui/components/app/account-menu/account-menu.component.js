@@ -230,11 +230,7 @@ export default class AccountMenu extends Component {
               />
             ) : null}
           </div>
-          <Identicon
-            address={identity.address}
-            diameter={32}
-            customizedFox="testString"
-          />
+          <Identicon address={identity.address} diameter={32} />
           <div
             className="account-menu__account-info"
             style={{ marginLeft: '8px' }}
