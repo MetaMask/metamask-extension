@@ -1185,6 +1185,8 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      getCurrentChainId: () =>
+        this.networkController.store.getState().provider.chainId,
     });
 
     this.swapsController = new SwapsController({
