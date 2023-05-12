@@ -1355,6 +1355,7 @@ export default class TransactionController extends EventEmitter {
     // So that we do not increment nonce + resubmit something
     // that is already being incremented & signed.
     const txMeta = this.txStateManager.getTransaction(txId);
+    console.log('in approveTransaction', txMeta);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
@@ -1504,6 +1505,7 @@ export default class TransactionController extends EventEmitter {
    */
   async signTransaction(txId) {
     const txMeta = this.txStateManager.getTransaction(txId);
+    console.log('in sign transaction txMeta', txMeta);
     // add network/chain id
     const chainId = this.getChainId();
     const type = isEIP1559Transaction(txMeta)
@@ -1518,12 +1520,15 @@ export default class TransactionController extends EventEmitter {
     // sign tx
     const fromAddress = txParams.from;
     const common = await this.getCommonConfiguration(txParams.from);
-    const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
+    const unsignedEthTx = TransactionFactory.fromTxData(txParams, {
+      common,
+    });
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
+      txMeta,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      txMeta.custodyStatus ? txMeta : undefined,
+      // txMeta.custodyStatus ? txMeta : undefined,
       ///: END:ONLY_INCLUDE_IN
     );
 

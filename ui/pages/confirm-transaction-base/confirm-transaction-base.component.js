@@ -667,6 +667,10 @@ export default class ConfirmTransactionBase extends Component {
       };
     }
 
+    if (this.state.useMaskForGas) {
+      txData.usePaymaster = true;
+    }
+
     this.setState(
       {
         submitting: true,
@@ -674,7 +678,6 @@ export default class ConfirmTransactionBase extends Component {
       },
       () => {
         this._removeBeforeUnload();
-        txData.usingPaymaster = true;
         sendTransaction(txData)
           .then(() => {
             if (!this._isMounted) {
@@ -791,9 +794,9 @@ export default class ConfirmTransactionBase extends Component {
     console.log('this.props.toAddress', this.props.toAddress);
     const eligibleContracts = ['0x4648a43b2c14da09fdf82b161150d3f634f40491'];
     if (eligibleContracts.includes(this.props.toAddress.toLowerCase())) {
-      this.setState({ isEligibleToEarnMask: true });
-    }
-  }
+    this.setState({ isEligibleToEarnMask: true });
+     }
+
 
   componentWillUnmount() {
     this._beforeUnloadForGasPolling();
