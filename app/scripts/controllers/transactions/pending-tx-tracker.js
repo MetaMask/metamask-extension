@@ -219,7 +219,6 @@ export default class PendingTransactionTracker extends EventEmitter {
     console.log('going to query tx status');
     if (txMeta.userOp) {
       console.log('checking sca tx status');
-      // TODO
       const res = await fetch(process.env.BUNDLER_URL, {
         method: 'POST',
         headers: {
@@ -236,13 +235,15 @@ export default class PendingTransactionTracker extends EventEmitter {
       const resJson = await res.json();
       console.log('eth_getUserOperationReceipt result:', resJson);
       if (resJson.result.success) {
-        this.emit(
-          'tx:confirmed',
-          txId,
-          resJson.result.receipt,
-          resJson.result.receipt.gasUsed,
-          resJson.result.receipt.blockNumber,
+        // TODO: set tx hash
+        const { receipt } = resJson.result;
+        const { baseFeePerGas, timestamp } = await this.query.getBlockByHash(
+          receipt.blockHash,
+          false,
         );
+
+        txMeta.hash = receipt.transactionHash;
+        this.emit('tx:confirmed', txId, receipt, baseFeePerGas, timestamp);
       }
     } else {
       try {
