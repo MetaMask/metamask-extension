@@ -1220,7 +1220,7 @@ export function getAllNetworks(state) {
       },
     ], // Localhosts
     ...Object.values(networkConfigurations).filter(({ chainId }) =>
-      localhostFilter(chainId),
+      chainId === CHAIN_IDS.LOCALHOST),
     ),
   );
 
