@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -13,12 +13,15 @@ import {
   forceUpdateMetamaskState,
 } from '../../store/actions';
 import UnlockPage from './unlock-page.component';
+import { getSelectedIdentity } from '../../selectors';
 
 const mapStateToProps = (state) => {
   const {
     metamask: { isUnlocked },
   } = state;
+  const selectedIdentity = getSelectedIdentity(state);
   return {
+    selectedIdentity,
     isUnlocked,
   };
 };

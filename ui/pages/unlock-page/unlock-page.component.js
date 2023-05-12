@@ -13,6 +13,7 @@ import {
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
+import Identicon from '../../components/ui/identicon';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -25,6 +26,7 @@ export default class UnlockPage extends Component {
      * History router for redirect after action
      */
     history: PropTypes.object.isRequired,
+    selectedIdentity: PropTypes.object.isRequired,
     /**
      * If isUnlocked is true will redirect to most recent route in history
      */
@@ -153,17 +155,21 @@ export default class UnlockPage extends Component {
   render() {
     const { password, error } = this.state;
     const { t } = this.context;
-    const { onRestore } = this.props;
+    const { onRestore, selectedIdentity } = this.props;
 
     return (
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
+            {selectedIdentity.colorSchema ? (
+              <Identicon address={selectedIdentity.address} diameter={120} />
+            ) : (
+              <Mascot
+                animationEventEmitter={this.animationEventEmitter}
+                width="120"
+                height="120"
+              />
+            )}
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
                 {t('beta')}

@@ -109,13 +109,16 @@ export default class AppHeader extends PureComponent {
         >
           <div
             style={{
-              width: '100%',
-              height: '100%',
+              width: '47px',
+              height: '47px',
               borderRadius: '50%',
-              border: '1px solid var(--color-text-alternative)',
+              border: '1px solid var(--color-border-default)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <Identicon address={selectedAddress} diameter={32} addBorder />
+            <Identicon address={selectedAddress} diameter={28} addBorder />
             {
               ///: BEGIN:ONLY_INCLUDE_IN(snaps)
               unreadNotificationsCount > 0 && (

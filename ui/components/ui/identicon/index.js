@@ -34,17 +34,26 @@ export default function Identicon({
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const {
-    metamask: { useBlockie, ipfsGateway },
+    metamask: { useBlockie, ipfsGateway, identities },
   } = appState;
 
   const [colorSchema, setColorSchema] = useState(undefined);
 
+  console.log({ colorSchema, address, accounts, identities });
+
   useEffect(() => {
     const currentIndex = accounts.findIndex(
-      (account) => account.address === address.toLowerCase(),
+      (account) => account.address === address?.toLowerCase(),
     );
     setColorSchema(accounts[currentIndex]?.colorSchema);
   }, [accounts, address]);
+
+  useEffect(() => {
+    // lock page
+    if (address && accounts.length === 0) {
+      setColorSchema(identities[address?.toLowerCase()]?.colorSchema);
+    }
+  }, [address, accounts, identities]);
 
   const tokenList = getTokenList(appState);
   const [imageLoadingError, setImageLoadingError] = useState(false);
