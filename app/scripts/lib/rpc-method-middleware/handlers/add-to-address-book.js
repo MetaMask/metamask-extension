@@ -18,36 +18,30 @@ async function addToAddressBookHandler(
   if (!req.params || typeof req.params !== 'object') {
     return end(
       ethErrors.rpc.invalidParams({
-        message: `Expected single, object parameter. Received:\n${JSON.stringify(
-          req.params,
-        )}`,
+        message: `Unexpected parameters:\n${JSON.stringify(req.params)}`,
       }),
     );
   }
 
   const { origin } = req;
-  const {
-    address,
-    name,
-    chainId = '0x1',
-    memo = '',
-    addressType = '',
-    tags = [],
-    source = '',
-  } = req.params;
+  let requestParams = req.params;
+  const isBulkRequest = Array.isArray(req.params)
+    ? req.params.length > 1
+    : false;
+
+  // If request params are an array of one item, just use the single item from the array
+  if (req.params.length === 1) {
+    requestParams = req.params[0] || {};
+  }
 
   try {
     const requestUserApprovalResult = await requestUserApproval({
       origin,
       type: MESSAGE_TYPE.ADD_TO_ADDRESS_BOOK,
       requestData: {
-        address,
-        name,
-        chainId,
-        memo,
-        addressType,
-        tags,
-        source,
+        data: requestParams,
+        source: origin,
+        isBulkRequest,
       },
     });
     await requestUserApprovalResult.result;
