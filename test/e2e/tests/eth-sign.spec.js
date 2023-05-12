@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  DAPP_URL,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const ganacheOptions = {
@@ -28,7 +33,7 @@ describe('Eth sign', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement('#ethSign');
 
         await driver.delay(1000);
@@ -64,7 +69,7 @@ describe('Eth sign', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement('#ethSign');
 
         // Wait for Signature request popup
@@ -80,7 +85,7 @@ describe('Eth sign', function () {
         );
         const origin = await driver.findElement('.request-signature__origin');
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+        assert.equal(await origin.getText(), DAPP_URL);
 
         const personalMessageRow = await driver.findElement(
           '.request-signature__row-value',
