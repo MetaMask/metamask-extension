@@ -4,7 +4,9 @@ import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
 import { Tag } from '../../../component-library/tag';
 import { ellipsify } from '../../../../pages/send/send.utils';
-import { TextVariant } from '../../../../helpers/constants/design-system';
+import { Color } from '../../../../helpers/constants/design-system';
+import CheckBox from '../../../ui/check-box';
+import { ButtonIcon, IconName } from '../../../component-library';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();
@@ -40,8 +42,10 @@ export default function RecipientGroup({
   label,
   items,
   onSelect,
+  handleAccountClick,
   selectedAddress,
   areRecipientsMyAccounts = false,
+  selectedAccount,
 }) {
   if (!items || !items.length) {
     return null;
@@ -57,41 +61,58 @@ export default function RecipientGroup({
           {label}
         </div>
       )}
-      {items.map(({ address, name, tags }) => (
-        <div
-          key={address}
-          onClick={() => onSelect(address, name)}
-          className={classnames({
-            'send__select-recipient-wrapper__group-item': !addressesEqual(
-              address,
-              selectedAddress,
-            ),
-            'send__select-recipient-wrapper__group-item--selected':
-              addressesEqual(address, selectedAddress),
-          })}
-        >
-          <Identicon
-            address={address}
-            diameter={28}
-            {...(areRecipientsMyAccounts && { customizedFox: 'test-strrubf' })}
-          />
+      {items.map(({ address, name, tags }) => {
+        const isSelectedAccount = selectedAccount.has(address);
+        return (
           <div
-            className="send__select-recipient-wrapper__group-item__content"
-            data-testid="recipient"
-            style={{ marginLeft: '8px' }}
+            key={address}
+            onClick={() => handleAccountClick(address)}
+            className={classnames({
+              'send__select-recipient-wrapper__group-item': !addressesEqual(
+                address,
+                selectedAddress,
+              ),
+              'send__select-recipient-wrapper__group-item--selected':
+                addressesEqual(address, selectedAddress),
+            })}
           >
-            <div className="send__select-recipient-wrapper__group-item__title">
-              {name || ellipsify(address)}
-            </div>
-            {name && (
-              <div className="send__select-recipient-wrapper__group-item__subtitle">
-                {ellipsify(address)}
+            <CheckBox
+              className="choose-account-list__list-check-box"
+              checked={isSelectedAccount}
+            />
+            <Identicon
+              address={address}
+              diameter={28}
+              {...(areRecipientsMyAccounts && {
+                customizedFox: 'test-strrubf',
+              })}
+            />
+            <div
+              className="send__select-recipient-wrapper__group-item__content"
+              data-testid="recipient"
+              style={{ marginLeft: '8px' }}
+            >
+              <div className="send__select-recipient-wrapper__group-item__title">
+                {name || ellipsify(address)}
               </div>
-            )}
+              {name && (
+                <div className="send__select-recipient-wrapper__group-item__subtitle">
+                  {ellipsify(address)}
+                </div>
+              )}
+            </div>
+            {renderTags(tags)}
+            <ButtonIcon
+              iconName={IconName.Edit}
+              ariaLabel="edit"
+              data-testid="edit"
+              onClick={() => onSelect(address, name)}
+              color={Color.iconDefault}
+              marginLeft={6}
+            />
           </div>
-          {renderTags(tags)}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -106,5 +127,8 @@ RecipientGroup.propTypes = {
   ),
   onSelect: PropTypes.func.isRequired,
   selectedAddress: PropTypes.string,
+  selectedAccount: PropTypes.any,
+  handleAccountClick: PropTypes.func,
+  deleteAccounts: PropTypes.func,
   areRecipientsMyAccounts: PropTypes.bool,
 };

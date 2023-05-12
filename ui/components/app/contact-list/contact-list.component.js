@@ -12,6 +12,8 @@ export default class ContactList extends PureComponent {
     selectRecipient: PropTypes.func,
     children: PropTypes.node,
     selectedAddress: PropTypes.string,
+    selectedAccount: PropTypes.any,
+    handleAccountClick: PropTypes.func,
   };
 
   static contextTypes = {
@@ -36,6 +38,8 @@ export default class ContactList extends PureComponent {
           items={showLoadMore ? nonContacts.slice(0, 2) : nonContacts}
           onSelect={this.props.selectRecipient}
           selectedAddress={this.props.selectedAddress}
+          selectedAccount={this.props.selectedAccount}
+          handleAccountClick={this.props.handleAccountClick}
         />
         {showLoadMore && (
           <Button
@@ -62,7 +66,6 @@ export default class ContactList extends PureComponent {
       }, {});
 
     const letters = Object.keys(unsortedContactsByLetter).sort();
-
     const sortedContactGroups = letters.map((letter) => {
       return [
         letter,
@@ -79,6 +82,8 @@ export default class ContactList extends PureComponent {
         items={groupItems}
         onSelect={this.props.selectRecipient}
         selectedAddress={this.props.selectedAddress}
+        selectedAccount={this.props.selectedAccount}
+        handleAccountClick={this.props.handleAccountClick}
       />
     ));
   }
@@ -91,6 +96,8 @@ export default class ContactList extends PureComponent {
         items={myAccounts}
         onSelect={this.props.selectRecipient}
         selectedAddress={this.props.selectedAddress}
+        selectedAccount={this.props.selectedAccount}
+        handleAccountClick={this.props.handleAccountClick}
         areRecipientsMyAccounts
       />
     );

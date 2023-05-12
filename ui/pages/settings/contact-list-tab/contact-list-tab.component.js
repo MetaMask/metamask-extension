@@ -9,12 +9,20 @@ import {
   IconName,
   IconSize,
   Text,
+  ButtonIcon,
 } from '../../../components/component-library';
 import { Button } from '../../../components/component-library/button/button';
 import Box from '../../../components/ui/box';
+import CheckBox, {
+  CHECKED,
+  INDETERMINATE,
+  UNCHECKED,
+} from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
+import Tooltip from '../../../components/ui/tooltip';
 import {
   AlignItems,
+  Color,
   DISPLAY,
   IconColor,
   JustifyContent,
@@ -54,6 +62,9 @@ export default class ContactListTab extends Component {
     exportContactList: PropTypes.func.isRequired,
     importContactList: PropTypes.func.isRequired,
     showClearContactListModal: PropTypes.func.isRequired,
+    chainId: PropTypes.string,
+    removeFromAddressBook: PropTypes.func,
+    addToAddressBook: PropTypes.func,
   };
 
   state = {
@@ -61,6 +72,7 @@ export default class ContactListTab extends Component {
     isImportSuccessful: true,
     importMessage: null,
     filterType: 'showAll',
+    selectedAccounts: new Set(),
   };
 
   types = {
@@ -226,8 +238,80 @@ export default class ContactListTab extends Component {
         : addressBook.filter((item) =>
             item.tags.includes(this.state.filterType),
           );
+    console.log('nickname', filteredAddress);
     const contacts = filteredAddress.filter(({ name }) => Boolean(name));
     const nonContacts = filteredAddress.filter(({ name }) => !name);
+
+    const handleAccountClick = (address) => {
+      const newSelectedAccounts = new Set(this.state.selectedAccounts);
+      console.log(newSelectedAccounts, 'nidhi');
+      if (newSelectedAccounts.has(address)) {
+        newSelectedAccounts.delete(address);
+      } else {
+        newSelectedAccounts.add(address);
+      }
+      this.setState({ selectedAccounts: newSelectedAccounts });
+    };
+
+    const deleteAccounts = () => {
+      let address;
+      // eslint-disable-next-line guard-for-in
+      for (address of this.state.selectedAccounts) {
+        console.log(address, 'address');
+        this.props.removeFromAddressBook(this.props.chainId, address);
+      }
+    };
+
+    const addToAllowList = () => {
+      for (const address of this.state.selectedAccounts) {
+        console.log(address, 'address');
+        const filteredName = filteredAddress.find(
+          (contact) => contact.address === address,
+        ).name;
+        console.log(filteredName, 'nidhi');
+        filteredName &&
+          this.props.addToAddressBook(address, filteredName, '', ['allowList']);
+      }
+    };
+
+    const addToBlockList = () => {
+      for (const address of this.state.selectedAccounts) {
+        console.log(address, 'address');
+        const filteredName = filteredAddress.find(
+          (contact) => contact.address === address,
+        ).name;
+        console.log(filteredName, 'nidhi');
+        filteredName &&
+          this.props.addToAddressBook(address, filteredName, '', ['blockList']);
+      }
+    };
+
+    const selectAll = () => {
+      const newSelectedAccounts = new Set(
+        filteredAddress.map((account) => account.address),
+      );
+      this.setState({ selectedAccounts: newSelectedAccounts });
+      console.log(this.state.selectedAccounts, 'hello');
+    };
+
+    const deselectAll = () => {
+      this.setState({ selectedAccounts: new Set() });
+      console.log(this.state.selectedAccounts, 'hiii');
+    };
+
+    const allAreSelected = () => {
+      console.log(this.state.selectedAccounts, 'yooo');
+      return filteredAddress.length === this.state.selectedAccounts?.size;
+    };
+
+    let checked;
+    if (allAreSelected()) {
+      checked = CHECKED;
+    } else if (this.selectedAccounts?.size === 0) {
+      checked = UNCHECKED;
+    } else {
+      checked = INDETERMINATE;
+    }
     const { t } = this.context;
 
     if (filteredAddress.length) {
@@ -238,19 +322,71 @@ export default class ContactListTab extends Component {
             marginBottom={4}
             display={DISPLAY.FLEX}
             alignItems={AlignItems.center}
-            gap={4}
-            marginRight={6}
-            justifyContent={JustifyContent.flexEnd}
+            justifyContent={JustifyContent.spaceBetween}
           >
-            <Text>Filter By</Text>
-            <Dropdown
-              className=""
-              options={filteredOptions}
-              onChange={(e) => {
-                this.setState({ filterType: e });
-              }}
-              selectedOption={this.state.filterType}
-            />
+            <Box
+              alignItems={AlignItems.center}
+              gap={4}
+              marginLeft={5}
+              display={DISPLAY.FLEX}
+            >
+              <CheckBox
+                className="choose-account-list__header-check-box"
+                checked={checked}
+                onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+              />
+              <Box
+                display={
+                  this.state.selectedAccounts.size ? DISPLAY.FLEX : DISPLAY.NONE
+                }
+                alignItems={AlignItems.center}
+                gap={4}
+              >
+                <Tooltip position="bottom" title="Delete">
+                  <ButtonIcon
+                    iconName={IconName.Trash}
+                    ariaLabel="delete"
+                    data-testid="delete"
+                    onClick={() => deleteAccounts()}
+                    color={Color.iconDefault}
+                  />
+                </Tooltip>
+                <Tooltip position="bottom" title="Add to Allow List">
+                  <ButtonIcon
+                    iconName={IconName.AddSquare}
+                    ariaLabel="add"
+                    data-testid="add"
+                    onClick={() => addToAllowList()}
+                    color={Color.successDefault}
+                  />
+                </Tooltip>
+                <Tooltip position="bottom" title="Add to Block List">
+                  <ButtonIcon
+                    iconName={IconName.AddSquare}
+                    ariaLabel="block"
+                    data-testid="block"
+                    onClick={() => addToBlockList()}
+                    color={Color.errorDefault}
+                  />
+                </Tooltip>
+              </Box>
+            </Box>
+            <Box
+              display={DISPLAY.FLEX}
+              alignItems={AlignItems.center}
+              gap={4}
+              marginRight={6}
+              justifyContent={JustifyContent.flexEnd}
+            >
+              <Dropdown
+                className=""
+                options={filteredOptions}
+                onChange={(e) => {
+                  this.setState({ filterType: e });
+                }}
+                selectedOption={this.state.filterType}
+              />
+            </Box>
           </Box>
           <ContactList
             searchForContacts={() => contacts}
@@ -259,6 +395,9 @@ export default class ContactListTab extends Component {
               history.push(`${CONTACT_VIEW_ROUTE}/${address}`);
             }}
             selectedAddress={selectedAddress}
+            selectedAccount={this.state.selectedAccounts}
+            handleAccountClick={handleAccountClick}
+            deleteAccounts={deleteAccounts}
           />
         </div>
       );
