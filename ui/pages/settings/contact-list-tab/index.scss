@@ -8,38 +8,14 @@
   flex: 0.4 1 100%;
 
   .btn-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 16px;
-
-    @include screen-lg-max {
-      flex-direction: column;
-      margin: 16px 0px 0px 0px;
-    }
-
-    :not(:last-child) {
-      width: 100%;
-      max-width: 220px;
-
-      @include screen-lg-max {
-        margin-bottom: 15px;
+    border-bottom: 1px solid var(--color-border-muted);
+    .import-button {
+      display: flex;
+      color: var(--color-primary-default);
+      cursor: pointer;
+      @media (max-width: 450px) {
+        font-size: 14px;
       }
-    }
-
-    :last-child {
-      @include screen-lg-max {
-        margin-bottom: 30px;
-      }
-    }
-  }
-
-  label.import-btn {
-    margin: 0;
-    font-size: 16px;
-
-    @include screen-lg-max {
-      margin: 0 auto;
     }
   }
 

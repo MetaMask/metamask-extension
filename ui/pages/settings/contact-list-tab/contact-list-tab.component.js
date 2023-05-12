@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ContactList from '../../../components/app/contact-list';
 import {
-  BUTTON_VARIANT,
   BannerAlert,
   Icon,
   IconName,
   IconSize,
   Text,
   ButtonIcon,
+  ButtonLink,
 } from '../../../components/component-library';
 import { Button } from '../../../components/component-library/button/button';
 import Box from '../../../components/ui/box';
@@ -24,6 +24,7 @@ import {
   AlignItems,
   Color,
   DISPLAY,
+  FLEX_DIRECTION,
   IconColor,
   JustifyContent,
   SEVERITIES,
@@ -177,19 +178,28 @@ export default class ContactListTab extends Component {
 
     return (
       <>
-        <Box className="btn-wrapper" display="flex" flexDirection="column">
-          <Button
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={[FLEX_DIRECTION.COLUMN, FLEX_DIRECTION.ROW]}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+          className="btn-wrapper"
+          gap={4}
+          padding={5}
+        >
+          <ButtonLink
             data-testid="export-contacts"
-            variant={BUTTON_VARIANT.PRIMARY}
+            startIconName={IconName.Export}
             onClick={() => this.exportContactList()}
           >
             Export contact list
-          </Button>
+          </ButtonLink>
           <label
             htmlFor="import-contact-list"
-            className="button btn btn--rounded btn-secondary btn--large settings-page__button import-btn"
+            className="import-button"
             style={{ marginTop: '16px', marginBottom: '16px' }}
           >
+            <Icon name={IconName.Import} />
             Import contact list
           </label>
           <input
@@ -214,13 +224,13 @@ export default class ContactListTab extends Component {
               }}
             />
           )}
-          <Button
+          <ButtonLink
             data-testid="clear-contacts"
-            variant={BUTTON_VARIANT.LINK}
+            startIconName={IconName.Close}
             onClick={() => this.props.showClearContactListModal()}
           >
             Clear contact list
-          </Button>
+          </ButtonLink>
         </Box>
       </>
     );
@@ -327,7 +337,7 @@ export default class ContactListTab extends Component {
             <Box
               alignItems={AlignItems.center}
               gap={4}
-              marginLeft={5}
+              marginLeft={4}
               display={DISPLAY.FLEX}
             >
               <CheckBox
