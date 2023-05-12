@@ -110,6 +110,7 @@ export type SignControllerOptions = {
   getState: () => any;
   metricsEvent: (payload: any, options?: any) => void;
   securityProviderRequest: SecurityProviderRequest;
+  getCurrentChainId: () => string;
 };
 
 /**
@@ -152,6 +153,7 @@ export default class SignController extends BaseControllerV2<
    * @param options.getState - Callback to retrieve all user state.
    * @param options.metricsEvent - A function for emitting a metric event.
    * @param options.securityProviderRequest - A function for verifying a message, whether it is malicious or not.
+   * @param options.getCurrentChainId - Returns the chain ID of the current selected network.
    */
   constructor({
     messenger,
@@ -160,6 +162,7 @@ export default class SignController extends BaseControllerV2<
     getState,
     metricsEvent,
     securityProviderRequest,
+    getCurrentChainId,
   }: SignControllerOptions) {
     super({
       name: controllerName,
@@ -188,6 +191,8 @@ export default class SignController extends BaseControllerV2<
       undefined,
       undefined,
       securityProviderRequest,
+      undefined,
+      getCurrentChainId,
     );
 
     this._messageManagers = [
