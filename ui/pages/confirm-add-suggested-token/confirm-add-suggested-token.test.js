@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import {
   acceptWatchAsset,
@@ -87,39 +88,44 @@ describe('ConfirmAddSuggestedToken Component', () => {
     );
   });
 
-  it('should dispatch acceptWatchAsset when clicking the "Add token" button', () => {
+  it('should dispatch acceptWatchAsset when clicking the "Add token" button', async () => {
     renderComponent();
     const addTokenBtn = screen.getByRole('button', { name: 'Add token' });
 
-    fireEvent.click(addTokenBtn);
+    await act(async () => {
+      fireEvent.click(addTokenBtn);
+    });
 
-    expect(resolvePendingApproval).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_ASSETS.length,
-    );
     expect(acceptWatchAsset).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
+    expect(resolvePendingApproval).toHaveBeenCalledTimes(
+      MOCK_SUGGESTED_ASSETS.length,
+    );
 
     MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
-      expect(resolvePendingApproval).toHaveBeenCalledWith(id, null);
       expect(acceptWatchAsset).toHaveBeenCalledWith(id);
+      expect(resolvePendingApproval).toHaveBeenCalledWith(id, null);
     });
   });
 
-  it('should dispatch rejectWatchAsset when clicking the "Cancel" button', () => {
+  it('should dispatch rejectWatchAsset when clicking the "Cancel" button', async () => {
     renderComponent();
     const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
 
-    fireEvent.click(cancelBtn);
+    await act(async () => {
+      fireEvent.click(cancelBtn);
+    });
 
-    expect(rejectPendingApproval).toHaveBeenCalledTimes(
+    expect(rejectWatchAsset).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
-    expect(rejectWatchAsset).toHaveBeenCalledTimes(
+    expect(rejectPendingApproval).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
     );
 
     MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
+      expect(rejectWatchAsset).toHaveBeenCalledWith(id);
       expect(rejectPendingApproval).toHaveBeenCalledWith(
         id,
         expect.objectContaining({
@@ -128,7 +134,6 @@ describe('ConfirmAddSuggestedToken Component', () => {
           stack: expect.any(String),
         }),
       );
-      expect(rejectWatchAsset).toHaveBeenCalledWith(id);
     });
   });
 
