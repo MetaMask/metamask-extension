@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 
 import { SECONDARY } from '../../../helpers/constants/common';
@@ -9,6 +8,7 @@ import {
   FONT_WEIGHT,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { isNFTAssetStandard } from '../../../helpers/utils/transactions.util';
 import { getShouldShowFiat } from '../../../selectors';
 import { useTransactionInfo } from '../../../hooks/useTransactionInfo';
 import { Text } from '../../component-library';
@@ -23,12 +23,7 @@ const ConfirmSubTitle = ({
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const { isNftTransfer } = useTransactionInfo(txData);
 
-  if (
-    !shouldShowFiat &&
-    !isNftTransfer &&
-    assetStandard !== ERC1155 &&
-    assetStandard !== ERC721
-  ) {
+  if (!shouldShowFiat && !isNftTransfer && !isNFTAssetStandard(assetStandard)) {
     return null;
   }
 

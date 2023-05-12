@@ -213,7 +213,7 @@ export default class SendAssetRow extends Component {
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           {sendAsset?.type === AssetType.NFT && sendAsset?.details?.image ? (
-            <img width={36} src={sendAsset?.details?.image} />
+            <img width={36} src={sendAsset.details.image} />
           ) : (
             <Identicon
               diameter={36}

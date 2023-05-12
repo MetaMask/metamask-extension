@@ -1,5 +1,6 @@
 import { MethodRegistry } from 'eth-method-registry';
 import log from 'loglevel';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
@@ -215,3 +216,12 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
+
+/**
+ * Method to check if asset standard passed is NFT
+ *
+ * @param {*} assetStandard - string
+ * @returns boolean
+ */
+export const isNFTAssetStandard = (assetStandard) =>
+  assetStandard === ERC1155 || assetStandard === ERC721;
