@@ -256,6 +256,7 @@ export default function ConfirmApprove({
   ) : (
     submitWarning
   );
+
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase

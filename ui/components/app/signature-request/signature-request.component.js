@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
+import { EVM, IInspectorReturn } from 'signature-inspection';
 import LedgerInstructionField from '../ledger-instruction-field';
+
 import {
   sanitizeMessage,
   getURLHostName,
@@ -9,11 +11,13 @@ import {
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
+
 import {
   TypographyVariant,
   FONT_WEIGHT,
@@ -36,8 +40,13 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+
+// eslint-disable-next-line import/no-duplicates
+import { BannerAlert } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/no-duplicates
 import { Icon, IconName, Text } from '../../component-library';
+
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 
@@ -82,6 +91,7 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
+    lockedAssets: PropTypes.array,
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
     conversionRate: PropTypes.number,
@@ -187,7 +197,32 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      lockedAssets,
     } = this.props;
+
+    const payload = {
+      method: [txData.type, txData.msgParams.version.toLowerCase()].join('_'),
+      params: [txData.msgParams.from, txData.msgParams.data],
+    };
+    let signatureInspectResult;
+    try {
+      signatureInspectResult = EVM.Inspector('OFFCHAIN_SIG', { payload });
+    } catch (e) {
+      console.log(e);
+    }
+
+    const lockedAssetsInSig = signatureInspectResult?.mutatedAddresses.reduce(
+      (acc, mutatedAddress) => {
+        const regex = new RegExp(`^eip155:${chainId}/${mutatedAddress}`, 'iu');
+        const asset = lockedAssets.find((assetId) => regex.test(assetId));
+
+        if (asset) {
+          acc.push(asset);
+        }
+        return acc;
+      },
+      [],
+    );
 
     const { t, trackEvent } = this.context;
     const {
@@ -244,13 +279,20 @@ export default class SignatureRequest extends PureComponent {
       });
     };
 
+    const onManageNft = () => {
+      const assetKey = lockedAssetsInSig[0].replace(`eip155:${chainId}/`, '');
+      const url = `${ASSET_ROUTE}/${assetKey}`;
+      this.context.history.push(url);
+      this.props.history.push(url);
+    };
+
     const messageIsScrollable =
       this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
 
     const targetSubjectMetadata = txData.msgParams.origin
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
-
+    const isLocked = lockedAssetsInSig.length > 0;
     return (
       <div className="signature-request">
         <ConfirmPageContainerNavigation />
@@ -258,6 +300,16 @@ export default class SignatureRequest extends PureComponent {
           className="request-signature__account"
           data-testid="request-signature-account"
         >
+          {isLocked ? (
+            <BannerAlert
+              severity="warning"
+              title={t('lockedAssetTxWarning1')}
+            // actionButtonLabel={t('lockedAssetTxWarning3')}
+            // actionButtonOnClick={onManageNft}
+            >
+              {t('lockedAssetTxWarning2')}
+            </BannerAlert>
+          ) : null}
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
             accountName={name}
@@ -375,7 +427,8 @@ export default class SignatureRequest extends PureComponent {
           signAction={onSign}
           disabled={
             hardwareWalletRequiresConnection ||
-            (messageIsScrollable && !this.state.hasScrolledMessage)
+            (messageIsScrollable && !this.state.hasScrolledMessage) ||
+            isLocked
           }
         />
         {this.state.showContractDetails && (

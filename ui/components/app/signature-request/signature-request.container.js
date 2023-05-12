@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -41,8 +42,13 @@ function mapStateToProps(state, ownProps) {
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
-
+  const lockedAssets = Object.keys(state.metamask.lockedAssets[from]).filter(
+    (key) => {
+      return state.metamask.lockedAssets[from][key];
+    },
+  );
   return {
+    lockedAssets,
     providerConfig,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
@@ -101,6 +107,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage,
+    lockedAssets,
   } = stateProps;
   const {
     signPersonalMessage,
@@ -153,6 +160,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     subjectMetadata,
     unapprovedMessagesCount,
     mostRecentOverviewPage,
+    lockedAssets,
     cancelAll: () => dispatchCancelAll(valuesFor(unconfirmedMessagesList)),
   };
 }
