@@ -1186,12 +1186,13 @@ export function getAllNetworks(state) {
   // Custom networks added
   networks.push(
     ...Object.values(networkConfigurations).filter(
-      ({ chainId }) =>
-        !localhostFilter(chainId) &&
-        chainId !== CHAIN_IDS.MAINNET &&
+      ({ chainId }) => ![
+        CHAIN_IDS.LOCALHOST,
+        CHAIN_IDS.MAINNET,
         // Linea gets added as a custom network configuration so
         // we must ignore it here to display in test networks
-        chainId !== CHAIN_IDS.LINEA_TESTNET,
+        CHAIN_IDS.LINEA_TESTNET,
+      ].includes(chainId)
     ),
   );
   // Test networks
