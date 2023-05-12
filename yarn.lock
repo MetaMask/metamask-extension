@@ -17842,7 +17842,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globalthis@npm:1.0.1, globalthis@npm:^1.0.1":
+"globalthis@npm:1.0.1":
   version: 1.0.1
   resolution: "globalthis@npm:1.0.1"
   dependencies:
