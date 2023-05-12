@@ -74,6 +74,7 @@ const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
+const ONBOARDING_HARDWARE_ROUTE = '/onboarding/connect-hardware-wallet';
 const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
 const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
@@ -276,6 +277,7 @@ export {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_HARDWARE_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,

@@ -2137,6 +2137,8 @@ export default class MetamaskController extends EventEmitter {
       // KeyringController
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
+      createNewHDKeychainAndFirstAccount: this.createNewHDKeychainAndFirstAccount.bind(this),
+      createEmptyKeychain: this.createEmptyKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       exportAccount: this.exportAccount.bind(this),
 
@@ -2513,6 +2515,18 @@ export default class MetamaskController extends EventEmitter {
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
 
+  async createEmptyKeychain(password) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      await this.keyringController.createEmptyKeychain(
+        password,
+      );
+
+      return true;
+    } finally {
+      releaseLock();
+    }
+  }
   /**
    * Creates a new Vault and create a new keychain.
    *
@@ -2543,6 +2557,26 @@ export default class MetamaskController extends EventEmitter {
       }
 
       return vault;
+    } finally {
+      releaseLock();
+    }
+  }
+
+  async createNewHDKeychainAndFirstAccount() {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      const [primaryKeyring] = this.keyringController.getKeyringsByType(
+        KeyringType.hdKeyTree,
+      );
+      let vault;
+      if (primaryKeyring) {
+        throw new Error('HD keychain already exists!')
+      }
+
+
+      const firstAccount = await this.keyringController.createNewHDKeychainAndFirstAccount();
+      await addNewAccount(null, firstAccount);
+      return firstAccount;
     } finally {
       releaseLock();
     }
@@ -3028,7 +3062,7 @@ export default class MetamaskController extends EventEmitter {
    * @param accountCount
    * @returns {} keyState
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountCount, newAccount) {
     const isActionMetricsQueueE2ETest =
       this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
 
@@ -3046,19 +3080,26 @@ export default class MetamaskController extends EventEmitter {
     const { identities: oldIdentities } =
       this.preferencesController.store.getState();
 
-    if (Object.keys(oldIdentities).length === accountCount) {
+    if (Object.keys(oldIdentities).length === accountCount || newAccount) {
       const oldAccounts = await keyringController.getAccounts();
-      const keyState = await keyringController.addNewAccount(primaryKeyring);
+      const keyState = newAccount
+        ? keyringController.memStore.getState()
+        : await keyringController.addNewAccount(primaryKeyring);
       const newAccounts = await keyringController.getAccounts();
 
       await this.verifySeedPhrase();
 
       this.preferencesController.setAddresses(newAccounts);
-      newAccounts.forEach((address) => {
-        if (!oldAccounts.includes(address)) {
-          this.preferencesController.setSelectedAddress(address);
-        }
-      });
+
+      if (newAccount) {
+        this.preferencesController.setSelectedAddress(newAccount);
+      } else {
+        newAccounts.forEach((address) => {
+          if (!oldAccounts.includes(address)) {
+            this.preferencesController.setSelectedAddress(address);
+          }
+        });
+      }
 
       const { identities } = this.preferencesController.store.getState();
       return { ...keyState, identities };

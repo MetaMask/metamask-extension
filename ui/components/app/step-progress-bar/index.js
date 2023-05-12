@@ -3,4 +3,6 @@ export {
   TwoStepProgressBar,
   threeStepStages,
   twoStepStages,
+  twoStepStagesHardware,
+  TwoStepProgressBarHardware,
 } from './step-progress-bar';

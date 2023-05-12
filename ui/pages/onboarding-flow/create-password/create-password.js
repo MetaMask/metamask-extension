@@ -16,6 +16,7 @@ import {
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_HARDWARE_ROUTE,
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
@@ -25,6 +26,8 @@ import {
   threeStepStages,
   TwoStepProgressBar,
   twoStepStages,
+  twoStepStagesHardware,
+  TwoStepProgressBarHardware,
 } from '../../../components/app/step-progress-bar';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -40,6 +43,7 @@ import { Icon, IconName } from '../../../components/component-library';
 export default function CreatePassword({
   createNewAccount,
   importWithRecoveryPhrase,
+  createEmptyKeychain,
   secretRecoveryPhrase,
 }) {
   const t = useI18nContext();
@@ -60,6 +64,8 @@ export default function CreatePassword({
     if (currentKeyring) {
       if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else if (firstTimeFlowType === 'hardware') {
+        history.replace(ONBOARDING_HARDWARE_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -163,6 +169,9 @@ export default function CreatePassword({
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
       history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else if (firstTimeFlowType === 'hardware') {
+      await createEmptyKeychain(password);
+      history.push(ONBOARDING_HARDWARE_ROUTE);
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -176,20 +185,27 @@ export default function CreatePassword({
     }
   };
 
+  let progressBar;
+  if (secretRecoveryPhrase && firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+    progressBar = <TwoStepProgressBar
+      stage={twoStepStages.PASSWORD_CREATE}
+      marginBottom={4}
+    />
+  } else if (firstTimeFlowType === 'hardware') {
+    progressBar = <TwoStepProgressBarHardware
+      stage={twoStepStagesHardware.PASSWORD_CREATE}
+      marginBottom={4}
+    />
+  } else {
+    progressBar = <ThreeStepProgressBar
+      stage={threeStepStages.PASSWORD_CREATE}
+      marginBottom={4}
+    />
+  }
+
   return (
     <div className="create-password__wrapper" data-testid="create-password">
-      {secretRecoveryPhrase &&
-      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
-        <TwoStepProgressBar
-          stage={twoStepStages.PASSWORD_CREATE}
-          marginBottom={4}
-        />
-      ) : (
-        <ThreeStepProgressBar
-          stage={threeStepStages.PASSWORD_CREATE}
-          marginBottom={4}
-        />
-      )}
+      {progressBar}
       <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>

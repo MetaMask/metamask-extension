@@ -1,0 +1,49 @@
+diff --git a/index.js b/index.js
+index bdda034a22c4a13814360fc2e6275bfbefaabcb2..c533f82a531e329e433f2e4f3524aa08a86c2caa 100644
+--- a/index.js
++++ b/index.js
+@@ -96,6 +96,22 @@ class KeyringController extends EventEmitter {
+     this.setUnlocked();
+     return this.fullUpdate();
+   }
++  
++  async createNewHDKeychainAndFirstAccount() {
++    if (!this.password) {
++      throw new Error('Password does not exist');
++    }
++
++    const firstAccount = await this.createFirstKeyTree({ extendExistingKeyrings: true });
++    this.fullUpdate();
++    return firstAccount;
++  }
++
++  async createEmptyKeychain(password) {
++    this.password = password;
++    this.setUnlocked();
++    return this.fullUpdate();
++  }
+ 
+   /**
+    * CreateNewVaultAndRestore
+@@ -517,8 +533,10 @@ class KeyringController extends EventEmitter {
+    *
+    * @returns {Promise<void>} A promise that resolves if the operation was successful.
+    */
+-  async createFirstKeyTree() {
+-    this.clearKeyrings();
++  async createFirstKeyTree({ extendExistingKeyrings = false }) {
++    if (!extendExistingKeyrings) {
++      this.clearKeyrings();
++    }
+ 
+     const keyring = await this.addNewKeyring(KEYRINGS_TYPE_MAP.HD_KEYRING);
+     const [firstAccount] = await keyring.getAccounts();
+@@ -528,7 +546,7 @@ class KeyringController extends EventEmitter {
+ 
+     const hexAccount = normalizeAddress(firstAccount);
+     this.emit('newVault', hexAccount);
+-    return null;
++    return hexAccount;
+   }
+ 
+   /**

@@ -319,6 +319,11 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
+export function getHardwareKeyrings(state) {
+  const keyrings = getMetaMaskKeyrings(state);
+  return keyrings.filter(kr => getAccountTypeForKeyring(kr) === 'hardware');
+}
+
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
 }

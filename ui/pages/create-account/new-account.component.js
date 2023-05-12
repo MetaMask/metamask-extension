@@ -23,13 +23,16 @@ export default class NewAccountCreateForm extends Component {
 
   render() {
     const { newAccountName, defaultAccountName } = this.state;
-    const { history, createAccount, mostRecentOverviewPage, accounts } =
+    const { history, createAccount, mostRecentOverviewPage, accounts, hdKeyringExists, createNewHDKeychainAndFirstAccount } =
       this.props;
 
     const createClick = (event) => {
       event.preventDefault();
-      createAccount(newAccountName || defaultAccountName)
-        .then(() => {
+      const action = hdKeyringExists
+        ? createAccount(newAccountName || defaultAccountName)
+        : createNewHDKeychainAndFirstAccount(newAccountName || defaultAccountName)
+      
+        action.then(() => {
           this.context.trackEvent({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.AccountAdded,

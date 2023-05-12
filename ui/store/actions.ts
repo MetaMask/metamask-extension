@@ -272,6 +272,48 @@ export function createNewVault(password: string): Promise<boolean> {
   });
 }
 
+export function createNewHDKeychainAndFirstAccount():
+ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'createNewHDKeychainAndFirstAccount',
+        [],
+        (err, newAddress) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(newAddress);
+        },
+      );
+    });
+  };
+}
+
+export function createEmptyKeychain(password: string):
+ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'createEmptyKeychain',
+        [password],
+        (err) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(true);
+        },
+      );
+    });
+  };
+}
+
 export function verifyPassword(password: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     callBackgroundMethod('verifyPassword', [password], (error) => {

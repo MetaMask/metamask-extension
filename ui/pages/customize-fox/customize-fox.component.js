@@ -19,6 +19,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import Box from '../../components/ui/box';
 import { getSeedPhraseBackedUp } from '../../ducks/metamask/metamask';
+import { getHardwareKeyrings, getMetaMaskKeyrings } from '../../selectors';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import {
@@ -37,6 +38,9 @@ export default function CustomizeFoxComponent() {
     (state) => state.metamask.userCompletedSRPQuiz,
   );
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const allKeyrings = useSelector(getMetaMaskKeyrings);
+  const hardwareKeyrings = useSelector(getHardwareKeyrings);
+  const hasOnlyHardwareAccounts = hardwareKeyrings.some(kr => kr.accounts?.length) && allKeyrings.length === hardwareKeyrings.length;
   const dispatch = useDispatch();
   const t = useI18nContext();
   const envType = getEnvironmentType();
@@ -44,7 +48,7 @@ export default function CustomizeFoxComponent() {
   const addressBook = useSelector(getAddressBook);
   const isTags = addressBook.filter((item) => item.tags.length);
   const isDisabled =
-    seedPhraseBackedUp && userCompletedSRPQuiz && isTags.length;
+    (seedPhraseBackedUp || hasOnlyHardwareAccounts) && userCompletedSRPQuiz && isTags.length;
 
   const showSRPQuizModal = () => {
     dispatch(
@@ -54,6 +58,19 @@ export default function CustomizeFoxComponent() {
       }),
     );
   };
+
+  let firstSuccessBanner;
+  if (hasOnlyHardwareAccounts) {
+	firstSuccessBanner = <BannerAlert
+		severity="success"
+		title="You are using a hardware wallet to secure your seed phrase &#127942;"
+	/>
+  } else {
+  	firstSuccessBanner = <BannerAlert
+  		severity="success"
+  		title="You have backed up your seed phrase &#127942;"
+  	/>
+  }
 
   return (
     <Box
@@ -86,11 +103,8 @@ export default function CustomizeFoxComponent() {
           will be visible whenever you interact with your MetaMask wallet.`}
       </Text>
       <Box marginTop={4} marginBottom={4}>
-        {seedPhraseBackedUp ? (
-          <BannerAlert
-            severity="success"
-            title="You have backed up your seed phrase &#127942;"
-          />
+        {(seedPhraseBackedUp || hasOnlyHardwareAccounts) ? (
+          firstSuccessBanner
         ) : (
           <BannerAlert
             severity="info"

@@ -2,6 +2,7 @@ import {
   DEFAULT_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_HARDWARE_ROUTE,
 } from '../helpers/constants/routes';
 
 export function getFirstTimeFlowTypeRoute(state) {
@@ -12,6 +13,8 @@ export function getFirstTimeFlowTypeRoute(state) {
     nextRoute = ONBOARDING_CREATE_PASSWORD_ROUTE;
   } else if (firstTimeFlowType === 'import') {
     nextRoute = ONBOARDING_IMPORT_WITH_SRP_ROUTE;
+  } else if (firstTimeFlowType === 'hardware') {
+    nextRoute = ONBOARDING_CREATE_PASSWORD_ROUTE;
   } else {
     nextRoute = DEFAULT_ROUTE;
   }

@@ -94,6 +94,12 @@ export default function OnboardingWelcome() {
     history.push(ONBOARDING_METAMETRICS);
   };
 
+  const onHardwareClick = () => {
+    dispatch(setFirstTimeFlowType('hardware'));
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+    history.push(ONBOARDING_METAMETRICS);
+  };
+
   trackEvent({
     category: MetaMetricsEventCategory.Onboarding,
     event: MetaMetricsEventName.OnboardingWelcome,
@@ -211,6 +217,16 @@ export default function OnboardingWelcome() {
             disabled={!termsChecked}
           >
             {t('onboardingImportWallet')}
+          </Button>
+        </li>
+        <li>
+          <Button
+            data-testid="onboarding-import-wallet"
+            type="secondary"
+            onClick={onHardwareClick}
+            disabled={!termsChecked}
+          >
+            {'I have a hardware wallet'}
           </Button>
         </li>
       </ul>

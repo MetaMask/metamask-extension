@@ -18,6 +18,7 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_HARDWARE_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import {
@@ -25,6 +26,7 @@ import {
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
   verifySeedPhrase,
+  createEmptyKeychain,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -46,6 +48,7 @@ import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
+import Hardware from './hardware/hardware';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 
@@ -99,6 +102,10 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
+  const handleCreateEmptyKeychain = async (password) => {
+    return await dispatch(createEmptyKeychain(password));
+  };
+
   return (
     <div className="onboarding-flow">
       <div className="onboarding-flow__wrapper">
@@ -111,6 +118,7 @@ export default function OnboardingFlow() {
                 createNewAccount={handleCreateNewAccount}
                 importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
                 secretRecoveryPhrase={secretRecoveryPhrase}
+                createEmptyKeychain={handleCreateEmptyKeychain}
               />
             )}
           />
@@ -140,6 +148,14 @@ export default function OnboardingFlow() {
               <ImportSRP
                 {...routeProps}
                 submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
+              />
+            )}
+          />
+          <Route
+            path={ONBOARDING_HARDWARE_ROUTE}
+            render={(routeProps) => (
+              <Hardware
+                {...routeProps}
               />
             )}
           />

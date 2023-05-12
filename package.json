@@ -211,7 +211,8 @@
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/address-book-controller@^2.0.0": "patch:@metamask/address-book-controller@npm%3A2.0.0#./.yarn/patches/@metamask-address-book-controller-npm-2.0.0-802642e046.patch"
+    "@metamask/address-book-controller@^2.0.0": "patch:@metamask/address-book-controller@npm%3A2.0.0#./.yarn/patches/@metamask-address-book-controller-npm-2.0.0-802642e046.patch",
+    "@metamask/eth-keyring-controller@^10.0.1": "patch:@metamask/eth-keyring-controller@npm%3A10.0.1#./.yarn/patches/@metamask-eth-keyring-controller-npm-10.0.1-9a306640e1.patch"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",

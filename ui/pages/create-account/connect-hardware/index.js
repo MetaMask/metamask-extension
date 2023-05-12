@@ -249,7 +249,7 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = (device, path) => {
-    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
+    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts, nextRoute } =
       this.props;
     const { selectedAccounts } = this.state;
 
@@ -276,7 +276,7 @@ class ConnectHardwareForm extends Component {
             account_hardware_type: device,
           },
         });
-        history.push(mostRecentOverviewPage);
+        history.push(nextRoute ? nextRoute : mostRecentOverviewPage);
       })
       .catch((e) => {
         this.context.trackEvent({

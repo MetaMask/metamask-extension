@@ -1,0 +1,43 @@
+.import-srp {
+  margin-bottom: 24px;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  &__description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 40px;
+
+    a {
+      color: var(--color-primary-default);
+
+      &:hover {
+        cursor: pointer;
+        color: var(--color-primary-default);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    margin: auto;
+  }
+
+  &__confirm-button {
+    max-width: 327px;
+    margin: auto;
+    margin-top: 24px;
+  }
+}
