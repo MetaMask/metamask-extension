@@ -358,6 +358,20 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * The address of the MMI account in question
+   */
+  mmi_account_address?: string;
+  /**
+   * What is the MMI extension ID
+   */
+  mmi_extension_id?: string;
+  /**
+   * Is the user using a custodian account
+   */
+  mmi_is_custodian?: boolean;
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export enum MetaMetricsUserTrait {
@@ -427,6 +441,20 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * Identified when we get the current account in question
+   */
+  MmiAccountAddress = 'mmi_account_address',
+  /**
+   * Identified when we the user has the extension
+   */
+  MmiExtensionId = 'mmi_extension_id',
+  /**
+   * Identified when the user connects a custodian
+   */
+  MmiIsCustodian = 'mmi_is_custodian',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 /**
@@ -455,6 +483,7 @@ export enum MetaMetricsEventName {
   AccountAddFailed = 'Account Add Failed',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
+  AccountRenamed = 'Account Renamed',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -493,34 +522,7 @@ export enum MetaMetricsEventName {
   NavBuyButtonClicked = 'Buy Button Clicked',
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
-  SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
-  WalletSetupStarted = 'Wallet Setup Selected',
-  WalletSetupCanceled = 'Wallet Setup Canceled',
-  WalletSetupFailed = 'Wallet Setup Failed',
-  WalletCreated = 'Wallet Created',
   NftAdded = 'NFT Added',
-  OnrampProviderSelected = 'On-ramp Provider Selected',
-  PermissionsApproved = 'Permissions Approved',
-  PermissionsRejected = 'Permissions Rejected',
-  PermissionsRequested = 'Permissions Requested',
-  PhishingPageDisplayed = 'Phishing Page Displayed',
-  PortfolioLinkClicked = 'Portfolio Link Clicked',
-  PublicAddressCopied = 'Public Address Copied',
-  ProviderMethodCalled = 'Provider Method Called',
-  SignatureApproved = 'Signature Approved',
-  SignatureFailed = 'Signature Failed',
-  SignatureRejected = 'Signature Rejected',
-  SignatureRequested = 'Signature Requested',
-  TermsOfUseShown = 'Terms of Use Shown',
-  TermsOfUseAccepted = 'Terms of Use Accepted',
-  TokenImportButtonClicked = 'Import Token Button Clicked',
-  TokenScreenOpened = 'Token Screen Opened',
-  SupportLinkClicked = 'Support Link Clicked',
-  TokenAdded = 'Token Added',
-  TokenDetected = 'Token Detected',
-  TokenHidden = 'Token Hidden',
-  TokenImportCanceled = 'Token Import Canceled',
-  TokenImportClicked = 'Token Import Clicked',
   OnboardingWelcome = 'App Installed',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
@@ -538,7 +540,48 @@ export enum MetaMetricsEventName {
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
+  OnrampProviderSelected = 'On-ramp Provider Selected',
+  PermissionsApproved = 'Permissions Approved',
+  PermissionsRejected = 'Permissions Rejected',
+  PermissionsRequested = 'Permissions Requested',
+  PhishingPageDisplayed = 'Phishing Page Displayed',
+  PortfolioLinkClicked = 'Portfolio Link Clicked',
+  ProviderMethodCalled = 'Provider Method Called',
+  PublicAddressCopied = 'Public Address Copied',
   ServiceWorkerRestarted = 'Service Worker Restarted',
+  SignatureApproved = 'Signature Approved',
+  SignatureFailed = 'Signature Failed',
+  SignatureRejected = 'Signature Rejected',
+  SignatureRequested = 'Signature Requested',
+  SrpRevealStarted = 'Reveal SRP Initiated',
+  SrpRevealClicked = 'Clicked Reveal Secret Recovery',
+  SrpRevealViewed = 'Views Reveal Secret Recovery',
+  SrpRevealBackButtonClicked = 'Clicked Back on Reveal SRP Password Page',
+  SrpRevealCancelled = 'Reveal SRP Cancelled',
+  SrpRevealCancelButtonClicked = 'Clicks Cancel on Reveal Secret Recovery Phrase Page',
+  SrpRevealCloseClicked = 'Clicks CLOSE with SRP',
+  SrpRevealNextClicked = 'Clicks Next on Reveal Secret Recovery Phrase',
+  SrpHoldToRevealClickStarted = 'Reveal SRP Click Started',
+  SrpHoldToRevealCloseClicked = 'Closes Hold To Reveal SRP',
+  SrpHoldToRevealCompleted = 'Reveal SRP Completed',
+  SrpViewsSrpQR = 'Views SRP QR Code',
+  SrpViewSrpText = 'Views SRP',
+  SrpCopiedToClipboard = 'Copies SRP to clipboard',
+  SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
+  SupportLinkClicked = 'Support Link Clicked',
+  TermsOfUseShown = 'Terms of Use Shown',
+  TermsOfUseAccepted = 'Terms of Use Accepted',
+  TokenImportButtonClicked = 'Import Token Button Clicked',
+  TokenScreenOpened = 'Token Screen Opened',
+  TokenAdded = 'Token Added',
+  TokenDetected = 'Token Detected',
+  TokenHidden = 'Token Hidden',
+  TokenImportCanceled = 'Token Import Canceled',
+  TokenImportClicked = 'Token Import Clicked',
+  WalletSetupStarted = 'Wallet Setup Selected',
+  WalletSetupCanceled = 'Wallet Setup Canceled',
+  WalletSetupFailed = 'Wallet Setup Failed',
+  WalletCreated = 'Wallet Created',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   UserClickedDeepLink = 'User clicked deeplink',
   ///: END:ONLY_INCLUDE_IN
@@ -557,8 +600,8 @@ export enum MetaMetricsEventName {
 
 export enum MetaMetricsEventAccountType {
   Default = 'metamask',
-  Imported = 'imported',
   Hardware = 'hardware',
+  Imported = 'imported',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -572,6 +615,7 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  Desktop = 'Desktop',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
@@ -585,13 +629,12 @@ export enum MetaMetricsEventCategory {
   Onboarding = 'Onboarding',
   Phishing = 'Phishing',
   Retention = 'Retention',
+  ServiceWorkers = 'service_workers',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
-  Desktop = 'Desktop',
-  ServiceWorkers = 'service_workers',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
@@ -599,10 +642,10 @@ export enum MetaMetricsEventCategory {
 }
 
 export enum MetaMetricsEventLinkType {
-  TransactionBlockExplorer = 'Transaction Block Explorer',
-  BlockExplorer = 'Block Explorer',
   AccountTracker = 'Account Tracker',
+  BlockExplorer = 'Block Explorer',
   TokenTracker = 'Token Tracker',
+  TransactionBlockExplorer = 'Transaction Block Explorer',
 }
 
 export enum MetaMetricsEventKeyType {
@@ -614,9 +657,9 @@ export enum MetaMetricsEventKeyType {
 export enum MetaMetricsEventOnrampProviderType {
   Coinbase = 'coinbase',
   Moonpay = 'moonpay',
-  Wyre = 'wyre',
-  Transak = 'transak',
   SelfDeposit = 'direct_deposit',
+  Transak = 'transak',
+  Wyre = 'wyre',
 }
 
 export enum MetaMetricsNetworkEventSource {

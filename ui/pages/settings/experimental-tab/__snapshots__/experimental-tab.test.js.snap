@@ -17,7 +17,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         class="settings-page__content-item"
       >
         <span>
-          Enable transaction security providers
+          Enable security alerts
         </span>
         <div
           class="settings-page__content-description"
@@ -38,7 +38,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <h5
               class="box box--margin-top-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
             >
-              OpenSea (Beta)
+              OpenSea + Blockaid (Beta)
             </h5>
             <label
               class="toggle-button toggle-button--off"

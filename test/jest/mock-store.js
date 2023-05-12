@@ -137,7 +137,7 @@ export const createSwapsMockStore = () => {
           1559: false,
         },
       },
-      provider: {
+      providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
       },
       cachedBalances: {

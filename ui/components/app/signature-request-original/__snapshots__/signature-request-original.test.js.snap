@@ -145,12 +145,12 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
             <h6
-              class="box box--margin-top-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
             >
               Unknown private network
             </h6>
             <h6
-              class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
             >
               Test Account
             </h6>
@@ -160,12 +160,13 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
           <h6
-            class="box box--margin-top-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
           >
             Balance
           </h6>
           <h6
-            class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
+            align="end"
+            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
           >
             966.987986
              
