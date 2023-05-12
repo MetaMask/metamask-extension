@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.30.2]
+### Changed
+- Improve `eth_signTypedData_v4` validation ([#19110](https://github.com/MetaMask/metamask-extension/pull/19110))
+
+### Fixed
+- Fix crash when confirming an approval where the `maxPriorityFeePerGas` is zero ([#19102](https://github.com/MetaMask/metamask-extension/pull/19102))
 
 ## [10.30.1]
 ### Fixed
