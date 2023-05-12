@@ -11,6 +11,8 @@ import FoxIcon from '../../components/ui/fox-icon/FoxIcon';
 import Dropdown from '../../components/ui/dropdown';
 import Box from '../../components/ui/box/box';
 import {
+  AlignItems,
+  BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
@@ -88,7 +90,7 @@ export default function FoxSelection() {
     ) {
       polishOptions.push({
         value: 'previousSelected',
-        name: 'My previous selection',
+        name: 'Previous selection',
       });
       setPolishOptions(polishOptions);
       setPolishOption('previousSelected');
@@ -133,7 +135,7 @@ export default function FoxSelection() {
     <div className={classnames('main-container customize-fox-page')}>
       <div className="customize-fox-page__header">
         <div className="customize-fox-page__header__title">
-          Celebrate with a custom fox
+          Customize a fox
           <img src="./images/empower.svg" alt="" />
         </div>
         <div
@@ -160,10 +162,10 @@ export default function FoxSelection() {
             <Text
               variant={TextVariant.bodyXs}
               as="h6"
-              color={TextColor.textMuted}
+              color={TextColor.textAlternative}
               marginBottom={1}
             >
-              Select the account for your customized fox:
+              Select the account for your customized fox
             </Text>
           </div>
           <Dropdown
@@ -189,12 +191,12 @@ export default function FoxSelection() {
             <Text
               variant={TextVariant.bodyXs}
               as="h6"
-              color={TextColor.textMuted}
+              color={TextColor.textAlternative}
               marginBottom={1}
             >
-              The default option is a piece of generative art or your previously
-              selected one. You can also choose between AI and editor's
-              selections 🫶
+              The default option is a piece of generative art or your previous
+              selection. You can also choose between AI and editor's selections
+              🫶
             </Text>
             <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
               <Dropdown
@@ -220,26 +222,30 @@ export default function FoxSelection() {
           </div>
         </Box>
         <Box
-          marginTop={8}
+          marginTop={12}
           display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.spaceBetween}
-          flexDirection={FLEX_DIRECTION.ROW}
+          flexDirection={[FLEX_DIRECTION.COLUMN, FLEX_DIRECTION.ROW]}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          gap={12}
         >
-          <div style={{ border: '1.5px solid #bbc0c5' }}>
-            <FoxIcon
-              address={accounts[Number(selectedAccountIndex)].address}
-              settledColorSchema={
-                accounts[Number(selectedAccountIndex)].colorSchema
-              }
-              size={280}
-              colorPaletteType={polishOption}
-              editorSelection={Number(editorSelection)}
-              handleNewColorSettled={handleNewColorSettled}
-              shouldShuffle={shouldShuffle}
-            />
-          </div>
+          <FoxIcon
+            address={accounts[Number(selectedAccountIndex)].address}
+            settledColorSchema={
+              accounts[Number(selectedAccountIndex)].colorSchema
+            }
+            size={280}
+            colorPaletteType={polishOption}
+            editorSelection={Number(editorSelection)}
+            handleNewColorSettled={handleNewColorSettled}
+            shouldShuffle={shouldShuffle}
+          />
 
-          <Box marginLeft={4}>
+          <Box
+            marginLeft={12}
+            marginRight={12}
+            width={[BLOCK_SIZES.FULL, BLOCK_SIZES.ONE_THIRD]}
+          >
             {accounts[Number(selectedAccountIndex)].colorSchema && (
               <Button type="secondary" onClick={() => handleResetToPrevious()}>
                 <Text
@@ -247,7 +253,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.primaryDefault}
                 >
-                  Reset to previous selection 🙏🏻
+                  Use previous selection 🙏🏻
                 </Text>
               </Button>
             )}
@@ -261,9 +267,6 @@ export default function FoxSelection() {
                   Do this later 👋
                 </Text>
               </Button>
-              <Text variant={TextVariant.bodyXs} color={TextColor.textMuted}>
-                (Your fox will be the same as it was before.)
-              </Text>
             </Box>
             {(polishOption === 'generative' || polishOption === 'ai') && (
               <Box marginTop={4}>
@@ -273,7 +276,7 @@ export default function FoxSelection() {
                     as="h6"
                     color={TextColor.overlayInverse}
                   >
-                    Shuffle to see more ✨
+                    Shuffle ✨
                   </Text>
                 </Button>
               </Box>
@@ -285,7 +288,7 @@ export default function FoxSelection() {
                   as="h6"
                   color={TextColor.overlayInverse}
                 >
-                  Save my custom fox 😗
+                  Save this fox 😗
                 </Text>
               </Button>
             </Box>
