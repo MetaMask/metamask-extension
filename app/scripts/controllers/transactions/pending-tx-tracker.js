@@ -132,6 +132,12 @@ export default class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:block-update', txMeta, latestBlockNumber);
     }
 
+    // If we get here it means that the user op was already submitted to the
+    // bundler, there is nothing more that we can do.
+    if (txMeta.userOp) {
+      return txMeta.hash;
+    }
+
     const firstRetryBlockNumber =
       txMeta.firstRetryBlockNumber || latestBlockNumber;
     const txBlockDistance =
