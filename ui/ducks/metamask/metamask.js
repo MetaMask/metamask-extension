@@ -379,32 +379,31 @@ export function getSeedPhraseBackedUp(state) {
 }
 
 export function checkIfLockedAsset(state, txData) {
-  const { selectedAddress, lockedAssets } = state.metamask;
-  const { chainId, fromAddress, tokenAddress, transactionData } = txData;
+  try {
+    const { selectedAddress, lockedAssets } = state.metamask;
+    const { chainId, tokenAddress, transactionData } = txData;
 
-  if (fromAddress !== selectedAddress) {
+    const tokenId = transactionData?.args?._tokenId?.toString();
+
+    const regex = new RegExp(
+      `^eip155:${chainId}/ERC\\d+:${tokenAddress}/${tokenId || '\\d+'}$`,
+      'iu',
+    );
+
+    const lockedAssetEntries = lockedAssets[selectedAddress];
+    const assetKey = Object.keys(lockedAssetEntries).find((assetId) => {
+      const res = regex.test(assetId);
+      return res;
+    });
+    if (!assetKey) {
+      return false;
+    }
+    const isLocked = lockedAssets[selectedAddress][assetKey];
+    return Boolean(isLocked);
+  } catch (e) {
+    console.log(e);
     return false;
   }
-  const tokenId = transactionData.args?._tokenId.toString();
-  const lockedAssetEntries = lockedAssets[selectedAddress];
-  const isLocked = Object.keys(lockedAssetEntries).find((assetId) => {
-    const [lockedChainId, asset, lockedTokenId] = assetId
-      .replace('eip155:', '')
-      .split('/');
-    const [, lockedTokenAddress] = asset.split(':');
-
-    if (chainId !== lockedChainId) {
-      return false;
-    }
-    if (tokenId !== lockedTokenId) {
-      return false;
-    }
-    if (tokenAddress.toLowerCase() !== lockedTokenAddress.toLowerCase()) {
-      return false;
-    }
-    return true;
-  });
-  return Boolean(isLocked);
 }
 
 /**
