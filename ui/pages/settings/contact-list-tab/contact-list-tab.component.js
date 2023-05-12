@@ -175,7 +175,25 @@ export default class ContactListTab extends Component {
       importMessage === CORRUPT_JSON_FILE
         ? 'Contact list seems corrupt'
         : defaultImportMessage;
+    const {
+      viewingContact,
+      editingContact,
+      addingContact,
+      showContactContent,
+    } = this.props;
 
+    if (!showContactContent) {
+      return null;
+    }
+
+    let ContactContentComponent = null;
+    if (viewingContact) {
+      ContactContentComponent = ViewContact;
+    } else if (editingContact) {
+      ContactContentComponent = EditContact;
+    } else if (addingContact) {
+      ContactContentComponent = AddContact;
+    }
     return (
       <>
         <Box
@@ -183,7 +201,9 @@ export default class ContactListTab extends Component {
           flexDirection={[FLEX_DIRECTION.COLUMN, FLEX_DIRECTION.ROW]}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
-          className="btn-wrapper"
+          className={`btn-wrapper ${
+            ContactContentComponent ? 'btn-wrapper-column' : 'btn-wrapper-row'
+          }`}
           gap={4}
           padding={5}
         >

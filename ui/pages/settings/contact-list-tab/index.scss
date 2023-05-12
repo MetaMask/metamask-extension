@@ -18,6 +18,14 @@
       }
     }
   }
+  .btn-wrapper-column{
+    flex-direction: column !important;
+  }
+
+  .btn-wrapper-row {
+  flex-direction: row !important;
+}
+
 
   #import-contact-list {
     display: none;
