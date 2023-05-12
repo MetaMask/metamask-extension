@@ -1170,7 +1170,6 @@ export function getAllEnabledNetworks(state) {
 
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
-  const localhostFilter = (chainId) => chainId === CHAIN_IDS.LOCALHOST;
 
   const networks = [];
   // Mainnet always first
