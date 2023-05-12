@@ -1,7 +1,7 @@
 import MersenneTwister from '../../../node_modules/mersenne-twister';
 import Rainbow from '@indot/rainbowvis';
 
-import { jsNumberForAddress } from './icon-factory';
+import { jsNumberForSlicedAddress } from './icon-factory';
 import {
   hexToHsl,
   hslToHex,
@@ -38,7 +38,7 @@ const generateColorBasedOnAddress = (
 };
 
 const getRandomIndex = (slicedAddress, options) => {
-  const seed = jsNumberForAddress(slicedAddress);
+  const seed = jsNumberForSlicedAddress(slicedAddress);
   const generator = new MersenneTwister(seed);
   const randomIndex = Math.floor(
     generator.random() * Object.values(options).length,
