@@ -128,10 +128,9 @@ export default function ConfirmTokenTransactionBase({
         ({ address, tokenId: _tokenId }) =>
           isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
       );
-      title = assetName;
-      if (!isExistingNft && assetStandard === TokenStandard.ERC721) {
-        title = `${title} #${tokenId}`;
-      }
+      title = !isExistingNft && assetStandard === TokenStandard.ERC721
+        ? `${title} #${tokenId}`
+        : assetName;
     } else {
       title = getTitleTokenDescription();
     }
