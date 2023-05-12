@@ -236,6 +236,8 @@ describe('Add token using wallet_watchAsset', function () {
           text: 'Cancel',
         });
 
+        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+
         const assetListItems = await driver.findElements(
           '.list-item--single-content-row',
         );
