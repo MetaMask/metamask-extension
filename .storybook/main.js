@@ -57,6 +57,7 @@ module.exports = {
       _stream_transform: require.resolve(
         'readable-stream/lib/_stream_transform.js',
       ),
+      zlib: false,
     };
     config.module.strictExportPresence = true;
     config.module.rules.push({
