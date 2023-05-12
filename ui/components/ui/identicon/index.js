@@ -41,7 +41,7 @@ export default function Identicon({
 
   useEffect(() => {
     const currentIndex = accounts.findIndex(
-      (account) => account.address === address,
+      (account) => account.address === address.toLowerCase(),
     );
     setColorSchema(accounts[currentIndex]?.colorSchema);
   }, [accounts, address]);
@@ -101,10 +101,6 @@ export default function Identicon({
   };
 
   const renderCustomizedFox = () => {
-    if (addBorder) {
-      console.log(colorSchema[0], address);
-    }
-
     return (
       <FoxIcon size={size} settledColorSchema={colorSchema} address={address} />
     );

@@ -54,7 +54,9 @@ const FoxIcon = ({
         );
         break;
       case COLOR_PALETTE_TYPE.previousSelected:
-        setColorSchema(settledColorSchema);
+        if (settledColorSchema) {
+          setColorSchema(settledColorSchema);
+        }
         break;
       case COLOR_PALETTE_TYPE.default:
         setColorSchema(Object.values(FOX_COLOR_PALETTE));
@@ -72,9 +74,7 @@ const FoxIcon = ({
   }, [colorSchema, handleNewColorSettled]);
 
   useEffect(() => {
-    console.log(colorPaletteType);
     if (!colorPaletteType) {
-      console.log('inside, ', settledColorSchema[0]);
       setColorSchema(settledColorSchema);
     }
   }, [colorPaletteType, settledColorSchema]);
