@@ -26,6 +26,10 @@ async function main(): Promise<void> {
     issueNumber = getIssueNumberFromBranchName(headRef);
   }
 
+  if (Number(issueNumber) === 0) {
+    process.exit(0);
+  }
+
   await updateLabels(octokit, issueNumber);
 }
 
