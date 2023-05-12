@@ -235,6 +235,12 @@ describe('Add token using wallet_watchAsset', function () {
           tag: 'button',
           text: 'Cancel',
         });
+
+        const assetListItems = await driver.findElements(
+          '.list-item--single-content-row',
+        );
+
+        assert.strictEqual(assetListItems.length, 1);
       },
     );
   });
