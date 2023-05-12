@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import { EditGasModes } from '../../../shared/constants/gas';
+import { ASSET_ROUTE } from '../../helpers/constants/routes';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   showModal,
   updateCustomNonce,
@@ -15,8 +18,10 @@ import { TransactionModalContextProvider } from '../../contexts/transaction-moda
 import {
   getNativeCurrency,
   isAddressLedger,
+  checkIfLockedAsset,
 } from '../../ducks/metamask/metamask';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
+import { BannerAlert } from '../../components/component-library';
 import {
   getCurrentCurrency,
   getSubjectMetadata,
@@ -86,6 +91,17 @@ export default function ConfirmApprove({
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+
+  const isLockedAsset = useSelector((state) => {
+    return checkIfLockedAsset(state, {
+      tokenAddress,
+      fromAddress: userAddress,
+      transactionData,
+      chainId,
+    });
+  });
+  const t = useI18nContext();
+  const history = useHistory();
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -223,6 +239,23 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
+
+  const warning = isLockedAsset ? (
+    <BannerAlert
+      severity="warning"
+      title={t('lockedAssetTxWarning1')}
+      actionButtonLabel={t('lockedAssetTxWarning3')}
+      actionButtonOnClick={() =>
+        history.push(
+          `${ASSET_ROUTE}/${tokenAddress}${tokenId ? `/${tokenId}` : ''}`,
+        )
+      }
+    >
+      {t('lockedAssetTxWarning2')}
+    </BannerAlert>
+  ) : (
+    submitWarning
+  );
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
@@ -288,7 +321,7 @@ export default function ConfirmApprove({
                   }),
                 )
               }
-              warning={submitWarning}
+              warning={warning}
               txData={transaction}
               fromAddressIsLedger={fromAddressIsLedger}
               chainId={chainId}

@@ -4,7 +4,7 @@ export function isLockedAsset({
   selectedAddress,
   currentNetwork,
 }) {
-  const { standard, address, tokenId } = nft;
-  const assetIdentifier = `eip155:${currentNetwork}/${standard}:${address}/${tokenId}`;
+  const { address, tokenId } = nft;
+  const assetIdentifier = `eip155:${currentNetwork}/${address}/${tokenId}`;
   return Boolean(lockedAssets?.[selectedAddress]?.[assetIdentifier]);
 }
