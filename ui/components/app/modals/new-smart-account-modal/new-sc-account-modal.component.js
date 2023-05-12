@@ -35,20 +35,13 @@ export default class NewSCAccountModal extends Component {
 
   onKeyPress = async (e) => {
     // create instance of AA account
-    const provider = new ethers.providers.JsonRpcProvider(
-      'https://polygon-mumbai.infura.io/v3/{apiKey}',
-    );
-
     const signer = new ethers.Wallet();
-
     const factory = new ethers.Contract(
       '0x665cf455371e12EA5D49a7bA295cD060f436D95e',
       factoryAbi,
       signer,
     );
-
     const salt = 123123213;
-
     await factory.createAccount(signer.address, salt, this.state.guardians);
 
     if (e.key === 'Enter' && this.state.alias) {

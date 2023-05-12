@@ -91,8 +91,7 @@ export default class SmartContractKeyring implements Keyring<string[]> {
     console.log('address', aaAddress);
 
     const provider = new ethers.providers.JsonRpcProvider(
-      'https://polygon-mumbai.infura.io/v3/{apiKey}',
-      // `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+      `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
     );
 
     const chainId = await provider.getNetwork().then((net) => net.chainId);
@@ -110,8 +109,6 @@ export default class SmartContractKeyring implements Keyring<string[]> {
       accountAbstractionAbi.abi,
       signer,
     );
-
-    // console.log('nonce', await accountAbstractionInstance.getNonce());
 
     console.log('nonce', await accountAbstractionInstance.nonce());
 
