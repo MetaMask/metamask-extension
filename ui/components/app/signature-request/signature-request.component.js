@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import { EVM, IInspectorReturn } from 'signature-inspection';
+import { Redirect } from 'react-router-dom';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import {
@@ -17,7 +18,6 @@ import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
-
 import {
   TypographyVariant,
   FONT_WEIGHT,
@@ -99,7 +99,7 @@ export default class SignatureRequest extends PureComponent {
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
     clearConfirmTransaction: PropTypes.func.isRequired,
-    history: PropTypes.object,
+    history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
@@ -198,15 +198,25 @@ export default class SignatureRequest extends PureComponent {
       conversionRate,
       unapprovedMessagesCount,
       lockedAssets,
+      history,
     } = this.props;
 
+    const inspectorMsgType = [
+      'eth_sign',
+      'eth_signTypedData',
+      'eth_signTypedData_v3',
+      'eth_signTypedData_v4',
+      'personal_sign',
+    ].includes(txData.type)
+      ? 'OFFCHAIN_SIG'
+      : 'UNSIGNED_TRANSACTION';
     const payload = {
       method: [txData.type, txData.msgParams.version.toLowerCase()].join('_'),
       params: [txData.msgParams.from, txData.msgParams.data],
     };
     let signatureInspectResult;
     try {
-      signatureInspectResult = EVM.Inspector('OFFCHAIN_SIG', { payload });
+      signatureInspectResult = EVM.Inspector(inspectorMsgType, { payload });
     } catch (e) {
       console.log(e);
     }
@@ -281,9 +291,8 @@ export default class SignatureRequest extends PureComponent {
 
     const onManageNft = () => {
       const assetKey = lockedAssetsInSig[0].replace(`eip155:${chainId}/`, '');
-      const url = `${ASSET_ROUTE}/${assetKey}`;
-      this.context.history.push(url);
-      this.props.history.push(url);
+      const pathname = `${ASSET_ROUTE}/${assetKey}`;
+      history.push(pathname);
     };
 
     const messageIsScrollable =
@@ -304,8 +313,8 @@ export default class SignatureRequest extends PureComponent {
             <BannerAlert
               severity="warning"
               title={t('lockedAssetTxWarning1')}
-            // actionButtonLabel={t('lockedAssetTxWarning3')}
-            // actionButtonOnClick={onManageNft}
+              actionButtonLabel={t('lockedAssetTxWarning3')}
+              actionButtonOnClick={onManageNft}
             >
               {t('lockedAssetTxWarning2')}
             </BannerAlert>

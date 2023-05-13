@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-
+import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -165,8 +166,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(SignatureRequest);
