@@ -1,0 +1,89 @@
+diff --git a/index.js b/index.js
+index 043b6ea858523db7bd232034155befbf4b2332e4..7f7e6036a8a7068f76f0e745099d38ee267eee8f 100644
+--- a/index.js
++++ b/index.js
+@@ -16,25 +16,54 @@ function createLogo(options = {}) {
+   const cameraDistance = options.cameraDistance || 400;
+   const { height, width } = calculateSizingOptions(options);
+   const meshJson = options.meshJson || foxJson;
++  const meshJsonContainer = { meshJson };
+ 
+   const container = createNode('svg');
+   setAttribute(container, 'width', `${width}px`);
+   setAttribute(container, 'height', `${height}px`);
+   document.body.appendChild(container);
+ 
+-  setGradientDefinitions(container, meshJson.gradients);
+-  setMaskDefinitions({ container, masks: meshJson.masks, height, width });
++  const setFox = (_meshJson) => {
++    setGradientDefinitions(container, _meshJson.gradients);
++    setMaskDefinitions({ container, masks: _meshJson.masks, height, width });
+ 
+-  const modelObj = loadModelFromJson(meshJson);
+-  const renderFox = createModelRenderer(container, cameraDistance, modelObj);
++    const modelObj = loadModelFromJson(_meshJson);
++    const _renderFox = createModelRenderer(container, cameraDistance, modelObj);
++
++    return {
++      renderFox: _renderFox,
++    }
++  }
++
++  let {
++    renderFox,
++  } = setFox(meshJsonContainer.meshJson);
++  const renderFoxContainer = { renderFox }
++
++  let closedLookCurrent;
++  let closedSlowDrift;
+   const renderScene = (lookCurrent, slowDrift) => {
+     const rect = container.getBoundingClientRect();
+-    renderFox(rect, lookCurrent, slowDrift);
++    closedLookCurrent = lookCurrent;
++    closedSlowDrift = slowDrift;
++    renderFoxContainer.renderFox(rect, lookCurrent, slowDrift);
+   };
+ 
++  const reRenderScene = (_meshJson) => {
++    meshJsonContainer.meshJson = _meshJson;
++    const {
++      renderFox: _renderFox,
++    } = setFox(_meshJson);
++    renderFoxContainer.renderFox = _renderFox
++    const rect = container.getBoundingClientRect();
++    _renderFox(rect, closedLookCurrent, closedSlowDrift);
++  }
++
+   return createLogoViewer(
+     container,
+     renderScene,
++    reRenderScene,
+     Object.assign({ cameraDistance }, options),
+   );
+ }
++
+diff --git a/util.js b/util.js
+index dbbf9adc67f228c07f88fd674c1bbc2f8bf83ad3..d4de0418018fc359383e9503076e6a4ff7868f74 100644
+--- a/util.js
++++ b/util.js
+@@ -116,6 +116,7 @@ module.exports = {
+ function createLogoViewer(
+   container,
+   renderScene,
++  reRenderScene,
+   {
+     followMouse = false,
+     followMotion = false,
+@@ -239,6 +240,7 @@ function createLogoViewer(
+     startAnimation,
+     lookAtAndRender,
+     renderCurrentScene,
++    reRenderScene,
+   };
+ }
+ 
+@@ -786,3 +788,4 @@ function setMaskDefinitions({ container, masks, height, width }) {
+     container.appendChild(mask);
+   }
+ }
++
