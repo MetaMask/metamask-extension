@@ -72,11 +72,11 @@ export const generateColorPurelyOnAddress = (address) => {
 
   // TODO: Danica If user are not happy with the generated one
   // they can shuffle to a different set until they are happy
-  shuffleArray(colorsFromAddress);
+  // shuffleArray(colorsFromAddress);
 
   // Insert the 1 color randomly inside array of 5
   colorsFromAddress.splice(
-    getRandomIndex(slicedAddress, FOX_COLOR_PALETTE),
+    4,
     0,
     colorFromAddressString,
   );
@@ -88,15 +88,16 @@ export const fillInFoxColor = (colorArray) => {
   // primaryShadow, secondaryShadow, tertiaryShadow, baseSkinTone
   const skinColors = getRainbowColor(colorArray[4], colorArray[5], 5);
   return [
-    hexToHsl(mouthColors[0]), // mouth
-    hexToHsl(mouthColors[1]), // mouth shadow
-    hexToHsl(colorArray[1]), // eyes
-    hexToHsl(colorArray[2]), // nose
-    hexToHsl(colorArray[3]), // ear base color
-    hexToHsl(skinColors[0]), // darkest shadow
-    hexToHsl(skinColors[1]), // 2nd shadow
-    hexToHsl(skinColors[2]), // 3rd shadow
-    hexToHsl(skinColors[3]), // base skin tone
+    hexToRgb(mouthColors[0]), // mouth
+    hexToRgb(mouthColors[1]), // mouth shadow
+    hexToRgb(colorArray[1]), // eyes
+    hexToRgb(colorArray[2]), // nose
+    hexToRgb(colorArray[3]), // ear base color
+    hexToRgb(skinColors[0]), // darkest shadow
+    hexToRgb(skinColors[1]), // 2nd shadow
+    hexToRgb(skinColors[2]), // 3rd shadow
+    hexToRgb(skinColors[3]), // base skin tone
+    hexToRgb(skinColors[0]), // darkest shadow
   ];
 };
 

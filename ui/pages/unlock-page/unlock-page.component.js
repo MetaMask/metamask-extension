@@ -162,7 +162,7 @@ export default class UnlockPage extends Component {
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
             {selectedIdentity.colorSchema ? (
-              <Identicon address={selectedIdentity.address} diameter={120} />
+              <Identicon address={selectedIdentity.address} diameter={120} followMouse={true} />
             ) : (
               <Mascot
                 animationEventEmitter={this.animationEventEmitter}

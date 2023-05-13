@@ -66,6 +66,7 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      userCompletedSRPQuiz: false,
       ...opts.initState,
     };
 
@@ -153,6 +154,9 @@ export default class PreferencesController {
     this.store.updateState({ useNftDetection });
   }
 
+  setUserCompletedSRPQuiz(val) {
+    this.store.updateState({ userCompletedSRPQuiz: val });
+  }
   /**
    * Setter for the `useCurrencyRateCheck` property
    *

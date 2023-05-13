@@ -25,6 +25,7 @@ import { FOX_COLOR_PALETTE } from '../../helpers/utils/generative-color';
 import { setAccountColor } from '../../store/actions';
 import { EditorSelectionOptions, POLISH_OPTIONS } from './constants';
 import { downloadBlob } from '../../helpers/utils/color-util';
+import { isEqual } from 'lodash';
 
 const checkValueExists = (arr, val) => {
   return arr.some((option) => option.value === val);
@@ -33,8 +34,8 @@ const checkValueExists = (arr, val) => {
 export default function FoxSelection() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const state = useSelector((state) => state);
+  const accounts = useSelector(getMetaMaskAccountsOrdered, isEqual);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
   const selectedAddress = useSelector(getSelectedAddress);
   const initialSelectedIndex = accounts.findIndex(
@@ -44,10 +45,6 @@ export default function FoxSelection() {
   const [selectedAccountIndex, setSelectedAccountIndex] = useState(
     initialSelectedIndex.toString(),
   );
-
-  useEffect(() => {
-    setSelectedAccountIndex(initialSelectedIndex.toString());
-  }, [initialSelectedIndex]);
 
   const [shouldShuffle, setShouldShuffle] = useState(false);
   const [accountOptions, setAccountOptions] = useState([]);
@@ -151,7 +148,7 @@ export default function FoxSelection() {
         <div
           className="settings-page__header__title-container__close-button"
           onClick={() => {
-            history.push(getMostRecentOverviewPage(state));
+            history.push(mostRecentOverviewPage);
           }}
         />
       </div>
@@ -250,6 +247,7 @@ export default function FoxSelection() {
             handleNewColorSettled={handleNewColorSettled}
             shouldShuffle={shouldShuffle}
             svgRef={svgRef}
+            followMouse={true}
           />
 
           <Box

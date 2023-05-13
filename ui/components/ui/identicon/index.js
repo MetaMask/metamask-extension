@@ -23,6 +23,7 @@ export default function Identicon({
   image,
   address,
   addBorder,
+  followMouse = false,
 }) {
   const size = diameter + 8;
 
@@ -105,7 +106,7 @@ export default function Identicon({
 
   const renderCustomizedFox = () => {
     return (
-      <FoxIcon size={size} settledColorSchema={colorSchema} address={address} />
+      <FoxIcon size={size} settledColorSchema={colorSchema} address={address} followMouse={followMouse} />
     );
   };
 

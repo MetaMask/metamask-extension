@@ -63,12 +63,12 @@ export default function CustomizeFoxComponent() {
   if (hasOnlyHardwareAccounts) {
 	firstSuccessBanner = <BannerAlert
 		severity="success"
-		title="You are using a hardware wallet to secure your seed phrase &#127942;"
+		title="You are using a hardware wallet to secure your secret recovery phrase &#127942;"
 	/>
   } else {
   	firstSuccessBanner = <BannerAlert
   		severity="success"
-  		title="You have backed up your seed phrase &#127942;"
+  		title="You have backed up your secret recovery phrase &#127942;"
   	/>
   }
 
@@ -108,7 +108,7 @@ export default function CustomizeFoxComponent() {
         ) : (
           <BannerAlert
             severity="info"
-            title="Back up your seed phrase"
+            title="Back up your secret recovery phrase"
             actionButtonLabel={t('backupNow')}
             actionButtonProps={{
               endIconName: IconName.Arrow2Right,

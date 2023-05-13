@@ -219,10 +219,12 @@ export default function reduceApp(
     }
 
     case actionConstants.MODAL_CLOSE:
+      const appStateModal = { ...appState.modal };
       return {
         ...appState,
         modal: Object.assign(
-          appState.modal,
+          {},
+          appStateModal,
           { open: false },
           { modalState: { name: null, props: {} } },
           { previousModalState: appState.modal.modalState },

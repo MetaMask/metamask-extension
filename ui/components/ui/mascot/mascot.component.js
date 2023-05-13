@@ -38,14 +38,14 @@ export default class Mascot extends Component {
   constructor(props) {
     super(props);
 
-    const { width, height, followMouse } = props;
+    const { width, height, followMouse, meshJson = getBuildSpecificAsset('foxMeshJson') } = props;
 
     this.logo = MetaMaskLogo({
       followMouse,
       pxNotRatio: true,
       width,
       height,
-      meshJson: getBuildSpecificAsset('foxMeshJson'),
+      meshJson,
     });
 
     this.mascotContainer = createRef();
@@ -110,6 +110,9 @@ export default class Mascot extends Component {
     if (prevFollowMouse !== followMouse) {
       this.unfollowMouse();
       followMouse && this.refollowMouse();
+    }
+    if (JSON.stringify(prevProps.meshJson) !== JSON.stringify(this.props.meshJson)) {
+      this.logo.reRenderScene(this.props.meshJson)
     }
   }
 

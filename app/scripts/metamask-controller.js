@@ -2129,7 +2129,7 @@ export default class MetamaskController extends EventEmitter {
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
       setUserCompletedSRPQuiz:
-        appStateController.setUserCompletedSRPQuiz.bind(appStateController),
+        preferencesController.setUserCompletedSRPQuiz.bind(preferencesController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
