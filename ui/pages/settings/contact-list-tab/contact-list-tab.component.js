@@ -62,7 +62,6 @@ export default class ContactListTab extends Component {
     hideAddressBook: PropTypes.bool,
     exportContactList: PropTypes.func.isRequired,
     importContactList: PropTypes.func.isRequired,
-    showClearContactListModal: PropTypes.func.isRequired,
     chainId: PropTypes.string,
     removeFromAddressBook: PropTypes.func,
     addToAddressBook: PropTypes.func,
@@ -168,7 +167,7 @@ export default class ContactListTab extends Component {
       this.state;
 
     const defaultImportMessage = isImportSuccessful
-      ? 'Contact list import successful'
+      ? 'Contact list is successfully imported'
       : 'Contact list import failed';
 
     const restoreMessageToRender =
@@ -209,29 +208,23 @@ export default class ContactListTab extends Component {
             accept=".json"
             onChange={(e) => this.importContactList(e)}
           />
-          {isVisibleResultMessage && (
-            <BannerAlert
-              severity={
-                isImportSuccessful ? SEVERITIES.SUCCESS : SEVERITIES.DANGER
-              }
-              description={restoreMessageToRender}
-              onClose={() => {
-                this.setState({
-                  isVisibleResultMessage: false,
-                  isImportSuccessful: true,
-                  importMessage: null,
-                });
-              }}
-            />
-          )}
-          <ButtonLink
-            data-testid="clear-contacts"
-            startIconName={IconName.Close}
-            onClick={() => this.props.showClearContactListModal()}
-          >
-            Clear contact list
-          </ButtonLink>
         </Box>
+        {isVisibleResultMessage && (
+          <BannerAlert
+            margin={4}
+            severity={
+              isImportSuccessful ? SEVERITIES.SUCCESS : SEVERITIES.DANGER
+            }
+            description={restoreMessageToRender}
+            onClose={() => {
+              this.setState({
+                isVisibleResultMessage: false,
+                isImportSuccessful: true,
+                importMessage: null,
+              });
+            }}
+          />
+        )}
       </>
     );
   }
