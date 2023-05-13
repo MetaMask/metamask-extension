@@ -63,7 +63,7 @@ export default function RecipientGroup({
         </div>
       )}
       {items.map(({ address, name, tags }) => {
-        const isSelectedAccount = selectedAccount.has(address);
+        const isSelectedAccount = selectedAccount && selectedAccount.has(address);
         return (
           <div
             key={address}

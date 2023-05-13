@@ -116,6 +116,7 @@ export default class AppHeader extends PureComponent {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              paddingTop: '7px',
             }}
           >
             <Identicon address={selectedAddress} diameter={28} addBorder />

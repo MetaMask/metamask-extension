@@ -191,6 +191,8 @@ export default class AddRecipient extends Component {
             this.selectRecipient(address, name, 'my accounts')
           }
           areRecipientsMyAccounts
+          selectedAccount={''}
+          handleAccountClick={() => null}
         />
       </div>
     );
@@ -218,6 +220,8 @@ export default class AddRecipient extends Component {
               `${name ? 'contact' : 'recent'} list`,
             );
           }}
+          selectedAccount={''}
+          handleAccountClick={() => null}
         >
           {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button
