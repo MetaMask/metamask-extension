@@ -33,8 +33,7 @@ const mapStateToProps = (state, ownProps) => {
   const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const { chainId } = getProviderConfig(state);
 
-  const hideAddressBook =
-    envIsPopup && (viewingContact || editingContact || addingContact);
+  const hideAddressBook = viewingContact || editingContact || addingContact;
 
   return {
     viewingContact,

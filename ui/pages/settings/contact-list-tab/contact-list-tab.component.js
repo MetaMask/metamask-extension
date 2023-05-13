@@ -175,25 +175,7 @@ export default class ContactListTab extends Component {
       importMessage === CORRUPT_JSON_FILE
         ? 'Contact list seems corrupt'
         : defaultImportMessage;
-    const {
-      viewingContact,
-      editingContact,
-      addingContact,
-      showContactContent,
-    } = this.props;
 
-    if (!showContactContent) {
-      return null;
-    }
-
-    let ContactContentComponent = null;
-    if (viewingContact) {
-      ContactContentComponent = ViewContact;
-    } else if (editingContact) {
-      ContactContentComponent = EditContact;
-    } else if (addingContact) {
-      ContactContentComponent = AddContact;
-    }
     return (
       <>
         <Box
@@ -201,9 +183,7 @@ export default class ContactListTab extends Component {
           flexDirection={[FLEX_DIRECTION.COLUMN, FLEX_DIRECTION.ROW]}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
-          className={`btn-wrapper ${
-            ContactContentComponent ? 'btn-wrapper-column' : 'btn-wrapper-row'
-          }`}
+          className="btn-wrapper"
           gap={4}
           padding={5}
         >
@@ -268,13 +248,11 @@ export default class ContactListTab extends Component {
         : addressBook.filter((item) =>
             item.tags.includes(this.state.filterType),
           );
-    console.log('nickname', filteredAddress);
     const contacts = filteredAddress.filter(({ name }) => Boolean(name));
     const nonContacts = filteredAddress.filter(({ name }) => !name);
 
     const handleAccountClick = (address) => {
       const newSelectedAccounts = new Set(this.state.selectedAccounts);
-      console.log(newSelectedAccounts, 'nidhi');
       if (newSelectedAccounts.has(address)) {
         newSelectedAccounts.delete(address);
       } else {
@@ -287,18 +265,15 @@ export default class ContactListTab extends Component {
       let address;
       // eslint-disable-next-line guard-for-in
       for (address of this.state.selectedAccounts) {
-        console.log(address, 'address');
         this.props.removeFromAddressBook(this.props.chainId, address);
       }
     };
 
     const addToAllowList = () => {
       for (const address of this.state.selectedAccounts) {
-        console.log(address, 'address');
         const filteredName = filteredAddress.find(
           (contact) => contact.address === address,
         ).name;
-        console.log(filteredName, 'nidhi');
         filteredName &&
           this.props.addToAddressBook(address, filteredName, '', ['allowList']);
       }
@@ -306,11 +281,9 @@ export default class ContactListTab extends Component {
 
     const addToBlockList = () => {
       for (const address of this.state.selectedAccounts) {
-        console.log(address, 'address');
         const filteredName = filteredAddress.find(
           (contact) => contact.address === address,
         ).name;
-        console.log(filteredName, 'nidhi');
         filteredName &&
           this.props.addToAddressBook(address, filteredName, '', ['blockList']);
       }
@@ -321,16 +294,13 @@ export default class ContactListTab extends Component {
         filteredAddress.map((account) => account.address),
       );
       this.setState({ selectedAccounts: newSelectedAccounts });
-      console.log(this.state.selectedAccounts, 'hello');
     };
 
     const deselectAll = () => {
       this.setState({ selectedAccounts: new Set() });
-      console.log(this.state.selectedAccounts, 'hiii');
     };
 
     const allAreSelected = () => {
-      console.log(this.state.selectedAccounts, 'yooo');
       return filteredAddress.length === this.state.selectedAccounts?.size;
     };
 

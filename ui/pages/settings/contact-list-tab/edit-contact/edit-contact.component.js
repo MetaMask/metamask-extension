@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
+import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -273,7 +274,7 @@ export default class EditContact extends PureComponent {
                 this.state.newMemo || memo,
                 this.state.newTags || tags,
               );
-              history.push(listRoute);
+              history.push(CONTACT_LIST_ROUTE);
             }
           }}
           onCancel={() => {

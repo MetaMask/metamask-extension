@@ -8,13 +8,17 @@ import Button from '../../../../components/ui/button/button.component';
 import {
   ButtonIcon,
   ButtonIconSize,
+  ButtonPrimary,
+  ButtonSecondary,
   IconName,
 } from '../../../../components/component-library';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import { FLEX_DIRECTION, IconColor } from '../../../../helpers/constants/design-system';
+import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
+import Box from '../../../../components/ui/box';
 
 function quadSplit(address) {
   return `0x${address
@@ -46,16 +50,28 @@ function ViewContact({
           <Identicon address={address} diameter={60} />
           <div className="address-book__header__name">{name || address}</div>
         </div>
-        <div className="address-book__view-contact__group">
-          <Button
-            type="secondary"
+        <Box
+          className="address-book__view-contact__group address-book__view-contact__button-group"
+          gap={4}
+          flexDirection={FLEX_DIRECTION.ROW}
+        >
+          <ButtonPrimary
+            block
             onClick={() => {
               history.push(`${editRoute}/${address}`);
             }}
           >
             {t('edit')}
-          </Button>
-        </div>
+          </ButtonPrimary>
+          <ButtonSecondary
+            block
+            onClick={() => {
+              history.push(CONTACT_LIST_ROUTE);
+            }}
+          >
+            {t('cancel')}
+          </ButtonSecondary>
+        </Box>
         <div className="address-book__view-contact__group">
           <div className="address-book__view-contact__group__label">
             {t('ethereumPublicAddress')}

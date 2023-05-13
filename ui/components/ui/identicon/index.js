@@ -6,11 +6,7 @@ import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import FoxIcon from '../fox-icon/FoxIcon';
-import {
-  getMetaMaskAccountsOrdered,
-  getSelectedAddress,
-  getTokenList,
-} from '../../../selectors';
+import { getMetaMaskAccountsOrdered, getTokenList } from '../../../selectors';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({

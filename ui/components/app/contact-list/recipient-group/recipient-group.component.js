@@ -7,6 +7,7 @@ import { ellipsify } from '../../../../pages/send/send.utils';
 import { Color } from '../../../../helpers/constants/design-system';
 import CheckBox from '../../../ui/check-box';
 import { ButtonIcon, IconName } from '../../../component-library';
+import Tooltip from '../../../ui/tooltip/tooltip';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();
@@ -66,7 +67,9 @@ export default function RecipientGroup({
         return (
           <div
             key={address}
-            onClick={() => handleAccountClick(address)}
+            onClick={() => {
+              handleAccountClick(address);
+            }}
             className={classnames({
               'send__select-recipient-wrapper__group-item': !addressesEqual(
                 address,
@@ -102,14 +105,19 @@ export default function RecipientGroup({
               )}
             </div>
             {renderTags(tags)}
-            <ButtonIcon
-              iconName={IconName.Edit}
-              ariaLabel="edit"
-              data-testid="edit"
-              onClick={() => onSelect(address, name)}
-              color={Color.iconDefault}
-              marginLeft={6}
-            />
+            <Tooltip title="Edit" position="bottom">
+              <ButtonIcon
+                iconName={IconName.Edit}
+                ariaLabel="edit"
+                data-testid="edit"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(address, name);
+                }}
+                color={Color.iconDefault}
+                marginLeft={6}
+              />
+            </Tooltip>
           </div>
         );
       })}

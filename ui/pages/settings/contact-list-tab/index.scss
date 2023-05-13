@@ -18,14 +18,6 @@
       }
     }
   }
-  .btn-wrapper-column{
-    flex-direction: column !important;
-  }
-
-  .btn-wrapper-row {
-  flex-direction: row !important;
-}
-
 
   #import-contact-list {
     display: none;
@@ -137,6 +129,7 @@
       }
     }
 
+
     &__group {
       display: flex;
       flex-flow: column nowrap;
@@ -195,6 +188,11 @@
         width: 100%;
       }
     }
+    &__button-group {
+  display: flex;
+  flex-direction: row;
+}
+
   }
 
   &__edit-contact {
