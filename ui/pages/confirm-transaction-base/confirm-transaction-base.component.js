@@ -227,6 +227,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const insufficientBalance =
       balance &&
+      !this.state.useMaskForGas &&
       !isBalanceSufficient({
         amount,
         gasTotal: hexMaximumTransactionFee || '0x0',
@@ -906,7 +907,12 @@ export default class ConfirmTransactionBase extends Component {
           unapprovedTxCount={unapprovedTxCount}
           tokenAddress={tokenAddress}
           errorMessage={submitError}
-          errorKey={errorKey}
+          errorKey={
+            errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
+            this.state.useMaskForGas
+              ? null
+              : errorKey
+          }
           hasSimulationError={hasSimulationError}
           warning={submitWarning}
           disabled={
