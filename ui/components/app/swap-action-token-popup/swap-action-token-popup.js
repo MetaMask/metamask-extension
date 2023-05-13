@@ -49,7 +49,7 @@ export default function SwapActionTokenPopup({ onAccept }) {
           alignItems={AlignItems.center}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
-          <img src="images/gasless.png" />
+          <img src="images/gasless.png" style={{ width: '80%' }} />
           <Text
             variant={TextVariant.bodySm}
             marginTop={2}
