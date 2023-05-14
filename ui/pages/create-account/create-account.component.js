@@ -5,6 +5,7 @@ import Box from '../../components/ui/box';
 import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
+  NEW_AA_ACCOUNT_ROUTE,
   IMPORT_AA_ACCOUNT_ROUTE,
   NEW_ACCOUNT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -17,6 +18,7 @@ import CustodyPage from '../institutional/custody';
 import ConnectHardwareForm from './connect-hardware';
 import NewAccountImportForm from './import-account';
 import NewAAAccountImportForm from './import-account/import-aa-account';
+import NewAAAccountForm from './import-account/create-aa-account';
 import NewAccountCreateForm from './new-account.container';
 
 export default function CreateAccountPage() {
@@ -33,6 +35,7 @@ export default function CreateAccountPage() {
           path={IMPORT_ACCOUNT_ROUTE}
           component={NewAccountImportForm}
         />
+        <Route exact path={NEW_AA_ACCOUNT_ROUTE} component={NewAAAccountForm} />
         <Route
           exact
           path={IMPORT_AA_ACCOUNT_ROUTE}
