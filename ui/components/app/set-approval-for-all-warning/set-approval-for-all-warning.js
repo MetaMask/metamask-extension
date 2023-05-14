@@ -9,7 +9,6 @@ import Button from '../../ui/button';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  FontWeight,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -65,11 +64,7 @@ const SetApproveForAllWarning = ({
           name={IconName.Danger}
           className="set-approval-for-all-warning__content__header__warning-icon"
         />
-        <Text
-          variant={TextVariant.headingSm}
-          as="h4"
-          fontWeight={FontWeight.Bold}
-        >
+        <Text variant={TextVariant.headingSm} as="h4">
           {t('yourNFTmayBeAtRisk')}
         </Text>
       </Box>
