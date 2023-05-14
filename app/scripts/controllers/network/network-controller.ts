@@ -307,10 +307,9 @@ function isErrorWithCode(error: unknown): error is { code: string | number } {
  * @param value - The value to check.
  */
 function assertNetworkId(value: any): asserts value is NetworkId {
-  assert(
-    /^\d+$/u.test(value) && !Number.isNaN(Number(value)),
-    'value is not a number',
-  );
+  if (!/^\d+$/u.test(value) || Number.isNaN(Number(value))) {
+    throw new Error('value is not a number');
+  }
 }
 
 /**
@@ -624,12 +623,14 @@ export class NetworkController extends EventEmitter {
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
-      if (isErrorWithCode(error) && isErrorWithMessage(error)) {
+      if (isErrorWithCode(error)) {
         let responseBody;
-        try {
-          responseBody = JSON.parse(error.message);
-        } catch {
-          // error.message must not be JSON
+        if (isInfura && isErrorWithMessage(error)) {
+          try {
+            responseBody = JSON.parse(error.message);
+          } catch {
+            // error.message must not be JSON
+          }
         }
 
         if (
