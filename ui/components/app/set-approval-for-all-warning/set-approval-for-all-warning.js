@@ -4,18 +4,22 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Popover from '../../ui/popover';
 import Box from '../../ui/box';
-import Button from '../../ui/button';
 
 import {
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Identicon from '../../ui/identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { Icon, IconName, Text } from '../../component-library';
+import {
+  Icon,
+  IconName,
+  Text,
+  Button,
+  BUTTON_VARIANT,
+} from '../../component-library';
 
 const SetApproveForAllWarning = ({
   collectionName,
@@ -34,17 +38,19 @@ const SetApproveForAllWarning = ({
       flexDirection={FLEX_DIRECTION.COLUMN}
       justifyContent={JustifyContent.SPACE_BETWEEN}
       className="set-approval-for-all-warning__footer"
+      gap={4}
     >
       <Button
         className="set-approval-for-all-warning__footer__approve-button"
-        type="danger-primary"
+        variant={BUTTON_VARIANT.PRIMARY}
+        danger
         onClick={onSubmit}
       >
         {t('approveButtonText')}
       </Button>
       <Button
         className="set-approval-for-all-warning__footer__cancel-button"
-        type="secondary"
+        variant={BUTTON_VARIANT.SECONDARY}
         onClick={onCancel}
       >
         {t('reject')}
@@ -82,14 +88,13 @@ const SetApproveForAllWarning = ({
             marginLeft={2}
             className="set-approval-for-all-warning__content__account-name"
           >
-            <b>{name}</b> {` (${shortenAddress(senderAddress)})`}
+            <strong>{name}</strong> {` (${shortenAddress(senderAddress)})`}
           </Text>
         </Box>
         {isERC721 && total && <Text>{`${t('total')}: ${total}`}</Text>}
       </Box>
 
       <Text
-        color={TextColor.textAlternative}
         margin={4}
         marginTop={4}
         marginBottom={4}
@@ -97,10 +102,7 @@ const SetApproveForAllWarning = ({
         as="h6"
       >
         {t('nftWarningContent', [
-          <strong
-            key="non_custodial_bold"
-            className="set-approval-for-all-warning__content__bold"
-          >
+          <strong key="non_custodial_bold">
             {t('nftWarningContentBold', [collectionName || ''])}
           </strong>,
           <strong key="non_custodial_grey">
