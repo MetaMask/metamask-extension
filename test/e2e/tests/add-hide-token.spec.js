@@ -123,3 +123,127 @@ describe('Add existing token using search', function () {
     );
   });
 });
+
+describe('Add token using wallet_watchAsset', function () {
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+
+  it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+
+        await driver.executeScript(`
+          window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                symbol: 'TST',
+                decimals: 4
+              },
+            }
+          })
+        `);
+
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Add token',
+        });
+
+        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+
+        await driver.waitForSelector({
+          css: '.asset-list-item__token-value',
+          text: '0',
+        });
+
+        await driver.waitForSelector({
+          css: '.asset-list-item__token-symbol',
+          text: 'TST',
+        });
+      },
+    );
+  });
+
+  it('opens a notification that adds a token when wallet_watchAsset is executed, then rejects', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+
+        await driver.executeScript(`
+          window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                symbol: 'TST',
+                decimals: 4
+              },
+            }
+          })
+        `);
+
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
+
+        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+
+        const assetListItems = await driver.findElements(
+          '.list-item--single-content-row',
+        );
+
+        assert.strictEqual(assetListItems.length, 1);
+      },
+    );
+  });
+});

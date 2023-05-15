@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import {
   resolvePendingApproval,
@@ -83,11 +84,13 @@ describe('ConfirmAddSuggestedToken Component', () => {
     );
   });
 
-  it('should dispatch resolvePendingApproval when clicking the "Add token" button', () => {
+  it('should dispatch resolvePendingApproval when clicking the "Add token" button', async () => {
     renderComponent();
     const addTokenBtn = screen.getByRole('button', { name: 'Add token' });
 
-    fireEvent.click(addTokenBtn);
+    await act(async () => {
+      fireEvent.click(addTokenBtn);
+    });
 
     expect(resolvePendingApproval).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,
@@ -98,11 +101,13 @@ describe('ConfirmAddSuggestedToken Component', () => {
     });
   });
 
-  it('should dispatch rejectPendingApproval when clicking the "Cancel" button', () => {
+  it('should dispatch rejectPendingApproval when clicking the "Cancel" button', async () => {
     renderComponent();
     const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
 
-    fireEvent.click(cancelBtn);
+    await act(async () => {
+      fireEvent.click(cancelBtn);
+    });
 
     expect(rejectPendingApproval).toHaveBeenCalledTimes(
       MOCK_SUGGESTED_ASSETS.length,

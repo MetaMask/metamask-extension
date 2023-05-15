@@ -124,6 +124,7 @@ const ConfirmAddSuggestedToken = () => {
     await Promise.all(
       suggestedAssets.map(async ({ asset, id }) => {
         await dispatch(resolvePendingApproval(id, null));
+
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
           category: MetaMetricsEventCategory.Wallet,
