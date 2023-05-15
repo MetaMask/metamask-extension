@@ -5,8 +5,10 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
-import { getCurrentChainId } from '../selectors';
+import { getCurrentChainId, getNameLookupSnapsIds } from '../selectors';
+import { handleSnapRequest } from '../store/actions';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
   NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
@@ -15,7 +17,7 @@ import {
   CONFUSING_ENS_ERROR,
   ENS_ILLEGAL_CHARACTER,
   ENS_NOT_FOUND_ON_NETWORK,
-  ENS_NOT_SUPPORTED_ON_NETWORK,
+  DOMAIN_NOT_SUPPORTED_ON_NETWORK,
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
@@ -90,7 +92,15 @@ const slice = createSlice({
         } else {
           state.error = ENS_NO_ADDRESS_FOR_NAME;
         }
+      } else {
+        if (!address) {
+          state.error = 'No resolution for domain provided.';
+        }
+        if (address) {
+          state.resolution = address;
+        }
       }
+      // in the future we can have snaps register their domains and have error handlers that they supply
     },
     enableDomainLookup: (state, action) => {
       state.stage = 'INITIALIZED';
@@ -106,10 +116,10 @@ const slice = createSlice({
       state.resolution = null;
       state.network = null;
     },
-    ensNotSupported: (state) => {
+    domainNotSupported: (state) => {
       state.resolution = null;
       state.warning = null;
-      state.error = ENS_NOT_SUPPORTED_ON_NETWORK;
+      state.error = DOMAIN_NOT_SUPPORTED_ON_NETWORK;
     },
     resetDomainResolution: (state) => {
       state.resolution = null;
@@ -134,7 +144,7 @@ const {
   disableDomainLookup,
   domainLookup,
   enableDomainLookup,
-  ensNotSupported,
+  domainNotSupported,
   resetDomainResolution,
 } = actions;
 export { resetDomainResolution };
@@ -146,6 +156,7 @@ export function initializeDomainSlice() {
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
     const ensAddress = networkMap[network];
+    const isSupportedButNotEns = Object.values(CHAIN_IDS).includes(chainId);
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {
@@ -156,12 +167,16 @@ export function initializeDomainSlice() {
       dispatch(enableDomainLookup(network));
     } else {
       web3Provider = null;
-      dispatch(disableDomainLookup());
+      if (isSupportedButNotEns) {
+        dispatch(enableDomainLookup(parseInt(chainId, 10)));
+      } else {
+        dispatch(disableDomainLookup());
+      }
     }
   };
 }
 
-export function lookupEnsName(domainName) {
+export function lookupDomainName(domainName) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
@@ -177,9 +192,9 @@ export function lookupEnsName(domainName) {
       ) &&
       !isHexString(trimmedDomainName)
     ) {
-      await dispatch(ensNotSupported());
+      await dispatch(domainNotSupported());
     } else {
-      log.info(`ENS attempting to resolve name: ${trimmedDomainName}`);
+      log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
       let address;
       let error;
       try {
@@ -188,7 +203,45 @@ export function lookupEnsName(domainName) {
         error = err;
       }
       const chainId = getCurrentChainId(state);
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      let network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      const nameLookupSnaps = getNameLookupSnapsIds(state);
+      if (nameLookupSnaps.length) {
+        const results = await Promise.all(
+          nameLookupSnaps.map((snapId) => {
+            return new Promise((resolve) => {
+              handleSnapRequest({
+                snapId,
+                origin: '',
+                handler: 'onNameLookup',
+                request: {
+                  jsonrpc: '2.0',
+                  method: ' ',
+                  params: {
+                    content: domainName,
+                    id: `eip155:${parseInt(chainId, 10)}`,
+                  },
+                },
+              }).then((res) => {
+                resolve(res);
+              });
+            });
+          }),
+        );
+        const successfulResolutions = results.filter(
+          (result) => result !== null,
+        );
+        network = parseInt(chainId, 10);
+        await dispatch(
+          domainLookup({
+            address: successfulResolutions[0],
+            error,
+            chainId,
+            network,
+            domainType: 'Other',
+            domainName: trimmedDomainName,
+          }),
+        );
+      }
 
       await dispatch(
         domainLookup({
@@ -203,6 +256,49 @@ export function lookupEnsName(domainName) {
     }
   };
 }
+
+// export function lookupEnsName(domainName) {
+//   return async (dispatch, getState) => {
+//     const trimmedDomainName = domainName.trim();
+//     let state = getState();
+//     if (state[name].stage === 'UNINITIALIZED') {
+//       await dispatch(initializeDomainSlice());
+//     }
+//     state = getState();
+//     if (
+//       state[name].stage === 'NO_NETWORK_SUPPORT' &&
+//       !(
+//         isBurnAddress(trimmedDomainName) === false &&
+//         isValidHexAddress(trimmedDomainName, { mixedCaseUseChecksum: true })
+//       ) &&
+//       !isHexString(trimmedDomainName)
+//     ) {
+//       await dispatch(ensNotSupported());
+//     } else {
+//       log.info(`ENS attempting to resolve name: ${trimmedDomainName}`);
+//       let address;
+//       let error;
+//       try {
+//         address = await web3Provider.resolveName(trimmedDomainName);
+//       } catch (err) {
+//         error = err;
+//       }
+//       const chainId = getCurrentChainId(state);
+//       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+
+//       await dispatch(
+//         domainLookup({
+//           address,
+//           error,
+//           chainId,
+//           network,
+//           domainType: ENS,
+//           domainName: trimmedDomainName,
+//         }),
+//       );
+//     }
+//   };
+// }
 
 export function getDomainResolution(state) {
   return state[name].resolution;

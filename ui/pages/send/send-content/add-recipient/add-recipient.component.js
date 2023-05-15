@@ -121,8 +121,12 @@ export default class AddRecipient extends Component {
       content = this.renderExplicitAddress(
         domainResolution,
         addressBookEntryName || userInput,
-        'ENS resolution',
+        'Domain resolution',
       );
+      // In the future, we will want to add a type for domain resolution
+      // that we can point to as a defacto name for the type
+      // maybe we have some casa profiles for domain types
+      // the snap would have to pair its reply with some error handler
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
     }
