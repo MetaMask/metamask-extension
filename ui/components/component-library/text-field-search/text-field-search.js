@@ -28,7 +28,7 @@ export const TextFieldSearch = ({
             className="mm-text-field__button-clear"
             ariaLabel="Clear" // TODO: i18n
             iconName={IconName.Close}
-            size={ButtonIconSize.SM}
+            size={ButtonIconSize.Sm}
             onClick={clearButtonOnClick}
             {...clearButtonProps}
           />
