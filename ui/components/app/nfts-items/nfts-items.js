@@ -198,14 +198,15 @@ export default function NftsItems({
                           size={Size.SM}
                           name={currentChain?.nickname}
                           src={currentChain?.rpcPrefs?.imageUrl}
-                          borderColor={BorderColor.borderMuted}
+                          borderColor={BackgroundColor.backgroundDefault}
+                          borderWidth={2}
                           data-testid="nft-network-badge"
                         />
                       }
                       anchorElementShape={
                         BadgeWrapperAnchorElementShape.rectangular
                       }
-                      positionObj={{ top: -2, right: -2 }}
+                      positionObj={{ top: -4, right: -4 }}
                       display={DISPLAY.BLOCK}
                     >
                       {nftImage ? (
