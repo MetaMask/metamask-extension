@@ -1188,7 +1188,6 @@ export function getAllNetworks(state) {
       ({ chainId }) =>
         ![
           CHAIN_IDS.LOCALHOST,
-          CHAIN_IDS.MAINNET,
           // Linea gets added as a custom network configuration so
           // we must ignore it here to display in test networks
           CHAIN_IDS.LINEA_TESTNET,
