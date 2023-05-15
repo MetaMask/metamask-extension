@@ -37,16 +37,8 @@ export default function JsonImportSubview({ importAccountFunc }) {
   const [fileContents, setFileContents] = useState('');
   const [isPasswordless, setIsPasswordless] = useState(false);
 
-  function isPrimaryDisabled() {
-    if (fileContents === '') {
-      return true;
-    }
-    if (!isPasswordless && password === '') {
-      return true;
-    }
-
-    return false;
-  }
+  const isPrimaryDisabled =
+    fileContents === '' || (!isPasswordless && password === '');
 
   function handlePasswordlessCheck() {
     if (password !== '') {
@@ -57,14 +49,14 @@ export default function JsonImportSubview({ importAccountFunc }) {
   }
 
   function handleKeyPress(event) {
-    if (!isPrimaryDisabled() && event.key === 'Enter') {
+    if (!isPrimaryDisabled && event.key === 'Enter') {
       event.preventDefault();
       _importAccountFunc();
     }
   }
 
   function _importAccountFunc() {
-    if (isPrimaryDisabled()) {
+    if (isPrimaryDisabled) {
       displayWarning(t('needImportFile'));
     } else {
       importAccountFunc('JSON File', [fileContents, password]);
@@ -141,7 +133,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
 
       <BottomButtons
         importAccountFunc={_importAccountFunc}
-        isPrimaryDisabled={isPrimaryDisabled()}
+        isPrimaryDisabled={isPrimaryDisabled}
       />
     </>
   );
