@@ -228,12 +228,12 @@ export function lookupDomainName(domainName) {
           }),
         );
         const successfulResolutions = results.filter(
-          (result) => result !== null,
+          (result) => result.resolvedAccount !== null,
         );
         network = parseInt(chainId, 10);
         await dispatch(
           domainLookup({
-            address: successfulResolutions[0],
+            address: successfulResolutions[0].resolvedAccount,
             error,
             chainId,
             network,

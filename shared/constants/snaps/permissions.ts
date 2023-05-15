@@ -7,6 +7,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:webassembly': 'endowment:webassembly',
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   'endowment:long-running': 'endowment:long-running',
+  'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
