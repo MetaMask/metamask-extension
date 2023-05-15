@@ -58,18 +58,6 @@ export default {
     connectedAvatarName: {
       control: 'text',
     },
-    accountMaxWidth: {
-      control: 'text',
-    },
-    accountMinWidth: {
-      control: 'text',
-    },
-    assetMaxWidth: {
-      control: 'text',
-    },
-    assetMinWidth: {
-      control: 'text',
-    },
   },
   args: {
     identity: SIMPLE_IDENTITY,

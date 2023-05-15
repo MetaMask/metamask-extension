@@ -11,8 +11,8 @@
   }
 
   &__account-name {
-    // max-width: 120px;
-    // min-width: 67px;
+    max-width: 160px;
+    min-width: 80px;
     font-size: 14px !important;
 
     * {
@@ -28,8 +28,8 @@
   }
 
   &__asset {
-    //max-width: 164px;
-    //min-width: 36px;
+    max-width: 130px;
+    min-width: 60px;
     font-size: 14px !important;
   }
 

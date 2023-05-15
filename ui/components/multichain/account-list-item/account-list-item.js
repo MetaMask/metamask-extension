@@ -72,10 +72,6 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
-  accountMaxWidth,
-  accountMinWidth,
-  assetMaxWidth,
-  assetMinWidth,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -142,17 +138,6 @@ export const AccountListItem = ({
               ellipsis
               as="div"
               className="multichain-account-list-item__account-name"
-              style={{
-                minWidth: `${accountMinWidth}px`,
-                maxWidth: `${accountMaxWidth}px`,
-                background: `repeating-linear-gradient(
-                  -45deg,
-                  #555,
-                  #555 5px,
-                  #444 5px,
-                  #444 10px
-                )`,
-              }}
               marginInlineEnd={2}
             >
               <ButtonLink
@@ -185,17 +170,6 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               ellipsis
               textAlign={TextAlign.End}
-              style={{
-                minWidth: `${assetMinWidth}px`,
-                maxWidth: `${assetMaxWidth}px`,
-                background: `repeating-linear-gradient(
-                  -45deg,
-                  #555,
-                  #555 5px,
-                  #444 5px,
-                  #444 10px
-                )`,
-              }}
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
@@ -307,11 +281,6 @@ AccountListItem.propTypes = {
    * Text used as the avatar alt text
    */
   connectedAvatarName: PropTypes.string,
-
-  accountMaxWidth: PropTypes.number,
-  accountMinWidth: PropTypes.number,
-  assetMaxWidth: PropTypes.number,
-  assetMinWidth: PropTypes.number,
 };
 
 AccountListItem.displayName = 'AccountListItem';
