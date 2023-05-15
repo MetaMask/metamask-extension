@@ -4521,9 +4521,6 @@
   "token": {
     "message": "Token"
   },
-  "tokens": {
-    "message": "Tokens"
-  },
   "tokenAddress": {
     "message": "Token address"
   },
@@ -4562,6 +4559,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokens": {
+    "message": "Tokens"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
