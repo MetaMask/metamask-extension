@@ -107,7 +107,7 @@ export default class Home extends PureComponent {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     hasWatchAssetPendingApprovals: PropTypes.bool,
-    unconfirmedTransactionsCount: PropTypes.number,
+    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
@@ -197,7 +197,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       hasWatchAssetPendingApprovals,
       swapsFetchParams,
-      unconfirmedTransactionsCount,
+      hasTransactionPendingApprovals,
     } = this.props;
 
     if (shouldCloseNotificationPopup(props)) {
@@ -205,7 +205,7 @@ export default class Home extends PureComponent {
       closeNotificationPopup();
     } else if (
       firstPermissionsRequestId ||
-      unconfirmedTransactionsCount > 0 ||
+      hasTransactionPendingApprovals ||
       hasWatchAssetPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
@@ -269,7 +269,7 @@ export default class Home extends PureComponent {
       history,
       isNotification,
       hasWatchAssetPendingApprovals,
-      unconfirmedTransactionsCount,
+      hasTransactionPendingApprovals,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
@@ -288,7 +288,7 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (unconfirmedTransactionsCount > 0) {
+    } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (hasWatchAssetPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
@@ -815,13 +815,21 @@ export default class Home extends PureComponent {
                 name={this.context.t('assets')}
                 tabKey="assets"
               >
-                <Box marginTop={2}>
+                {process.env.MULTICHAIN ? (
+                  <Box marginTop={2}>
+                    <AssetList
+                      onClickAsset={(asset) =>
+                        history.push(`${ASSET_ROUTE}/${asset}`)
+                      }
+                    />
+                  </Box>
+                ) : (
                   <AssetList
                     onClickAsset={(asset) =>
                       history.push(`${ASSET_ROUTE}/${asset}`)
                     }
                   />
-                </Box>
+                )}
               </Tab>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
