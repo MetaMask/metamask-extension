@@ -926,7 +926,7 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e.xml
 
-            test-e2e-firefox-snaps-flask:
+  test-e2e-firefox-snaps-flask:
     executor: node-browsers
     parallelism: 4
     steps:
