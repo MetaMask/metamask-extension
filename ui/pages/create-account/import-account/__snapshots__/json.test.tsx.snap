@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Json should match snapshot 1`] = `
+<DocumentFragment>
+  <p
+    class="box mm-text mm-text--body-md mm-text--text-align-center box--flex-direction-row box--color-text-default"
+  >
+    Used by a variety of different clients
+    <a
+      class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+      href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      File import not working? Click here!
+    </a>
+  </p>
+  <div
+    class="box box--display-flex box--flex-direction-row box--justify-content-flex-end"
+  >
+    <label
+      class="box mm-text mm-label mm-text--body-md mm-text--font-weight-bold box--margin-right-2 box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+    >
+      Import JSON file without password
+    </label>
+    <label
+      class="toggle-button toggle-button--off"
+      tabindex="0"
+    >
+      <div
+        style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+      >
+        <div
+          style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+        >
+          <div
+            style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+          />
+          <div
+            style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+          />
+        </div>
+        <div
+          style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+        >
+          <div
+            style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+          />
+        </div>
+        <input
+          style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+          type="checkbox"
+          value="false"
+        />
+      </div>
+      <div
+        class="toggle-button__status"
+      >
+        <span
+          class="toggle-button__label-off"
+        >
+          Import JSON file without password
+        </span>
+        <span
+          class="toggle-button__label-on"
+        />
+      </div>
+    </label>
+  </div>
+  <input
+    data-testid="file-input"
+    id="file-input"
+    style="padding: 20px 0px 12px 15%; font-size: 16px; display: flex; justify-content: center; width: 100%;"
+    type="file"
+  />
+  <div
+    class="box mm-form-text-field box--margin-bottom-4 box--display-flex box--flex-direction-column"
+  >
+    <div
+      class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+    >
+      <input
+        aria-invalid="true"
+        autocomplete="off"
+        class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+        focused="true"
+        id="json-password-box"
+        placeholder="Enter password"
+        type="password"
+        value=""
+      />
+    </div>
+  </div>
+  <div
+    class="box box--display-flex box--gap-4 box--flex-direction-row"
+  >
+    <button
+      class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent box--rounded-pill box--border-color-primary-default box--border-style-solid box--border-width-1"
+    >
+      Cancel
+    </button>
+    <button
+      class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+      disabled=""
+    >
+      Import
+    </button>
+  </div>
+</DocumentFragment>
+`;
