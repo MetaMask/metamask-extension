@@ -1833,6 +1833,9 @@
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
   },
+  "importJsonWithoutPassword": {
+    "message": "Import JSON file without password"
+  },
   "importMyWallet": {
     "message": "Import my wallet"
   },
