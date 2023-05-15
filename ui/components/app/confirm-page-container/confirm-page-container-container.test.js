@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import sinon from 'sinon';
 import { fireEvent, screen } from '@testing-library/react';
 
 import mockState from '../../../../test/data/mock-state.json';
@@ -8,16 +7,21 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
 import ConfirmPageContainer from '.';
 
+const mockOnCancelAll = jest.fn();
+const mockOnCancel = jest.fn();
+const mockOnSubmit = jest.fn();
+const mockHandleCloseEditGas = jest.fn();
+
 const props = {
   title: 'Title',
   fromAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
   toAddress: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
   origin: 'testOrigin', // required
   // Footer
-  onCancelAll: sinon.spy(),
-  onCancel: sinon.spy(),
-  onSubmit: sinon.spy(),
-  handleCloseEditGas: sinon.spy(),
+  onCancelAll: mockOnCancelAll,
+  onCancel: mockOnCancel,
+  onSubmit: mockOnSubmit,
+  handleCloseEditGas: mockHandleCloseEditGas,
   // Gas Popover
   currentTransaction: {
     id: 8783053010106567,
@@ -176,6 +180,10 @@ describe('Confirm Page Container Container Test', () => {
       renderWithProvider(<ConfirmPageContainer {...props} />, store);
     });
 
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('should render a confirm page container component', () => {
       const pageContainer = screen.queryByTestId('page-container');
       expect(pageContainer).toBeInTheDocument();
@@ -207,13 +215,13 @@ describe('Confirm Page Container Container Test', () => {
     it('should simulate click reject button', () => {
       const rejectButton = screen.getByTestId('page-container-footer-cancel');
       fireEvent.click(rejectButton);
-      expect(props.onCancel.calledOnce).toStrictEqual(true);
+      expect(mockOnCancel).toHaveBeenCalledTimes(1);
     });
 
     it('should simulate click submit button', () => {
       const confirmButton = screen.getByTestId('page-container-footer-next');
       fireEvent.click(confirmButton);
-      expect(props.onSubmit.calledOnce).toStrictEqual(true);
+      expect(mockOnSubmit).toHaveBeenCalledTimes(1);
     });
   });
 
