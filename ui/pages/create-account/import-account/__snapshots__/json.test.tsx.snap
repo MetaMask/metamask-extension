@@ -3,7 +3,7 @@
 exports[`Json should match snapshot 1`] = `
 <DocumentFragment>
   <p
-    class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+    class="box mm-text mm-text--body-md box--margin-bottom-2 box--flex-direction-row box--color-text-default"
   >
     Used by a variety of different clients
     <a

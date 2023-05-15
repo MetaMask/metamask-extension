@@ -65,7 +65,11 @@ export default function JsonImportSubview({ importAccountFunc }) {
 
   return (
     <>
-      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.CENTER}>
+      <Text
+        variant={TextVariant.bodyMd}
+        textAlign={TextAlign.CENTER}
+        marginBottom={2}
+      >
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}
