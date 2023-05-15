@@ -192,6 +192,7 @@ export function lookupDomainName(domainName) {
       ) &&
       !isHexString(trimmedDomainName)
     ) {
+      console.log('here');
       await dispatch(domainNotSupported());
     } else {
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
@@ -205,6 +206,7 @@ export function lookupDomainName(domainName) {
       const chainId = getCurrentChainId(state);
       let network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       const nameLookupSnaps = getNameLookupSnapsIds(state);
+      console.log(nameLookupSnaps);
       if (nameLookupSnaps.length) {
         const results = await Promise.all(
           nameLookupSnaps.map((snapId) => {
@@ -230,6 +232,7 @@ export function lookupDomainName(domainName) {
         const successfulResolutions = results.filter(
           (result) => result.resolvedAccount !== null,
         );
+        console.log('here FOR RESULTS', results);
         network = parseInt(chainId, 10);
         await dispatch(
           domainLookup({

@@ -884,7 +884,7 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
-export const ookupSnapsIds = createDeepEqualSelector(
+export const getNameLookupSnapsIds = createDeepEqualSelector(
   getSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
