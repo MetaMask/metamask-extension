@@ -13,12 +13,8 @@
   &__account-name {
     max-width: 160px;
     min-width: 80px;
-    font-size: 14px !important;
 
-    * {
-      font-size: 14px !important;
-    }
-
+    /* Prevent the normal hover effect on Buttons */
     &__button {
       &:hover,
       &:focus {
@@ -30,6 +26,13 @@
   &__asset {
     max-width: 130px;
     min-width: 60px;
+    align-self: self-end;
+  }
+
+  /* Prevent font-size resizing to avoid conflcits for long asset and token names */
+  &__account-name button,
+  &__asset,
+  &__tooltip {
     font-size: 14px !important;
   }
 
