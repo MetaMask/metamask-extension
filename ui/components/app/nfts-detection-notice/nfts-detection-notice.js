@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Dialog from '../../ui/dialog';
-import { Text } from '../../component-library';
+import { Icon, IconName, Text } from '../../component-library';
 import {
   TextVariant,
   TextAlign,
@@ -14,7 +14,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, IconName } from '../../component-library';
 
 export default function NftsDetectionNotice() {
   const t = useI18nContext();
