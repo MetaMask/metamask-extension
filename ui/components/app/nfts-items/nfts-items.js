@@ -14,7 +14,7 @@ import {
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
-  BorderColor,
+  BackgroundColor,
   Size,
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
