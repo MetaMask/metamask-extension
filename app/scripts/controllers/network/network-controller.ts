@@ -302,12 +302,12 @@ function isErrorWithCode(error: unknown): error is { code: string | number } {
 
 /**
  * Asserts that the given value is a network ID, i.e., that it is a decimal
- * number represented as a string.
+ * or hexadecimal number represented as a string.
  *
  * @param value - The value to check.
  */
 function assertNetworkId(value: any): asserts value is NetworkId {
-  if (!/^\d+$/u.test(value) || Number.isNaN(Number(value))) {
+  if (!/^0x[\da-fA-F]+|\d+$/u.test(value) || Number.isNaN(Number(value))) {
     throw new Error('value is not a number');
   }
 }
