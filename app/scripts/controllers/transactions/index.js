@@ -5,6 +5,7 @@ import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
+import { ApprovalType } from '@metamask/controller-utils';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
@@ -51,10 +52,7 @@ import {
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
-import {
-  ORIGIN_METAMASK,
-  MESSAGE_TYPE,
-} from '../../../../shared/constants/app';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
@@ -394,6 +392,22 @@ export default class TransactionController extends EventEmitter {
         },
       );
     });
+  }
+
+  /**
+   * Creates approvals for all unapproved transactions in the txStateManager.
+   *
+   * @returns {Promise<void>}
+   */
+  async initApprovals() {
+    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
+    return Promise.all(
+      Object.values(unapprovedTxs).map((txMeta) =>
+        this._requestApproval(txMeta, {
+          shouldShowRequest: false,
+        }),
+      ),
+    );
   }
 
   // ====================================================================================================================================================
@@ -2648,13 +2662,16 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
-  _requestApproval(txMeta) {
+  async _requestApproval(
+    txMeta,
+    { shouldShowRequest } = { shouldShowRequest: true },
+  ) {
     const id = this._getApprovalId(txMeta);
     const { origin } = txMeta;
-    const type = MESSAGE_TYPE.TRANSACTION;
+    const type = ApprovalType.Transaction;
     const requestData = { txId: txMeta.id };
 
-    this.messagingSystem
+    return this.messagingSystem
       .call(
         'ApprovalController:addRequest',
         {
@@ -2663,7 +2680,7 @@ export default class TransactionController extends EventEmitter {
           type,
           requestData,
         },
-        true,
+        shouldShowRequest,
       )
       .catch(() => {
         // Intentionally ignored as promise not currently used

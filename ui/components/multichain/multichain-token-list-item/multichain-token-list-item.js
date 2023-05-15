@@ -7,7 +7,7 @@ import {
   BorderColor,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
   Size,
   TextColor,
@@ -121,7 +121,7 @@ export const MultichainTokenListItem = ({
                 theme={dataTheme === 'light' ? 'dark' : 'light'}
               >
                 <Text
-                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
@@ -130,7 +130,7 @@ export const MultichainTokenListItem = ({
               </Tooltip>
             </Box>
             <Text
-              fontWeight={FONT_WEIGHT.MEDIUM}
+              fontWeight={FontWeight.Medium}
               variant={TextVariant.bodyMd}
               width={[BLOCK_SIZES.TWO_THIRD]}
               textAlign={TextAlign.End}
