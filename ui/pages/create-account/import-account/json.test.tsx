@@ -18,11 +18,11 @@ describe('Json', () => {
   });
 
   it('should render', () => {
-    const { getByText, getByLabelText } = renderWithProvider(
+    const { getByText, getByRole } = renderWithProvider(
       <Json importAccountFunc={mockImportFunc} />,
       mockStore,
     );
-    const passwordToggle = getByLabelText('Import JSON file without password');
+    const passwordToggle = getByRole('checkbox');
     expect(passwordToggle).toBeInTheDocument();
 
     const fileImportLink = getByText('File import not working? Click here!');

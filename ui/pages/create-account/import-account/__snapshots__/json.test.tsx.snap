@@ -3,7 +3,7 @@
 exports[`Json should match snapshot 1`] = `
 <DocumentFragment>
   <p
-    class="box mm-text mm-text--body-md mm-text--text-align-center box--flex-direction-row box--color-text-default"
+    class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
   >
     Used by a variety of different clients
     <a
@@ -16,10 +16,10 @@ exports[`Json should match snapshot 1`] = `
     </a>
   </p>
   <div
-    class="box box--display-flex box--flex-direction-row box--justify-content-flex-end"
+    class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
   >
     <label
-      class="box mm-text mm-label mm-text--body-md mm-text--font-weight-bold box--margin-right-2 box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+      class="box mm-text mm-label mm-text--body-md mm-text--font-weight-normal box--margin-right-2 box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
     >
       Import JSON file without password
     </label>
@@ -58,9 +58,7 @@ exports[`Json should match snapshot 1`] = `
       >
         <span
           class="toggle-button__label-off"
-        >
-          Import JSON file without password
-        </span>
+        />
         <span
           class="toggle-button__label-on"
         />

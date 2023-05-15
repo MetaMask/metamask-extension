@@ -13,10 +13,11 @@ import {
 import {
   Size,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
   FLEX_DIRECTION,
   DISPLAY,
   JustifyContent,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -48,7 +49,9 @@ export default function JsonImportSubview({ importAccountFunc }) {
   }
 
   function handlePasswordlessCheck() {
-    if (password !== '') return;
+    if (password !== '') {
+      return;
+    }
     setIsPasswordless(!isPasswordless);
     setPassword('');
   }
@@ -70,7 +73,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
 
   return (
     <>
-      <Text variant={TextVariant.bodyMd} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.CENTER}>
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}
@@ -85,12 +88,17 @@ export default function JsonImportSubview({ importAccountFunc }) {
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JustifyContent.flexEnd}
+        justifyContent={JustifyContent.spaceBetween}
       >
-        <Label marginRight={2}>{t('importJsonWithoutPassword')}</Label>
+        <Label
+          variant={TextVariant.bodyMd}
+          fontWeight={FontWeight.Normal}
+          marginRight={2}
+        >
+          {t('importJsonWithoutPassword')}
+        </Label>
         <ToggleButton
           value={isPasswordless}
-          offLabel={t('importJsonWithoutPassword')}
           onToggle={handlePasswordlessCheck}
           disabled={password !== ''}
         ></ToggleButton>
