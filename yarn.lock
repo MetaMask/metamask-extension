@@ -5425,7 +5425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-a11y@npm:^7.0.10":
+"@storybook/addon-a11y@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/addon-a11y@npm:7.0.12"
   dependencies:
@@ -5454,7 +5454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-actions@npm:7.0.12, @storybook/addon-actions@npm:^7.0.10":
+"@storybook/addon-actions@npm:7.0.12, @storybook/addon-actions@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/addon-actions@npm:7.0.12"
   dependencies:
@@ -5571,7 +5571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-essentials@npm:^7.0.10":
+"@storybook/addon-essentials@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/addon-essentials@npm:7.0.12"
   dependencies:
@@ -5639,7 +5639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-mdx-gfm@npm:^7.0.10":
+"@storybook/addon-mdx-gfm@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/addon-mdx-gfm@npm:7.0.12"
   dependencies:
@@ -5743,7 +5743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addons@npm:7.0.12, @storybook/addons@npm:^7.0.0, @storybook/addons@npm:^7.0.10":
+"@storybook/addons@npm:7.0.12, @storybook/addons@npm:^7.0.0, @storybook/addons@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/addons@npm:7.0.12"
   dependencies:
@@ -5757,7 +5757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/api@npm:7.0.12, @storybook/api@npm:^7.0.0, @storybook/api@npm:^7.0.10":
+"@storybook/api@npm:7.0.12, @storybook/api@npm:^7.0.0, @storybook/api@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/api@npm:7.0.12"
   dependencies:
@@ -5971,7 +5971,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/client-api@npm:7.0.12, @storybook/client-api@npm:^7.0.10":
+"@storybook/client-api@npm:7.0.12, @storybook/client-api@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/client-api@npm:7.0.12"
   dependencies:
@@ -6011,7 +6011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/components@npm:7.0.12, @storybook/components@npm:^7.0.0, @storybook/components@npm:^7.0.10":
+"@storybook/components@npm:7.0.12, @storybook/components@npm:^7.0.0, @storybook/components@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/components@npm:7.0.12"
   dependencies:
@@ -6067,7 +6067,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/core-events@npm:7.0.12, @storybook/core-events@npm:^7.0.0, @storybook/core-events@npm:^7.0.10":
+"@storybook/core-events@npm:7.0.12, @storybook/core-events@npm:^7.0.0, @storybook/core-events@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/core-events@npm:7.0.12"
   checksum: a251497cab0d132dcef79cf01fb226c69da0d8a0be51a5ebd992a92a54a75c360ca21714a3cab64ba6a5f722b661911bff517b1fe65a214e6ce371c72520a9e1
@@ -6361,7 +6361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react-webpack5@npm:^7.0.10":
+"@storybook/react-webpack5@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/react-webpack5@npm:7.0.12"
   dependencies:
@@ -6382,7 +6382,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react@npm:7.0.12, @storybook/react@npm:^7.0.10":
+"@storybook/react@npm:7.0.12, @storybook/react@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/react@npm:7.0.12"
   dependencies:
@@ -6514,7 +6514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/theming@npm:7.0.12, @storybook/theming@npm:^7.0.0, @storybook/theming@npm:^7.0.10":
+"@storybook/theming@npm:7.0.12, @storybook/theming@npm:^7.0.0, @storybook/theming@npm:^7.0.11":
   version: 7.0.12
   resolution: "@storybook/theming@npm:7.0.12"
   dependencies:
@@ -23725,21 +23725,21 @@ __metadata:
     "@sentry/integrations": ^6.0.0
     "@sentry/types": ^6.0.1
     "@sentry/utils": ^6.0.1
-    "@storybook/addon-a11y": ^7.0.10
-    "@storybook/addon-actions": ^7.0.10
-    "@storybook/addon-essentials": ^7.0.10
+    "@storybook/addon-a11y": ^7.0.11
+    "@storybook/addon-actions": ^7.0.11
+    "@storybook/addon-essentials": ^7.0.11
     "@storybook/addon-knobs": ^7.0.2
-    "@storybook/addon-mdx-gfm": ^7.0.10
-    "@storybook/addons": ^7.0.10
-    "@storybook/api": ^7.0.10
-    "@storybook/client-api": ^7.0.10
-    "@storybook/components": ^7.0.10
-    "@storybook/core-events": ^7.0.10
-    "@storybook/react": ^7.0.10
-    "@storybook/react-webpack5": ^7.0.10
+    "@storybook/addon-mdx-gfm": ^7.0.11
+    "@storybook/addons": ^7.0.11
+    "@storybook/api": ^7.0.11
+    "@storybook/client-api": ^7.0.11
+    "@storybook/components": ^7.0.11
+    "@storybook/core-events": ^7.0.11
+    "@storybook/react": ^7.0.11
+    "@storybook/react-webpack5": ^7.0.11
     "@storybook/storybook-deployer": ^2.8.16
     "@storybook/test-runner": ^0.10.0
-    "@storybook/theming": ^7.0.10
+    "@storybook/theming": ^7.0.11
     "@testing-library/jest-dom": ^5.11.10
     "@testing-library/react": ^10.4.8
     "@testing-library/react-hooks": ^8.0.1
@@ -23948,7 +23948,7 @@ __metadata:
     source-map: ^0.7.2
     source-map-explorer: ^2.4.2
     squirrelly: ^8.0.8
-    storybook: ^7.0.10
+    storybook: ^7.0.11
     storybook-dark-mode: ^3.0.0
     stream-browserify: ^3.0.0
     string.prototype.matchall: ^4.0.2
@@ -31194,7 +31194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^7.0.10":
+"storybook@npm:^7.0.11":
   version: 7.0.12
   resolution: "storybook@npm:7.0.12"
   dependencies:
