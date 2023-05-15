@@ -526,6 +526,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.LINEA_TESTNET
     | typeof CHAIN_IDS.GOERLI
+    | typeof CHAIN_IDS.PULSECHAIN
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
