@@ -30873,10 +30873,10 @@ __metadata:
 
 "signature-inspection@github:MetaMask/signature-inspection#main":
   version: 1.0.0
-  resolution: "signature-inspection@https://github.com/MetaMask/signature-inspection.git#commit=1e01f6bee56c69dfc116cc9a6ca123b76e2bd2e0"
+  resolution: "signature-inspection@https://github.com/MetaMask/signature-inspection.git#commit=44ed98dd9970ca10531812caa03908c12b295d86"
   dependencies:
     typescript: ^5.0.4
-  checksum: a80b316001eb007c64357a311a43af17552ab7f27c30baa622ee0dce5207d39b57fdf3e2ee3f2d30900167c058f02245fd1a4f13273a5c06e1a0d0bc0ffa4d01
+  checksum: d2c5df1c0249cf27b124f168fa2a9e3fee6f07826b9def9998d6a867e4e78e645c232170cb705a40ab264d7072b794fee6bba04c2ebb45a2a440d94dc4b64f13
   languageName: node
   linkType: hard
 

@@ -504,10 +504,8 @@ export default class PreferencesController {
 
   async lockAsset(assetToLock) {
     console.log('Locking Asset');
-    const { tokenAddress, setLocked, tokenId, tokenStandard, chainId } =
-      assetToLock;
+    const { tokenAddress, setLocked, tokenId, chainId } = assetToLock;
     const lockedAssetIdentifier = this._lockedAssetIdentifier({
-      tokenStandard,
       tokenAddress,
       tokenId,
       chainId,
@@ -567,20 +565,13 @@ export default class PreferencesController {
   /**
    *
    * @param {opts} opts
-   * @param {string} opts.tokenStandard - The token standard of the asset to lock
    * @param {string} opts.tokenAddress - The token address of the asset to lock
    * @param {string} opts.tokenId - The token id of the asset to lock
    * @param {string} opts.chainId - The chain id of the asset to lock
    * @param {string} opts.eip - The EIP standard this follows
    * @returns {string}
    */
-  _lockedAssetIdentifier({
-    tokenStandard,
-    tokenAddress,
-    tokenId,
-    chainId,
-    eip = 'eip155',
-  }) {
-    return `${eip}:${chainId}/${tokenStandard}:${tokenAddress}/${tokenId}`;
+  _lockedAssetIdentifier({ tokenAddress, tokenId, chainId, eip = 'eip155' }) {
+    return `${eip}:${chainId}/${tokenAddress}/${tokenId}`;
   }
 }

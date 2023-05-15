@@ -386,7 +386,7 @@ export function checkIfLockedAsset(state, txData) {
     const tokenId = transactionData?.args?._tokenId?.toString();
 
     const regex = new RegExp(
-      `^eip155:${chainId}/ERC\\d+:${tokenAddress}/${tokenId || '\\d+'}$`,
+      `^eip155:${chainId}/${tokenAddress}/${tokenId || '\\d+'}$`,
       'iu',
     );
 

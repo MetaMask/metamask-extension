@@ -60,7 +60,7 @@ export default class ConfirmApproveContent extends Component {
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     showCustomizeNonceModal: PropTypes.func,
-    warning: PropTypes.string,
+    warning: PropTypes.string || PropTypes.node,
     txData: PropTypes.object,
     fromAddressIsLedger: PropTypes.bool,
     chainId: PropTypes.string,
@@ -585,7 +585,6 @@ export default class ConfirmApproveContent extends Component {
       renderSimulationFailureWarning,
     } = this.props;
     const { showFullTxDetails, setShowContractDetails } = this.state;
-
     return (
       <div
         className={classnames('confirm-approve-content', {

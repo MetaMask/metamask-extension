@@ -193,6 +193,7 @@ export default function ConfirmTokenTransactionBase({
       onEdit={onEdit}
       tokenAddress={tokenAddress}
       title={title}
+      tokenId={tokenId}
       subtitleComponent={subtitleComponent()}
       primaryTotalTextOverride={`${subtotalDisplay} + ${ethTransactionTotal} ${nativeCurrency}`}
       primaryTotalTextOverrideMaxAmount={`${subtotalDisplay} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}

@@ -17,7 +17,6 @@ import {
   DISPLAY,
   BLOCK_SIZES,
   BackgroundColor,
-  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -90,10 +89,15 @@ export default function NftDetails({ nft }) {
 
   // @ellul PULL OUT THE ID GENERATING LOGIC INTO A SHARED FUNCTION
   const isLockedAsset = useSelector((state) => {
-    const assetIdentifier = `eip155:${currentNetwork}/${standard}:${address}/${tokenId}`;
+    const assetIdentifier = `eip155:${currentNetwork}/${address}/${tokenId}`;
     const { lockedAssets, selectedAddress } = state.metamask;
+    const entry = Object.keys(lockedAssets?.[selectedAddress] || {}).find(
+      (key) => {
+        return key.toLowerCase() === assetIdentifier.toLowerCase();
+      },
+    );
 
-    return Boolean(lockedAssets?.[selectedAddress]?.[assetIdentifier]);
+    return Boolean(lockedAssets?.[selectedAddress]?.[entry]);
   });
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();

@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
+import { EVM, IInspectorReturn } from 'signature-inspection';
+import { Redirect } from 'react-router-dom';
 import LedgerInstructionField from '../ledger-instruction-field';
+
 import {
   sanitizeMessage,
   getURLHostName,
@@ -9,6 +12,7 @@ import {
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
@@ -36,8 +40,13 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+
+// eslint-disable-next-line import/no-duplicates
+import { BannerAlert } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/no-duplicates
 import { Icon, IconName, Text } from '../../component-library';
+
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 
@@ -82,6 +91,7 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
+    lockedAssets: PropTypes.array,
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
     conversionRate: PropTypes.number,
@@ -89,7 +99,7 @@ export default class SignatureRequest extends PureComponent {
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
     clearConfirmTransaction: PropTypes.func.isRequired,
-    history: PropTypes.object,
+    history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
@@ -187,7 +197,42 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      lockedAssets,
+      history,
     } = this.props;
+
+    const inspectorMsgType = [
+      'eth_sign',
+      'eth_signTypedData',
+      'eth_signTypedData_v3',
+      'eth_signTypedData_v4',
+      'personal_sign',
+    ].includes(txData.type)
+      ? 'OFFCHAIN_SIG'
+      : 'UNSIGNED_TRANSACTION';
+    const payload = {
+      method: [txData.type, txData.msgParams.version.toLowerCase()].join('_'),
+      params: [txData.msgParams.from, txData.msgParams.data],
+    };
+    let signatureInspectResult;
+    try {
+      signatureInspectResult = EVM.Inspector(inspectorMsgType, { payload });
+    } catch (e) {
+      console.log(e);
+    }
+
+    const lockedAssetsInSig = signatureInspectResult?.mutatedAddresses.reduce(
+      (acc, mutatedAddress) => {
+        const regex = new RegExp(`^eip155:${chainId}/${mutatedAddress}`, 'iu');
+        const asset = lockedAssets.find((assetId) => regex.test(assetId));
+
+        if (asset) {
+          acc.push(asset);
+        }
+        return acc;
+      },
+      [],
+    );
 
     const { t, trackEvent } = this.context;
     const {
@@ -244,13 +289,19 @@ export default class SignatureRequest extends PureComponent {
       });
     };
 
+    const onManageNft = () => {
+      const assetKey = lockedAssetsInSig[0].replace(`eip155:${chainId}/`, '');
+      const pathname = `${ASSET_ROUTE}/${assetKey}`;
+      history.push(pathname);
+    };
+
     const messageIsScrollable =
       this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
 
     const targetSubjectMetadata = txData.msgParams.origin
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
-
+    const isLocked = lockedAssetsInSig.length > 0;
     return (
       <div className="signature-request">
         <ConfirmPageContainerNavigation />
@@ -258,6 +309,16 @@ export default class SignatureRequest extends PureComponent {
           className="request-signature__account"
           data-testid="request-signature-account"
         >
+          {isLocked ? (
+            <BannerAlert
+              severity="warning"
+              title={t('lockedAssetTxWarning1')}
+              actionButtonLabel={t('lockedAssetTxWarning3')}
+              actionButtonOnClick={onManageNft}
+            >
+              {t('lockedAssetTxWarning2')}
+            </BannerAlert>
+          ) : null}
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
             accountName={name}
@@ -375,7 +436,8 @@ export default class SignatureRequest extends PureComponent {
           signAction={onSign}
           disabled={
             hardwareWalletRequiresConnection ||
-            (messageIsScrollable && !this.state.hasScrolledMessage)
+            (messageIsScrollable && !this.state.hasScrolledMessage) ||
+            isLocked
           }
         />
         {this.state.showContractDetails && (

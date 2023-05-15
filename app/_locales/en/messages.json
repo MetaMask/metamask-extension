@@ -1818,6 +1818,19 @@
     "message": "Unlock: $1",
     "description": "$1 is the name and tokenId of the NFT"
   },
+  "lockedAssetTxWarning1": {
+    "message": "A locked asset is being requested",
+    "description": "Is the bolded text in the warning message"
+  },
+  "lockedAssetTxWarning2": {
+    "message": "You can approve this request only after unlocking your requested asset.",
+    "description": "detailed warning message"
+  },
+  "lockedAssetTxWarning3": {
+    "message": "Manage my NFTs",
+    "description": "Is the link part warning message"
+  },
+
   "id": {
     "message": "Id"
   },
