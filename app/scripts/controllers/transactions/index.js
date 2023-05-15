@@ -2,7 +2,7 @@ import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
-import { ethErrors } from 'eth-rpc-errors';
+import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ApprovalType } from '@metamask/controller-utils';
@@ -789,7 +789,7 @@ export default class TransactionController extends EventEmitter {
    * @param transactionType
    * @param sendFlowHistory
    * @param actionId
-   * @returns {txMeta}
+   * @param options
    */
   async addUnapprovedTransaction(
     txMethodType,
@@ -798,6 +798,7 @@ export default class TransactionController extends EventEmitter {
     transactionType,
     sendFlowHistory = [],
     actionId,
+    options,
   ) {
     if (
       transactionType !== undefined &&
@@ -889,7 +890,35 @@ export default class TransactionController extends EventEmitter {
     this.emit('newUnapprovedTx', txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
-    this._requestApproval(txMeta);
+
+    if (transactionType === TransactionType.swapApproval) {
+      this.emit('newSwapApproval', txMeta);
+      txMeta = this.updateSwapApprovalTransaction(
+        txMeta.id,
+        options?.extraMeta,
+      );
+    } else if (transactionType === TransactionType.swap) {
+      this.emit('newSwap', txMeta);
+      txMeta = this.updateSwapTransaction(txMeta.id, options?.extraMeta);
+    }
+
+    if (options?.requireApproval === false) {
+      await this.updateAndApproveTransaction(txMeta, actionId);
+      return txMeta;
+    }
+
+    await this._requestApprovalWithRetry(
+      txMeta,
+      async (
+        { txMeta: updatedTxMeta, actionId: updatedActionId },
+        _retryCount,
+      ) => {
+        await this.updateAndApproveTransaction(updatedTxMeta, updatedActionId);
+      },
+      async () => {
+        await this.cancelTransaction(txMeta.id, actionId);
+      },
+    );
 
     return txMeta;
   }
@@ -1361,10 +1390,8 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {number} txId - the tx's Id
    * @param {string} actionId - actionId passed from UI
-   * @param opts - options object
-   * @param opts.hasApprovalRequest - whether the transaction has an approval request
    */
-  async approveTransaction(txId, actionId, { hasApprovalRequest = true } = {}) {
+  async approveTransaction(txId, actionId) {
     // TODO: Move this safety out of this function.
     // Since this transaction is async,
     // we need to keep track of what is currently being signed,
@@ -1389,9 +1416,6 @@ export default class TransactionController extends EventEmitter {
     try {
       // approve
       this.txStateManager.setTxStatusApproved(txId);
-      if (hasApprovalRequest) {
-        this._acceptApproval(txMeta);
-      }
       // get next nonce
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
@@ -1789,7 +1813,6 @@ export default class TransactionController extends EventEmitter {
   async cancelTransaction(txId, actionId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     this.txStateManager.setTxStatusRejected(txId);
-    this._rejectApproval(txMeta);
     this._trackTransactionMetricsEvent(
       txMeta,
       TransactionMetaMetricsEvent.rejected,
@@ -2662,6 +2685,40 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
+  // Approvals
+
+  async _requestApprovalWithRetry(txMeta, onApproval, onCancel) {
+    let success = false;
+    let approvalPromise = this._requestApproval(txMeta);
+    let retryCount = 0;
+
+    while (!success) {
+      let approvalResponse;
+
+      try {
+        approvalResponse = await approvalPromise;
+      } catch (error) {
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          await onCancel();
+          throw ethErrors.provider.userRejectedRequest();
+        }
+
+        throw error;
+      }
+
+      const { value, result } = approvalResponse;
+
+      try {
+        await onApproval(value, retryCount);
+        result.success();
+        success = true;
+      } catch (error) {
+        approvalPromise = result.error(error, { retry: true });
+        retryCount += 1;
+      }
+    }
+  }
+
   async _requestApproval(
     txMeta,
     { shouldShowRequest } = { shouldShowRequest: true },
@@ -2671,44 +2728,16 @@ export default class TransactionController extends EventEmitter {
     const type = ApprovalType.Transaction;
     const requestData = { txId: txMeta.id };
 
-    return this.messagingSystem
-      .call(
-        'ApprovalController:addRequest',
-        {
-          id,
-          origin,
-          type,
-          requestData,
-        },
-        shouldShowRequest,
-      )
-      .catch(() => {
-        // Intentionally ignored as promise not currently used
-      });
-  }
-
-  _acceptApproval(txMeta) {
-    const id = this._getApprovalId(txMeta);
-
-    try {
-      this.messagingSystem.call('ApprovalController:acceptRequest', id);
-    } catch (error) {
-      log.error('Failed to accept transaction approval request', error);
-    }
-  }
-
-  _rejectApproval(txMeta) {
-    const id = this._getApprovalId(txMeta);
-
-    try {
-      this.messagingSystem.call(
-        'ApprovalController:rejectRequest',
+    return this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
         id,
-        new Error('Rejected'),
-      );
-    } catch (error) {
-      log.error('Failed to reject transaction approval request', error);
-    }
+        origin,
+        type,
+        requestData,
+      },
+      shouldShowRequest,
+    );
   }
 
   _getApprovalId(txMeta) {

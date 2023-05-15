@@ -1272,6 +1272,14 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
+    this.txController.on('newSwapApproval', (txMeta) => {
+      this.swapsController.setApproveTxId(txMeta.id);
+    });
+
+    this.txController.on('newSwap', (txMeta) => {
+      this.swapsController.setTradeTxId(txMeta.id);
+    });
+
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
       NetworkControllerEventType.NetworkDidChange,
@@ -4261,9 +4269,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  resolvePendingApproval = (id, value) => {
+  resolvePendingApproval = async (id, value, options) => {
     try {
-      this.approvalController.accept(id, value);
+      await this.approvalController.accept(id, value, options);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
         throw exp;

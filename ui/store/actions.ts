@@ -105,6 +105,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { ethErrors } from 'eth-rpc-errors';
 
 export function goHome() {
   return {
@@ -1160,12 +1161,13 @@ export async function addUnapprovedTransaction(
   method: string,
   txParams: TxParams,
   type: TransactionType,
+  options?: { requireApproval?: boolean; extraMeta: Record<string, unknown> },
 ): Promise<TransactionMeta> {
   log.debug('background.addUnapprovedTransaction');
   const actionId = generateActionId();
   const txMeta = await submitRequestToBackground<TransactionMeta>(
     'addUnapprovedTransaction',
-    [method, txParams, ORIGIN_METAMASK, type, undefined, actionId],
+    [method, txParams, ORIGIN_METAMASK, type, undefined, actionId, options],
     actionId,
   );
   return txMeta;
@@ -1185,8 +1187,8 @@ export function updateAndApproveTx(
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
-        'updateAndApproveTransaction',
-        [txMeta, actionId],
+        'resolvePendingApproval',
+        [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
           dispatch(resetSendState());
@@ -1617,8 +1619,11 @@ export function cancelTx(
     return new Promise<void>((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
-        'cancelTransaction',
-        [txMeta.id, actionId],
+        'rejectPendingApproval',
+        [
+          String(txMeta.id),
+          ethErrors.provider.userRejectedRequest().serialize(),
+        ],
         (error) => {
           if (error) {
             reject(error);
@@ -3581,24 +3586,6 @@ export function setSwapsQuotesPollingLimitEnabled(
     await submitRequestToBackground('setSwapsQuotesPollingLimitEnabled', [
       quotesPollingLimitEnabled,
     ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setTradeTxId(
-  tradeTxId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setTradeTxId', [tradeTxId]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setApproveTxId(
-  approveTxId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setApproveTxId', [approveTxId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
