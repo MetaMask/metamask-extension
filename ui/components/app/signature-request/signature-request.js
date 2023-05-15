@@ -33,7 +33,6 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
-import SiteOrigin from '../../ui/site-origin';
 import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -60,16 +59,17 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   BUTTON_VARIANT,
   Button,
+  TagUrl,
+  Text,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
-  Text,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 import Box from '../../ui/box/box';
-///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
@@ -299,11 +299,9 @@ const SignatureRequest = ({
           ///: END:ONLY_INCLUDE_IN
         }
         <div className="signature-request__origin">
-          <SiteOrigin
-            siteOrigin={origin}
-            iconSrc={targetSubjectMetadata?.iconUrl}
-            iconName={getURLHostName(origin) || origin}
-            chip
+          <TagUrl
+            label={getURLHostName(origin) || origin}
+            src={targetSubjectMetadata?.iconUrl}
           />
         </div>
         <Text
