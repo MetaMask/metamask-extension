@@ -637,10 +637,16 @@ export class NetworkController extends EventEmitter {
           isPlainObject(responseBody) &&
           responseBody.error === INFURA_BLOCKED_KEY
         ) {
+          log.warn('NetworkController - network blocked', error);
           networkStatus = NetworkStatus.Blocked;
         } else if (error.code === errorCodes.rpc.internal) {
+          log.warn(
+            'NetworkController - could not determine network status',
+            error,
+          );
           networkStatus = NetworkStatus.Unknown;
         } else {
+          log.warn('NetworkController - network unavailable', error);
           networkStatus = NetworkStatus.Unavailable;
         }
       } else {
