@@ -7,21 +7,22 @@ import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/permissions';
+import { nameLookupEndowmentBuilder } from './name-lookup';
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
  * specifications.
  */
 export const buildSnapEndowmentSpecifications = () =>
-  Object.values(endowmentPermissionBuilders).reduce(
-    (allSpecifications, { targetKey, specificationBuilder }) => {
-      if (!Object.keys(ExcludedSnapEndowments).includes(targetKey)) {
-        allSpecifications[targetKey] = specificationBuilder();
-      }
-      return allSpecifications;
-    },
-    {},
-  );
+  Object.values({
+    ...endowmentPermissionBuilders,
+    'endowment:name-lookup': nameLookupEndowmentBuilder,
+  }).reduce((allSpecifications, { targetKey, specificationBuilder }) => {
+    if (!Object.keys(ExcludedSnapEndowments).includes(targetKey)) {
+      allSpecifications[targetKey] = specificationBuilder();
+    }
+    return allSpecifications;
+  }, {});
 
 /**
  * @param {Record<string, Function>} hooks - The hooks for the Snap
