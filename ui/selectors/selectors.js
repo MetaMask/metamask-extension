@@ -63,7 +63,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -551,7 +551,7 @@ export function getUnapprovedConfirmations(state) {
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
   return unapprovedConfirmations.filter((approval) =>
-    TEMPLATED_CONFIRMATION_MESSAGE_TYPES.includes(approval.type),
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
 }
 

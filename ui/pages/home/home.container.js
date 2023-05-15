@@ -22,7 +22,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
@@ -36,7 +35,7 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  hasPendingApprovalsSelector,
+  hasPendingApprovals,
 } from '../../selectors';
 
 import {
@@ -71,6 +70,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -121,7 +121,7 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchAssetPendingApprovals = hasPendingApprovalsSelector(
+  const hasWatchAssetPendingApprovals = hasPendingApprovals(
     state,
     ApprovalType.WatchAsset,
   );
@@ -130,7 +130,7 @@ const mapStateToProps = (state) => {
     forgottenPassword,
     hasWatchAssetPendingApprovals,
     swapsEnabled,
-    unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
+    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,

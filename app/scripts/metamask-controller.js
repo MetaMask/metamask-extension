@@ -1210,6 +1210,8 @@ export default class MetamaskController extends EventEmitter {
           ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      getCurrentChainId: () =>
+        this.networkController.store.getState().providerConfig.chainId,
     });
 
     this.signatureController.hub.on('cancelWithReason', (message, reason) => {
