@@ -864,10 +864,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-flask ./dist
+          command: mv ./dist-test ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-flask ./builds
+          command: mv ./builds-test ./builds
       - run:
           name: test:e2e:firefox:snaps
           command: |
