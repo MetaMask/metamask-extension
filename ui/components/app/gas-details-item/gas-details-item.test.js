@@ -110,4 +110,43 @@ describe('GasDetailsItem', () => {
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
+
+  it('should render gas fee details if maxPriorityFeePerGas is 0', async () => {
+    render({
+      contextProps: {
+        transaction: {
+          txParams: {
+            gas: '0x5208',
+            maxFeePerGas: '0x59682f10',
+            maxPriorityFeePerGas: '0',
+          },
+          simulationFails: false,
+          userFeeLevel: 'low',
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+    });
+  });
+
+  it('should render gas fee details if maxPriorityFeePerGas is undefined', async () => {
+    render({
+      contextProps: {
+        transaction: {
+          txParams: {
+            gas: '0x5208',
+            maxFeePerGas: '0x59682f10',
+          },
+          simulationFails: false,
+          userFeeLevel: 'low',
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+    });
+  });
 });
