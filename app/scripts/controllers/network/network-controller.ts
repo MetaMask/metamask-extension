@@ -10,10 +10,11 @@ import {
 import EthQuery from 'eth-query';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { v4 as uuid } from 'uuid';
-import { Hex, isPlainObject } from '@metamask/utils';
+import { Hex, isPlainObject, isStrictHexString } from '@metamask/utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
 import { PollingBlockTracker } from 'eth-block-tracker';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   INFURA_PROVIDER_TYPES,
   INFURA_BLOCKED_KEY,
@@ -266,7 +267,7 @@ type NetworkConfigurations = Record<
  * The state that NetworkController holds after combining its individual stores.
  */
 export type NetworkControllerState = {
-  provider: ProviderConfiguration;
+  providerConfig: ProviderConfiguration;
   networkId: NetworkIdState;
   networkStatus: NetworkStatus;
   networkDetails: NetworkDetails;
@@ -279,7 +280,7 @@ export type NetworkControllerState = {
 export type NetworkControllerOptions = {
   messenger: NetworkControllerMessenger;
   state?: {
-    provider?: ProviderConfiguration;
+    providerConfig?: ProviderConfiguration;
     networkDetails?: NetworkDetails;
     networkConfigurations?: NetworkConfigurations;
   };
@@ -301,16 +302,22 @@ function isErrorWithCode(error: unknown): error is { code: string | number } {
 }
 
 /**
- * Asserts that the given value is a network ID, i.e., that it is a decimal
- * number represented as a string.
+ * Convert the given value into a valid network ID. The ID is accepted
+ * as either a number, a decimal string, or a 0x-prefixed hex string.
  *
- * @param value - The value to check.
+ * @param value - The network ID to convert, in an unknown format.
+ * @returns A valid network ID (as a decimal string)
+ * @throws If the given value cannot be safely parsed.
  */
-function assertNetworkId(value: any): asserts value is NetworkId {
-  assert(
-    /^\d+$/u.test(value) && !Number.isNaN(Number(value)),
-    'value is not a number',
-  );
+function convertNetworkId(value: unknown): NetworkId {
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return `${value}`;
+  } else if (isStrictHexString(value)) {
+    return hexToDecimal(value) as NetworkId;
+  } else if (typeof value === 'string' && /^\d+$/u.test(value)) {
+    return value as NetworkId;
+  }
+  throw new Error(`Cannot parse as a valid network ID: '${value}'`);
 }
 
 /**
@@ -386,7 +393,7 @@ function buildDefaultNetworkConfigurationsState(): NetworkConfigurations {
  */
 function buildDefaultState() {
   return {
-    provider: buildDefaultProviderConfigState(),
+    providerConfig: buildDefaultProviderConfigState(),
     networkId: buildDefaultNetworkIdState(),
     networkStatus: buildDefaultNetworkStatusState(),
     networkDetails: buildDefaultNetworkDetailsState(),
@@ -477,7 +484,7 @@ export class NetworkController extends EventEmitter {
       ...buildDefaultState(),
       ...state,
     });
-    this.#previousProviderConfig = this.store.getState().provider;
+    this.#previousProviderConfig = this.store.getState().providerConfig;
 
     // provider and block tracker
     this.#provider = null;
@@ -508,7 +515,7 @@ export class NetworkController extends EventEmitter {
    * using the provider to gather details about the network.
    */
   async initializeProvider(): Promise<void> {
-    const { type, rpcUrl, chainId } = this.store.getState().provider;
+    const { type, rpcUrl, chainId } = this.store.getState().providerConfig;
     this.#configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
   }
@@ -575,7 +582,7 @@ export class NetworkController extends EventEmitter {
    * blocking requests, or if the network is not Infura-supported.
    */
   async lookupNetwork(): Promise<void> {
-    const { chainId, type } = this.store.getState().provider;
+    const { chainId, type } = this.store.getState().providerConfig;
     const { provider } = this.getProviderAndBlockTracker();
     let networkChanged = false;
     let networkId: NetworkIdState = null;
@@ -619,17 +626,18 @@ export class NetworkController extends EventEmitter {
         this.#determineEIP1559Compatibility(provider),
       ]);
       const possibleNetworkId = results[0];
-      assertNetworkId(possibleNetworkId);
-      networkId = possibleNetworkId;
+      networkId = convertNetworkId(possibleNetworkId);
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
-      if (isErrorWithCode(error) && isErrorWithMessage(error)) {
+      if (isErrorWithCode(error)) {
         let responseBody;
-        try {
-          responseBody = JSON.parse(error.message);
-        } catch {
-          // error.message must not be JSON
+        if (isInfura && isErrorWithMessage(error)) {
+          try {
+            responseBody = JSON.parse(error.message);
+          } catch {
+            // error.message must not be JSON
+          }
         }
 
         if (
@@ -754,7 +762,7 @@ export class NetworkController extends EventEmitter {
    * Re-initializes the provider and block tracker for the current network.
    */
   async resetConnection() {
-    await this.#setProviderConfig(this.store.getState().provider);
+    await this.#setProviderConfig(this.store.getState().providerConfig);
   }
 
   /**
@@ -765,7 +773,7 @@ export class NetworkController extends EventEmitter {
   async rollbackToPreviousProvider() {
     const config = this.#previousProviderConfig;
     this.store.updateState({
-      provider: config,
+      providerConfig: config,
     });
     await this.#switchNetwork(config);
   }
@@ -850,8 +858,8 @@ export class NetworkController extends EventEmitter {
    * @param providerConfig - The provider configuration.
    */
   async #setProviderConfig(providerConfig: ProviderConfiguration) {
-    this.#previousProviderConfig = this.store.getState().provider;
-    this.store.updateState({ provider: providerConfig });
+    this.#previousProviderConfig = this.store.getState().providerConfig;
+    this.store.updateState({ providerConfig });
     await this.#switchNetwork(providerConfig);
   }
 

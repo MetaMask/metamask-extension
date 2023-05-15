@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
-
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   getURLHostName,
@@ -72,7 +71,7 @@ export default class SignatureRequestOriginal extends Component {
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
-    provider: PropTypes.object,
+    providerConfig: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
@@ -83,8 +82,8 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
+    const { providerConfig } = this.props;
+    const providerName = providerConfig.type;
     const { t } = this.context;
 
     switch (providerName) {
@@ -99,7 +98,7 @@ export default class SignatureRequestOriginal extends Component {
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
-        return provider.nickname || t('unknownNetwork');
+        return providerConfig.nickname || t('unknownNetwork');
     }
   }
 

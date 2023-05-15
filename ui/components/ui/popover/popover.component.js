@@ -57,6 +57,7 @@ const Popover = ({
   footerClassName,
   onBack,
   onClose,
+  onScroll,
   className,
   contentClassName,
   showArrow,
@@ -133,6 +134,7 @@ const Popover = ({
         {children ? (
           <Box
             className={classnames('popover-content', contentClassName)}
+            onScroll={onScroll}
             {...{ ...defaultContentProps, ...contentProps }}
           >
             {children}
@@ -201,6 +203,10 @@ Popover.propTypes = {
    * onClose handler
    */
   onClose: PropTypes.func,
+  /**
+   * onScroll handler
+   */
+  onScroll: PropTypes.func,
   CustomBackground: PropTypes.func,
   /**
    * Add custom CSS class for content

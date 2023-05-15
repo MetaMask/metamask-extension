@@ -15,13 +15,19 @@
         "fs": true,
         "module": true,
         "path": true,
+        "process": true,
         "url": true,
-        "util": true
+        "util": true,
+        "v8": true
       },
       "globals": {
         "console.error": true,
         "console.log": true,
-        "process": true
+        "process.env.BABEL_ENV": true,
+        "process.env.BABEL_SHOW_CONFIG_FOR": true,
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true,
+        "process.versions.pnp": true
       },
       "packages": {
         "$root$": true,
@@ -55,17 +61,8 @@
         "define": true
       },
       "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -75,7 +72,8 @@
       "packages": {
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -148,7 +146,7 @@
     },
     "@babel/core>@babel/types": {
       "globals": {
-        "console.trace": true,
+        "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
@@ -1301,6 +1299,122 @@
         "gulp-sass>picocolors": true
       }
     },
+    "babel-plugin-module-resolver": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.cwd": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>find-babel-config": true,
+        "babel-plugin-module-resolver>glob": true,
+        "babel-plugin-module-resolver>pkg-up": true,
+        "babel-plugin-module-resolver>reselect": true,
+        "brfs>resolve": true
+      }
+    },
+    "babel-plugin-module-resolver>find-babel-config": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "depcheck>json5": true,
+        "nyc>find-up>path-exists": true
+      }
+    },
+    "babel-plugin-module-resolver>glob": {
+      "builtin": {
+        "assert": true,
+        "events.EventEmitter": true,
+        "fs": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.resolve": true,
+        "util": true
+      },
+      "globals": {
+        "console.error": true,
+        "process.cwd": true,
+        "process.nextTick": true,
+        "process.platform": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>glob>minimatch": true,
+        "nyc>glob>fs.realpath": true,
+        "nyc>glob>inflight": true,
+        "pump>once": true,
+        "pumpify>inherits": true
+      }
+    },
+    "babel-plugin-module-resolver>glob>minimatch": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>glob>minimatch>brace-expansion": true
+      }
+    },
+    "babel-plugin-module-resolver>glob>minimatch>brace-expansion": {
+      "packages": {
+        "stylelint>balanced-match": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up": {
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up": {
+      "builtin": {
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path": {
+      "builtin": {
+        "path.resolve": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate": true,
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path>path-exists": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate": {
+      "packages": {
+        "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate>p-limit": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path>p-locate>p-limit": {
+      "packages": {
+        "nyc>find-up>locate-path>p-locate>p-limit>p-try": true
+      }
+    },
+    "babel-plugin-module-resolver>pkg-up>find-up>locate-path>path-exists": {
+      "builtin": {
+        "fs.access": true,
+        "fs.accessSync": true
+      }
+    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -1419,7 +1533,7 @@
         "process.getuid": true,
         "process.nextTick": true,
         "process.platform": true,
-        "process.versions": true
+        "process.versions.pnp": true
       },
       "packages": {
         "brfs>resolve>path-parse": true,
@@ -2118,8 +2232,7 @@
     },
     "depcheck>@babel/traverse": {
       "globals": {
-        "console.log": true,
-        "console.trace": true
+        "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
@@ -2586,6 +2699,7 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils": {
       "builtin": {
+        "assert": true,
         "path": true
       },
       "packages": {
@@ -2595,11 +2709,12 @@
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true,
+        "eslint>@eslint-community/eslint-utils": true,
         "eslint>eslint-scope": true,
         "eslint>eslint-utils": true,
+        "semver": true,
         "webpack>eslint-scope": true
       }
     },
@@ -2622,7 +2737,9 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
       "packages": {
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true,
+        "eslint>@eslint-community/eslint-utils": true,
+        "semver": true
       }
     },
     "eslint-plugin-jsdoc": {
@@ -6429,14 +6546,12 @@
         "Element": true,
         "HTMLElement": true,
         "Intl": true,
-        "PerformanceObserver": true,
         "SVGElement": true,
         "WorkerGlobalScope": true,
         "YAML_SILENCE_DEPRECATION_WARNINGS": true,
         "YAML_SILENCE_WARNINGS": true,
         "__dirname": true,
         "__filename": true,
-        "__magic__": true,
         "assertDoc": true,
         "atob": true,
         "btoa": true,
@@ -6444,8 +6559,6 @@
         "console": true,
         "define": true,
         "document": true,
-        "globalThis": "write",
-        "localStorage": true,
         "location": true,
         "navigator": true,
         "new": true,
@@ -6692,6 +6805,9 @@
       }
     },
     "semver": {
+      "builtin": {
+        "util.inspect": true
+      },
       "globals": {
         "console.error": true,
         "process": true
@@ -7255,7 +7371,7 @@
     },
     "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": {
       "packages": {
-        "stylelint>postcss-html>htmlparser2>domutils>dom-serializer>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
         "stylelint>postcss-html>htmlparser2>entities": true
       }
     },
@@ -7883,14 +7999,7 @@
       },
       "globals": {
         "console.warn": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
-        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
-        "process.env.BROWSERSLIST_ENV": true,
-        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
-        "process.env.BROWSERSLIST_STATS": true,
-        "process.env.NODE_ENV": true,
+        "process.env": true,
         "process.versions.node": true
       },
       "packages": {

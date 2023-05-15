@@ -105,8 +105,8 @@
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+@import '../institutional/compliance-details/index';
+@import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IN

@@ -3,15 +3,18 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, matchPath } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  BUILD_QUOTE_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   DEFAULT_ROUTE,
+  SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
 
 import {
@@ -25,7 +28,9 @@ import {
 import {
   AvatarNetwork,
   ButtonIcon,
+  ButtonIconSize,
   IconName,
+  IconSize,
   PickerNetwork,
 } from '../../component-library';
 
@@ -51,8 +56,9 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getSendStage, SEND_STAGES } from '../../../ducks/send';
 
-export const AppHeader = ({ onClick }) => {
+export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
@@ -85,6 +91,33 @@ export const AppHeader = ({ onClick }) => {
     .querySelector('[dir]')
     ?.getAttribute('dir');
 
+  // Disable the network and account pickers if the user is in
+  // a critical flow
+  const sendStage = useSelector(getSendStage);
+  const isConfirmationPage = Boolean(
+    matchPath(location.pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE,
+      exact: false,
+    }),
+  );
+  const isTransactionEditPage = [
+    SEND_STAGES.EDIT,
+    SEND_STAGES.DRAFT,
+    SEND_STAGES.ADD_RECIPIENT,
+  ].includes(sendStage);
+  const isSwapsPage = Boolean(
+    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+  );
+  const isSwapsBuildQuotePage = Boolean(
+    matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
+  );
+
+  const disablePickers =
+    isConfirmationPage ||
+    isTransactionEditPage ||
+    (isSwapsPage && !isSwapsBuildQuotePage);
+  const disableNetworkPicker = isSwapsPage || disablePickers;
+
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
     dispatch(toggleNetworkMenu());
@@ -111,12 +144,7 @@ export const AppHeader = ({ onClick }) => {
         >
           <MetafoxLogo
             unsetIconHeight
-            onClick={async () => {
-              if (onClick) {
-                await onClick();
-              }
-              history.push(DEFAULT_ROUTE);
-            }}
+            onClick={async () => history.push(DEFAULT_ROUTE)}
           />
         </Box>
       ) : null}
@@ -143,28 +171,36 @@ export const AppHeader = ({ onClick }) => {
               width={BLOCK_SIZES.FULL}
               backgroundColor={BackgroundColor.backgroundDefault}
               padding={2}
+              paddingLeft={4}
+              paddingRight={4}
               gap={2}
             >
               <AvatarNetwork
-                margin={2}
                 className="multichain-app-header__contents--avatar-network"
                 ref={menuRef}
                 as="button"
-                aria-label="Network Menu" // TODO: needs locale
+                aria-label={t('networkMenu')}
                 padding={0}
                 name={currentNetwork?.nickname}
                 src={currentNetwork?.rpcPrefs?.imageUrl}
                 size={Size.SM}
                 onClick={networkOpenCallback}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
+                disabled={disableNetworkPicker}
               />
-              <PickerNetwork
-                margin={2}
-                label={currentNetwork?.nickname}
-                src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={networkOpenCallback}
-                display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
-              />
+              {popupStatus ? null : (
+                <div>
+                  <PickerNetwork
+                    margin={2}
+                    label={currentNetwork?.nickname}
+                    src={currentNetwork?.rpcPrefs?.imageUrl}
+                    onClick={networkOpenCallback}
+                    display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+                    className="multichain-app-header__contents__network-picker"
+                    disabled={disableNetworkPicker}
+                  />
+                </div>
+              )}
               {showProductTour &&
               popupStatus &&
               multichainProductTourStep === 1 ? (
@@ -197,100 +233,109 @@ export const AppHeader = ({ onClick }) => {
                     },
                   });
                 }}
+                disabled={disablePickers}
               />
               <Box
                 display={DISPLAY.FLEX}
                 alignItems={AlignItems.center}
-                justifyContent={JustifyContent.spaceBetween}
+                justifyContent={JustifyContent.flexEnd}
               >
-                {showStatus ? (
-                  <Box ref={menuRef}>
-                    <ConnectedStatusIndicator
+                <Box display={DISPLAY.FLEX} gap={4}>
+                  {showStatus ? (
+                    <Box ref={menuRef}>
+                      <ConnectedStatusIndicator
+                        onClick={() => {
+                          history.push(CONNECTED_ACCOUNTS_ROUTE);
+                          trackEvent({
+                            event: MetaMetricsEventName.NavConnectedSitesOpened,
+                            category: MetaMetricsEventCategory.Navigation,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : null}{' '}
+                  {popupStatus && multichainProductTourStep === 2 ? (
+                    <ProductTour
+                      className="multichain-app-header__product-tour"
+                      anchorElement={menuRef.current}
+                      closeMenu={() => setAccountOptionsMenuOpen(false)}
+                      prevIcon
+                      title={t('permissionsTitle')}
+                      description={t('permissionsTourDescription')}
+                      currentStep="2"
+                      totalSteps="3"
+                      prevClick={() =>
+                        setMultichainProductTourStep(
+                          multichainProductTourStep - 1,
+                        )
+                      }
+                      onClick={() =>
+                        setMultichainProductTourStep(
+                          multichainProductTourStep + 1,
+                        )
+                      }
+                      positionObj={
+                        productTourDirection === 'rtl' ? '76%' : '12%'
+                      }
+                      productTourDirection={productTourDirection}
+                    />
+                  ) : null}
+                  <Box
+                    ref={menuRef}
+                    display={DISPLAY.FLEX}
+                    justifyContent={JustifyContent.flexEnd}
+                    width={BLOCK_SIZES.FULL}
+                  >
+                    <ButtonIcon
+                      iconName={IconName.MoreVertical}
+                      data-testid="account-options-menu-button"
+                      ariaLabel={t('accountOptions')}
                       onClick={() => {
-                        history.push(CONNECTED_ACCOUNTS_ROUTE);
                         trackEvent({
-                          event: MetaMetricsEventName.NavConnectedSitesOpened,
+                          event: MetaMetricsEventName.NavAccountMenuOpened,
                           category: MetaMetricsEventCategory.Navigation,
+                          properties: {
+                            location: 'Home',
+                          },
                         });
+                        setAccountOptionsMenuOpen(true);
                       }}
+                      size={ButtonIconSize.Sm}
+                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
-                ) : null}{' '}
-                {popupStatus && multichainProductTourStep === 2 ? (
+                </Box>
+                {accountOptionsMenuOpen ? (
+                  <GlobalMenu
+                    anchorElement={menuRef.current}
+                    closeMenu={() => setAccountOptionsMenuOpen(false)}
+                  />
+                ) : null}
+                {showProductTour &&
+                popupStatus &&
+                multichainProductTourStep === 3 ? (
                   <ProductTour
                     className="multichain-app-header__product-tour"
                     anchorElement={menuRef.current}
                     closeMenu={() => setAccountOptionsMenuOpen(false)}
                     prevIcon
-                    title={t('permissionsTitle')}
-                    description={t('permissionsTourDescription')}
-                    currentStep="2"
+                    title={t('globalTitle')}
+                    description={t('globalTourDescription')}
+                    currentStep="3"
                     totalSteps="3"
                     prevClick={() =>
                       setMultichainProductTourStep(
                         multichainProductTourStep - 1,
                       )
                     }
-                    onClick={() =>
-                      setMultichainProductTourStep(
-                        multichainProductTourStep + 1,
-                      )
-                    }
-                    positionObj={productTourDirection === 'rtl' ? '74%' : '12%'}
+                    onClick={() => {
+                      hideProductTour();
+                    }}
+                    positionObj={productTourDirection === 'rtl' ? '88%' : '0%'}
                     productTourDirection={productTourDirection}
                   />
                 ) : null}
-                <Box
-                  ref={menuRef}
-                  display={DISPLAY.FLEX}
-                  justifyContent={JustifyContent.flexEnd}
-                  width={BLOCK_SIZES.FULL}
-                >
-                  <ButtonIcon
-                    iconName={IconName.MoreVertical}
-                    data-testid="account-options-menu-button"
-                    ariaLabel={t('accountOptions')}
-                    onClick={() => {
-                      trackEvent({
-                        event: MetaMetricsEventName.NavAccountMenuOpened,
-                        category: MetaMetricsEventCategory.Navigation,
-                        properties: {
-                          location: 'Home',
-                        },
-                      });
-                      setAccountOptionsMenuOpen(true);
-                    }}
-                  />
-                </Box>
               </Box>
-              {accountOptionsMenuOpen ? (
-                <GlobalMenu
-                  anchorElement={menuRef.current}
-                  closeMenu={() => setAccountOptionsMenuOpen(false)}
-                />
-              ) : null}
-              {showProductTour &&
-              popupStatus &&
-              multichainProductTourStep === 3 ? (
-                <ProductTour
-                  className="multichain-app-header__product-tour"
-                  anchorElement={menuRef.current}
-                  closeMenu={() => setAccountOptionsMenuOpen(false)}
-                  prevIcon
-                  title={t('globalTitle')}
-                  description={t('globalTourDescription')}
-                  currentStep="3"
-                  totalSteps="3"
-                  prevClick={() =>
-                    setMultichainProductTourStep(multichainProductTourStep - 1)
-                  }
-                  onClick={() => {
-                    hideProductTour();
-                  }}
-                  positionObj={productTourDirection === 'rtl' ? '89%' : '0%'}
-                  productTourDirection={productTourDirection}
-                />
-              ) : null}
             </Box>
           ) : (
             <Box
@@ -305,18 +350,17 @@ export const AppHeader = ({ onClick }) => {
               padding={2}
               gap={2}
             >
-              <PickerNetwork
-                label={currentNetwork?.nickname}
-                src={currentNetwork?.rpcPrefs?.imageUrl}
-                onClick={() => dispatch(toggleNetworkMenu())}
-                className="multichain-app-header__contents__network-picker"
-              />
+              <div>
+                <PickerNetwork
+                  label={currentNetwork?.nickname}
+                  src={currentNetwork?.rpcPrefs?.imageUrl}
+                  onClick={() => dispatch(toggleNetworkMenu())}
+                  className="multichain-app-header__contents__network-picker"
+                />
+              </div>
               <MetafoxLogo
                 unsetIconHeight
                 onClick={async () => {
-                  if (onClick) {
-                    await onClick();
-                  }
                   history.push(DEFAULT_ROUTE);
                 }}
               />
@@ -330,7 +374,7 @@ export const AppHeader = ({ onClick }) => {
 
 AppHeader.propTypes = {
   /**
-   * The onClick handler to be passed to the MetaMask Logo in the App Header
+   * The location object for the application
    */
-  onClick: PropTypes.func,
+  location: PropTypes.object,
 };
