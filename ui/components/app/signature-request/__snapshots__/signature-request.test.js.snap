@@ -177,28 +177,31 @@ exports[`Signature Request Component render should match snapshot when we are us
         </div>
       </div>
       <h3
-        class="box box--margin-top-4 box--margin-bottom-1 box--flex-direction-row typography signature-request__content__title typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+        boxprops="[object Object]"
+        class="box mm-text signature-request__content__title mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
       >
         Signature request
       </h3>
-      <h6
-        class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      <h7
+        class="box mm-text request-signature__content__subtitle mm-text--body-xs mm-text--text-align-center box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
-      </h6>
+      </h7>
       <div>
-        <a
-          class="button btn-link signature-request-content__verify-contract-details"
+        <button
+          class="box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
           data-testid="verify-contract-details"
-          role="button"
-          tabindex="0"
         >
-          <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
+          <span
+            class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
           >
-            Verify third-party details
-          </h6>
-        </a>
+            <h7
+              class="box mm-text mm-text--body-xs box--flex-direction-row box--color-primary-default"
+            >
+              Verify third-party details
+            </h7>
+          </span>
+        </button>
       </div>
     </div>
     <div
@@ -743,14 +746,13 @@ exports[`Signature Request Component render should match snapshot when we are us
         </button>
       </footer>
     </div>
-    <a
-      class="button btn-link signature-request__reject-all-button"
+    <button
+      class="box mm-text mm-button-base mm-button-base--size-md signature-request__reject-all-button mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
       data-testid="signature-request-reject-all"
-      role="button"
-      tabindex="0"
+      type="link"
     >
       Reject 2 requests
-    </a>
+    </button>
   </div>
 </div>
 `;
@@ -932,28 +934,31 @@ exports[`Signature Request Component render should match snapshot when we want t
         </div>
       </div>
       <h3
-        class="box box--margin-top-4 box--margin-bottom-1 box--flex-direction-row typography signature-request__content__title typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+        boxprops="[object Object]"
+        class="box mm-text signature-request__content__title mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
       >
         Signature request
       </h3>
-      <h6
-        class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      <h7
+        class="box mm-text request-signature__content__subtitle mm-text--body-xs mm-text--text-align-center box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
-      </h6>
+      </h7>
       <div>
-        <a
-          class="button btn-link signature-request-content__verify-contract-details"
+        <button
+          class="box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
           data-testid="verify-contract-details"
-          role="button"
-          tabindex="0"
         >
-          <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
+          <span
+            class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
           >
-            Verify third-party details
-          </h6>
-        </a>
+            <h7
+              class="box mm-text mm-text--body-xs box--flex-direction-row box--color-primary-default"
+            >
+              Verify third-party details
+            </h7>
+          </span>
+        </button>
       </div>
     </div>
     <div
@@ -1498,14 +1503,13 @@ exports[`Signature Request Component render should match snapshot when we want t
         </button>
       </footer>
     </div>
-    <a
-      class="button btn-link signature-request__reject-all-button"
+    <button
+      class="box mm-text mm-button-base mm-button-base--size-md signature-request__reject-all-button mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
       data-testid="signature-request-reject-all"
-      role="button"
-      tabindex="0"
+      type="link"
     >
       Reject 2 requests
-    </a>
+    </button>
   </div>
 </div>
 `;

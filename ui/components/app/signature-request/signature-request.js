@@ -49,23 +49,25 @@ import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banne
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Typography from '../../ui/typography';
-import Button from '../../ui/button';
 import {
-  FontWeight,
   TextAlign,
   TextColor,
-  TypographyVariant,
+  TextVariant,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   DISPLAY,
   BLOCK_SIZES,
-  TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Icon,
+  IconName,
+  Text,
+} from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 
@@ -304,41 +306,42 @@ const SignatureRequest = ({
             chip
           />
         </div>
-
-        <Typography
+        <Text
           className="signature-request__content__title"
-          variant={TypographyVariant.H3}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.bodySmBold}
           boxProps={{
             marginTop: 4,
           }}
+          as="h3"
         >
           {t('sigRequest')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="request-signature__content__subtitle"
-          variant={TypographyVariant.H7}
+          variant={TextVariant.bodyXs}
           color={TextColor.textAlternative}
-          align={TextAlign.Center}
+          textAlign={TextAlign.Center}
           margin={12}
           marginTop={3}
+          as="h7"
         >
           {t('signatureRequestGuidance')}
-        </Typography>
+        </Text>
         {verifyingContract ? (
           <div>
             <Button
-              type="link"
+              variant={BUTTON_VARIANT.LINK}
               onClick={() => setShowContractDetails(true)}
               className="signature-request-content__verify-contract-details"
               data-testid="verify-contract-details"
             >
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodyXs}
                 color={TextColor.primaryDefault}
+                as="h7"
               >
                 {t('verifyContractDetails')}
-              </Typography>
+              </Text>
             </Button>
           </div>
         ) : null}
