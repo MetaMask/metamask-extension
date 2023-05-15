@@ -50,6 +50,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.16.0-flask.1/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -101,6 +102,7 @@ features:
       - ALLOW_LOCAL_SNAPS
       # Whether to verify that a snap can be installed using an allow list
       - REQUIRE_SNAPS_ALLOWLIST
+      - IFRAME_EXECUTION_ENVIRONMENT_URL
     assets:
       - ./{app,shared,ui}/**/snaps/**
   desktop:
