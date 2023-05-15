@@ -4521,6 +4521,9 @@
   "token": {
     "message": "Token"
   },
+  "tokens": {
+    "message": "Tokens"
+  },
   "tokenAddress": {
     "message": "Token address"
   },
