@@ -181,40 +181,85 @@ import { Popover } from '../../ui/component-library';
 
 ### Esc Key Close
 
-TODO: Add description
+`escKeyClose` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
 
 ```jsx
 import { Popover } from '../../ui/component-library';
 
-<Popover>ToDO:</Popover>;
+const [isOpen, setIsOpen] = useState(false);
+
+const handleClick = () => {
+  setIsOpen(!isOpen);
+};
+
+<Popover escKeyClose={() => setIsOpen(false)}>Press esc key to close</Popover>;
 ```
 
 ### With PopoverHeader
 
-TODO: Add description
+Using the `PopoverHeader` component to add a header to the `Popover` component. The `PopoverHeader` is used to show common elements such as title, back button, and close button.
 
 ```jsx
 import { Popover } from '../../ui/component-library';
 
-<Popover>ToDO:</Popover>;
+<Popover>
+  <PopoverHeader
+    onClose={() => console.log('close')}
+    onBack={() => console.log('back')}
+  >
+    Popover Title
+  </PopoverHeader>
+  Title should be short and concise. It should be sentence case and no period.
+</Popover>;
 ```
 
 ### Mouse Event Demo
 
-TODO: Add description
+Not built into the `Popover` component, but a demo of `onMouseEnter` and `onMouseLeave` events on the reference element to control the visibility of the popover
 
 ```jsx
 import { Popover } from '../../ui/component-library';
 
-<Popover>ToDO:</Popover>;
+const [isOpen, setIsOpen] = useState(false);
+
+const handleMouseEnter = () => {
+  setIsOpen(true);
+};
+
+const handleMouseLeave = () => {
+  setIsOpen(false);
+};
+
+<>
+  <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    Hover
+  </Box>
+  <Popover isOpen={isOpen}>onMouseEnter and onMouseLeave</Popover>
+</>;
 ```
 
 ### On Focus/Blur Demo
 
-TODO: Add description
+Not built into the `Popover` component, but a demo of `onFocus` and `onBlur` events on the reference element to control the visibility of the popover
 
 ```jsx
 import { Popover } from '../../ui/component-library';
 
-<Popover>ToDO:</Popover>;
+const [isOpen, setIsOpen] = useState(false);
+
+// Example of how open popover with focus and pair with onBlur to close popover
+const handleFocus = () => {
+  setIsOpen(true);
+};
+
+const handleClose = () => {
+  setIsOpen(false);
+};
+
+<>
+  <Box onFocus={handleFocus} onBlur={handleClose} as="button">
+    Focus to open
+  </Box>
+  <Popover>onFocus to open and onBlur to close</Popover>
+</>;
 ```
