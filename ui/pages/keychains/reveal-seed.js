@@ -27,6 +27,7 @@ import {
   Button,
   TextField,
   HelpText,
+  HelpTextSeverity,
   BUTTON_VARIANT,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
@@ -143,7 +144,9 @@ const RevealSeedPage = () => {
           error={error}
           width={BLOCK_SIZES.FULL}
         />
-        {error && <HelpText severity={SEVERITIES.DANGER}>{error}</HelpText>}
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
       </form>
     );
   };
