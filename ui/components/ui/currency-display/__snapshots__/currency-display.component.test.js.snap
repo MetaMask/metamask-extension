@@ -3,14 +3,11 @@
 exports[`CurrencyDisplay Component should match default snapshot 1`] = `
 <div>
   <div
-    class="currency-display-component"
+    class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
     title="null"
   >
     <span
-      class="currency-display-component__prefix"
-    />
-    <span
-      class="currency-display-component__text"
+      class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
     />
   </div>
 </div>
@@ -19,14 +16,11 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
 exports[`CurrencyDisplay Component should render text with a className 1`] = `
 <div>
   <div
-    class="currency-display-component currency-display"
+    class="box currency-display-component currency-display box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
     title="$123.45"
   >
     <span
-      class="currency-display-component__prefix"
-    />
-    <span
-      class="currency-display-component__text"
+      class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
     >
       $123.45
     </span>
@@ -37,14 +31,11 @@ exports[`CurrencyDisplay Component should render text with a className 1`] = `
 exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
 <div>
   <div
-    class="currency-display-component currency-display"
+    class="box currency-display-component currency-display box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
     title="-$123.45"
   >
     <span
-      class="currency-display-component__prefix"
-    />
-    <span
-      class="currency-display-component__text"
+      class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
     >
       -
       $123.45

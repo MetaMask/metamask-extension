@@ -6,37 +6,31 @@ exports[`CancelTransactionGasFee Component should render 1`] = `
     class="cancel-transaction-gas-fee"
   >
     <div
-      class="currency-display-component cancel-transaction-gas-fee__eth"
+      class="box currency-display-component cancel-transaction-gas-fee__eth box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
       title="0 ETH"
     >
       <span
-        class="currency-display-component__prefix"
-      />
-      <span
-        class="currency-display-component__text"
+        class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         0
       </span>
       <span
-        class="currency-display-component__suffix"
+        class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
       >
         ETH
       </span>
     </div>
     <div
-      class="currency-display-component cancel-transaction-gas-fee__fiat"
+      class="box currency-display-component cancel-transaction-gas-fee__fiat box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
       title="0 ETH"
     >
       <span
-        class="currency-display-component__prefix"
-      />
-      <span
-        class="currency-display-component__text"
+        class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         0
       </span>
       <span
-        class="currency-display-component__suffix"
+        class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
       >
         ETH
       </span>

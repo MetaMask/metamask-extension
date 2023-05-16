@@ -74,19 +74,16 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
           >
             <div
-              class="currency-display-component"
+              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
               title="0.006 ETH"
             >
               <span
-                class="currency-display-component__prefix"
-              />
-              <span
-                class="currency-display-component__text"
+                class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
               >
                 0.006
               </span>
               <span
-                class="currency-display-component__suffix"
+                class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
               >
                 ETH
               </span>
@@ -110,19 +107,16 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
         >
           <div
-            class="currency-display-component"
+            class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
             title="0.006 ETH"
           >
             <span
-              class="currency-display-component__prefix"
-            />
-            <span
-              class="currency-display-component__text"
+              class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
             >
               0.006
             </span>
             <span
-              class="currency-display-component__suffix"
+              class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
             >
               ETH
             </span>
