@@ -989,6 +989,9 @@
   "custodySessionExpired": {
     "message": "Custodian session expired."
   },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
+  },
   "custom": {
     "message": "Advanced"
   },
