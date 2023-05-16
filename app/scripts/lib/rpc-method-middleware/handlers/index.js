@@ -8,12 +8,12 @@ import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset from './watch-asset';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import mmiSupported from './mmi/mmi-supported';
-import mmiAuthenticate from './mmi/mmi-authenticate';
-import mmiPortfolio from './mmi/mmi-portfolio';
-import mmiOpenSwaps from './mmi/mmi-open-swaps';
-import mmiCheckIfTokenIsPresent from './mmi/mmi-check-if-token-is-present';
-import mmiSetAccountAndNetwork from './mmi/mmi-set-account-and-network';
+import mmiSupported from './institutional/mmi-supported';
+import mmiAuthenticate from './institutional/mmi-authenticate';
+import mmiPortfolio from './institutional/mmi-portfolio';
+import mmiOpenSwaps from './institutional/mmi-open-swaps';
+import mmiCheckIfTokenIsPresent from './institutional/mmi-check-if-token-is-present';
+import mmiSetAccountAndNetwork from './institutional/mmi-set-account-and-network';
 ///: END:ONLY_INCLUDE_IN
 
 const handlers = [
