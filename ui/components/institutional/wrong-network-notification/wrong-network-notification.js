@@ -6,12 +6,13 @@ import {
   JustifyContent,
   BackgroundColor,
   BLOCK_SIZES,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { getSelectedAccountCachedBalance } from '../../../selectors';
 import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { Text } from '../../component-library';
+import { Text, Icon, IconName, IconSize } from '../../component-library';
 import Box from '../../ui/box';
 
 const WrongNetworkNotification = () => {
@@ -34,8 +35,12 @@ const WrongNetworkNotification = () => {
       backgroundColor={BackgroundColor.errorMuted}
       width={BLOCK_SIZES.FULL}
     >
-      <img src="images/icons/red-triangle-exclaim.svg" />{' '}
-      <Text>
+      <Icon
+        name={IconName.Danger}
+        size={IconSize.Sm}
+        color={IconColor.errorDefault}
+      />
+      <Text marginLeft={2}>
         {t('custodyWrongChain', [
           network ? network.charAt(0).toUpperCase() + network.slice(1) : '',
         ])}
