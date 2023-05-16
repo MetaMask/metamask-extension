@@ -21,13 +21,15 @@ import {
   setUseTokenDetection,
   showModal,
   setIpfsGateway,
-  showNetworkDropdown,
   setUseCurrencyRateCheck,
+  toggleNetworkMenu,
 } from '../../../store/actions';
+import { getCurrentNetwork } from '../../../selectors';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { TextField } from '../../../components/component-library';
-import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
-import NetworkDisplay from '../../../components/app/network-display/network-display';
+import {
+  TextField,
+  PickerNetwork,
+} from '../../../components/component-library';
 import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
@@ -58,9 +60,7 @@ export default function PrivacySettings() {
   const [ipfsError, setIPFSError] = useState(null);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const networks = useSelector(
-    (state) => state.metamask.networkConfigurations || {},
-  );
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const handleSubmit = () => {
     dispatch(
@@ -198,31 +198,17 @@ export default function PrivacySettings() {
                 ])}
 
                 <Box paddingTop={2}>
-                  {Object.values(networks).length > 1 ? (
+                  {currentNetwork ? (
                     <div className="privacy-settings__network">
                       <>
-                        <NetworkDisplay
-                          onClick={() => dispatch(showNetworkDropdown())}
-                        />
-                        <NetworkDropdown
-                          hideElementsForOnboarding
-                          dropdownStyles={{
-                            position: 'absolute',
-                            top: '40px',
-                            left: '0',
-                            width: '309px',
-                            zIndex: '55',
-                          }}
-                          onAddClick={() => {
-                            dispatch(
-                              showModal({ name: 'ONBOARDING_ADD_NETWORK' }),
-                            );
-                          }}
+                        <PickerNetwork
+                          label={currentNetwork?.nickname}
+                          src={currentNetwork?.rpcPrefs?.imageUrl}
+                          onClick={() => dispatch(toggleNetworkMenu())}
                         />
                       </>
                     </div>
-                  ) : null}
-                  {Object.values(networks).length === 1 ? (
+                  ) : (
                     <Button
                       type="secondary"
                       rounded
@@ -234,7 +220,7 @@ export default function PrivacySettings() {
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
                     </Button>
-                  ) : null}
+                  )}
                 </Box>
               </>
             }
