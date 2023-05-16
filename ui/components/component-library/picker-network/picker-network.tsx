@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
-import { IconName, Icon, IconSize } from '../icon';
+import { Icon } from '../icon';
 import { Text } from '../text';
 import Box from '../../ui/box';
 import {
   AlignItems,
-  DISPLAY,
+  display,
   Size,
   BorderRadius,
   TextVariant,
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import { PickerNetworkProps } from './picker-network.types';
 
-export const PickerNetwork = ({
+const PickerNetwork: FC<PickerNetworkProps> = ({
   className,
   avatarNetworkProps,
   iconProps,
@@ -57,29 +57,4 @@ export const PickerNetwork = ({
   );
 };
 
-PickerNetwork.propTypes = {
-  /**
-   * The src accepts the string of the image to be rendered
-   */
-  src: PropTypes.string,
-  /**
-   * An additional className to apply to the PickerNetwork.
-   */
-  className: PropTypes.string,
-  /**
-   * It accepts all the props from AvatarNetwork
-   */
-  avatarNetworkProps: PropTypes.shape(AvatarNetwork.PropTypes),
-  /**
-   * It accepts all the props from Icon
-   */
-  iconProps: PropTypes.object,
-  /**
-   * The text content of the PickerNetwork component
-   */
-  label: PropTypes.string.isRequired,
-  /**
-   * PickerNetwork accepts all the props from Box
-   */
-  ...Box.propTypes,
-};
+export default PickerNetwork;
