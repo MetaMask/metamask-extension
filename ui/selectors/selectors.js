@@ -21,6 +21,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  AURORA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -1170,61 +1171,56 @@ export function getAllEnabledNetworks(state) {
 
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
-  const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
 
-  const networks = [];
-  // Mainnet always first
-  networks.push({
-    chainId: CHAIN_IDS.MAINNET,
-    nickname: MAINNET_DISPLAY_NAME,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-    rpcPrefs: {
-      imageUrl: ETH_TOKEN_IMAGE_URL,
+  const networks = [
+    // Mainnet always first
+    {
+      chainId: CHAIN_IDS.MAINNET,
+      nickname: MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      rpcPrefs: {
+        imageUrl: ETH_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.MAINNET,
+      ticker: CURRENCY_SYMBOLS.ETH,
     },
-    providerType: NETWORK_TYPES.MAINNET,
-    ticker: CURRENCY_SYMBOLS.ETH,
-  });
-  // Custom networks added
-  networks.push(
-    ...Object.entries(networkConfigurations)
-      .filter(
-        ([, network]) =>
-          !localhostFilter(network) &&
-          network.chainId !== CHAIN_IDS.MAINNET &&
+    // Custom networks added by the user
+    ...Object.values(networkConfigurations).filter(
+      ({ chainId }) =>
+        ![
+          CHAIN_IDS.LOCALHOST,
+          CHAIN_IDS.MAINNET,
           // Linea gets added as a custom network configuration so
           // we must ignore it here to display in test networks
-          network.chainId !== CHAIN_IDS.LINEA_TESTNET,
-      )
-      .map(([, network]) => network),
-  );
-  // Test networks
-  networks.push(
-    ...[
-      {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-        providerType: NETWORK_TYPES.GOERLI,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
-      },
-      {
-        chainId: CHAIN_IDS.SEPOLIA,
-        nickname: SEPOLIA_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-        providerType: NETWORK_TYPES.SEPOLIA,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_TESTNET,
-        nickname: LINEA_TESTNET_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
-      },
-    ], // Localhosts
-    ...Object.entries(networkConfigurations)
-      .filter(([, network]) => localhostFilter(network))
-      .map(([, network]) => network),
-  );
+          CHAIN_IDS.LINEA_TESTNET,
+        ].includes(chainId),
+    ),
+    // Test networks
+    {
+      chainId: CHAIN_IDS.GOERLI,
+      nickname: GOERLI_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+      providerType: NETWORK_TYPES.GOERLI,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+    },
+    {
+      chainId: CHAIN_IDS.SEPOLIA,
+      nickname: SEPOLIA_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+      providerType: NETWORK_TYPES.SEPOLIA,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_TESTNET,
+      nickname: LINEA_TESTNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
+    },
+    // Localhosts
+    ...Object.values(networkConfigurations).filter(
+      ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
+    ),
+  ];
 
   return networks;
 }
@@ -1279,13 +1275,15 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
+    case CHAIN_IDS.AURORA:
+      return AURORA_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
- * To check if teh chainId supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ * To check if the chainId supports token detection,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1297,6 +1295,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
+    CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
 
@@ -1339,7 +1338,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
