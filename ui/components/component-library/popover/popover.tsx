@@ -11,7 +11,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { Text } from '..';
 import { PopoverPosition, PopoverProps, PopoverRole } from '.';
 
 export const Popover = ({
@@ -90,8 +89,7 @@ export const Popover = ({
   }
 
   const PopoverContent = (
-    <Text
-      as="div"
+    <Box
       borderColor={BorderColor.borderMuted}
       borderRadius={BorderRadius.LG}
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -124,7 +122,7 @@ export const Popover = ({
           {...arrowProps}
         />
       )}
-    </Text>
+    </Box>
   );
 
   console.log('isPortal', isPortal);
