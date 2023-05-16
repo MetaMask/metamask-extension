@@ -16,13 +16,9 @@
     background-color: unset;
     text-align: start;
     position: relative;
-    @include screen-sm-min {
-      &:active {
-        background-color: var(--color-primary-muted);
-      }
-    }
 
     @include screen-sm-max {
+
       @include H4;
 
       opacity: 1;
@@ -86,6 +82,9 @@
 
     &--active {
       opacity: 1 !important;
+      @include screen-sm-min {
+        background-color: var(--color-primary-muted);
+      }
     }
   }
 

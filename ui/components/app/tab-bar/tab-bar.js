@@ -4,7 +4,11 @@ import classnames from 'classnames';
 
 import { Icon, IconName, IconSize } from '../../component-library';
 import Box from '../../ui/box';
-import { BorderRadius, Color, DISPLAY } from '../../../helpers/constants/design-system';
+import {
+  BorderRadius,
+  Color,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
