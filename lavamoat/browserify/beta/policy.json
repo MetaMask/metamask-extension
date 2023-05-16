@@ -219,7 +219,7 @@
         "fetch": true
       },
       "packages": {
-        "browserify-zlib": true,
+        "browserify>browserify-zlib": true,
         "browserify>buffer": true,
         "browserify>https-browserify": true,
         "browserify>process": true,
@@ -2593,16 +2593,6 @@
         "define": true
       }
     },
-    "browserify-zlib": {
-      "packages": {
-        "browserify-zlib>pako": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>stream-browserify": true,
-        "browserify>util": true
-      }
-    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
@@ -2627,6 +2617,16 @@
     "browserify>browser-resolve": {
       "packages": {
         "ethjs-query>babel-runtime>core-js": true
+      }
+    },
+    "browserify>browserify-zlib": {
+      "packages": {
+        "browserify>assert": true,
+        "browserify>browserify-zlib>pako": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>stream-browserify": true,
+        "browserify>util": true
       }
     },
     "browserify>buffer": {
