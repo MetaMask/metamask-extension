@@ -54,9 +54,7 @@ function QrCodeView({ Qr, warning }) {
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
-          __html: process.env.MULTICHAIN
-            ? qrImage.createTableTag(5, 24)
-            : qrImage.createTableTag(4),
+          __html: qrImage.createTableTag(5, 24),
         }}
       />
       <Box marginBottom={6}>
