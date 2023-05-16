@@ -37,6 +37,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { Tabs, Tab } from '../../components/ui/tabs';
+import { HelpTextSeverity } from '../../components/component-library/help-text/help-text.types';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -143,7 +144,9 @@ const RevealSeedPage = () => {
           error={error}
           width={BLOCK_SIZES.FULL}
         />
-        {error && <HelpText severity={SEVERITIES.DANGER}>{error}</HelpText>}
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
       </form>
     );
   };

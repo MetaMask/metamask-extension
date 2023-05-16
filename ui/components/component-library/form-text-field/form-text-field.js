@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  SEVERITIES,
   Size,
 } from '../../../helpers/constants/design-system';
 
@@ -14,6 +13,7 @@ import Box from '../../ui/box/box';
 import { TextField } from '../text-field';
 import { HelpText } from '../help-text';
 import { Label } from '../label';
+import { HelpTextSeverity } from '../help-text/help-text.types';
 
 export const FormTextField = ({
   autoComplete,
@@ -102,7 +102,7 @@ export const FormTextField = ({
     />
     {helpText && (
       <HelpText
-        severity={error && SEVERITIES.DANGER}
+        severity={error && HelpTextSeverity.Danger}
         marginTop={1}
         {...helpTextProps}
         className={classnames(

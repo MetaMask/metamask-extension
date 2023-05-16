@@ -1,10 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Color, SEVERITIES } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '..';
 
 import { HelpText } from './help-text';
+import { HelpTextSeverity } from './help-text.types';
 
 describe('HelpText', () => {
   it('should render with text inside the HelpText', () => {
@@ -34,10 +35,10 @@ describe('HelpText', () => {
   it('should render with severities', () => {
     const { getByText } = render(
       <>
-        <HelpText severity={SEVERITIES.DANGER}>error</HelpText>
-        <HelpText severity={SEVERITIES.SUCCESS}>success</HelpText>
-        <HelpText severity={SEVERITIES.WARNING}>warning</HelpText>
-        <HelpText severity={SEVERITIES.INFO}>info</HelpText>
+        <HelpText severity={HelpTextSeverity.Danger}>error</HelpText>
+        <HelpText severity={HelpTextSeverity.Success}>success</HelpText>
+        <HelpText severity={HelpTextSeverity.Warning}>warning</HelpText>
+        <HelpText severity={HelpTextSeverity.Info}>info</HelpText>
       </>,
     );
     expect(getByText('error')).toHaveClass('box--color-error-default');
@@ -49,9 +50,9 @@ describe('HelpText', () => {
     const { getByText } = render(
       <>
         <HelpText>default</HelpText>
-        <HelpText color={Color.textDefault}>text default</HelpText>
-        <HelpText color={Color.textAlternative}>text alternative</HelpText>
-        <HelpText color={Color.textMuted}>text muted</HelpText>
+        <HelpText color={TextColor.textDefault}>text default</HelpText>
+        <HelpText color={TextColor.textAlternative}>text alternative</HelpText>
+        <HelpText color={TextColor.textMuted}>text muted</HelpText>
       </>,
     );
     expect(getByText('default')).toHaveClass('box--color-text-default');

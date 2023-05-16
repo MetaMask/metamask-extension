@@ -389,6 +389,18 @@ export const FONT_STYLE = {
   NORMAL: 'normal',
 };
 
+export enum Severity {
+  Danger = 'danger',
+  Warning = 'warning',
+  Info = 'info',
+  Success = 'success',
+}
+
+/**
+ * @deprecated `SEVERITIES` const has been deprecated in favour of the `Severities` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * `SEVERITIES` can be removed once the migration from banner-alert.js  to TS.
+ */
 export const SEVERITIES = {
   DANGER: 'danger',
   WARNING: 'warning',

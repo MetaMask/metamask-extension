@@ -44,14 +44,14 @@ import { HelpText, Icon, IconName, IconSize } from '../../component-library';
 
 ### Severity
 
-Use the `severity` prop and `SEVERITIES` object to change the severity of the `HelpText`
+Use the `severity` prop and `HelpTextSeverity` enum to change the severity of the `HelpText`
 
 <Canvas>
   <Story id="components-componentlibrary-helptext--severity-story" />
 </Canvas>
 
 ```jsx
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { HelpTextSeverity } from '../../component-library/help-text/help-text.types';
 import { HelpText } from '../../component-library';
 
 <HelpText>HelpText without severity prop</HelpText>
@@ -71,14 +71,14 @@ import { HelpText } from '../../component-library';
 
 ### Color
 
-It may be useful to change the color of the `HelpText`. Use the `color` prop and the `Color` object to change the color of the `HelpText`. Defaults to `Color.textDefault`.
+It may be useful to change the color of the `HelpText`. Use the `color` prop and the `TextColor` enum to change the color of the `HelpText`. Defaults to `TextColor.textDefault`.
 
 <Canvas>
   <Story id="components-componentlibrary-helptext--color-story" />
 </Canvas>
 
 ```jsx
-import { Color } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { HelpText } from '../../component-library';
 
 <HelpText color={TextColor.textDefault}>
