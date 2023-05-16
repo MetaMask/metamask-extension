@@ -15,13 +15,19 @@
         "fs": true,
         "module": true,
         "path": true,
+        "process": true,
         "url": true,
-        "util": true
+        "util": true,
+        "v8": true
       },
       "globals": {
         "console.error": true,
         "console.log": true,
-        "process": true
+        "process.env.BABEL_ENV": true,
+        "process.env.BABEL_SHOW_CONFIG_FOR": true,
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true,
+        "process.versions.pnp": true
       },
       "packages": {
         "$root$": true,
@@ -66,7 +72,8 @@
       "packages": {
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -139,7 +146,7 @@
     },
     "@babel/core>@babel/types": {
       "globals": {
-        "console.trace": true,
+        "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
@@ -2225,8 +2232,7 @@
     },
     "depcheck>@babel/traverse": {
       "globals": {
-        "console.log": true,
-        "console.trace": true
+        "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
