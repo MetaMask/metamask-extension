@@ -47,8 +47,8 @@ export default {
   component: WrongNetworkNotification,
 };
 
-export const WithAnImage = () => {
+export const DefaultStory = () => {
   return <WrongNetworkNotification />;
 };
 
-WithAnImage.storyName = 'WrongNetworkNotification';
+DefaultStory.storyName = 'WrongNetworkNotification';
