@@ -7,7 +7,7 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
     title="null"
   >
     <span
-      class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
     />
   </div>
 </div>
@@ -20,7 +20,7 @@ exports[`CurrencyDisplay Component should render text with a className 1`] = `
     title="$123.45"
   >
     <span
-      class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
     >
       $123.45
     </span>
@@ -35,7 +35,7 @@ exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
     title="-$123.45"
   >
     <span
-      class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
     >
       -
       $123.45

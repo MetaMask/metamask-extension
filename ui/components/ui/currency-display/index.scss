@@ -1,9 +1,0 @@
-.currency-display-component {
-  &__text {
-    /*rtl:ignore*/
-    direction: ltr;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}

@@ -55,7 +55,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                       title="0 ETH"
                     >
                       <span
-                        class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                        class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                       >
                         0
                       </span>
@@ -242,7 +242,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                         title="0.0000315 ETH"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.0000315
                         </span>
@@ -287,7 +287,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                         title="0.0000315 ETH"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.0000315
                         </span>

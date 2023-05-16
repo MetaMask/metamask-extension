@@ -31,7 +31,7 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
         title="0.00432788 ETH"
       >
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           0.00432788
         </span>
@@ -129,7 +129,7 @@ exports[`CurrencyInput Component rendering should render properly with an ETH va
         title="$231.06 USD"
       >
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           $231.06
         </span>
@@ -183,7 +183,7 @@ exports[`CurrencyInput Component rendering should render properly without a suff
         title="$0.00 USD"
       >
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           $0.00
         </span>

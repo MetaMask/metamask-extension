@@ -78,7 +78,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               title="0.006 ETH"
             >
               <span
-                class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
               >
                 0.006
               </span>
@@ -111,7 +111,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             title="0.006 ETH"
           >
             <span
-              class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
             >
               0.006
             </span>

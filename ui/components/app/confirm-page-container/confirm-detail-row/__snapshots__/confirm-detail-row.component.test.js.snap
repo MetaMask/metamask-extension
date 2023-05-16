@@ -24,7 +24,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
           />
         </div>
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           0
         </span>
@@ -42,7 +42,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
           />
         </div>
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           0
         </span>

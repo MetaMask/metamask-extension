@@ -269,7 +269,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                 />
               </div>
               <span
-                class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
               >
                 0.0001
               </span>
@@ -382,7 +382,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                             title="0.000021"
                           >
                             <span
-                              class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                              class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                             >
                               0.000021
                             </span>
@@ -407,7 +407,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                           title="0.000021"
                         >
                           <span
-                            class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                            class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                           >
                             0.000021
                           </span>
@@ -441,7 +441,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                             title="0.000121"
                           >
                             <span
-                              class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                              class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                             >
                               0.000121
                             </span>
@@ -473,7 +473,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                           title="0.000121"
                         >
                           <span
-                            class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+                            class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
                           >
                             0.000121
                           </span>

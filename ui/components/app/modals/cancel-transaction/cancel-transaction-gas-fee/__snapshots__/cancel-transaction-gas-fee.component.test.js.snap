@@ -10,7 +10,7 @@ exports[`CancelTransactionGasFee Component should render 1`] = `
       title="0 ETH"
     >
       <span
-        class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
       >
         0
       </span>
@@ -25,7 +25,7 @@ exports[`CancelTransactionGasFee Component should render 1`] = `
       title="0 ETH"
     >
       <span
-        class="box mm-text currency-display-component__text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
       >
         0
       </span>
