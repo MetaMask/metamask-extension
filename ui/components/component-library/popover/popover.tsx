@@ -68,21 +68,23 @@ export const Popover = ({
     width: matchWidth ? referenceElement?.clientWidth : 'auto',
   };
 
-  // Define the Esc key press handler
-  useEffect(() => {
-    function handleEscKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        // Close the popover when the "Esc" key is pressed
-        escKeyClose();
+  // Esc key press handler
+  if (escKeyClose) {
+    useEffect(() => {
+      function handleEscKey(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+          // Close the popover when the "Esc" key is pressed
+          escKeyClose();
+        }
       }
-    }
 
-    document.addEventListener('keydown', handleEscKey);
+      document.addEventListener('keydown', handleEscKey);
 
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
-  }, [escKeyClose]);
+      return () => {
+        document.removeEventListener('keydown', handleEscKey);
+      };
+    }, [escKeyClose]);
+  }
 
   const PopoverContent = (
     <Box
