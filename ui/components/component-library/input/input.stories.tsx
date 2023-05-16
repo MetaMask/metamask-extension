@@ -10,7 +10,7 @@ import Box from '../../ui/box/box';
 
 import { Button } from '..';
 
-import { INPUT_TYPES } from './input.constants';
+import { InputTypes } from './input.types';
 import { Input } from './input';
 
 import README from './README.mdx';
@@ -92,7 +92,7 @@ export default {
     },
     type: {
       control: 'select',
-      options: Object.values(INPUT_TYPES),
+      options: Object.values(InputTypes),
     },
     value: {
       control: 'text',
@@ -146,9 +146,9 @@ export const Type = (args) => (
     gap={4}
   >
     <Input {...args} placeholder="Default" />
-    <Input {...args} type={INPUT_TYPES.PASSWORD} placeholder="Password" />
-    <Input {...args} type={INPUT_TYPES.NUMBER} placeholder="Number" />
-    <Input {...args} type={INPUT_TYPES.SEARCH} placeholder="Search" />
+    <Input {...args} type={InputTypes.Password} placeholder="Password" />
+    <Input {...args} type={InputTypes.Number} placeholder="Number" />
+    <Input {...args} type={InputTypes.Search} placeholder="Search" />
   </Box>
 );
 
@@ -178,7 +178,7 @@ export const Ref = (args) => {
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {
   autoComplete: true,
-  type: INPUT_TYPES.PASSWORD,
+  type: InputTypes.Password,
   placeholder: 'Enter password',
 };
 
