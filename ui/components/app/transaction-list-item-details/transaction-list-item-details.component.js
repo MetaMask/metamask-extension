@@ -269,25 +269,26 @@ export default class TransactionListItemDetails extends PureComponent {
               </div>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                custodyTransactionDeepLink && custodyTransactionDeepLink.url && (
-                  <Tooltip
-                    wrapperClassName="transaction-list-item-details__header-button"
-                    containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                    title={t('viewinCustodianApp')}
-                  >
-                    <Button
-                      type="raised"
-                      onClick={() => {
-                        window.open(custodyTransactionDeepLink.url);
-                      }}
+                custodyTransactionDeepLink &&
+                  custodyTransactionDeepLink.url && (
+                    <Tooltip
+                      wrapperClassName="transaction-list-item-details__header-button"
+                      containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                      title={t('viewinCustodianApp')}
                     >
-                      <Icon
-                        name={IconName.Custody}
-                        color={IconColor.primaryDefault}
-                      />
-                    </Button>
-                  </Tooltip>
-                )
+                      <Button
+                        type="raised"
+                        onClick={() => {
+                          window.open(custodyTransactionDeepLink.url);
+                        }}
+                      >
+                        <Icon
+                          name={IconName.Custody}
+                          color={IconColor.primaryDefault}
+                        />
+                      </Button>
+                    </Tooltip>
+                  )
                 ///: END:ONLY_INCLUDE_IN
               }
             </div>
