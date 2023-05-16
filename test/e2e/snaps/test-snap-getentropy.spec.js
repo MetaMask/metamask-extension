@@ -2,8 +2,8 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap RPC', function () {
-  it('can use the cross-snap RPC endowment and produce a public key', async function () {
+describe('Test Snap getEntropy', function () {
+  it('can use snap_getEntropy inside a snap', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -27,15 +27,13 @@ describe('Test Snap RPC', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page
+        // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-
-        // find and scroll to the bip32 test and connect
-        const snapButton1 = await driver.findElement('#connectBip32');
-        await driver.scrollToElement(snapButton1);
+        const snapButton = await driver.findElement('#connectGetEntropySnap');
+        await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectBip32');
+        await driver.clickElement('#connectGetEntropySnap');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -60,18 +58,6 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
-        await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
-        await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-1');
-        await driver.clickElement(
-          '#public-key-access-bip32-m-44h-0h-secp256k1-0',
-        );
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
         await driver.waitForSelector({ text: 'Ok' });
 
         await driver.clickElement({
@@ -79,57 +65,42 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // switch back to test-snaps window
+        // click send inputs on test snap page
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        const snapButton2 = await driver.findElement('#connectRpcSnap');
-        await driver.scrollToElement(snapButton2);
-        await driver.delay(1000);
-        await driver.clickElement('#connectRpcSnap');
-        await driver.delay(1000);
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectGetEntropySnap',
+          text: 'Reconnect to getEntropy Snap',
+        });
 
+        // find and click on send test
+        await driver.pasteIntoField('#entropyMessage', '1234');
+        await driver.delay(500);
+        const snapButton2 = await driver.findElement('#signEntropyMessage');
+        await driver.scrollToElement(snapButton2);
+        await driver.delay(500);
+        await driver.clickElement('#signEntropyMessage');
+
+        // Switch to approve signature message window and approve
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Approve',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
-
-        await driver.clickElement({
-          text: 'Approve & install',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'Ok' });
-
-        await driver.clickElement({
-          text: 'Ok',
-          tag: 'button',
-        });
-
+        // switch back to test-snaps page
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        // wait for npm installation success
+        // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
-          css: '#connectRpcSnap',
-          text: 'Reconnect to RPC Snap',
-        });
-
-        // click send inputs on test snap page
-        const snapButton3 = await driver.findElement('#sendRpc');
-        await driver.scrollToElement(snapButton3);
-        await driver.delay(1000);
-        await driver.clickElement('#sendRpc');
-
-        // check result with waitForSelector
-        await driver.waitForSelector({
-          css: '#rpcResult',
-          text: '"0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
+          css: '#entropySignResult',
+          text: '"0xb9c20d675976e12c8bb53c3fd8fdff2dee11ad2b132eb453b5a8f35b0553c52d3bcac0fd3324d22ff0c53b3445ef48c119ba6435bc9bfb03234806719599aa6f6245593238c734bcf9d94d2873cacdd65a3176be3ae7e5b84f95fdd4487a395f"',
         });
       },
     );
