@@ -679,12 +679,6 @@
   "complianceActivatedTitle": {
     "message": "Your compliance feature is activated"
   },
-  "complianceAnalysisNotRun": {
-    "message": "No report has been run on this address. Please click on the tile below to run a report."
-  },
-  "complianceAnalysisRun": {
-    "message": "A compliance analysis has $1 been run within the last 8 hours."
-  },
   "complianceBlurb0": {
     "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
   },
@@ -1675,9 +1669,6 @@
   "general": {
     "message": "General"
   },
-  "generatingAmlReport": {
-    "message": "Generating AML report"
-  },
   "globalTitle": {
     "message": "Global menu"
   },
@@ -1759,9 +1750,6 @@
   },
   "highLowercase": {
     "message": "high"
-  },
-  "historicalReportsLongerThanUsual": {
-    "message": "Fetching compliance reports is taking longer than usual. Please make sure your connection is stable and contact us if problem continues."
   },
   "history": {
     "message": "History"
@@ -2279,9 +2267,6 @@
   "myAccounts": {
     "message": "My accounts"
   },
-  "na": {
-    "message": "N/A"
-  },
   "name": {
     "message": "Name"
   },
@@ -2521,9 +2506,6 @@
   },
   "nonceFieldHeading": {
     "message": "Custom nonce"
-  },
-  "not": {
-    "message": "not"
   },
   "notBusy": {
     "message": "Not busy"
@@ -3354,9 +3336,6 @@
   "replace": {
     "message": "replace"
   },
-  "report": {
-    "message": "Report"
-  },
   "reportLastRun": {
     "message": "Report last run"
   },
@@ -3491,12 +3470,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
-  },
-  "risk": {
-    "message": "Risk"
-  },
-  "riskOfThisPoolFlaggedAs": {
-    "message": "The risk of this pool has been flagged as $1 according to your compliance settings."
   },
   "riskRating": {
     "message": "Risk rating"

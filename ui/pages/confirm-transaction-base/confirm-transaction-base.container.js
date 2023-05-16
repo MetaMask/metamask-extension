@@ -74,12 +74,6 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-
-import {
-  getComplianceProjectId,
-  generateComplianceReport,
-  fetchHistoricalReports,
-} from '../../ducks/institutional/institutional';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -223,7 +217,6 @@ const mapStateToProps = (state, ownProps) => {
   const nativeCurrency = getNativeCurrency(state);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const complianceProjectId = getComplianceProjectId(state);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   let isNoteToTraderSupported = false;
   if (state.metamask.custodyAccountDetails?.[fromChecksumHexAddress]) {
@@ -293,7 +286,6 @@ const mapStateToProps = (state, ownProps) => {
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
-    complianceProjectId,
     isNoteToTraderSupported,
     isNotification,
     ///: END:ONLY_INCLUDE_IN
@@ -378,22 +370,6 @@ export const mapDispatchToProps = (dispatch) => {
       }),
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    showComplianceDetailsModal: ({
-      reportAddress,
-      onGenerateComplianceReport,
-    }) => {
-      return dispatch(
-        showModal({
-          name: 'COMPLIANCE_DETAILS',
-          reportAddress,
-          onGenerateComplianceReport,
-        }),
-      );
-    },
-    fetchHistoricalReports: (address) =>
-      dispatch(fetchHistoricalReports(address)),
-    generateComplianceReport: (address) =>
-      dispatch(generateComplianceReport(address)),
     ///: END:ONLY_INCLUDE_IN
   };
 };

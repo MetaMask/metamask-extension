@@ -31,7 +31,6 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceRow from '../../components/institutional/compliance-row';
 import NoteToTrader from '../../components/institutional/note-to-trader/note-to-trader';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -159,7 +158,6 @@ export default class ConfirmTransactionBase extends Component {
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    complianceReportInProgress: false,
     noteText: '',
     ///: END:ONLY_INCLUDE_IN
   };
@@ -328,11 +326,6 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      complianceProjectId,
-      toAddress,
-      showComplianceDetailsModal,
-      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -347,10 +340,6 @@ export default class ConfirmTransactionBase extends Component {
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    const { complianceReportInProgress } = this.state;
-    ///: END:ONLY_INCLUDE_IN
 
     const renderTotalMaxAmount = () => {
       if (
@@ -512,23 +501,6 @@ export default class ConfirmTransactionBase extends Component {
             showDataInstruction={Boolean(txData.txParams?.data)}
           />
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          complianceProjectId && toAddress && (
-            <ComplianceRow
-              address={toAddress}
-              rowClick={() => {
-                showComplianceDetailsModal({
-                  reportAddress: toAddress,
-                  onGenerateComplianceReport: (address) =>
-                    this.onGenerateComplianceReport(address),
-                });
-              }}
-              inProgress={complianceReportInProgress}
-            />
-          )
-          ///: END:ONLY_INCLUDE_IN
-        }
       </div>
     );
   }
@@ -843,24 +815,6 @@ export default class ConfirmTransactionBase extends Component {
       />
     );
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  onGenerateComplianceReport(address) {
-    const { generateComplianceReport, fetchHistoricalReports } = this.props;
-    try {
-      // set report in progress flag to show loader before reportsInProgress array is updated
-      this.setState({ complianceReportInProgress: true });
-      generateComplianceReport(address);
-      fetchHistoricalReports(address);
-      // set report in progress flag to false to make loader dependent on actual report progress
-      setTimeout(() => {
-        this.setState({ complianceReportInProgress: false });
-      }, 3000);
-    } catch (e) {
-      this.setState({ complianceReportInProgress: false });
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
