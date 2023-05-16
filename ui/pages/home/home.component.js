@@ -813,21 +813,13 @@ export default class Home extends PureComponent {
                 name={this.context.t('tokens')}
                 tabKey="tokens"
               >
-                {process.env.MULTICHAIN ? (
-                  <Box marginTop={2}>
-                    <AssetList
-                      onClickAsset={(asset) =>
-                        history.push(`${ASSET_ROUTE}/${asset}`)
-                      }
-                    />
-                  </Box>
-                ) : (
+                <Box marginTop={2}>
                   <AssetList
                     onClickAsset={(asset) =>
                       history.push(`${ASSET_ROUTE}/${asset}`)
                     }
                   />
-                )}
+                </Box>
               </Tab>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
