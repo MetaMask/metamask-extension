@@ -75,7 +75,9 @@ export const Popover = ({
       function handleEscKey(event: KeyboardEvent) {
         if (event.key === 'Escape') {
           // Close the popover when the "Esc" key is pressed
-          escKeyClose();
+          if (escKeyClose) {
+            escKeyClose();
+          }
         }
       }
 
