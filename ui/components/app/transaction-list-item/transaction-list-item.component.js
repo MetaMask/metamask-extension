@@ -14,7 +14,7 @@ import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import CustodyIcon from '../../institutional/icon/custody-icon.component';
+import { Icon, IconName } from '../../component-library';
 ///: END:ONLY_INCLUDE_IN
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
@@ -230,7 +230,8 @@ function TransactionListItemInner({
                 category={category}
                 status={displayedStatusKey}
               />
-              <CustodyIcon
+              <Icon
+                name={IconName.Custody}
                 className="transaction-list-item__icon-badge"
                 color={getTransactionColor(status)}
                 width={12}

@@ -12,7 +12,8 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import CustodyIcon from '../../institutional/icon/custody-icon.component';
+import { Icon, IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -281,7 +282,10 @@ export default class TransactionListItemDetails extends PureComponent {
                           window.open(custodyTransactionDeepLink.url);
                         }}
                       >
-                        <CustodyIcon color="#3098DC" width={10} height={10} />
+                        <Icon
+                          name={IconName.Custody}
+                          color={IconColor.primaryDefault}
+                        />
                       </Button>
                     </Tooltip>
                   </div>
