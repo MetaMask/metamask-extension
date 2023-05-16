@@ -76,10 +76,6 @@ const Template: ComponentStory<typeof Popover> = (args) => {
       <Box
         ref={setBoxRef}
         onClick={handleClick}
-        // onMouseEnter={handleMouseEnter}
-        // onMouseLeave={handleMouseLeave}
-        // onFocus={handleFocus}
-        // onBlur={handleClose}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
         color={Color.primaryInverse}
@@ -87,11 +83,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
       >
         Click to toggle popover
       </Box>
-      <Popover
-        referenceElement={referenceElement}
-        isOpen={isOpen}
-        {...args}
-      ></Popover>
+      <Popover referenceElement={referenceElement} isOpen={isOpen} {...args} />
     </>
   );
 };
@@ -350,6 +342,44 @@ export const Position: ComponentStory<typeof Popover> = (args) => {
           </Popover>
         </Box>
       </Box>
+    </>
+  );
+};
+
+export const IsPortal: ComponentStory<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        backgroundColor={BackgroundColor.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      />
+      <Popover
+        referenceElement={referenceElement}
+        position={PopoverPosition.RightEnd}
+        isOpen={true}
+        isPortal={true}
+        hasArrow
+        {...args}
+      >
+        <Text>Inspect to view the popover in the DOM (isPortal true)</Text>
+      </Popover>
+      <Popover
+        referenceElement={referenceElement}
+        position={PopoverPosition.RightStart}
+        isOpen={true}
+        isPortal={false}
+        hasArrow
+        {...args}
+      >
+        <Text>Inspect to view the popover in the DOM (isPortal false)</Text>
+      </Popover>
     </>
   );
 };
