@@ -1,7 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
+import { BigNumber } from '@ethersproject/bignumber';
+import * as TokenUtil from '../../../../shared/lib/token-util.ts';
+import {
+  TokenStandard,
+  TransactionType,
+} from '../../../../shared/constants/transaction';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -172,16 +178,32 @@ jest.mock('../../../pages/swaps/swaps.util', () => {
   };
 });
 
+jest.mock('../../../../shared/lib/token-util.ts', () => {
+  const actual = jest.requireActual('../../../../shared/lib/token-util.ts');
+  return {
+    ...actual,
+    fetchTokenBalance: jest.fn(() => Promise.resolve()),
+  };
+});
+
+const mockedState = jest.mocked(mockState);
+const mockedProps = jest.mocked(props);
+
+const setMockedTransactionType = (type) => {
+  mockedProps.currentTransaction.type = type;
+  mockedProps.txData.type = type;
+  mockedProps.txData.history[0].type = type;
+};
+
 describe('Confirm Page Container Container Test', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('Render and simulate button clicks', () => {
-    const store = configureMockStore()(mockState);
-
     beforeEach(() => {
+      const store = configureMockStore()(mockedState);
       renderWithProvider(<ConfirmPageContainer {...props} />, store);
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
     });
 
     it('should render a confirm page container component', () => {
@@ -221,6 +243,41 @@ describe('Confirm Page Container Container Test', () => {
     it('should simulate click submit button', () => {
       const confirmButton = screen.getByTestId('page-container-footer-next');
       fireEvent.click(confirmButton);
+      expect(mockOnSubmit).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe(`when type is '${TransactionType.tokenMethodSetApprovalForAll}'`, () => {
+    it('should display warning modal with total token balance', () => {
+      const mockValue12AsHexString = '0x0c'; // base-10 representation = 12
+
+      TokenUtil.fetchTokenBalance.mockImplementation(() => {
+        return BigNumber.from(mockValue12AsHexString);
+      });
+      setMockedTransactionType(TransactionType.tokenMethodSetApprovalForAll);
+      const store = configureMockStore()(mockedState);
+
+      renderWithProvider(
+        <ConfirmPageContainer
+          {...props}
+          showWarningModal
+          assetStandard={TokenStandard.ERC721}
+        />,
+        store,
+      );
+
+      act(() => {
+        const confirmButton = screen.getByTestId('page-container-footer-next');
+        fireEvent.click(confirmButton);
+      });
+
+      waitFor(() => {
+        expect(
+          screen.querySelector('.set-approval-for-all-warning__content'),
+        ).toBeDefined();
+        expect(screen.queryByText('Total: 12')).toBeInTheDocument();
+      });
+
       expect(mockOnSubmit).toHaveBeenCalledTimes(1);
     });
   });
