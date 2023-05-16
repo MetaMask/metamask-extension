@@ -553,7 +553,7 @@ export default class Routes extends Component {
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
-        {process.env.MULTICHAIN && accountDetailsAddress ? (
+        {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
         <div className="main-container-wrapper">
