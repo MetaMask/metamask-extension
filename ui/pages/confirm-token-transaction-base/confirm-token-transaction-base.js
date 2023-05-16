@@ -24,7 +24,6 @@ import {
   getConversionRate,
   getNativeCurrency,
   getNftContracts,
-  getNfts,
 } from '../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import {
