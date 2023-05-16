@@ -3053,9 +3053,6 @@
   "searchResults": {
     "message": "Resultados de la búsqueda"
   },
-  "searchSettings": {
-    "message": "Buscar en Configuración"
-  },
   "searchTokens": {
     "message": "Buscar tokens"
   },

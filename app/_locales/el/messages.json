@@ -3050,12 +3050,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση Λογαριασμών"
   },
-  "searchResults": {
-    "message": "Αποτελέσματα Αναζήτησης"
-  },
-  "searchSettings": {
-    "message": "Αναζήτηση στις Ρυθμίσεις"
-  },
   "searchTokens": {
     "message": "Αναζήτηση Tokens"
   },

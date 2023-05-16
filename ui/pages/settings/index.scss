@@ -23,12 +23,7 @@
   }
 
   &__header {
-    padding: 8px 24px 8px 24px;
-    position: relative;
-
-    @include screen-sm-max {
-      background: var(--color-background-alternative);
-    }
+    padding: 20px 16px 20px 16px;
 
     &__title-container {
       display: flex;
@@ -36,21 +31,10 @@
       align-items: center;
       flex: 0 0 auto;
 
-      &__close-button {
-        margin-left: auto;
-      }
-
-      &__close-button::after {
-        content: '\00D7';
-        font-size: 40px;
-        color: var(--color-icon-default);
-        cursor: pointer;
-      }
-
       &__title {
-        @include H3;
-
-        flex: 1 0 auto;
+        @include screen-sm-min {
+          width: 197px;
+        }
 
         @include screen-sm-max {
           text-overflow: ellipsis;
@@ -62,17 +46,6 @@
     }
 
     &__search {
-      @include screen-sm-max {
-        position: relative;
-      }
-
-      @include screen-sm-min {
-        position: absolute;
-        right: 57px;
-        top: 10px;
-        width: 300px;
-      }
-
       @include screen-md-min {
         width: 400px;
       }
@@ -144,16 +117,6 @@
 
   &__subheader,
   &__subheader--link {
-    @include H4;
-
-    padding: 16px 4px;
-    border-bottom: 1px solid var(--color-border-muted);
-    margin-right: 24px;
-    height: 72px;
-    align-items: center;
-    display: flex;
-    flex-flow: row nowrap;
-
     @include screen-sm-max {
       display: none;
     }
@@ -225,11 +188,11 @@
   }
 
   &__content {
+    margin-top: 8px;
     display: flex;
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    border-top: 1px solid var(--color-border-muted);
 
     &__tabs {
       display: flex;
@@ -239,7 +202,6 @@
       @include screen-sm-min {
         flex: 0 0 40%;
         max-width: 197px;
-        padding-top: 13px;
       }
 
       .tab-bar__tab {
@@ -380,7 +342,8 @@
       width: 100%;
     }
 
-    .eth-sign-toggle .toggle-button__status { // for eth_sign we need to override the uppercase property of toggle button text
+    .eth-sign-toggle .toggle-button__status {
+      // for eth_sign we need to override the uppercase property of toggle button text
       text-transform: capitalize;
     }
   }

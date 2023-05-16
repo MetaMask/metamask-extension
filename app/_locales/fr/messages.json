@@ -3053,9 +3053,6 @@
   "searchResults": {
     "message": "Résultats de la recherche"
   },
-  "searchSettings": {
-    "message": "Rechercher dans les paramètres"
-  },
   "searchTokens": {
     "message": "Rechercher des jetons"
   },

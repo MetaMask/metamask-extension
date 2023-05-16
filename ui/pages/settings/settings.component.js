@@ -27,8 +27,20 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
-import { ButtonIcon, Icon, IconName } from '../../components/component-library';
-import { Color, DISPLAY } from '../../helpers/constants/design-system';
+import {
+  ButtonIcon,
+  Icon,
+  IconName,
+  Text,
+} from '../../components/component-library';
+import {
+  AlignItems,
+  Color,
+  DISPLAY,
+  FLEX_DIRECTION,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import Box from '../../components/ui/box';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -128,10 +140,32 @@ class SettingsPage extends PureComponent {
                 display={[DISPLAY.FLEX, DISPLAY.NONE]}
               />
             )}
-
             {this.renderTitle()}
-            <div
-              className="settings-page__header__title-container__close-button"
+            <Box
+              className="settings-page__header__search"
+              display={[DISPLAY.NONE, DISPLAY.BLOCK]}
+              style={{ width: '330px' }}
+            >
+              <SettingsSearch
+                onSearch={({ searchQuery = '', results = [] }) => {
+                  this.setState({
+                    isSearchList: searchQuery !== '',
+                    searchResults: results,
+                    searchText: searchQuery,
+                  });
+                }}
+                settingsRoutesList={getSettingsRoutes()}
+              />
+              {isSearchList && searchText.length >= 3 && (
+                <SettingsSearchList
+                  results={searchResults}
+                  onClickSetting={(setting) => this.handleClickSetting(setting)}
+                />
+              )}
+            </Box>
+            <ButtonIcon
+              iconName={IconName.Close}
+              ariaLabel="Close"
               onClick={() => {
                 if (addNewNetwork) {
                   history.push(NETWORKS_ROUTE);
@@ -139,10 +173,14 @@ class SettingsPage extends PureComponent {
                   history.push(mostRecentOverviewPage);
                 }
               }}
+              marginLeft="auto"
             />
           </div>
-
-          <div className="settings-page__header__search">
+          <Box
+            className="settings-page__header__search"
+            display={[DISPLAY.BLOCK, DISPLAY.NONE]}
+            marginTop={5}
+          >
             <SettingsSearch
               onSearch={({ searchQuery = '', results = [] }) => {
                 this.setState({
@@ -159,7 +197,7 @@ class SettingsPage extends PureComponent {
                 onClickSetting={(setting) => this.handleClickSetting(setting)}
               />
             )}
-          </div>
+          </Box>
         </div>
 
         <div className="settings-page__content">
@@ -192,7 +230,7 @@ class SettingsPage extends PureComponent {
 
     return (
       <div className="settings-page__header__title-container__title">
-        {titleText}
+        <Text variant={TextVariant.headingMd}>{titleText}</Text>
       </div>
     );
   }
@@ -225,17 +263,24 @@ class SettingsPage extends PureComponent {
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
-        <div className="settings-page__subheader">
-          <div
+        <Box
+          className="settings-page__subheader"
+          padding={4}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.ROW}
+          alignItems={AlignItems.center}
+        >
+          <Text
             className={classnames({
               'settings-page__subheader--link': initialBreadCrumbRoute,
             })}
+            variant={TextVariant.headingSm}
             onClick={() =>
               initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)
             }
           >
             {subheaderText}
-          </div>
+          </Text>
           {breadCrumbTextKey && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
@@ -248,7 +293,7 @@ class SettingsPage extends PureComponent {
               {addressName}
             </div>
           )}
-        </div>
+        </Box>
       )
     );
   }
@@ -293,12 +338,12 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('networks'),
-        icon: <i className="fa fa-plug" />,
+        icon: <Icon name={IconName.Plug} />,
         key: NETWORKS_ROUTE,
       },
       {
         content: t('experimental'),
-        icon: <i className="fa fa-flask" />,
+        icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
       },
       {
