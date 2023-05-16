@@ -176,7 +176,11 @@ export default class SignatureRequest extends PureComponent {
       primaryType,
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
-    const currentNetwork = getNetworkNameFromProviderType(providerConfig, t);
+    const networkName = getNetworkNameFromProviderType(providerConfig.type);
+    const currentNetwork =
+      networkName === ''
+        ? providerConfig.nickname || t('unknownNetwork')
+        : t(networkName);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(

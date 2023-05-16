@@ -338,7 +338,11 @@ export default class SignatureRequestOriginal extends Component {
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
-    const currentNetwork = getNetworkNameFromProviderType(providerConfig, t);
+    const networkName = getNetworkNameFromProviderType(providerConfig.type);
+    const currentNetwork =
+      networkName === ''
+        ? providerConfig.nickname || t('unknownNetwork')
+        : t(networkName);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(

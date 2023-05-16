@@ -593,21 +593,9 @@ export const sanitizeString = (value) => {
  * @returns
  */
 
-export const getNetworkNameFromProviderType = (providerConfig, t) => {
-  const providerName = providerConfig.type;
-
-  switch (providerName) {
-    case NETWORK_TYPES.MAINNET:
-      return t('mainnet');
-    case NETWORK_TYPES.GOERLI:
-      return t('goerli');
-    case NETWORK_TYPES.SEPOLIA:
-      return t('sepolia');
-    case NETWORK_TYPES.LINEA_TESTNET:
-      return t('lineatestnet');
-    case NETWORK_TYPES.LOCALHOST:
-      return t('localhost');
-    default:
-      return providerConfig.nickname || t('unknownNetwork');
+export const getNetworkNameFromProviderType = (providerName) => {
+  if (providerName === NETWORK_TYPES.RPC) {
+    return '';
   }
+  return providerName;
 };
