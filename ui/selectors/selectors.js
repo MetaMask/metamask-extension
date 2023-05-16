@@ -1,6 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -500,7 +501,7 @@ export function getCurrentCurrency(state) {
 
 export function getTotalUnapprovedCount(state) {
   const { pendingApprovalCount = 0 } = state.metamask;
-
+  console.log('pendingApprovalCount', pendingApprovalCount);
   return (
     pendingApprovalCount +
     getSuggestedAssetCount(state) +
@@ -558,21 +559,35 @@ export function getUnapprovedTemplatedConfirmations(state) {
 }
 
 function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
+  return (
+    Object.values(state.metamask.pendingApprovals)?.filter(({ type }) => {
+      return type === ApprovalType.WatchAsset;
+    }).length || 0
+  );
 }
 
 export function getSuggestedAssets(state) {
-  return state.metamask.suggestedAssets;
+  return (
+    Object.values(state.metamask.pendingApprovals)?.filter(({ type }) => {
+      return type === ApprovalType.WatchAsset;
+    }) || []
+  );
 }
 
 function getSuggestedNftsCount(state) {
-  const { suggestedNfts = [] } = state.metamask;
-  return suggestedNfts.length;
+  return (
+    Object.values(state.metamask.pendingApprovals)?.filter(({ type }) => {
+      return type === ApprovalType.WatchNFT;
+    }).length || 0
+  );
 }
 
 export function getSuggestedNfts(state) {
-  return state.metamask.suggestedNfts;
+  return (
+    Object.values(state.metamask.pendingApprovals)?.filter(({ type }) => {
+      return type === ApprovalType.WatchNFT;
+    }) || []
+  );
 }
 
 export function getIsMainnet(state) {

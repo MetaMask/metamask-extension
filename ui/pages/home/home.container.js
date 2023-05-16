@@ -109,10 +109,9 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchAssetPendingApprovals = hasPendingApprovalsSelector(
-    state,
-    ApprovalType.WatchAsset,
-  );
+  const hasWatchAssetPendingApprovals =
+    hasPendingApprovalsSelector(state, ApprovalType.WatchAsset) ||
+    hasPendingApprovalsSelector(state, ApprovalType.WatchNFT);
 
   return {
     forgottenPassword,
