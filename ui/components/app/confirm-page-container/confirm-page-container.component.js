@@ -99,6 +99,9 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent,
+    ///: END:ONLY_INCLUDE_IN
   } = props;
 
   const t = useI18nContext();
@@ -238,6 +241,9 @@ const ConfirmPageContainer = (props) => {
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
             txData={txData}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            noteComponent={noteComponent}
+            ///: END:ONLY_INCLUDE_IN
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -398,6 +404,9 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  noteComponent: PropTypes.node,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default ConfirmPageContainer;
