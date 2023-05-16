@@ -140,10 +140,6 @@ export default class ConfirmTransactionBase extends Component {
     accountType: PropTypes.string,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     showTransactionsFailedModal: PropTypes.func,
-    complianceProjectId: PropTypes.string,
-    showComplianceDetailsModal: PropTypes.func,
-    generateComplianceReport: PropTypes.func,
-    fetchHistoricalReports: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
