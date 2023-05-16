@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
@@ -14,8 +14,10 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getSuggestedAssets } from '../../selectors';
-import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
+import {
+  rejectPendingApproval,
+  resolvePendingApproval,
+} from '../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -133,30 +135,47 @@ const ConfirmAddSuggestedToken = () => {
 
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
-      suggestedAssets.map(async ({ asset, id }) => {
-        await dispatch(acceptWatchAsset(id));
+      [...suggestedAssets, ...suggestedNfts].map(
+        async ({ requestData: { asset }, id }) => {
+          await dispatch(resolvePendingApproval(id, null));
 
-        trackEvent({
-          event: MetaMetricsEventName.TokenAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_symbol: asset.symbol,
-            token_contract_address: asset.address,
-            token_decimal_precision: asset.decimals,
-            unlisted: asset.unlisted,
-            source_connection_method: MetaMetricsTokenEventSource.Dapp,
-            token_standard: TokenStandard.ERC20,
-            asset_type: AssetType.token,
-          },
-        });
-      }),
+          trackEvent({
+            event: MetaMetricsEventName.TokenAdded,
+            category: MetaMetricsEventCategory.Wallet,
+            sensitiveProperties: {
+              token_symbol: asset.symbol,
+              token_contract_address: asset.address,
+              token_decimal_precision: asset.decimals,
+              unlisted: asset.unlisted,
+              source_connection_method: MetaMetricsTokenEventSource.Dapp,
+              token_standard: TokenStandard.ERC20,
+              asset_type: AssetType.token,
+            },
+          });
+        },
+      ),
     );
 
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
 
+  const handleCancelClick = useCallback(async () => {
+    await Promise.all(
+      [...suggestedAssets, ...suggestedNfts].map(({ id }) =>
+        dispatch(
+          rejectPendingApproval(
+            id,
+            serializeError(ethErrors.provider.userRejectedRequest()),
+          ),
+        ),
+      ),
+    );
+    history.push(mostRecentOverviewPage);
+  }, [dispatch, history, mostRecentOverviewPage, suggestedAssets]);
+
   const goBackIfNoSuggestedAssetsOnFirstRender = () => {
     if (!suggestedAssets.length && !suggestedNfts.length) {
+      console.log('in here?');
       history.push(mostRecentOverviewPage);
     }
   };
@@ -167,7 +186,7 @@ const ConfirmAddSuggestedToken = () => {
   }, []);
 
   const showNftConfirmation = suggestedNfts.length > 0;
-
+  console.log('suggestedNfts', suggestedNfts);
   if (showNftConfirmation) {
     return (
       <div className="page-container">
@@ -189,7 +208,12 @@ const ConfirmAddSuggestedToken = () => {
             </div>
             <div className="confirm-add-suggested-token__nft-list">
               {suggestedNfts.map(
-                ({ id, asset: { address, tokenId, symbol, image, name } }) => {
+                ({
+                  id,
+                  requestData: {
+                    asset: { address, tokenId, symbol, image, name },
+                  },
+                }) => {
                   const blockExplorerLink = getTokenTrackerLink(
                     address,
                     chainId,
@@ -230,16 +254,11 @@ const ConfirmAddSuggestedToken = () => {
                           size={BUTTON_PRIMARY_SIZES.SMALL}
                           className="confirm-add-suggested-token__nft-add-button"
                           onClick={(e) => {
-                            const isLastSuggestedAsset =
-                              suggestedNfts.length === 1;
+                            // const isLastSuggestedAsset =
+                            //   suggestedNfts.length === 1;
                             e.preventDefault();
                             e.stopPropagation();
-                            dispatch(
-                              acceptWatchAsset({
-                                suggestedAssetID: id,
-                                closeNotificationPopup: isLastSuggestedAsset,
-                              }),
-                            );
+                            dispatch(resolvePendingApproval(id, null));
                           }}
                         >
                           {t('add')}
@@ -255,12 +274,20 @@ const ConfirmAddSuggestedToken = () => {
         <PageContainerFooter
           cancelText={t('cancel')}
           submitText={t('addAllNfts')}
-          onCancel={async () => {
-            await Promise.all(
-              suggestedNfts.map(({ id }) => dispatch(rejectWatchAsset(id))),
-            );
-            history.push(mostRecentOverviewPage);
-          }}
+          // onCancel={async () => {
+          //   await Promise.all(
+          //     suggestedNfts.map(({ id }) =>
+          //       dispatch(
+          //         rejectPendingApproval(
+          //           id,
+          //           serializeError(ethErrors.provider.userRejectedRequest()),
+          //         ),
+          //       ),
+          //     ),
+          //   );
+          //   history.push(mostRecentOverviewPage);
+          // }}
+          onCancel={handleCancelClick}
           onSubmit={handleAddTokensClick}
           disabled={suggestedNfts.length === 0}
         />
@@ -289,7 +316,7 @@ const ConfirmAddSuggestedToken = () => {
             </div>
           </div>
           <div className="confirm-add-suggested-token__token-list">
-            {suggestedAssets.map(({ asset }) => {
+            {suggestedAssets.map(({ requestData: { asset } }) => {
               return (
                 <div
                   className="confirm-add-suggested-token__token-list-item"
@@ -318,12 +345,7 @@ const ConfirmAddSuggestedToken = () => {
       <PageContainerFooter
         cancelText={t('cancel')}
         submitText={t('addToken')}
-        onCancel={async () => {
-          await Promise.all(
-            suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
-          );
-          history.push(mostRecentOverviewPage);
-        }}
+        onCancel={handleCancelClick}
         onSubmit={handleAddTokensClick}
         disabled={suggestedAssets.length === 0}
       />

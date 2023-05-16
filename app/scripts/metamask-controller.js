@@ -3321,35 +3321,35 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  acceptWatchAssetRequest = (id) => {
-    const suggestedToken = this.tokensController.state.suggestedAssets.find(
-      (asset) => asset.id === id,
-    );
-    const suggestedNft = this.nftController.state.suggestedNfts.find(
-      (asset) => asset.id === id,
-    );
-    if (suggestedToken) {
-      return this.tokensController.acceptWatchAssetRequest(id);
-    }
-    if (suggestedNft) {
-      this.nftController.acceptWatchNft(id);
-    }
-  };
+  // acceptWatchAssetRequest = (id) => {
+  //   const suggestedToken = this.tokensController.state.suggestedAssets.find(
+  //     (asset) => asset.id === id,
+  //   );
+  //   const suggestedNft = this.nftController.state.suggestedNfts.find(
+  //     (asset) => asset.id === id,
+  //   );
+  //   if (suggestedToken) {
+  //     return this.tokensController.acceptWatchAssetRequest(id);
+  //   }
+  //   if (suggestedNft) {
+  //     this.nftController.acceptWatchNft(id);
+  //   }
+  // };
 
-  rejectWatchAssetRequest = (id) => {
-    const suggestedToken = this.tokensController.state.suggestedAssets.find(
-      (asset) => asset.id === id,
-    );
-    const suggestedNft = this.nftController.state.suggestedNfts.find(
-      (asset) => asset.id === id,
-    );
-    if (suggestedToken) {
-      return this.tokensController.rejectWatchAsset(id);
-    }
-    if (suggestedNft) {
-      return this.nftController.rejectWatchNft(id);
-    }
-  };
+  // rejectWatchAssetRequest = (id) => {
+  //   const suggestedToken = this.tokensController.state.suggestedAssets.find(
+  //     (asset) => asset.id === id,
+  //   );
+  //   const suggestedNft = this.nftController.state.suggestedNfts.find(
+  //     (asset) => asset.id === id,
+  //   );
+  //   if (suggestedToken) {
+  //     return this.tokensController.rejectWatchAsset(id);
+  //   }
+  //   if (suggestedNft) {
+  //     return this.nftController.rejectWatchNft(id);
+  //   }
+  // };
 
   //=============================================================================
   // PASSWORD MANAGEMENT
