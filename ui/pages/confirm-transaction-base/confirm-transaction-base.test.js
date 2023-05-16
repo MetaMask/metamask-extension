@@ -269,4 +269,32 @@ describe('Confirm Transaction Base', () => {
       });
     });
   });
+
+  it('should render NoteToTrader when isNoteToTraderSupported is true', () => {
+    baseStore.metamask.custodyAccountDetails = {
+      '0x0': {
+        address: '0x0',
+        details: 'details',
+        custodyType: 'testCustody - Saturn',
+        custodianName: 'saturn-dev',
+      },
+    };
+
+    baseStore.metamask.mmiConfiguration = {
+      custodians: [
+        {
+          name: 'saturn-dev',
+          displayName: 'Saturn Custody',
+          isNoteToTraderSupported: true,
+        },
+      ],
+    };
+
+    const store = configureMockStore(middleware)(baseStore);
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(getByTestId('transaction-note')).toBeInTheDocument();
+  });
 });

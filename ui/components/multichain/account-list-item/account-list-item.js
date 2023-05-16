@@ -22,7 +22,7 @@ import {
 } from '../../component-library';
 import {
   Color,
-  TEXT_ALIGN,
+  TextAlign,
   AlignItems,
   DISPLAY,
   TextVariant,
@@ -136,7 +136,10 @@ export const AccountListItem = ({
           >
             <Text ellipsis as="div">
               <ButtonLink
-                onClick={onClick}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick();
+                }}
                 className="multichain-account-list-item__account-name"
                 color={Color.textDefault}
                 ellipsis
@@ -167,7 +170,7 @@ export const AccountListItem = ({
                   marginInlineEnd={2}
                 />
               ) : null}
-              <Text textAlign={TEXT_ALIGN.END} as="div">
+              <Text textAlign={TextAlign.End} as="div">
                 <UserPreferencedCurrencyDisplay
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={identity.balance}
@@ -187,7 +190,7 @@ export const AccountListItem = ({
           <Text
             variant={TextVariant.bodySm}
             color={Color.textAlternative}
-            textAlign={TEXT_ALIGN.END}
+            textAlign={TextAlign.End}
             as="div"
           >
             <UserPreferencedCurrencyDisplay

@@ -36,7 +36,7 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import { Text, BUTTON_VARIANT } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
-import { DelineatorType } from '../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 function ViewSnap() {
   const t = useI18nContext();
