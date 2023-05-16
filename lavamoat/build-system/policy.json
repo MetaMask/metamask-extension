@@ -15,13 +15,19 @@
         "fs": true,
         "module": true,
         "path": true,
+        "process": true,
         "url": true,
-        "util": true
+        "util": true,
+        "v8": true
       },
       "globals": {
         "console.error": true,
         "console.log": true,
-        "process": true
+        "process.env.BABEL_ENV": true,
+        "process.env.BABEL_SHOW_CONFIG_FOR": true,
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true,
+        "process.versions.pnp": true
       },
       "packages": {
         "$root$": true,
@@ -55,17 +61,8 @@
         "define": true
       },
       "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -75,7 +72,8 @@
       "packages": {
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -148,7 +146,7 @@
     },
     "@babel/core>@babel/types": {
       "globals": {
-        "console.trace": true,
+        "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
@@ -2234,8 +2232,7 @@
     },
     "depcheck>@babel/traverse": {
       "globals": {
-        "console.log": true,
-        "console.trace": true
+        "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
@@ -2702,6 +2699,7 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils": {
       "builtin": {
+        "assert": true,
         "path": true
       },
       "packages": {
@@ -2711,11 +2709,12 @@
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true,
+        "eslint>@eslint-community/eslint-utils": true,
         "eslint>eslint-scope": true,
         "eslint>eslint-utils": true,
+        "semver": true,
         "webpack>eslint-scope": true
       }
     },
@@ -2738,7 +2737,9 @@
     },
     "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
       "packages": {
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true,
+        "eslint>@eslint-community/eslint-utils": true,
+        "semver": true
       }
     },
     "eslint-plugin-jsdoc": {
@@ -6545,14 +6546,12 @@
         "Element": true,
         "HTMLElement": true,
         "Intl": true,
-        "PerformanceObserver": true,
         "SVGElement": true,
         "WorkerGlobalScope": true,
         "YAML_SILENCE_DEPRECATION_WARNINGS": true,
         "YAML_SILENCE_WARNINGS": true,
         "__dirname": true,
         "__filename": true,
-        "__magic__": true,
         "assertDoc": true,
         "atob": true,
         "btoa": true,
@@ -6560,8 +6559,6 @@
         "console": true,
         "define": true,
         "document": true,
-        "globalThis": "write",
-        "localStorage": true,
         "location": true,
         "navigator": true,
         "new": true,
@@ -6808,6 +6805,9 @@
       }
     },
     "semver": {
+      "builtin": {
+        "util.inspect": true
+      },
       "globals": {
         "console.error": true,
         "process": true
@@ -7371,7 +7371,7 @@
     },
     "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": {
       "packages": {
-        "stylelint>postcss-html>htmlparser2>domutils>dom-serializer>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
         "stylelint>postcss-html>htmlparser2>entities": true
       }
     },
@@ -7999,14 +7999,7 @@
       },
       "globals": {
         "console.warn": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
-        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
-        "process.env.BROWSERSLIST_ENV": true,
-        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
-        "process.env.BROWSERSLIST_STATS": true,
-        "process.env.NODE_ENV": true,
+        "process.env": true,
         "process.versions.node": true
       },
       "packages": {
