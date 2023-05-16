@@ -25,7 +25,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import { Text } from '../../component-library';
 import {
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
@@ -246,7 +246,7 @@ const ConfirmPageContainer = (props) => {
                 isBuyableChain ? (
                   <Text
                     variant={TextVariant.bodySm}
-                    textAlign={TEXT_ALIGN.LEFT}
+                    textAlign={TextAlign.Left}
                     as="h6"
                   >
                     {t('insufficientCurrencyBuyOrDeposit', [
@@ -277,7 +277,7 @@ const ConfirmPageContainer = (props) => {
                 ) : (
                   <Text
                     variant={TextVariant.bodySm}
-                    textAlign={TEXT_ALIGN.LEFT}
+                    textAlign={TextAlign.Left}
                     as="h6"
                   >
                     {t('insufficientCurrencyDeposit', [
