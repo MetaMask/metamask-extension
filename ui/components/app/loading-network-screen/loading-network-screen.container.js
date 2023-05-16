@@ -59,10 +59,7 @@ const mapDispatchToProps = (dispatch) => {
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),
     showNetworkDropdown: () => {
-      if (process.env.MULTICHAIN) {
-        return dispatch(actions.toggleNetworkMenu());
-      }
-      return dispatch(actions.showNetworkDropdown());
+      return dispatch(actions.toggleNetworkMenu());
     },
   };
 };
