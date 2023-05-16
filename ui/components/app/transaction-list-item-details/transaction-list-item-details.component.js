@@ -148,7 +148,7 @@ export default class TransactionListItemDetails extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this._mounted = true;
     const { address } = selectedIdentity;
-    const { custodyId } = transactionGroup?.primaryTransaction;
+    const custodyId = transactionGroup?.primaryTransaction?.custodyId;
 
     if (this._mounted && address && custodyId) {
       this.getCustodianTransactionDeepLink(address, custodyId);
