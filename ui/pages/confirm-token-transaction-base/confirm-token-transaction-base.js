@@ -33,7 +33,6 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -50,7 +49,6 @@ export default function ConfirmTokenTransactionBase({
   hexMaximumTransactionFee,
 }) {
   const t = useContext(I18nContext);
-  const nfts = useSelector(getNfts);
   const contractExchangeRate = useSelector(contractExchangeRateSelector);
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -123,18 +121,7 @@ export default function ConfirmTokenTransactionBase({
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155
   ) {
-    if (assetName) {
-      const isExistingNft = nfts?.find(
-        ({ address, tokenId: _tokenId }) =>
-          isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
-      );
-      title =
-        !isExistingNft && assetStandard === TokenStandard.ERC721
-          ? `${title} #${tokenId}`
-          : assetName;
-    } else {
-      title = getTitleTokenDescription();
-    }
+    title = assetName || getTitleTokenDescription();
     subtitle = `#${tokenId}`;
     subtotalDisplay =
       assetName || `${getTitleTokenDescription('text')} #${tokenId}`;
