@@ -22,24 +22,24 @@ Use the `type` prop to change the type of input.
 
 Possible types include:
 
-- `InputTypes.Text`
-- `InputTypes.Number`
-- `InputTypes.Password`
-- `InputTypes.Search`
+- `InputType.text`
+- `InputType.number`
+- `InputType.password`
+- `InputType.search`
 
-Defaults to `InputTypes.Text`.
+Defaults to `InputType.text`.
 
 <Canvas>
   <Story id="components-componentlibrary-input--type" />
 </Canvas>
 
 ```jsx
-import { Input, InputTypes } from '../../component-library';
+import { Input, InputType } from '../../component-library';
 
-<Input type={InputTypes.Text} />
-<Input type={InputTypes.Number} />
-<Input type={InputTypes.Password} />
-<Input type={InputTypes.Search} />
+<Input type={InputType.text} />
+<Input type={InputType.number} />
+<Input type={InputType.password} />
+<Input type={InputType.search} />
 ```
 
 ### Ref
@@ -83,7 +83,7 @@ Use the `autoComplete` prop to set the autocomplete html attribute. It allows th
 ```jsx
 import { Input } from '../../component-library';
 
-<Input type={InputTypes.Password} autoComplete />;
+<Input type={InputType.password} autoComplete />;
 ```
 
 ### Auto Focus
