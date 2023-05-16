@@ -125,8 +125,6 @@ export const Popover = ({
     </Box>
   );
 
-  console.log('isPortal', isPortal);
-
   return (
     <>
       {isPortal

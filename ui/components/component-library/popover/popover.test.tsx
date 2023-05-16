@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
-import { render } from '@testing-library/react';
-import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
+import React, { useState } from 'react';
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.types';
 
@@ -222,4 +222,32 @@ test('should add reference-hidden classname when referenceHidden prop is true', 
   );
 
   expect(getByTestId('popover')).toHaveClass('mm-popover--reference-hidden');
+});
+
+const EscKeyTestComponent = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <Popover
+      isOpen={isOpen}
+      referenceHidden={false}
+      escKeyClose={() => setIsOpen(false)}
+    >
+      Press esc key to close
+    </Popover>
+  );
+};
+
+test('Press esc key to close fires', () => {
+  // Render the component
+  const { getByText, queryByText } = render(<EscKeyTestComponent />);
+
+  // Assert that the popover is initially visible
+  expect(getByText('Press esc key to close')).toBeVisible();
+
+  // Trigger the "Escape" key press event
+  fireEvent.keyDown(document, { key: 'Escape' });
+
+  // Assert that the popover closes
+  expect(queryByText('Press esc key to close')).not.toBeInTheDocument();
 });
