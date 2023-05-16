@@ -15,6 +15,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import { ethErrors } from 'eth-rpc-errors';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -105,7 +106,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { ethErrors } from 'eth-rpc-errors';
 
 export function goHome() {
   return {
@@ -1155,6 +1155,9 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  * @param method
  * @param txParams - the transaction parameters
  * @param type - The type of the transaction being added.
+ * @param options
+ * @param options.requireApproval
+ * @param options.extraMeta
  * @returns
  */
 export async function addUnapprovedTransaction(
@@ -1617,7 +1620,6 @@ export function cancelTx(
   return (dispatch: MetaMaskReduxDispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise<void>((resolve, reject) => {
-      const actionId = generateActionId();
       callBackgroundMethod(
         'rejectPendingApproval',
         [
