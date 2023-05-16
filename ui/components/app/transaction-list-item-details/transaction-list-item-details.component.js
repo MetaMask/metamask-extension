@@ -135,24 +135,23 @@ export default class TransactionListItemDetails extends PureComponent {
     });
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     const {
       recipientAddress,
       tryReverseResolveAddress,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      getCustodianTransactionDeepLink,
       selectedIdentity,
       transactionGroup,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (selectedIdentity && transactionGroup?.primaryTransaction?.custodyId) {
-      const custodyTransactionDeepLink = await getCustodianTransactionDeepLink(
-        selectedIdentity.address,
-        transactionGroup.primaryTransaction.custodyId,
-      );
-      this.setState({ custodyTransactionDeepLink });
+    this._mounted = true;
+    const { address } = selectedIdentity;
+    const { custodyId } = transactionGroup?.primaryTransaction;
+
+    if (this._mounted && address && custodyId) {
+      this.getCustodianTransactionDeepLink(address, custodyId);
     }
     ///: END:ONLY_INCLUDE_IN
 
@@ -160,6 +159,25 @@ export default class TransactionListItemDetails extends PureComponent {
       tryReverseResolveAddress(recipientAddress);
     }
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getCustodianTransactionDeepLink = async (address, custodyId) => {
+    const { getCustodianTransactionDeepLink } = this.props;
+
+    const custodyTransactionDeepLink = await getCustodianTransactionDeepLink(
+      address,
+      custodyId,
+    );
+
+    if (custodyTransactionDeepLink && this._mounted) {
+      this.setState({ custodyTransactionDeepLink });
+    }
+  };
+
+  componentWillUnmount() {
+    this._mounted = false;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   render() {
     const { t } = this.context;
