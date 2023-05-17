@@ -209,8 +209,8 @@ describe('Confirm Transaction Base', () => {
 
   it('should render NoteToTrader when isNoteToTraderSupported is true', () => {
     mockedStore.metamask.custodyAccountDetails = {
-      '0x0': {
-        address: '0x0',
+      [mockTxParamsFromAddress]: {
+        address: mockTxParamsFromAddress,
         details: 'details',
         custodyType: 'testCustody - Saturn',
         custodianName: 'saturn-dev',
