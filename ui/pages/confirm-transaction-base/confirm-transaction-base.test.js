@@ -298,7 +298,9 @@ describe('Confirm Transaction Base', () => {
 
           const { container } = renderWithProvider(
             <ConfirmTransactionBase
-              // fixme: we want to test toAddress provided by ownProps in mapStateToProps, but this currently overrides toAddress
+              // we want to test toAddress provided by ownProps in mapStateToProps, but this
+              // currently overrides toAddress this should pan out fine when we refactor the
+              // component into a functional component and remove the container.js file
               toAddress={mockPropsToAddress}
               actionKey="confirm"
             />,
