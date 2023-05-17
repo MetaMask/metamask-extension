@@ -381,6 +381,7 @@
     "@storybook/addon-actions": "^7.0.10",
     "@storybook/addon-essentials": "^7.0.10",
     "@storybook/addon-knobs": "^7.0.2",
+    "@storybook/addon-mdx-gfm": "^7.0.10",
     "@storybook/addons": "^7.0.10",
     "@storybook/api": "^7.0.10",
     "@storybook/client-api": "^7.0.10",
