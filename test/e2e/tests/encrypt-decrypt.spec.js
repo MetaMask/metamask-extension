@@ -152,7 +152,6 @@ describe('Encrypt Decrypt', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
         await openDapp(driver);
 
         // ------ Get Encryption key and display ETH ------
