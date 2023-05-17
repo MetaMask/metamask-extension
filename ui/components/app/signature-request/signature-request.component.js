@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import LedgerInstructionField from '../ledger-instruction-field';
 import {
   sanitizeMessage,
@@ -93,6 +94,9 @@ export default class SignatureRequest extends PureComponent {
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
+    cancelAllApprovals: PropTypes.func.isRequired,
+    resolvePendingApproval: PropTypes.func.isRequired,
+    rejectPendingApproval: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     showCustodianDeepLink: PropTypes.func,
     isNotification: PropTypes.bool,
@@ -156,11 +160,13 @@ export default class SignatureRequest extends PureComponent {
       mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       unapprovedMessagesCount,
+      cancelAllApprovals,
     } = this.props;
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount: unapprovedMessagesCount,
       onSubmit: async () => {
+        await cancelAllApprovals();
         await cancelAll();
         clearConfirmTransaction();
         history.push(mostRecentOverviewPage);
@@ -174,6 +180,7 @@ export default class SignatureRequest extends PureComponent {
       txData: {
         msgParams: { data, origin, version },
         type,
+        id,
       },
       fromAccount: { address, balance, name },
       cancel,
@@ -188,6 +195,8 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      resolvePendingApproval,
+      rejectPendingApproval,
     } = this.props;
 
     const { t, trackEvent } = this.context;
@@ -221,8 +230,9 @@ export default class SignatureRequest extends PureComponent {
           .toBase(10)
           .toString();
 
-    const onSign = (event) => {
-      sign(event);
+    const onSign = async (event) => {
+      await sign(event);
+      await resolvePendingApproval(id);
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Confirm',
@@ -235,8 +245,12 @@ export default class SignatureRequest extends PureComponent {
       });
     };
 
-    const onCancel = (event) => {
-      cancel(event);
+    const onCancel = async (event) => {
+      await cancel(event);
+      await rejectPendingApproval(
+        id,
+        serializeError(ethErrors.provider.userRejectedRequest()),
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Cancel',

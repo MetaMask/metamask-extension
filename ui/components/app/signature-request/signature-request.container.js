@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -39,6 +40,8 @@ import {
 import {
   cancelMsgs,
   showModal,
+  resolvePendingApproval,
+  rejectPendingApproval,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   goHome,
   ///: END:ONLY_INCLUDE_IN
@@ -143,6 +146,9 @@ mapDispatchToProps = mmiMapDispatchToProps;
 
 mapDispatchToProps = function (dispatch) {
   return {
+    resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
@@ -159,6 +165,19 @@ mapDispatchToProps = function (dispatch) {
     },
     cancelAll: (unconfirmedMessagesList) =>
       dispatch(cancelMsgs(unconfirmedMessagesList)),
+    cancelAllApprovals: (unconfirmedMessagesList) => {
+      return Promise.all(
+        unconfirmedMessagesList.map(
+          async ({ id }) =>
+            await dispatch(
+              rejectPendingApproval(
+                id,
+                serializeError(ethErrors.provider.userRejectedRequest()),
+              ),
+            ),
+        ),
+      );
+    },
   };
 };
 
@@ -192,7 +211,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps;
 
-  const { cancelAll: dispatchCancelAll } = dispatchProps;
+  const {
+    cancelAll: dispatchCancelAll,
+    cancelAllApprovals: dispatchCancelAllApprovals,
+  } = dispatchProps;
 
   const {
     type,
@@ -276,6 +298,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     unapprovedMessagesCount,
     mostRecentOverviewPage,
     cancelAll: () => dispatchCancelAll(valuesFor(unconfirmedMessagesList)),
+    cancelAllApprovals: () =>
+      dispatchCancelAllApprovals(valuesFor(unconfirmedMessagesList)),
   };
 }
 

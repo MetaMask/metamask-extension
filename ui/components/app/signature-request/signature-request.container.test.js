@@ -90,6 +90,7 @@ describe('Signature Request', () => {
     clearConfirmTransaction: sinon.spy(),
     cancelMessage: sinon.spy(),
     cancel: sinon.stub().resolves(),
+    rejectPendingApproval: sinon.stub().resolves(),
     showRejectTransactionsConfirmationModal: sinon.stub().resolves(),
     cancelAll: sinon.stub().resolves(),
     providerConfig: {
@@ -97,6 +98,8 @@ describe('Signature Request', () => {
     },
     unapprovedMessagesCount: 2,
     sign: sinon.stub().resolves(),
+    cancelAllApprovals: sinon.stub().resolves(),
+    resolvePendingApproval: sinon.stub().resolves(),
     txData: {
       msgParams: {
         id: 1,
@@ -166,18 +169,25 @@ describe('Signature Request', () => {
       const cancelButton = screen.getByTestId('page-container-footer-cancel');
       fireEvent.click(cancelButton);
       expect(propsWithFiat.cancel.calledOnce).toStrictEqual(true);
+      expect(propsWithFiat.rejectPendingApproval.calledOnce).toStrictEqual(
+        true,
+      );
     });
 
     it('sign', () => {
       const signButton = screen.getByTestId('page-container-footer-next');
       fireEvent.click(signButton);
       expect(propsWithFiat.sign.calledOnce).toStrictEqual(true);
+      expect(propsWithFiat.resolvePendingApproval.calledOnce).toStrictEqual(
+        true,
+      );
     });
 
     it('cancelAll', () => {
       const cancelAll = screen.getByTestId('signature-request-reject-all');
       fireEvent.click(cancelAll);
       expect(propsWithFiat.cancelAll.calledOnce).toStrictEqual(false);
+      expect(propsWithFiat.cancelAllApprovals.calledOnce).toStrictEqual(true);
     });
 
     it('have user warning', () => {
