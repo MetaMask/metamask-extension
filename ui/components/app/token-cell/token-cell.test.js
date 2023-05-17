@@ -48,7 +48,7 @@ describe('Token Cell', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByTestId('token-button'));
+    fireEvent.click(queryByTestId('multichain-token-list-button'));
 
     expect(props.onClick).toHaveBeenCalled();
   });
