@@ -175,6 +175,7 @@ export const AccountListMenu = ({ onClose }) => {
                 });
                 history.push(NEW_ACCOUNT_ROUTE);
               }}
+              data-testid="multichain-account-menu-add-account"
             >
               {t('addAccount')}
             </ButtonLink>
