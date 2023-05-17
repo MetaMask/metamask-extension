@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, act } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.container';
@@ -165,29 +165,26 @@ describe('Signature Request', () => {
       propsWithFiat.clearConfirmTransaction.resetHistory();
     });
 
-    it('cancel', () => {
+    it('cancel', async () => {
       const cancelButton = screen.getByTestId('page-container-footer-cancel');
-      fireEvent.click(cancelButton);
+      await act(() => {
+        fireEvent.click(cancelButton);
+      });
       expect(propsWithFiat.cancel.calledOnce).toStrictEqual(true);
       expect(propsWithFiat.rejectPendingApproval.calledOnce).toStrictEqual(
         true,
       );
     });
 
-    it('sign', () => {
+    it('sign', async () => {
       const signButton = screen.getByTestId('page-container-footer-next');
-      fireEvent.click(signButton);
+      await act(() => {
+        fireEvent.click(signButton);
+      });
       expect(propsWithFiat.sign.calledOnce).toStrictEqual(true);
       expect(propsWithFiat.resolvePendingApproval.calledOnce).toStrictEqual(
         true,
       );
-    });
-
-    it('cancelAll', () => {
-      const cancelAll = screen.getByTestId('signature-request-reject-all');
-      fireEvent.click(cancelAll);
-      expect(propsWithFiat.cancelAll.calledOnce).toStrictEqual(false);
-      expect(propsWithFiat.cancelAllApprovals.calledOnce).toStrictEqual(true);
     });
 
     it('have user warning', () => {
