@@ -130,7 +130,7 @@ features:
     assets:
       - src: ./app/build-types/mmi/images/
         dest: images
-      - ./{app,shared,ui}/**/{mmi,institutional}/**
+      - ./{app,shared,ui}/**/{institutional}/**
   build-flask:
     assets:
       - src: ./app/build-types/flask/images/
