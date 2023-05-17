@@ -816,7 +816,6 @@ export default class TransactionController extends EventEmitter {
       if (existingTxMeta) {
         this.emit('newUnapprovedTx', existingTxMeta);
         existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
-        this._requestApproval(existingTxMeta);
         return existingTxMeta;
       }
     }
@@ -909,11 +908,8 @@ export default class TransactionController extends EventEmitter {
 
     await this._requestApprovalWithRetry(
       txMeta,
-      async (
-        { txMeta: updatedTxMeta, actionId: updatedActionId },
-        _retryCount,
-      ) => {
-        await this.updateAndApproveTransaction(updatedTxMeta, updatedActionId);
+      async (_value, _retryCount) => {
+        await this.updateAndApproveTransaction(txMeta, actionId);
       },
       async () => {
         await this.cancelTransaction(txMeta.id, actionId);
@@ -1349,9 +1345,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId, {
-      hasApprovalRequest: false,
-    });
+    await this.approveTransaction(newTxMeta.id, actionId);
     return newTxMeta;
   }
 

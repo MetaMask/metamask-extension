@@ -45,6 +45,10 @@ const providerConfig = {
 const actionId = 'DUMMY_ACTION_ID';
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
+const approvalRequestResult = {
+  value: undefined,
+  result: { success: () => undefined, error: () => undefined },
+};
 
 describe('Transaction Controller', function () {
   let txController,
@@ -63,6 +67,8 @@ describe('Transaction Controller', function () {
       eth_gasPrice: '0x0de0b6b3a7640000',
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
+      eth_sendRawTransaction:
+        '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8',
     };
     provider = createTestProviderTools({
       scaffold: providerResultStub,
@@ -78,7 +84,9 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop;
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
-    messengerMock = { call: sinon.stub().returns(Promise.resolve()) };
+    messengerMock = {
+      call: sinon.stub().returns(Promise.resolve(approvalRequestResult)),
+    };
 
     txController = new TransactionController({
       provider,
@@ -542,8 +550,8 @@ describe('Transaction Controller', function () {
         '12345',
       );
 
-      assert.equal(messengerMock.call.callCount, 2);
-      assert.deepEqual(messengerMock.call.getCall(1).args, [
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:addRequest',
         {
           id: String(secondTxMeta.id),
@@ -595,7 +603,6 @@ describe('Transaction Controller', function () {
         from: selectedAddress,
         to: recipientAddress,
       });
-      await txController.approveTransaction(txMeta.id);
       const cancelTxMeta = await txController.createCancelTransaction(
         txMeta.id,
         {},
@@ -606,8 +613,7 @@ describe('Transaction Controller', function () {
         cancelTxMeta.id,
       );
       assert.deepEqual(cancelTxMeta, memTxMeta);
-      // One for the initial addUnapprovedTransaction, one for the approval
-      assert.equal(messengerMock.call.callCount, 2);
+      assert.equal(messengerMock.call.callCount, 1);
     });
 
     it('should add only 1 cancel transaction when called twice with same actionId', async function () {
@@ -638,7 +644,6 @@ describe('Transaction Controller', function () {
         from: selectedAddress,
         to: recipientAddress,
       });
-      await txController.approveTransaction(txMeta.id);
       await txController.createCancelTransaction(
         txMeta.id,
         {},
@@ -1117,21 +1122,6 @@ describe('Transaction Controller', function () {
         'should have reached the submitted status.',
       );
     });
-
-    it('should accept the approval request', async function () {
-      await txController.approveTransaction(txMeta.id);
-
-      assert.equal(messengerMock.call.callCount, 1);
-      assert.deepEqual(messengerMock.call.getCall(0).args, [
-        'ApprovalController:acceptRequest',
-        txMeta.id,
-      ]);
-    });
-
-    it('should not throw if accepting approval request throws', async function () {
-      messengerMock.call.throws();
-      await txController.approveTransaction(txMeta.id);
-    });
   });
 
   describe('#sign replay-protected tx', function () {
@@ -1287,22 +1277,6 @@ describe('Transaction Controller', function () {
 
       txController.cancelTransaction(0);
     });
-
-    it('should reject the approval request', function () {
-      txController.cancelTransaction(0);
-
-      assert.equal(messengerMock.call.callCount, 1);
-      assert.deepEqual(messengerMock.call.getCall(0).args, [
-        'ApprovalController:rejectRequest',
-        '0',
-        new Error('Rejected'),
-      ]);
-    });
-
-    it('should not throw if rejecting approval request throws', async function () {
-      messengerMock.call.throws();
-      txController.cancelTransaction(0);
-    });
   });
 
   describe('#createSpeedUpTransaction', function () {
@@ -1416,7 +1390,6 @@ describe('Transaction Controller', function () {
         from: selectedAddress,
         to: recipientAddress,
       });
-      await txController.approveTransaction(txMeta.id);
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},

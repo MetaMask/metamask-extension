@@ -228,14 +228,24 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndKeychain('test@123');
       const accounts = await metamaskController.keyringController.getAccounts();
-      const txMeta = await metamaskController.getApi().addUnapprovedTransaction(
-        undefined,
-        {
-          from: accounts[0],
-          to: recipientAddress,
-        },
-        ORIGIN_METAMASK,
-      );
+
+      const txMeta = await new Promise((resolve) => {
+        metamaskController.txController.once('newUnapprovedTx', (_txMeta) =>
+          resolve(_txMeta),
+        );
+
+        metamaskController.getApi().addUnapprovedTransaction(
+          undefined,
+          {
+            from: accounts[0],
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          undefined,
+        );
+      });
 
       const [transaction1, transaction2] = await Promise.all([
         metamaskController
@@ -327,7 +337,7 @@ describe('MetaMaskController', function () {
   });
 
   describe('#resolvePendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
+    it('should not propagate ApprovalRequestNotFoundError', async function () {
       const error = new ApprovalRequestNotFoundError('123');
       metamaskController.approvalController = {
         accept: () => {
@@ -335,7 +345,10 @@ describe('MetaMaskController', function () {
         },
       };
       // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+      await metamaskController.resolvePendingApproval(
+        'DUMMY_ID',
+        'DUMMY_VALUE',
+      );
     });
 
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
@@ -345,9 +358,11 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      assert.throws(() => {
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
-      }, error);
+      assert.rejects(
+        () =>
+          metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
+        error,
+      );
     });
   });
 
