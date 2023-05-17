@@ -25,7 +25,6 @@ import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
-import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -541,7 +540,6 @@ export default class Routes extends Component {
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && <MultichainAppHeader location={location} />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
-        {completedOnboarding ? <NetworkDropdown /> : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isUnlocked ? <InteractiveReplacementTokenNotification /> : null
