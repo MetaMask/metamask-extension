@@ -23,7 +23,6 @@ import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
-import NewSnapAccountPage from '../create-account/snap-account/snap-account';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
@@ -115,6 +114,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import AddSnapAccountPage from '../add-snap-account/add-snap-account.component';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -333,7 +333,7 @@ export default class Routes extends Component {
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={ADD_SNAP_ACCOUNT_ROUTE}
-          component={NewSnapAccountPage}
+          component={AddSnapAccountPage}
         />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
