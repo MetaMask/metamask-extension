@@ -3800,6 +3800,9 @@
   "snapDetailLastUpdated": {
     "message": "Updated"
   },
+  "snapDetailManageSnap": {
+    "message": "Manage snap"
+  },
   "snapDetailTags": {
     "message": "Tags"
   },
