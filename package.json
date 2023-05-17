@@ -221,7 +221,8 @@
     "@babel/core@>=7.9.0": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
     "@babel/core@^7.1.0": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
     "@babel/core@^7.12.3": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
-    "@babel/core@7.12.9": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch"
+    "@babel/core@7.12.9": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
+    "@metamask/assets-controllers@^6.0.0": "patch:@metamask/assets-controllers@npm%3A6.0.0#./.yarn/patches/@metamask-assets-controllers-npm-6.0.0-0cb763bd07.patch"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",

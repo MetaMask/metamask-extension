@@ -3809,7 +3809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^6.0.0":
+"@metamask/assets-controllers@npm:6.0.0":
   version: 6.0.0
   resolution: "@metamask/assets-controllers@npm:6.0.0"
   dependencies:
@@ -3840,6 +3840,40 @@ __metadata:
     "@metamask/approval-controller": ^2.1.0
     "@metamask/network-controller": ^7.0.0
   checksum: 79c56421567b48b24deab2410645ae60022954ad590e6d91c3770fbeaf24ea3e92608935ae15696349a51bfc5d4337b22cc21f48b0d09bbf4e2f1a0c4aa96904
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A6.0.0#./.yarn/patches/@metamask-assets-controllers-npm-6.0.0-0cb763bd07.patch::locator=metamask-crx%40workspace%3A.":
+  version: 6.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A6.0.0#./.yarn/patches/@metamask-assets-controllers-npm-6.0.0-0cb763bd07.patch::version=6.0.0&hash=b3036f&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethersproject/bignumber": ^5.7.0
+    "@ethersproject/contracts": ^5.7.0
+    "@ethersproject/providers": ^5.7.0
+    "@metamask/abi-utils": ^1.1.0
+    "@metamask/approval-controller": ^2.1.0
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/contract-metadata": ^2.3.1
+    "@metamask/controller-utils": ^3.2.0
+    "@metamask/metamask-eth-abis": 3.0.0
+    "@metamask/network-controller": ^7.0.0
+    "@metamask/preferences-controller": ^3.0.0
+    "@metamask/utils": ^5.0.1
+    "@types/uuid": ^8.3.0
+    abort-controller: ^3.0.0
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    immer: ^9.0.6
+    multiformats: ^9.5.2
+    single-call-balance-checker-abi: ^1.0.0
+    uuid: ^8.3.2
+  peerDependencies:
+    "@metamask/approval-controller": ^2.1.0
+    "@metamask/network-controller": ^7.0.0
+  checksum: 7fcb7d4b62bca0205d8e4d833d40c5b9f5cc6e80a27a3b1f3f3108e7e643121eb2a6f208672fd537e9b372280163fc9029f7f9c1d99ba252d359654a6493affa
   languageName: node
   linkType: hard
 

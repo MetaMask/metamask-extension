@@ -812,8 +812,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={this.context.t('assets')}
-                tabKey="assets"
+                name={this.context.t('tokens')}
+                tabKey="tokens"
               >
                 {process.env.MULTICHAIN ? (
                   <Box marginTop={2}>
