@@ -441,9 +441,6 @@
   "assetOptions": {
     "message": "Asset options"
   },
-  "assets": {
-    "message": "Assets"
-  },
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
@@ -4568,6 +4565,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokens": {
+    "message": "Tokens"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
