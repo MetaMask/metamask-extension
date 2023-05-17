@@ -1069,11 +1069,9 @@ describe('Transaction Controller', function () {
   });
 
   describe('#approveTransaction', function () {
-    let originalValue, txMeta, signStub, pubStub;
-
-    beforeEach(function () {
-      originalValue = '0x01';
-      txMeta = {
+    it('does not overwrite set values', async function () {
+      const originalValue = '0x01';
+      const txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
         metamaskNetworkId: currentNetworkId,
@@ -1093,22 +1091,17 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_gasPrice = wrongValue;
       providerResultStub.eth_estimateGas = '0x5209';
 
-      signStub = sinon
+      const signStub = sinon
         .stub(txController, 'signTransaction')
         .callsFake(() => Promise.resolve());
 
-      pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
-        txController.setTxHash('1', originalValue);
-        txController.txStateManager.setTxStatusSubmitted('1');
-      });
-    });
+      const pubStub = sinon
+        .stub(txController, 'publishTransaction')
+        .callsFake(() => {
+          txController.setTxHash('1', originalValue);
+          txController.txStateManager.setTxStatusSubmitted('1');
+        });
 
-    afterEach(function () {
-      signStub.restore();
-      pubStub.restore();
-    });
-
-    it('does not overwrite set values', async function () {
       await txController.approveTransaction(txMeta.id);
       const result = txController.txStateManager.getTransaction(txMeta.id);
       const params = result.txParams;
@@ -1121,6 +1114,9 @@ describe('Transaction Controller', function () {
         TransactionStatus.submitted,
         'should have reached the submitted status.',
       );
+
+      signStub.restore();
+      pubStub.restore();
     });
   });
 
@@ -1185,7 +1181,7 @@ describe('Transaction Controller', function () {
   });
 
   describe('#cancelTransaction', function () {
-    beforeEach(function () {
+    it('should emit a status change to rejected', function (done) {
       txController.txStateManager._addTransactionsToState([
         {
           id: 0,
@@ -1258,9 +1254,7 @@ describe('Transaction Controller', function () {
           history: [{}],
         },
       ]);
-    });
 
-    it('should emit a status change to rejected', function (done) {
       txController.once('tx:status-update', (txId, status) => {
         try {
           assert.equal(

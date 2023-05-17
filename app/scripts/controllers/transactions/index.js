@@ -401,13 +401,16 @@ export default class TransactionController extends EventEmitter {
    */
   async initApprovals() {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-    return Promise.all(
-      Object.values(unapprovedTxs).map((txMeta) =>
-        this._requestApproval(txMeta, {
+
+    Object.values(unapprovedTxs).forEach(async (txMeta) => {
+      try {
+        await this._waitForTransactionApproval(txMeta, {
           shouldShowRequest: false,
-        }),
-      ),
-    );
+        });
+      } catch (error) {
+        log.error('Error during persisted transaction approval', error);
+      }
+    });
   }
 
   // ====================================================================================================================================================
@@ -906,15 +909,7 @@ export default class TransactionController extends EventEmitter {
       return txMeta;
     }
 
-    await this._requestApprovalWithRetry(
-      txMeta,
-      async (_value, _retryCount) => {
-        await this.updateAndApproveTransaction(txMeta, actionId);
-      },
-      async () => {
-        await this.cancelTransaction(txMeta.id, actionId);
-      },
-    );
+    await this._waitForTransactionApproval(txMeta);
 
     return txMeta;
   }
@@ -2681,9 +2676,32 @@ export default class TransactionController extends EventEmitter {
 
   // Approvals
 
-  async _requestApprovalWithRetry(txMeta, onApproval, onCancel) {
+  async _waitForTransactionApproval(
+    txMeta,
+    { shouldShowRequest } = { shouldShowRequest: true },
+  ) {
+    await this._waitForApprovalWithRetry(
+      txMeta,
+      async (_value, _retryCount) => {
+        await this.updateAndApproveTransaction(txMeta, txMeta.actionId);
+      },
+      async () => {
+        await this.cancelTransaction(txMeta.id, txMeta.actionId);
+      },
+      {
+        shouldShowRequest,
+      },
+    );
+  }
+
+  async _waitForApprovalWithRetry(
+    txMeta,
+    onApproval,
+    onCancel,
+    { shouldShowRequest } = { shouldShowRequest: true },
+  ) {
     let success = false;
-    let approvalPromise = this._requestApproval(txMeta);
+    let approvalPromise = this._waitForApproval(txMeta, { shouldShowRequest });
     let retryCount = 0;
 
     while (!success) {
@@ -2713,7 +2731,7 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
-  async _requestApproval(
+  async _waitForApproval(
     txMeta,
     { shouldShowRequest } = { shouldShowRequest: true },
   ) {
