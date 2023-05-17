@@ -463,7 +463,7 @@
     "browserify": "^16.5.1",
     "chalk": "^3.0.0",
     "chokidar": "^3.5.3",
-    "chromedriver": "^111.0.0",
+    "chromedriver": "^113.0.0",
     "concurrently": "^7.6.0",
     "copy-webpack-plugin": "^6.0.3",
     "cross-spawn": "^7.0.3",
