@@ -1,0 +1,90 @@
+import React from 'react';
+import Box from '../../../components/ui/box/box';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Icon,
+  IconName,
+  Text,
+} from '../../../components/component-library';
+import Identicon from '../../../components/ui/identicon/identicon.component';
+import { SnapCardProps } from '../snap-account/snap-account';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AlignItems,
+  BLOCK_SIZES,
+  BorderColor,
+  Color,
+  DISPLAY,
+  FLEX_DIRECTION,
+  IconColor,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
+export default function SnapCard({
+  iconUrl,
+  snapTitle,
+  snapSlug,
+  updateAvailable,
+  isInstalled,
+  onClickFunc,
+}: Pick<
+  SnapCardProps,
+  'iconUrl' | 'snapTitle' | 'snapSlug' | 'updateAvailable' | 'isInstalled'
+> & { onClickFunc: () => void }) {
+  const t = useI18nContext();
+
+  return (
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      width={BLOCK_SIZES.ONE_THIRD}
+      borderColor={BorderColor.errorDefault}
+      borderWidth={1}
+      padding={[4, 4, 4, 4]}
+      className="snap-card"
+    >
+      <Box
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        marginBottom={2}
+      >
+        <Identicon image={iconUrl} />
+        {isInstalled ? (
+          <Button variant={BUTTON_VARIANT.SECONDARY}>
+            {t('snapConfigure')}
+          </Button>
+        ) : (
+          <Button variant={BUTTON_VARIANT.SECONDARY}>{t('install')}</Button>
+        )}
+      </Box>
+      <Text
+        variant={TextVariant.bodySm}
+        color={Color.textAlternative}
+        marginBottom={2}
+      >
+        {snapTitle}
+      </Text>
+      <Text variant={TextVariant.headingMd} marginBottom="auto">
+        {snapSlug}
+      </Text>
+      {updateAvailable && (
+        <Box
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+            {t('snapUpdateAvailable')}
+          </Text>
+          <Icon
+            name={IconName.Arrow2Right}
+            color={IconColor.iconAlternative}
+            onClick={onClickFunc}
+          />
+        </Box>
+      )}
+    </Box>
+  );
+}
