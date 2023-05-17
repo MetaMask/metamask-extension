@@ -2052,9 +2052,6 @@
   "showHexDataDescription": {
     "message": "Seleccione esta opción para mostrar el campo de datos hexadecimales en la pantalla de envío"
   },
-  "showHide": {
-    "message": "Mostrar/ocultar"
-  },
   "showIncomingTransactions": {
     "message": "Mostrar transacciones entrantes"
   },
@@ -2537,10 +2534,6 @@
   "toAddress": {
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 redes de prueba",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"

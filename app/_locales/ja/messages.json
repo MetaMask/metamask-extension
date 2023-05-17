@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "これを選択すると、送金画面に16進データフィールドが表示されます"
   },
-  "showHide": {
-    "message": "表示・非表示"
-  },
   "showIncomingTransactions": {
     "message": "受信トランザクションを表示"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "eth_sign 要求の設定"
-  },
-  "toggleTestNetworks": {
-    "message": "$1テストネットワーク",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "トークン"

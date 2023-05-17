@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
   },
-  "showHide": {
-    "message": "보기/숨기기"
-  },
   "showIncomingTransactions": {
     "message": "수신 거래 표시"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "eth_sign 요청 토글"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 테스트 네트워크",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "토큰"

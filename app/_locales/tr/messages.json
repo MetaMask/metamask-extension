@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Gönder ekranında on altılık veri alanını göstermek için bunu seçin"
   },
-  "showHide": {
-    "message": "Göster/gizle"
-  },
   "showIncomingTransactions": {
     "message": "Gelen işlemleri göster"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "eth_sign taleplerini değiştirin"
-  },
-  "toggleTestNetworks": {
-    "message": "Test ağlarını $1",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"

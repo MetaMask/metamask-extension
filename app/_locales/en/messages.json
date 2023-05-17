@@ -1785,7 +1785,9 @@
     "message": "full access to your wallet and funds.",
     "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
   },
-  "holdToRevealLockedLabel": { "message": "hold to reveal circle locked" },
+  "holdToRevealLockedLabel": {
+    "message": "hold to reveal circle locked"
+  },
   "holdToRevealPrivateKey": {
     "message": "Hold to reveal Private Key"
   },
@@ -1798,7 +1800,9 @@
   "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
   },
-  "holdToRevealUnlockedLabel": { "message": "hold to reveal circle unlocked" },
+  "holdToRevealUnlockedLabel": {
+    "message": "hold to reveal circle unlocked"
+  },
   "id": {
     "message": "Id"
   },
@@ -3696,9 +3700,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "showHide": {
-    "message": "Show/hide"
-  },
   "showIncomingTransactions": {
     "message": "Show incoming transactions"
   },
@@ -4513,10 +4514,6 @@
   },
   "toggleEthSignOn": {
     "message": "ON (Not recommended)"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 test networks",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"

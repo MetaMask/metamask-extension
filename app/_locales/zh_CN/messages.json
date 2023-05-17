@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "选择此项以在发送屏幕上显示十六进制数据字段"
   },
-  "showHide": {
-    "message": "显示/隐藏"
-  },
   "showIncomingTransactions": {
     "message": "显示传入的交易"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "切换eth_sign请求"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 测试网络",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "代币"

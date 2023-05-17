@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Выберите эту опцию, чтобы отобразить поле шестнадцатеричных данных на экране отправки"
   },
-  "showHide": {
-    "message": "Показать/скрыть"
-  },
   "showIncomingTransactions": {
     "message": "Показать входящие транзакции"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "Переключить запросы eth_sign"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 тестовые сети",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Токен"

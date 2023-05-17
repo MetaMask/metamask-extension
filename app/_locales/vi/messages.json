@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Chọn tùy chọn này để hiển thị trường dữ liệu thập lục phân trên màn hình gửi"
   },
-  "showHide": {
-    "message": "Hiển thị/ẩn"
-  },
   "showIncomingTransactions": {
     "message": "Hiển thị các giao dịch đến"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "Bật/tắt yêu cầu eth_sign"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 mạng thử nghiệm",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"

@@ -3196,9 +3196,6 @@
   "showHexDataDescription": {
     "message": "Επιλέξτε αυτό για να εμφανίσετε το πεδίο hex δεδομένων στην οθόνη αποστολής"
   },
-  "showHide": {
-    "message": "Εμφάνιση/απόκρυψη"
-  },
   "showIncomingTransactions": {
     "message": "Εμφάνιση Εισερχομένων Συναλλαγών"
   },
@@ -3905,10 +3902,6 @@
   },
   "toggleEthSignField": {
     "message": "Εναλλαγή αιτημάτων eth_sign"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 δοκιμαστικά δίκτυα",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Διακριτικό"

@@ -3199,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
   },
-  "showHide": {
-    "message": "Afficher/masquer"
-  },
   "showIncomingTransactions": {
     "message": "Afficher les transactions entrantes"
   },
@@ -3908,10 +3905,6 @@
   },
   "toggleEthSignField": {
     "message": "Activer/Désactiver les requêtes eth-sign"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 réseaux de test",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Jeton"
