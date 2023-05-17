@@ -441,9 +441,6 @@
   "assetOptions": {
     "message": "Asset options"
   },
-  "assets": {
-    "message": "Assets"
-  },
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
@@ -673,6 +670,9 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "compliance": {
+    "message": "Compliance"
+  },
   "complianceActivatedDesc": {
     "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
   },
@@ -732,6 +732,9 @@
   },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
+  },
+  "connectCustodialAccountMenu": {
+    "message": "Connect Custodial Account"
   },
   "connectCustodialAccountMsg": {
     "message": "Please choose the custodian you want to connect in order to add or refresh a token."
@@ -3170,6 +3173,9 @@
   "portfolio": {
     "message": "Portfolio"
   },
+  "portfolioDashboard": {
+    "message": "Portfolio Dashboard"
+  },
   "portfolioView": {
     "message": "Portfolio view"
   },
@@ -4568,6 +4574,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokens": {
+    "message": "Tokens"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
