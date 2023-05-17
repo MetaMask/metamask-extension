@@ -57,7 +57,7 @@ describe('Hide token', function () {
         let assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 2);
 
-        await driver.clickElement({ text: 'Assets', tag: 'button' });
+        await driver.clickElement({ text: 'Tokens', tag: 'button' });
 
         await driver.clickElement({ text: 'TST', tag: 'span' });
 

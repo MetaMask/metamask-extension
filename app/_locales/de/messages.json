@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Asset-Optionen"
   },
-  "assets": {
-    "message": "Vermögenswerte"
-  },
   "attemptSendingAssets": {
     "message": "Wenn Sie versuchen, Assets direkt von einem Netzwerk in ein anderes zu senden, kann dies zu einem dauerhaften Asset-Verlust führen. Verwenden Sie unbedingt eine Bridge."
   },
