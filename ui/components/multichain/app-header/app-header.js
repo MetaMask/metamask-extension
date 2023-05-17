@@ -188,7 +188,11 @@ export const AppHeader = ({ location }) => {
                       name={currentNetwork?.nickname}
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       size={Size.SM}
-                      onClick={networkOpenCallback}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        networkOpenCallback();
+                      }}
                       display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
                       disabled={disableNetworkPicker}
                     />
@@ -200,10 +204,15 @@ export const AppHeader = ({ location }) => {
                     margin={2}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
-                    onClick={networkOpenCallback}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      networkOpenCallback();
+                    }}
                     display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
                     className="multichain-app-header__contents__network-picker"
                     disabled={disableNetworkPicker}
+                    data-testid="network-display"
                   />
                 </div>
               )}
@@ -362,8 +371,13 @@ export const AppHeader = ({ location }) => {
                 <PickerNetwork
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
-                  onClick={() => dispatch(toggleNetworkMenu())}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    networkOpenCallback();
+                  }}
                   className="multichain-app-header__contents__network-picker"
+                  data-testid="network-display"
                 />
               </div>
               <MetafoxLogo
