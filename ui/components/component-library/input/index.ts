@@ -1,2 +1,2 @@
 export { Input } from './input';
-export type { InputType } from './input.type';
+export { InputType } from './input.types';

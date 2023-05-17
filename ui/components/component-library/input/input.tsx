@@ -12,7 +12,7 @@ import Box from '../../ui/box';
 
 import { Text } from '../text';
 
-import { InputType } from './input.type';
+import { InputType } from './input.types';
 
 export const Input = React.forwardRef(
   (
@@ -152,8 +152,8 @@ Input.propTypes = {
    */
   textVariant: PropTypes.oneOf(Object.values(TextVariant)),
   /**
-   * Type of the input element. Can be InputType.text, InputType.password, InputType.number
-   * Defaults to InputType.text ('text')
+   * Type of the input element. Can be InputType.Text, InputType.Password, InputType.Number
+   * Defaults to InputType.Text ('text')
    * If you require another type add it to InputType
    */
   type: PropTypes.oneOf(Object.values(InputType)),
