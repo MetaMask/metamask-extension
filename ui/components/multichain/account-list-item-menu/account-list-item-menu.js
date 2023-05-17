@@ -113,6 +113,7 @@ export const AccountListItemMenu = ({
           closeMenu?.();
         }}
         iconName={IconName.ScanBarcode}
+        data-testid="account-list-menu-details"
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>

@@ -24,12 +24,11 @@ describe('Show account details', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
+        await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-list-item-menu-button"]',
         );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
-        );
+        await driver.clickElement('[data-testid="account-list-menu-details"');
 
         const qrCode = await driver.findElement('.qr-code__wrapper');
         assert.equal(await qrCode.isDisplayed(), true);
