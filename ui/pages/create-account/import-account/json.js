@@ -5,7 +5,6 @@ import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
   FormTextField,
-  Label,
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
@@ -14,16 +13,10 @@ import {
   Size,
   TextVariant,
   TextAlign,
-  FLEX_DIRECTION,
-  DISPLAY,
-  JustifyContent,
-  FontWeight,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { displayWarning } from '../../../store/actions';
-import Box from '../../../components/ui/box/box';
-import ToggleButton from '../../../components/ui/toggle-button';
 import BottomButtons from './bottom-buttons';
 
 JsonImportSubview.propTypes = {
@@ -35,18 +28,8 @@ export default function JsonImportSubview({ importAccountFunc }) {
   const warning = useSelector((state) => state.appState.warning);
   const [password, setPassword] = useState('');
   const [fileContents, setFileContents] = useState('');
-  const [isPasswordless, setIsPasswordless] = useState(false);
 
-  const isPrimaryDisabled =
-    fileContents === '' || (!isPasswordless && password === '');
-
-  function handlePasswordlessCheck() {
-    if (password !== '') {
-      return;
-    }
-    setIsPasswordless(!isPasswordless);
-    setPassword('');
-  }
+  const isPrimaryDisabled = fileContents === '';
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -65,11 +48,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
 
   return (
     <>
-      <Text
-        variant={TextVariant.bodyMd}
-        textAlign={TextAlign.CENTER}
-        marginBottom={2}
-      >
+      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}
@@ -80,25 +59,6 @@ export default function JsonImportSubview({ importAccountFunc }) {
           {t('fileImportFail')}
         </ButtonLink>
       </Text>
-
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <Label
-          variant={TextVariant.bodyMd}
-          fontWeight={FontWeight.Normal}
-          marginRight={2}
-        >
-          {t('importJsonWithoutPassword')}
-        </Label>
-        <ToggleButton
-          value={isPasswordless}
-          onToggle={handlePasswordlessCheck}
-          disabled={password !== ''}
-        ></ToggleButton>
-      </Box>
 
       <FileInput
         id="file-input"
@@ -114,26 +74,23 @@ export default function JsonImportSubview({ importAccountFunc }) {
         }}
       />
 
-      {!isPasswordless && (
-        <FormTextField
-          id="json-password-box"
-          size={TEXT_FIELD_SIZES.LARGE}
-          autoFocus
-          type={TEXT_FIELD_TYPES.PASSWORD}
-          helpText={warning}
-          error
-          placeholder={t('enterPassword')}
-          value={password}
-          onChange={(event) => {
-            setIsPasswordless(false);
-            setPassword(event.target.value);
-          }}
-          inputProps={{
-            onKeyPress: handleKeyPress,
-          }}
-          marginBottom={4}
-        />
-      )}
+      <FormTextField
+        id="json-password-box"
+        size={TEXT_FIELD_SIZES.LARGE}
+        autoFocus
+        type={TEXT_FIELD_TYPES.PASSWORD}
+        helpText={warning}
+        error
+        placeholder={t('enterOptionalPassword')}
+        value={password}
+        onChange={(event) => {
+          setPassword(event.target.value);
+        }}
+        inputProps={{
+          onKeyPress: handleKeyPress,
+        }}
+        marginBottom={4}
+      />
 
       <BottomButtons
         importAccountFunc={_importAccountFunc}

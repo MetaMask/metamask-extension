@@ -18,19 +18,17 @@ describe('Json', () => {
   });
 
   it('should render', () => {
-    const { getByText, getByRole } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <Json importAccountFunc={mockImportFunc} />,
       mockStore,
     );
-    const passwordToggle = getByRole('checkbox');
-    expect(passwordToggle).toBeInTheDocument();
 
     const fileImportLink = getByText('File import not working? Click here!');
     expect(fileImportLink).toBeInTheDocument();
   });
 
-  it('should import file without password when toggle is enabled', async () => {
-    const { getByText, getByRole, getByTestId } = renderWithProvider(
+  it('should import file without password', async () => {
+    const { getByText, getByTestId } = renderWithProvider(
       <Json importAccountFunc={mockImportFunc} />,
       mockStore,
     );
@@ -39,18 +37,15 @@ describe('Json', () => {
     const fileInput = getByTestId('file-input');
 
     const mockFile = new File(['0'], 'test.json');
-    fireEvent.change(fileInput, {
-      target: { files: [mockFile] },
-    });
 
     expect(importButton).toBeInTheDocument();
     expect(importButton).toBeDisabled();
 
-    const passwordToggle = getByRole('checkbox');
-    fireEvent.click(passwordToggle);
+    fireEvent.change(fileInput, {
+      target: { files: [mockFile] },
+    });
 
     await waitFor(() => {
-      expect(passwordToggle).toBeChecked();
       expect(importButton).not.toBeDisabled();
     });
 
@@ -61,33 +56,32 @@ describe('Json', () => {
     });
   });
 
-  it('should import file with password when toggle is disabled', async () => {
-    const { getByText, getByRole, getByTestId, getByPlaceholderText } =
-      renderWithProvider(
-        <Json importAccountFunc={mockImportFunc} />,
-        mockStore,
-      );
+  it('should import file with password', async () => {
+    const { getByText, getByTestId, getByPlaceholderText } = renderWithProvider(
+      <Json importAccountFunc={mockImportFunc} />,
+      mockStore,
+    );
 
     const importButton = getByText('Import');
     const fileInput = getByTestId('file-input');
 
     const mockFile = new File(['0'], 'test.json');
-    fireEvent.change(fileInput, {
-      target: { files: [mockFile] },
-    });
 
     expect(importButton).toBeInTheDocument();
     expect(importButton).toBeDisabled();
 
-    const passwordToggle = getByRole('checkbox');
-
-    const passwordInput = getByPlaceholderText(messages.enterPassword.message);
+    const passwordInput = getByPlaceholderText(
+      messages.enterOptionalPassword.message,
+    );
     fireEvent.change(passwordInput, {
       target: { value: 'password' },
     });
 
+    fireEvent.change(fileInput, {
+      target: { files: [mockFile] },
+    });
+
     await waitFor(() => {
-      expect(passwordToggle).not.toBeChecked();
       expect(importButton).not.toBeDisabled();
     });
 
