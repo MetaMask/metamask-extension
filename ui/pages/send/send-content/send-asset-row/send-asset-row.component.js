@@ -157,10 +157,8 @@ export default class SendAssetRow extends Component {
       if (nft) {
         return this.renderNft(nft);
       }
-      if (details) {
-        return this.renderNft(details);
       if (nft || details) {
-         return this.renderNft(nft ?? details);
+        return this.renderNft(nft ?? details);
       }
     }
     return this.renderNativeCurrency();
