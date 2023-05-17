@@ -44,12 +44,11 @@ describe('Clear account activity', function () {
         });
 
         // Clear activity and nonce data
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          css: '.tab-bar__tab__content__title',
-          text: 'Advanced',
-        });
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
           text: 'Clear activity tab data',
           tag: 'button',
