@@ -164,6 +164,7 @@ class SettingsPage extends PureComponent {
               )}
             </Box>
             <ButtonIcon
+              className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
               ariaLabel="Close"
               onClick={() => {
