@@ -8,6 +8,7 @@ const {
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
+  openDapp,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
@@ -177,7 +178,7 @@ describe('MetaMask', function () {
     let popup;
     let dapp;
     it('connects the dapp', async function () {
-      await driver.openNewPage('http://127.0.0.1:8080/');
+      await openDapp(driver);
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Connect', tag: 'button' });
@@ -429,7 +430,7 @@ describe('MetaMask', function () {
 
     it('checks balance', async function () {
       await driver.clickElement({
-        text: 'Assets',
+        text: 'Tokens',
         tag: 'button',
       });
 

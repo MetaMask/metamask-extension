@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Параметры актива"
   },
-  "assets": {
-    "message": "Активы"
-  },
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "История"
   },
-  "holdToReveal": {
-    "message": "Удерживайте для отображения СВФ"
-  },
   "holdToRevealContent1": {
     "message": "Ваша секретная фраза для восстановления дает $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "но злоумышленники-фишеры могут.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Обеспечьте безопасность своей СВФ"
   },
   "ignoreAll": {
     "message": "Игнорировать все"
