@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import log from 'loglevel';
+import { cloneDeep } from 'lodash';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -168,9 +169,10 @@ const ConfirmTxScreen = ({ match }) => {
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
 
-    return transactionId
+    const unconfirmedTx = transactionId
       ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index];
+    return cloneDeep(unconfirmedTx);
   };
 
   const txData = getTxData() || {};
