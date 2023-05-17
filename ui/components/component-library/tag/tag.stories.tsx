@@ -1,10 +1,11 @@
 import React from 'react';
-import README from './README.mdx';
+import { ComponentMeta } from '@storybook/react';
 import { Tag } from './tag';
+import { TagProps } from './tag.types';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/Tag',
-
   component: Tag,
   parameters: {
     docs: {
@@ -19,13 +20,13 @@ export default {
   args: {
     label: 'Imported',
   },
-};
+} as ComponentMeta<typeof Tag>;
 
-export const DefaultStory = (args) => <Tag {...args} />;
+export const DefaultStory = (args: TagProps) => <Tag {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Label = (args) => <Tag {...args}>Anchor Element</Tag>;
+export const Label = (args: TagProps) => <Tag {...args}>Anchor Element</Tag>;
 
 Label.args = {
   label: 'Label Story',
