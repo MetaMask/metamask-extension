@@ -70,7 +70,9 @@ describe('Backup and Restore', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Download user settings
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
@@ -107,7 +109,9 @@ describe('Backup and Restore', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Restore
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         const restore = await driver.findElement('#restore-file');
