@@ -19,6 +19,8 @@ export default function ListItem({
     className,
     subtitle || children ? '' : 'list-item--single-content-row',
   );
+  const showBorderTop =
+    process.env.MULTICHAIN && className === 'transaction-list-item';
 
   return (
     <div
@@ -32,6 +34,11 @@ export default function ListItem({
           onClick();
         }
       }}
+      style={
+        showBorderTop
+          ? { borderTop: 'none' }
+          : { borderTop: '1px solid var(--color-border-muted)' }
+      } // TODO: Remove this style once we create a new component for TranactionListItem
     >
       {icon ? <div className="list-item__icon">{icon}</div> : null}
       <div className="list-item__heading">
