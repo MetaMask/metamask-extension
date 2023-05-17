@@ -130,13 +130,13 @@ describe('MetaMask', function () {
 
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
 
       const lockButton = await driver.findClickableElement(
-        '.account-menu__lock-button',
+        '[data-testid="global-menu-lock"]',
       );
-      assert.equal(await lockButton.getText(), 'Lock');
+      assert.equal(await lockButton.getText(), 'Lock MetaMask');
       await lockButton.click();
       await driver.delay(regularDelayMs);
     });
