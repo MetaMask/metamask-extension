@@ -33,8 +33,12 @@ const mockTxParamsFromAddress = '0x123456789';
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
 const mockTxParamsToAddressConcat = '0x85c...D65e';
 
-const mockContractAddressWithout0x = 'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
-const mockContractAddressConcat = '0xe57...750A';
+const mockParsedTxDataToAddressWithout0x =
+  'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
+const mockParsedTxDataToAddress = '0xe57...750A';
+
+const mockPropsToAddress = '0x33m1685cfceaa5c0bdb1609fc536e9a8387dd567';
+const mockPropsToAddressConcat = '0x33m...d567';
 
 const mockTxParams = {
   from: mockTxParamsFromAddress,
@@ -44,7 +48,7 @@ const mockTxParams = {
   maxFeePerGas: '0x59682f16',
   maxPriorityFeePerGas: '0x59682f00',
   type: '0x2',
-  data: `0xa22cb465000000000000000000000000${mockContractAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
+  data: `0xa22cb465000000000000000000000000${mockParsedTxDataToAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
 };
 
 const baseStore = {
@@ -203,60 +207,51 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
   });
 
-  describe(`when the transaction is a ${TransactionType.simpleSend} type`, () => {
-    it('should use txParams.to address as the recipient value', () => {
-      const store = configureMockStore(middleware)(mockedStore);
-      const { container } = renderWithProvider(
-        <ConfirmTransactionBase actionKey="confirm" />,
-        store,
-      );
+  it('should render NoteToTrader when isNoteToTraderSupported is true', () => {
+    mockedStore.metamask.custodyAccountDetails = {
+      '0x0': {
+        address: '0x0',
+        details: 'details',
+        custodyType: 'testCustody - Saturn',
+        custodianName: 'saturn-dev',
+      },
+    };
 
-      const recipientElem = container.querySelector(sendToRecipientSelector);
-      expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
-    });
+    mockedStore.metamask.mmiConfiguration = {
+      custodians: [
+        {
+          name: 'saturn-dev',
+          displayName: 'Saturn Custody',
+          isNoteToTraderSupported: true,
+        },
+      ],
+    };
 
-    it('should use txParams.to address as the recipient value even when no value is passed', () => {
-      mockedStoreWithConfirmTxParams({
-        ...mockTxParams,
-        value: '0x0',
-      });
-      const store = configureMockStore(middleware)(mockedStore);
-      const { container } = renderWithProvider(
-        <ConfirmTransactionBase actionKey="confirm" />,
-        store,
-      );
-
-      const recipientElem = container.querySelector(sendToRecipientSelector);
-      expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
-    });
+    const store = configureMockStore(middleware)(mockedStore);
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(getByTestId('transaction-note')).toBeInTheDocument();
   });
 
-  describe('when the transaction is a contract interaction', () => {
-    beforeEach(() => {
-      mockedStore.confirmTransaction.txData.type =
-        TransactionType.contractInteraction;
-    });
+  describe('when rendering the recipient value', () => {
+    describe(`when the transaction is a ${TransactionType.simpleSend} type`, () => {
+      it(`should use txParams.to address`, () => {
+        const store = configureMockStore(middleware)(mockedStore);
+        const { container } = renderWithProvider(
+          <ConfirmTransactionBase actionKey="confirm" />,
+          store,
+        );
 
-    it('should use the token to address as the recipient address', () => {
-      mockedStoreWithConfirmTxParams({
-        ...mockTxParams,
-        value: '0x0',
+        const recipientElem = container.querySelector(sendToRecipientSelector);
+        expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
       });
-      const store = configureMockStore(middleware)(mockedStore);
-      const { container } = renderWithProvider(
-        <ConfirmTransactionBase actionKey="confirm" />,
-        store,
-      );
 
-      const recipientElem = container.querySelector(sendToRecipientSelector);
-      expect(recipientElem).toHaveTextContent(mockContractAddressConcat);
-    });
-
-    describe('when there is a value being sent it should be treated as a general contract intereaction rather than custom one', () => {
-      it('should use txParams.to address (contract address) as the recipient address', () => {
+      it(`should use txParams.to address even if there is no amount sent`, () => {
         mockedStoreWithConfirmTxParams({
           ...mockTxParams,
-          value: '0x45666',
+          value: '0x0',
         });
         const store = configureMockStore(middleware)(mockedStore);
         const { container } = renderWithProvider(
@@ -268,33 +263,89 @@ describe('Confirm Transaction Base', () => {
         expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
       });
     });
-  });
+    describe(`when the transaction is NOT a ${TransactionType.simpleSend} type`, () => {
+      beforeEach(() => {
+        mockedStore.confirmTransaction.txData.type =
+          TransactionType.contractInteraction;
+      });
 
-  it('should render NoteToTrader when isNoteToTraderSupported is true', () => {
-    baseStore.metamask.custodyAccountDetails = {
-      '0x0': {
-        address: '0x0',
-        details: 'details',
-        custodyType: 'testCustody - Saturn',
-        custodianName: 'saturn-dev',
-      },
-    };
+      describe('when there is an amount being sent (it should be treated as a general contract intereaction rather than custom one)', () => {
+        it('should use txParams.to address (contract address)', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            value: '0x45666',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase actionKey="confirm" />,
+            store,
+          );
 
-    baseStore.metamask.mmiConfiguration = {
-      custodians: [
-        {
-          name: 'saturn-dev',
-          displayName: 'Saturn Custody',
-          isNoteToTraderSupported: true,
-        },
-      ],
-    };
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+      });
 
-    const store = configureMockStore(middleware)(baseStore);
-    const { getByTestId } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
-    expect(getByTestId('transaction-note')).toBeInTheDocument();
+      describe(`when there is no amount being sent`, () => {
+        it('should use propToAddress (toAddress passed as prop)', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            value: '0x0',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase
+              // fixme: we want to test toAddress provided by ownProps in mapStateToProps, but this currently overrides toAddress
+              toAddress={mockPropsToAddress}
+              actionKey="confirm"
+            />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockPropsToAddressConcat);
+        });
+
+        it('should use address parsed from transaction data if propToAddress is not provided', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            value: '0x0',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase actionKey="confirm" />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
+        });
+
+        it('should use txParams.to if neither propToAddress is not provided nor the transaction data to address were provided', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            data: '0x',
+            value: '0x0',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase actionKey="confirm" />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+      });
+    });
   });
 });

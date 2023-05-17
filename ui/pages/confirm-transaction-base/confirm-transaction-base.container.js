@@ -138,7 +138,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const toAddress = isSendingAmount
     ? txParamsToAddress
-    : propsToAddress || tokenToAddress;
+    : propsToAddress || tokenToAddress || txParamsToAddress;
 
   const toAccounts = getSendToAccounts(state);
 
