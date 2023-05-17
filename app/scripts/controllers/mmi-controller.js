@@ -15,7 +15,7 @@ import {
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { IN_PROGRESS_TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { FINALIZED_TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
 export default class MMIController extends EventEmitter {
   constructor(opts) {
@@ -73,7 +73,7 @@ export default class MMIController extends EventEmitter {
   custodianEventHandlerFactory() {
     return custodianEventHandlerFactory({
       log,
-      IN_PROGRESS_TRANSACTION_STATUSES,
+      FINALIZED_TRANSACTION_STATUSES,
       getState: () => this.getState(),
       addKeyringIfNotExists: (t) => this.addKeyringIfNotExists(t),
       getPendingNonce: (address) => this.getPendingNonce(address),
