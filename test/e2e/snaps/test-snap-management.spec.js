@@ -73,15 +73,13 @@ describe('Test Snap Management', function () {
         await driver.switchToWindow(extensionPage);
         await driver.delay(1000);
 
-        // click on the account menu icon
-        await driver.clickElement('.account-menu__icon');
-        await driver.delay(1000);
+        // click on the global action menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
 
         // try to click on the notification item
-        await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
-        });
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.delay(1000);
 
         // try to click on the snaps item
