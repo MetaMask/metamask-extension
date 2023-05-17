@@ -54,9 +54,7 @@ module.exports = {
       os: false,
       path: false,
       stream: require.resolve('stream-browserify'),
-      _stream_transform: require.resolve(
-        'readable-stream/lib/_stream_transform.js',
-      ),
+      _stream_transform: require.resolve('readable-stream/lib/_stream_transform.js'),
       zlib: false,
     };
     config.module.strictExportPresence = true;

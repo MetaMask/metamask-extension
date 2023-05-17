@@ -441,9 +441,6 @@
   "assetOptions": {
     "message": "Asset options"
   },
-  "assets": {
-    "message": "Assets"
-  },
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
@@ -988,6 +985,9 @@
   },
   "custodySessionExpired": {
     "message": "Custodian session expired."
+  },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
   },
   "custom": {
     "message": "Advanced"
@@ -2515,6 +2515,12 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "note": {
+    "message": "Note"
+  },
+  "notePlaceholder": {
+    "message": "The approver will see this note when approving the transaction at the custodian."
   },
   "notifications": {
     "message": "Notifications"
@@ -4560,6 +4566,9 @@
   "tokenSymbol": {
     "message": "Token symbol"
   },
+  "tokens": {
+    "message": "Tokens"
+  },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
@@ -4671,6 +4680,9 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionNote": {
+    "message": "Transaction note"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
