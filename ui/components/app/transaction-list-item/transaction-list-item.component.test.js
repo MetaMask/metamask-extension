@@ -146,5 +146,23 @@ describe('TransactionListItem', () => {
       fireEvent.click(cancelButton);
       expect(getByText('Cancel transaction')).toBeInTheDocument();
     });
+
+    it('should have a custodian Tx and show the custody icon', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+      expect(queryByTestId('custody-icon')).toBeInTheDocument();
+    });
   });
 });

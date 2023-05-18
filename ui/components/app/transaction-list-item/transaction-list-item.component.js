@@ -226,7 +226,7 @@ function TransactionListItemInner({
         icon={
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isCustodian ? (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} data-testid="custody-icon">
               <TransactionIcon
                 category={category}
                 status={displayedStatusKey}
