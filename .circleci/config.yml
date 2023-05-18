@@ -180,6 +180,7 @@ workflows:
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
             - test-e2e-chrome
+            - test-e2e-chrome-mv3
             - test-e2e-firefox
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
@@ -692,7 +693,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --mv3
             fi
           no_output_timeout: 20m
       - store_artifacts:
