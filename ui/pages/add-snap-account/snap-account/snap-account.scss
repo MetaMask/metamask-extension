@@ -4,3 +4,7 @@
   background-repeat: no-repeat;
   background-position: bottom;
 }
+
+.snap-account-cards {
+  grid-template-columns: repeat(3, 1fr);
+}

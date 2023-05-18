@@ -39,7 +39,6 @@ export default function SnapCard({
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      width={BLOCK_SIZES.ONE_THIRD}
       borderColor={BorderColor.errorDefault}
       borderWidth={1}
       padding={[4, 4, 4, 4]}
@@ -70,21 +69,20 @@ export default function SnapCard({
       <Text variant={TextVariant.headingMd} marginBottom="auto">
         {snapSlug}
       </Text>
-      {updateAvailable && (
-        <Box
-          display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.spaceBetween}
-        >
+
+      <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.spaceBetween}>
+        {updateAvailable && (
           <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
             {t('snapUpdateAvailable')}
           </Text>
-          <Icon
-            name={IconName.Arrow2Right}
-            color={IconColor.iconAlternative}
-            onClick={onClickFunc}
-          />
-        </Box>
-      )}
+        )}
+        <Icon
+          name={IconName.Arrow2Right}
+          color={IconColor.iconAlternative}
+          onClick={onClickFunc}
+          marginLeft="auto"
+        />
+      </Box>
     </Box>
   );
 }

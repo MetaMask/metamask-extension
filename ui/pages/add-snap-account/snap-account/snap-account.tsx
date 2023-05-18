@@ -70,7 +70,12 @@ export default function NewSnapAccountPage() {
           {t('snapCreateAccountSubtitle')}
         </Text>
       </Box>
-      <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={1}>
+      <Box
+        display={DISPLAY.GRID}
+        flexWrap={FLEX_WRAP.WRAP}
+        gap={4}
+        className="snap-account-cards"
+      >
         {snapList.map((snap, index: number) => {
           const mockInstalled = Math.round(Math.random()) === 0;
           return (
