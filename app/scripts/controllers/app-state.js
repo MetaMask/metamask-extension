@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
+import { ApprovalType } from '@metamask/controller-utils';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -12,8 +13,6 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
-
-const APPROVAL_REQUEST_TYPE = 'unlock';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -408,7 +407,7 @@ export default class AppStateController extends EventEmitter {
         {
           id: this._approvalRequestId,
           origin: ORIGIN_METAMASK,
-          type: APPROVAL_REQUEST_TYPE,
+          type: ApprovalType.Unlock,
         },
         true,
       )

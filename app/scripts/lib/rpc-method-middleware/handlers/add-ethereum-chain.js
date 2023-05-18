@@ -1,6 +1,7 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
@@ -158,7 +159,7 @@ async function addEthereumChainHandler(
     try {
       await requestUserApproval({
         origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        type: ApprovalType.SwitchEthereumChain,
         requestData: {
           rpcUrl: existingNetwork.rpcUrl,
           chainId: existingNetwork.chainId,
@@ -244,7 +245,7 @@ async function addEthereumChainHandler(
   try {
     await requestUserApproval({
       origin,
-      type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+      type: ApprovalType.AddEthereumChain,
       requestData: {
         chainId: _chainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
@@ -275,7 +276,7 @@ async function addEthereumChainHandler(
   try {
     await requestUserApproval({
       origin,
-      type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+      type: ApprovalType.SwitchEthereumChain,
       requestData: {
         rpcUrl: firstValidRPCUrl,
         chainId: _chainId,

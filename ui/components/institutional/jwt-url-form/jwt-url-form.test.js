@@ -8,7 +8,7 @@ import JwtUrlForm from './jwt-url-form';
 describe('JwtUrlForm', function () {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
     },

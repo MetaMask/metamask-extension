@@ -34,6 +34,7 @@ import {
   AppHeader as MultichainAppHeader,
   AccountListMenu,
   NetworkListMenu,
+  AccountDetails,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -47,6 +48,14 @@ import Notifications from '../notifications';
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import ComplianceFeaturePage from '../institutional/compliance-feature-page';
+import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
+import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
+import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
+import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
+import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -71,6 +80,14 @@ import {
   ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  COMPLIANCE_FEATURE_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  CUSTODY_ACCOUNT_DONE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -136,6 +153,7 @@ export default class Routes extends Component {
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func,
+    accountDetailsAddress: PropTypes.string,
   };
 
   static contextTypes = {
@@ -273,6 +291,44 @@ export default class Routes extends Component {
           path={CONFIRMATION_V_NEXT_ROUTE}
           component={ConfirmationPage}
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        }
+        <Authenticated
+          path={CUSTODY_ACCOUNT_DONE_ROUTE}
+          component={InstitutionalEntityDonePage}
+          exact
+        />
+        <Authenticated
+          path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
+          component={InstitutionalEntityDonePage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+          component={ConfirmAddCustodianToken}
+          exact
+        />
+        <Authenticated
+          path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
+          component={InteractiveReplacementTokenPage}
+          exact
+        />
+        <Authenticated
+          path={COMPLIANCE_FEATURE_ROUTE}
+          component={ComplianceFeaturePage}
+        />
+        <Authenticated
+          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
+          component={ConfirmAddInstitutionalFeature}
+        />
+        <Authenticated
+          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+          component={ConfirmAddCustodianToken}
+        />
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
@@ -441,6 +497,8 @@ export default class Routes extends Component {
       toggleAccountMenu,
       isNetworkMenuOpen,
       toggleNetworkMenu,
+      accountDetailsAddress,
+      location,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -485,7 +543,7 @@ export default class Routes extends Component {
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() &&
           (process.env.MULTICHAIN ? (
-            <MultichainAppHeader />
+            <MultichainAppHeader location={location} />
           ) : (
             <AppHeader
               hideNetworkIndicator={this.onInitializationUnlockPage()}
@@ -500,12 +558,20 @@ export default class Routes extends Component {
           ))}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          isUnlocked ? <InteractiveReplacementTokenNotification /> : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {process.env.MULTICHAIN ? null : <AccountMenu />}
         {process.env.MULTICHAIN && isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
         {process.env.MULTICHAIN && isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
+        ) : null}
+        {process.env.MULTICHAIN && accountDetailsAddress ? (
+          <AccountDetails address={accountDetailsAddress} />
         ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

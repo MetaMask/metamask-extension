@@ -111,7 +111,7 @@
     },
     "networkId": "5",
     "networkStatus": "available",
-    "provider": {
+    "providerConfig": {
       "type": "rpc",
       "chainId": "0x5",
       "ticker": "ETH",
@@ -120,7 +120,8 @@
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
-        "chainId": "0x1"
+        "chainId": "0x1",
+        "nickname": "Custom Mainnet RPC"
       }
     },
     "keyrings": [

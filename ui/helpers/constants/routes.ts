@@ -20,10 +20,6 @@ const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
-const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
@@ -32,6 +28,17 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
+const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
+const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+const COMPLIANCE_FEATURE_ROUTE = '/compliance-feature';
+const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT =
+  '/confirm-institutional-feature-connect';
+const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
+const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
+  '/interactive-replacement-token-page';
+///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
@@ -126,6 +133,13 @@ const PATH_NAME_MAP = {
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
+  [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
+  [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
+  [COMPLIANCE_FEATURE_ROUTE]: 'Compliance Feature Page',
+  [CONFIRM_INSTITUTIONAL_FEATURE_CONNECT]:
+    'Confirm Institutional Feature Connect',
+  [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
+  [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
   ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
@@ -160,9 +174,6 @@ const PATH_NAME_MAP = {
     'Decrypt Message Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
-  ///: END:ONLY_INCLUDE_IN
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
@@ -212,8 +223,13 @@ export {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CUSTODY_ACCOUNT_DONE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,

@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "资产选项"
   },
-  "assets": {
-    "message": "资产"
-  },
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。必须使用桥来进行。"
   },
@@ -427,7 +424,7 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "历史记录"
   },
-  "holdToReveal": {
-    "message": "按住以显示 SRP"
-  },
   "holdToRevealContent1": {
     "message": "您的助记词提供 $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "但网络钓鱼者可能会。",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "确保 SRP 的安全"
   },
   "ignoreAll": {
     "message": "忽略所有"
@@ -3919,9 +3910,6 @@
   },
   "thingsToKeep": {
     "message": "注意事项:"
-  },
-  "thisIsBasedOn": {
-    "message": "所根据的信息是来自"
   },
   "time": {
     "message": "时间"

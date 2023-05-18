@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Opciones de activos"
   },
-  "assets": {
-    "message": "Activos"
-  },
   "attemptSendingAssets": {
     "message": "Si intenta enviar activos directamente de una red a otra, esto puede provocar la pérdida permanente de activos. Asegúrese de utilizar un puente."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "Historial"
   },
-  "holdToReveal": {
-    "message": "Mantenga presionado para mostrar la SRP"
-  },
   "holdToRevealContent1": {
     "message": "Su frase secreta de recuperación proporciona $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "pero los defraudadores sí.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Mantenga segura su SRP"
   },
   "ignoreAll": {
     "message": "Ignorar todo"
@@ -3919,9 +3910,6 @@
   },
   "thingsToKeep": {
     "message": "Cosas a tener en cuenta:"
-  },
-  "thisIsBasedOn": {
-    "message": "Esto se basa en información de "
   },
   "time": {
     "message": "Tiempo"

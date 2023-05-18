@@ -2,7 +2,7 @@
  * A note about the existence of both singular and plural variable names here:
  * When dealing with a literal property name, e.g. AlignItems, the constant
  * should match the property. When detailing a collection of things, it should
- * match the plural form of the thing. e.g. Color, TypographyVariant
+ * match the plural form of the thing. e.g. Color, TextVariant, Size
  */
 
 export enum Color {
@@ -63,7 +63,7 @@ export enum BackgroundColor {
   primaryAlternative = 'primary-alternative',
   primaryMuted = 'primary-muted',
   errorDefault = 'error-default',
-  errorAlternative = 'error-Alternative',
+  errorAlternative = 'error-alternative',
   errorMuted = 'error-muted',
   warningDefault = 'warning-default',
   warningAlternative = 'warning-alternative',
@@ -235,6 +235,19 @@ export enum JustifyContent {
   spaceEvenly = 'space-evenly',
 }
 
+export enum FlexDirection {
+  Row = 'row',
+  RowReverse = 'row-reverse',
+  Column = 'column',
+  ColumnReverse = 'column-reverse',
+}
+
+/**
+ * @deprecated `FLEX_DIRECTION` const has been deprecated in favour of the `FlexDirection` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FLEX_DIRECTION` with `FlexDirection` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
+
 export const FLEX_DIRECTION = {
   ROW: 'row',
   ROW_REVERSE: 'row-reverse',
@@ -242,11 +255,41 @@ export const FLEX_DIRECTION = {
   COLUMN_REVERSE: 'column-reverse',
 };
 
+export enum FlexWrap {
+  Wrap = 'wrap',
+  WrapReverse = 'wrap-reverse',
+  NoWrap = 'nowrap',
+}
+
+/**
+ * @deprecated `FLEX_WRAP` const has been deprecated in favour of the `FlexWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FLEX_WRAP` with `FlexWrap` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
+
 export const FLEX_WRAP = {
   WRAP: 'wrap',
   WRAP_REVERSE: 'wrap-reverse',
   NO_WRAP: 'nowrap',
 };
+
+export enum Display {
+  Block = 'block',
+  Flex = 'flex',
+  Grid = 'grid',
+  InlineBlock = 'inline-block',
+  Inline = 'inline',
+  InlineFlex = 'inline-flex',
+  InlineGrid = 'inline-grid',
+  ListItem = 'list-item',
+  None = 'none',
+}
+
+/**
+ * @deprecated `DISPLAY` const has been deprecated in favour of the `Display` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `DISPLAY` with `Display` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 
 export const DISPLAY = {
   BLOCK: 'block',
@@ -259,6 +302,12 @@ export const DISPLAY = {
   LIST_ITEM: 'list-item',
   NONE: 'none',
 };
+
+/**
+ * @deprecated `FRACTIONS` const has been deprecated in favour of the `BlockSize` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FRACTIONS` with `BlockSize` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 
 export const FRACTIONS = {
   HALF: '1/2',
@@ -289,6 +338,45 @@ export const FRACTIONS = {
   ELEVEN_TWELFTHS: '11/12',
 };
 
+export enum BlockSize {
+  Half = '1/2',
+  OneThird = '1/3',
+  TwoThirds = '2/3',
+  OneFourth = '1/4',
+  TwoFourths = '2/4',
+  ThreeFourths = '3/4',
+  OneFifth = '1/5',
+  TwoFifths = '2/5',
+  ThreeFifths = '3/5',
+  FourFifths = '4/5',
+  OneSixth = '1/6',
+  TwoSixths = '2/6',
+  ThreeSixths = '3/6',
+  FourSixths = '4/6',
+  FiveSixths = '5/6',
+  OneTwelfth = '1/12',
+  TwoTwelfths = '2/12',
+  ThreeTwelfths = '3/12',
+  FourTwelfths = '4/12',
+  FiveTwelfths = '5/12',
+  SixTwelfths = '6/12',
+  SevenTwelfths = '7/12',
+  EightTwelfths = '8/12',
+  NineTwelfths = '9/12',
+  TenTwelfths = '10/12',
+  ElevenTwelfths = '11/12',
+  Screen = 'screen',
+  Max = 'max',
+  Min = 'min',
+  Full = 'full',
+}
+
+/**
+ * @deprecated `BLOCK_SIZES` const has been deprecated in favour of the `BlockSize` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `BLOCK_SIZES` with `BlockSize` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
+
 export const BLOCK_SIZES = {
   ...FRACTIONS,
   SCREEN: 'screen',
@@ -306,6 +394,11 @@ export enum TextAlign {
   Start = 'start',
 }
 
+/**
+ * @deprecated `TEXT_ALIGN` const has been deprecated in favour of the `TextAlign` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `TEXT_ALIGN` with `TextAlign` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const TEXT_ALIGN = {
   LEFT: 'left',
   CENTER: 'center',
@@ -324,6 +417,11 @@ export enum TextTransform {
   Capitalize = 'capitalize',
 }
 
+/**
+ * @deprecated `TEXT_TRANSFORM` const has been deprecated in favour of the `TextTransform` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `TEXT_TRANSFORM` with `TextTransform` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const TEXT_TRANSFORM = {
   UPPERCASE: 'uppercase',
   LOWERCASE: 'lowercase',
@@ -336,6 +434,11 @@ export enum FontWeight {
   Normal = 'normal',
 }
 
+/**
+ * @deprecated `FONT_WEIGHT` const has been deprecated in favour of the `FontWeight` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FONT_WEIGHT` with `FontWeight` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const FONT_WEIGHT = {
   BOLD: 'bold',
   MEDIUM: 'medium',
@@ -348,6 +451,11 @@ export enum OverflowWrap {
   Normal = 'normal',
 }
 
+/**
+ * @deprecated `OVERFLOW_WRAP` const has been deprecated in favour of the `OverflowWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `OVERFLOW_WRAP` with `OverflowWrap` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const OVERFLOW_WRAP = {
   BREAK_WORD: 'break-word',
   ANYWHERE: 'anywhere',
@@ -359,10 +467,28 @@ export enum FontStyle {
   Normal = 'normal',
 }
 
+/**
+ * @deprecated `FONT_STYLE` const has been deprecated in favour of the `FontStyle` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `FONT_STYLE` with `FontStyle` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 export const FONT_STYLE = {
   ITALIC: 'italic',
   NORMAL: 'normal',
 };
+
+export enum Severity {
+  Danger = 'danger',
+  Warning = 'warning',
+  Info = 'info',
+  Success = 'success',
+}
+
+/**
+ * @deprecated `SEVERITIES` const has been deprecated in favour of the `Severity` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ *
+ * Help to replace `SEVERITIES` with `FontStyle` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
+ */
 
 export const SEVERITIES = {
   DANGER: 'danger',

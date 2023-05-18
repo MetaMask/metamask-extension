@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Mga opsyon ng asset"
   },
-  "assets": {
-    "message": "Mga Asset"
-  },
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "I-hold para ipakita ang SRP"
-  },
   "holdToRevealContent1": {
     "message": "Ang iyong Secret Recovery Phrase ay nagbibigay ng $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "ngunit maaring hingin ng mga phisher.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Ingatan ang iyong SRP"
   },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
@@ -3919,9 +3910,6 @@
   },
   "thingsToKeep": {
     "message": "Mga bagay na dapat tandaan:"
-  },
-  "thisIsBasedOn": {
-    "message": "Ito ay batay sa impormasyon mula sa "
   },
   "time": {
     "message": "Oras"

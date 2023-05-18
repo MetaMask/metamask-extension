@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Opções do ativo"
   },
-  "assets": {
-    "message": "Ativos"
-  },
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "Histórico"
   },
-  "holdToReveal": {
-    "message": "Segure para revelar a FRS"
-  },
   "holdToRevealContent1": {
     "message": "Sua Frase de Recuperação Secreta concede $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "mas os phishers talvez solicitem.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Mantenha sua FRS em segurança"
   },
   "ignoreAll": {
     "message": "Ignorar tudo"
@@ -3919,9 +3910,6 @@
   },
   "thingsToKeep": {
     "message": "Informações importantes:"
-  },
-  "thisIsBasedOn": {
-    "message": "Isso se baseia em informações de "
   },
   "time": {
     "message": "Hora"

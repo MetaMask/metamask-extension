@@ -29,7 +29,11 @@ class Variables {
     assert(
       value !== DeclaredOnly,
       new TypeError(
-        `Tried to access a declared, but not defined environmental variable "${key}"`,
+        `Tried to access a declared, but not defined environmental variable "${key}"
+\tWhy am I seeing this: "${key}" is declared in builds.yml, but had no actual value when we tried loading it.
+\tHow do I fix this: You could provide a default value for the variable in builds.yml under "env" property and commit to git. For example:
+\t\tenv:
+\t\t - ${key}: ''`,
       ),
     );
     return value;
@@ -46,7 +50,9 @@ class Variables {
     assert(
       this.isDeclared(key),
       new TypeError(
-        `Tried to access an environmental variable "${key}" that wasn't declared in builds.yml`,
+        `Tried to access an environmental variable "${key}" that wasn't declared in builds.yml
+\tWhy am I seeing this: We've made use of new variables be explicit to keep track of all of them in one place
+\tHow do I fix this: Adding your variable in builds.yml under "env" property and committing to git will fix this`,
       ),
     );
     return this.#definitions.get(key);

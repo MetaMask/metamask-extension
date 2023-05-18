@@ -7,15 +7,11 @@ const { loadBuildTypesConfig } = require('../lib/build-type');
 const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');
 
-const VARIABLES_REQUIRED_IN_PRODUCTION = [
-  'INFURA_BETA_PROJECT_ID',
-  'INFURA_FLASK_PROJECT_ID',
-  'INFURA_PROD_PROJECT_ID',
-  'SEGMENT_BETA_WRITE_KEY',
-  'SEGMENT_FLASK_WRITE_KEY',
-  'SEGMENT_PROD_WRITE_KEY',
-  'SENTRY_DSN',
-];
+const VARIABLES_REQUIRED_IN_PRODUCTION = {
+  main: ['INFURA_PROD_PROJECT_ID', 'SEGMENT_PROD_WRITE_KEY', 'SENTRY_DSN'],
+  beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
+  flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
+};
 
 async function fromIniFile(filepath) {
   let configContents = '';
@@ -137,9 +133,9 @@ async function getConfig(buildType, environment) {
 
   // TODO(ritave): Move build targets and environments to builds.yml
   if (environment === ENVIRONMENT.PRODUCTION) {
-    const undefinedVariables = VARIABLES_REQUIRED_IN_PRODUCTION.filter(
-      (variable) => !variables.isDefined(variable),
-    );
+    const undefinedVariables = VARIABLES_REQUIRED_IN_PRODUCTION[
+      buildType
+    ].filter((variable) => !variables.isDefined(variable));
     if (undefinedVariables.length !== 0) {
       const message = `Some variables required to build production target are not defined.
     - ${undefinedVariables.join('\n  - ')}

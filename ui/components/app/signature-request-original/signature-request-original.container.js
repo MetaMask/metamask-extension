@@ -23,6 +23,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
 
@@ -30,7 +31,7 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
-  const { provider } = state.metamask;
+  const providerConfig = getProviderConfig(state);
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -55,7 +56,7 @@ function mapStateToProps(state, ownProps) {
     subjectMetadata: getSubjectMetadata(state),
     messagesList,
     messagesCount,
-    provider,
+    providerConfig,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: getSelectedAccount(state),
     ///: END:ONLY_INCLUDE_IN

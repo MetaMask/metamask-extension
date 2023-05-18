@@ -1,10 +1,10 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { hasPendingApprovalsSelector } from './approvals';
+import { hasPendingApprovals } from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
     metamask: {
-      pendingApprovalCount: 2,
+      pendingApprovalCount: 3,
       pendingApprovals: {
         '1': {
           id: '1',
@@ -18,28 +18,30 @@ describe('approval selectors', () => {
           id: '2',
           origin: 'origin',
           time: Date.now(),
-          type: ApprovalType.EthSignTypedData,
+          type: ApprovalType.Transaction,
           requestData: {},
           requestState: null,
+        },
+      },
+      unapprovedTxs: {
+        '2': {
+          id: '2',
         },
       },
     },
   };
 
-  describe('hasPendingApprovalsSelector', () => {
+  describe('hasPendingApprovals', () => {
     it('should return true if there is a pending approval request', () => {
-      const result = hasPendingApprovalsSelector(
-        mockedState,
-        ApprovalType.WatchAsset,
-      );
+      const result = hasPendingApprovals(mockedState, ApprovalType.WatchAsset);
 
       expect(result).toBe(true);
     });
 
     it('should return false if there is no pending approval request', () => {
-      const result = hasPendingApprovalsSelector(
+      const result = hasPendingApprovals(
         mockedState,
-        ApprovalType.Transaction,
+        ApprovalType.SnapDialogPrompt,
       );
 
       expect(result).toBe(false);
