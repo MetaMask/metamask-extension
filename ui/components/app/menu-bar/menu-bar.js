@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
+import Box from '../../ui/box';
+import { DISPLAY, AlignItems } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
@@ -54,13 +56,18 @@ export default function MenuBar() {
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         custodianIcon && (
-          <div className="menu-bar__custody-logo" data-testid="custody-logo">
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            className="menu-bar__custody-logo"
+            data-testid="custody-logo"
+          >
             <img
               src={custodianIcon}
               className="menu-bar__custody-logo--icon"
               alt=""
             />
-          </div>
+          </Box>
         )
         ///: END:ONLY_INCLUDE_IN
       }

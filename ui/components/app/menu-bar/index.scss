@@ -16,9 +16,6 @@
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   &__custody-logo {
-    display: flex;
-    align-items: center;
-
     @media screen and (max-width: $break-small) {
       display: none;
     }
