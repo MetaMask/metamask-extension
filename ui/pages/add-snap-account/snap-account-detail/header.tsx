@@ -13,6 +13,8 @@ import {
   Button,
   Tag,
   BUTTON_VARIANT,
+  Icon,
+  IconName,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SnapCardProps } from '../snap-account/snap-account';
@@ -37,6 +39,17 @@ export const SnapDetailHeader = ({
 
   return (
     <Box marginBottom={5}>
+      <Box alignItems={AlignItems.center} marginBottom={4}>
+        <Button
+          variant={BUTTON_VARIANT.LINK}
+          marginRight={4}
+          onClick={() => history.back()}
+        >
+          {t('snapDetailsCreateASnapAccount')}
+        </Button>
+        <Icon name={IconName.ArrowRight} marginRight={4} />
+        <Text>{snapTitle}</Text>
+      </Box>
       <Box justifyContent={JustifyContent.spaceBetween}>
         <Text variant={TextVariant.headingLg}>{snapTitle}</Text>
         <Box>
