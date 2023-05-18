@@ -11,7 +11,6 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 
-import Identicon from '../../ui/identicon';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
@@ -28,7 +27,6 @@ import {
   getIsSwapsChain,
   getIsBridgeChain,
   getIsBuyableChain,
-  getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
   getMetaMetricsId,
@@ -71,7 +69,6 @@ const EthOverview = ({ className }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -130,7 +127,6 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
-      loading={!balance}
       balance={
         <Tooltip
           position="top"
@@ -371,7 +367,6 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };
