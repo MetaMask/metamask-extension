@@ -25,6 +25,10 @@ import {
   isLegacyTransaction,
 } from '../../helpers/utils/transactions.util';
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import NoteToTrader from '../../components/institutional/note-to-trader';
+///: END:ONLY_INCLUDE_IN
+
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
@@ -129,6 +133,10 @@ export default class ConfirmTransactionBase extends Component {
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType: PropTypes.string,
+    isNoteToTraderSupported: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
@@ -142,6 +150,9 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteText: '',
+    ///: END:ONLY_INCLUDE_IN
   };
 
   componentDidUpdate(prevProps) {
@@ -457,7 +468,7 @@ export default class ConfirmTransactionBase extends Component {
             ),
             !isMultiLayerFeeNetwork && (
               <TransactionDetailItem
-                key="total-item"
+                key="confirm-transaction-base-total-item"
                 detailTitle={t('total')}
                 detailText={useCurrencyRateCheck && renderTotalDetailText()}
                 detailTotal={renderTotalDetailTotal()}
@@ -594,9 +605,30 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      accountType,
+      isNoteToTraderSupported,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
-    const { submitting } = this.state;
+    const {
+      submitting,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      noteText,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.state;
     const { name } = methodData;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (accountType === 'custody') {
+      txData.custodyStatus = 'created';
+
+      if (isNoteToTraderSupported) {
+        txData.metadata = {
+          note: noteText,
+        };
+      }
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     if (txData.type === TransactionType.simpleSend) {
       addToAddressBookIfNew(toAddress, toAccounts);
@@ -802,6 +834,9 @@ export default class ConfirmTransactionBase extends Component {
       isApprovalOrRejection,
       assetStandard,
       title,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      isNoteToTraderSupported,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
       submitting,
@@ -869,6 +904,19 @@ export default class ConfirmTransactionBase extends Component {
           dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          noteComponent={
+            isNoteToTraderSupported && (
+              <NoteToTrader
+                maxLength="280"
+                placeholder={t('notePlaceholder')}
+                onChange={(value) => this.setState({ noteText: value })}
+                noteText={this.state.noteText}
+                labelText={t('transactionNote')}
+              />
+            )
+          }
+          ///: END:ONLY_INCLUDE_IN
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
           tokenAddress={tokenAddress}

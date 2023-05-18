@@ -11,7 +11,9 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import Button from '../../ui/button';
+///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
@@ -23,22 +25,23 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import { Text } from '../../component-library';
 import {
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
   getAddressBookEntry,
   getIsBuyableChain,
   getMetadataContractName,
   getMetaMaskIdentities,
+  getMetaMetricsId,
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
@@ -96,6 +99,9 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent,
+    ///: END:ONLY_INCLUDE_IN
   } = props;
 
   const t = useI18nContext();
@@ -115,6 +121,8 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   // TODO: Move useRamps hook to the confirm-transaction-base parent component.
   // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
@@ -140,7 +148,7 @@ const ConfirmPageContainer = (props) => {
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   const insightComponent = useTransactionInsights({
@@ -198,6 +206,7 @@ const ConfirmPageContainer = (props) => {
         )}
         {contentComponent || (
           <ConfirmPageContainerContent
+            metaMetricsId={metaMetricsId}
             action={action}
             title={title}
             image={image}
@@ -206,7 +215,7 @@ const ConfirmPageContainer = (props) => {
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             insightComponent={insightComponent}
             ///: END:ONLY_INCLUDE_IN
             errorMessage={errorMessage}
@@ -232,6 +241,9 @@ const ConfirmPageContainer = (props) => {
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
             txData={txData}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            noteComponent={noteComponent}
+            ///: END:ONLY_INCLUDE_IN
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -241,12 +253,13 @@ const ConfirmPageContainer = (props) => {
                 isBuyableChain ? (
                   <Text
                     variant={TextVariant.bodySm}
-                    textAlign={TEXT_ALIGN.LEFT}
+                    textAlign={TextAlign.Left}
                     as="h6"
                   >
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -265,12 +278,13 @@ const ConfirmPageContainer = (props) => {
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
+                      ///: END:ONLY_INCLUDE_IN
                     ])}
                   </Text>
                 ) : (
                   <Text
                     variant={TextVariant.bodySm}
-                    textAlign={TEXT_ALIGN.LEFT}
+                    textAlign={TextAlign.Left}
                     as="h6"
                   >
                     {t('insufficientCurrencyDeposit', [
@@ -390,6 +404,9 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  noteComponent: PropTypes.node,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default ConfirmPageContainer;

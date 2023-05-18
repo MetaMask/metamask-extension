@@ -17,8 +17,8 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
   getNetworkConfigurations,
   getNetworksTabSelectedNetworkConfigurationId,
-  getProvider,
 } from '../../../selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -52,7 +52,7 @@ const NetworksTab = ({ addNewNetwork }) => {
     window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
   const networkConfigurations = useSelector(getNetworkConfigurations);
-  const provider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
   const networksTabSelectedNetworkConfigurationId = useSelector(
     getNetworksTabSelectedNetworkConfigurationId,
   );
@@ -92,9 +92,9 @@ const NetworksTab = ({ addNewNetwork }) => {
     selectedNetwork =
       networksToRender.find((network) => {
         return (
-          network.rpcUrl === provider.rpcUrl ||
+          network.rpcUrl === providerConfig.rpcUrl ||
           (network.providerType !== NETWORK_TYPES.RPC &&
-            network.providerType === provider.type)
+            network.providerType === providerConfig.type)
         );
       }) || {};
     networkDefaultedToProvider = true;
@@ -130,7 +130,7 @@ const NetworksTab = ({ addNewNetwork }) => {
               networkDefaultedToProvider={networkDefaultedToProvider}
               networkIsSelected={networkIsSelected}
               networksToRender={networksToRender}
-              providerUrl={provider.rpcUrl}
+              providerUrl={providerConfig.rpcUrl}
               selectedNetwork={selectedNetwork}
               shouldRenderNetworkForm={shouldRenderNetworkForm}
             />

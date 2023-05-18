@@ -14,7 +14,7 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { AvatarBase } from './avatar-base';
-export { Button, BUTTON_TYPES, BUTTON_SIZES } from './button';
+export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
@@ -34,9 +34,11 @@ export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
+export { ModalFocus } from './modal-focus';
 
 // Molecules
 export { BannerBase } from './banner-base';
 export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
+export { ModalHeader } from './modal-header';

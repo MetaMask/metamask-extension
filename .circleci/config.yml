@@ -3,11 +3,17 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: circleci/node:16-browsers
+      - image: cimg/node:16.20-browsers
   node-browsers-medium-plus:
     docker:
-      - image: circleci/node:16-browsers
+      - image: cimg/node:16.20-browsers
     resource_class: medium+
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
+  node-browsers-large:
+    docker:
+      - image: cimg/node:16.20-browsers
+    resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
@@ -500,7 +506,7 @@ jobs:
             - builds-test
 
   prep-build-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -551,7 +557,7 @@ jobs:
           command: yarn verify-locales --quiet
 
   test-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:

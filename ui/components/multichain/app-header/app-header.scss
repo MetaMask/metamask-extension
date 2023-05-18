@@ -29,16 +29,12 @@
       width: $width-screen-lg-min;
     }
 
-    &--avatar-network {
-      background-color: transparent;
-      width: min-content;
-      padding: 8px;
+    &__network-picker {
+      max-width: 250px;
+    }
 
-      &:hover,
-      &:active {
-        box-shadow: none;
-        background: transparent;
-      }
+    &--avatar-network {
+      padding: 0; // TODO: Remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
     }
   }
 

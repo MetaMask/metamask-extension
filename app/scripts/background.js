@@ -9,6 +9,9 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -18,11 +21,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  MESSAGE_TYPE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
-import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -33,6 +32,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { getEnvironmentType, deferredPromise, getPlatform } from './lib/util';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -51,12 +51,11 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { deferredPromise, getPlatform } from './lib/util';
 
 /* eslint-enable import/first */
 
 /* eslint-disable import/order */
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import {
   CONNECTION_TYPE_EXTERNAL,
   CONNECTION_TYPE_INTERNAL,
@@ -85,6 +84,7 @@ let popupIsOpen = false;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
+const openMetamaskConnections = new Map();
 const requestAccountTabIds = {};
 let controller;
 
@@ -106,7 +106,7 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 const OVERRIDE_ORIGIN = {
   EXTENSION: 'EXTENSION',
   DESKTOP: 'DESKTOP_APP',
@@ -185,10 +185,28 @@ let connectExternal;
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
+  const remotePort = args[0];
+  const { sender } = remotePort;
 
-  // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
+  const url = sender?.url;
+  const detectedProcessName = url ? getEnvironmentType(url) : '';
+
+  const connectionId = generateConnectionId(remotePort, detectedProcessName);
+  const openConnections = openMetamaskConnections.get(connectionId) || 0;
+
+  if (
+    openConnections === 0 ||
+    (detectedProcessName === 'background' && openConnections < 2)
+    // 2 background connections are allowed, one for phishing warning page and one for the ledger bridge keyring
+  ) {
+    // This is set in `setupController`, which is called as part of initialization
+    connectRemote(...args);
+    openMetamaskConnections.set(connectionId, openConnections + 1);
+  } else {
+    throw new Error('CONNECTION_ALREADY_EXISTS');
+  }
 });
+
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
@@ -220,9 +238,9 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} provider - The current selected network provider.
- * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
+ * @property {object} providerConfig - The current selected network provider.
+ * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
+ * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkId - The stringified number of the current network ID.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
@@ -264,7 +282,7 @@ async function initialize() {
     const initState = await loadStateFromPersistence();
     const initLangCode = await getFirstPreferredLangCode();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
@@ -417,6 +435,21 @@ export async function loadStateFromPersistence() {
   return versionedData.data;
 }
 
+function generateConnectionId(remotePort, detectedProcessName) {
+  const { sender } = remotePort;
+  const id = sender?.tab ? sender.tab.id : sender?.id;
+  if (!id || !detectedProcessName) {
+    console.error(
+      'Must provide id and detectedProcessName to generate connection id.',
+      id,
+      detectedProcessName,
+    ); // eslint-disable-line no-console
+    throw new Error(
+      'Must provide id and detectedProcessName to generate connection id.',
+    );
+  }
+  return `${id}-${detectedProcessName}`;
+}
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
@@ -442,7 +475,6 @@ export function setupController(
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
-    openPopup,
     // initial state
     initState,
     // initial locale code
@@ -464,7 +496,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.store.getState().provider.chainId,
+      controller.networkController.store.getState().providerConfig.chainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -527,7 +559,7 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
       OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
@@ -572,7 +604,6 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-
       if (isManifestV3) {
         // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
         remotePort.onMessage.addListener((message) => {
@@ -587,9 +618,11 @@ export function setupController(
         });
       }
 
+      const connectionId = generateConnectionId(remotePort, processName);
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
+          openMetamaskConnections.set(connectionId, 0);
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -599,8 +632,8 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
-
         endOfStream(portStream, () => {
+          openMetamaskConnections.set(connectionId, 0);
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -616,6 +649,7 @@ export function setupController(
         openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
+          openMetamaskConnections.set(connectionId, 0);
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -653,7 +687,7 @@ export function setupController(
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
       OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
@@ -679,12 +713,14 @@ export function setupController(
   // User Interface setup
   //
 
-  updateBadge();
+  controller.txController.initApprovals().then(() => {
+    updateBadge();
+  });
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.decryptMessageManager.on(
+  controller.decryptMessageController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -692,7 +728,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.signController.hub.on(
+  controller.signatureController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -727,14 +763,11 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
-    return (
-      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
-    );
+    return pendingApprovalCount + waitingForUnlockCount;
   }
 
   notificationManager.on(
@@ -754,15 +787,12 @@ export function setupController(
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
-    controller.decryptMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.decryptMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTIFICATION_CLOSE,
-        ),
-      );
+    controller.signatureController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE_SIG,
+    );
+    controller.decryptMessageController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE,
+    );
     controller.encryptionPublicKeyController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE,
     );
@@ -771,12 +801,12 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
-          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          case ApprovalType.SnapDialogAlert:
+          case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
             break;
-          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+          case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
@@ -793,7 +823,7 @@ export function setupController(
     updateBadge();
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
     controller.store.subscribe((state) => {
       DesktopManager.setState(state);
@@ -837,22 +867,6 @@ async function triggerUi() {
       uiIsTriggering = false;
     }
   }
-}
-
-/**
- * Opens the browser popup for user confirmation of watchAsset
- * then it waits until user interact with the UI
- */
-async function openPopup() {
-  await triggerUi();
-  await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (!notificationIsOpen) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, SECOND);
-  });
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.

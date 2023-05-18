@@ -1,5 +1,5 @@
 import { omit, pick } from 'lodash';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
@@ -8,23 +8,23 @@ import {
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import snapAlert from './flask/snap-alert/snap-alert';
-import snapConfirmation from './flask/snap-confirmation/snap-confirmation';
-import snapPrompt from './flask/snap-prompt/snap-prompt';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import snapAlert from './snaps/snap-alert/snap-alert';
+import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
+import snapPrompt from './snaps/snap-prompt/snap-prompt';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVAL_TEMPLATES = {
-  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
-  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  [MESSAGE_TYPE.SNAP_DIALOG_ALERT]: snapAlert,
-  [MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION]: snapConfirmation,
-  [MESSAGE_TYPE.SNAP_DIALOG_PROMPT]: snapPrompt,
+  [ApprovalType.AddEthereumChain]: addEthereumChain,
+  [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  [ApprovalType.SnapDialogAlert]: snapAlert,
+  [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
+  [ApprovalType.SnapDialogPrompt]: snapPrompt,
   ///: END:ONLY_INCLUDE_IN
 };
 
-export const TEMPLATED_CONFIRMATION_MESSAGE_TYPES =
+export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
   Object.keys(APPROVAL_TEMPLATES);
 
 const ALLOWED_TEMPLATE_KEYS = [

@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Mga opsyon ng asset"
   },
-  "assets": {
-    "message": "Mga Asset"
-  },
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
   },
@@ -694,10 +691,6 @@
   "connectedSitesEmptyDescription": {
     "message": "Ang $1 ay hindi nakakonekta sa anumang site.",
     "description": "$1 is the account name"
-  },
-  "connectedSnapSites": {
-    "message": "Ang $1 snap ay konektado sa mga site na ito. May access sila sa mga pahintulot na nakalista sa itaas.",
-    "description": "$1 represents the name of the snap"
   },
   "connecting": {
     "message": "Kumokonekta..."
@@ -1355,18 +1348,6 @@
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Tingnan ang mga detalye",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Dinagdag sa",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "mula sa",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1586,9 +1567,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "I-hold para ipakita ang SRP"
-  },
   "holdToRevealContent1": {
     "message": "Ang iyong Secret Recovery Phrase ay nagbibigay ng $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1608,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "ngunit maaring hingin ng mga phisher.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Ingatan ang iyong SRP"
   },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
@@ -3227,10 +3202,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Walang nakitang katugmang resulta."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Ipakita"
   },
@@ -3304,14 +3275,6 @@
   "smartTransaction": {
     "message": "Smart Transaction"
   },
-  "snapAccess": {
-    "message": "Ang $1 snap ay may access sa:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Idinagdag noong $1 mula sa $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Ang nilalamang ito ay nagmumula sa $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3347,9 +3310,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Pamahalaan ang iyong mga Snap"
-  },
-  "snapsStatus": {
-    "message": "Ang lagay ng Snap ay nakadepende sa aktibidad."
   },
   "snapsToggle": {
     "message": "Tatakbo lamang ang snap kapag pinagana ito"
@@ -3950,9 +3910,6 @@
   },
   "thingsToKeep": {
     "message": "Mga bagay na dapat tandaan:"
-  },
-  "thisIsBasedOn": {
-    "message": "Ito ay batay sa impormasyon mula sa "
   },
   "time": {
     "message": "Oras"

@@ -6,7 +6,7 @@ import { Tag } from '../../../components/component-library';
 
 import {
   SUPPORT_REQUEST_LINK,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI_WEB_SITE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/common';
@@ -24,7 +24,7 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {
-    version: global.platform.getVersion(),
+    version: global.platform?.getVersion() ?? '<unknown>',
   };
 
   static contextTypes = {
@@ -54,12 +54,12 @@ export default class InfoTab extends PureComponent {
     const { t } = this.context;
     let privacyUrl, siteUrl;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     privacyUrl = 'https://consensys.net/codefi/about/privacy-policy/';
     siteUrl = MMI_WEB_SITE;
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     privacyUrl = 'https://metamask.io/privacy.html';
     siteUrl = 'https://metamask.io/';
     ///: END:ONLY_INCLUDE_IN
@@ -194,7 +194,7 @@ export default class InfoTab extends PureComponent {
         <div className="settings-page__content-row">
           <div className="settings-page__content-item settings-page__content-item--without-height">
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               <div className="info-tab__logo-wrapper">
                 <img
                   src="images/info-logo.png"
@@ -218,12 +218,12 @@ export default class InfoTab extends PureComponent {
             <div className="info-tab__item">
               <div className="info-tab__about">
                 {
-                  ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                   t('builtAroundTheWorld')
                   ///: END:ONLY_INCLUDE_IN
                 }
                 {
-                  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                   t('mmiBuiltAroundTheWorld')
                   ///: END:ONLY_INCLUDE_IN
                 }
@@ -233,7 +233,7 @@ export default class InfoTab extends PureComponent {
           {this.renderInfoLinks()}
         </div>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
           <div className="info-tab__logo-wrapper">
             <img
               src="./images/logo/metamask-fox.svg"

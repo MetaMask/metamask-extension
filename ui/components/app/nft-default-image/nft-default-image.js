@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Typography from '../../ui/typography';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Text } from '../../component-library';
 
 export default function NftDefaultImage({ name, tokenId, handleImageClick }) {
   const t = useI18nContext();
@@ -17,9 +17,9 @@ export default function NftDefaultImage({ name, tokenId, handleImageClick }) {
       })}
       onClick={handleImageClick}
     >
-      <Typography variant={TypographyVariant.H6} className="nft-default__text">
+      <Text variant={TextVariant.bodySm} as="h6" className="nft-default__text">
         {name ?? t('unknownCollection')} <br /> #{tokenId}
-      </Typography>
+      </Text>
     </Tag>
   );
 }

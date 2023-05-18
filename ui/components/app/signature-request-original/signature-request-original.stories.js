@@ -5,7 +5,9 @@ import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequestOriginal from './signature-request-original.component';
 
-const [MOCK_PRIMARY_IDENTITY] = Object.values(testData.metamask.identities);
+const [MOCK_PRIMARY_IDENTITY, MOCK_SECONDARY_IDENTITY] = Object.values(
+  testData.metamask.identities,
+);
 
 const MOCK_SIGN_DATA = JSON.stringify({
   domain: {
@@ -71,7 +73,8 @@ export default {
     },
     mostRecentOverviewPage: '/',
     nativeCurrency: 'ETH',
-    provider: { name: 'Goerli ETH' },
+    providerConfig: { name: 'Goerli ETH' },
+    selectedAccount: MOCK_PRIMARY_IDENTITY,
   },
 };
 
@@ -130,4 +133,19 @@ ETHSignTypedStory.args = {
     },
     type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
   },
+};
+
+export const AccountMismatchStory = Template.bind({});
+
+AccountMismatchStory.storyName = 'Account Mismatch warning';
+
+AccountMismatchStory.args = {
+  txData: {
+    msgParams: {
+      data: MOCK_SIGN_DATA,
+      origin: 'https://happydapp.website/governance?futarchy=true',
+    },
+    type: MESSAGE_TYPE.PERSONAL_SIGN,
+  },
+  selectedAccount: MOCK_SECONDARY_IDENTITY,
 };

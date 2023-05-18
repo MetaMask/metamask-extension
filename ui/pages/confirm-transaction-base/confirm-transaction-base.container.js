@@ -46,6 +46,7 @@ import {
   getIsGasEstimatesLoading,
   getNativeCurrency,
   getSendToAccounts,
+  getProviderConfig,
 } from '../../ducks/metamask/metamask';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 
@@ -59,6 +60,9 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getAccountType } from '../../selectors/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
   TransactionType,
@@ -104,8 +108,8 @@ const mapStateToProps = (state, ownProps) => {
     networkId,
     unapprovedTxs,
     nextNonce,
-    provider: { chainId },
   } = metamask;
+  const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || Number(paramsTransactionId);
@@ -195,6 +199,23 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accountType = getAccountType(state);
+
+  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
+  let isNoteToTraderSupported = false;
+  if (
+    state.metamask.custodyAccountDetails &&
+    state.metamask.custodyAccountDetails[fromChecksumHexAddress]
+  ) {
+    const { custodianName } =
+      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
+    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
+      (custodian) => custodian.name === custodianName,
+    )?.isNoteToTraderSupported;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     balance,
     fromAddress,
@@ -245,6 +266,10 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNoteToTraderSupported,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -279,7 +304,6 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
       const hexPrefixedAddress = addHexPrefix(newAddress);
       if (addressIsNew(toAccounts, hexPrefixedAddress)) {

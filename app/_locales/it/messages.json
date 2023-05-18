@@ -315,9 +315,6 @@
   "assetOptions": {
     "message": "Opzioni asset"
   },
-  "assets": {
-    "message": "Patrimonio"
-  },
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
   },
@@ -537,10 +534,6 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 non è connesso ad alcun sito.",
     "description": "$1 is the account name"
-  },
-  "connectedSnapSites": {
-    "message": "$1 snap è collegato a questi siti. Hanno accesso alle autorizzazioni sopra elencate.",
-    "description": "$1 represents the name of the snap"
   },
   "connecting": {
     "message": "Connessione..."

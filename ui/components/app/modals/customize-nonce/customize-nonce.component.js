@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import Modal from '../../modal';
 import TextField from '../../../ui/text-field';
 import Button from '../../../ui/button';
-import Typography from '../../../ui/typography';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
+  FontWeight,
   AlignItems,
   BLOCK_SIZES,
   DISPLAY,
@@ -19,6 +18,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Text,
 } from '../../../component-library';
 
 const CustomizeNonce = ({
@@ -50,13 +50,14 @@ const CustomizeNonce = ({
     >
       <div className="customize-nonce-modal">
         <div className="customize-nonce-modal__main-header">
-          <Typography
+          <Text
             className="customize-nonce-modal__main-title"
-            variant={TypographyVariant.H4}
-            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.headingSm}
+            as="h4"
+            fontWeight={FontWeight.Bold}
           >
             {t('editNonceField')}
-          </Typography>
+          </Text>
           <ButtonIcon
             iconName={IconName.Close}
             className="customize-nonce-modal__close"
@@ -70,9 +71,10 @@ const CustomizeNonce = ({
           display={DISPLAY.INLINE_FLEX}
           alignItems={AlignItems.center}
         >
-          <Typography
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
+            fontWeight={FontWeight.Normal}
           >
             {t('editNonceMessage')}
             <Button
@@ -84,21 +86,23 @@ const CustomizeNonce = ({
             >
               {t('learnMoreUpperCase')}
             </Button>
-          </Typography>
+          </Text>
         </Box>
         <Box marginTop={3}>
           <Box alignItems={AlignItems.center} display={DISPLAY.FLEX}>
-            <Typography
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
               boxProps={{ width: BLOCK_SIZES.FIVE_SIXTHS }}
             >
               {t('editNonceField')}
-            </Typography>
+            </Text>
             <Box width={BLOCK_SIZES.ONE_SIXTH}>
               <Button
                 type="link"
                 className="customize-nonce-modal__reset"
+                data-testid="customize-nonce-reset"
                 onClick={() => {
                   setCustomNonce(nextNonce);
                 }}
@@ -110,6 +114,7 @@ const CustomizeNonce = ({
           <div className="customize-nonce-modal__input">
             <TextField
               type="number"
+              data-testid="custom-nonce-input"
               min="0"
               placeholder={
                 customNonceValue ||

@@ -18,7 +18,7 @@ describe('useTransactionInfo', () => {
     it('should return true if transaction is NFT transfer', () => {
       mockState.metamask.allNftContracts = {
         [mockState.metamask.selectedAddress]: {
-          [hexToDecimal(mockState.metamask.provider.chainId)]: [
+          [hexToDecimal(mockState.metamask.providerConfig.chainId)]: [
             { address: '0x9' },
           ],
         },

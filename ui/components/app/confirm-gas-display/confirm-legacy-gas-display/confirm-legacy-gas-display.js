@@ -23,9 +23,10 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { useDraftTransactionGasValues } from '../../../../hooks/useDraftTransactionGasValues';
+import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
+import { Icon, IconName } from '../../../component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -40,7 +41,7 @@ const ConfirmLegacyGasDisplay = () => {
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const nativeCurrency = useSelector(getNativeCurrency);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const { transactionData } = useDraftTransactionGasValues();
+  const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
   const { id: transactionId, dappSuggestedGasFees } = txData;
   const transaction = Object.keys(transactionData).length
@@ -53,7 +54,7 @@ const ConfirmLegacyGasDisplay = () => {
   if (isMultiLayerFeeNetwork) {
     return [
       <TransactionDetailItem
-        key="total-item"
+        key="legacy-total-item"
         detailTitle={t('transactionDetailLayer2GasHeading')}
         detailTotal={
           <UserPreferencedCurrencyDisplay
@@ -64,11 +65,13 @@ const ConfirmLegacyGasDisplay = () => {
           />
         }
         detailText={
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          useCurrencyRateCheck && (
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={hexMinimumTransactionFee}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          )
         }
         noBold
         flexWidthValues
@@ -93,7 +96,7 @@ const ConfirmLegacyGasDisplay = () => {
               contentText={t('transactionDetailDappGasTooltip')}
               position="top"
             >
-              <i className="fa fa-info-circle" />
+              <Icon name={IconName.Info} />
             </InfoTooltip>
           </>
         ) : (
@@ -121,7 +124,7 @@ const ConfirmLegacyGasDisplay = () => {
               }
               position="top"
             >
-              <i className="fa fa-info-circle" />
+              <Icon name={IconName.Info} />
             </InfoTooltip>
           </>
         )

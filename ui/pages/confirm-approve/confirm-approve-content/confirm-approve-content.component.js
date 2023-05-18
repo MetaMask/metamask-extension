@@ -28,11 +28,11 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
-  ICON_NAMES,
+  ButtonIcon,
   Icon,
-} from '../../../components/component-library/icon/deprecated';
-import { ButtonIcon } from '../../../components/component-library/button-icon/deprecated';
-import { Text } from '../../../components/component-library';
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -187,7 +187,7 @@ export default class ConfirmApproveContent extends Component {
         {isMultiLayerFeeNetwork ? (
           <div className="confirm-approve-content__transaction-details-extra-content">
             <TransactionDetailItem
-              key="total-item"
+              key="confirm-approve-content-min-tx-fee"
               detailTitle={t('transactionDetailLayer2GasHeading')}
               detailTotal={
                 <UserPreferencedCurrencyDisplay
@@ -273,7 +273,7 @@ export default class ConfirmApproveContent extends Component {
               onClick={() => copyToClipboard(toAddress)}
               color={IconColor.iconDefault}
               iconName={
-                this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                this.state.copied ? IconName.CopySuccess : IconName.Copy
               }
               title={
                 this.state.copied
@@ -290,6 +290,11 @@ export default class ConfirmApproveContent extends Component {
   renderDataContent() {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { tokenAddress } = this.props;
+    ///: END:ONLY_INCLUDE_IN
+
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -300,6 +305,11 @@ export default class ConfirmApproveContent extends Component {
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <div className="confirm-approve-content__small-text">
             {`${t('parameters')}: ${isApprovalOrRejection}`}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              `${t('tokenContractAddress')}: ${tokenAddress}`
+              ///: END:ONLY_INCLUDE_IN
+            }
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
@@ -665,7 +675,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
           )}
           {this.renderApproveContentCard({
-            symbol: <Icon name={ICON_NAMES.TAG} />,
+            symbol: <Icon name={IconName.Tag} />,
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,

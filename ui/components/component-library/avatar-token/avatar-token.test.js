@@ -121,4 +121,10 @@ describe('AvatarToken', () => {
       `box--border-color-${BorderColor.errorDefault}`,
     );
   });
+  it('should forward a ref to the root html element', () => {
+    const ref = React.createRef();
+    render(<AvatarToken ref={ref} />);
+    expect(ref.current).not.toBeNull();
+    expect(ref.current.nodeName).toBe('DIV');
+  });
 });

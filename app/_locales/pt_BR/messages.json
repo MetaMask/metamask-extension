@@ -229,9 +229,6 @@
   "assetOptions": {
     "message": "Opções do ativo"
   },
-  "assets": {
-    "message": "Ativos"
-  },
   "attemptingConnect": {
     "message": "Tentando conexão com o blockchain."
   },
@@ -881,18 +878,6 @@
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Ver detalhes",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Adicionado em",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
   },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",
