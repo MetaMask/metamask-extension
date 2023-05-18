@@ -134,7 +134,7 @@ class SettingsPage extends PureComponent {
               <ButtonIcon
                 ariaLabel={t('back')}
                 iconName={IconName.ArrowLeft}
-                className="settings-page__back-button"
+                className="settings-page__header__title-container__back-button"
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
                 display={[DISPLAY.FLEX, DISPLAY.NONE]}
@@ -142,8 +142,8 @@ class SettingsPage extends PureComponent {
             )}
             {this.renderTitle()}
             <Box
-              className="settings-page__header__search"
-              display={[DISPLAY.NONE, DISPLAY.BLOCK]}
+              className="settings-page__header__title-container__search"
+              display={[DISPLAY.BLOCK]}
               style={{ width: '330px' }}
             >
               <SettingsSearch
@@ -178,8 +178,8 @@ class SettingsPage extends PureComponent {
             />
           </div>
           <Box
-            className="settings-page__header__search"
-            display={[DISPLAY.BLOCK, DISPLAY.NONE]}
+            className="settings-page__header__search nidhi"
+            style={{ display: 'none' }}
             marginTop={5}
           >
             <SettingsSearch

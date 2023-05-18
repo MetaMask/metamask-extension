@@ -26,11 +26,31 @@
     padding: 20px 16px 20px 16px;
 
     &__title-container {
-      display: flex;
-      flex-flow: row nowrap;
+      display: grid;
       align-items: center;
-      flex: 0 0 auto;
+      grid-template-columns: 197px 1fr 1fr;
+      @include screen-sm-max {
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
 
+        grid-template-areas:
+          'back title close'
+          'search search search';
+
+        &__back-button {
+          grid-area: back;
+        }
+        &__title {
+          grid-area: title;
+        }
+        &__close-button {
+          grid-area: close;
+        }
+        &__search {
+          grid-area: search;
+        }
+      }
       &__title {
         @include screen-sm-min {
           width: 197px;
@@ -47,7 +67,7 @@
 
     &__search {
       @include screen-md-min {
-        width: 400px;
+        width: 330px;
       }
 
       &__list {
@@ -56,7 +76,7 @@
         box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
         border-radius: 6px;
         position: absolute;
-        width: 100%;
+        width: 330px;
         z-index: 10;
 
         > div {
