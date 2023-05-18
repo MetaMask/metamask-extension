@@ -26,7 +26,7 @@ async function measurePage(pageName) {
       await driver.navigate();
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
-      await driver.findElement('.selected-account__name');
+      await driver.findElement('[data-testid="account-menu-icon"]');
       await driver.navigate(pageName);
       await driver.delay(1000);
       metrics = await driver.collectMetrics();
