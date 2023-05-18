@@ -50,6 +50,8 @@ const mockSnapList: SnapDetails[] = new Array(5).fill({
 
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
+  // TODO: this is currently a mock
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [snapList, setSnapList] = useState(mockSnapList);
   const history = useHistory();
 
