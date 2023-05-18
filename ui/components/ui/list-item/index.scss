@@ -118,3 +118,7 @@
     grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
 }
+
+.list-item-border{
+  border-top: 1px solid var(--color-border-muted);
+}

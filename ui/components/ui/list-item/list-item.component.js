@@ -12,15 +12,17 @@ export default function ListItem({
   rightContent,
   midContent,
   className,
+  showBorder,
   'data-testid': dataTestId,
 }) {
   const primaryClassName = classnames(
     'list-item',
     className,
     subtitle || children ? '' : 'list-item--single-content-row',
+    {
+      'list-item-border': !showBorder,
+    },
   );
-  const showBorderTop =
-    process.env.MULTICHAIN && className === 'transaction-list-item';
 
   return (
     <div
@@ -34,11 +36,6 @@ export default function ListItem({
           onClick();
         }
       }}
-      style={
-        showBorderTop
-          ? { borderTop: 'none' }
-          : { borderTop: '1px solid var(--color-border-muted)' }
-      } // TODO: Remove this style once we create a new component for TranactionListItem
     >
       {icon ? <div className="list-item__icon">{icon}</div> : null}
       <div className="list-item__heading">
@@ -75,5 +72,6 @@ ListItem.propTypes = {
   midContent: PropTypes.node,
   className: PropTypes.string,
   onClick: PropTypes.func,
+  showBorder: PropTypes.bool,
   'data-testid': PropTypes.string,
 };
