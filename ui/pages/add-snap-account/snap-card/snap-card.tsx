@@ -13,7 +13,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   BLOCK_SIZES,
+  BackgroundColor,
   BorderColor,
+  BorderRadius,
   Color,
   DISPLAY,
   FLEX_DIRECTION,
@@ -39,10 +41,11 @@ export default function SnapCard({
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      borderColor={BorderColor.errorDefault}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderColor={BorderColor.borderMuted}
+      borderRadius={BorderRadius.SM}
       borderWidth={1}
       padding={[4, 4, 4, 4]}
-      className="snap-card"
     >
       <Box
         display={DISPLAY.FLEX}

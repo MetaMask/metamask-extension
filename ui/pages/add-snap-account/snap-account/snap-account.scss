@@ -8,3 +8,9 @@
 .snap-account-cards {
   grid-template-columns: repeat(3, 1fr);
 }
+
+.snap-account-color-text{
+    background-image: -webkit-linear-gradient(.45deg,#F6851B, #43AEFC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

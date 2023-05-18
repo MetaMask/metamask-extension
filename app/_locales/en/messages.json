@@ -3782,7 +3782,12 @@
     "message": "Choose how to secure your new account using Snaps."
   },
   "snapCreateAccountTitle": {
-    "message": "Create a Snap account"
+    "message": "Create a $1 account",
+    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "Snap",
+    "description": "$1 of the snapCreateAccountTitle"
   },
   "snapCreatedByMetamask": {
     "message": "By MetaMask"
