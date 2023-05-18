@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Opções do ativo"
   },
-  "assets": {
-    "message": "Ativos"
-  },
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
   },

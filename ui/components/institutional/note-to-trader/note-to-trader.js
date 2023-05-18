@@ -12,33 +12,35 @@ const NoteToTrader = (props) => {
   const { placeholder, maxLength, onChange, noteText, labelText } = props;
 
   return (
-    <>
-      <Box
-        className="note-header"
-        display={DISPLAY.FLEX}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <Label htmlFor="transaction-note">{labelText}</Label>
-        <Text className="note-header__counter">
-          {noteText.length}/{maxLength}
-        </Text>
+    <Box className="confirm-page-container-content__data">
+      <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+        <Box
+          className="note-header"
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Label htmlFor="transaction-note">{labelText}</Label>
+          <Text className="note-header__counter">
+            {noteText.length}/{maxLength}
+          </Text>
+        </Box>
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          className="note-field"
+        >
+          <textarea
+            id="transaction-note"
+            data-testid="transaction-note"
+            onChange={({ target: { value } }) => onChange(value)}
+            autoFocus
+            maxLength={maxLength}
+            placeholder={placeholder}
+            value={noteText}
+          />
+        </Box>
       </Box>
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        className="note-field"
-      >
-        <textarea
-          id="transaction-note"
-          data-testid="transaction-note"
-          onChange={({ target: { value } }) => onChange(value)}
-          autoFocus
-          maxLength={maxLength}
-          placeholder={placeholder}
-          value={noteText}
-        />
-      </Box>
-    </>
+    </Box>
   );
 };
 
