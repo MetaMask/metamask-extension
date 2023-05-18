@@ -6,10 +6,10 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   TypographyVariant,
-  FONT_WEIGHT,
+  FontWeight,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
@@ -75,7 +75,7 @@ export default function NetworkAccountBalanceHeader({
           <Typography
             variant={TypographyVariant.H6}
             color={TextColor.textDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
             marginTop={0}
           >
             {accountName}
@@ -98,9 +98,9 @@ export default function NetworkAccountBalanceHeader({
         <Typography
           variant={TypographyVariant.H6}
           color={TextColor.textDefault}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
           marginTop={0}
-          align={TEXT_ALIGN.END}
+          align={TextAlign.End}
         >
           {accountBalance} {tokenName}
         </Typography>

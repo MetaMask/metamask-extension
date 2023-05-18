@@ -5,8 +5,8 @@ import Dialog from '../../ui/dialog';
 import Typography from '../../ui/typography/typography';
 import {
   TypographyVariant,
-  TEXT_ALIGN,
-  FONT_WEIGHT,
+  TextAlign,
+  FontWeight,
   DISPLAY,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -34,15 +34,15 @@ export default function NftsDetectionNotice() {
           <Box paddingLeft={2}>
             <Typography
               color={TextColor.textDefault}
-              align={TEXT_ALIGN.LEFT}
+              align={TextAlign.Left}
               variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.BOLD}
+              fontWeight={FontWeight.Bold}
             >
               {t('newNFTsDetected')}
             </Typography>
             <Typography
               color={TextColor.textDefault}
-              align={TEXT_ALIGN.LEFT}
+              align={TextAlign.Left}
               variant={TypographyVariant.H7}
               boxProps={{ marginBottom: 4 }}
             >

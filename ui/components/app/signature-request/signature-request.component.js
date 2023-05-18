@@ -16,8 +16,8 @@ import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
@@ -322,7 +322,7 @@ export default class SignatureRequest extends PureComponent {
           <Typography
             className="signature-request__content__title"
             variant={TypographyVariant.H3}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
             boxProps={{
               marginTop: 4,
             }}
@@ -333,7 +333,7 @@ export default class SignatureRequest extends PureComponent {
             className="request-signature__content__subtitle"
             variant={TypographyVariant.H7}
             color={TextColor.textAlternative}
-            align={TEXT_ALIGN.CENTER}
+            align={TextAlign.Center}
             margin={12}
             marginTop={3}
           >

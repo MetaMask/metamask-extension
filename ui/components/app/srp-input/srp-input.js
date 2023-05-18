@@ -9,8 +9,8 @@ import Dropdown from '../../ui/dropdown';
 import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
@@ -130,9 +130,9 @@ export default function SrpInput({ onChange, srpText }) {
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
         <Typography
-          align={TEXT_ALIGN.LEFT}
+          align={TextAlign.Left}
           variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {srpText}
         </Typography>
