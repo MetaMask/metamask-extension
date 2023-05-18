@@ -1520,6 +1520,7 @@
     "brfs>static-module": {
       "packages": {
         "brfs>static-module>acorn-node": true,
+        "brfs>static-module>escodegen": true,
         "brfs>static-module>magic-string": true,
         "brfs>static-module>merge-source-map": true,
         "brfs>static-module>object-inspect": true,
@@ -1530,7 +1531,6 @@
         "browserify>concat-stream": true,
         "browserify>duplexer2": true,
         "browserify>has": true,
-        "jsdom>escodegen": true,
         "nyc>convert-source-map": true,
         "readable-stream": true
       }
@@ -1545,6 +1545,16 @@
     "brfs>static-module>acorn-node>acorn": {
       "globals": {
         "define": true
+      }
+    },
+    "brfs>static-module>escodegen": {
+      "globals": {
+        "sourceMap.SourceNode": true
+      },
+      "packages": {
+        "brfs>static-module>escodegen>estraverse": true,
+        "brfs>static-module>escodegen>source-map": true,
+        "eslint>esutils": true
       }
     },
     "brfs>static-module>magic-string": {
@@ -1621,7 +1631,17 @@
     },
     "brfs>static-module>static-eval": {
       "packages": {
-        "jsdom>escodegen": true
+        "brfs>static-module>static-eval>escodegen": true
+      }
+    },
+    "brfs>static-module>static-eval>escodegen": {
+      "globals": {
+        "sourceMap.SourceNode": true
+      },
+      "packages": {
+        "brfs>static-module>static-eval>escodegen>estraverse": true,
+        "brfs>static-module>static-eval>escodegen>source-map": true,
+        "eslint>esutils": true
       }
     },
     "brfs>static-module>through2": {
@@ -6118,16 +6138,6 @@
     "ini": {
       "globals": {
         "process": true
-      }
-    },
-    "jsdom>escodegen": {
-      "globals": {
-        "sourceMap.SourceNode": true
-      },
-      "packages": {
-        "eslint>esutils": true,
-        "jsdom>escodegen>estraverse": true,
-        "jsdom>escodegen>source-map": true
       }
     },
     "koa>is-generator-function>has-tostringtag": {
