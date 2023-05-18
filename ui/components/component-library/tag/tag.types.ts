@@ -1,5 +1,5 @@
 import { TextProps } from '../text/text.types';
-import { BoxProps } from 'ui/components/ui/box/box';
+import type { BoxProps } from '../../ui/box/box.d';
 
 export interface TagProps extends BoxProps {
   /**
