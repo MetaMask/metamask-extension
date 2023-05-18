@@ -7724,6 +7724,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/history@npm:^4.7.11":
+  version: 4.7.11
+  resolution: "@types/history@npm:4.7.11"
+  checksum: c92e2ba407dcab0581a9afdf98f533aa41b61a71133420a6d92b1ca9839f741ab1f9395b17454ba5b88cb86020b70b22d74a1950ccfbdfd9beeaa5459fdc3464
+  languageName: node
+  linkType: hard
+
 "@types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
@@ -24235,6 +24242,7 @@ __metadata:
     "@types/react": ^16.9.53
     "@types/react-dom": ^17.0.11
     "@types/react-redux": ^7.1.25
+    "@types/react-router-dom": ^5.3.3
     "@types/remote-redux-devtools": ^0.5.5
     "@types/sass": ^1.43.1
     "@types/sinon": ^10.0.13
