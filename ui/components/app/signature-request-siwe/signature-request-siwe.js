@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -25,6 +26,10 @@ import {
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+} from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
@@ -59,6 +64,7 @@ export default function SignatureRequestSIWE({
       origin,
       siwe: { parsedMessage },
     },
+    id,
   } = txData;
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
@@ -86,6 +92,7 @@ export default function SignatureRequestSIWE({
     async (event) => {
       try {
         await signPersonalMessage(event);
+        await dispatch(resolvePendingApproval(id, null));
       } catch (e) {
         log.error(e);
       }
@@ -97,6 +104,12 @@ export default function SignatureRequestSIWE({
     async (event) => {
       try {
         await cancelPersonalMessage(event);
+        await dispatch(
+          rejectPendingApproval(
+            id,
+            serializeError(ethErrors.provider.userRejectedRequest()),
+          ),
+        );
       } catch (e) {
         log.error(e);
       }
