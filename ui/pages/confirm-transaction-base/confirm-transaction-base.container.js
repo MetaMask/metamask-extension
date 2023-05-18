@@ -41,9 +41,6 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  getTargetAccountWithSendEtherInfo,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -73,8 +70,8 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getAccountType } from '../../selectors/selectors';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
@@ -196,7 +193,7 @@ const mapStateToProps = (state, ownProps) => {
   const methodData = getKnownMethodData(state, data) || {};
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const accountType = getTargetAccountWithSendEtherInfo(state, fromAddress);
+  const accountType = getAccountType(state, fromAddress);
   ///: END:ONLY_INCLUDE_IN
 
   const fullTxData = getFullTxData(
@@ -233,23 +230,6 @@ const mapStateToProps = (state, ownProps) => {
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const accountType = getAccountType(state);
-
-  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
-  let isNoteToTraderSupported = false;
-  if (
-    state.metamask.custodyAccountDetails &&
-    state.metamask.custodyAccountDetails[fromChecksumHexAddress]
-  ) {
-    const { custodianName } =
-      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
-    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
-      (custodian) => custodian.name === custodianName,
-    )?.isNoteToTraderSupported;
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   return {
     balance,

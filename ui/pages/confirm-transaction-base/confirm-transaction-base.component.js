@@ -34,9 +34,7 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import NoteToTrader from '../../components/institutional/note-to-trader/note-to-trader';
-///: END:ONLY_INCLUDE_IN
+
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -136,10 +134,6 @@ export default class ConfirmTransactionBase extends Component {
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    accountType: PropTypes.string,
-    isNoteToTraderSupported: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
@@ -519,31 +513,6 @@ export default class ConfirmTransactionBase extends Component {
     }
     return <ConfirmData txData={txData} dataComponent={dataComponent} />;
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  renderNote() {
-    const { t } = this.context;
-    const { isNoteToTraderSupported } = this.props;
-
-    if (!isNoteToTraderSupported) {
-      return null;
-    }
-
-    return (
-      <div className="confirm-page-container-content__data">
-        <div className="confirm-page-container-content__data-note-input">
-          <NoteToTrader
-            maxLength="280"
-            placeholder={t('notePlaceholder')}
-            onChange={(value) => this.setState({ noteText: value })}
-            noteText={this.state.noteText}
-            labelText={t('transactionNote')}
-          />
-        </div>
-      </div>
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   renderDataHex() {
     const { txData, dataHexComponent } = this.props;
@@ -1026,9 +995,6 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          noteComponent={this.renderNote()}
-          ///: END:ONLY_INCLUDE_IN
         />
       </TransactionModalContextProvider>
     );
