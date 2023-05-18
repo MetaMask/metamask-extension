@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { Ref, forwardRef } from 'react';
 import classnames from 'classnames';
 import {
   TextVariant,
@@ -8,13 +8,16 @@ import { Text, ValidTag } from '../text';
 import { HelpTextProps, HelpTextSeverity } from './help-text.types';
 
 export const HelpText = forwardRef(
-  ({
-    severity,
-    color = TextColor.textDefault,
-    className,
-    children,
-    ...props
-  }: HelpTextProps) => {
+  (
+    {
+      severity,
+      color = TextColor.textDefault,
+      className,
+      children,
+      ...props
+    }: HelpTextProps,
+    ref: Ref<HTMLElement>,
+  ) => {
     const severityColor = () => {
       switch (severity) {
         case HelpTextSeverity.Danger:
@@ -34,6 +37,7 @@ export const HelpText = forwardRef(
     return (
       <Text
         className={classnames('mm-help-text', className ?? '')}
+        ref={ref}
         as={
           children && typeof children === 'object' ? ValidTag.Div : ValidTag.P
         }
