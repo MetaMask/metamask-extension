@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Mga opsyon ng asset"
   },
-  "assets": {
-    "message": "Mga Asset"
-  },
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
   },

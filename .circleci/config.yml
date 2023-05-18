@@ -10,6 +10,12 @@ executors:
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
+  node-browsers-large:
+    docker:
+      - image: cimg/node:16.20-browsers
+    resource_class: large
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
@@ -500,7 +506,7 @@ jobs:
             - builds-test
 
   prep-build-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -551,7 +557,7 @@ jobs:
           command: yarn verify-locales --quiet
 
   test-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:

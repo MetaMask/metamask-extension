@@ -68,6 +68,7 @@ export function getRenderableTokenData(
     (symbol === CURRENCY_SYMBOLS.AVALANCHE &&
       chainId === CHAIN_IDS.AVALANCHE) ||
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.OPTIMISM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.AURORA) ||
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ARBITRUM)
       ? iconUrl
       : formatIconUrlWithProxy({

@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Options d’actifs"
   },
-  "assets": {
-    "message": "Actifs"
-  },
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
