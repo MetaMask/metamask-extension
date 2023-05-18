@@ -3686,6 +3686,9 @@
     "message": "Set a spending cap for your $1",
     "description": "$1 is a token symbol"
   },
+  "settingAddSnapWallet": {
+    "message": "Add snap wallet"
+  },
   "settings": {
     "message": "Settings"
   },
