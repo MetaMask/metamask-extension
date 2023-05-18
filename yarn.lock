@@ -13719,21 +13719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"del@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "del@npm:3.0.0"
-  dependencies:
-    globby: ^6.1.0
-    is-path-cwd: ^1.0.0
-    is-path-in-cwd: ^1.0.0
-    p-map: ^1.1.1
-    pify: ^3.0.0
-    rimraf: ^2.2.8
-  checksum: 88192c10411b55ba644456ac4881c6ed92029b53b882bb6067011af05e8da8d9c87f5ddacf2999cc45a05a9f03af345b83f17f341a88f456417c7daa04458d38
-  languageName: node
-  linkType: hard
-
-"del@npm:^6.0.0":
+"del@npm:^6.0.0, del@npm:^6.1.1":
   version: 6.1.1
   resolution: "del@npm:6.1.1"
   dependencies:
@@ -18616,9 +18602,9 @@ __metadata:
   linkType: hard
 
 "graceful-fs@npm:^4.0.0, graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.15, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
-  version: 4.2.10
-  resolution: "graceful-fs@npm:4.2.10"
-  checksum: 3f109d70ae123951905d85032ebeae3c2a5a7a997430df00ea30df0e3a6c60cf6689b109654d6fdacd28810a053348c4d14642da1d075049e6be1ba5216218da
+  version: 4.2.11
+  resolution: "graceful-fs@npm:4.2.11"
+  checksum: ac85f94da92d8eb6b7f5a8b20ce65e43d66761c55ce85ac96df6865308390da45a8d3f0296dd3a663de65d30ba497bd46c696cc1e248c72b13d6d567138a4fc7
   languageName: node
   linkType: hard
 
@@ -20491,26 +20477,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-path-cwd@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "is-path-cwd@npm:1.0.0"
-  checksum: ade6d8d59bb6a00079fb515ad78a741b757a66bc6208a2dab2c9f8ad535bc61e21b6823ae8b23df2bf4d2b9dac8df4f3df2e68105698eb3e15ceb5ca90dac097
-  languageName: node
-  linkType: hard
-
 "is-path-cwd@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-path-cwd@npm:2.2.0"
   checksum: 46a840921bb8cc0dc7b5b423a14220e7db338072a4495743a8230533ce78812dc152548c86f4b828411fe98c5451959f07cf841c6a19f611e46600bd699e8048
-  languageName: node
-  linkType: hard
-
-"is-path-in-cwd@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "is-path-in-cwd@npm:1.0.0"
-  dependencies:
-    is-path-inside: ^1.0.0
-  checksum: c738dfa6593e0c5dadf13ce7aa47aa73562d39bf8642a9746077b3dbb316274389e61dcf49ad6d1e1fec5ec58026d7e09f3ce07d38bfbde4c5e96f503275bcf1
   languageName: node
   linkType: hard
 
@@ -24478,7 +24448,7 @@ __metadata:
     currency-formatter: ^1.4.2
     debounce-stream: ^2.0.0
     deep-freeze-strict: 1.1.1
-    del: ^3.0.0
+    del: ^6.1.1
     depcheck: ^1.4.3
     dependency-tree: ^10.0.9
     duplexify: ^4.1.1
@@ -26921,13 +26891,6 @@ __metadata:
   dependencies:
     p-limit: ^3.0.2
   checksum: 1623088f36cf1cbca58e9b61c4e62bf0c60a07af5ae1ca99a720837356b5b6c5ba3eb1b2127e47a06865fee59dd0453cad7cc844cda9d5a62ac1a5a51b7c86d3
-  languageName: node
-  linkType: hard
-
-"p-map@npm:^1.1.1":
-  version: 1.2.0
-  resolution: "p-map@npm:1.2.0"
-  checksum: 1ac7267b1e8c562bfd01d83c1769cd550d50cc518f75ea2b9c9a0b365767365961a00ff5b0edbf0cbd4a8e405a804c211d9c3497245257955645bbd39d4d0fb4
   languageName: node
   linkType: hard
 
