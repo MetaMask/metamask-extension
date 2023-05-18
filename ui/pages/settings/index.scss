@@ -51,6 +51,7 @@
           grid-area: search;
         }
       }
+
       &__title {
         @include screen-sm-min {
           width: 197px;
@@ -66,9 +67,7 @@
     }
 
     &__search {
-      @include screen-md-min {
         width: 330px;
-      }
 
       &__list {
         background: var(--color-background-default);

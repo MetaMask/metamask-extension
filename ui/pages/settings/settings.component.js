@@ -144,7 +144,6 @@ class SettingsPage extends PureComponent {
             <Box
               className="settings-page__header__title-container__search"
               display={[DISPLAY.BLOCK]}
-              style={{ width: '330px' }}
             >
               <SettingsSearch
                 onSearch={({ searchQuery = '', results = [] }) => {
