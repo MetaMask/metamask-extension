@@ -505,7 +505,7 @@
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.9.6",
     "loose-envify": "^1.4.0",
-    "madge": "^5.0.1",
+    "madge": "^6.1.0",
     "mocha": "^9.2.2",
     "mockttp": "^2.6.0",
     "nock": "^13.2.9",
