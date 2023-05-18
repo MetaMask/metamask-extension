@@ -27,9 +27,9 @@ describe('TransactionListItemDetails Component', () => {
       value: '0x2386f26fc10000',
     },
     metadata: {
-      note: 'some note'
+      note: 'some note',
     },
-    custodyId: '1'
+    custodyId: '1',
   };
 
   const transactionGroup = {
