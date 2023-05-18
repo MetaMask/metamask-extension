@@ -28,7 +28,7 @@ const SnapDetailsPage = () => {
 
   const snapDetail = {
     id: 'mockSnapId',
-    iconUrl: '',
+    iconUrl: '/images/logo/metamask-fox.svg',
     snapTitle: 'Metamask TSS',
     snapSlug: 'Secure your account with MetaMask Mobile',
     snapDescription:
@@ -78,7 +78,9 @@ const SnapDetailsPage = () => {
               return (
                 <Tag
                   label={tag}
-                  labelProps={{}}
+                  labelProps={{
+                    color: TextColor.textAlternative,
+                  }}
                   className=""
                   key={`tag-${index}`}
                   marginRight={1}

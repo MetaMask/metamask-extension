@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Box from '../../../components/ui/box/box';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderColor,
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Identicon from '../../../components/ui/identicon';
 import {
   Text,
   Button,
@@ -56,7 +58,25 @@ export const SnapDetailHeader = ({
           <Text>{snapTitle}</Text>
         </Box>
         <Box justifyContent={JustifyContent.spaceBetween}>
-          <Text variant={TextVariant.headingLg}>{snapTitle}</Text>
+          <Box
+            display={DISPLAY.FLEX}
+            flexDirection={FLEX_DIRECTION.ROW}
+            alignItems={AlignItems.center}
+          >
+            <Text variant={TextVariant.headingLg} marginRight={1}>
+              {snapTitle}
+            </Text>
+            {isInstalled && (
+              <Tag
+                label={t('snapDetailsInstalled')}
+                labelProps={{
+                  color: TextColor.textAlternative,
+                }}
+                className=""
+                height={2}
+              />
+            )}
+          </Box>
           <Box>
             {isInstalled && updateAvailable && (
               <Button variant={BUTTON_VARIANT.PRIMARY} marginRight={1}>
@@ -83,17 +103,68 @@ export const SnapDetailHeader = ({
           flexDirection={FLEX_DIRECTION.ROW}
           alignItems={AlignItems.center}
         >
-          <Identicon image={iconUrl} />
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            style={{
+              borderRadius: '50%',
+              height: '32px',
+              width: '32px',
+            }}
+            borderWidth={1}
+            borderColor={BorderColor.borderMuted}
+            padding={[2, 2, 2, 2]}
+            marginRight={1}
+          >
+            <img src={iconUrl} className="snap-detail-icon" />
+          </Box>
           {developer === 'Metamask' && (
             <Tag
-              label={t('snapCreatedByMetaMask')}
-              labelProps={{}}
+              color={TextColor.infoDefault}
+              backgroundColor={BackgroundColor.infoMuted}
+              borderColor={BackgroundColor.infoMuted}
+              label={
+                <Box
+                  display={DISPLAY.FLEX}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon name={IconName.Star} />{' '}
+                  <Text color={TextColor.infoDefault}>
+                    {t('snapCreatedByMetaMask')}
+                  </Text>
+                </Box>
+              }
+              labelProps={{
+                color: TextColor.infoDefault,
+              }}
               className=""
               marginRight={1}
             />
           )}
           {auditUrls.length > 0 && (
-            <Tag label={t('snapIsAudited')} labelProps={{}} className="" />
+            <Tag
+              color={TextColor.infoDefault}
+              backgroundColor={BackgroundColor.infoMuted}
+              borderColor={BackgroundColor.infoMuted}
+              label={
+                <Box
+                  display={DISPLAY.FLEX}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon name={IconName.Star} />{' '}
+                  <Text color={TextColor.infoDefault}>
+                    {t('snapIsAudited')}
+                  </Text>
+                </Box>
+              }
+              labelProps={{
+                color: TextColor.infoDefault,
+              }}
+              className=""
+            />
           )}
         </Box>
       </Box>
