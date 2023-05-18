@@ -6,17 +6,24 @@ import {
   GasRecommendations,
   EditGasModes,
   PriorityLevels,
+  TOO_HIGH_GAS_LIMIT,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
+  transactionFeeSelector,
 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import {
+  decEthToConvertedCurrency,
+  hexToDecimal,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../shared/modules/conversion.utils';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -157,6 +164,8 @@ export function useGasFeeInputs(
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
 
+  const fee = useSelector((state) => transactionFeeSelector(state, transaction));
+
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
@@ -169,27 +178,11 @@ export function useGasFeeInputs(
         setInternalEstimateToUse(transaction?.userFeeLevel);
       }
 
-      if (
-        transaction &&
-        transaction.dappSuggestedGasFees !== undefined &&
-        transaction.dappSuggestedGasFees !== null &&
-        Object.keys(transaction.dappSuggestedGasFees).length > 0 &&
-        transaction.dappSuggestedGasFees.maxPriorityFeePerGas !== undefined
-      ) {
-        const dappMaxFeePerGas = Number(
-          hexToDecimal(transaction.dappSuggestedGasFees.maxPriorityFeePerGas),
-        );
+      console.log('fee: ', fee);
+      console.log('transaction: ', transaction);
 
-        let highGasFees = 2;
-        if (gasFeeEstimates.high !== undefined) {
-          highGasFees = Number(
-            gasFeeEstimates.high.suggestedMaxPriorityFeePerGas,
-          );
-        }
-
-        if (dappMaxFeePerGas > highGasFees) {
-          setEstimateUsed(PriorityLevels.dappSuggestedHigh);
-        }
+      if(fee.ethTransactionTotal > TOO_HIGH_GAS_LIMIT) {
+        setEstimateUsed(PriorityLevels.dappSuggestedHigh);
       }
 
       setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));

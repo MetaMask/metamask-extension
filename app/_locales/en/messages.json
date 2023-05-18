@@ -1025,7 +1025,7 @@
     "description": "$1 is url for the dapp that has suggested gas settings"
   },
   "dappSuggestedHigh": {
-    "message": "Site suggested high gas estimate"
+    "message": "Site suggested"
   },
   "dappSuggestedHighShortLabel": {
     "message": "Site (high)"
