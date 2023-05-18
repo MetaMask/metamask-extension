@@ -20,7 +20,7 @@ export default function ListItem({
     className,
     subtitle || children ? '' : 'list-item--single-content-row',
     {
-      'list-item-border': !showBorder,
+      'list-item-border': showBorder,
     },
   );
 

@@ -168,7 +168,7 @@ function TransactionListItemInner({
   ]);
 
   const showCancelButton = !hasCancelled && isPending && !isUnapproved;
-  const showBorder = process.env.MULTICHAIN;
+  const showBorder = !process.env.MULTICHAIN;
 
   return (
     <>
