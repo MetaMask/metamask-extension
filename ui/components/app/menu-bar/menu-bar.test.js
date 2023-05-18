@@ -135,8 +135,8 @@ describe('MenuBar', () => {
     fireEvent.click(accountOptions);
 
     await waitFor(() => {
-      const custodyLogosss = screen.queryByTestId('custody-logo');
-      expect(custodyLogosss).toBeInTheDocument();
+      const custodyLogo = screen.queryByTestId('custody-logo');
+      expect(custodyLogo).toBeInTheDocument();
     });
   });
 });
