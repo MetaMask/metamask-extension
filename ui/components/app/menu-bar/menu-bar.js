@@ -54,7 +54,7 @@ export default function MenuBar() {
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         custodianIcon && (
-          <div className="menu-bar__custody-logo">
+          <div className="menu-bar__custody-logo" data-testid="custody-logo">
             <img
               src={custodianIcon}
               className="menu-bar__custody-logo--icon"
@@ -62,7 +62,6 @@ export default function MenuBar() {
             />
           </div>
         )
-
         ///: END:ONLY_INCLUDE_IN
       }
       <SelectedAccount />

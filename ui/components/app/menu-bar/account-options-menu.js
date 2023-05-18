@@ -209,7 +209,6 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             {t('removeJWT')}
           </MenuItem>
         ) : null
-
         ///: END:ONLY_INCLUDE_IN
       }
     </Menu>

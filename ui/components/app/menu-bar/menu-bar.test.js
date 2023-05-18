@@ -67,4 +67,76 @@ describe('MenuBar', () => {
 
     expect(accountOptionsMenu).not.toBeInTheDocument();
   });
+
+  it('shows a custodial account detail', async () => {
+    const customState = {
+      ...mockState,
+      activeTab: {},
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurations: {},
+
+        providerConfig: {
+          type: 'test',
+          chainId: '1',
+        },
+        identities: {
+          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+            name: 'Custody Account A',
+            address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+          },
+        },
+        selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+        waitForConfirmDeepLinkDialog: '123',
+        keyrings: [
+          {
+            type: 'Custody',
+            accounts: ['0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275'],
+          },
+        ],
+        custodyStatusMaps: '123',
+        custodyAccountDetails: {
+          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+            custodianName: 'saturn',
+          },
+        },
+        custodianSupportedChains: {
+          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+            supportedChains: ['1', '2'],
+            custodianName: 'saturn',
+          },
+        },
+        mmiConfiguration: {
+          portfolio: {
+            enabled: true,
+            url: 'https://dashboard.metamask-institutional.io',
+          },
+          custodians: [
+            {
+              type: 'saturn',
+              name: 'saturn',
+              apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
+              iconUrl: 'images/saturn.svg',
+              displayName: 'Saturn Custody',
+              production: true,
+              refreshTokenUrl: null,
+              isNoteToTraderSupported: false,
+              version: 1,
+            },
+          ],
+        },
+      },
+    };
+
+    const store = mockStore(customState);
+    renderWithProvider(<MenuBar />, store);
+
+    const accountOptions = screen.queryByTestId('account-options-menu-button');
+    fireEvent.click(accountOptions);
+
+    await waitFor(() => {
+      const custodyLogosss = screen.queryByTestId('custody-logo');
+      expect(custodyLogosss).toBeInTheDocument();
+    });
+  });
 });
