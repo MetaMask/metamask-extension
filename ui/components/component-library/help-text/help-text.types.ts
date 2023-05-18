@@ -11,7 +11,6 @@ export enum HelpTextSeverity {
 
 export interface HelpTextProps extends TextProps {
   severity?: HelpTextSeverity;
-
   /**
    * The color of the HelpText will be overridden if there is a severity passed
    * Defaults to Color.textDefault
