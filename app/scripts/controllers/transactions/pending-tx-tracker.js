@@ -4,6 +4,11 @@ import EthQuery from 'ethjs-query';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { getTokenTransfersFromTxReceipt } from '../../../../shared/lib/transactions-controller-utils';
 import { isEmpty } from '../../../../shared/lib/storage-helpers';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
 import { ERROR_SUBMITTING } from './tx-state-manager';
 
 /**
@@ -41,6 +46,8 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @param {object} config.query - An EthQuery instance.
    * @param {Function} config.publishTransaction - Publishes a raw transaction,
    * @param {Function} config.addTokens - Adds tokens to state.
+   * @param {Function} config.trackMetaMetricsEvent - A method to forward events to the
+   * {@link MetaMetricsController}.
    */
   constructor(config) {
     super();
@@ -53,6 +60,7 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.confirmTransaction = config.confirmTransaction;
     this.addTokens = config.addTokens;
     this.getTokenStandardAndDetails = config.getTokenStandardAndDetails
+    this.#trackMetaMetricsEvent = config.trackMetaMetricsEvent;
   }
 
   /**
@@ -239,7 +247,31 @@ export default class PendingTransactionTracker extends EventEmitter {
             contractAddress => getTokenStandardAndDetails(contractAddress, txSender)
           )
         )
-        this.addTokens(tokens.filter(token => !isEmpty(token)))
+
+        const receivedTokens = tokens.filter(token => !isEmpty(token)).reduce((acc, token) => {
+          acc[token.contractAddress.toLowerCase()] = { ...token, image: formatIconUrlWithProxy(txMeta.chainId, token.address) }
+          return acc
+        }, {})
+        this.addTokens(receivedTokens)
+        const addedTokenValues = Object.values(receivedTokens);
+
+        addedTokenValues.forEach((pendingToken) => {
+          this.#trackMetaMetricsEvent({
+            event: MetaMetricsEventName.TokenAdded,
+            category: MetaMetricsEventCategory.Wallet,
+            sensitiveProperties: {
+              token_symbol: pendingToken.symbol,
+              token_contract_address: pendingToken.address,
+              token_decimal_precision: pendingToken.decimals,
+              unlisted: pendingToken.unlisted,
+              source_connection_method: pendingToken.isCustom
+                ? MetaMetricsTokenEventSource.Custom
+                : MetaMetricsTokenEventSource.List,
+              token_standard: TokenStandard.ERC20,
+              asset_type: AssetType.token,
+            },
+          });
+        });
         return;
       }
     } catch (err) {
