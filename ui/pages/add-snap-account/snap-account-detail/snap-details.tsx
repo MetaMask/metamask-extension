@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useHistory } from 'react-router-dom';
 import Box from '../../../components/ui/box/box';
 import {
   BLOCK_SIZES,
@@ -15,11 +16,13 @@ import {
   Text,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
 
 const SnapDetailsPage = () => {
   const t = useI18nContext();
+  const history = useHistory();
 
   // TODO: replace with data from redux
 
@@ -106,7 +109,14 @@ const SnapDetailsPage = () => {
           </Detail>
           {snapDetail.isInstalled && (
             <Box>
-              <Button variant={BUTTON_VARIANT.LINK}>
+              <Button
+                variant={BUTTON_VARIANT.LINK}
+                onClick={() =>
+                  history.push(
+                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapDetail.id)}`,
+                  )
+                }
+              >
                 {t('snapDetailManageSnap')}
               </Button>
             </Box>
