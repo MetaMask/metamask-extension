@@ -14,8 +14,6 @@ import {
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
-  BackgroundColor,
-  Size,
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -32,15 +30,10 @@ import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AvatarNetwork,
-  BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import NftDefaultImage from '../nft-default-image';
 import Card from '../../ui/card/card';
+import { NftItem } from '../../multichain/nft-item';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -183,7 +176,6 @@ export default function NftsItems({
               const nftImageAlt = getNftImageAlt(nft);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
-
               return (
                 <Box
                   data-testid="nft-wrapper"
@@ -192,48 +184,16 @@ export default function NftsItems({
                   className="nfts-items__item-wrapper"
                 >
                   {process.env.MULTICHAIN ? (
-                    <BadgeWrapper
-                      badge={
-                        <AvatarNetwork
-                          size={Size.SM}
-                          name={currentChain.nickname}
-                          src={currentChain.rpcPrefs?.imageUrl}
-                          borderColor={BackgroundColor.backgroundDefault}
-                          borderWidth={2}
-                          data-testid="nft-network-badge"
-                        />
-                      }
-                      anchorElementShape={
-                        BadgeWrapperAnchorElementShape.rectangular
-                      }
-                      positionObj={{ top: -4, right: -4 }}
-                      display={DISPLAY.BLOCK}
-                    >
-                      {nftImage ? (
-                        <button
-                          className="nfts-items__item"
-                          style={{
-                            backgroundColor,
-                            borderRadius: 8,
-                          }}
-                          onClick={handleImageClick}
-                        >
-                          <img
-                            className="nfts-items__item-image"
-                            data-testid="nft-image"
-                            style={{ borderRadius: 8 }}
-                            src={nftImage}
-                            alt={nftImageAlt}
-                          />
-                        </button>
-                      ) : (
-                        <NftDefaultImage
-                          name={name}
-                          tokenId={tokenId}
-                          handleImageClick={handleImageClick}
-                        />
-                      )}
-                    </BadgeWrapper>
+                    <NftItem
+                      backgroundColor={backgroundColor}
+                      src={nftImage}
+                      alt={nftImageAlt}
+                      name={name}
+                      tokenId={tokenId}
+                      networkName={currentChain.nickname}
+                      networkSrc={currentChain.rpcPrefs?.imageUrl}
+                      onClick={handleImageClick}
+                    />
                   ) : (
                     <Card
                       padding={0}
