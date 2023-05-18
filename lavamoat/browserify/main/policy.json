@@ -2827,13 +2827,13 @@
     },
     "browserify>stream-http>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "browserify>string_decoder": {
