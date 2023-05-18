@@ -120,7 +120,8 @@
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
-        "chainId": "0x1"
+        "chainId": "0x1",
+        "nickname": "Custom Mainnet RPC"
       }
     },
     "keyrings": [
