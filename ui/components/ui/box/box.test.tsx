@@ -2,12 +2,17 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import {
   BorderStyle,
+  Display,
   DISPLAY,
+  FlexDirection,
   FLEX_DIRECTION,
+  FlexWrap,
   FLEX_WRAP,
   AlignItems,
   JustifyContent,
   TEXT_ALIGN,
+  TextAlign,
+  BlockSize,
   BLOCK_SIZES,
   BorderRadius,
   BorderColor,
@@ -487,15 +492,32 @@ describe('Box', () => {
     it('should render the Box with the display classes', () => {
       const { getByText } = render(
         <>
-          <Box display={DISPLAY.BLOCK}>Box display-block</Box>
-          <Box display={DISPLAY.FLEX}>Box display-flex</Box>
-          <Box display={DISPLAY.GRID}>Box display-grid</Box>
-          <Box display={DISPLAY.INLINE}>Box display-inline</Box>
-          <Box display={DISPLAY.INLINE_BLOCK}>Box display-inline-block</Box>
-          <Box display={DISPLAY.INLINE_FLEX}>Box display-inline-flex</Box>
-          <Box display={DISPLAY.INLINE_GRID}>Box display-inline-grid</Box>
-          <Box display={DISPLAY.LIST_ITEM}>Box display-list-item</Box>
-          <Box display={DISPLAY.NONE}>Box display-none</Box>
+          <Box display={Display.Block}>Box display-block</Box>
+          <Box display={Display.Flex}>Box display-flex</Box>
+          <Box display={Display.Grid}>Box display-grid</Box>
+          <Box display={Display.Inline}>Box display-inline</Box>
+          <Box display={Display.InlineBlock}>Box display-inline-block</Box>
+          <Box display={Display.InlineFlex}>Box display-inline-flex</Box>
+          <Box display={Display.InlineGrid}>Box display-inline-grid</Box>
+          <Box display={Display.ListItem}>Box display-list-item</Box>
+          <Box display={Display.None}>Box display-none</Box>
+          <Box display={DISPLAY.BLOCK}>DEPRECATED Box display-block</Box>
+          <Box display={DISPLAY.FLEX}>DEPRECATED Box display-flex</Box>
+          <Box display={DISPLAY.GRID}>DEPRECATED Box display-grid</Box>
+          <Box display={DISPLAY.INLINE}>DEPRECATED Box display-inline</Box>
+          <Box display={DISPLAY.INLINE_BLOCK}>
+            DEPRECATED Box display-inline-block
+          </Box>
+          <Box display={DISPLAY.INLINE_FLEX}>
+            DEPRECATED Box display-inline-flex
+          </Box>
+          <Box display={DISPLAY.INLINE_GRID}>
+            DEPRECATED Box display-inline-grid
+          </Box>
+          <Box display={DISPLAY.LIST_ITEM}>
+            DEPRECATED Box display-list-item
+          </Box>
+          <Box display={DISPLAY.NONE}>DEPRECATED Box display-none</Box>
         </>,
       );
 
@@ -517,14 +539,44 @@ describe('Box', () => {
       expect(getByText('Box display-list-item')).toHaveClass(
         'box--display-list-item',
       );
+
+      expect(getByText('DEPRECATED Box display-block')).toHaveClass(
+        'box--display-block',
+      );
+      expect(getByText('DEPRECATED Box display-flex')).toHaveClass(
+        'box--display-flex',
+      );
+      expect(getByText('DEPRECATED Box display-grid')).toHaveClass(
+        'box--display-grid',
+      );
+      expect(getByText('DEPRECATED Box display-inline')).toHaveClass(
+        'box--display-inline',
+      );
+      expect(getByText('DEPRECATED Box display-inline-block')).toHaveClass(
+        'box--display-inline-block',
+      );
+      expect(getByText('DEPRECATED Box display-inline-flex')).toHaveClass(
+        'box--display-inline-flex',
+      );
+      expect(getByText('DEPRECATED Box display-inline-grid')).toHaveClass(
+        'box--display-inline-grid',
+      );
+      expect(getByText('DEPRECATED Box display-list-item')).toHaveClass(
+        'box--display-list-item',
+      );
     });
     it('should render the Box with the responsive display classes', () => {
       const { getByText } = render(
         <>
           <Box
-            display={[DISPLAY.BLOCK, DISPLAY.FLEX, DISPLAY.GRID, DISPLAY.NONE]}
+            display={[Display.Block, Display.Flex, Display.Grid, Display.None]}
           >
             Box content
+          </Box>
+          <Box
+            display={[DISPLAY.BLOCK, DISPLAY.FLEX, DISPLAY.GRID, DISPLAY.NONE]}
+          >
+            DEPRECATED Box content
           </Box>
         </>,
       );
@@ -532,6 +584,19 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--sm:display-flex');
       expect(getByText('Box content')).toHaveClass('box--md:display-grid');
       expect(getByText('Box content')).toHaveClass('box--lg:display-none');
+
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--display-block',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--sm:display-flex',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--md:display-grid',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--lg:display-none',
+      );
     });
     it('should render the Box with the gap class', () => {
       const { getByText } = render(<Box gap={1}>Box content</Box>);
@@ -549,15 +614,28 @@ describe('Box', () => {
     it('should render the Box with the flexDirection classes', () => {
       const { getByText } = render(
         <>
-          <Box flexDirection={FLEX_DIRECTION.ROW}>Box flex-direction-row</Box>
-          <Box flexDirection={FLEX_DIRECTION.ROW_REVERSE}>
+          <Box flexDirection={FlexDirection.Row}>Box flex-direction-row</Box>
+          <Box flexDirection={FlexDirection.RowReverse}>
             Box flex-direction-row-reverse
           </Box>
-          <Box flexDirection={FLEX_DIRECTION.COLUMN}>
+          <Box flexDirection={FlexDirection.Column}>
             Box flex-direction-column
           </Box>
-          <Box flexDirection={FLEX_DIRECTION.COLUMN_REVERSE}>
+          <Box flexDirection={FlexDirection.ColumnReverse}>
             Box flex-direction-column-reverse
+          </Box>
+
+          <Box flexDirection={FlexDirection.Row}>
+            DEPRECATED Box flex-direction-row
+          </Box>
+          <Box flexDirection={FlexDirection.RowReverse}>
+            DEPRECATED Box flex-direction-row-reverse
+          </Box>
+          <Box flexDirection={FlexDirection.Column}>
+            DEPRECATED Box flex-direction-column
+          </Box>
+          <Box flexDirection={FlexDirection.ColumnReverse}>
+            DEPRECATED Box flex-direction-column-reverse
           </Box>
         </>,
       );
@@ -574,10 +652,33 @@ describe('Box', () => {
       expect(getByText('Box flex-direction-column-reverse')).toHaveClass(
         'box--flex-direction-column-reverse',
       );
+
+      expect(getByText('DEPRECATED Box flex-direction-row')).toHaveClass(
+        'box--flex-direction-row',
+      );
+      expect(
+        getByText('DEPRECATED Box flex-direction-row-reverse'),
+      ).toHaveClass('box--flex-direction-row-reverse');
+      expect(getByText('DEPRECATED Box flex-direction-column')).toHaveClass(
+        'box--flex-direction-column',
+      );
+      expect(
+        getByText('DEPRECATED Box flex-direction-column-reverse'),
+      ).toHaveClass('box--flex-direction-column-reverse');
     });
     it('should render the Box with the responsive flexDirection classes', () => {
       const { getByText } = render(
         <>
+          <Box
+            flexDirection={[
+              FlexDirection.Row,
+              FlexDirection.RowReverse,
+              FlexDirection.Column,
+              FlexDirection.ColumnReverse,
+            ]}
+          >
+            Box content
+          </Box>
           <Box
             flexDirection={[
               FLEX_DIRECTION.ROW,
@@ -586,7 +687,7 @@ describe('Box', () => {
               FLEX_DIRECTION.COLUMN_REVERSE,
             ]}
           >
-            Box content
+            DEPRECATED Box content
           </Box>
         </>,
       );
@@ -600,15 +701,34 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass(
         'box--lg:flex-direction-column-reverse',
       );
+
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--flex-direction-row',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--sm:flex-direction-row-reverse',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--md:flex-direction-column',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--lg:flex-direction-column-reverse',
+      );
     });
     it('should render the Box with the flexWrap classes', () => {
       const { getByText } = render(
         <>
-          <Box flexWrap={FLEX_WRAP.WRAP}>Box flex-wrap-wrap</Box>
+          <Box flexWrap={FlexWrap.Wrap}>Box flex-wrap-wrap</Box>
+          <Box flexWrap={FlexWrap.WrapReverse}>Box flex-wrap-wrap-reverse</Box>
+          <Box flexWrap={FlexWrap.NoWrap}>Box flex-wrap-nowrap</Box>
+
+          <Box flexWrap={FLEX_WRAP.WRAP}>DEPRECATED Box flex-wrap-wrap</Box>
           <Box flexWrap={FLEX_WRAP.WRAP_REVERSE}>
-            Box flex-wrap-wrap-reverse
+            DEPRECATED Box flex-wrap-wrap-reverse
           </Box>
-          <Box flexWrap={FLEX_WRAP.NO_WRAP}>Box flex-wrap-nowrap</Box>
+          <Box flexWrap={FLEX_WRAP.NO_WRAP}>
+            DEPRECATED Box flex-wrap-nowrap
+          </Box>
         </>,
       );
 
@@ -621,18 +741,29 @@ describe('Box', () => {
       expect(getByText('Box flex-wrap-nowrap')).toHaveClass(
         'box--flex-wrap-nowrap',
       );
+
+      expect(getByText('DEPRECATED Box flex-wrap-wrap')).toHaveClass(
+        'box--flex-wrap-wrap',
+      );
+      expect(getByText('DEPRECATED Box flex-wrap-wrap-reverse')).toHaveClass(
+        'box--flex-wrap-wrap-reverse',
+      );
+      expect(getByText('DEPRECATED Box flex-wrap-nowrap')).toHaveClass(
+        'box--flex-wrap-nowrap',
+      );
     });
     it('should render the Box with the responsive flexWrap classes', () => {
       const { getByText } = render(
         <>
           <Box
-            flexWrap={[
-              FLEX_WRAP.WRAP,
-              FLEX_WRAP.WRAP_REVERSE,
-              FLEX_WRAP.NO_WRAP,
-            ]}
+            flexWrap={[FlexWrap.Wrap, FlexWrap.WrapReverse, FlexWrap.NoWrap]}
           >
             Box content
+          </Box>
+          <Box
+            flexWrap={[FlexWrap.Wrap, FlexWrap.WrapReverse, FlexWrap.NoWrap]}
+          >
+            DEPRECATED Box content
           </Box>
         </>,
       );
@@ -641,6 +772,16 @@ describe('Box', () => {
         'box--sm:flex-wrap-wrap-reverse',
       );
       expect(getByText('Box content')).toHaveClass('box--md:flex-wrap-nowrap');
+
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--flex-wrap-wrap',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--sm:flex-wrap-wrap-reverse',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--md:flex-wrap-nowrap',
+      );
     });
     it('should render the Box with the alignItems classes', () => {
       const { getByText } = render(
@@ -772,11 +913,17 @@ describe('Box', () => {
     it('should render the Box with the textAlign auto class', () => {
       const { getByText } = render(
         <>
-          <Box textAlign={TEXT_ALIGN.LEFT}>Box left</Box>
-          <Box textAlign={TEXT_ALIGN.CENTER}>Box center</Box>
-          <Box textAlign={TEXT_ALIGN.RIGHT}>Box right</Box>
-          <Box textAlign={TEXT_ALIGN.JUSTIFY}>Box justify</Box>
-          <Box textAlign={TEXT_ALIGN.END}>Box end</Box>
+          <Box textAlign={TextAlign.Left}>Box left</Box>
+          <Box textAlign={TextAlign.Center}>Box center</Box>
+          <Box textAlign={TextAlign.Right}>Box right</Box>
+          <Box textAlign={TextAlign.Justify}>Box justify</Box>
+          <Box textAlign={TextAlign.End}>Box end</Box>
+
+          <Box textAlign={TEXT_ALIGN.LEFT}>DEPRECATED Box left</Box>
+          <Box textAlign={TEXT_ALIGN.CENTER}>DEPRECATED Box center</Box>
+          <Box textAlign={TEXT_ALIGN.RIGHT}>DEPRECATED Box right</Box>
+          <Box textAlign={TEXT_ALIGN.JUSTIFY}>DEPRECATED Box justify</Box>
+          <Box textAlign={TEXT_ALIGN.END}>DEPRECATED Box end</Box>
         </>,
       );
 
@@ -785,25 +932,66 @@ describe('Box', () => {
       expect(getByText('Box right')).toHaveClass('box--text-align-right');
       expect(getByText('Box justify')).toHaveClass('box--text-align-justify');
       expect(getByText('Box end')).toHaveClass('box--text-align-end');
+
+      expect(getByText('DEPRECATED Box left')).toHaveClass(
+        'box--text-align-left',
+      );
+      expect(getByText('DEPRECATED Box center')).toHaveClass(
+        'box--text-align-center',
+      );
+      expect(getByText('DEPRECATED Box right')).toHaveClass(
+        'box--text-align-right',
+      );
+      expect(getByText('DEPRECATED Box justify')).toHaveClass(
+        'box--text-align-justify',
+      );
+      expect(getByText('DEPRECATED Box end')).toHaveClass(
+        'box--text-align-end',
+      );
     });
     it('should render the Box with the responsive textAlign classes', () => {
       const { getByText } = render(
-        <Box
-          textAlign={[
-            TEXT_ALIGN.LEFT,
-            TEXT_ALIGN.CENTER,
-            TEXT_ALIGN.RIGHT,
-            TEXT_ALIGN.JUSTIFY,
-          ]}
-        >
-          Box content
-        </Box>,
+        <>
+          <Box
+            textAlign={[
+              TextAlign.Left,
+              TextAlign.Center,
+              TextAlign.Right,
+              TextAlign.Justify,
+            ]}
+          >
+            Box content
+          </Box>
+          <Box
+            textAlign={[
+              TEXT_ALIGN.LEFT,
+              TEXT_ALIGN.CENTER,
+              TEXT_ALIGN.RIGHT,
+              TEXT_ALIGN.JUSTIFY,
+            ]}
+          >
+            DEPRECATED Box content
+          </Box>
+        </>,
       );
 
       expect(getByText('Box content')).toHaveClass('box--text-align-left');
       expect(getByText('Box content')).toHaveClass('box--sm:text-align-center');
       expect(getByText('Box content')).toHaveClass('box--md:text-align-right');
       expect(getByText('Box content')).toHaveClass(
+        'box--lg:text-align-justify',
+      );
+
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--text-align-left',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--sm:text-align-center',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--md:text-align-right',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
         'box--lg:text-align-justify',
       );
     });
@@ -884,20 +1072,43 @@ describe('Box', () => {
     it('should render the Box with the width class', () => {
       const { getByText } = render(
         <>
-          <Box width={BLOCK_SIZES.HALF}>Box half</Box>
-          <Box width={BLOCK_SIZES.ONE_FOURTH}>Box one fourth</Box>
-          <Box width={BLOCK_SIZES.MAX}>Box max</Box>
-          <Box width={BLOCK_SIZES.MIN}>Box min</Box>
+          <Box width={BlockSize.Half}>Box half</Box>
+          <Box width={BlockSize.OneFourth}>Box one fourth</Box>
+          <Box width={BlockSize.Max}>Box max</Box>
+          <Box width={BlockSize.Min}>Box min</Box>
+
+          <Box width={BLOCK_SIZES.HALF}>DEPRECATED Box half</Box>
+          <Box width={BLOCK_SIZES.ONE_FOURTH}>DEPRECATED Box one fourth</Box>
+          <Box width={BLOCK_SIZES.MAX}>DEPRECATED Box max</Box>
+          <Box width={BLOCK_SIZES.MIN}>DEPRECATED Box min</Box>
         </>,
       );
       expect(getByText('Box half')).toHaveClass('box--width-1/2');
       expect(getByText('Box one fourth')).toHaveClass('box--width-1/4');
       expect(getByText('Box max')).toHaveClass('box--width-max');
       expect(getByText('Box min')).toHaveClass('box--width-min');
+
+      expect(getByText('DEPRECATED Box half')).toHaveClass('box--width-1/2');
+      expect(getByText('DEPRECATED Box one fourth')).toHaveClass(
+        'box--width-1/4',
+      );
+      expect(getByText('DEPRECATED Box max')).toHaveClass('box--width-max');
+      expect(getByText('DEPRECATED Box min')).toHaveClass('box--width-min');
     });
     it('should render the Box with the responsive width classes', () => {
       const { getByText } = render(
         <>
+          <Box
+            width={[
+              BlockSize.Half,
+              BlockSize.OneFourth,
+              BlockSize.Max,
+              BlockSize.Min,
+            ]}
+          >
+            Box content
+          </Box>
+
           <Box
             width={[
               BLOCK_SIZES.HALF,
@@ -906,7 +1117,7 @@ describe('Box', () => {
               BLOCK_SIZES.MIN,
             ]}
           >
-            Box content
+            DEPRECATED Box content
           </Box>
         </>,
       );
@@ -914,24 +1125,57 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--sm:width-1/4');
       expect(getByText('Box content')).toHaveClass('box--md:width-max');
       expect(getByText('Box content')).toHaveClass('box--lg:width-min');
+
+      expect(getByText('DEPRECATED Box content')).toHaveClass('box--width-1/2');
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--sm:width-1/4',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--md:width-max',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--lg:width-min',
+      );
     });
     it('should render the Box with the height class', () => {
       const { getByText } = render(
         <>
-          <Box height={BLOCK_SIZES.HALF}>Box half</Box>
-          <Box height={BLOCK_SIZES.ONE_FOURTH}>Box one fourth</Box>
-          <Box height={BLOCK_SIZES.MAX}>Box max</Box>
-          <Box height={BLOCK_SIZES.MIN}>Box min</Box>
+          <Box height={BlockSize.Half}>Box half</Box>
+          <Box height={BlockSize.OneFourth}>Box one fourth</Box>
+          <Box height={BlockSize.Max}>Box max</Box>
+          <Box height={BlockSize.Min}>Box min</Box>
+
+          <Box height={BLOCK_SIZES.HALF}>DEPRECATED Box half</Box>
+          <Box height={BLOCK_SIZES.ONE_FOURTH}>DEPRECATED Box one fourth</Box>
+          <Box height={BLOCK_SIZES.MAX}>DEPRECATED Box max</Box>
+          <Box height={BLOCK_SIZES.MIN}>DEPRECATED Box min</Box>
         </>,
       );
       expect(getByText('Box half')).toHaveClass('box--height-1/2');
       expect(getByText('Box one fourth')).toHaveClass('box--height-1/4');
       expect(getByText('Box max')).toHaveClass('box--height-max');
       expect(getByText('Box min')).toHaveClass('box--height-min');
+
+      expect(getByText('DEPRECATED Box half')).toHaveClass('box--height-1/2');
+      expect(getByText('DEPRECATED Box one fourth')).toHaveClass(
+        'box--height-1/4',
+      );
+      expect(getByText('DEPRECATED Box max')).toHaveClass('box--height-max');
+      expect(getByText('DEPRECATED Box min')).toHaveClass('box--height-min');
     });
     it('should render the Box with the responsive height classes', () => {
       const { getByText } = render(
         <>
+          <Box
+            height={[
+              BlockSize.Half,
+              BlockSize.OneFourth,
+              BlockSize.Max,
+              BlockSize.Min,
+            ]}
+          >
+            Box content
+          </Box>
           <Box
             height={[
               BLOCK_SIZES.HALF,
@@ -940,7 +1184,7 @@ describe('Box', () => {
               BLOCK_SIZES.MIN,
             ]}
           >
-            Box content
+            DEPRECATED Box content
           </Box>
         </>,
       );
@@ -948,6 +1192,19 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--sm:height-1/4');
       expect(getByText('Box content')).toHaveClass('box--md:height-max');
       expect(getByText('Box content')).toHaveClass('box--lg:height-min');
+
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--height-1/2',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--sm:height-1/4',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--md:height-max',
+      );
+      expect(getByText('DEPRECATED Box content')).toHaveClass(
+        'box--lg:height-min',
+      );
     });
   });
   describe('polymorphic "as" prop', () => {
