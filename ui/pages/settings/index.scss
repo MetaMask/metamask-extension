@@ -34,7 +34,6 @@
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 20px;
-
         grid-template-areas:
           'back title close'
           'search search search';
@@ -71,7 +70,7 @@
     }
 
     &__search {
-        width: 330px;
+      width: 330px;
 
       &__list {
         background: var(--color-background-default);
