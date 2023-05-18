@@ -30,7 +30,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { HardwareWalletStates } from '../../../../shared/constants/hardware-wallets';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
