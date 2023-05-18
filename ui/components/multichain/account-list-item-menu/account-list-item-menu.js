@@ -137,6 +137,7 @@ export const AccountListItemMenu = ({
               },
             });
             onClose();
+            closeMenu?.();
           }}
           iconName={IconName.Trash}
         >

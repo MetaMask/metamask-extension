@@ -227,13 +227,15 @@ async function checkAccountDetails(driver) {
   // Select account details for second account
   await driver.clickElement(
     '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
-  )
+  );
   await driver.clickElement('[data-testid="account-list-menu-details"]');
 
   await driver.findVisibleElement('.popover-bg');
 
   // get the public address for the "second account"
-  const accountDOM = await driver.waitForSelector('.multichain-address-copy-button');;
+  const accountDOM = await driver.waitForSelector(
+    '.multichain-address-copy-button',
+  );
   const accountAddress = await accountDOM.getText();
 
   await driver.clickElement('button[aria-label="Close"]');
