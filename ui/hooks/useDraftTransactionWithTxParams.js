@@ -8,13 +8,14 @@ import { getUnapprovedTransactions } from '../selectors';
  * the gas data from draftTransaction and unapprovedTx has to be reorganized
  * to mimic the txdata.txParam from a confirmTransaction
  *
- * @returns {Object txData.txParams}
+ * @returns {object} The transaction data
  */
-export const useDraftTransactionGasValues = () => {
+export const useDraftTransactionWithTxParams = () => {
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
   let transactionData = {};
+
   if (Object.keys(draftTransaction).length !== 0) {
     const editingTransaction = unapprovedTxs[draftTransaction.id];
     transactionData = {
@@ -36,5 +37,5 @@ export const useDraftTransactionGasValues = () => {
     };
   }
 
-  return { transactionData };
+  return transactionData;
 };

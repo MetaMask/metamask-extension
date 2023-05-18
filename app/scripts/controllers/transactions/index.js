@@ -394,6 +394,22 @@ export default class TransactionController extends EventEmitter {
     });
   }
 
+  /**
+   * Creates approvals for all unapproved transactions in the txStateManager.
+   *
+   * @returns {Promise<void>}
+   */
+  async initApprovals() {
+    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
+    return Promise.all(
+      Object.values(unapprovedTxs).map((txMeta) =>
+        this._requestApproval(txMeta, {
+          shouldShowRequest: false,
+        }),
+      ),
+    );
+  }
+
   // ====================================================================================================================================================
 
   /**
@@ -2646,13 +2662,16 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
-  _requestApproval(txMeta) {
+  async _requestApproval(
+    txMeta,
+    { shouldShowRequest } = { shouldShowRequest: true },
+  ) {
     const id = this._getApprovalId(txMeta);
     const { origin } = txMeta;
     const type = ApprovalType.Transaction;
     const requestData = { txId: txMeta.id };
 
-    this.messagingSystem
+    return this.messagingSystem
       .call(
         'ApprovalController:addRequest',
         {
@@ -2661,7 +2680,7 @@ export default class TransactionController extends EventEmitter {
           type,
           requestData,
         },
-        true,
+        shouldShowRequest,
       )
       .catch(() => {
         // Intentionally ignored as promise not currently used

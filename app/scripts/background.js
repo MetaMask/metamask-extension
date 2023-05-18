@@ -713,7 +713,9 @@ export function setupController(
   // User Interface setup
   //
 
-  updateBadge();
+  controller.txController.initApprovals().then(() => {
+    updateBadge();
+  });
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,

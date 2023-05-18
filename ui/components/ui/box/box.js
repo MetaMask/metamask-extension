@@ -4,26 +4,26 @@ import classnames from 'classnames';
 import { memoize } from 'lodash';
 import {
   AlignItems,
-  BLOCK_SIZES,
+  BlockSize,
   BorderStyle,
   BackgroundColor,
   BorderColor,
   TextColor,
   IconColor,
-  DISPLAY,
   JustifyContent,
   TEXT_ALIGN,
-  FLEX_DIRECTION,
-  FLEX_WRAP,
+  FlexDirection,
+  FlexWrap,
   BREAKPOINTS,
   BorderRadius,
+  Display,
 } from '../../../helpers/constants/design-system';
 
 const BASE_CLASS_NAME = 'box';
 const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const ValidSize = PropTypes.oneOf(Sizes);
-const ValidBlockSize = PropTypes.oneOf(Object.values(BLOCK_SIZES));
+const ValidBlockSize = PropTypes.oneOf(Object.values(BlockSize));
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
 export const ValidBackgroundColor = PropTypes.oneOf(
   Object.values(BackgroundColor),
@@ -212,7 +212,7 @@ const Box = React.forwardRef(function Box(
     alignItems,
     justifyContent,
     textAlign,
-    flexDirection = FLEX_DIRECTION.ROW,
+    flexDirection = FlexDirection.Row,
     flexWrap,
     gap,
     display,
@@ -329,12 +329,12 @@ function isCustomComponent(element) {
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   flexDirection: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_DIRECTION))),
+    PropTypes.oneOf(Object.values(FlexDirection)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FlexDirection))),
   ]),
   flexWrap: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(FLEX_WRAP)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_WRAP))),
+    PropTypes.oneOf(Object.values(FlexWrap)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FlexWrap))),
   ]),
   gap: MultipleSizes,
   margin: MultipleSizesAndAuto,
@@ -373,8 +373,8 @@ Box.propTypes = {
     PropTypes.arrayOf(PropTypes.oneOf(Object.values(TEXT_ALIGN))),
   ]),
   display: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(DISPLAY)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(DISPLAY))),
+    PropTypes.oneOf(Object.values(Display)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(Display))),
   ]),
   width: MultipleBlockSizes,
   height: MultipleBlockSizes,

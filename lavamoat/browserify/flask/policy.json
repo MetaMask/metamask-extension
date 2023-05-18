@@ -5,6 +5,11 @@
         "regeneratorRuntime": "write"
       }
     },
+    "@babel/runtime>regenerator-runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
+      }
+    },
     "@download/blockies": {
       "globals": {
         "document.createElement": true
@@ -868,6 +873,20 @@
         "immer": true
       }
     },
+    "@metamask/browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1069,11 +1088,11 @@
     },
     "@metamask/eth-keyring-controller": {
       "packages": {
+        "@metamask/browser-passworder": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/eth-keyring-controller>obs-store": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
-        "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>events": true
       }
     },
@@ -1199,8 +1218,8 @@
         "@metamask/eth-token-tracker>deep-equal>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@ngraveio/bc-ur>assert>object-is": true,
-        "@storybook/api>telejson>is-regex": true,
         "globalthis>define-properties>object-keys": true,
+        "string.prototype.matchall>es-abstract>is-regex": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
@@ -1683,25 +1702,12 @@
         "browser": true,
         "chrome": true,
         "location.origin": true,
-        "onmessage": "write",
         "postMessage": true,
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
-        "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
+        "@metamask/post-message-stream>readable-stream": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -1709,14 +1715,14 @@
         "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
         "@metamask/post-message-stream>readable-stream>safe-buffer": true,
         "@metamask/post-message-stream>readable-stream>string_decoder": true,
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>timers-browserify": true,
         "pumpify>inherits": true,
         "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true
+        "readable-stream>isarray": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "@metamask/post-message-stream>readable-stream>process-nextick-args": {
@@ -1753,51 +1759,50 @@
         "eth-rpc-errors": true
       }
     },
-    "@metamask/rpc-methods": {
-      "packages": {
-        "@metamask/key-tree": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/rpc-methods>nanoid": true,
-        "@metamask/snaps-ui": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
-        "eth-rpc-errors": true,
-        "superstruct": true
-      }
-    },
     "@metamask/rpc-methods-flask": {
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
+        "@metamask/rpc-methods-flask>@metamask/snaps-ui": true,
+        "@metamask/rpc-methods-flask>@metamask/snaps-utils": true,
         "@metamask/rpc-methods-flask>nanoid": true,
-        "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/snaps-ui": true,
-        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "eth-rpc-errors": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/rpc-methods-flask>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/rpc-methods-flask>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "@metamask/utils": true,
+        "semver": true,
         "superstruct": true
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/browser-passworder": {
-      "globals": {
-        "btoa": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.decrypt": true,
-        "crypto.subtle.deriveKey": true,
-        "crypto.subtle.encrypt": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true
-      },
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1922,21 +1927,61 @@
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
-        "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers-flask>concat-stream": true,
         "@metamask/snaps-controllers-flask>nanoid": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
-        "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
-        "@metamask/subject-metadata-controller": true,
         "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "pump": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/permission-controller": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils>@metamask/snaps-ui": true,
+        "@metamask/snaps-controllers-flask>nanoid": true,
+        "@metamask/utils": true,
+        "eth-rpc-errors": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "@metamask/utils": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/snaps-utils>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
       }
     },
     "@metamask/snaps-controllers-flask>concat-stream": {
@@ -1948,13 +1993,13 @@
     },
     "@metamask/snaps-controllers-flask>concat-stream>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2052,13 +2097,13 @@
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>tar-stream": {
@@ -2081,46 +2126,18 @@
     },
     "@metamask/snaps-controllers>tar-stream>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snaps-ui": {
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "@metamask/snaps-ui-flask": {
       "packages": {
         "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils": {
-      "globals": {
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "@metamask/utils": true,
-        "semver": true,
         "superstruct": true
       }
     },
@@ -2386,24 +2403,6 @@
         "define": true
       }
     },
-    "@storybook/api>regenerator-runtime": {
-      "globals": {
-        "regeneratorRuntime": "write"
-      }
-    },
-    "@storybook/api>telejson>is-regex": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true
-      }
-    },
-    "@storybook/api>util-deprecate": {
-      "globals": {
-        "console.trace": true,
-        "console.warn": true,
-        "localStorage": true
-      }
-    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -2500,14 +2499,8 @@
     },
     "@truffle/codec>@truffle/abi-utils>change-case>pascal-case": {
       "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>pascal-case>camel-case": true,
+        "@truffle/codec>@truffle/abi-utils>change-case>camel-case": true,
         "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>pascal-case>camel-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
       }
     },
     "@truffle/codec>@truffle/abi-utils>change-case>path-case": {
@@ -2616,13 +2609,8 @@
         "console.error": true
       },
       "packages": {
-        "@truffle/codec>semver>lru-cache": true,
-        "browserify>process": true
-      }
-    },
-    "@truffle/codec>semver>lru-cache": {
-      "packages": {
-        "semver>lru-cache>yallist": true
+        "browserify>process": true,
+        "semver>lru-cache": true
       }
     },
     "@truffle/codec>web3-utils": {
@@ -2680,9 +2668,9 @@
         "@truffle/codec": true,
         "@truffle/codec>@truffle/abi-utils": true,
         "@truffle/codec>@truffle/compile-common": true,
+        "@truffle/codec>big.js": true,
         "@truffle/codec>web3-utils": true,
         "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs": true,
-        "@truffle/decoder>@truffle/encoder>big.js": true,
         "@truffle/decoder>@truffle/encoder>bignumber.js": true,
         "lodash": true,
         "nock>debug": true
@@ -2859,11 +2847,6 @@
         "browserify>process": true
       }
     },
-    "@truffle/decoder>@truffle/encoder>big.js": {
-      "globals": {
-        "define": true
-      }
-    },
     "@truffle/decoder>@truffle/encoder>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -2893,7 +2876,7 @@
     },
     "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
       "packages": {
-        "@storybook/addon-a11y>react-sizeme>shallowequal": true
+        "@truffle/decoder>@truffle/source-map-utils>node-interval-tree>shallowequal": true
       }
     },
     "@truffle/decoder>bn.js": {
@@ -3726,13 +3709,13 @@
     },
     "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
@@ -3779,13 +3762,13 @@
     },
     "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>scrypt-js": {
@@ -3960,7 +3943,7 @@
     "ethjs-query>babel-runtime": {
       "packages": {
         "@babel/runtime": true,
-        "@storybook/api>regenerator-runtime": true,
+        "@babel/runtime>regenerator-runtime": true,
         "ethjs-query>babel-runtime>core-js": true
       }
     },
@@ -4183,13 +4166,13 @@
     },
     "madge>ora>bl>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "nanoid": {
@@ -4401,8 +4384,8 @@
     },
     "react-focus-lock>react-clientside-effect": {
       "packages": {
-        "react": true,
-        "react-focus-lock>react-clientside-effect>@babel/runtime": true
+        "@babel/runtime": true,
+        "react": true
       }
     },
     "react-focus-lock>use-callback-ref": {
@@ -4496,7 +4479,7 @@
       "packages": {
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
-        "react-markdown>vfile>unist-util-stringify-position": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>unist-util-stringify-position": true,
         "react-syntax-highlighter>refractor>parse-entities": true
       }
     },
@@ -4812,7 +4795,6 @@
     },
     "readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>events": true,
         "browserify>process": true,
@@ -4822,7 +4804,8 @@
         "readable-stream>isarray": true,
         "readable-stream>process-nextick-args": true,
         "readable-stream>safe-buffer": true,
-        "readable-stream>string_decoder": true
+        "readable-stream>string_decoder": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "readable-stream>core-util-is": {
@@ -4845,6 +4828,13 @@
         "readable-stream>safe-buffer": true
       }
     },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
+      }
+    },
     "redux": {
       "globals": {
         "console": true
@@ -4859,6 +4849,7 @@
       },
       "packages": {
         "browserify>process": true,
+        "browserify>util": true,
         "semver>lru-cache": true
       }
     },
@@ -4878,6 +4869,12 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "string.prototype.matchall>es-abstract>is-regex": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
     "string.prototype.matchall>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -4887,6 +4884,7 @@
       "packages": {
         "browserify>has": true,
         "browserify>has>function-bind": true,
+        "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
