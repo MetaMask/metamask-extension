@@ -181,7 +181,7 @@ import { Popover } from '../../ui/component-library';
 
 ### On Esc Key Close
 
-`onEscKeyClose` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
+`onPressEscKey` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
 
 ```jsx
 import { Popover } from '../../ui/component-library';
@@ -192,7 +192,7 @@ const handleClick = () => {
   setIsOpen(!isOpen);
 };
 
-<Popover onEscKeyClose={() => setIsOpen(false)}>
+<Popover onPressEscKey={() => setIsOpen(false)}>
   Press esc key to close
 </Popover>;
 ```

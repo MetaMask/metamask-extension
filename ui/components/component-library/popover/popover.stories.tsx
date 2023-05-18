@@ -731,7 +731,7 @@ export const Offset: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const onEscKeyClose: ComponentStory<typeof Popover> = (args) => {
+export const onPressEscKey: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -758,7 +758,7 @@ export const onEscKeyClose: ComponentStory<typeof Popover> = (args) => {
       </Box>
       <Popover
         referenceElement={referenceElement}
-        onEscKeyClose={() => setIsOpen(false)}
+        onPressEscKey={() => setIsOpen(false)}
         isOpen={isOpen}
         {...args}
       >
