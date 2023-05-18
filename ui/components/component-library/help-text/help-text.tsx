@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import classnames from 'classnames';
 import {
   TextVariant,
@@ -7,38 +7,42 @@ import {
 import { Text, ValidTag } from '../text';
 import { HelpTextProps, HelpTextSeverity } from './help-text.types';
 
-export const HelpText = ({
-  severity,
-  color = TextColor.textDefault,
-  className,
-  children,
-  ...props
-}: HelpTextProps) => {
-  const severityColor = () => {
-    switch (severity) {
-      case HelpTextSeverity.Danger:
-        return TextColor.errorDefault;
-      case HelpTextSeverity.Warning:
-        return TextColor.warningDefault;
-      case HelpTextSeverity.Success:
-        return TextColor.successDefault;
-      case HelpTextSeverity.Info:
-        return TextColor.infoDefault;
-      // Defaults to HelpTextSeverity.Info
-      default:
-        return TextColor.textDefault;
-    }
-  };
+export const HelpText = forwardRef(
+  ({
+    severity,
+    color = TextColor.textDefault,
+    className,
+    children,
+    ...props
+  }: HelpTextProps) => {
+    const severityColor = () => {
+      switch (severity) {
+        case HelpTextSeverity.Danger:
+          return TextColor.errorDefault;
+        case HelpTextSeverity.Warning:
+          return TextColor.warningDefault;
+        case HelpTextSeverity.Success:
+          return TextColor.successDefault;
+        case HelpTextSeverity.Info:
+          return TextColor.infoDefault;
+        // Defaults to HelpTextSeverity.Info
+        default:
+          return TextColor.textDefault;
+      }
+    };
 
-  return (
-    <Text
-      className={classnames('mm-help-text', className ?? '')}
-      as={children && typeof children === 'object' ? ValidTag.Div : ValidTag.P}
-      variant={TextVariant.bodyXs}
-      color={severity ? severityColor() : color}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
-};
+    return (
+      <Text
+        className={classnames('mm-help-text', className ?? '')}
+        as={
+          children && typeof children === 'object' ? ValidTag.Div : ValidTag.P
+        }
+        variant={TextVariant.bodyXs}
+        color={severity ? severityColor() : color}
+        {...props}
+      >
+        {children}
+      </Text>
+    );
+  },
+);
