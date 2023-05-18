@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BoxProps } from '../../ui/box/box.d';
+import type { BoxProps, TextAlignArray } from '../../ui/box/box.d';
 import {
   FontWeight,
   FontStyle,
@@ -119,7 +119,7 @@ export interface TextProps extends BoxProps {
    * The text-align of the Text component. Should use the TextAlign enum from
    * ./ui/helpers/constants/design-system.js
    */
-  textAlign?: TextAlign;
+  textAlign?: TextAlign | TextAlignArray;
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
