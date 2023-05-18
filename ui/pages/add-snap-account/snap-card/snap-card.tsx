@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '../../../components/ui/box/box';
 import {
   BUTTON_VARIANT,
@@ -7,7 +7,6 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
-import Identicon from '../../../components/ui/identicon/identicon.component';
 import { SnapCardProps } from '../snap-account/snap-account';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -22,6 +21,7 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import ConfigureSnapPopup from '../../../components/app/configure-snap-popup';
 
 export default function SnapCard({
   iconUrl,
@@ -29,12 +29,19 @@ export default function SnapCard({
   snapSlug,
   updateAvailable,
   isInstalled,
+  website,
   onClickFunc,
 }: Pick<
   SnapCardProps,
-  'iconUrl' | 'snapTitle' | 'snapSlug' | 'updateAvailable' | 'isInstalled'
+  | 'iconUrl'
+  | 'snapTitle'
+  | 'snapSlug'
+  | 'updateAvailable'
+  | 'isInstalled'
+  | 'website'
 > & { onClickFunc: () => void }) {
   const t = useI18nContext();
+  const [showConfigPopover, setShowConfigPopover] = useState(false);
 
   return (
     <Box
@@ -52,9 +59,27 @@ export default function SnapCard({
         alignItems={AlignItems.center}
         marginBottom={2}
       >
-        <Identicon image={iconUrl} />
+        <Box
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          style={{
+            borderRadius: '50%',
+            height: '32px',
+            width: '32px',
+          }}
+          borderWidth={1}
+          borderColor={BorderColor.borderMuted}
+          padding={[2, 2, 2, 2]}
+          marginRight={1}
+        >
+          <img src={iconUrl} className="snap-detail-icon" />
+        </Box>
         {isInstalled ? (
-          <Button variant={BUTTON_VARIANT.SECONDARY}>
+          <Button
+            variant={BUTTON_VARIANT.SECONDARY}
+            onClick={() => setShowConfigPopover(true)}
+          >
             {t('snapConfigure')}
           </Button>
         ) : (
@@ -85,6 +110,12 @@ export default function SnapCard({
           marginLeft="auto"
         />
       </Box>
+      {showConfigPopover && (
+        <ConfigureSnapPopup
+          onClose={() => setShowConfigPopover(false)}
+          link={website}
+        />
+      )}
     </Box>
   );
 }

@@ -131,7 +131,10 @@ export const SnapDetailHeader = ({
                   alignItems={AlignItems.center}
                 >
                   <Icon name={IconName.Star} />{' '}
-                  <Text color={TextColor.infoDefault}>
+                  <Text
+                    color={TextColor.infoDefault}
+                    variant={TextVariant.bodySm}
+                  >
                     {t('snapCreatedByMetaMask')}
                   </Text>
                 </Box>
@@ -155,7 +158,10 @@ export const SnapDetailHeader = ({
                   alignItems={AlignItems.center}
                 >
                   <Icon name={IconName.Star} />{' '}
-                  <Text color={TextColor.infoDefault}>
+                  <Text
+                    color={TextColor.infoDefault}
+                    variant={TextVariant.bodySm}
+                  >
                     {t('snapIsAudited')}
                   </Text>
                 </Box>
