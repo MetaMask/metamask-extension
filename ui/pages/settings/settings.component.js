@@ -176,28 +176,6 @@ class SettingsPage extends PureComponent {
               marginLeft="auto"
             />
           </div>
-          <Box
-            className="settings-page__header__search nidhi"
-            style={{ display: 'none' }}
-            marginTop={5}
-          >
-            <SettingsSearch
-              onSearch={({ searchQuery = '', results = [] }) => {
-                this.setState({
-                  isSearchList: searchQuery !== '',
-                  searchResults: results,
-                  searchText: searchQuery,
-                });
-              }}
-              settingsRoutesList={getSettingsRoutes()}
-            />
-            {isSearchList && searchText.length >= 3 && (
-              <SettingsSearchList
-                results={searchResults}
-                onClickSetting={(setting) => this.handleClickSetting(setting)}
-              />
-            )}
-          </Box>
         </div>
 
         <div className="settings-page__content">
