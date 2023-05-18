@@ -55,7 +55,7 @@ describe('Transaction Controller', function () {
     networkStatusStore,
     getCurrentChainId,
     messengerMock,
-    txMeta;
+    updatedTxMeta;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -84,7 +84,7 @@ describe('Transaction Controller', function () {
     messengerMock = {
       call: sinon.stub().callsFake((_) =>
         Promise.resolve({
-          value: { txMeta },
+          value: { txMeta: updatedTxMeta },
           result: { success: () => undefined, error: () => undefined },
         }),
       ),
@@ -127,8 +127,8 @@ describe('Transaction Controller', function () {
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
 
-    txController.on('newUnapprovedTx', (eventTxMeta) => {
-      txMeta = eventTxMeta;
+    txController.on('newUnapprovedTx', (txMeta) => {
+      updatedTxMeta = txMeta;
     });
   });
 
