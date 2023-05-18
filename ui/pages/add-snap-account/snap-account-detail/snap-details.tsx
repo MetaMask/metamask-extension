@@ -1,12 +1,10 @@
 import React from 'react';
 
 import Box from '../../../components/ui/box/box';
-import { SnapDetails } from '../snap-account';
 import {
   BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -17,7 +15,6 @@ import {
   Text,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Identicon from '../../../components/ui/identicon/identicon.component';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
 
