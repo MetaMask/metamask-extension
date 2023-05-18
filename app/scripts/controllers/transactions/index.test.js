@@ -45,10 +45,6 @@ const providerConfig = {
 const actionId = 'DUMMY_ACTION_ID';
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
-const approvalRequestResult = {
-  value: undefined,
-  result: { success: () => undefined, error: () => undefined },
-};
 
 describe('Transaction Controller', function () {
   let txController,
@@ -85,7 +81,12 @@ describe('Transaction Controller', function () {
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
     messengerMock = {
-      call: sinon.stub().returns(Promise.resolve(approvalRequestResult)),
+      call: sinon.stub().callsFake((_, approvalRequest) =>
+        Promise.resolve({
+          value: { txMeta: approvalRequest.requestData.txMeta },
+          result: { success: () => undefined, error: () => undefined },
+        }),
+      ),
     };
 
     txController = new TransactionController({
@@ -336,10 +337,8 @@ describe('Transaction Controller', function () {
 
     it('should resolve when finished and status is submitted and resolve with the hash', async function () {
       txController.once('newUnapprovedTx', (txMetaFromEmit) => {
-        setTimeout(() => {
-          txController.setTxHash(txMetaFromEmit.id, '0x0');
-          txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id);
-        });
+        txController.setTxHash(txMetaFromEmit.id, '0x0');
+        txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id);
       });
 
       const hash = await txController.newUnapprovedTransaction(txParams);
@@ -348,9 +347,7 @@ describe('Transaction Controller', function () {
 
     it('should reject when finished and status is rejected', async function () {
       txController.once('newUnapprovedTx', (txMetaFromEmit) => {
-        setTimeout(() => {
-          txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id);
-        });
+        txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id);
       });
 
       await assert.rejects(
@@ -518,7 +515,7 @@ describe('Transaction Controller', function () {
         {
           id: String(txMeta.id),
           origin: ORIGIN_METAMASK,
-          requestData: { txId: txMeta.id },
+          requestData: { txId: txMeta.id, txMeta },
           type: ApprovalType.Transaction,
         },
         true, // Show popup
@@ -556,7 +553,7 @@ describe('Transaction Controller', function () {
         {
           id: String(secondTxMeta.id),
           origin: ORIGIN_METAMASK,
-          requestData: { txId: secondTxMeta.id },
+          requestData: { txId: secondTxMeta.id, txMeta: secondTxMeta },
           type: ApprovalType.Transaction,
         },
         true, // Show popup
@@ -1432,7 +1429,6 @@ describe('Transaction Controller', function () {
           to: recipientAddress,
         },
       );
-      await txController.approveTransaction(txMeta.id);
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
@@ -2963,40 +2959,40 @@ describe('Transaction Controller', function () {
   describe('initApprovals', function () {
     it('adds unapprovedTxs as approvals', async function () {
       const firstTxId = '1';
-      txController.addTransaction(
-        {
-          id: firstTxId,
-          origin: ORIGIN_METAMASK,
-          status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
+      const firstTxMeta = {
+        id: firstTxId,
+        origin: ORIGIN_METAMASK,
+        status: TransactionStatus.unapproved,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS_TWO,
         },
-        noop,
-      );
+      };
+
       const secondTxId = '2';
-      txController.addTransaction(
-        {
-          id: secondTxId,
-          origin: ORIGIN_METAMASK,
-          status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
+      const secondTxMeta = {
+        id: secondTxId,
+        origin: ORIGIN_METAMASK,
+        status: TransactionStatus.unapproved,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS_TWO,
         },
-        noop,
-      );
+      };
+
+      txController.addTransaction(firstTxMeta);
+      txController.addTransaction(secondTxMeta);
+
       await txController.initApprovals();
+
       assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:addRequest',
         {
           id: firstTxId,
           origin: ORIGIN_METAMASK,
-          requestData: { txId: firstTxId },
+          requestData: { txId: firstTxId, txMeta: firstTxMeta },
           type: ApprovalType.Transaction,
         },
         false,
@@ -3006,7 +3002,7 @@ describe('Transaction Controller', function () {
         {
           id: secondTxId,
           origin: ORIGIN_METAMASK,
-          requestData: { txId: secondTxId },
+          requestData: { txId: secondTxId, txMeta: secondTxMeta },
           type: ApprovalType.Transaction,
         },
         false,

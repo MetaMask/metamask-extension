@@ -356,42 +356,30 @@ export default class TransactionController extends EventEmitter {
       opts.id,
     );
 
-    // listen for tx completion (success, fail)
-    return new Promise((resolve, reject) => {
-      this.txStateManager.once(
-        `${initialTxMeta.id}:finished`,
-        (finishedTxMeta) => {
-          switch (finishedTxMeta.status) {
-            case TransactionStatus.submitted:
-              return resolve(finishedTxMeta.hash);
-            case TransactionStatus.rejected:
-              return reject(
-                cleanErrorStack(
-                  ethErrors.provider.userRejectedRequest(
-                    'MetaMask Tx Signature: User denied transaction signature.',
-                  ),
-                ),
-              );
-            case TransactionStatus.failed:
-              return reject(
-                cleanErrorStack(
-                  ethErrors.rpc.internal(finishedTxMeta.err.message),
-                ),
-              );
-            default:
-              return reject(
-                cleanErrorStack(
-                  ethErrors.rpc.internal(
-                    `MetaMask Tx Signature: Unknown problem: ${JSON.stringify(
-                      finishedTxMeta.txParams,
-                    )}`,
-                  ),
-                ),
-              );
-          }
-        },
-      );
-    });
+    const finishedTxMeta = this.txStateManager.getTransaction(initialTxMeta.id);
+
+    switch (finishedTxMeta.status) {
+      case TransactionStatus.submitted:
+        return finishedTxMeta.hash;
+      case TransactionStatus.rejected:
+        throw cleanErrorStack(
+          ethErrors.provider.userRejectedRequest(
+            'MetaMask Tx Signature: User denied transaction signature.',
+          ),
+        );
+      case TransactionStatus.failed:
+        throw cleanErrorStack(
+          ethErrors.rpc.internal(finishedTxMeta.err.message),
+        );
+      default:
+        throw cleanErrorStack(
+          ethErrors.rpc.internal(
+            `MetaMask Tx Signature: Unknown problem: ${JSON.stringify(
+              finishedTxMeta.txParams,
+            )}`,
+          ),
+        );
+    }
   }
 
   /**
@@ -2682,8 +2670,8 @@ export default class TransactionController extends EventEmitter {
   ) {
     await this._waitForApprovalWithRetry(
       txMeta,
-      async (_value, _retryCount) => {
-        await this.updateAndApproveTransaction(txMeta, txMeta.actionId);
+      async ({ txMeta: updatedTxMeta }, _retryCount) => {
+        await this.updateAndApproveTransaction(updatedTxMeta, txMeta.actionId);
       },
       async () => {
         await this.cancelTransaction(txMeta.id, txMeta.actionId);
@@ -2725,6 +2713,7 @@ export default class TransactionController extends EventEmitter {
         result.success();
         success = true;
       } catch (error) {
+        log.error('Error during transaction approval', error);
         approvalPromise = result.error(error, { retry: true });
         retryCount += 1;
       }
@@ -2738,7 +2727,7 @@ export default class TransactionController extends EventEmitter {
     const id = this._getApprovalId(txMeta);
     const { origin } = txMeta;
     const type = ApprovalType.Transaction;
-    const requestData = { txId: txMeta.id };
+    const requestData = { txId: txMeta.id, txMeta };
 
     return this.messagingSystem.call(
       'ApprovalController:addRequest',
