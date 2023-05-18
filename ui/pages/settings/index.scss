@@ -29,6 +29,7 @@
       display: grid;
       align-items: center;
       grid-template-columns: 197px 1fr 1fr;
+
       @include screen-sm-max {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr 1fr;
@@ -41,12 +42,15 @@
         &__back-button {
           grid-area: back;
         }
+
         &__title {
           grid-area: title;
         }
+
         &__close-button {
           grid-area: close;
         }
+
         &__search {
           grid-area: search;
         }
