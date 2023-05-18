@@ -74,8 +74,8 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { getAccountType } from '../../selectors/selectors';
 ///: END:ONLY_INCLUDE_IN
-
 import {
   TransactionStatus,
   TransactionType,
@@ -233,6 +233,23 @@ const mapStateToProps = (state, ownProps) => {
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accountType = getAccountType(state);
+
+  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
+  let isNoteToTraderSupported = false;
+  if (
+    state.metamask.custodyAccountDetails &&
+    state.metamask.custodyAccountDetails[fromChecksumHexAddress]
+  ) {
+    const { custodianName } =
+      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
+    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
+      (custodian) => custodian.name === custodianName,
+    )?.isNoteToTraderSupported;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   return {
     balance,
