@@ -14,6 +14,7 @@ import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '../../component-library';
 ///: END:ONLY_INCLUDE_IN
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -199,16 +200,16 @@ function TransactionListItemInner({
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   showCancelButton = showCancelButton && !isCustodian;
-  const PENDING_COLOR = '#6A737D';
-  const OK_COLOR = '#2F80ED';
-  const FAIL_COLOR = '#D73A49';
+  const PENDING_COLOR = IconColor.iconAlternative;
+  const OK_COLOR = IconColor.primaryDefault;
+  const FAIL_COLOR = IconColor.errorDefault;
   const getTransactionColor = (tsStatus) => {
     switch (tsStatus) {
-      case TransactionStatus.SIGNED:
+      case TransactionStatus.signed:
         return PENDING_COLOR;
-      case TransactionStatus.REJECTED:
-      case TransactionStatus.FAILED:
-      case TransactionStatus.DROPPED:
+      case TransactionStatus.rejected:
+      case TransactionStatus.failed:
+      case TransactionStatus.dropped:
         return FAIL_COLOR;
       default:
         return OK_COLOR;

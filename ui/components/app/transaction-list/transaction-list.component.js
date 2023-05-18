@@ -161,6 +161,11 @@ export default function TransactionList({
           ) : null}
           {completedTransactions.length > 0 ? (
             completedTransactions
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              .sort(
+                (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
+              )
+              ///: END:ONLY_INCLUDE_IN
               .slice(0, limit)
               .map((transactionGroup, index) =>
                 transactionGroup.initialTransaction?.transactionType ===
