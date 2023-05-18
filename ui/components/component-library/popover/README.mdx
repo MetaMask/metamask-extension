@@ -83,12 +83,12 @@ import { Popover, PopoverPosition } from '../../ui/component-library';
 ### Is Portal
 
 The `isPortal` prop is a boolean that when set to true, causes the Popover to be rendered as a separate DOM element at the end of the document body.
-Default `true`
+Default `false`
 
 ```jsx
 import { Popover } from '../../ui/component-library';
 
-<Popover hasArrow>Popover with arrow</Popover>;
+<Popover isPortal={true}>Popover using create portal</Popover>;
 ```
 
 ### Has Arrow
@@ -179,9 +179,9 @@ import { Popover } from '../../ui/component-library';
 <Popover offset={[0, 32]}>offset override to [0,32]</Popover>;
 ```
 
-### Esc Key Close
+### On Esc Key Close
 
-`escKeyClose` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
+`onEscKeyClose` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
 
 ```jsx
 import { Popover } from '../../ui/component-library';
@@ -192,7 +192,9 @@ const handleClick = () => {
   setIsOpen(!isOpen);
 };
 
-<Popover escKeyClose={() => setIsOpen(false)}>Press esc key to close</Popover>;
+<Popover onEscKeyClose={() => setIsOpen(false)}>
+  Press esc key to close
+</Popover>;
 ```
 
 ### With PopoverHeader

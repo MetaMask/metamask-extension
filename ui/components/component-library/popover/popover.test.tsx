@@ -231,7 +231,7 @@ const EscKeyTestComponent = () => {
     <Popover
       isOpen={isOpen}
       referenceHidden={false}
-      escKeyClose={() => setIsOpen(false)}
+      onEscKeyClose={() => setIsOpen(false)}
     >
       Press esc key to close
     </Popover>

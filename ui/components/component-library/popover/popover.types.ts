@@ -90,5 +90,5 @@ export interface PopoverProps extends BoxProps {
   /**
    * Pass a close function for the escape key callback to close the Popover
    */
-  escKeyClose?: () => void;
+  onEscKeyClose?: () => void;
 }

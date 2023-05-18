@@ -29,7 +29,7 @@ export const Popover = ({
   title,
   isPortal = false,
   arrowProps,
-  escKeyClose,
+  onEscKeyClose,
   ...props
 }: PopoverProps) => {
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
@@ -69,13 +69,13 @@ export const Popover = ({
   };
 
   // Esc key press handler
-  if (escKeyClose) {
+  if (onEscKeyClose) {
     useEffect(() => {
       function handleEscKey(event: KeyboardEvent) {
         if (event.key === 'Escape') {
           // Close the popover when the "Esc" key is pressed
-          if (escKeyClose) {
-            escKeyClose();
+          if (onEscKeyClose) {
+            onEscKeyClose();
           }
         }
       }
@@ -85,7 +85,7 @@ export const Popover = ({
       return () => {
         document.removeEventListener('keydown', handleEscKey);
       };
-    }, [escKeyClose]);
+    }, [onEscKeyClose]);
   }
 
   const PopoverContent = (
