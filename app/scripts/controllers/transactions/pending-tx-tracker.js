@@ -2,6 +2,8 @@ import EventEmitter from '@metamask/safe-event-emitter';
 import log from 'loglevel';
 import EthQuery from 'ethjs-query';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
+import { getTokenTransfersFromTxReceipt } from '../../../../shared/lib/transactions-controller-utils';
+import { isEmpty } from '../../../../shared/lib/storage-helpers';
 import { ERROR_SUBMITTING } from './tx-state-manager';
 
 /**
@@ -38,6 +40,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @param {object} config.provider - A network provider.
    * @param {object} config.query - An EthQuery instance.
    * @param {Function} config.publishTransaction - Publishes a raw transaction,
+   * @param {Function} config.addTokens - Adds tokens to state.
    */
   constructor(config) {
     super();
@@ -48,6 +51,8 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.publishTransaction = config.publishTransaction;
     this.approveTransaction = config.approveTransaction;
     this.confirmTransaction = config.confirmTransaction;
+    this.addTokens = config.addTokens;
+    this.getTokenStandardAndDetails = config.getTokenStandardAndDetails
   }
 
   /**
@@ -223,6 +228,18 @@ export default class PendingTransactionTracker extends EventEmitter {
           baseFeePerGas,
           blockTimestamp,
         );
+        // Adds tokens to state on confirmation of transaction if the sender is a recipient of the token.
+        const txSender = txReceipt.from
+        const tokenTransfers = getTokenTransfersFromTxReceipt(txReceipt).filter(transfer =>
+          transfer.to.toLowerCase() === txSender)
+        const deduplicatedTransferContractsAddresses = [ ...new Set(tokenTransfers.map(transfer => transfer.contractAddress.toLowerCase())) ]
+
+        const tokens = await Promise.all(
+          deduplicatedTransferContractsAddresses.map(
+            contractAddress => getTokenStandardAndDetails(contractAddress, txSender)
+          )
+        )
+        this.addTokens(tokens.filter(token => !isEmpty(token)))
         return;
       }
     } catch (err) {

@@ -35,6 +35,31 @@ export function calcTokenAmount(value, decimals) {
   return new BigNumber(String(value)).div(multiplier);
 }
 
+/**
+ * Extracts token transfers from a txReceipt by filtering through logs.
+ *
+ * @param txReceipt - A transaction receipt.
+ * @returns {{ contractAddress: string, to: string, from: string }} A list of token transfers from a txReceipt.
+ */
+export function getTokenTransfersFromTxReceipt(txReceipt) {
+  const txReceiptLogs = txReceipt?.logs;
+  if (!txReceiptLogs || txReceipt?.status === '0x0') return []
+  return txReceiptLogs.map((txReceiptLog) => {
+    if (!txReceiptLog.topics) return
+    const isTokenTransfer = txReceiptLog.topics[0] &&
+      txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
+    if (!isTokenTransfer) return
+
+    const transferFromAddress = txReceiptLog.topics[1];
+    if (!transferFromAddress) return
+
+    const transferToAddress = txReceiptLog.topics[2];
+    if (!transferToAddress) return
+
+    return { to: transferToAddress, from: transferFromAddress, contractAddress: txReceiptLog }
+  }).filter(transfer => !!transfer);
+}
+
 export function getSwapsTokensReceivedFromTxMeta(
   tokenSymbol,
   txMeta,

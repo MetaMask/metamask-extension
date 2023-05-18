@@ -126,6 +126,10 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
  * @param {object} opts.preferencesStore
+ * @param {Function} opts.addTokens - Adds tokens to state after deduplicating
+ * @param {Function} getTokenStandardAndDetails - function to get token
+ *  standards and details.
+ *
  */
 
 export default class TransactionController extends EventEmitter {
@@ -157,6 +161,7 @@ export default class TransactionController extends EventEmitter {
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
     this.messagingSystem = opts.messenger;
+    this.addTokens = opts.addTokens;
 
     this.memStore = new ObservableStore({});
 
@@ -194,6 +199,8 @@ export default class TransactionController extends EventEmitter {
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
+      addTokens: this.addTokens,
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails,
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),

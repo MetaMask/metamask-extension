@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
-
+import { isEmpty } from '../../../shared/lib/storage-helpers'
 /**
  * A wrapper around the extension's storage local API
  */
@@ -111,14 +111,4 @@ export default class ExtensionStore {
       });
     });
   }
-}
-
-/**
- * Returns whether or not the given object contains no keys
- *
- * @param {object} obj - The object to check
- * @returns {boolean}
- */
-function isEmpty(obj) {
-  return Object.keys(obj).length === 0;
 }
