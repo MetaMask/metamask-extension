@@ -54,7 +54,8 @@ describe('Transaction Controller', function () {
     fragmentExists,
     networkStatusStore,
     getCurrentChainId,
-    messengerMock;
+    messengerMock,
+    txMeta;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -81,9 +82,9 @@ describe('Transaction Controller', function () {
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
     messengerMock = {
-      call: sinon.stub().callsFake((_, approvalRequest) =>
+      call: sinon.stub().callsFake((_) =>
         Promise.resolve({
-          value: { txMeta: approvalRequest.requestData.txMeta },
+          value: { txMeta },
           result: { success: () => undefined, error: () => undefined },
         }),
       ),
@@ -122,8 +123,13 @@ describe('Transaction Controller', function () {
       securityProviderRequest: () => undefined,
       messenger: messengerMock,
     });
+
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
+
+    txController.on('newUnapprovedTx', (eventTxMeta) => {
+      txMeta = eventTxMeta;
+    });
   });
 
   describe('#getState', function () {
@@ -515,7 +521,7 @@ describe('Transaction Controller', function () {
         {
           id: String(txMeta.id),
           origin: ORIGIN_METAMASK,
-          requestData: { txId: txMeta.id, txMeta },
+          requestData: { txId: txMeta.id },
           type: ApprovalType.Transaction,
         },
         true, // Show popup
@@ -553,7 +559,7 @@ describe('Transaction Controller', function () {
         {
           id: String(secondTxMeta.id),
           origin: ORIGIN_METAMASK,
-          requestData: { txId: secondTxMeta.id, txMeta: secondTxMeta },
+          requestData: { txId: secondTxMeta.id },
           type: ApprovalType.Transaction,
         },
         true, // Show popup
@@ -2992,7 +2998,7 @@ describe('Transaction Controller', function () {
         {
           id: firstTxId,
           origin: ORIGIN_METAMASK,
-          requestData: { txId: firstTxId, txMeta: firstTxMeta },
+          requestData: { txId: firstTxId },
           type: ApprovalType.Transaction,
         },
         false,
@@ -3002,7 +3008,7 @@ describe('Transaction Controller', function () {
         {
           id: secondTxId,
           origin: ORIGIN_METAMASK,
-          requestData: { txId: secondTxId, txMeta: secondTxMeta },
+          requestData: { txId: secondTxId },
           type: ApprovalType.Transaction,
         },
         false,

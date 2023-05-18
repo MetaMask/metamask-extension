@@ -2727,7 +2727,7 @@ export default class TransactionController extends EventEmitter {
     const id = this._getApprovalId(txMeta);
     const { origin } = txMeta;
     const type = ApprovalType.Transaction;
-    const requestData = { txId: txMeta.id, txMeta };
+    const requestData = { txId: txMeta.id };
 
     return this.messagingSystem.call(
       'ApprovalController:addRequest',
