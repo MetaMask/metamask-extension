@@ -67,4 +67,5 @@ export default function ConfigureSnapPopup({
 
 ConfigureSnapPopup.propTypes = {
   onClose: PropTypes.func.isRequired,
+  link: PropTypes.string.isRequired,
 };
