@@ -12,7 +12,6 @@ import { SnapCardProps } from '../snap-account/snap-account';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  BLOCK_SIZES,
   BackgroundColor,
   BorderColor,
   BorderRadius,
