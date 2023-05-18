@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '../../../components/ui/box/box';
-import { Text } from '../../../components/component-library';
+import { Text, ValidTag } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -64,7 +64,15 @@ export default function NewSnapAccountPage() {
         marginBottom={11}
       >
         <Text variant={TextVariant.headingLg}>
-          {t('snapCreateAccountTitle')}
+          {t('snapCreateAccountTitle', [
+            <Text
+              variant={TextVariant.headingLg}
+              as={ValidTag.Span}
+              className="snap-account-color-text"
+            >
+              {t('snapCreateAccountTitle2')}
+            </Text>,
+          ])}
         </Text>
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
           {t('snapCreateAccountSubtitle')}
@@ -74,6 +82,7 @@ export default function NewSnapAccountPage() {
         display={DISPLAY.GRID}
         flexWrap={FLEX_WRAP.WRAP}
         gap={4}
+        padding={[0, 10, 0, 10]}
         className="snap-account-cards"
       >
         {snapList.map((snap, index: number) => {
