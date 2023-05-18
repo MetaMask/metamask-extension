@@ -11,7 +11,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 
-export default function ConfigureSnapPopup({ onClose, link }) {
+export default function ConfigureSnapPopup({
+  onClose,
+  link,
+}: {
+  onClose: () => void;
+  link: string;
+}) {
   const t = useI18nContext();
   const popoverRef = useRef();
 
