@@ -397,9 +397,9 @@ export enum Severity {
 }
 
 /**
- * @deprecated `SEVERITIES` const has been deprecated in favour of the `Severities` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `SEVERITIES` const has been deprecated in favour of the `Severity` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
- * `SEVERITIES` can be removed once the migration from banner-alert.js  to TS.
+ * This `SEVERITIES` object can be removed once the migration from banner-alert.js to TS is done.
  */
 export const SEVERITIES = {
   DANGER: 'danger',
