@@ -54,7 +54,7 @@ export default function NewSnapAccountPage() {
   const history = useHistory();
 
   return (
-    <Box>
+    <Box className="snap-account-page">
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.COLUMN}
@@ -70,7 +70,7 @@ export default function NewSnapAccountPage() {
           {t('snapCreateAccountSubtitle')}
         </Text>
       </Box>
-      <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
+      <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={1}>
         {snapList.map((snap, index: number) => {
           const mockInstalled = Math.round(Math.random()) === 0;
           return (
