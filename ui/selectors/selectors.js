@@ -1,7 +1,12 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -507,7 +512,7 @@ export function getTotalUnapprovedCount(state) {
   console.log('pendingApprovalCount', pendingApprovalCount);
   return (
     pendingApprovalCount +
-    getSuggestedAssetCount(state) +
+    getSuggestedTokenCount(state) +
     getSuggestedNftsCount(state)
   );
 }
@@ -561,32 +566,34 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedAssetCount(state) {
-  return getSuggestedAssets(state).length || 0;
+function getSuggestedTokenCount(state) {
+  return getSuggestedTokens(state)?.length || 0;
 }
 
-export function getSuggestedAssets(state) {
+export function getSuggestedTokens(state) {
   return (
-    Object.values(state.metamask.pendingApprovals)?.filter(({ type }) => {
-      return type === ApprovalType.WatchAsset;
-    }) || []
+    Object.values(state.metamask.pendingApprovals)?.filter(
+      ({ type, requestData: { asset } }) => {
+        return type === ApprovalType.WatchAsset && asset.standard === ERC20;
+      },
+    ) || []
   );
 }
 
 function getSuggestedNftsCount(state) {
-  return getSuggestedNfts(state).length || 0;
+  return getSuggestedNfts(state)?.length || 0;
 }
 
 export function getSuggestedNfts(state) {
   return (
-    Object.values(state.metamask.pendingApprovals)?.filter(({ type }) => {
-      return type === ApprovalType.WatchNFT;
-    }) ||
     Object.values(state.metamask.pendingApprovals)?.filter(
-      ({ requestData }) => {
-        return requestData.asset.tokenId;
+      ({ requestData: { asset }, type }) => {
+        return (
+          type === ApprovalType.WatchAsset &&
+          [ERC721, ERC1155].includes(asset.standard)
+        );
       },
-    )
+    ) || []
   );
 }
 

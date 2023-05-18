@@ -35,7 +35,7 @@ import {
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getSuggestedAssets,
+  getSuggestedTokens,
   getSuggestedNfts,
 } from '../../selectors';
 
@@ -44,14 +44,14 @@ function getTokenName(name, symbol) {
 }
 
 /**
- * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet
+ * @param {Array} suggestedTokens - an array of assets suggested to add to the user's wallet
  * via the RPC method `wallet_watchAsset`
  * @param {Array} tokens - the list of tokens currently tracked in state
- * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with
+ * @returns {boolean} Returns true when the list of suggestedTokens contains an entry with
  *          an address that matches an existing token.
  */
-function hasDuplicateAddress(suggestedAssets, tokens) {
-  const duplicate = suggestedAssets.find(({ asset }) => {
+function hasDuplicateAddress(suggestedTokens, tokens) {
+  const duplicate = suggestedTokens.find(({ asset }) => {
     const dupe = tokens.find(({ address }) => {
       return isEqualCaseInsensitive(address, asset.address);
     });
@@ -61,15 +61,15 @@ function hasDuplicateAddress(suggestedAssets, tokens) {
 }
 
 /**
- * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet
+ * @param {Array} suggestedTokens - a list of assets suggested to add to the user's wallet
  * via RPC method `wallet_watchAsset`
  * @param {Array} tokens - the list of tokens currently tracked in state
- * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with both
+ * @returns {boolean} Returns true when the list of suggestedTokens contains an entry with both
  *          1. a symbol that matches an existing token
  *          2. an address that does not match an existing token
  */
-function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
-  const duplicate = suggestedAssets.find(({ asset }) => {
+function hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) {
+  const duplicate = suggestedTokens.find(({ asset }) => {
     const dupe = tokens.find((token) => {
       return (
         isEqualCaseInsensitive(token.symbol, asset.symbol) &&
@@ -87,7 +87,7 @@ const ConfirmAddSuggestedToken = () => {
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const suggestedAssets = useSelector(getSuggestedAssets);
+  const suggestedTokens = useSelector(getSuggestedTokens);
   const suggestedNfts = useSelector(getSuggestedNfts);
   const tokens = useSelector(getTokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -96,7 +96,7 @@ const ConfirmAddSuggestedToken = () => {
 
   const knownTokenActionableMessage = useMemo(() => {
     return (
-      hasDuplicateAddress(suggestedAssets, tokens) && (
+      hasDuplicateAddress(suggestedTokens, tokens) && (
         <ActionableMessage
           message={t('knownTokenWarning', [
             <Button
@@ -117,11 +117,11 @@ const ConfirmAddSuggestedToken = () => {
         />
       )
     );
-  }, [suggestedAssets, tokens, t]);
+  }, [suggestedTokens, tokens, t]);
 
   const reusedTokenNameActionableMessage = useMemo(() => {
     return (
-      hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) && (
+      hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) && (
         <ActionableMessage
           message={t('reusedTokenNameWarning')}
           type="warning"
@@ -131,11 +131,11 @@ const ConfirmAddSuggestedToken = () => {
         />
       )
     );
-  }, [suggestedAssets, tokens, t]);
+  }, [suggestedTokens, tokens, t]);
 
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
-      [...suggestedAssets, ...suggestedNfts].map(
+      [...suggestedTokens, ...suggestedNfts].map(
         async ({ requestData: { asset }, id }) => {
           await dispatch(resolvePendingApproval(id, null));
 
@@ -157,11 +157,11 @@ const ConfirmAddSuggestedToken = () => {
     );
 
     history.push(mostRecentOverviewPage);
-  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
+  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedTokens]);
 
   const handleCancelClick = useCallback(async () => {
     await Promise.all(
-      [...suggestedAssets, ...suggestedNfts].map(({ id }) =>
+      [...suggestedTokens, ...suggestedNfts].map(({ id }) =>
         dispatch(
           rejectPendingApproval(
             id,
@@ -171,17 +171,17 @@ const ConfirmAddSuggestedToken = () => {
       ),
     );
     history.push(mostRecentOverviewPage);
-  }, [dispatch, history, mostRecentOverviewPage, suggestedAssets]);
+  }, [dispatch, history, mostRecentOverviewPage, suggestedTokens]);
 
-  const goBackIfNoSuggestedAssetsOnFirstRender = () => {
-    if (!suggestedAssets.length && !suggestedNfts.length) {
+  const goBackIfNoSuggestedTokensOnFirstRender = () => {
+    if (!suggestedTokens.length && !suggestedNfts.length) {
       console.log('in here?');
       history.push(mostRecentOverviewPage);
     }
   };
 
   useEffect(() => {
-    goBackIfNoSuggestedAssetsOnFirstRender();
+    goBackIfNoSuggestedTokensOnFirstRender();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -254,8 +254,6 @@ const ConfirmAddSuggestedToken = () => {
                           size={BUTTON_PRIMARY_SIZES.SMALL}
                           className="confirm-add-suggested-token__nft-add-button"
                           onClick={(e) => {
-                            // const isLastSuggestedAsset =
-                            //   suggestedNfts.length === 1;
                             e.preventDefault();
                             e.stopPropagation();
                             dispatch(resolvePendingApproval(id, null));
@@ -274,19 +272,6 @@ const ConfirmAddSuggestedToken = () => {
         <PageContainerFooter
           cancelText={t('cancel')}
           submitText={t('addAllNfts')}
-          // onCancel={async () => {
-          //   await Promise.all(
-          //     suggestedNfts.map(({ id }) =>
-          //       dispatch(
-          //         rejectPendingApproval(
-          //           id,
-          //           serializeError(ethErrors.provider.userRejectedRequest()),
-          //         ),
-          //       ),
-          //     ),
-          //   );
-          //   history.push(mostRecentOverviewPage);
-          // }}
           onCancel={handleCancelClick}
           onSubmit={handleAddTokensClick}
           disabled={suggestedNfts.length === 0}
@@ -316,7 +301,7 @@ const ConfirmAddSuggestedToken = () => {
             </div>
           </div>
           <div className="confirm-add-suggested-token__token-list">
-            {suggestedAssets.map(({ requestData: { asset } }) => {
+            {suggestedTokens.map(({ requestData: { asset } }) => {
               return (
                 <div
                   className="confirm-add-suggested-token__token-list-item"
@@ -347,7 +332,7 @@ const ConfirmAddSuggestedToken = () => {
         submitText={t('addToken')}
         onCancel={handleCancelClick}
         onSubmit={handleAddTokensClick}
-        disabled={suggestedAssets.length === 0}
+        disabled={suggestedTokens.length === 0}
       />
     </div>
   );

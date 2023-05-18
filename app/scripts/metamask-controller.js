@@ -425,11 +425,6 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController.getERC1155TokenURI.bind(
             this.assetsContractController,
           ),
-
-        getTokenStandardAndDetails:
-          this.assetsContractController.getTokenStandardAndDetails.bind(
-            this.assetsContractController,
-          ),
         onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
           this.metaMetricsController.trackEvent({
             event: MetaMetricsEventName.NftAdded,
@@ -447,11 +442,7 @@ export default class MetamaskController extends EventEmitter {
           }),
         messenger: this.controllerMessenger.getRestricted({
           name: 'NftController',
-          allowedActions: [
-            `${this.approvalController.name}:addRequest`,
-            `${this.approvalController.name}:acceptRequest`,
-            `${this.approvalController.name}:rejectRequest`,
-          ],
+          allowedActions: [`${this.approvalController.name}:addRequest`],
         }),
       },
       {},
@@ -724,14 +715,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.getState().providerConfig.chainId,
       initState: initState.CachedBalancesController,
     });
-
-    // this.tokensController.hub.on('pendingSuggestedAsset', async () => {
-    //   await opts.openPopup();
-    // });
-
-    // this.nftController.hub.on('pendingSuggestedNft', async () => {
-    //   await opts.openPopup();
-    // });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -3320,36 +3303,6 @@ export default class MetamaskController extends EventEmitter {
         throw new Error(`Asset type ${type} not supported`);
     }
   };
-
-  // acceptWatchAssetRequest = (id) => {
-  //   const suggestedToken = this.tokensController.state.suggestedAssets.find(
-  //     (asset) => asset.id === id,
-  //   );
-  //   const suggestedNft = this.nftController.state.suggestedNfts.find(
-  //     (asset) => asset.id === id,
-  //   );
-  //   if (suggestedToken) {
-  //     return this.tokensController.acceptWatchAssetRequest(id);
-  //   }
-  //   if (suggestedNft) {
-  //     this.nftController.acceptWatchNft(id);
-  //   }
-  // };
-
-  // rejectWatchAssetRequest = (id) => {
-  //   const suggestedToken = this.tokensController.state.suggestedAssets.find(
-  //     (asset) => asset.id === id,
-  //   );
-  //   const suggestedNft = this.nftController.state.suggestedNfts.find(
-  //     (asset) => asset.id === id,
-  //   );
-  //   if (suggestedToken) {
-  //     return this.tokensController.rejectWatchAsset(id);
-  //   }
-  //   if (suggestedNft) {
-  //     return this.nftController.rejectWatchNft(id);
-  //   }
-  // };
 
   //=============================================================================
   // PASSWORD MANAGEMENT
