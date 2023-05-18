@@ -26,6 +26,10 @@ describe('TransactionListItemDetails Component', () => {
       to: '0x2',
       value: '0x2386f26fc10000',
     },
+    metadata: {
+      note: 'some note'
+    },
+    custodyId: '1'
   };
 
   const transactionGroup = {
@@ -52,6 +56,7 @@ describe('TransactionListItemDetails Component', () => {
     recipientAddress: '0xAddress',
     senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tryReverseResolveAddress: jest.fn(),
+    getCustodianTransactionDeepLink: jest.fn(),
     transactionGroup,
     transactionStatus: () => <div></div>,
     blockExplorerLinkText,
