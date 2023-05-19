@@ -164,15 +164,15 @@ function TransactionListItemInner({
   ///: END:ONLY_INCLUDE_IN
 
   const speedUpButton = useMemo(() => {
-    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
-      return null;
-    }
-
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (isCustodian) {
       return null;
     }
     ///: END:ONLY_INCLUDE_IN
+
+    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
+      return null;
+    }
 
     return (
       <Button
