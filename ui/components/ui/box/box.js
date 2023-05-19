@@ -12,7 +12,7 @@ import {
   IconColor,
   DISPLAY,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   FLEX_DIRECTION,
   FLEX_WRAP,
   BREAKPOINTS,
@@ -369,8 +369,8 @@ Box.propTypes = {
   alignItems: MultipleAlignItems,
   justifyContent: MultipleJustifyContents,
   textAlign: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(TEXT_ALIGN)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TEXT_ALIGN))),
+    PropTypes.oneOf(Object.values(TextAlign)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TextAlign))),
   ]),
   display: PropTypes.oneOfType([
     PropTypes.oneOf(Object.values(DISPLAY)),

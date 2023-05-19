@@ -10,7 +10,7 @@ import {
   IconColor,
   DISPLAY,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   FLEX_DIRECTION,
   FLEX_WRAP,
   BorderRadius,
@@ -36,7 +36,7 @@ export type BoxFlexWrapArray = [
   BoxFlexWrap?,
 ];
 
-export type BoxTextAlign = typeof TEXT_ALIGN[keyof typeof TEXT_ALIGN] | null;
+export type BoxTextAlign = typeof TextAlign[keyof typeof TextAlign] | null;
 export type BoxTextAlignArray = [
   BoxTextAlign,
   BoxTextAlign?,
@@ -287,7 +287,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   justifyContent?: JustifyContent | JustifyContentArray;
   /**
    * The text-align of the Box component.
-   * Use TEXT_ALIGN const from '../../../helpers/constants/design-system';
+   * Use TextAlign const from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   textAlign?: BoxTextAlign | BoxTextAlignArray;

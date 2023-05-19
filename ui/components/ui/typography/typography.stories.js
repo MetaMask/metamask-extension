@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  FONT_WEIGHT,
-  FONT_STYLE,
-  TEXT_ALIGN,
+  FontWeight,
+  FontStyle,
+  TextAlign,
   TypographyVariant,
-  OVERFLOW_WRAP,
+  OverflowWrap,
   DISPLAY,
   BackgroundColor,
   Color as ColorEnum,
@@ -43,19 +43,19 @@ export default {
     },
     fontWeight: {
       control: { type: 'select' },
-      options: Object.values(FONT_WEIGHT),
+      options: Object.values(FontWeight),
     },
     fontStyle: {
       control: { type: 'select' },
-      options: Object.values(FONT_STYLE),
+      options: Object.values(FontStyle),
     },
     align: {
       control: { type: 'select' },
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
     },
     overflowWrap: {
       control: { type: 'select' },
-      options: Object.values(OVERFLOW_WRAP),
+      options: Object.values(OverflowWrap),
     },
     as: {
       control: { type: 'select' },
@@ -176,7 +176,7 @@ export const Color = (args) => {
             <React.Fragment key={color}>
               <Typography
                 color={TextColor.textDefault}
-                align={TEXT_ALIGN.CENTER}
+                align={TextAlign.Center}
                 boxProps={{
                   backgroundColor: BackgroundColor.warningMuted,
                   padding: 4,
@@ -232,7 +232,7 @@ export const FontWeight = (args) => (
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
       }}
     />
-    {Object.values(FONT_WEIGHT).map((weight) => (
+    {Object.values(FontWeight).map((weight) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
         {...args}
@@ -256,7 +256,7 @@ export const FontStyle = (args) => (
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
       }}
     />
-    {Object.values(FONT_STYLE).map((style) => (
+    {Object.values(FontStyle).map((style) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
         {...args}
@@ -280,7 +280,7 @@ export const Align = (args) => (
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
       }}
     />
-    {Object.values(TEXT_ALIGN).map((align) => (
+    {Object.values(TextAlign).map((align) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
         {...args}
@@ -311,11 +311,11 @@ export const OverflowWrap = (args) => (
         display: 'block',
       }}
     >
-      <Typography {...args} overflowWrap={OVERFLOW_WRAP.NORMAL}>
-        {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+      <Typography {...args} overflowWrap={OverflowWrap.Normal}>
+        {OverflowWrap.Normal}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
       </Typography>
-      <Typography {...args} overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>
-        {OVERFLOW_WRAP.BREAK_WORD}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+      <Typography {...args} overflowWrap={OverflowWrap.Break_Word}>
+        {OverflowWrap.Break_Word}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
       </Typography>
     </div>
   </>
