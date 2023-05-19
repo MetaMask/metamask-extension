@@ -7,6 +7,7 @@ import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,
   getTokenTransfersFromTxReceipt,
+  stripAddressFromLogTopic,
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
 } from './transactions-controller-utils';
 
@@ -18,6 +19,17 @@ describe('transaction controller utils', () => {
     });
   });
 
+  describe('stripAddressFromLogTopic()', () => {
+    it('should correctly strip leading 0s from address-containing log topic and output as hex', () => {
+      const result = stripAddressFromLogTopic(
+        '0x00000000000000000000000020c9509EDd850E3821e698301D09C4dD5d7B7554',
+      );
+      expect(result).toStrictEqual(
+        '0x20c9509EDd850E3821e698301D09C4dD5d7B7554',
+      );
+    });
+  });
+
   describe('getTokenTransfersFromTxReceipt()', () => {
     it('should properly derive token transfers', () => {
       const result = getTokenTransfersFromTxReceipt({
@@ -26,8 +38,8 @@ describe('transaction controller utils', () => {
             address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             topics: [
               '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-              '0x20c9509EDd850E3821e698301D09C4dD5d7B7554',
-              '0x74de5d4FCbf63E00296fd95d33236B9794016631',
+              '0x00000000000000000000000020c9509EDd850E3821e698301D09C4dD5d7B7554',
+              '0x00000000000000000000000074de5d4FCbf63E00296fd95d33236B9794016631',
               '0x0000000000000000000000000000000000000000000000000000000005f5e100',
             ],
           },
@@ -35,8 +47,8 @@ describe('transaction controller utils', () => {
             address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             topics: [
               '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-              '0x74de5d4FCbf63E00296fd95d33236B9794016631',
-              '0x20c9509EDd850E3821e698301D09C4dD5d7B7554',
+              '0x00000000000000000000000074de5d4FCbf63E00296fd95d33236B9794016631',
+              '0x00000000000000000000000020c9509EDd850E3821e698301D09C4dD5d7B7554',
               '0x0000000000000000000000000000000000000000000000000000000005f5e100',
             ],
           },
@@ -54,6 +66,47 @@ describe('transaction controller utils', () => {
           contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         },
       ]);
+    });
+    it('should not derive token transfers when log topics are not defined', () => {
+      const result = getTokenTransfersFromTxReceipt({
+        logs: [
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            topics: undefined,
+          },
+        ],
+      });
+      expect(result).toStrictEqual([]);
+    });
+    it('should not derive token transfers when from address is invalid', () => {
+      const result = getTokenTransfersFromTxReceipt({
+        logs: [
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            topics: [
+              '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+              undefined,
+              '0x00000000000000000000000074de5d4FCbf63E00296fd95d33236B9794016631',
+              '0x0000000000000000000000000000000000000000000000000000000005f5e100',
+            ],
+          },
+        ],
+      });
+      expect(result).toStrictEqual([]);
+    });
+    it('should not derive token transfers when to address is invalid', () => {
+      const result = getTokenTransfersFromTxReceipt({
+        logs: [
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            topics: [
+              '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+              '0x00000000000000000000000074de5d4FCbf63E00296fd95d33236B9794016631',
+            ],
+          },
+        ],
+      });
+      expect(result).toStrictEqual([]);
     });
   });
 

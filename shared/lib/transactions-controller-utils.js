@@ -35,6 +35,10 @@ export function calcTokenAmount(value, decimals) {
   return new BigNumber(String(value)).div(multiplier);
 }
 
+export function stripAddressFromLogTopic(addressLogTopic) {
+  return `0x${addressLogTopic.replace(/^0x000000000000000000000000/u, '')}`;
+}
+
 /**
  * Extracts token transfers from a txReceipt by filtering through logs.
  *
@@ -58,19 +62,19 @@ export function getTokenTransfersFromTxReceipt(txReceipt) {
         return undefined;
       }
 
-      const transferFromAddress = txReceiptLog.topics[1];
-      if (!transferFromAddress) {
+      const transferFromAddressTopic = txReceiptLog.topics[1];
+      if (!transferFromAddressTopic) {
         return undefined;
       }
 
-      const transferToAddress = txReceiptLog.topics[2];
-      if (!transferToAddress) {
+      const transferToAddressTopic = txReceiptLog.topics[2];
+      if (!transferToAddressTopic) {
         return undefined;
       }
 
       return {
-        to: transferToAddress,
-        from: transferFromAddress,
+        to: stripAddressFromLogTopic(transferToAddressTopic),
+        from: stripAddressFromLogTopic(transferFromAddressTopic),
         contractAddress: txReceiptLog.address,
       };
     })
