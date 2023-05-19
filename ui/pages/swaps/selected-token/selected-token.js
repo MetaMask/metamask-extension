@@ -21,6 +21,7 @@ export default function SelectedToken({ onClick, selectedToken, testId }) {
         'dropdown-search-list__selector-closed-container',
         'dropdown-input-pair__selector--closed',
       )}
+      data-testid="dropdown-search-list"
       onClick={onClick}
     >
       <div className="dropdown-search-list__selector-closed">

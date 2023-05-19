@@ -130,10 +130,9 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
       break;
     case CONTRACT_DATA_DISABLED_ERROR:
       title = t('swapContractDataDisabledErrorTitle');
-      description = t('swapContractDataDisabledErrorDescription');
       description = (
         <Text variant={TextVariant.bodyMd} as="h6">
-          {t('swapSlippageNegativeDescription')}
+          {t('swapContractDataDisabledErrorDescription')}
         </Text>
       );
       break;

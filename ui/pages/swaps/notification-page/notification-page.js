@@ -24,6 +24,7 @@ export default function NotificationPage({ notificationKey }) {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  // TODO: Either add default values or redirect a user out if a notificationKey value is not supported.
   let title = '';
   let description = '';
   let buttonText = '';

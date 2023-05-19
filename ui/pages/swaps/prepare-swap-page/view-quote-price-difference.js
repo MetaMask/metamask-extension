@@ -66,6 +66,7 @@ export default function ViewQuotePriceDifference(props) {
         title={priceDifferenceTitle}
         severity={severity}
         width={BLOCK_SIZES.FULL}
+        data-testid="mm-banner-alert"
       >
         <Box>
           <Text

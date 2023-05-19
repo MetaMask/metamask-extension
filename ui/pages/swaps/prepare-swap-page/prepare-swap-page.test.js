@@ -20,7 +20,6 @@ const createProps = (customProps = {}) => {
   return {
     ethBalance: '0x8',
     selectedAccountAddress: 'selectedAccountAddress',
-    isFeatureFlagLoaded: false,
     shuffledTokensList: [],
     ...customProps,
   };
@@ -36,6 +35,14 @@ setBackgroundConnection({
   setSwapsFromToken: jest.fn(),
   setSwapToToken: jest.fn(),
   setFromTokenInputValue: jest.fn(),
+});
+
+jest.mock('../../../../shared/lib/token-util.ts', () => {
+  const actual = jest.requireActual('../../../../shared/lib/token-util.ts');
+  return {
+    ...actual,
+    fetchTokenBalance: jest.fn(() => Promise.resolve()),
+  };
 });
 
 jest.mock('../../../ducks/swaps/swaps', () => {
@@ -56,12 +63,11 @@ jest.mock('../swaps.util', () => {
   const actual = jest.requireActual('../swaps.util');
   return {
     ...actual,
-    fetchTokenBalance: jest.fn(() => Promise.resolve()),
     fetchTokenPrice: jest.fn(() => Promise.resolve()),
   };
 });
 
-describe.skip('PrepareSwap', () => {
+describe('PrepareSwapPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -73,13 +79,7 @@ describe.skip('PrepareSwap', () => {
       <PrepareSwapPage {...props} />,
       store,
     );
-    expect(getByText('Swap from')).toBeInTheDocument();
-    expect(getByText('Swap to')).toBeInTheDocument();
-    expect(getByText('Select')).toBeInTheDocument();
-    expect(getByText('Slippage tolerance')).toBeInTheDocument();
-    expect(getByText('2%')).toBeInTheDocument();
-    expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('Review swap')).toBeInTheDocument();
+    expect(getByText('Select token')).toBeInTheDocument();
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();
@@ -101,12 +101,11 @@ describe.skip('PrepareSwap', () => {
     const mockStore = createSwapsMockStore();
     const store = configureMockStore(middleware)(mockStore);
     const props = createProps();
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
-    expect(getByText('Swap from')).toBeInTheDocument();
-    fireEvent.click(getByTestId('prepare-swap-page__swap-arrows'));
+    fireEvent.click(getByTestId('prepare-swap-page__switch-tokens'));
     expect(setSwapsFromToken).toHaveBeenCalledWith(mockStore.swaps.toToken);
     expect(setSwapToToken).toHaveBeenCalled();
   });
@@ -120,9 +119,12 @@ describe.skip('PrepareSwap', () => {
       <PrepareSwapPage {...props} />,
       store,
     );
-    expect(getByText('Swap from')).toBeInTheDocument();
-    expect(getByText('Only verified on 1 source.')).toBeInTheDocument();
+    expect(getByText('Potentially inauthentic token')).toBeInTheDocument();
+    expect(
+      getByText('USDC is only verified on 1 source', { exact: false }),
+    ).toBeInTheDocument();
     expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
   it('renders the block explorer link, 0 verified sources', () => {
@@ -134,11 +136,12 @@ describe.skip('PrepareSwap', () => {
       <PrepareSwapPage {...props} />,
       store,
     );
-    expect(getByText('Swap from')).toBeInTheDocument();
+    expect(getByText('Token added manually')).toBeInTheDocument();
     expect(
-      getByText('This token has been added manually.'),
+      getByText('Verify this token on', { exact: false }),
     ).toBeInTheDocument();
     expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
   it('clicks on a block explorer link', () => {
@@ -167,7 +170,12 @@ describe.skip('PrepareSwap', () => {
     });
     setFromTokenInputValue.mockImplementation(setFromTokenInputValueMock);
     const mockStore = createSwapsMockStore();
-    mockStore.swaps.fromToken = 'DAI';
+    mockStore.swaps.fromToken = {
+      symbol: 'DAI',
+      balance: '0x8',
+      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+      decimals: 6,
+    };
     const store = configureMockStore(middleware)(mockStore);
     const props = createProps();
     const { getByText } = renderWithProvider(

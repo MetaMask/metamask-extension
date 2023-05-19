@@ -941,6 +941,7 @@ export default function PrepareSwapPage({
                 'prepare-swap-page__switch-tokens--disabled':
                   showQuotesLoadingAnimation,
               })}
+              data-testid="prepare-swap-page__switch-tokens"
               onClick={() => {
                 // If quotes are being loaded, disable the switch button.
                 if (!showQuotesLoadingAnimation) {
