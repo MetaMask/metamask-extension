@@ -9,6 +9,9 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -18,9 +21,6 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  MESSAGE_TYPE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -713,7 +713,9 @@ export function setupController(
   // User Interface setup
   //
 
-  updateBadge();
+  controller.txController.initApprovals().then(() => {
+    updateBadge();
+  });
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -726,7 +728,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.signController.hub.on(
+  controller.signatureController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -785,7 +787,9 @@ export function setupController(
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
+    controller.signatureController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE_SIG,
+    );
     controller.decryptMessageController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE,
     );
@@ -798,11 +802,11 @@ export function setupController(
       ({ id, type }) => {
         switch (type) {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
-          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+          case ApprovalType.SnapDialogAlert:
+          case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
             break;
-          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+          case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN

@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Options d’actifs"
   },
-  "assets": {
-    "message": "Actifs"
-  },
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "Historique"
   },
-  "holdToReveal": {
-    "message": "Appuyez longuement pour révéler la PSR"
-  },
   "holdToRevealContent1": {
     "message": "Votre phrase secrète de récupération donne $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "mais les hameçonneurs pourraient le faire.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Conservez votre PSR en lieu sûr"
   },
   "ignoreAll": {
     "message": "Ignorer tout"

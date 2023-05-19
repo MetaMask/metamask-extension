@@ -2,61 +2,108 @@ import * as React from 'react';
 
 import {
   AlignItems,
+  BlockSize,
   BLOCK_SIZES,
   BorderStyle,
   BackgroundColor,
   BorderColor,
   TextColor,
   IconColor,
+  Display,
   DISPLAY,
   JustifyContent,
   TextAlign,
+  FlexDirection,
   FLEX_DIRECTION,
+  FlexWrap,
   FLEX_WRAP,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
 export type BoxChildren = React.ReactNode | ((...args: any[]) => any);
 
-export type BoxFlexDirection =
-  | typeof FLEX_DIRECTION[keyof typeof FLEX_DIRECTION]
+export type FlexDirectionArray = [
+  FlexDirection,
+  FlexDirection?,
+  FlexDirection?,
+  FlexDirection?,
+];
+
+/**
+ * @deprecated BoxFlexDirection is deprecated. Use FlexDirection instead.
+ */
+type BoxFlexDirection =
+  | (typeof FLEX_DIRECTION)[keyof typeof FLEX_DIRECTION]
   | null;
-export type BoxFlexDirectionArray = [
+
+/**
+ * @deprecated BoxFlexDirectionArray is deprecated. Use FlexDirectionArray instead.
+ */
+type BoxFlexDirectionArray = [
   BoxFlexDirection,
   BoxFlexDirection?,
   BoxFlexDirection?,
   BoxFlexDirection?,
 ];
 
-export type BoxFlexWrap = typeof FLEX_WRAP[keyof typeof FLEX_WRAP] | null;
-export type BoxFlexWrapArray = [
-  BoxFlexWrap,
-  BoxFlexWrap?,
-  BoxFlexWrap?,
-  BoxFlexWrap?,
-];
+export type FlexWrapArray = [FlexWrap, FlexWrap?, FlexWrap?, FlexWrap?];
 
-export type BoxTextAlign = typeof TextAlign[keyof typeof TextAlign] | null;
-export type BoxTextAlignArray = [
+/**
+ * @deprecated BoxFlexWrap is deprecated. Use FlexWrap instead.
+ */
+type BoxFlexWrap = (typeof FLEX_WRAP)[keyof typeof FLEX_WRAP] | null;
+
+/**
+ * @deprecated BoxFlexWrapArray is deprecated. Use FlexWrapArray instead.
+ */
+type BoxFlexWrapArray = [BoxFlexWrap, BoxFlexWrap?, BoxFlexWrap?, BoxFlexWrap?];
+
+export type TextAlignArray = [TextAlign, TextAlign?, TextAlign?, TextAlign?];
+
+/**
+ * @deprecated BoxTextAlign is deprecated. Use TextAlign instead.
+ */
+type BoxTextAlign = (typeof TextAlign)[keyof typeof TextAlign] | null;
+/**
+ * @deprecated BoxTextAlignArray is deprecated. Use TextAlignArray instead.
+ */
+type BoxTextAlignArray = [
   BoxTextAlign,
   BoxTextAlign?,
   BoxTextAlign?,
   BoxTextAlign?,
 ];
 
-export type BoxDisplay = typeof DISPLAY[keyof typeof DISPLAY] | null;
-export type BoxDisplayArray = [
-  BoxDisplay,
-  BoxDisplay?,
-  BoxDisplay?,
-  BoxDisplay?,
-];
+export type DisplayArray = [Display, Display?, Display?, Display?];
 
-export type BoxWidth = typeof BLOCK_SIZES[keyof typeof BLOCK_SIZES] | null;
+/**
+ * @deprecated BoxDisplay is deprecated. Use Display instead.
+ */
+type BoxDisplay = (typeof DISPLAY)[keyof typeof DISPLAY] | null;
+/**
+ * @deprecated BoxDisplayArray is deprecated. Use DisplayArray instead.
+ */
+type BoxDisplayArray = [BoxDisplay, BoxDisplay?, BoxDisplay?, BoxDisplay?];
+
+export type BlockSizeArray = [BlockSize, BlockSize?, BlockSize?, BlockSize?];
+
+/**
+ * @deprecated BoxWidth is deprecated. Use BlockSize instead.
+ */
+export type BoxWidth = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
+/**
+ * @deprecated BoxWidthArray is deprecated. Use BlockSizeArray instead.
+ */
 export type BoxWidthArray = [BoxWidth, BoxWidth?, BoxWidth?, BoxWidth?];
 
-export type BoxHeight = typeof BLOCK_SIZES[keyof typeof BLOCK_SIZES] | null;
-export type BoxHeightArray = [BoxHeight, BoxHeight?, BoxHeight?, BoxHeight?];
+/**
+ * @deprecated BoxHeight is deprecated. Use BlockSize instead.
+ */
+type BoxHeight = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
+/**
+ * @deprecated BoxHeightArray is deprecated. Use BlockSizeArray instead.
+ */
+type BoxHeightArray = [BoxHeight, BoxHeight?, BoxHeight?, BoxHeight?];
 
 export type SizeNumber =
   | 0
@@ -130,6 +177,7 @@ export type BackgroundColorArray = [
   BackgroundColor?,
   BackgroundColor?,
 ];
+
 export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The content of the Box component.
@@ -140,7 +188,11 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    * Use the FLEX_DIRECTION object from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  flexDirection?: BoxFlexDirection | BoxFlexDirectionArray;
+  flexDirection?:
+    | FlexDirection
+    | FlexDirectionArray
+    | BoxFlexDirection
+    | BoxFlexDirectionArray;
   /**
    * The flex wrap of the Box component.
    * Use the FLEX_WRAP object from '../../../helpers/constants/design-system';
@@ -296,19 +348,19 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    * Use DISPLAY const from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  display?: BoxDisplay | BoxDisplayArray;
+  display?: Display | DisplayArray | BoxDisplay | BoxDisplayArray;
   /**
    * The width of the Box component.
    * Use BLOCK_SIZES const from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  width?: BoxWidth | BoxWidthArray;
+  width?: BlockSize | BlockSizeArray | BoxWidth | BoxWidthArray;
   /**
    * The height of the Box component.
    * Use BLOCK_SIZES const from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  height?: BoxHeight | BoxHeightArray;
+  height?: BlockSize | BlockSizeArray | BoxHeight | BoxHeightArray;
   /**
    * The background-color of the Box component.
    * Use BackgroundColor enum from '../../../helpers/constants/design-system';
