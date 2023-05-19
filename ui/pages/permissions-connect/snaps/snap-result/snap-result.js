@@ -94,7 +94,7 @@ export default function SnapResult({
         )}
       </Box>
       <Box
-        className="snap-result__footers"
+        className="snap-result__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >

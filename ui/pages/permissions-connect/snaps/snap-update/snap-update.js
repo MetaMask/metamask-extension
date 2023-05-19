@@ -160,7 +160,7 @@ export default function SnapUpdate({
         )}
       </Box>
       <Box
-        className="snap-update__footers"
+        className="snap-update__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
