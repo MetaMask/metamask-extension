@@ -1,6 +1,6 @@
 import sinon from 'sinon';
-import {browser} from '../../app/scripts/browser';
 import log from 'loglevel';
+import { browser } from '../../app/scripts/browser';
 import * as BrowserRuntimeUtil from './browser-runtime.utils';
 
 const mockLastError = { message: 'error', stack: [] };

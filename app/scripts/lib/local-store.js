@@ -1,6 +1,6 @@
-import {browser} from '../browser';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
+import { browser } from '../browser';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 
 /**

@@ -5,7 +5,6 @@ import '@formatjs/intl-relativetimeformat/polyfill';
 import 'react-devtools';
 
 import PortStream from 'extension-port-stream';
-import {browser} from './browser';
 
 import Eth from 'ethjs';
 import EthQuery from 'eth-query';
@@ -26,6 +25,7 @@ import {
   registerDesktopErrorActions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
+import { browser } from './browser';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';

@@ -2,8 +2,8 @@
  * Utility Functions to support browser.runtime JavaScript API
  */
 
-import {browser} from '../../app/scripts/browser';
 import log from 'loglevel';
+import { browser } from '../../app/scripts/browser';
 
 /**
  * Returns an Error if extension.runtime.lastError is present

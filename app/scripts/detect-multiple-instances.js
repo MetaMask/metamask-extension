@@ -5,13 +5,13 @@
  * versions running simultaneously.
  */
 
-import {browser} from './browser';
 import {
   PLATFORM_CHROME,
   PLATFORM_FIREFOX,
   CHROME_BUILD_IDS,
   FIREFOX_BUILD_IDS,
 } from '../../shared/constants/app';
+import { browser } from './browser';
 import { getPlatform } from './lib/util';
 
 const MESSAGE_TEXT = 'isRunning';

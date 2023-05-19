@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import {browser} from './browser';
 import sinon from 'sinon';
 import {
   PLATFORM_CHROME,
@@ -10,6 +9,7 @@ import {
   METAMASK_MMI_PROD_CHROME_ID,
   METAMASK_MMI_BETA_CHROME_ID,
 } from '../../shared/constants/app';
+import { browser } from './browser';
 import {
   checkForMultipleVersionsRunning,
   onMessageReceived,

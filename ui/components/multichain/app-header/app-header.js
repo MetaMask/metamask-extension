@@ -1,9 +1,9 @@
 import React, { useContext, useState, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import {browser} from '../../../../app/scripts/browser';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, matchPath } from 'react-router-dom';
+import { browser } from '../../../../app/scripts/browser';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

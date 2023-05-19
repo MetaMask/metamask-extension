@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef } from 'react';
-import {browser} from '../../../../app/scripts/browser';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { browser } from '../../../../app/scripts/browser';
 import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';

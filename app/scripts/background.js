@@ -7,13 +7,9 @@ import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
-import {browser} from './browser';
 import { storeAsStream } from '@metamask/obs-store';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
-
 import { ethErrors } from 'eth-rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -32,6 +28,10 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { browser } from './browser';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: END:ONLY_INCLUDE_IN
+
 import { getEnvironmentType, deferredPromise, getPlatform } from './lib/util';
 import migrations from './migrations';
 import Migrator from './lib/migrator';

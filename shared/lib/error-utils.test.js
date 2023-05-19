@@ -1,4 +1,4 @@
-import {browser} from '../../app/scripts/browser';
+import { browser } from '../../app/scripts/browser';
 import { fetchLocale } from '../../ui/helpers/utils/i18n-helper';
 import { SUPPORT_LINK } from './ui-utils';
 import {

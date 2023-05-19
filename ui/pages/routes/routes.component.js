@@ -5,7 +5,7 @@ import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import {browser} from '../../../app/scripts/browser';
+import { browser } from '../../../app/scripts/browser';
 ///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
@@ -172,9 +172,7 @@ export default class Routes extends Component {
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   componentDidMount() {
     const { history } = this.props;
-    browser.runtime.onMessage.addListener(
-      registerOnDesktopDisconnect(history),
-    );
+    browser.runtime.onMessage.addListener(registerOnDesktopDisconnect(history));
   }
 
   componentWillUnmount() {
@@ -485,7 +483,7 @@ export default class Routes extends Component {
       setMouseUserState,
       isMouseUser,
       browserEnvironmentOs: os,
-      browserEnvironmentBrowser: browser,
+      browserEnvironmentBrowser: browserEnv,
       isNetworkUsed,
       allAccountsOnNetworkAreEmpty,
       isTestNet,
@@ -525,7 +523,7 @@ export default class Routes extends Component {
       <div
         className={classnames('app', {
           [`os-${os}`]: os,
-          [`browser-${browser}`]: browser,
+          [`browser-${browserEnv}`]: browserEnv,
           'mouse-user-styles': isMouseUser,
         })}
         dir={textDirection}

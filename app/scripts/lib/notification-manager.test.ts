@@ -1,4 +1,4 @@
-import {browser} from '../browser';
+import { browser } from '../browser';
 import NotificationManager from './notification-manager';
 
 function generateMockWindow(overrides?: object) {
