@@ -55,7 +55,10 @@ import {
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  isEmptyHexString,
+  toChecksumHexAddress,
+} from '../../../shared/modules/hexstring-utils';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
@@ -129,10 +132,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  let toAddress = txParamsToAddress;
-  if (type !== TransactionType.simpleSend) {
-    toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
-  }
+
+  const isSendingAmount =
+    type === TransactionType.simpleSend || !isEmptyHexString(amount);
+
+  const toAddress = isSendingAmount
+    ? txParamsToAddress
+    : propsToAddress || tokenToAddress || txParamsToAddress;
 
   const toAccounts = getSendToAccounts(state);
 
