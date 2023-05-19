@@ -314,8 +314,8 @@ export const OverflowWrap = (args) => (
       <Typography {...args} overflowWrap={OverflowWrap.Normal}>
         {OverflowWrap.Normal}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
       </Typography>
-      <Typography {...args} overflowWrap={OverflowWrap.Break_Word}>
-        {OverflowWrap.Break_Word}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+      <Typography {...args} overflowWrap={OverflowWrap.BreakWord}>
+        {OverflowWrap.BreakWord}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
       </Typography>
     </div>
   </>

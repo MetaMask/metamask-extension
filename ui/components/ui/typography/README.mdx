@@ -195,7 +195,7 @@ import { TextAlign } from '../../../helpers/constants/design-system';
 
 ### Overflow Wrap
 
-Use the `overflowWrap` prop and the `OVERFLOW_WRAP` object from `./ui/helpers/constants/design-system.js` to change the overflow wrap of the Typography component.
+Use the `overflowWrap` prop and the `OverFlow` enum from `./ui/helpers/constants/design-system.js` to change the overflow wrap of the Typography component.
 
 <Canvas>
   <Story id="components-ui-typography--overflow-wrap" />
@@ -204,7 +204,7 @@ Use the `overflowWrap` prop and the `OVERFLOW_WRAP` object from `./ui/helpers/co
 ```jsx
 // If importing from ui/components/app/[YOUR_COMPONENT]/ directory
 import Typography from '../../ui/typography';
-import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
+import { OverFlow } from '../../../helpers/constants/design-system';
 
 <div
   style={{
@@ -213,11 +213,11 @@ import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
     display: 'block',
   }}
 >
-  <Typography overflowWrap={OVERFLOW_WRAP.NORMAL}>
-    {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+  <Typography overflowWrap={OverFlow.Normal}>
+    {OverFlow.Normal}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
   </Typography>
-  <Typography overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>
-    {OVERFLOW_WRAP.BREAK_WORD}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+  <Typography overflowWrap={OverFlow.BreakWord}>
+    {OverFlow.BreakWord}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
   </Typography>
 </div>;
 ```
