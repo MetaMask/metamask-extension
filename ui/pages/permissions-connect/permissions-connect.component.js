@@ -13,6 +13,7 @@ import { Icon, IconName, IconSize } from '../../components/component-library';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
@@ -40,6 +41,7 @@ export default class PermissionConnect extends Component {
     confirmPermissionPath: PropTypes.string.isRequired,
     requestType: PropTypes.string.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    snapsConnectPath: PropTypes.string.isRequired,
     snapInstallPath: PropTypes.string.isRequired,
     snapUpdatePath: PropTypes.string.isRequired,
     snapResultPath: PropTypes.string.isRequired,
@@ -99,6 +101,7 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      snapsConnectPath,
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
@@ -133,6 +136,9 @@ export default class PermissionConnect extends Component {
           break;
         case 'wallet_installSnapResult':
           history.replace(snapResultPath);
+          break;
+        case 'wallet_connectSnaps':
+          history.replace(snapsConnectPath);
           break;
         default:
           ///: END:ONLY_INCLUDE_IN
@@ -177,6 +183,7 @@ export default class PermissionConnect extends Component {
       confirmPermissionPath,
       requestType,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      snapsConnectPath,
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
@@ -197,6 +204,9 @@ export default class PermissionConnect extends Component {
             break;
           case 'wallet_installSnapResult':
             this.props.history.push(snapResultPath);
+            break;
+          case 'wallet_connectSnaps':
+            this.props.history.replace(snapsConnectPath);
             break;
           ///: END:ONLY_INCLUDE_IN
           default:
@@ -292,6 +302,7 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      snapsConnectPath,
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
@@ -359,6 +370,30 @@ export default class PermissionConnect extends Component {
                 />
               )}
             />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            }
+            <Route
+              path={snapsConnectPath}
+              exact
+              render={() => (
+                <SnapsConnect
+                  request={permissionsRequest || {}}
+                  requestState={requestState || {}}
+                  approveConnection={(...args) => {
+                    approvePermissionsRequest(...args);
+                    this.redirect(true);
+                  }}
+                  rejectConnection={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              )}
+            />
+            {
+              ///: END:ONLY_INCLUDE_IN
+            }
             {
               ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             }

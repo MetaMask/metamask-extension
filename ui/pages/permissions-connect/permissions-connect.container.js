@@ -1,4 +1,5 @@
 import { SubjectType } from '@metamask/subject-metadata-controller';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -30,6 +31,7 @@ import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
@@ -73,12 +75,17 @@ const mapStateToProps = (state, ownProps) => {
     subjectType: SubjectType.Unknown,
   };
 
-  const requestType = getRequestType(state, permissionsRequestId);
+  let requestType = getRequestType(state, permissionsRequestId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
 
-  // change request type to some new routes for multiple snaps e.g. wallet_multi_installSnap
+  if (
+    permissionsRequest &&
+    permissionsRequest.permissions[WALLET_SNAP_PERMISSION_KEY]
+  ) {
+    requestType = 'wallet_connectSnaps';
+  }
 
   const requestState = getRequestState(state, permissionsRequestId);
   ///: END:ONLY_INCLUDE_IN
@@ -98,6 +105,7 @@ const mapStateToProps = (state, ownProps) => {
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const snapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
@@ -130,6 +138,7 @@ const mapStateToProps = (state, ownProps) => {
     isRequestingAccounts,
     requestType,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    snapsConnectPath,
     snapInstallPath,
     snapUpdatePath,
     snapResultPath,
@@ -152,9 +161,6 @@ const mapStateToProps = (state, ownProps) => {
     targetSubjectMetadata,
   };
 };
-
-// add a function that iterates through the given array of snaps approvals
-// and approves them i.e. approvePendingApprovals, rejectPendingApprovals.
 
 const mapDispatchToProps = (dispatch) => {
   return {
