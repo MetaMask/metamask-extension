@@ -1150,7 +1150,7 @@ export default class MetamaskController extends EventEmitter {
     this.txController = new TransactionController({
       initState:
         initState.TransactionController || initState.TransactionManager,
-      addToken: this.tokensController.addTokens.bind(this),
+      addTokens: this.tokensController.addTokens.bind(this.tokensController),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getProviderConfig: () => this.networkController.state.providerConfig,
       getCurrentNetworkEIP1559Compatibility:
