@@ -88,6 +88,41 @@ exports[`Account Menu Render Content should not render keyring label if keyring 
             >
               Account 1
             </div>
+            <label
+              class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+              for="address-0"
+            />
+            <div
+              class="account-menu__balance-container"
+            >
+              <div
+                class="currency-display-component account-menu__balance"
+                data-testid="account-menu__balance"
+                title="0 ETH"
+              >
+                <span
+                  class="currency-display-component__prefix"
+                />
+                <span
+                  class="currency-display-component__text"
+                >
+                  0
+                </span>
+                <span
+                  class="currency-display-component__suffix"
+                >
+                  ETH
+                </span>
+              </div>
+               
+              <span
+                class="account-menu__address"
+              >
+                 
+                · 
+                0x00
+              </span>
+            </div>
             <div
               class="currency-display-component account-menu__balance"
               data-testid="account-menu__balance"
@@ -168,6 +203,41 @@ exports[`Account Menu Render Content should not render keyring label if keyring 
             >
               Imported Account 1
             </div>
+            <label
+              class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+              for="address-0"
+            />
+            <div
+              class="account-menu__balance-container"
+            >
+              <div
+                class="currency-display-component account-menu__balance"
+                data-testid="account-menu__balance"
+                title="0 ETH"
+              >
+                <span
+                  class="currency-display-component__prefix"
+                />
+                <span
+                  class="currency-display-component__text"
+                >
+                  0
+                </span>
+                <span
+                  class="currency-display-component__suffix"
+                >
+                  ETH
+                </span>
+              </div>
+               
+              <span
+                class="account-menu__address"
+              >
+                 
+                · 
+                0x1
+              </span>
+            </div>
             <div
               class="currency-display-component account-menu__balance"
               data-testid="account-menu__balance"
@@ -243,6 +313,24 @@ exports[`Account Menu Render Content should not render keyring label if keyring 
         class="account-menu__item__text"
       >
         Connect hardware wallet
+      </div>
+    </button>
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__text"
+      >
+        Connect Custodial Account
+      </div>
+    </button>
+    <button
+      class="account-menu__item account-menu__item--clickable"
+    >
+      <div
+        class="account-menu__item__text"
+      >
+        Compliance
       </div>
     </button>
     <div
