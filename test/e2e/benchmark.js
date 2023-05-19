@@ -79,12 +79,17 @@ async function profilePageLoad(pages, numSamples, retries) {
     if (runResults.some((result) => result.navigation.lenth > 1)) {
       throw new Error(`Multiple navigations not supported`);
     } else if (
-      runResults.some((result) => result.navigation[0] && result.navigation[0].type !== 'navigate')
+      runResults.some(
+        (result) =>
+          result.navigation[0] && result.navigation[0].type !== 'navigate',
+      )
     ) {
       throw new Error(
         `Navigation type ${
-          runResults.find((result) => result.navigation[0] && result.navigation[0].type !== 'navigate')
-            .navigation[0].type
+          runResults.find(
+            (result) =>
+              result.navigation[0] && result.navigation[0].type !== 'navigate',
+          ).navigation[0].type
         } not supported`,
       );
     }
