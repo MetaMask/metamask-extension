@@ -1,5 +1,4 @@
 import { IconName } from '../../components/component-library';
-import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -20,21 +19,21 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyConversion'),
     descriptionMessage: (t) => t('currencyConversion'),
     route: `${GENERAL_ROUTE}#currency-conversion`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('primaryCurrencySetting'),
     descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
     route: `${GENERAL_ROUTE}#primary-currency`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currentLanguage'),
     descriptionMessage: (t) => t('currentLanguage'),
     route: `${GENERAL_ROUTE}#current-language`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
@@ -48,14 +47,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('hideZeroBalanceTokens'),
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('advanced'),
@@ -132,7 +131,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    iconName: ICON_NAMES.BOOK,
+    iconName: IconName.BOOK,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
@@ -140,7 +139,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('snaps'),
     descriptionMessage: (t) => t('snaps'),
     route: SNAPS_LIST_ROUTE,
-    iconName: ICON_NAMES.SNAPS,
+    iconName: IconName.SNAPS,
   },
   ///: END:ONLY_INCLUDE_IN
   {
@@ -211,7 +210,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: ICON_NAMES.NOTIFICATION,
+    iconName: IconName.NOTIFICATION,
   },
   {
     tabMessage: (t) => t('alerts'),
