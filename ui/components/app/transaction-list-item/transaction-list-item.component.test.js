@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
   getConversionRate,
@@ -71,6 +73,20 @@ jest.mock('react', () => {
     useLayoutEffect: jest.fn(),
   };
 });
+
+jest.mock('../../../store/actions.ts', () => ({
+  tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    getCustodianTransactionDeepLink: jest
+      .fn()
+      .mockReturnValue({ type: 'TYPE' }),
+  }),
+}));
+
+const mockStore = configureStore();
 
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
@@ -163,6 +179,32 @@ describe('TransactionListItem', () => {
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
       expect(queryByTestId('custody-icon')).toBeInTheDocument();
+    });
+
+    it('should click the custody list item and view the send screen', () => {
+      const store = mockStore(mockState);
+
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+        store,
+      );
+
+      const custodyListItem = queryByTestId('custody-icon');
+      fireEvent.click(custodyListItem);
+
+      const sendTextExists = screen.queryAllByText('Send');
+      expect(sendTextExists).toBeTruthy();
     });
   });
 });
