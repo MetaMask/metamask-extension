@@ -25,11 +25,7 @@ import {
   setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import {
-  TextField,
-  Icon,
-  IconName,
-} from '../../../components/component-library';
+import { TextField } from '../../../components/component-library';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import {
@@ -235,7 +231,6 @@ export default function PrivacySettings() {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
-                      icon={<Icon name={IconName.Add} marginRight={2} />}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
                     </Button>

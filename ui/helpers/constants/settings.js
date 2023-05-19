@@ -131,7 +131,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    iconName: IconName.BOOK,
+    iconName: IconName.Book,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
@@ -139,7 +139,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('snaps'),
     descriptionMessage: (t) => t('snaps'),
     route: SNAPS_LIST_ROUTE,
-    iconName: IconName.SNAPS,
+    iconName: IconName.Snaps,
   },
   ///: END:ONLY_INCLUDE_IN
   {
@@ -210,7 +210,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: IconName.NOTIFICATION,
+    iconName: IconName.Notification,
   },
   {
     tabMessage: (t) => t('alerts'),
