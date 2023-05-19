@@ -1,35 +1,33 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
-import ToggleButton from '../../../components/ui/toggle-button';
-import TextField from '../../../components/ui/text-field';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import {
-  ADD_POPULAR_CUSTOM_NETWORK,
-  REVEAL_SEED_ROUTE,
-} from '../../../helpers/constants/routes';
-import Button from '../../../components/ui/button';
-import {
-  getNumberOfSettingsInSection,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
+  addUrlProtocolPrefix,
+  getEnvironmentType,
+} from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  COINGECKO_LINK,
-  CRYPTOCOMPARE_LINK,
-  PRIVACY_POLICY_LINK,
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
+  COINGECKO_LINK,
   CONSENSYS_PRIVACY_LINK,
+  CRYPTOCOMPARE_LINK,
   ETHERSCAN_PRIVACY_LINK,
+  PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { Button } from '../../../components/component-library/button';
+import TextField from '../../../components/ui/text-field';
+import ToggleButton from '../../../components/ui/toggle-button';
+import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
-  addUrlProtocolPrefix,
-  getEnvironmentType,
-} from '../../../../app/scripts/lib/util';
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
+import SRPQuiz from '../../../components/app/srp-quiz-popover/SRPQuiz';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -59,6 +57,7 @@ export default class SecurityTab extends PureComponent {
   state = {
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
+    srpQuizPopoverVisible: false,
   };
 
   settingsRefCounter = 0;
@@ -98,7 +97,6 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history } = this.props;
 
     return (
       <div ref={this.settingsRefs[0]} className="settings-page__content-row">
@@ -129,11 +127,16 @@ export default class SecurityTab extends PureComponent {
                     location: 'Settings',
                   },
                 });
-                history.push(REVEAL_SEED_ROUTE);
+                this.setState({ srpQuizPopoverVisible: true });
               }}
             >
               {t('revealSeedWords')}
             </Button>
+            {this.state.srpQuizPopoverVisible && (
+              <SRPQuiz
+                onClose={() => this.setState({ srpQuizPopoverVisible: false })}
+              />
+            )}
           </div>
         </div>
       </div>
