@@ -903,32 +903,6 @@ export function updatePreviousGasParams(
   };
 }
 
-// TODO: codeword: NOT_A_THUNK @brad-decker
-export function updateSwapApprovalTransaction(
-  txId: number,
-  txSwapApproval: TransactionMeta,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateSwapApprovalTransaction',
-        [txId, txSwapApproval],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export function updateEditableParams(
   txId: number,
   editableParams: Partial<TxParams>,
@@ -1035,32 +1009,6 @@ export function updateTransactionGasFees(
       updatedTransaction = await submitRequestToBackground(
         'updateTransactionGasFees',
         [txId, txGasFees],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
-// TODO: codeword: NOT_A_THUNK @brad-decker
-export function updateSwapTransaction(
-  txId: number,
-  txSwap: TransactionMeta,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateSwapTransaction',
-        [txId, txSwap],
       );
     } catch (error) {
       logErrorWithMessage(error);

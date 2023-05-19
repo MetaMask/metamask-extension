@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
@@ -6,6 +7,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { ApprovalType } from '@metamask/controller-utils';
 import sinon from 'sinon';
 
+import { errorCodes } from 'eth-rpc-errors';
 import {
   createTestProviderTools,
   getTestAccounts,
@@ -564,6 +566,142 @@ describe('Transaction Controller', function () {
         },
         true, // Show popup
       ]);
+    });
+
+    it('updates meta if transaction type is swap approval', async function () {
+      await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+        TransactionType.swapApproval,
+        undefined,
+        '12345',
+        { extraMeta: { type: 'swapApproval', sourceTokenSymbol: 'XBN' } },
+      );
+
+      const transaction = txController.getTransactions({
+        searchCriteria: { id: updatedTxMeta.id },
+      })[0];
+
+      assert.equal(transaction.type, 'swapApproval');
+      assert.equal(transaction.sourceTokenSymbol, 'XBN');
+    });
+
+    it('updates meta if transaction type is swap', async function () {
+      await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+        TransactionType.swap,
+        undefined,
+        '12345',
+        {
+          extraMeta: {
+            sourceTokenSymbol: 'BTCX',
+            destinationTokenSymbol: 'ETH',
+            type: 'swapped',
+            destinationTokenDecimals: 8,
+            destinationTokenAddress: VALID_ADDRESS_TWO,
+            swapTokenValue: '0x0077',
+          },
+        },
+      );
+
+      const transaction = txController.getTransactions({
+        searchCriteria: { id: updatedTxMeta.id },
+      })[0];
+
+      assert.equal(transaction.sourceTokenSymbol, 'BTCX');
+      assert.equal(transaction.destinationTokenSymbol, 'ETH');
+      assert.equal(transaction.type, 'swapped');
+      assert.equal(transaction.destinationTokenDecimals, 8);
+      assert.equal(transaction.destinationTokenAddress, VALID_ADDRESS_TWO);
+      assert.equal(transaction.swapTokenValue, '0x0077');
+    });
+
+    describe('on approval', function () {
+      it('changes status to submitted', async function () {
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        const transaction = txController.getTransactions({
+          searchCriteria: { id: updatedTxMeta.id },
+        })[0];
+
+        assert.equal(transaction.status, TransactionStatus.submitted);
+      });
+
+      it('emits approved, signed, and submitted status events', async function () {
+        const listener = sinon.spy();
+
+        txController.on('tx:status-update', listener);
+
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        assert.equal(listener.callCount, 3);
+        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][1], TransactionStatus.approved);
+        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][1], TransactionStatus.signed);
+        assert.equal(listener.args[2][0], updatedTxMeta.id);
+        assert.equal(listener.args[2][1], TransactionStatus.submitted);
+      });
+    });
+
+    describe('on cancel', function () {
+      it('emits rejected status event', async function () {
+        const listener = sinon.spy();
+
+        txController.on('tx:status-update', listener);
+
+        messengerMock.call.returns(
+          Promise.reject({ code: errorCodes.provider.userRejectedRequest }),
+        );
+
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        assert.equal(listener.callCount, 1);
+
+        const [txId, status] = listener.args[0];
+
+        assert.equal(status, TransactionStatus.rejected);
+        assert.equal(txId, updatedTxMeta.id);
+      });
     });
   });
 
@@ -1143,28 +1281,6 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('#updateAndApproveTransaction', function () {
-    it('should update and approve transactions', async function () {
-      const txMeta = {
-        id: 1,
-        status: TransactionStatus.unapproved,
-        txParams: {
-          from: fromAccount.address,
-          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          gasPrice: '0x77359400',
-          gas: '0x7b0d',
-          nonce: '0x4b',
-        },
-        metamaskNetworkId: currentNetworkId,
-      };
-      txController.txStateManager.addTransaction(txMeta);
-      const approvalPromise = txController.updateAndApproveTransaction(txMeta);
-      const tx = txController.txStateManager.getTransaction(1);
-      assert.equal(tx.status, TransactionStatus.approved);
-      await approvalPromise;
-    });
-  });
-
   describe('#getChainId', function () {
     it('returns the chain ID of the network when it is available', function () {
       networkStatusStore.putState(NetworkStatus.Available);
@@ -1180,99 +1296,6 @@ describe('Transaction Controller', function () {
       networkStatusStore.putState(NetworkStatus.Available);
       getCurrentChainId.returns('$fdsjfldf');
       assert.equal(txController.getChainId(), 0);
-    });
-  });
-
-  describe('#cancelTransaction', function () {
-    it('should emit a status change to rejected', function (done) {
-      txController.txStateManager._addTransactionsToState([
-        {
-          id: 0,
-          status: TransactionStatus.unapproved,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-        {
-          id: 1,
-          status: TransactionStatus.rejected,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-        {
-          id: 2,
-          status: TransactionStatus.approved,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-        {
-          id: 3,
-          status: TransactionStatus.signed,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-        {
-          id: 4,
-          status: TransactionStatus.submitted,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-        {
-          id: 5,
-          status: TransactionStatus.confirmed,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-        {
-          id: 6,
-          status: TransactionStatus.failed,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-          },
-          metamaskNetworkId: currentNetworkId,
-          history: [{}],
-        },
-      ]);
-
-      txController.once('tx:status-update', (txId, status) => {
-        try {
-          assert.equal(
-            status,
-            TransactionStatus.rejected,
-            'status should be rejected',
-          );
-          assert.equal(txId, 0, 'id should e 0');
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-
-      txController.cancelTransaction(0);
     });
   });
 
@@ -2735,44 +2758,6 @@ describe('Transaction Controller', function () {
       assert.equal(result.decEstimatedBaseFee, '66');
     });
 
-    it('updates swap approval transaction', function () {
-      txController.updateSwapApprovalTransaction('1', {
-        type: 'swapApproval',
-        sourceTokenSymbol: 'XBN',
-      });
-
-      const result = txStateManager.getTransaction('1');
-      assert.equal(result.type, 'swapApproval');
-      assert.equal(result.sourceTokenSymbol, 'XBN');
-    });
-
-    it('updates swap transaction', function () {
-      txController.updateSwapTransaction('1', {
-        sourceTokenSymbol: 'BTCX',
-        destinationTokenSymbol: 'ETH',
-      });
-
-      const result = txStateManager.getTransaction('1');
-      assert.equal(result.sourceTokenSymbol, 'BTCX');
-      assert.equal(result.destinationTokenSymbol, 'ETH');
-      assert.equal(result.destinationTokenDecimals, 16);
-      assert.equal(result.destinationTokenAddress, VALID_ADDRESS);
-      assert.equal(result.swapTokenValue, '0x007');
-
-      txController.updateSwapTransaction('1', {
-        type: 'swapped',
-        destinationTokenDecimals: 8,
-        destinationTokenAddress: VALID_ADDRESS_TWO,
-        swapTokenValue: '0x0077',
-      });
-      assert.equal(result.sourceTokenSymbol, 'BTCX');
-      assert.equal(result.destinationTokenSymbol, 'ETH');
-      assert.equal(result.type, 'swapped');
-      assert.equal(result.destinationTokenDecimals, 8);
-      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
-      assert.equal(result.swapTokenValue, '0x0077');
-    });
-
     it('updates transaction user settings', function () {
       txController.updateTransactionUserSettings('1', {
         userEditedGasLimit: '0x0088',
@@ -2813,32 +2798,16 @@ describe('Transaction Controller', function () {
     });
 
     it('does not update unknown parameters in update method', function () {
-      txController.updateSwapTransaction('1', {
-        type: 'swapped',
-        destinationTokenDecimals: 8,
-        destinationTokenAddress: VALID_ADDRESS_TWO,
-        swapTokenValue: '0x011',
-        gasPrice: '0x12',
-      });
-
-      let result = txStateManager.getTransaction('1');
-
-      assert.equal(result.type, 'swapped');
-      assert.equal(result.destinationTokenDecimals, 8);
-      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
-      assert.equal(result.swapTokenValue, '0x011');
-      assert.equal(result.txParams.gasPrice, '0x002'); // not updated even though it's passed in to update
-
       txController.updateTransactionGasFees('1', {
         estimateUsed: '0x13',
         gasPrice: '0x14',
         destinationTokenAddress: VALID_ADDRESS,
       });
 
-      result = txStateManager.getTransaction('1');
+      const result = txStateManager.getTransaction('1');
       assert.equal(result.estimateUsed, '0x13');
       assert.equal(result.txParams.gasPrice, '0x14');
-      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS); // not updated even though it's passed in to update
     });
   });
 

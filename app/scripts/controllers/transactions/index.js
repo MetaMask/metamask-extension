@@ -598,81 +598,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * updates a swap approval transaction with provided metadata and source token symbol
-   *  if the transaction state is unapproved.
-   *
-   * @param {string} txId
-   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
-   * @param {string} swapApprovalTransaction.type
-   * @param {string} swapApprovalTransaction.sourceTokenSymbol
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapApprovalTransaction');
-
-    let swapApprovalTransaction = { type, sourceTokenSymbol };
-    // only update what is defined
-    swapApprovalTransaction = pickBy(swapApprovalTransaction);
-
-    const note = `Update Swap Approval Transaction for ${txId}`;
-    this._updateTransaction(txId, swapApprovalTransaction, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates a swap transaction with provided metadata and source token symbol
-   *  if the transaction state is unapproved.
-   *
-   * @param {string} txId
-   * @param {object} swapTransaction - holds the metadata
-   * @param {string} swapTransaction.sourceTokenSymbol
-   * @param {string} swapTransaction.destinationTokenSymbol
-   * @param {string} swapTransaction.type
-   * @param {string} swapTransaction.destinationTokenDecimals
-   * @param {string} swapTransaction.destinationTokenAddress
-   * @param {string} swapTransaction.swapMetaData
-   * @param {string} swapTransaction.swapTokenValue
-   * @param {string} swapTransaction.estimatedBaseFee
-   * @param {string} swapTransaction.approvalTxId
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateSwapTransaction(
-    txId,
-    {
-      sourceTokenSymbol,
-      destinationTokenSymbol,
-      type,
-      destinationTokenDecimals,
-      destinationTokenAddress,
-      swapMetaData,
-      swapTokenValue,
-      estimatedBaseFee,
-      approvalTxId,
-    },
-  ) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapTransaction');
-
-    let swapTransaction = {
-      sourceTokenSymbol,
-      destinationTokenSymbol,
-      type,
-      destinationTokenDecimals,
-      destinationTokenAddress,
-      swapMetaData,
-      swapTokenValue,
-      estimatedBaseFee,
-      approvalTxId,
-    };
-
-    // only update what is defined
-    swapTransaction = pickBy(swapTransaction);
-
-    const note = `Update Swap Transaction for ${txId}`;
-    this._updateTransaction(txId, swapTransaction, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
    * updates a transaction's user settings only if the transaction state is unapproved
    *
    * @param {string} txId
@@ -883,13 +808,13 @@ export default class TransactionController extends EventEmitter {
 
     if (transactionType === TransactionType.swapApproval) {
       this.emit('newSwapApproval', txMeta);
-      txMeta = this.updateSwapApprovalTransaction(
+      txMeta = this._updateSwapApprovalTransaction(
         txMeta.id,
         options?.extraMeta,
       );
     } else if (transactionType === TransactionType.swap) {
       this.emit('newSwap', txMeta);
-      txMeta = this.updateSwapTransaction(txMeta.id, options?.extraMeta);
+      txMeta = this._updateSwapTransaction(txMeta.id, options?.extraMeta);
     }
 
     if (options?.requireApproval === false) {
@@ -1345,20 +1270,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * updates and approves the transaction
-   *
-   * @param {object} txMeta
-   * @param {string} actionId
-   */
-  async updateAndApproveTransaction(txMeta, actionId) {
-    this.txStateManager.updateTransaction(
-      txMeta,
-      'confTx: user approved transaction',
-    );
-    await this.approveTransaction(txMeta.id, actionId);
-  }
-
-  /**
    * sets the tx status to approved
    * auto fills the nonce
    * signs the transaction
@@ -1781,23 +1692,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Convenience method for the ui thats sets the transaction to rejected
-   *
-   * @param {number} txId - the tx's Id
-   * @param {string} actionId - actionId passed from UI
-   * @returns {Promise<void>}
-   */
-  async cancelTransaction(txId, actionId) {
-    const txMeta = this.txStateManager.getTransaction(txId);
-    this.txStateManager.setTxStatusRejected(txId);
-    this._trackTransactionMetricsEvent(
-      txMeta,
-      TransactionMetaMetricsEvent.rejected,
-      actionId,
-    );
-  }
-
-  /**
    * Sets the txHas on the txMeta
    *
    * @param {number} txId - the tx's Id
@@ -1835,6 +1729,113 @@ export default class TransactionController extends EventEmitter {
   //
   //           PRIVATE METHODS
   //
+
+  /**
+   * updates a swap approval transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
+   * @param {string} swapApprovalTransaction.type
+   * @param {string} swapApprovalTransaction.sourceTokenSymbol
+   * @returns {TransactionMeta} the txMeta of the updated transaction
+   */
+  _updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapApprovalTransaction');
+
+    let swapApprovalTransaction = { type, sourceTokenSymbol };
+    // only update what is defined
+    swapApprovalTransaction = pickBy(swapApprovalTransaction);
+
+    const note = `Update Swap Approval Transaction for ${txId}`;
+    this._updateTransaction(txId, swapApprovalTransaction, note);
+    return this._getTransaction(txId);
+  }
+
+  /**
+   * updates a swap transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapTransaction - holds the metadata
+   * @param {string} swapTransaction.sourceTokenSymbol
+   * @param {string} swapTransaction.destinationTokenSymbol
+   * @param {string} swapTransaction.type
+   * @param {string} swapTransaction.destinationTokenDecimals
+   * @param {string} swapTransaction.destinationTokenAddress
+   * @param {string} swapTransaction.swapMetaData
+   * @param {string} swapTransaction.swapTokenValue
+   * @param {string} swapTransaction.estimatedBaseFee
+   * @param {string} swapTransaction.approvalTxId
+   * @returns {TransactionMeta} the txMeta of the updated transaction
+   */
+  _updateSwapTransaction(
+    txId,
+    {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    },
+  ) {
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapTransaction');
+
+    let swapTransaction = {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    };
+
+    // only update what is defined
+    swapTransaction = pickBy(swapTransaction);
+
+    const note = `Update Swap Transaction for ${txId}`;
+    this._updateTransaction(txId, swapTransaction, note);
+    return this._getTransaction(txId);
+  }
+
+  /**
+   * updates and approves the transaction
+   *
+   * @param {object} txMeta
+   * @param {string} actionId
+   */
+  async _updateAndApproveTransaction(txMeta, actionId) {
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'confTx: user approved transaction',
+    );
+    await this.approveTransaction(txMeta.id, actionId);
+  }
+
+  /**
+   * Convenience method for the ui thats sets the transaction to rejected
+   *
+   * @param {number} txId - the tx's Id
+   * @param {string} actionId - actionId passed from UI
+   * @returns {Promise<void>}
+   */
+  async _cancelTransaction(txId, actionId) {
+    const txMeta = this.txStateManager.getTransaction(txId);
+    this.txStateManager.setTxStatusRejected(txId);
+    this._trackTransactionMetricsEvent(
+      txMeta,
+      TransactionMetaMetricsEvent.rejected,
+      actionId,
+    );
+  }
+
   /** maps methods for convenience*/
   _mapMethods() {
     /** @returns {object} the state in transaction controller */
@@ -2671,10 +2672,10 @@ export default class TransactionController extends EventEmitter {
     await this._waitForApprovalWithRetry(
       txMeta,
       async ({ txMeta: updatedTxMeta }, _retryCount) => {
-        await this.updateAndApproveTransaction(updatedTxMeta, txMeta.actionId);
+        await this._updateAndApproveTransaction(updatedTxMeta, txMeta.actionId);
       },
       async () => {
-        await this.cancelTransaction(txMeta.id, txMeta.actionId);
+        await this._cancelTransaction(txMeta.id, txMeta.actionId);
       },
       {
         shouldShowRequest,
@@ -2688,11 +2689,11 @@ export default class TransactionController extends EventEmitter {
     onCancel,
     { shouldShowRequest } = { shouldShowRequest: true },
   ) {
-    let success = false;
+    let completed = false;
     let approvalPromise = this._waitForApproval(txMeta, { shouldShowRequest });
     let retryCount = 0;
 
-    while (!success) {
+    while (!completed) {
       let approvalResponse;
 
       try {
@@ -2700,7 +2701,8 @@ export default class TransactionController extends EventEmitter {
       } catch (error) {
         if (error.code === errorCodes.provider.userRejectedRequest) {
           await onCancel();
-          throw ethErrors.provider.userRejectedRequest();
+          completed = true;
+          break;
         }
 
         throw error;
@@ -2711,7 +2713,7 @@ export default class TransactionController extends EventEmitter {
       try {
         await onApproval(value, retryCount);
         result.success();
-        success = true;
+        completed = true;
       } catch (error) {
         log.error('Error during transaction approval', error);
         approvalPromise = result.error(error, { retry: true });

@@ -2138,10 +2138,7 @@ export default class MetamaskController extends EventEmitter {
       exportAccount: this.exportAccount.bind(this),
 
       // txController
-      cancelTransaction: txController.cancelTransaction.bind(txController),
       updateTransaction: txController.updateTransaction.bind(txController),
-      updateAndApproveTransaction:
-        txController.updateAndApproveTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
       createCancelTransaction: this.createCancelTransaction.bind(this),
@@ -2160,11 +2157,6 @@ export default class MetamaskController extends EventEmitter {
         txController.updateTransactionGasFees.bind(txController),
       updateTransactionSendFlowHistory:
         txController.updateTransactionSendFlowHistory.bind(txController),
-
-      updateSwapApprovalTransaction:
-        txController.updateSwapApprovalTransaction.bind(txController),
-      updateSwapTransaction:
-        txController.updateSwapTransaction.bind(txController),
 
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
