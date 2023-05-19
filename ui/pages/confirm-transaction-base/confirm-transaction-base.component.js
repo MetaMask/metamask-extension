@@ -436,7 +436,10 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const simulationFailureWarning = () => (
-      <div className="confirm-page-container-content__error-container">
+      <div
+        className="confirm-page-container-content__error-container"
+        key="confirm-transaction-base_simulation-error-container"
+      >
         <SimulationErrorMessage
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           setUserAcknowledgedGasMissing={() =>
@@ -468,6 +471,7 @@ export default class ConfirmTransactionBase extends Component {
             renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning && (
               <ConfirmGasDisplay
+                key="confirm-transaction-base_confirm-gas-display"
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
               />
             ),
