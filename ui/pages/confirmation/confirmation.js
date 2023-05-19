@@ -226,17 +226,17 @@ export default function ConfirmationPage({
   const templatedValues = useMemo(() => {
     return pendingConfirmation
       ? getTemplateValues(
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          snapName: isSnapDialog && snapName,
-          ///: END:ONLY_INCLUDE_IN
-          ...pendingConfirmation,
-        },
-        t,
-        dispatch,
-        history,
-        setInputState,
-      )
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            snapName: isSnapDialog && snapName,
+            ///: END:ONLY_INCLUDE_IN
+            ...pendingConfirmation,
+          },
+          t,
+          dispatch,
+          history,
+          setInputState,
+        )
       : {};
   }, [
     pendingConfirmation,
@@ -349,25 +349,25 @@ export default function ConfirmationPage({
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           !isSnapDialog &&
-          ///: END:ONLY_INCLUDE_IN
-          pendingConfirmation.origin === 'metamask' && (
-            <Box
-              alignItems={AlignItems.center}
-              paddingTop={2}
-              paddingRight={4}
-              paddingLeft={4}
-              paddingBottom={4}
-              flexDirection={FLEX_DIRECTION.COLUMN}
-            >
-              <SiteOrigin
-                chip
-                siteOrigin={originMetadata.origin}
-                title={originMetadata.origin}
-                iconSrc={originMetadata.iconUrl}
-                iconName={originMetadata.hostname}
-              />
-            </Box>
-          )
+            ///: END:ONLY_INCLUDE_IN
+            pendingConfirmation.origin === 'metamask' && (
+              <Box
+                alignItems={AlignItems.center}
+                paddingTop={2}
+                paddingRight={4}
+                paddingLeft={4}
+                paddingBottom={4}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+              >
+                <SiteOrigin
+                  chip
+                  siteOrigin={originMetadata.origin}
+                  title={originMetadata.origin}
+                  iconSrc={originMetadata.iconUrl}
+                  iconName={originMetadata.hostname}
+                />
+              </Box>
+            )
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
