@@ -43,21 +43,38 @@ export function calcTokenAmount(value, decimals) {
  */
 export function getTokenTransfersFromTxReceipt(txReceipt) {
   const txReceiptLogs = txReceipt?.logs;
-  if (!txReceiptLogs || txReceipt?.status === '0x0') return []
-  return txReceiptLogs.map((txReceiptLog) => {
-    if (!txReceiptLog.topics) return
-    const isTokenTransfer = txReceiptLog.topics[0] &&
-      txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
-    if (!isTokenTransfer) return
+  if (!txReceiptLogs || txReceipt?.status === '0x0') {
+    return [];
+  }
+  return txReceiptLogs
+    .map((txReceiptLog) => {
+      if (!txReceiptLog.topics) {
+        return undefined;
+      }
+      const isTokenTransfer =
+        txReceiptLog.topics[0] &&
+        txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
+      if (!isTokenTransfer) {
+        return undefined;
+      }
 
-    const transferFromAddress = txReceiptLog.topics[1];
-    if (!transferFromAddress) return
+      const transferFromAddress = txReceiptLog.topics[1];
+      if (!transferFromAddress) {
+        return undefined;
+      }
 
-    const transferToAddress = txReceiptLog.topics[2];
-    if (!transferToAddress) return
+      const transferToAddress = txReceiptLog.topics[2];
+      if (!transferToAddress) {
+        return undefined;
+      }
 
-    return { to: transferToAddress, from: transferFromAddress, contractAddress: txReceiptLog }
-  }).filter(transfer => !!transfer);
+      return {
+        to: transferToAddress,
+        from: transferFromAddress,
+        contractAddress: txReceiptLog,
+      };
+    })
+    .filter((transfer) => Boolean(transfer));
 }
 
 export function getSwapsTokensReceivedFromTxMeta(

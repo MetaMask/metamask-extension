@@ -22,7 +22,6 @@ export async function setStorageItem(key, value) {
   }
 }
 
-
 /**
  * Returns whether or not the given object contains no keys
  *

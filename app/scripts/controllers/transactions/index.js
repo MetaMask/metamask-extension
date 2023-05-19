@@ -210,6 +210,7 @@ export default class TransactionController extends EventEmitter {
       approveTransaction: this._approveTransaction.bind(this),
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+      trackMetaMetricsEvent: this.trackMetaMetricsEvent.bind(this),
     });
 
     this.txStateManager.store.subscribe(() =>
