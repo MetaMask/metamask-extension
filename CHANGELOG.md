@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix overflowing notification content ([#18881](https://github.com/MetaMask/metamask-extension/pull/18881))
 - [FLASK] Fix missing icon for webassembly endowment ([#18781](https://github.com/MetaMask/metamask-extension/pull/18781))
 - [FLASK] Fix text selection bug in snap ui ([#18719](https://github.com/MetaMask/metamask-extension/pull/18719))
+
 ## [10.30.4]
 ### Fixed
 - Fix error upon submitting multiple requests that require approval ([#19050](https://github.com/MetaMask/metamask-extension/pull/19050))
