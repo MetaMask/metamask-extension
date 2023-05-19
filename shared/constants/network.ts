@@ -152,6 +152,7 @@ export const CHAIN_IDS = {
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
+  EUROPA_SKALE: '0x79f99296',
 } as const;
 
 /**
@@ -177,6 +178,7 @@ export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
+export const EUROPA_DISPLAY_NAME = 'Europa Liquidity Hub | SKALE';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -219,6 +221,7 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
+  SFUEL: 'sFUEL',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
@@ -233,6 +236,9 @@ export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
+export const SFUEL_TOKEN_IMAGE_URL = './images/sfuel.png';
+
+export const EUROPA_LOGO_IMAGE_URL = './images/europa.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -356,6 +362,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.EUROPA_SKALE]: EUROPA_LOGO_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -382,6 +389,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.SFUEL]: SFUEL_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -521,6 +529,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.LINEA_TESTNET
     | typeof CHAIN_IDS.GOERLI
+    | typeof CHAIN_IDS.EUROPA_SKALE
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -661,6 +670,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
       blockExplorerUrl: 'https://celoscan.io',
       imageUrl: CELO_TOKEN_IMAGE_URL,
     },
+  },
+  {
+    chainId: CHAIN_IDS.EUROPA_SKALE,
+    nickname: EUROPA_DISPLAY_NAME,
+    rpcUrl: 'https://mainnet.skalenodes.com/v1/elated-tan-skat',
+    ticker: CURRENCY_SYMBOLS.SFUEL,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
+      imageUrl: EUROPA_LOGO_IMAGE_URL,
+    }
   },
 ];
 
