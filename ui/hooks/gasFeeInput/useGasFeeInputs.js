@@ -18,12 +18,7 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
-import {
-  decEthToConvertedCurrency,
-  hexToDecimal,
-  hexWEIToDecETH,
-  hexWEIToDecGWEI,
-} from '../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -164,7 +159,9 @@ export function useGasFeeInputs(
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
 
-  const fee = useSelector((state) => transactionFeeSelector(state, transaction));
+  const fee = useSelector((state) =>
+    transactionFeeSelector(state, transaction),
+  );
 
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
@@ -178,10 +175,7 @@ export function useGasFeeInputs(
         setInternalEstimateToUse(transaction?.userFeeLevel);
       }
 
-      console.log('fee: ', fee);
-      console.log('transaction: ', transaction);
-
-      if(fee.ethTransactionTotal > TOO_HIGH_GAS_LIMIT) {
+      if (fee.ethTransactionTotal > TOO_HIGH_GAS_LIMIT) {
         setEstimateUsed(PriorityLevels.dappSuggestedHigh);
       }
 
