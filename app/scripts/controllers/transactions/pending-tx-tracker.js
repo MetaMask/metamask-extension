@@ -241,11 +241,14 @@ export default class PendingTransactionTracker extends EventEmitter {
           baseFeePerGas,
           blockTimestamp,
         );
-        // Adds tokens to state on confirmation of transaction if the sender is a recipient of the token.
+        // Adds tokens to state on confirmation of transaction
+        // if the sender is a recipient of the token.
         const txSender = transactionReceipt?.from;
         const tokenTransfers = getTokenTransfersFromTxReceipt(
           transactionReceipt,
-        ).filter((transfer) => transfer.to.toLowerCase() === txSender);
+        ).filter(
+          (transfer) => transfer.to.toLowerCase() === txSender.toLowerCase(),
+        );
         const deduplicatedTransferContractsAddresses = [
           ...new Set(
             tokenTransfers.map((transfer) =>

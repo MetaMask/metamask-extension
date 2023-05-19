@@ -653,6 +653,80 @@ describe('PendingTransactionTracker', function () {
       assert.ok(listeners.warning.calledOnce, "should emit 'tx:warning'");
     });
 
+    it("should emit 'tx:confirmed' if getTransactionReceipt succeeds", async function () {
+      const txMeta = {
+        id: 1,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.submitted,
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+        history: [{}],
+        rawTx: '0xf86c808504a817c80082471d',
+        custodyId: 'testid',
+      };
+      const resolvedTxReceipt = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        transactionHash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        logs: [
+          {
+            address: '0xf56dc6695cf1f5c364edebc7dc7077ac9b586068',
+            topics: [
+              '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+              '0x0000000000000000000000001678a085c290ebd122dc42cba69373b5953b831d',
+              '0x000000000000000000000000c04bf211972cea9a10f30bc81b0257aa51f024c6',
+            ],
+          },
+        ],
+        blockNumber: '0xa8532',
+        status: '0x1',
+        to: '0xf56dc6695cf1f5c364edebc7dc7077ac9b586068',
+      };
+      const nonceBN = new BN(2);
+      const pendingTxTracker = new PendingTransactionTracker({
+        query: {
+          getTransactionReceipt: sinon.stub().resolves(resolvedTxReceipt),
+          getTransactionCount: sinon.stub().resolves(nonceBN),
+          getBlockByHash: sinon.stub().resolves({
+            timestamp: '0x64605d3e',
+            baseFeePerGas: '0x8',
+          }),
+        },
+        nonceTracker: {
+          getGlobalLock: sinon.stub().resolves({
+            releaseLock: sinon.spy(),
+          }),
+        },
+        getPendingTransactions: sinon.stub().returns([]),
+        getCompletedTransactions: sinon.stub().returns([]),
+        publishTransaction: sinon.spy(),
+        confirmTransaction: sinon.spy(),
+        addTokens: sinon.spy(),
+        getTokenStandardAndDetails: sinon.spy(),
+        trackMetaMetricsEvent: sinon.spy(),
+      });
+      const listeners = {
+        confirmed: sinon.spy(),
+        dropped: sinon.spy(),
+        failed: sinon.spy(),
+        warning: sinon.spy(),
+      };
+
+      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
+      pendingTxTracker.once('tx:dropped', listeners.dropped);
+      pendingTxTracker.once('tx:failed', listeners.failed);
+      pendingTxTracker.once('tx:warning', listeners.warning);
+      await pendingTxTracker._checkPendingTx(txMeta);
+
+      assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped");
+      assert.ok(listeners.confirmed.calledOnce, "should emit 'tx:confirmed'");
+      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
+      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
+    });
+
     it('should NOT emit anything if the tx is already not submitted', async function () {
       const pendingTxTracker = new PendingTransactionTracker({
         query: sinon.spy(),
