@@ -35,6 +35,7 @@ export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
 export { ModalFocus } from './modal-focus';
+export { Modal, useModalContext } from './modal';
 
 // Molecules
 export { BannerBase } from './banner-base';
