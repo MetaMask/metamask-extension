@@ -7,7 +7,7 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -31,7 +31,7 @@ export const Tag = forwardRef(
         paddingLeft={1}
         paddingRight={1}
         borderRadius={BorderRadius.pill}
-        display={DISPLAY.INLINE_BLOCK}
+        display={Display.InlineBlock}
         {...props}
       >
         <Text variant={TextVariant.bodySm} {...labelProps}>
