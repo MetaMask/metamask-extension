@@ -1,14 +1,19 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import log from 'loglevel';
 import EthQuery from 'ethjs-query';
-import { TransactionStatus } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TransactionStatus,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import { getTokenTransfersFromTxReceipt } from '../../../../shared/lib/transactions-controller-utils';
 import { isEmpty } from '../../../../shared/lib/storage-helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
-} from '../../../shared/constants/metametrics';
+} from '../../../../shared/constants/metametrics';
+import { formatIconUrlWithProxy } from '../../../../shared/modules/format-icon-url';
 import { ERROR_SUBMITTING } from './tx-state-manager';
 
 /**
@@ -59,8 +64,8 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.approveTransaction = config.approveTransaction;
     this.confirmTransaction = config.confirmTransaction;
     this.addTokens = config.addTokens;
-    this.getTokenStandardAndDetails = config.getTokenStandardAndDetails
-    this.#trackMetaMetricsEvent = config.trackMetaMetricsEvent;
+    this.getTokenStandardAndDetails = config.getTokenStandardAndDetails;
+    this.trackMetaMetricsEvent = config.trackMetaMetricsEvent;
   }
 
   /**
@@ -237,26 +242,38 @@ export default class PendingTransactionTracker extends EventEmitter {
           blockTimestamp,
         );
         // Adds tokens to state on confirmation of transaction if the sender is a recipient of the token.
-        const txSender = txReceipt.from
-        const tokenTransfers = getTokenTransfersFromTxReceipt(txReceipt).filter(transfer =>
-          transfer.to.toLowerCase() === txSender)
-        const deduplicatedTransferContractsAddresses = [ ...new Set(tokenTransfers.map(transfer => transfer.contractAddress.toLowerCase())) ]
+        const txSender = transactionReceipt?.from;
+        const tokenTransfers = getTokenTransfersFromTxReceipt(
+          transactionReceipt,
+        ).filter((transfer) => transfer.to.toLowerCase() === txSender);
+        const deduplicatedTransferContractsAddresses = [
+          ...new Set(
+            tokenTransfers.map((transfer) =>
+              transfer.contractAddress.toLowerCase(),
+            ),
+          ),
+        ];
 
         const tokens = await Promise.all(
-          deduplicatedTransferContractsAddresses.map(
-            contractAddress => getTokenStandardAndDetails(contractAddress, txSender)
-          )
-        )
+          deduplicatedTransferContractsAddresses.map((contractAddress) =>
+            this.getTokenStandardAndDetails(contractAddress, txSender),
+          ),
+        );
 
-        const receivedTokens = tokens.filter(token => !isEmpty(token)).reduce((acc, token) => {
-          acc[token.contractAddress.toLowerCase()] = { ...token, image: formatIconUrlWithProxy(txMeta.chainId, token.address) }
-          return acc
-        }, {})
-        this.addTokens(receivedTokens)
+        const receivedTokens = tokens
+          .filter((token) => !isEmpty(token))
+          .reduce((acc, token) => {
+            acc[token.contractAddress.toLowerCase()] = {
+              ...token,
+              image: formatIconUrlWithProxy(txMeta.chainId, token.address),
+            };
+            return acc;
+          }, {});
+        this.addTokens(receivedTokens);
         const addedTokenValues = Object.values(receivedTokens);
 
         addedTokenValues.forEach((pendingToken) => {
-          this.#trackMetaMetricsEvent({
+          this.trackMetaMetricsEvent({
             event: MetaMetricsEventName.TokenAdded,
             category: MetaMetricsEventCategory.Wallet,
             sensitiveProperties: {

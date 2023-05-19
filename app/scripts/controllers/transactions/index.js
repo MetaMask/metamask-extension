@@ -127,9 +127,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
  * @param {object} opts.preferencesStore
  * @param {Function} opts.addTokens - Adds tokens to state after deduplicating
- * @param {Function} getTokenStandardAndDetails - function to get token
- *  standards and details.
- *
+ * @param {Function} getTokenStandardAndDetails - function to get token standards and details.
  */
 
 export default class TransactionController extends EventEmitter {
