@@ -537,12 +537,14 @@ export default class PreferencesController {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   async prepareMmiPortfolio() {
     if (!process.env.IN_TEST) {
-      this.handleMmiPortfolio().then((mmiDashboardData) => {
-        setDashboardCookie(
-          mmiDashboardData,
-          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls,
-        );
-      });
+      try {
+        const mmiDashboardData = await this.handleMmiPortfolio();
+        const cookieSetUrls =
+          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls;
+        setDashboardCookie(mmiDashboardData, cookieSetUrls);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
   ///: END:ONLY_INCLUDE_IN
