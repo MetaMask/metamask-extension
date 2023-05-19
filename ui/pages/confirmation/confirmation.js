@@ -11,7 +11,9 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
@@ -224,17 +226,17 @@ export default function ConfirmationPage({
   const templatedValues = useMemo(() => {
     return pendingConfirmation
       ? getTemplateValues(
-          {
-            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-            snapName: isSnapDialog && snapName,
-            ///: END:ONLY_INCLUDE_IN
-            ...pendingConfirmation,
-          },
-          t,
-          dispatch,
-          history,
-          setInputState,
-        )
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          snapName: isSnapDialog && snapName,
+          ///: END:ONLY_INCLUDE_IN
+          ...pendingConfirmation,
+        },
+        t,
+        dispatch,
+        history,
+        setInputState,
+      )
       : {};
   }, [
     pendingConfirmation,
@@ -347,25 +349,25 @@ export default function ConfirmationPage({
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           !isSnapDialog &&
-            ///: END:ONLY_INCLUDE_IN
-            pendingConfirmation.origin === 'metamask' && (
-              <Box
-                alignItems={AlignItems.center}
-                paddingTop={2}
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
-                flexDirection={FLEX_DIRECTION.COLUMN}
-              >
-                <SiteOrigin
-                  chip
-                  siteOrigin={originMetadata.origin}
-                  title={originMetadata.origin}
-                  iconSrc={originMetadata.iconUrl}
-                  iconName={originMetadata.hostname}
-                />
-              </Box>
-            )
+          ///: END:ONLY_INCLUDE_IN
+          pendingConfirmation.origin === 'metamask' && (
+            <Box
+              alignItems={AlignItems.center}
+              paddingTop={2}
+              paddingRight={4}
+              paddingLeft={4}
+              paddingBottom={4}
+              flexDirection={FLEX_DIRECTION.COLUMN}
+            >
+              <SiteOrigin
+                chip
+                siteOrigin={originMetadata.origin}
+                title={originMetadata.origin}
+                iconSrc={originMetadata.iconUrl}
+                iconName={originMetadata.hostname}
+              />
+            </Box>
+          )
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
