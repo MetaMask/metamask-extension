@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import * as actions from '../../../store/actions';
-import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import isMobileView from '../../../helpers/utils/is-mobile-view';
+import * as actions from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
@@ -13,31 +13,31 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import ComplianceDetailsModal from '../../institutional/compliance-details';
+import ComplianceModal from '../../institutional/compliance-modal';
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
-import TransactionFailed from '../../institutional/transaction-failed-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
-import ComplianceModal from '../../institutional/compliance-modal';
-import ComplianceDetailsModal from '../../institutional/compliance-details';
+import TransactionFailed from '../../institutional/transaction-failed-modal';
 ///: END:ONLY_INCLUDE_IN
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
-import HoldToRevealModal from './hold-to-reveal-modal';
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
+import HoldToRevealModal from './hold-to-reveal-modal';
 import TransactionConfirmed from './transaction-confirmed';
 
-import FadeModal from './fade-modal';
-import RejectTransactions from './reject-transactions';
 import ConfirmDeleteNetwork from './confirm-delete-network';
-import EditApprovalPermission from './edit-approval-permission';
-import NewAccountModal from './new-account-modal';
-import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
+import CustomizeNonceModal from './customize-nonce';
+import EditApprovalPermission from './edit-approval-permission';
 import EthSignModal from './eth-sign-modal/eth-sign-modal';
+import FadeModal from './fade-modal';
+import NewAccountModal from './new-account-modal';
+import RejectTransactions from './reject-transactions';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
