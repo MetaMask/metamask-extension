@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
-import { isEmpty } from '../../../shared/lib/storage-helpers';
+import { isEmpty } from '../../../shared/modules/isEmpty';
 /**
  * A wrapper around the extension's storage local API
  */

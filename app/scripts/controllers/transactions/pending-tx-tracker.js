@@ -7,7 +7,7 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import { getTokenTransfersFromTxReceipt } from '../../../../shared/lib/transactions-controller-utils';
-import { isEmpty } from '../../../../shared/lib/storage-helpers';
+import { isEmpty } from '../../../../shared/modules/isEmpty';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
