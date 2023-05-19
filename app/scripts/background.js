@@ -7,7 +7,7 @@ import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
-import browser from 'webextension-polyfill';
+import {browser} from './browser';
 import { storeAsStream } from '@metamask/obs-store';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';

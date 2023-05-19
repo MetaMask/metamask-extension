@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import browser from 'webextension-polyfill';
+import {browser} from '../../../../app/scripts/browser';
 import { PairingKeyStatus } from '@metamask/desktop/dist/types';
 import { I18nContext } from '../../../contexts/i18n';
 import Button from '../../ui/button';

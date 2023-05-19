@@ -5,7 +5,7 @@ import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
-import browser from 'webextension-polyfill';
+import {browser} from './browser';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';

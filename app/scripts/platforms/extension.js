@@ -1,4 +1,4 @@
-import browser from 'webextension-polyfill';
+import {browser} from '../browser';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';

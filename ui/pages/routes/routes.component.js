@@ -5,7 +5,7 @@ import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import browserAPI from 'webextension-polyfill';
+import {browser} from '../../../app/scripts/browser';
 ///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
@@ -172,14 +172,14 @@ export default class Routes extends Component {
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   componentDidMount() {
     const { history } = this.props;
-    browserAPI.runtime.onMessage.addListener(
+    browser.runtime.onMessage.addListener(
       registerOnDesktopDisconnect(history),
     );
   }
 
   componentWillUnmount() {
     const { history } = this.props;
-    browserAPI.runtime.onMessage.removeListener(
+    browser.runtime.onMessage.removeListener(
       registerOnDesktopDisconnect(history),
     );
   }

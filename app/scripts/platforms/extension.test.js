@@ -1,4 +1,4 @@
-import browser from 'webextension-polyfill';
+import {browser} from '../browser';
 import ExtensionPlatform from './extension';
 
 const TEST_URL =

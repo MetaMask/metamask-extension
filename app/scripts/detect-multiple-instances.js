@@ -5,7 +5,7 @@
  * versions running simultaneously.
  */
 
-import browser from 'webextension-polyfill';
+import {browser} from './browser';
 import {
   PLATFORM_CHROME,
   PLATFORM_FIREFOX,

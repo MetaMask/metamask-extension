@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import browser from 'webextension-polyfill';
+import {browser} from '../../app/scripts/browser';
 import log from 'loglevel';
 import * as BrowserRuntimeUtil from './browser-runtime.utils';
 

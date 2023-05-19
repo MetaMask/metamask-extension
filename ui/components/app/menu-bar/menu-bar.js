@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from 'react';
-import browser from 'webextension-polyfill';
+import {browser} from '../../../../app/scripts/browser';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SelectedAccount from '../selected-account';

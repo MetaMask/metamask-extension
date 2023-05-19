@@ -1,4 +1,4 @@
-import browser from 'webextension-polyfill';
+import {browser} from '../browser';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';

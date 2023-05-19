@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import browser from 'webextension-polyfill';
+import {browser} from '../../app/scripts/browser';
 ///: END:ONLY_INCLUDE_IN
 import { memoize } from 'lodash';
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';

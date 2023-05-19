@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import browser from 'webextension-polyfill';
+import {browser} from '../browser';
 
 /**
  * Returns a middleware that intercepts `wallet_registerOnboarding` messages

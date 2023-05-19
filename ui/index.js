@@ -3,7 +3,7 @@ import log from 'loglevel';
 import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
-import browser from 'webextension-polyfill';
+import {browser} from '../app/scripts/browser';
 
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';

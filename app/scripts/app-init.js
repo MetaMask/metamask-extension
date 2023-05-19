@@ -9,6 +9,8 @@ const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
 
+const {chrome} = globalThis;
+
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
