@@ -192,10 +192,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const accountType = getAccountType(state, fromAddress);
-  ///: END:ONLY_INCLUDE_IN
-
   const fullTxData = getFullTxData(
     state,
     txId,
@@ -214,6 +210,7 @@ const mapStateToProps = (state, ownProps) => {
   const nativeCurrency = getNativeCurrency(state);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   let isNoteToTraderSupported = false;
   if (state.metamask.custodyAccountDetails?.[fromChecksumHexAddress]) {
