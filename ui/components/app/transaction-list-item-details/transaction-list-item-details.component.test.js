@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { waitFor } from '@testing-library/react';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -11,6 +12,13 @@ jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: () => jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
   addPollingTokenToAppState: jest.fn(),
+}));
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    getCustodianTransactionDeepLink: () =>
+      jest.fn().mockReturnValue({ url: 'https://url.com' }),
+  }),
 }));
 
 describe('TransactionListItemDetails Component', () => {
@@ -56,14 +64,13 @@ describe('TransactionListItemDetails Component', () => {
     recipientAddress: '0xAddress',
     senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tryReverseResolveAddress: jest.fn(),
-    getCustodianTransactionDeepLink: jest.fn(),
     transactionGroup,
     transactionStatus: () => <div></div>,
     blockExplorerLinkText,
     rpcPrefs,
   };
 
-  it('should render title with title prop', () => {
+  it('should render title with title prop', async () => {
     const mockStore = configureMockStore([thunk])(mockState);
 
     const { queryByText } = renderWithProvider(
@@ -71,7 +78,9 @@ describe('TransactionListItemDetails Component', () => {
       mockStore,
     );
 
-    expect(queryByText(props.title)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(queryByText(props.title)).toBeInTheDocument();
+    });
   });
 
   describe('Retry button', () => {
