@@ -221,7 +221,7 @@ export const Color = (args) => {
   );
 };
 
-export const FontWeight = (args) => (
+export const FontWeightStory = (args) => (
   <>
     <BannerAlert
       severity={SEVERITIES.WARNING}
@@ -244,8 +244,9 @@ export const FontWeight = (args) => (
     ))}
   </>
 );
+FontWeightStory.storyName = 'FontWeight';
 
-export const FontStyle = (args) => (
+export const FontStyleStory = (args) => (
   <>
     <BannerAlert
       severity={SEVERITIES.WARNING}
@@ -268,6 +269,8 @@ export const FontStyle = (args) => (
     ))}
   </>
 );
+
+FontStyleStory.storyName = 'FontStyle';
 
 export const Align = (args) => (
   <>
