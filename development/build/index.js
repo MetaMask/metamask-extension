@@ -127,6 +127,8 @@ async function defineAndRunBuildTasks() {
         'Promise',
         'JSON',
         'Date',
+        'Proxy',
+        'ret_nodes',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
