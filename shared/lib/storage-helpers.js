@@ -21,13 +21,3 @@ export async function setStorageItem(key, value) {
     console.warn(err);
   }
 }
-
-/**
- * Returns whether or not the given object contains no keys
- *
- * @param {object} obj - The object to check
- * @returns {boolean}
- */
-export function isEmpty(obj) {
-  return Object.keys(obj).length === 0;
-}

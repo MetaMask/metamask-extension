@@ -71,7 +71,7 @@ export function getTokenTransfersFromTxReceipt(txReceipt) {
       return {
         to: transferToAddress,
         from: transferFromAddress,
-        contractAddress: txReceiptLog,
+        contractAddress: txReceiptLog.address,
       };
     })
     .filter((transfer) => Boolean(transfer));
