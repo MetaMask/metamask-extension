@@ -12,13 +12,14 @@ import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
-  transactionFeeSelector,
 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -159,10 +160,6 @@ export function useGasFeeInputs(
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
 
-  const fee = useSelector((state) =>
-    transactionFeeSelector(state, transaction),
-  );
-
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
@@ -175,7 +172,18 @@ export function useGasFeeInputs(
         setInternalEstimateToUse(transaction?.userFeeLevel);
       }
 
-      if (fee.ethTransactionTotal > TOO_HIGH_GAS_LIMIT) {
+      const maximumGas = new Numeric(transaction?.txParams?.gas ?? '0x0', 16)
+        .times(new Numeric(transaction?.txParams?.maxFeePerGas ?? '0x0', 16))
+        .toPrefixedHexString();
+
+      console.log('maximumGas: ', maximumGas);
+      const fee = new Numeric(maximumGas, 16, EtherDenomination.WEI)
+        .toDenomination(EtherDenomination.ETH)
+        .toBase(10)
+        .toString();
+
+      console.log('fee: ', fee);
+      if (Number(fee) > Number(TOO_HIGH_GAS_LIMIT)) {
         setEstimateUsed(PriorityLevels.dappSuggestedHigh);
       }
 

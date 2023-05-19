@@ -80,11 +80,14 @@ describe('GasDetailsItem', () => {
       contextProps: {
         gasFeeEstimates: {
           high: {
-            suggestedMaxPriorityFeePerGas: '2',
+            suggestedMaxPriorityFeePerGas: '1',
           },
         },
         transaction: {
-          txParams: {},
+          txParams: {
+            gas: '0x52081',
+            maxFeePerGas: '0x38D7EA4C68000',
+          },
           userFeeLevel: 'medium',
           dappSuggestedGasFees: {
             maxPriorityFeePerGas: '0x38D7EA4C68000',
