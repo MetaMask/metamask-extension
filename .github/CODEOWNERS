@@ -11,7 +11,7 @@
 **/snaps/**                          @MetaMask/snaps-devs
 **/flask/**                          @MetaMask/snaps-devs
 development/                         @MetaMask/extension-devs @kumavis
-lavamoat/                            @MetaMask/supply-chain
+lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
 
 # The .circleci/ folder instructs Circle CI on the process by which it
 # should test, build and publish releases of our application. Due to the

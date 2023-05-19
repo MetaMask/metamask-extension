@@ -79,7 +79,10 @@ export const AccountDetails = ({ address }) => {
           <PopoverHeader
             startAccessory={
               <ButtonIcon
-                onClick={() => setAttemptingExport(false)}
+                onClick={() => {
+                  dispatch(hideWarning());
+                  setAttemptingExport(false);
+                }}
                 iconName={IconName.ArrowLeft}
                 size={Size.SM}
               />

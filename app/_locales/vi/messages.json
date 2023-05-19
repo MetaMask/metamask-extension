@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Tùy chọn tài sản"
   },
-  "assets": {
-    "message": "Tài sản"
-  },
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "Lịch sử"
   },
-  "holdToReveal": {
-    "message": "Giữ để hiển thị Cụm từ khôi phục bí mật"
-  },
   "holdToRevealContent1": {
     "message": "Cụm từ khôi phục bí mật của bạn cung cấp $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "nhưng những kẻ lừa đảo qua mạng thì có.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Đảm bảo an toàn cho Cụm từ khôi phục bí mật của bạn"
   },
   "ignoreAll": {
     "message": "Bỏ qua tất cả"
