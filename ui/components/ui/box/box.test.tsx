@@ -11,6 +11,7 @@ import {
   AlignItems,
   JustifyContent,
   TextAlign,
+  TEXT_ALIGN,
   BlockSize,
   BLOCK_SIZES,
   BorderRadius,
@@ -917,14 +918,30 @@ describe('Box', () => {
           <Box textAlign={TextAlign.Right}>Box right</Box>
           <Box textAlign={TextAlign.Justify}>Box justify</Box>
           <Box textAlign={TextAlign.End}>Box end</Box>
+
+          <Box textAlign={TEXT_ALIGN.LEFT}>DEPRECATED Box left</Box>
+          <Box textAlign={TEXT_ALIGN.CENTER}>DEPRECATED Box center</Box>
+          <Box textAlign={TEXT_ALIGN.RIGHT}>DEPRECATED Box right</Box>
+          <Box textAlign={TEXT_ALIGN.JUSTIFY}>DEPRECATED Box justify</Box>
+          <Box textAlign={TEXT_ALIGN.END}>DEPRECATED Box end</Box>
         </>,
       );
 
-      expect(getByText('Box left')).toHaveClass('box--text-align-left');
-      expect(getByText('Box center')).toHaveClass('box--text-align-center');
-      expect(getByText('Box right')).toHaveClass('box--text-align-right');
-      expect(getByText('Box justify')).toHaveClass('box--text-align-justify');
-      expect(getByText('Box end')).toHaveClass('box--text-align-end');
+      expect(getByText('DEPRECATED Box left')).toHaveClass(
+        'box--text-align-left',
+      );
+      expect(getByText('DEPRECATED Box center')).toHaveClass(
+        'box--text-align-center',
+      );
+      expect(getByText('DEPRECATED Box right')).toHaveClass(
+        'box--text-align-right',
+      );
+      expect(getByText('DEPRECATED Box justify')).toHaveClass(
+        'box--text-align-justify',
+      );
+      expect(getByText('DEPRECATED Box end')).toHaveClass(
+        'box--text-align-end',
+      );
 
       expect(getByText('Box left')).toHaveClass('box--text-align-left');
       expect(getByText('Box center')).toHaveClass('box--text-align-center');
@@ -934,16 +951,28 @@ describe('Box', () => {
     });
     it('should render the Box with the responsive textAlign classes', () => {
       const { getByText } = render(
-        <Box
-          textAlign={[
-            TextAlign.Left,
-            TextAlign.Center,
-            TextAlign.Right,
-            TextAlign.Justify,
-          ]}
-        >
-          Box content
-        </Box>,
+        <>
+          <Box
+            textAlign={[
+              TextAlign.Left,
+              TextAlign.Center,
+              TextAlign.Right,
+              TextAlign.Justify,
+            ]}
+          >
+            Box content
+          </Box>
+          <Box
+            textAlign={[
+              TEXT_ALIGN.LEFT,
+              TEXT_ALIGN.CENTER,
+              TEXT_ALIGN.RIGHT,
+              TEXT_ALIGN.JUSTIFY,
+            ]}
+          >
+            DEPRECATED Box content
+          </Box>
+        </>,
       );
 
       expect(getByText('Box content')).toHaveClass('box--text-align-left');

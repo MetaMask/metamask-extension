@@ -33,7 +33,7 @@ export type FlexDirectionArray = [
  * @deprecated BoxFlexDirection is deprecated. Use FlexDirection instead.
  */
 type BoxFlexDirection =
-  | (typeof FLEX_DIRECTION)[keyof typeof FLEX_DIRECTION]
+  | typeof FLEX_DIRECTION[keyof typeof FLEX_DIRECTION]
   | null;
 
 /**
@@ -51,7 +51,7 @@ export type FlexWrapArray = [FlexWrap, FlexWrap?, FlexWrap?, FlexWrap?];
 /**
  * @deprecated BoxFlexWrap is deprecated. Use FlexWrap instead.
  */
-type BoxFlexWrap = (typeof FLEX_WRAP)[keyof typeof FLEX_WRAP] | null;
+type BoxFlexWrap = typeof FLEX_WRAP[keyof typeof FLEX_WRAP] | null;
 
 /**
  * @deprecated BoxFlexWrapArray is deprecated. Use FlexWrapArray instead.
@@ -63,7 +63,7 @@ export type TextAlignArray = [TextAlign, TextAlign?, TextAlign?, TextAlign?];
 /**
  * @deprecated BoxTextAlign is deprecated. Use TextAlign instead.
  */
-type BoxTextAlign = (typeof TextAlign)[keyof typeof TextAlign] | null;
+type BoxTextAlign = typeof TextAlign[keyof typeof TextAlign] | null;
 /**
  * @deprecated BoxTextAlignArray is deprecated. Use TextAlignArray instead.
  */
@@ -79,7 +79,7 @@ export type DisplayArray = [Display, Display?, Display?, Display?];
 /**
  * @deprecated BoxDisplay is deprecated. Use Display instead.
  */
-type BoxDisplay = (typeof DISPLAY)[keyof typeof DISPLAY] | null;
+type BoxDisplay = typeof DISPLAY[keyof typeof DISPLAY] | null;
 /**
  * @deprecated BoxDisplayArray is deprecated. Use DisplayArray instead.
  */
@@ -90,7 +90,7 @@ export type BlockSizeArray = [BlockSize, BlockSize?, BlockSize?, BlockSize?];
 /**
  * @deprecated BoxWidth is deprecated. Use BlockSize instead.
  */
-export type BoxWidth = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
+export type BoxWidth = typeof BLOCK_SIZES[keyof typeof BLOCK_SIZES] | null;
 /**
  * @deprecated BoxWidthArray is deprecated. Use BlockSizeArray instead.
  */
@@ -99,7 +99,7 @@ export type BoxWidthArray = [BoxWidth, BoxWidth?, BoxWidth?, BoxWidth?];
 /**
  * @deprecated BoxHeight is deprecated. Use BlockSize instead.
  */
-type BoxHeight = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
+type BoxHeight = typeof BLOCK_SIZES[keyof typeof BLOCK_SIZES] | null;
 /**
  * @deprecated BoxHeightArray is deprecated. Use BlockSizeArray instead.
  */
@@ -342,7 +342,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    * Use TextAlign const from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  textAlign?: BoxTextAlign | BoxTextAlignArray;
+  textAlign?: BoxTextAlign | BoxTextAlignArray | TextAlign;
   /**
    * The display of the Box component.
    * Use DISPLAY const from '../../../helpers/constants/design-system';
