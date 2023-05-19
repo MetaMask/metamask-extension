@@ -926,21 +926,11 @@ describe('Box', () => {
       expect(getByText('Box justify')).toHaveClass('box--text-align-justify');
       expect(getByText('Box end')).toHaveClass('box--text-align-end');
 
-      expect(getByText('Box left')).toHaveClass(
-        'box--text-align-left',
-      );
-      expect(getByText('Box center')).toHaveClass(
-        'box--text-align-center',
-      );
-      expect(getByText('Box right')).toHaveClass(
-        'box--text-align-right',
-      );
-      expect(getByText('Box justify')).toHaveClass(
-        'box--text-align-justify',
-      );
-      expect(getByText('Box end')).toHaveClass(
-        'box--text-align-end',
-      );
+      expect(getByText('Box left')).toHaveClass('box--text-align-left');
+      expect(getByText('Box center')).toHaveClass('box--text-align-center');
+      expect(getByText('Box right')).toHaveClass('box--text-align-right');
+      expect(getByText('Box justify')).toHaveClass('box--text-align-justify');
+      expect(getByText('Box end')).toHaveClass('box--text-align-end');
     });
     it('should render the Box with the responsive textAlign classes', () => {
       const { getByText } = render(
