@@ -1,5 +1,3 @@
-import { strict as assert } from 'assert';
-import sinon from 'sinon';
 import BN from 'bn.js';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -7,38 +5,37 @@ import PendingTransactionTracker from './pending-tx-tracker';
 describe('PendingTransactionTracker', function () {
   describe('#resubmitPendingTxs', function () {
     it('should return early if there are no pending transactions', async function () {
-      const getPendingTransactions = sinon.stub().returns([]);
+      const getPendingTransactions = jest.fn().mockReturnValue([]);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
         getPendingTransactions,
-        getCompletedTransactions: sinon.stub().returns([]),
-        approveTransaction: sinon.spy(),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        approveTransaction: jest.fn(),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
-      const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').rejects();
-      const warningListener = sinon.spy();
+      const resubmitTx = jest
+        .spyOn(pendingTxTracker, '_resubmitTx')
+        .mockRejectedValueOnce();
+      const warningListener = jest.fn();
 
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      assert.ok(
-        getPendingTransactions.calledOnceWithExactly(),
-        'should call getPendingTransaction',
-      );
-      assert.ok(resubmitTx.notCalled, 'should NOT call _resubmitTx');
-      assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'");
+      expect(getPendingTransactions).toBeCalledTimes(1);
+      expect(resubmitTx).toBeCalledTimes(0);
+      expect(warningListener).toBeCalledTimes(0);
     });
 
     it('should resubmit each pending transaction', async function () {
-      const getPendingTransactions = sinon.stub().returns([
+      const getPendingTransactions = jest.fn().mockReturnValue([
         {
           id: 1,
         },
@@ -48,105 +45,98 @@ describe('PendingTransactionTracker', function () {
       ]);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
         getPendingTransactions,
-        getCompletedTransactions: sinon.stub().returns([]),
-        approveTransaction: sinon.spy(),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        approveTransaction: jest.fn(),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
-      const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').resolves();
-      const warningListener = sinon.spy();
+      const resubmitTx = jest
+        .spyOn(pendingTxTracker, '_resubmitTx')
+        .mockResolvedValueOnce();
+      const warningListener = jest.fn();
 
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      assert.ok(
-        getPendingTransactions.calledOnceWithExactly(),
-        'should call getPendingTransaction',
-      );
-      assert.ok(resubmitTx.calledTwice, 'should call _resubmitTx');
-      assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'");
+      expect(getPendingTransactions).toBeCalledTimes(1);
+      expect(resubmitTx).toBeCalledTimes(2);
+      expect(warningListener).toBeCalledTimes(0);
     });
 
     it("should NOT emit 'tx:warning' for known failed resubmission", async function () {
-      const getPendingTransactions = sinon.stub().returns([
+      const getPendingTransactions = jest.fn().mockReturnValue([
         {
           id: 1,
         },
       ]);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
         getPendingTransactions,
-        getCompletedTransactions: sinon.stub().returns([]),
-        approveTransaction: sinon.spy(),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        approveTransaction: jest.fn(),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
-      const resubmitTx = sinon
-        .stub(pendingTxTracker, '_resubmitTx')
-        .rejects({ message: 'known transaction' });
-      const warningListener = sinon.spy();
+      const resubmitTx = jest
+        .spyOn(pendingTxTracker, '_resubmitTx')
+        .mockRejectedValueOnce({ message: 'known transaction' });
+      const warningListener = jest.fn();
 
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      assert.ok(
-        getPendingTransactions.calledOnceWithExactly(),
-        'should call getPendingTransaction',
-      );
-      assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx');
-      assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'");
+      expect(getPendingTransactions).toBeCalledTimes(1);
+      expect(resubmitTx).toBeCalledTimes(1);
+      expect(warningListener).toBeCalledTimes(0);
     });
 
     it("should emit 'tx:warning' for unknown failed resubmission", async function () {
-      const getPendingTransactions = sinon.stub().returns([
+      const getPendingTransactions = jest.fn().mockReturnValue([
         {
           id: 1,
         },
       ]);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
         getPendingTransactions,
-        getCompletedTransactions: sinon.stub().returns([]),
-        approveTransaction: sinon.spy(),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        approveTransaction: jest.fn(),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
-      const resubmitTx = sinon
-        .stub(pendingTxTracker, '_resubmitTx')
-        .rejects({ message: 'who dis' });
-      const warningListener = sinon.spy();
+      const resubmitTx = jest
+        .spyOn(pendingTxTracker, '_resubmitTx')
+        .mockRejectedValueOnce({ message: 'who dis' });
+      const warningListener = jest.fn();
 
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      assert.ok(
-        getPendingTransactions.calledOnceWithExactly(),
-        'should call getPendingTransaction',
-      );
-      assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx');
-      assert.ok(warningListener.calledOnce, "should emit 'tx:warning'");
+      expect(getPendingTransactions).toBeCalledTimes(1);
+      expect(resubmitTx).toBeCalledTimes(1);
+      expect(warningListener).toBeCalledTimes(1);
     });
   });
 
@@ -168,7 +158,7 @@ describe('PendingTransactionTracker', function () {
       const txList = [1, 2, 3].map((id) => ({ ...txMeta, id }));
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
           getGlobalLock: async () => {
@@ -183,26 +173,20 @@ describe('PendingTransactionTracker', function () {
         confirmTransaction: () => undefined,
       });
 
-      const checkPendingTxStub = sinon
-        .stub(pendingTxTracker, '_checkPendingTx')
-        .resolves();
+      const checkPendingTxStub = jest
+        .spyOn(pendingTxTracker, '_checkPendingTx')
+        .mockResolvedValue();
       await pendingTxTracker.updatePendingTxs();
 
-      assert.ok(checkPendingTxStub.calledThrice);
-      assert.ok(
-        checkPendingTxStub.firstCall.calledWithExactly(
-          sinon.match.has('id', 1),
-        ),
+      expect(checkPendingTxStub).toBeCalledTimes(3);
+      expect(checkPendingTxStub).toBeCalledWith(
+        expect.objectContaining({ id: 1 }),
       );
-      assert.ok(
-        checkPendingTxStub.secondCall.calledWithExactly(
-          sinon.match.has('id', 2),
-        ),
+      expect(checkPendingTxStub).toBeCalledWith(
+        expect.objectContaining({ id: 2 }),
       );
-      assert.ok(
-        checkPendingTxStub.thirdCall.calledWithExactly(
-          sinon.match.has('id', 3),
-        ),
+      expect(checkPendingTxStub).toBeCalledWith(
+        expect.objectContaining({ id: 3 }),
       );
     });
   });
@@ -222,34 +206,28 @@ describe('PendingTransactionTracker', function () {
         rawTx:
           '0xf86c808504a817c80086a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       };
-      const approveTransaction = sinon.spy();
-      const publishTransaction = sinon.spy();
+      const approveTransaction = jest.fn();
+      const publishTransaction = jest.fn();
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
         approveTransaction,
         publishTransaction,
-        confirmTransaction: sinon.spy(),
+        confirmTransaction: jest.fn(),
       });
 
       await pendingTxTracker._resubmitTx(txMeta);
 
-      assert.ok(
-        publishTransaction.calledOnceWithExactly(txMeta.rawTx),
-        'should call publish transaction with the rawTx',
-      );
-      assert.ok(
-        approveTransaction.notCalled,
-        'should NOT try to approve transaction',
-      );
+      expect(publishTransaction).toBeCalledWith(txMeta.rawTx);
+      expect(approveTransaction).toBeCalledTimes(0);
     });
 
     it('should publish the given transaction if more than 2**retryCount blocks have passed', async function () {
@@ -268,34 +246,28 @@ describe('PendingTransactionTracker', function () {
         retryCount: 4,
         firstRetryBlockNumber: '0x1',
       };
-      const approveTransaction = sinon.spy();
-      const publishTransaction = sinon.spy();
+      const approveTransaction = jest.fn();
+      const publishTransaction = jest.fn();
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
         publishTransaction,
         approveTransaction,
-        confirmTransaction: sinon.spy(),
+        confirmTransaction: jest.fn(),
       });
 
       await pendingTxTracker._resubmitTx(txMeta, '0x11' /* 16 */);
 
-      assert.ok(
-        publishTransaction.calledOnceWithExactly(txMeta.rawTx),
-        'should try to publish transaction',
-      );
-      assert.ok(
-        approveTransaction.notCalled,
-        'should NOT try to approve transaction',
-      );
+      expect(publishTransaction).toBeCalledWith(txMeta.rawTx);
+      expect(approveTransaction).toBeCalledTimes(0);
     });
 
     it('should NOT publish the given transaction if fewer than 2**retryCount blocks have passed', async function () {
@@ -314,65 +286,53 @@ describe('PendingTransactionTracker', function () {
         retryCount: 4,
         firstRetryBlockNumber: '0x1',
       };
-      const approveTransaction = sinon.spy();
-      const publishTransaction = sinon.spy();
+      const approveTransaction = jest.fn();
+      const publishTransaction = jest.fn();
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
         publishTransaction,
         approveTransaction,
-        confirmTransaction: sinon.spy(),
+        confirmTransaction: jest.fn(),
       });
 
       await pendingTxTracker._resubmitTx(txMeta, '0x5');
 
-      assert.ok(
-        publishTransaction.notCalled,
-        'should NOT try to publish transaction',
-      );
-      assert.ok(
-        approveTransaction.notCalled,
-        'should NOT try to approve transaction',
-      );
+      expect(publishTransaction).toBeCalledTimes(0);
+      expect(approveTransaction).toBeCalledTimes(0);
     });
 
     it('should call approveTransaction if the tx is not yet signed', async function () {
-      const approveTransaction = sinon.spy();
-      const publishTransaction = sinon.spy();
+      const approveTransaction = jest.fn();
+      const publishTransaction = jest.fn();
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
         approveTransaction,
         publishTransaction,
-        confirmTransaction: sinon.spy(),
+        confirmTransaction: jest.fn(),
       });
 
       await pendingTxTracker._resubmitTx({ id: 40 });
 
-      assert.ok(
-        approveTransaction.calledOnceWithExactly(40),
-        'should call approveTransaction with the tx ID',
-      );
-      assert.ok(
-        publishTransaction.notCalled,
-        'should NOT try to publish transaction',
-      );
+      expect(approveTransaction).toBeCalledWith(40);
+      expect(publishTransaction).toBeCalledTimes(0);
     });
 
     it('should return undefined if txMeta has custodyId property', async function () {
@@ -390,26 +350,26 @@ describe('PendingTransactionTracker', function () {
         rawTx:
           '0xf86c808504a817c80086a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       };
-      const approveTransaction = sinon.spy();
-      const publishTransaction = sinon.spy();
+      const approveTransaction = jest.fn();
+      const publishTransaction = jest.fn();
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: jest.fn(),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
         approveTransaction,
         publishTransaction,
-        confirmTransaction: sinon.spy(),
+        confirmTransaction: jest.fn(),
       });
 
       const result = await pendingTxTracker._resubmitTx(txMeta);
-      assert.equal(result, undefined);
+      expect(result).toBeUndefined();
     });
   });
 
@@ -418,23 +378,23 @@ describe('PendingTransactionTracker', function () {
       const nonceBN = new BN(2);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
-          getTransactionCount: sinon.stub().resolves(nonceBN),
+          getTransactionReceipt: jest.fn(),
+          getTransactionCount: jest.fn().mockResolvedValue(nonceBN),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
 
       pendingTxTracker.DROPPED_BUFFER_COUNT = 0;
 
-      assert.ok(
+      expect(
         await pendingTxTracker._checkIfTxWasDropped({
           id: 1,
           hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
@@ -453,18 +413,18 @@ describe('PendingTransactionTracker', function () {
       const nonceBN = new BN(1);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
-          getTransactionCount: sinon.stub().resolves(nonceBN),
+          getTransactionReceipt: jest.fn(),
+          getTransactionCount: jest.fn().mockResolvedValue(nonceBN),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
 
       const dropped = await pendingTxTracker._checkIfTxWasDropped({
@@ -480,7 +440,7 @@ describe('PendingTransactionTracker', function () {
           '0xf86c808504a89e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       });
 
-      assert.ok(!dropped, 'should be false');
+      expect(dropped).toBeFalsy();
     });
   });
 
@@ -512,18 +472,20 @@ describe('PendingTransactionTracker', function () {
             '0xf86c808507a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
       ];
-      const getCompletedTransactions = sinon.stub().returns(confirmedTxList);
+      const getCompletedTransactions = jest
+        .fn()
+        .mockReturnValue(confirmedTxList);
       const pendingTxTracker = new PendingTransactionTracker({
-        query: sinon.spy(),
+        query: jest.fn(),
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
         getCompletedTransactions,
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
 
       const taken = await pendingTxTracker._checkIfNonceIsTaken({
@@ -534,12 +496,10 @@ describe('PendingTransactionTracker', function () {
         },
       });
 
-      assert.ok(
-        getCompletedTransactions.calledOnceWithExactly(
-          '0x1678a085c290ebd122dc42cba69373b5953b831d',
-        ),
+      expect(getCompletedTransactions).toBeCalledWith(
+        '0x1678a085c290ebd122dc42cba69373b5953b831d',
       );
-      assert.ok(!taken);
+      expect(!taken);
     });
 
     it('should return true if the nonce is taken', async function () {
@@ -569,18 +529,20 @@ describe('PendingTransactionTracker', function () {
             '0xf86c808504a817c800827b0d940c62bb760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
       ];
-      const getCompletedTransactions = sinon.stub().returns(confirmedTxList);
+      const getCompletedTransactions = jest
+        .fn()
+        .mockReturnValue(confirmedTxList);
       const pendingTxTracker = new PendingTransactionTracker({
-        query: sinon.spy(),
+        query: jest.fn(),
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
         getCompletedTransactions,
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
       });
 
       const taken = await pendingTxTracker._checkIfNonceIsTaken({
@@ -591,68 +553,14 @@ describe('PendingTransactionTracker', function () {
         },
       });
 
-      assert.ok(
-        getCompletedTransactions.calledOnceWithExactly(
-          '0x1678a085c290ebd122dc42cba69373b5953b831d',
-        ),
+      expect(getCompletedTransactions).toBeCalledWith(
+        '0x1678a085c290ebd122dc42cba69373b5953b831d',
       );
-      assert.ok(taken);
+      expect(taken).toBeTruthy();
     });
   });
 
   describe('#_checkPendingTx', function () {
-    it("should emit 'tx:warning' if getTransactionReceipt rejects", async function () {
-      const txMeta = {
-        id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TransactionStatus.submitted,
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x1',
-          value: '0xfffff',
-        },
-        history: [{}],
-        rawTx: '0xf86c808504a817c80082471d',
-        custodyId: 'testid',
-      };
-      const nonceBN = new BN(2);
-      const pendingTxTracker = new PendingTransactionTracker({
-        query: {
-          getTransactionReceipt: sinon.stub().rejects(),
-          getTransactionCount: sinon.stub().resolves(nonceBN),
-        },
-        nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
-          }),
-        },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
-      });
-      const listeners = {
-        confirmed: sinon.spy(),
-        dropped: sinon.spy(),
-        failed: sinon.spy(),
-        warning: sinon.spy(),
-      };
-
-      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
-      pendingTxTracker.once('tx:dropped', listeners.dropped);
-      pendingTxTracker.once('tx:failed', listeners.failed);
-      pendingTxTracker.once('tx:warning', listeners.warning);
-      await pendingTxTracker._checkPendingTx(txMeta);
-
-      assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped");
-      assert.ok(
-        listeners.confirmed.notCalled,
-        "should not emit 'tx:confirmed'",
-      );
-      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
-      assert.ok(listeners.warning.calledOnce, "should emit 'tx:warning'");
-    });
-
     it("should emit 'tx:confirmed' if getTransactionReceipt succeeds", async function () {
       const txMeta = {
         id: 1,
@@ -688,31 +596,32 @@ describe('PendingTransactionTracker', function () {
       const nonceBN = new BN(2);
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub().resolves(resolvedTxReceipt),
-          getTransactionCount: sinon.stub().resolves(nonceBN),
-          getBlockByHash: sinon.stub().resolves({
+          getTransactionReceipt: jest.fn().mockResolvedValue(resolvedTxReceipt),
+          getTransactionCount: jest.fn().mockResolvedValue(nonceBN),
+          getBlockByHash: jest.fn().mockResolvedValue({
             timestamp: '0x64605d3e',
             baseFeePerGas: '0x8',
           }),
         },
         nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
+          getGlobalLock: jest.fn().mockResolvedValue({
+            releaseLock: jest.fn(),
           }),
         },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
-        addTokens: sinon.spy(),
-        getTokenStandardAndDetails: sinon.spy(),
-        trackMetaMetricsEvent: sinon.spy(),
+        getPendingTransactions: jest.fn().mockReturnValue([]),
+        getCompletedTransactions: jest.fn().mockReturnValue([]),
+        publishTransaction: jest.fn(),
+        confirmTransaction: jest.fn(),
+        addTokens: jest.fn(),
+        getTokenStandardAndDetails: jest.fn(),
+        trackMetaMetricsEvent: jest.fn(),
       });
+
       const listeners = {
-        confirmed: sinon.spy(),
-        dropped: sinon.spy(),
-        failed: sinon.spy(),
-        warning: sinon.spy(),
+        confirmed: jest.fn(),
+        dropped: jest.fn(),
+        failed: jest.fn(),
+        warning: jest.fn(),
       };
 
       pendingTxTracker.once('tx:confirmed', listeners.confirmed);
@@ -721,209 +630,10 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.once('tx:warning', listeners.warning);
       await pendingTxTracker._checkPendingTx(txMeta);
 
-      assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped");
-      assert.ok(listeners.confirmed.calledOnce, "should emit 'tx:confirmed'");
-      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
-      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
-    });
-
-    it('should NOT emit anything if the tx is already not submitted', async function () {
-      const pendingTxTracker = new PendingTransactionTracker({
-        query: sinon.spy(),
-        nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
-          }),
-        },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
-      });
-      const listeners = {
-        confirmed: sinon.spy(),
-        dropped: sinon.spy(),
-        failed: sinon.spy(),
-        warning: sinon.spy(),
-      };
-
-      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
-      pendingTxTracker.once('tx:dropped', listeners.dropped);
-      pendingTxTracker.once('tx:failed', listeners.failed);
-      pendingTxTracker.once('tx:warning', listeners.warning);
-      await pendingTxTracker._checkPendingTx({
-        status: TransactionStatus.confirmed,
-        history: [{}],
-        txParams: { nonce: '0x1' },
-        id: '456',
-        value: '0x01',
-        hash: '0xbad',
-      });
-
-      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
-      assert.ok(
-        listeners.confirmed.notCalled,
-        "should not emit 'tx:confirmed'",
-      );
-      assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped'");
-      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
-    });
-
-    it("should emit 'tx:failed' if the txMeta does NOT have a hash", async function () {
-      const pendingTxTracker = new PendingTransactionTracker({
-        query: sinon.spy(),
-        nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
-          }),
-        },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
-      });
-      const listeners = {
-        confirmed: sinon.spy(),
-        dropped: sinon.spy(),
-        failed: sinon.spy(),
-        warning: sinon.spy(),
-      };
-
-      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
-      pendingTxTracker.once('tx:dropped', listeners.dropped);
-      pendingTxTracker.once('tx:failed', listeners.failed);
-      pendingTxTracker.once('tx:warning', listeners.warning);
-      await pendingTxTracker._checkPendingTx({
-        id: '2',
-        history: [{}],
-        status: TransactionStatus.submitted,
-        txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d' },
-      });
-
-      assert.ok(
-        listeners.failed.calledOnceWithExactly(
-          '2',
-          sinon.match.instanceOf(Error),
-        ),
-        "should pass txId to 'tx:failed' listener",
-      );
-      assert.ok(
-        listeners.confirmed.notCalled,
-        "should not emit 'tx:confirmed'",
-      );
-      assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped'");
-      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
-    });
-
-    it("should emit 'tx:dropped' if another tx with the same nonce succeeds", async function () {
-      const txs = [
-        {
-          status: TransactionStatus.confirmed,
-          history: [{}],
-          txParams: { nonce: '0x1' },
-          id: '456',
-          value: '0x01',
-          hash: '0xbad',
-        },
-        {
-          status: TransactionStatus.submitted,
-          history: [{}],
-          txParams: { nonce: '0x1' },
-          id: '123',
-          value: '0x02',
-          hash: '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
-          custodyId: 'testid',
-        },
-      ];
-      const pendingTxTracker = new PendingTransactionTracker({
-        query: {
-          getTransactionReceipt: sinon.stub().resolves(null),
-        },
-        nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
-          }),
-        },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns(txs),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
-      });
-      const listeners = {
-        confirmed: sinon.spy(),
-        dropped: sinon.spy(),
-        failed: sinon.spy(),
-        warning: sinon.spy(),
-      };
-
-      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
-      pendingTxTracker.once('tx:dropped', listeners.dropped);
-      pendingTxTracker.once('tx:failed', listeners.failed);
-      pendingTxTracker.once('tx:warning', listeners.warning);
-      await pendingTxTracker._checkPendingTx(txs[1]);
-
-      assert.ok(listeners.dropped.calledOnceWithExactly('123'));
-      assert.ok(
-        listeners.confirmed.notCalled,
-        "should not emit 'tx:confirmed'",
-      );
-      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
-      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
-    });
-
-    it("should emit 'tx:dropped' with the txMetas id only after the fourth call", async function () {
-      const nonceBN = new BN(2);
-      const txMeta = {
-        id: 1,
-        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TransactionStatus.submitted,
-        txParams: {
-          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          nonce: '0x1',
-          value: '0xfffff',
-        },
-        history: [{}],
-        rawTx: '0xf86c808504a817c80082471d',
-        custodyId: 'testid',
-      };
-      const pendingTxTracker = new PendingTransactionTracker({
-        query: {
-          getTransactionReceipt: sinon.stub().resolves(null),
-          getTransactionCount: sinon.stub().resolves(nonceBN),
-        },
-        nonceTracker: {
-          getGlobalLock: sinon.stub().resolves({
-            releaseLock: sinon.spy(),
-          }),
-        },
-        getPendingTransactions: sinon.stub().returns([]),
-        getCompletedTransactions: sinon.stub().returns([]),
-        publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
-      });
-      const listeners = {
-        confirmed: sinon.spy(),
-        dropped: sinon.spy(),
-        failed: sinon.spy(),
-        warning: sinon.spy(),
-      };
-
-      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
-      pendingTxTracker.once('tx:dropped', listeners.dropped);
-      pendingTxTracker.once('tx:failed', listeners.failed);
-      pendingTxTracker.once('tx:warning', listeners.warning);
-      await pendingTxTracker._checkPendingTx(txMeta);
-      await pendingTxTracker._checkPendingTx(txMeta);
-      await pendingTxTracker._checkPendingTx(txMeta);
-      await pendingTxTracker._checkPendingTx(txMeta);
-
-      assert.ok(listeners.dropped.calledOnceWithExactly(1));
-      assert.ok(
-        listeners.confirmed.notCalled,
-        "should not emit 'tx:confirmed'",
-      );
-      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
-      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
+      expect(listeners.dropped).toBeCalledTimes(0);
+      expect(listeners.confirmed).toBeCalledTimes(1);
+      expect(listeners.failed).toBeCalledTimes(0);
+      expect(listeners.warning).toBeCalledTimes(0);
     });
   });
 });
