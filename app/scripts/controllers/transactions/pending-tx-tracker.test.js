@@ -29,9 +29,9 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      expect(getPendingTransactions).toBeCalledTimes(1);
-      expect(resubmitTx).toBeCalledTimes(0);
-      expect(warningListener).toBeCalledTimes(0);
+      expect(getPendingTransactions).toHaveBeenCalledTimes(1);
+      expect(resubmitTx).toHaveBeenCalledTimes(0);
+      expect(warningListener).toHaveBeenCalledTimes(0);
     });
 
     it('should resubmit each pending transaction', async function () {
@@ -66,9 +66,9 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      expect(getPendingTransactions).toBeCalledTimes(1);
-      expect(resubmitTx).toBeCalledTimes(2);
-      expect(warningListener).toBeCalledTimes(0);
+      expect(getPendingTransactions).toHaveBeenCalledTimes(1);
+      expect(resubmitTx).toHaveBeenCalledTimes(2);
+      expect(warningListener).toHaveBeenCalledTimes(0);
     });
 
     it("should NOT emit 'tx:warning' for known failed resubmission", async function () {
@@ -100,9 +100,9 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      expect(getPendingTransactions).toBeCalledTimes(1);
-      expect(resubmitTx).toBeCalledTimes(1);
-      expect(warningListener).toBeCalledTimes(0);
+      expect(getPendingTransactions).toHaveBeenCalledTimes(1);
+      expect(resubmitTx).toHaveBeenCalledTimes(1);
+      expect(warningListener).toHaveBeenCalledTimes(0);
     });
 
     it("should emit 'tx:warning' for unknown failed resubmission", async function () {
@@ -134,9 +134,9 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:warning', warningListener);
       await pendingTxTracker.resubmitPendingTxs('0x1');
 
-      expect(getPendingTransactions).toBeCalledTimes(1);
-      expect(resubmitTx).toBeCalledTimes(1);
-      expect(warningListener).toBeCalledTimes(1);
+      expect(getPendingTransactions).toHaveBeenCalledTimes(1);
+      expect(resubmitTx).toHaveBeenCalledTimes(1);
+      expect(warningListener).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -178,14 +178,14 @@ describe('PendingTransactionTracker', function () {
         .mockResolvedValue();
       await pendingTxTracker.updatePendingTxs();
 
-      expect(checkPendingTxStub).toBeCalledTimes(3);
-      expect(checkPendingTxStub).toBeCalledWith(
+      expect(checkPendingTxStub).toHaveBeenCalledTimes(3);
+      expect(checkPendingTxStub).toHaveBeenCalledWith(
         expect.objectContaining({ id: 1 }),
       );
-      expect(checkPendingTxStub).toBeCalledWith(
+      expect(checkPendingTxStub).toHaveBeenCalledWith(
         expect.objectContaining({ id: 2 }),
       );
-      expect(checkPendingTxStub).toBeCalledWith(
+      expect(checkPendingTxStub).toHaveBeenCalledWith(
         expect.objectContaining({ id: 3 }),
       );
     });
@@ -226,8 +226,8 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx(txMeta);
 
-      expect(publishTransaction).toBeCalledWith(txMeta.rawTx);
-      expect(approveTransaction).toBeCalledTimes(0);
+      expect(publishTransaction).toHaveBeenCalledWith(txMeta.rawTx);
+      expect(approveTransaction).toHaveBeenCalledTimes(0);
     });
 
     it('should publish the given transaction if more than 2**retryCount blocks have passed', async function () {
@@ -266,8 +266,8 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx(txMeta, '0x11' /* 16 */);
 
-      expect(publishTransaction).toBeCalledWith(txMeta.rawTx);
-      expect(approveTransaction).toBeCalledTimes(0);
+      expect(publishTransaction).toHaveBeenCalledWith(txMeta.rawTx);
+      expect(approveTransaction).toHaveBeenCalledTimes(0);
     });
 
     it('should NOT publish the given transaction if fewer than 2**retryCount blocks have passed', async function () {
@@ -306,8 +306,8 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx(txMeta, '0x5');
 
-      expect(publishTransaction).toBeCalledTimes(0);
-      expect(approveTransaction).toBeCalledTimes(0);
+      expect(publishTransaction).toHaveBeenCalledTimes(0);
+      expect(approveTransaction).toHaveBeenCalledTimes(0);
     });
 
     it('should call approveTransaction if the tx is not yet signed', async function () {
@@ -331,8 +331,8 @@ describe('PendingTransactionTracker', function () {
 
       await pendingTxTracker._resubmitTx({ id: 40 });
 
-      expect(approveTransaction).toBeCalledWith(40);
-      expect(publishTransaction).toBeCalledTimes(0);
+      expect(approveTransaction).toHaveBeenCalledWith(40);
+      expect(publishTransaction).toHaveBeenCalledTimes(0);
     });
 
     it('should return undefined if txMeta has custodyId property', async function () {
@@ -406,7 +406,7 @@ describe('PendingTransactionTracker', function () {
           },
           rawTx: '0xf86c808504a817c800827b0d940c62bba0ea0d00cc9789d0d7ff1f471d',
         }),
-      );
+      ).toBeTruthy();
     });
 
     it('should return false when the given nonce is the network nonce', async function () {
@@ -496,10 +496,10 @@ describe('PendingTransactionTracker', function () {
         },
       });
 
-      expect(getCompletedTransactions).toBeCalledWith(
+      expect(getCompletedTransactions).toHaveBeenCalledWith(
         '0x1678a085c290ebd122dc42cba69373b5953b831d',
       );
-      expect(!taken);
+      expect(taken).toBeFalsy();
     });
 
     it('should return true if the nonce is taken', async function () {
@@ -553,7 +553,7 @@ describe('PendingTransactionTracker', function () {
         },
       });
 
-      expect(getCompletedTransactions).toBeCalledWith(
+      expect(getCompletedTransactions).toHaveBeenCalledWith(
         '0x1678a085c290ebd122dc42cba69373b5953b831d',
       );
       expect(taken).toBeTruthy();
@@ -630,10 +630,10 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.once('tx:warning', listeners.warning);
       await pendingTxTracker._checkPendingTx(txMeta);
 
-      expect(listeners.dropped).toBeCalledTimes(0);
-      expect(listeners.confirmed).toBeCalledTimes(1);
-      expect(listeners.failed).toBeCalledTimes(0);
-      expect(listeners.warning).toBeCalledTimes(0);
+      expect(listeners.dropped).toHaveBeenCalledTimes(0);
+      expect(listeners.confirmed).toHaveBeenCalledTimes(1);
+      expect(listeners.failed).toHaveBeenCalledTimes(0);
+      expect(listeners.warning).toHaveBeenCalledTimes(0);
     });
   });
 });
