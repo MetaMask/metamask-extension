@@ -138,7 +138,10 @@ export const MultichainTokenListItem = ({
               {secondary}
             </Text>
           </Box>
-          <Text color={TextColor.textAlternative}>
+          <Text
+            color={TextColor.textAlternative}
+            data-testid="multichain-token-list-item-value"
+          >
             {primary} {tokenSymbol}{' '}
           </Text>
         </Box>

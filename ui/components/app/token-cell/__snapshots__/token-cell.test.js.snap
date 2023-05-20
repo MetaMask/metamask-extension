@@ -64,6 +64,7 @@ exports[`Token Cell should match snapshot 1`] = `
         </div>
         <p
           class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+          data-testid="multichain-token-list-item-value"
         >
           5.000
 

@@ -50,16 +50,16 @@ describe('Hide token', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.waitForSelector({
-          css: '.asset-list-item__token-button',
+          css: '[data-testid="multichain-token-list-item-value"]',
           text: '0 TST',
         });
 
-        let assets = await driver.findElements('.asset-list-item');
+        let assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 2);
 
         await driver.clickElement({ text: 'Tokens', tag: 'button' });
 
-        await driver.clickElement({ text: 'TST', tag: 'span' });
+        await driver.clickElement({ text: 'TST', tag: 'p' });
 
         await driver.clickElement('[data-testid="asset-options__button"]');
 
@@ -74,7 +74,7 @@ describe('Hide token', function () {
         // wait for confirm hide modal to be removed from DOM.
         await confirmHideModal.waitForElementState('hidden');
 
-        assets = await driver.findElements('.asset-list-item');
+        assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 1);
       },
     );
@@ -106,7 +106,7 @@ describe('Add existing token using search', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'import tokens', tag: 'a' });
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
         await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({
           text: 'BAT',
