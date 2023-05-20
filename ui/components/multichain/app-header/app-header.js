@@ -350,16 +350,14 @@ export const AppHeader = ({ location }) => {
               padding={2}
               gap={2}
             >
-              {popupStatus ? null : (
-                <div>
-                  <PickerNetwork
-                    label={currentNetwork?.nickname}
-                    src={currentNetwork?.rpcPrefs?.imageUrl}
-                    onClick={() => dispatch(toggleNetworkMenu())}
-                    className="multichain-app-header__contents__network-picker"
-                  />
-                </div>
-              )}
+              <div>
+                <PickerNetwork
+                  label={currentNetwork?.nickname}
+                  src={currentNetwork?.rpcPrefs?.imageUrl}
+                  onClick={() => dispatch(toggleNetworkMenu())}
+                  className="multichain-app-header__contents__network-picker"
+                />
+              </div>
               <MetafoxLogo
                 unsetIconHeight
                 onClick={async () => {
