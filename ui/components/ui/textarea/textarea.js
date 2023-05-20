@@ -10,9 +10,8 @@ import {
   BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { RESIZE } from './textarea.constants';
-
 import Box from '../box';
+import { RESIZE } from './textarea.constants';
 
 const TextArea = ({
   className,
