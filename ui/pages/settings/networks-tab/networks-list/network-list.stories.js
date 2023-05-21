@@ -1,5 +1,5 @@
 import React from 'react';
-import testData, { networkList } from '../../../../../.storybook/test-data';
+import { networkList } from '../../../../../.storybook/test-data';
 import NetworksList from './networks-list';
 
 export default {
