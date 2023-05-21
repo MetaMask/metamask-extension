@@ -12,7 +12,12 @@ import {
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IconName, Text } from '../../component-library';
+import {
+  IconName,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  Text,
+  ///: END:ONLY_INCLUDE_IN(snaps)
+} from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -31,6 +36,7 @@ import {
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import {
   AlignItems,
   BackgroundColor,
@@ -40,6 +46,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IN
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
