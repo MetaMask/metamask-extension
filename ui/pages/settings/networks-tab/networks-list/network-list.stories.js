@@ -1,5 +1,5 @@
 import React from 'react';
-import testData from '../../../../../.storybook/test-data';
+import testData, { networkList } from '../../../../../.storybook/test-data';
 import NetworksList from './networks-list';
 
 export default {
@@ -19,7 +19,7 @@ export default {
   args: {
     networkDefaultedToProvider: false,
     networkIsSelected: false,
-    networksToRender: testData.networkList,
+    networksToRender: networkList,
   },
 };
 
