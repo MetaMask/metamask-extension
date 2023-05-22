@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Tùy chọn tài sản"
   },
-  "assets": {
-    "message": "Tài sản"
-  },
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },

@@ -5,6 +5,11 @@
         "regeneratorRuntime": "write"
       }
     },
+    "@babel/runtime>regenerator-runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
+      }
+    },
     "@download/blockies": {
       "globals": {
         "document.createElement": true
@@ -868,6 +873,20 @@
         "immer": true
       }
     },
+    "@metamask/browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -998,11 +1017,11 @@
     },
     "@metamask/eth-keyring-controller": {
       "packages": {
+        "@metamask/browser-passworder": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/eth-keyring-controller>obs-store": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
-        "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>events": true
       }
     },
@@ -1128,8 +1147,8 @@
         "@metamask/eth-token-tracker>deep-equal>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@ngraveio/bc-ur>assert>object-is": true,
-        "@storybook/api>telejson>is-regex": true,
         "globalthis>define-properties>object-keys": true,
+        "string.prototype.matchall>es-abstract>is-regex": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
@@ -1610,20 +1629,6 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/rpc-methods>@metamask/browser-passworder": {
-      "globals": {
-        "btoa": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.decrypt": true,
-        "crypto.subtle.deriveKey": true,
-        "crypto.subtle.encrypt": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true
-      },
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1952,24 +1957,6 @@
         "define": true
       }
     },
-    "@storybook/api>regenerator-runtime": {
-      "globals": {
-        "regeneratorRuntime": "write"
-      }
-    },
-    "@storybook/api>telejson>is-regex": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true
-      }
-    },
-    "@storybook/api>util-deprecate": {
-      "globals": {
-        "console.trace": true,
-        "console.warn": true,
-        "localStorage": true
-      }
-    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -2066,14 +2053,8 @@
     },
     "@truffle/codec>@truffle/abi-utils>change-case>pascal-case": {
       "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>pascal-case>camel-case": true,
+        "@truffle/codec>@truffle/abi-utils>change-case>camel-case": true,
         "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>pascal-case>camel-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
       }
     },
     "@truffle/codec>@truffle/abi-utils>change-case>path-case": {
@@ -2182,13 +2163,8 @@
         "console.error": true
       },
       "packages": {
-        "@truffle/codec>semver>lru-cache": true,
-        "browserify>process": true
-      }
-    },
-    "@truffle/codec>semver>lru-cache": {
-      "packages": {
-        "semver>lru-cache>yallist": true
+        "browserify>process": true,
+        "semver>lru-cache": true
       }
     },
     "@truffle/codec>web3-utils": {
@@ -2246,9 +2222,9 @@
         "@truffle/codec": true,
         "@truffle/codec>@truffle/abi-utils": true,
         "@truffle/codec>@truffle/compile-common": true,
+        "@truffle/codec>big.js": true,
         "@truffle/codec>web3-utils": true,
         "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs": true,
-        "@truffle/decoder>@truffle/encoder>big.js": true,
         "@truffle/decoder>@truffle/encoder>bignumber.js": true,
         "lodash": true,
         "nock>debug": true
@@ -2425,11 +2401,6 @@
         "browserify>process": true
       }
     },
-    "@truffle/decoder>@truffle/encoder>big.js": {
-      "globals": {
-        "define": true
-      }
-    },
     "@truffle/decoder>@truffle/encoder>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -2459,7 +2430,7 @@
     },
     "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
       "packages": {
-        "@storybook/addon-a11y>react-sizeme>shallowequal": true
+        "@truffle/decoder>@truffle/source-map-utils>node-interval-tree>shallowequal": true
       }
     },
     "@truffle/decoder>bn.js": {
@@ -3292,13 +3263,13 @@
     },
     "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
@@ -3345,13 +3316,13 @@
     },
     "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>scrypt-js": {
@@ -3526,7 +3497,7 @@
     "ethjs-query>babel-runtime": {
       "packages": {
         "@babel/runtime": true,
-        "@storybook/api>regenerator-runtime": true,
+        "@babel/runtime>regenerator-runtime": true,
         "ethjs-query>babel-runtime>core-js": true
       }
     },
@@ -3910,6 +3881,64 @@
         "setTimeout": true
       }
     },
+    "react-focus-lock": {
+      "globals": {
+        "addEventListener": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "prop-types": true,
+        "react": true,
+        "react-focus-lock>focus-lock": true,
+        "react-focus-lock>react-clientside-effect": true,
+        "react-focus-lock>use-callback-ref": true,
+        "react-focus-lock>use-sidecar": true
+      }
+    },
+    "react-focus-lock>focus-lock": {
+      "globals": {
+        "HTMLIFrameElement": true,
+        "Node.DOCUMENT_FRAGMENT_NODE": true,
+        "Node.DOCUMENT_NODE": true,
+        "Node.DOCUMENT_POSITION_CONTAINED_BY": true,
+        "Node.DOCUMENT_POSITION_CONTAINS": true,
+        "Node.ELEMENT_NODE": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "getComputedStyle": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "wait-on>rxjs>tslib": true
+      }
+    },
+    "react-focus-lock>react-clientside-effect": {
+      "packages": {
+        "@babel/runtime": true,
+        "react": true
+      }
+    },
+    "react-focus-lock>use-callback-ref": {
+      "packages": {
+        "react": true
+      }
+    },
+    "react-focus-lock>use-sidecar": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "react": true,
+        "react-focus-lock>use-sidecar>detect-node-es": true,
+        "wait-on>rxjs>tslib": true
+      }
+    },
     "react-idle-timer": {
       "globals": {
         "clearTimeout": true,
@@ -4188,7 +4217,6 @@
     },
     "readable-stream": {
       "packages": {
-        "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
         "browserify>events": true,
         "browserify>process": true,
@@ -4198,7 +4226,8 @@
         "readable-stream>isarray": true,
         "readable-stream>process-nextick-args": true,
         "readable-stream>safe-buffer": true,
-        "readable-stream>string_decoder": true
+        "readable-stream>string_decoder": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "readable-stream>core-util-is": {
@@ -4221,6 +4250,13 @@
         "readable-stream>safe-buffer": true
       }
     },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
+      }
+    },
     "redux": {
       "globals": {
         "console": true
@@ -4235,6 +4271,7 @@
       },
       "packages": {
         "browserify>process": true,
+        "browserify>util": true,
         "semver>lru-cache": true
       }
     },
@@ -4254,6 +4291,12 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "string.prototype.matchall>es-abstract>is-regex": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
     "string.prototype.matchall>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -4263,6 +4306,7 @@
       "packages": {
         "browserify>has": true,
         "browserify>has>function-bind": true,
+        "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>has-symbols": true
       }
     },

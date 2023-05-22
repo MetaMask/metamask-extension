@@ -10,10 +10,11 @@ import {
 import EthQuery from 'eth-query';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { v4 as uuid } from 'uuid';
-import { Hex, isPlainObject } from '@metamask/utils';
+import { Hex, isPlainObject, isStrictHexString } from '@metamask/utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
 import { PollingBlockTracker } from 'eth-block-tracker';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   INFURA_PROVIDER_TYPES,
   INFURA_BLOCKED_KEY,
@@ -301,16 +302,22 @@ function isErrorWithCode(error: unknown): error is { code: string | number } {
 }
 
 /**
- * Asserts that the given value is a network ID, i.e., that it is a decimal
- * number represented as a string.
+ * Convert the given value into a valid network ID. The ID is accepted
+ * as either a number, a decimal string, or a 0x-prefixed hex string.
  *
- * @param value - The value to check.
+ * @param value - The network ID to convert, in an unknown format.
+ * @returns A valid network ID (as a decimal string)
+ * @throws If the given value cannot be safely parsed.
  */
-function assertNetworkId(value: any): asserts value is NetworkId {
-  assert(
-    /^\d+$/u.test(value) && !Number.isNaN(Number(value)),
-    'value is not a number',
-  );
+function convertNetworkId(value: unknown): NetworkId {
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return `${value}`;
+  } else if (isStrictHexString(value)) {
+    return hexToDecimal(value) as NetworkId;
+  } else if (typeof value === 'string' && /^\d+$/u.test(value)) {
+    return value as NetworkId;
+  }
+  throw new Error(`Cannot parse as a valid network ID: '${value}'`);
 }
 
 /**
@@ -619,17 +626,18 @@ export class NetworkController extends EventEmitter {
         this.#determineEIP1559Compatibility(provider),
       ]);
       const possibleNetworkId = results[0];
-      assertNetworkId(possibleNetworkId);
-      networkId = possibleNetworkId;
+      networkId = convertNetworkId(possibleNetworkId);
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
-      if (isErrorWithCode(error) && isErrorWithMessage(error)) {
+      if (isErrorWithCode(error)) {
         let responseBody;
-        try {
-          responseBody = JSON.parse(error.message);
-        } catch {
-          // error.message must not be JSON
+        if (isInfura && isErrorWithMessage(error)) {
+          try {
+            responseBody = JSON.parse(error.message);
+          } catch {
+            // error.message must not be JSON
+          }
         }
 
         if (
