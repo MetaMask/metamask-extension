@@ -19,7 +19,6 @@ import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/meta
 import {
   NetworkController,
   NetworkControllerEvent,
-  NetworkControllerEventType,
   NetworkControllerOptions,
   NetworkControllerState,
   ProviderConfiguration,
@@ -870,7 +869,7 @@ describe('NetworkController', () => {
 
           const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsUnblocked,
+            eventType: 'NetworkController:infuraIsUnblocked',
             count: 0,
             operation: async () => {
               await controller.lookupNetwork();
@@ -889,7 +888,7 @@ describe('NetworkController', () => {
 
           const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await controller.lookupNetwork();
@@ -953,7 +952,7 @@ describe('NetworkController', () => {
 
             const promiseForNoInfuraIsUnblockedEvents = waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await controller.lookupNetwork();
@@ -984,7 +983,7 @@ describe('NetworkController', () => {
 
             const promiseForNoInfuraIsBlockedEvents = waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsBlocked,
+              eventType: 'NetworkController:infuraIsBlocked',
               count: 0,
               operation: async () => {
                 await controller.lookupNetwork();
@@ -1367,12 +1366,12 @@ describe('NetworkController', () => {
                 const promiseForNoInfuraIsUnblockedEvents =
                   waitForPublishedEvents({
                     messenger,
-                    eventType: NetworkControllerEventType.InfuraIsUnblocked,
+                    eventType: 'NetworkController:infuraIsUnblocked',
                     count: 0,
                   });
                 const promiseForInfuraIsBlocked = waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.InfuraIsBlocked,
+                  eventType: 'NetworkController:infuraIsBlocked',
                 });
 
                 await controller.lookupNetwork();
@@ -1787,12 +1786,12 @@ describe('NetworkController', () => {
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.InfuraIsUnblocked,
+                  eventType: 'NetworkController:infuraIsUnblocked',
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
-                eventType: NetworkControllerEventType.InfuraIsBlocked,
+                eventType: 'NetworkController:infuraIsBlocked',
               });
 
               await controller.lookupNetwork();
@@ -2197,12 +2196,12 @@ describe('NetworkController', () => {
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.InfuraIsUnblocked,
+                  eventType: 'NetworkController:infuraIsUnblocked',
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
-                eventType: NetworkControllerEventType.InfuraIsBlocked,
+                eventType: 'NetworkController:infuraIsBlocked',
               });
 
               await controller.lookupNetwork();
@@ -2581,7 +2580,7 @@ describe('NetworkController', () => {
                 operation: async () => {
                   const networkWillChange = await waitForPublishedEvents({
                     messenger,
-                    eventType: NetworkControllerEventType.NetworkWillChange,
+                    eventType: 'NetworkController:networkWillChange',
                     operation: async () => {
                       await controller.rollbackToPreviousProvider();
                     },
@@ -2956,7 +2955,7 @@ describe('NetworkController', () => {
                 operation: async () => {
                   const networkDidChange = await waitForPublishedEvents({
                     messenger,
-                    eventType: NetworkControllerEventType.NetworkDidChange,
+                    eventType: 'NetworkController:networkDidChange',
                     operation: async () => {
                       await controller.rollbackToPreviousProvider();
                     },
@@ -3023,12 +3022,12 @@ describe('NetworkController', () => {
               const promiseForNoInfuraIsUnblockedEvents =
                 waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.InfuraIsUnblocked,
+                  eventType: 'NetworkController:infuraIsUnblocked',
                   count: 0,
                 });
               const promiseForInfuraIsBlocked = waitForPublishedEvents({
                 messenger,
-                eventType: NetworkControllerEventType.InfuraIsBlocked,
+                eventType: 'NetworkController:infuraIsBlocked',
               });
 
               await waitForLookupNetworkToComplete({
@@ -3320,7 +3319,7 @@ describe('NetworkController', () => {
               operation: async () => {
                 const networkWillChange = await waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.NetworkWillChange,
+                  eventType: 'NetworkController:networkWillChange',
                   operation: async () => {
                     await controller.rollbackToPreviousProvider();
                   },
@@ -3643,7 +3642,7 @@ describe('NetworkController', () => {
               operation: async () => {
                 const networkDidChange = await waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.NetworkDidChange,
+                  eventType: 'NetworkController:networkDidChange',
                   operation: async () => {
                     await controller.rollbackToPreviousProvider();
                   },
@@ -3694,7 +3693,7 @@ describe('NetworkController', () => {
               operation: async () => {
                 const infuraIsUnblocked = await waitForPublishedEvents({
                   messenger,
-                  eventType: NetworkControllerEventType.InfuraIsUnblocked,
+                  eventType: 'NetworkController:infuraIsUnblocked',
                   operation: async () => {
                     await controller.rollbackToPreviousProvider();
                   },
@@ -4536,7 +4535,7 @@ function refreshNetworkTests({
 
         const networkWillChange = await waitForPublishedEvents({
           messenger,
-          eventType: NetworkControllerEventType.NetworkWillChange,
+          eventType: 'NetworkController:networkWillChange',
           operation: () => {
             // Intentionally not awaited because we're capturing an event
             // emitted partway through the operation
@@ -4561,7 +4560,7 @@ function refreshNetworkTests({
 
         const networkDidChange = await waitForPublishedEvents({
           messenger,
-          eventType: NetworkControllerEventType.NetworkDidChange,
+          eventType: 'NetworkController:networkDidChange',
           operation: () => {
             // Intentionally not awaited because we're capturing an event
             // emitted partway through the operation
@@ -5082,7 +5081,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsUnblocked,
+            eventType: 'NetworkController:infuraIsUnblocked',
             operation: async () => {
               await operation(controller);
             },
@@ -5105,7 +5104,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await operation(controller);
@@ -5161,7 +5160,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5190,7 +5189,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5221,7 +5220,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await operation(controller);
@@ -5277,7 +5276,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5306,7 +5305,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsBlocked,
+              eventType: 'NetworkController:infuraIsBlocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5359,7 +5358,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5389,7 +5388,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsBlocked,
+              eventType: 'NetworkController:infuraIsBlocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5445,7 +5444,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5474,7 +5473,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5505,7 +5504,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await operation(controller);
@@ -5561,7 +5560,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5590,7 +5589,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5621,7 +5620,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await operation(controller);
@@ -5683,7 +5682,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5715,7 +5714,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5749,7 +5748,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await operation(controller);
@@ -5811,7 +5810,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5843,7 +5842,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsBlocked,
+              eventType: 'NetworkController:infuraIsBlocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5902,7 +5901,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -5935,7 +5934,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsBlocked,
+              eventType: 'NetworkController:infuraIsBlocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -5996,7 +5995,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               operation: async () => {
                 await operation(controller);
               },
@@ -6028,7 +6027,7 @@ function lookupNetworkTests({
 
             const payloads = await waitForPublishedEvents({
               messenger,
-              eventType: NetworkControllerEventType.InfuraIsUnblocked,
+              eventType: 'NetworkController:infuraIsUnblocked',
               count: 0,
               operation: async () => {
                 await operation(controller);
@@ -6062,7 +6061,7 @@ function lookupNetworkTests({
 
           const payloads = await waitForPublishedEvents({
             messenger,
-            eventType: NetworkControllerEventType.InfuraIsBlocked,
+            eventType: 'NetworkController:infuraIsBlocked',
             count: 0,
             operation: async () => {
               await operation(controller);
@@ -6092,17 +6091,13 @@ function buildMessenger() {
  * @returns The network controller restricted messenger.
  */
 function buildNetworkControllerMessenger(messenger = buildMessenger()) {
-  return messenger.getRestricted<
-    'NetworkController',
-    never,
-    NetworkControllerEventType
-  >({
+  return messenger.getRestricted({
     name: 'NetworkController',
     allowedEvents: [
-      NetworkControllerEventType.NetworkDidChange,
-      NetworkControllerEventType.NetworkWillChange,
-      NetworkControllerEventType.InfuraIsBlocked,
-      NetworkControllerEventType.InfuraIsUnblocked,
+      'NetworkController:networkDidChange',
+      'NetworkController:networkWillChange',
+      'NetworkController:infuraIsBlocked',
+      'NetworkController:infuraIsUnblocked',
     ],
   });
 }
