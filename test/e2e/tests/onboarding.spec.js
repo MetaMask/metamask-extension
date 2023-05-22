@@ -271,8 +271,9 @@ describe('MetaMask onboarding', function () {
 
         // Add custome network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement('.mm-picker-network');
         await driver.clickElement({
-          text: 'Add custom network',
+          text: 'Add network',
           tag: 'button',
         });
 
@@ -301,7 +302,7 @@ describe('MetaMask onboarding', function () {
 
         // Check localhost 8546 is selected and its balance value is correct
         const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"]',
+          '[data-testid="network-display"] p',
         );
         assert.equal(await networkDisplay.getText(), networkName);
 
