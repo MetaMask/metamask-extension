@@ -131,17 +131,17 @@
     "description": "Exchange type"
   },
   "fileImportFail": {
-    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
+    "message": "นำเข้าไฟล์ไม่สำเร็จ กดที่นี่!",
     "description": "Helps user import their account from a JSON file"
   },
   "from": {
     "message": "จาก"
   },
   "gasLimit": {
-    "message": "วงเงินแก็ส"
+    "message": "วงเงินแก๊ส"
   },
   "gasLimitTooLow": {
-    "message": "วงเงินแก็สต้องอย่างน้อย 21000"
+    "message": "วงเงินแก๊สต้องอย่างน้อย 21000"
   },
   "gasPrice": {
     "message": "ราคาแก๊ส (GWEI)"
@@ -167,7 +167,7 @@
     "message": "นำเข้าบัญชี"
   },
   "importAccountMsg": {
-    "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
+    "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
   },
   "imported": {
     "message": "นำเข้าเรียบร้อย",
@@ -180,10 +180,10 @@
     "message": "โทเค็นไม่เพียงพอ"
   },
   "invalidAddress": {
-    "message": "แอดแดรสไม่ถูกต้อง"
+    "message": "แอดเดรสไม่ถูกต้อง"
   },
   "invalidAddressRecipient": {
-    "message": "แอดแดรสผู้รับไม่ถูกต้อง"
+    "message": "แอดเดรสผู้รับไม่ถูกต้อง"
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "ไม่ใช่เครือข่าย ETH ตั้งเป็นตัวพิมพ์เล็ก"
@@ -252,7 +252,7 @@
     "message": "ถัดไป"
   },
   "noAddressForName": {
-    "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
+    "message": "ยังไม่มีแอดเดรสไหนตั้งในชื่อนี้"
   },
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
@@ -268,7 +268,7 @@
     "description": "For importing an account from a private key"
   },
   "personalAddressDetected": {
-    "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
+    "message": "ตรวจพบแอดเดรสส่วนตัวแล้ว ใส่แอดเดรสสัญญาโทเค็น"
   },
   "privacyMsg": {
     "message": "นโยบายสความเป็นส่วนตัว"
@@ -345,7 +345,7 @@
     "message": "บันทึกของสถานะ"
   },
   "stateLogsDescription": {
-    "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
+    "message": "บันทึกของสถานะประกอบด้วยแอดเดรสสาธารณะและธุรกรรมที่ส่ง"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
