@@ -1,5 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import {
   resolvePendingApproval,
@@ -32,6 +33,15 @@ const MOCK_SUGGESTED_ASSETS = [
   },
 ];
 
+const MOCK_PENDING_ASSET_APPROVALS = MOCK_SUGGESTED_ASSETS.map(
+  (requestData) => {
+    return {
+      type: ApprovalType.WatchAsset,
+      requestData,
+    };
+  },
+);
+
 const MOCK_TOKEN = {
   address: '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d',
   symbol: 'TEST',
@@ -46,7 +56,7 @@ jest.mock('../../store/actions', () => ({
 const renderComponent = (tokens = []) => {
   const store = configureStore({
     metamask: {
-      suggestedAssets: [...MOCK_SUGGESTED_ASSETS],
+      pendingApprovals: [...MOCK_PENDING_ASSET_APPROVALS],
       tokens,
       providerConfig: { chainId: '0x1' },
     },

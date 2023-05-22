@@ -553,15 +553,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
-}
-
-export function getSuggestedAssets(state) {
-  return state.metamask.suggestedAssets;
-}
-
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
   return chainId === CHAIN_IDS.MAINNET;

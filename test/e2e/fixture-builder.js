@@ -288,7 +288,6 @@ function defaultFixture() {
         allTokens: {},
         detectedTokens: [],
         ignoredTokens: [],
-        suggestedAssets: [],
         tokens: [],
       },
       TransactionController: {
@@ -392,7 +391,6 @@ function onboardingFixture() {
         allTokens: {},
         detectedTokens: [],
         ignoredTokens: [],
-        suggestedAssets: [],
         tokens: [],
       },
       config: {},
@@ -738,7 +736,6 @@ class FixtureBuilder {
       },
       allIgnoredTokens: {},
       allDetectedTokens: {},
-      suggestedAssets: [],
     });
     return this;
   }

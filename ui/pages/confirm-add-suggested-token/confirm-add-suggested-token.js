@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { ApprovalType } from '@metamask/controller-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
@@ -13,7 +14,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getSuggestedAssets } from '../../selectors';
+import { getPendingApprovalsRequestDataSelector } from '../../selectors';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
@@ -76,7 +77,12 @@ const ConfirmAddSuggestedToken = () => {
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const suggestedAssets = useSelector(getSuggestedAssets);
+  const suggestedAssets = useSelector((metamaskState) =>
+    getPendingApprovalsRequestDataSelector(
+      metamaskState,
+      ApprovalType.WatchAsset,
+    ),
+  );
   const tokens = useSelector(getTokens);
 
   const trackEvent = useContext(MetaMetricsContext);
