@@ -110,7 +110,7 @@ Some examples of `Icon` with `Text` using [Box](/docs/components-ui-box--default
 ```jsx
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   IconColor,
   FLEX_DIRECTION,
   BorderColor,
@@ -121,8 +121,8 @@ import Box from '../../ui/box/box';
 
 import { IconName, Icon, IconSize, Text, Label } from '../../component-library';
 
-<Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+<Box display={Display.Flex} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
+  <Box display={Display.Flex} alignItems={AlignItems.center}>
     <Icon
       name={IconName.Check}
       color={IconColor.successDefault}
@@ -132,7 +132,7 @@ import { IconName, Icon, IconSize, Text, Label } from '../../component-library';
   </Box>
   <Box
     as="button"
-    display={DISPLAY.FLEX}
+    display={Display.Flex}
     alignItems={AlignItems.center}
     borderRadius={BorderRadius.pill}
     backgroundColor={BackgroundColor.primaryMuted}
@@ -149,7 +149,7 @@ import { IconName, Icon, IconSize, Text, Label } from '../../component-library';
   </Box>
   <Box
     as="button"
-    display={DISPLAY.FLEX}
+    display={Display.Flex}
     alignItems={AlignItems.center}
     padding={4}
     borderColor={BorderColor.borderMuted}
