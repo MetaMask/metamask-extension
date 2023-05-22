@@ -55,9 +55,7 @@ describe('Permissions', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__connected-sites"]',
-        );
+        await driver.clickElement('.menu-item');
 
         await driver.findElement({
           text: 'Connected sites',
