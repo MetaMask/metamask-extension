@@ -199,6 +199,8 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
     <Button
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
+      onTouchStart={onMouseDown}
+      onTouchEnd={onMouseUp}
       className="hold-to-reveal-button__button-hold"
       textProps={{ display: DISPLAY.FLEX, alignItems: AlignItems.center }}
     >
