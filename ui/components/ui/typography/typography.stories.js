@@ -2,7 +2,7 @@ import React from 'react';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   OVERFLOW_WRAP,
   DISPLAY,
@@ -51,7 +51,7 @@ export default {
     },
     align: {
       control: { type: 'select' },
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
     },
     overflowWrap: {
       control: { type: 'select' },
@@ -176,7 +176,7 @@ export const Color = (args) => {
             <React.Fragment key={color}>
               <Typography
                 color={TextColor.textDefault}
-                align={TEXT_ALIGN.CENTER}
+                align={TextAlign.Center}
                 boxProps={{
                   backgroundColor: BackgroundColor.warningMuted,
                   padding: 4,
@@ -280,7 +280,7 @@ export const Align = (args) => (
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
       }}
     />
-    {Object.values(TEXT_ALIGN).map((align) => (
+    {Object.values(TextAlign).map((align) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
         {...args}

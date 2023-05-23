@@ -15,7 +15,7 @@ import {
   Size,
   BorderColor,
   IconColor,
-  TEXT_ALIGN,
+  TextAlign,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 
@@ -96,7 +96,7 @@ const Popover = ({
           />
         ) : null}
         <Text
-          textAlign={centerTitle ? TEXT_ALIGN.CENTER : TEXT_ALIGN.START}
+          textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
           ellipsis
           variant={TextVariant.headingSm}
           as="h2"
