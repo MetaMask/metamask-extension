@@ -71,7 +71,6 @@ import {
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
-import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
 
@@ -84,10 +83,6 @@ import { ApprovalType } from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import {
-  BUILD_QUOTE_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../ui/helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -1138,10 +1133,13 @@ export default class MetamaskController extends EventEmitter {
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
       institutionalFeaturesController: this.institutionalFeaturesController,
-      addKeyringIfNotExists: this.addKeyringIfNotExists.bind(this),
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTracker: this.accountTracker,
+      metaMetricsController: this.metaMetricsController,
+      networkController: this.networkController,
+      platform: this.platform,
+      extension: this.extension,
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -2948,90 +2946,12 @@ export default class MetamaskController extends EventEmitter {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  async addKeyringIfNotExists(type) {
-    let keyring = await this.keyringController.getKeyringsByType(type)[0];
-    if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(type);
-    }
-    return keyring;
-  }
-
   async getCustodyKeyringIfExists(address) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
     const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
     return keyring?.getAccountDetails(address) ? keyring : undefined;
-  }
-
-  async setMmiPortfolioCookie() {
-    await this.appStateController.getUnlockPromise(true);
-    const keyringAccounts = await this.keyringController.getAccounts();
-    const { identities } = this.preferencesController.store.getState();
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const { mmiConfiguration } =
-      this.mmiConfigurationController.store.getState();
-    const { cookieSetUrls } = mmiConfiguration && mmiConfiguration.portfolio;
-    const getAccountDetails = (address) =>
-      this.custodyController.getAccountDetails(address);
-    const extensionId = this.extension.runtime.id;
-    const networks = [
-      ...this.preferencesController.getFrequentRpcListDetail(),
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
-    ];
-
-    handleMmiPortfolio({
-      keyringAccounts,
-      identities,
-      metaMetricsId,
-      networks,
-      cookieSetUrls,
-      getAccountDetails,
-      extensionId,
-    });
-  }
-
-  async setAccountAndNetwork(origin, address, chainId) {
-    await this.appStateController.getUnlockPromise(true);
-    const selectedAddress = this.preferencesController.getSelectedAddress();
-    if (selectedAddress.toLowerCase() !== address.toLowerCase()) {
-      this.preferencesController.setSelectedAddress(address);
-    }
-    const selectedChainId = parseInt(
-      this.networkController.getCurrentChainId(),
-      16,
-    );
-    if (selectedChainId !== chainId && chainId === 1) {
-      this.networkController.setProviderType('mainnet');
-    } else if (selectedChainId !== chainId) {
-      const network = this.preferencesController
-        .getFrequentRpcListDetail()
-        .find((item) => parseInt(item.chainId, 16) === chainId);
-      this.networkController.setRpcTarget(
-        network.rpcUrl,
-        network.chainId,
-        network.ticker,
-        network.nickname,
-      );
-    }
-    getPermissionBackgroundApiMethods(
-      this.permissionController,
-    ).addPermittedAccount(origin, address);
-
-    return true;
-  }
-
-  async handleMmiOpenSwaps(origin, address, chainId) {
-    await this.setAccountAndNetwork(origin, address, chainId);
-    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-    return true;
-  }
-
-  async handleMmiOpenAddHardwareWallet() {
-    await this.appStateController.getUnlockPromise(true);
-    this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
-    return true;
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -3993,11 +3913,12 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
-        handleMmiOpenSwaps: this.handleMmiOpenSwaps.bind(this),
-        handleMmiSetAccountAndNetwork: this.setAccountAndNetwork.bind(this),
+        handleMmiPortfolio: this.mmiController.setMmiPortfolioCookie.bind(this),
+        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
+        handleMmiSetAccountAndNetwork:
+          this.mmiController.setAccountAndNetwork.bind(this),
         handleMmiOpenAddHardwareWallet:
-          this.handleMmiOpenAddHardwareWallet.bind(this),
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
         ///: END:ONLY_INCLUDE_IN
       }),
     );

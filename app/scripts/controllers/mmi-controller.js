@@ -14,8 +14,15 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { FINALIZED_TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  BUILD_QUOTE_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
+} from '../../../ui/helpers/constants/routes';
+import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
   constructor(opts) {
@@ -35,6 +42,10 @@ export default class MMIController extends EventEmitter {
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTracker = opts.accountTracker;
+    this.metaMetricsController = opts.metaMetricsController;
+    this.networkController = opts.networkController;
+    this.platform = opts.platform;
+    this.extension = opts.extension;
 
     this.personalMessageManager = new PersonalMessageManager(
       undefined,
@@ -69,6 +80,14 @@ export default class MMIController extends EventEmitter {
 
   async trackTransactionEventFromCustodianEvent(txMeta, event) {
     this.txController._trackTransactionMetricsEvent(txMeta, event);
+  }
+
+  async addKeyringIfNotExists(type) {
+    let keyring = await this.keyringController.getKeyringsByType(type)[0];
+    if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(type);
+    }
+    return keyring;
   }
 
   custodianEventHandlerFactory() {
@@ -526,5 +545,75 @@ export default class MMIController extends EventEmitter {
       apiUrl,
       keyring,
     });
+  }
+
+  async setMmiPortfolioCookie() {
+    await this.appStateController.getUnlockPromise(true);
+    const keyringAccounts = await this.keyringController.getAccounts();
+    const { identities } = this.preferencesController.store.getState();
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const { mmiConfiguration } =
+      this.mmiConfigurationController.store.getState();
+    const { cookieSetUrls } = mmiConfiguration && mmiConfiguration.portfolio;
+    const getAccountDetails = (address) =>
+      this.custodyController.getAccountDetails(address);
+    const extensionId = this.extension.runtime.id;
+    const networks = [
+      ...this.preferencesController.getFrequentRpcListDetail(),
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.GOERLI },
+    ];
+
+    handleMmiPortfolio({
+      keyringAccounts,
+      identities,
+      metaMetricsId,
+      networks,
+      cookieSetUrls,
+      getAccountDetails,
+      extensionId,
+    });
+  }
+
+  async setAccountAndNetwork(origin, address, chainId) {
+    await this.appStateController.getUnlockPromise(true);
+    const selectedAddress = this.preferencesController.getSelectedAddress();
+    if (selectedAddress.toLowerCase() !== address.toLowerCase()) {
+      this.preferencesController.setSelectedAddress(address);
+    }
+    const selectedChainId = parseInt(
+      this.networkController.getCurrentChainId(),
+      16,
+    );
+    if (selectedChainId !== chainId && chainId === 1) {
+      this.networkController.setProviderType('mainnet');
+    } else if (selectedChainId !== chainId) {
+      const network = this.preferencesController
+        .getFrequentRpcListDetail()
+        .find((item) => parseInt(item.chainId, 16) === chainId);
+      this.networkController.setRpcTarget(
+        network.rpcUrl,
+        network.chainId,
+        network.ticker,
+        network.nickname,
+      );
+    }
+    getPermissionBackgroundApiMethods(
+      this.permissionController,
+    ).addPermittedAccount(origin, address);
+
+    return true;
+  }
+
+  async handleMmiOpenSwaps(origin, address, chainId) {
+    await this.setAccountAndNetwork(origin, address, chainId);
+    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+    return true;
+  }
+
+  async handleMmiOpenAddHardwareWallet() {
+    await this.appStateController.getUnlockPromise(true);
+    this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
+    return true;
   }
 }
