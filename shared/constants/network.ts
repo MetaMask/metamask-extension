@@ -572,7 +572,7 @@ export const BUYABLE_CHAINS_MAP: {
     network: 'moonriver',
   },
   [CHAIN_IDS.AURORA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    nativeCurrency: CURRENCY_SYMBOLS.AURORA_ETH,
     network: 'aurora',
   },
   [CHAIN_IDS.HARMONY]: {
