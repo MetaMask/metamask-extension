@@ -90,7 +90,7 @@ describe('Test Snap networkAccess', function () {
         await driver.delay(500);
 
         // check dialog contents
-        let result = await driver.findElement('.snap-ui-renderer__panel');
+        const result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
         await driver.delay(500);
         assert.equal(
