@@ -34,6 +34,7 @@ export default class MMIController extends EventEmitter {
     this.addKeyringIfNotExists = opts.addKeyringIfNotExists;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
+    this.accountTracker = opts.accountTracker;
 
     this.personalMessageManager = new PersonalMessageManager(
       undefined,

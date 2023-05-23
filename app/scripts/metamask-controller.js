@@ -1141,7 +1141,7 @@ export default class MetamaskController extends EventEmitter {
       addKeyringIfNotExists: this.addKeyringIfNotExists.bind(this),
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
-      showConfirmRequest: opts.showUserConfirmation,
+      accountTracker: this.accountTracker,
     });
     ///: END:ONLY_INCLUDE_IN
 
