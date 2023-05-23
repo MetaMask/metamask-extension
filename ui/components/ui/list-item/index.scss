@@ -7,7 +7,6 @@
 
   @include Paragraph;
 
-  border-top: 1px solid var(--color-border-muted);
   border-bottom: 1px solid var(--color-border-muted);
   color: var(--color-text-default);
   display: grid;
@@ -118,4 +117,8 @@
   @include screen-sm-min {
     grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
+}
+
+.list-item-border {
+  border-top: 1px solid var(--color-border-muted);
 }
