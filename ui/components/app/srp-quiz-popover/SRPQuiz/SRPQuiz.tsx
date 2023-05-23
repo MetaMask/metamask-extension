@@ -19,9 +19,11 @@ import {
   Icon,
   IconName,
   IconSize,
-  PopoverHeader,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from '../../../component-library';
-import Popover from '../../../ui/popover';
 import QuizContent from '../QuizContent';
 import { JSXDict, QuizStage } from '../types';
 
@@ -253,11 +255,14 @@ export default function SRPQuiz(props: any) {
   }, [stage]);
 
   return (
-    <Popover>
-      <PopoverHeader onClose={props.onClose} margin={4}>
-        {title}
-      </PopoverHeader>
-      {quizContent}
-    </Popover>
+    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={props.onClose} margin={4}>
+          {title}
+        </ModalHeader>
+        {quizContent}
+      </ModalContent>
+    </Modal>
   );
 }

@@ -19,6 +19,7 @@ import {
   ETHERSCAN_PRIVACY_LINK,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
+import SRPQuiz from '../../../components/app/srp-quiz-popover/SRPQuiz';
 import { Button } from '../../../components/component-library/button';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -27,7 +28,6 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import SRPQuiz from '../../../components/app/srp-quiz-popover/SRPQuiz';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -134,6 +134,7 @@ export default class SecurityTab extends PureComponent {
             </Button>
             {this.state.srpQuizPopoverVisible && (
               <SRPQuiz
+                isOpen={this.state.srpQuizPopoverVisible}
                 onClose={() => this.setState({ srpQuizPopoverVisible: false })}
               />
             )}
