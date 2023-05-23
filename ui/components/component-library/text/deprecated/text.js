@@ -6,7 +6,7 @@ import {
   FONT_WEIGHT,
   FONT_STYLE,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
   TEXT_TRANSFORM,
   OVERFLOW_WRAP,
   TextColor,
@@ -146,10 +146,10 @@ Text.propTypes = {
    */
   textTransform: PropTypes.oneOf(Object.values(TEXT_TRANSFORM)),
   /**
-   * The text-align of the Text component. Should use the TEXT_ALIGN object from
+   * The text-align of the Text component. Should use the TextAlign enum from
    * ./ui/helpers/constants/design-system.js
    */
-  textAlign: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
+  textAlign: PropTypes.oneOf(Object.values(TextAlign)),
   /**
    * Change the dir (direction) global attribute of text to support the direction a language is written
    * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
