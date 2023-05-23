@@ -240,6 +240,7 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             noteComponent={noteComponent}
