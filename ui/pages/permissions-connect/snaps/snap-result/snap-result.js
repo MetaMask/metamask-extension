@@ -48,7 +48,7 @@ export default function SnapResult({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <Box
-        className="headers"
+        className="snap-result__header"
         paddingLeft={4}
         paddingRight={4}
         alignItems={AlignItems.center}
@@ -57,7 +57,7 @@ export default function SnapResult({
         <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {isLoading && (
           <Box
-            className="loader-container"
+            className="snap-result__header__loader-container"
             flexDirection={FLEX_DIRECTION.COLUMN}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
@@ -94,7 +94,7 @@ export default function SnapResult({
         )}
       </Box>
       <Box
-        className="footers"
+        className="snap-result__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
