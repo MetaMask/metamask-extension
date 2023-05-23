@@ -134,6 +134,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               history.push(NOTIFICATIONS_ROUTE);
             }}
           >
+            <Text as="span">{t('notifications')}</Text>
             {unreadNotificationsCount > 0 && (
               <Text
                 as="span"
@@ -149,12 +150,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                   borderRadius: '16px',
                   minWidth: '24px',
                 }}
-                marginInlineEnd={2}
+                marginInlineStart={2}
               >
                 {unreadNotificationsCount}
               </Text>
             )}
-            <Text as="span">{t('notifications')}</Text>
           </MenuItem>
         </>
         ///: END:ONLY_INCLUDE_IN(snaps)
