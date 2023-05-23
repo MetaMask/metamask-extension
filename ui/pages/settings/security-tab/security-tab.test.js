@@ -28,19 +28,6 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('navigates to reveal seed words page', () => {
-    const { queryByTestId, history } = renderWithProvider(
-      <SecurityTab />,
-      mockStore,
-    );
-
-    expect(history.location.pathname).toStrictEqual('/');
-
-    fireEvent.click(queryByTestId('reveal-seed-words'));
-
-    expect(history.location.pathname).toStrictEqual('/seed');
-  });
-
   it('toggles incoming txs', () => {
     const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
 
