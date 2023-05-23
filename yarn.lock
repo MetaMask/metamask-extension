@@ -12771,12 +12771,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.1.5":
-  version: 3.1.5
-  resolution: "cross-fetch@npm:3.1.5"
+"cross-fetch@npm:^3.0.4, cross-fetch@npm:^3.1.5":
+  version: 3.1.6
+  resolution: "cross-fetch@npm:3.1.6"
   dependencies:
-    node-fetch: 2.6.7
-  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+    node-fetch: ^2.6.11
+  checksum: 704b3519ab7de488328cc49a52cf1aa14132ec748382be5b9557b22398c33ffa7f8c2530e8a97ed8cb55da52b0a9740a9791d361271c4591910501682d981d9c
   languageName: node
   linkType: hard
 
@@ -25396,9 +25396,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7, node-fetch@npm:^2, node-fetch@npm:^2.6.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.7, node-fetch@npm:~2.6.1":
-  version: 2.6.7
-  resolution: "node-fetch@npm:2.6.7"
+"node-fetch@npm:^2, node-fetch@npm:^2.6.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.11, node-fetch@npm:^2.6.7, node-fetch@npm:~2.6.1":
+  version: 2.6.11
+  resolution: "node-fetch@npm:2.6.11"
   dependencies:
     whatwg-url: ^5.0.0
   peerDependencies:
@@ -25406,7 +25406,7 @@ __metadata:
   peerDependenciesMeta:
     encoding:
       optional: true
-  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  checksum: 249d0666a9497553384d46b5ab296ba223521ac88fed4d8a17d6ee6c2efb0fc890f3e8091cafe7f9fba8151a5b8d925db2671543b3409a56c3cd522b468b47b3
   languageName: node
   linkType: hard
 
