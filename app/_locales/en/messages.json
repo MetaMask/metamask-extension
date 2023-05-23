@@ -3921,18 +3921,6 @@
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
-  "srpToggleShow": {
-    "message": "Show/Hide this word of the secret recovery phrase",
-    "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
-  },
-  "srpWordHidden": {
-    "message": "This word is hidden",
-    "description": "Explains that a word in the secret recovery phrase is hidden"
-  },
-  "srpWordShown": {
-    "message": "This word is being shown",
-    "description": "Explains that a word in the secret recovery phrase is being shown"
-  },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
   },
@@ -3983,6 +3971,18 @@
   },
   "srpSecurityQuizTitle": {
     "message": "Security quiz"
+  },
+  "srpToggleShow": {
+    "message": "Show/Hide this word of the secret recovery phrase",
+    "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
+  },
+  "srpWordHidden": {
+    "message": "This word is hidden",
+    "description": "Explains that a word in the secret recovery phrase is hidden"
+  },
+  "srpWordShown": {
+    "message": "This word is being shown",
+    "description": "Explains that a word in the secret recovery phrase is being shown"
   },
   "stable": {
     "message": "Stable"
