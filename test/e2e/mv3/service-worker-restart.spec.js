@@ -1,5 +1,12 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  SERVICE_WORKER_URL,
+  defaultGanacheOptions,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
@@ -8,14 +15,6 @@ const {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } = require('../../../shared/constants/metametrics');
-
-const PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
-
-const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
-const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
-};
 
 const numberOfSegmentRequests = 3;
 
@@ -76,7 +75,7 @@ describe('MV3 - Service worker restart', function () {
 
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
-        await driver.openNewPage('chrome://inspect/#service-workers/');
+        await driver.openNewPage(SERVICE_WORKER_URL);
         await driver.clickElement({
           text: 'Service workers',
           tag: 'button',
@@ -142,7 +141,7 @@ describe('MV3 - Service worker restart', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // initialize a transaction of send from dapp
-        await driver.openNewPage('http://127.0.0.1:8080');
+        await openDapp(driver);
         await driver.clickElement('#sendButton');
 
         // A popup window is initialized
@@ -159,7 +158,7 @@ describe('MV3 - Service worker restart', function () {
         // Restart service worker in a new window
         // Because if we stay in the same window we will lose the popup when opening a new tab
         await driver.switchToNewWindow();
-        await driver.openNewURL('chrome://inspect/#service-workers');
+        await driver.openNewURL(SERVICE_WORKER_URL);
         windowHandles = await driver.getAllWindowHandles();
         // MM expanded view, Dapp, Notification popup, console and service worker
         await driver.waitUntilXWindowHandles(5);

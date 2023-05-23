@@ -21,6 +21,8 @@ buildTypes:
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+    # Main build uses the default browser manifest
+    manifestOverrides: false
 
   beta:
     features:
@@ -34,7 +36,7 @@ buildTypes:
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
     # Folder which contains overrides to browser manifests
-    manifestOverrides: ./app/build-types/mmi/manifest/
+    manifestOverrides: ./app/build-types/beta/manifest/
 
   flask:
     # Code surrounded using code fences for that feature
@@ -48,11 +50,13 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.16.0-flask.1/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
+    manifestOverrides: ./app/build-types/flask/manifest/
 
   desktop:
     features:
@@ -64,11 +68,13 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.16.0-flask.1/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
     isPrerelease: true
+    manifestOverrides: ./app/build-types/desktop/manifest/
 
   mmi:
     features:
@@ -83,6 +89,7 @@ buildTypes:
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
+    manifestOverrides: ./app/build-types/mmi/manifest/
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
@@ -96,6 +103,7 @@ features:
       - ALLOW_LOCAL_SNAPS
       # Whether to verify that a snap can be installed using an allow list
       - REQUIRE_SNAPS_ALLOWLIST
+      - IFRAME_EXECUTION_ENVIRONMENT_URL
     assets:
       - ./{app,shared,ui}/**/snaps/**
   desktop:
@@ -122,7 +130,7 @@ features:
     assets:
       - src: ./app/build-types/mmi/images/
         dest: images
-      - ./{app,shared,ui}/**/mmi/**
+      - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
       - src: ./app/build-types/flask/images/
@@ -153,6 +161,9 @@ env:
   # These are exclusively used for MV3
   - APPLY_LAVAMOAT
   - FILE_NAMES
+
+  # This variable is read by Trezor's source and breaks build if not included
+  - ASSET_PREFIX: null
 
   ###
   # API keys to 3rd party services
@@ -189,8 +200,6 @@ env:
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - ICON_NAMES
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - METAMASK_ENVIRONMENT
@@ -205,6 +214,8 @@ env:
   # if it's not inside process.env
   # Also see DEBUG and METAMASK_DEBUG
   - NODE_DEBUG: ''
+  # Used by react-devtools-core
+  - EDITOR_URL: ''
 
   ###
   # Meta variables

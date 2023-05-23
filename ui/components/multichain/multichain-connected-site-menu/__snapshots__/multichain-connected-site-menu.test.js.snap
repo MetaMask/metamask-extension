@@ -2,8 +2,8 @@
 
 exports[`Multichain Connected Site Menu should render the site menu in connected state 1`] = `
 <div>
-  <div
-    class="box multichain-connected-site-menu box--flex-direction-row"
+  <button
+    class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
     data-testid="connection-menu"
   >
     <div>
@@ -19,7 +19,7 @@ exports[`Multichain Connected Site Menu should render the site menu in connected
           class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -33,14 +33,14 @@ exports[`Multichain Connected Site Menu should render the site menu in connected
         </div>
       </div>
     </div>
-  </div>
+  </button>
 </div>
 `;
 
 exports[`Multichain Connected Site Menu should render the site menu in not connected state 1`] = `
 <div>
-  <div
-    class="box multichain-connected-site-menu box--flex-direction-row"
+  <button
+    class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
     data-testid="connection-menu"
   >
     <div>
@@ -56,7 +56,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
           class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -70,14 +70,14 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
         </div>
       </div>
     </div>
-  </div>
+  </button>
 </div>
 `;
 
 exports[`Multichain Connected Site Menu should render the site menu in not connected to current account state 1`] = `
 <div>
-  <div
-    class="box multichain-connected-site-menu box--flex-direction-row"
+  <button
+    class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
     data-testid="connection-menu"
   >
     <div>
@@ -93,7 +93,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
           class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -107,6 +107,6 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
         </div>
       </div>
     </div>
-  </div>
+  </button>
 </div>
 `;

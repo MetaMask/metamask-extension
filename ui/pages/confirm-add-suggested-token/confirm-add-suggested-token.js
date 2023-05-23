@@ -14,7 +14,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getPendingApprovalsRequestDataSelector } from '../../selectors';
+import { getApprovalRequestsByType } from '../../selectors';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
@@ -78,9 +78,8 @@ const ConfirmAddSuggestedToken = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedAssets = useSelector((metamaskState) =>
-    getPendingApprovalsRequestDataSelector(
-      metamaskState,
-      ApprovalType.WatchAsset,
+    getApprovalRequestsByType(metamaskState, ApprovalType.WatchAsset).map(
+      ({ requestData }) => requestData,
     ),
   );
   const tokens = useSelector(getTokens);

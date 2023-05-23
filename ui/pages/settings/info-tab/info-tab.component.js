@@ -24,7 +24,7 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {
-    version: global.platform.getVersion(),
+    version: global.platform?.getVersion() ?? '<unknown>',
   };
 
   static contextTypes = {

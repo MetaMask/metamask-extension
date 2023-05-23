@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 
 describe('Custom network', function () {
   const chainID = '42161';
@@ -33,7 +33,7 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.executeScript(`
           var params = [{
             chainId: "0x1",
@@ -111,7 +111,7 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.executeScript(`
           var params = [{
             chainId: "0x123",
@@ -176,7 +176,7 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.executeScript(`
           var params = [{
             chainId: "0x123",

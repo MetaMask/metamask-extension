@@ -1,0 +1,171 @@
+diff --git a/dist/TokensController.js b/dist/TokensController.js
+index 0e03b88e8a46dce73a5cc87fb432b0b2431b3797..e15e6ee1344b1a91f3893befbc47b7c340733091 100644
+--- a/dist/TokensController.js
++++ b/dist/TokensController.js
+@@ -423,103 +423,22 @@ class TokensController extends base_controller_1.BaseController {
+      */
+     watchAsset(asset, type, interactingAddress) {
+         return __awaiter(this, void 0, void 0, function* () {
++            if (type !== controller_utils_1.ERC20) {
++                throw new Error(`Asset of type ${type} not supported`);
++            }
+             const { selectedAddress } = this.config;
+             const suggestedAssetMeta = {
+                 asset,
+                 id: this._generateRandomId(),
+-                status: SuggestedAssetStatus.pending,
+                 time: Date.now(),
+                 type,
+                 interactingAddress: interactingAddress || selectedAddress,
+             };
+-            try {
+-                switch (type) {
+-                    case 'ERC20':
+-                        (0, assetsUtil_1.validateTokenToWatch)(asset);
+-                        break;
+-                    default:
+-                        throw new Error(`Asset of type ${type} not supported`);
+-                }
+-            }
+-            catch (error) {
+-                this.failSuggestedAsset(suggestedAssetMeta, error);
+-                return Promise.reject(error);
+-            }
+-            const result = new Promise((resolve, reject) => {
+-                this.hub.once(`${suggestedAssetMeta.id}:finished`, (meta) => {
+-                    switch (meta.status) {
+-                        case SuggestedAssetStatus.accepted:
+-                            return resolve(meta.asset.address);
+-                        case SuggestedAssetStatus.rejected:
+-                            return reject(new Error('User rejected to watch the asset.'));
+-                        case SuggestedAssetStatus.failed:
+-                            return reject(new Error(meta.error.message));
+-                        /* istanbul ignore next */
+-                        default:
+-                            return reject(new Error(`Unknown status: ${meta.status}`));
+-                    }
+-                });
+-            });
+-            const { suggestedAssets } = this.state;
+-            suggestedAssets.push(suggestedAssetMeta);
+-            this.update({ suggestedAssets: [...suggestedAssets] });
+-            this._requestApproval(suggestedAssetMeta);
+-            return { result, suggestedAssetMeta };
++            (0, assetsUtil_1.validateTokenToWatch)(asset);
++            yield this._requestApproval(suggestedAssetMeta);
++            yield this.addToken(asset.address, asset.symbol, asset.decimals, asset.image, suggestedAssetMeta.interactingAddress);
+         });
+     }
+-    /**
+-     * Accepts to watch an asset and updates it's status and deletes the suggestedAsset from state,
+-     * adding the asset to corresponding asset state. In this case ERC20 tokens.
+-     * A `<suggestedAssetMeta.id>:finished` hub event is fired after accepted or failure.
+-     *
+-     * @param suggestedAssetID - The ID of the suggestedAsset to accept.
+-     */
+-    acceptWatchAsset(suggestedAssetID) {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            const { selectedAddress } = this.config;
+-            const { suggestedAssets } = this.state;
+-            const index = suggestedAssets.findIndex(({ id }) => suggestedAssetID === id);
+-            const suggestedAssetMeta = suggestedAssets[index];
+-            try {
+-                switch (suggestedAssetMeta.type) {
+-                    case 'ERC20':
+-                        const { address, symbol, decimals, image } = suggestedAssetMeta.asset;
+-                        yield this.addToken(address, symbol, decimals, image, (suggestedAssetMeta === null || suggestedAssetMeta === void 0 ? void 0 : suggestedAssetMeta.interactingAddress) || selectedAddress);
+-                        this._acceptApproval(suggestedAssetID);
+-                        const acceptedSuggestedAssetMeta = Object.assign(Object.assign({}, suggestedAssetMeta), { status: SuggestedAssetStatus.accepted });
+-                        this.hub.emit(`${suggestedAssetMeta.id}:finished`, acceptedSuggestedAssetMeta);
+-                        break;
+-                    default:
+-                        throw new Error(`Asset of type ${suggestedAssetMeta.type} not supported`);
+-                }
+-            }
+-            catch (error) {
+-                this.failSuggestedAsset(suggestedAssetMeta, error);
+-                this._rejectApproval(suggestedAssetID);
+-            }
+-            const newSuggestedAssets = suggestedAssets.filter(({ id }) => id !== suggestedAssetID);
+-            this.update({ suggestedAssets: [...newSuggestedAssets] });
+-        });
+-    }
+-    /**
+-     * Rejects a watchAsset request based on its ID by setting its status to "rejected"
+-     * and emitting a `<suggestedAssetMeta.id>:finished` hub event.
+-     *
+-     * @param suggestedAssetID - The ID of the suggestedAsset to accept.
+-     */
+-    rejectWatchAsset(suggestedAssetID) {
+-        const { suggestedAssets } = this.state;
+-        const index = suggestedAssets.findIndex(({ id }) => suggestedAssetID === id);
+-        const suggestedAssetMeta = suggestedAssets[index];
+-        if (!suggestedAssetMeta) {
+-            return;
+-        }
+-        const rejectedSuggestedAssetMeta = Object.assign(Object.assign({}, suggestedAssetMeta), { status: SuggestedAssetStatus.rejected });
+-        this.hub.emit(`${suggestedAssetMeta.id}:finished`, rejectedSuggestedAssetMeta);
+-        const newSuggestedAssets = suggestedAssets.filter(({ id }) => id !== suggestedAssetID);
+-        this.update({ suggestedAssets: [...newSuggestedAssets] });
+-        this._rejectApproval(suggestedAssetID);
+-    }
+     /**
+      * Takes a new tokens and ignoredTokens array for the current network/account combination
+      * and returns new allTokens and allIgnoredTokens state to update to.
+@@ -577,42 +496,24 @@ class TokensController extends base_controller_1.BaseController {
+         this.update({ ignoredTokens: [], allIgnoredTokens: {} });
+     }
+     _requestApproval(suggestedAssetMeta) {
+-        this.messagingSystem
+-            .call('ApprovalController:addRequest', {
+-            id: suggestedAssetMeta.id,
+-            origin: controller_utils_1.ORIGIN_METAMASK,
+-            type: controller_utils_1.ApprovalType.WatchAsset,
+-            requestData: {
++        return __awaiter(this, void 0, void 0, function* () {
++            return this.messagingSystem.call('ApprovalController:addRequest', {
+                 id: suggestedAssetMeta.id,
+-                interactingAddress: suggestedAssetMeta.interactingAddress,
+-                asset: {
+-                    address: suggestedAssetMeta.asset.address,
+-                    decimals: suggestedAssetMeta.asset.decimals,
+-                    symbol: suggestedAssetMeta.asset.symbol,
+-                    image: suggestedAssetMeta.asset.image || null,
++                origin: controller_utils_1.ORIGIN_METAMASK,
++                type: controller_utils_1.ApprovalType.WatchAsset,
++                requestData: {
++                    id: suggestedAssetMeta.id,
++                    interactingAddress: suggestedAssetMeta.interactingAddress,
++                    asset: {
++                        address: suggestedAssetMeta.asset.address,
++                        decimals: suggestedAssetMeta.asset.decimals,
++                        symbol: suggestedAssetMeta.asset.symbol,
++                        image: suggestedAssetMeta.asset.image || null,
++                    },
+                 },
+-            },
+-        }, true)
+-            .catch(() => {
+-            // Intentionally ignored as promise not currently used
++            }, true);
+         });
+     }
+-    _acceptApproval(approvalRequestId) {
+-        try {
+-            this.messagingSystem.call('ApprovalController:acceptRequest', approvalRequestId);
+-        }
+-        catch (error) {
+-            console.error('Failed to accept token watch approval request', error);
+-        }
+-    }
+-    _rejectApproval(approvalRequestId) {
+-        try {
+-            this.messagingSystem.call('ApprovalController:rejectRequest', approvalRequestId, new Error('Rejected'));
+-        }
+-        catch (messageCallError) {
+-            console.error('Failed to reject token watch approval request', messageCallError);
+-        }
+-    }
+ }
+ exports.TokensController = TokensController;
+ exports.default = TokensController;

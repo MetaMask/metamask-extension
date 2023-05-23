@@ -498,6 +498,7 @@ export default class Routes extends Component {
       isNetworkMenuOpen,
       toggleNetworkMenu,
       accountDetailsAddress,
+      location,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -542,7 +543,7 @@ export default class Routes extends Component {
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() &&
           (process.env.MULTICHAIN ? (
-            <MultichainAppHeader />
+            <MultichainAppHeader location={location} />
           ) : (
             <AppHeader
               hideNetworkIndicator={this.onInitializationUnlockPage()}

@@ -10,7 +10,7 @@ import {
   holdToRevealContent3,
   holdToRevealContent4,
   holdToRevealContent5,
-  holdToRevealTitle,
+  holdToRevealSRPTitle,
 } from '../../../../../app/_locales/en/messages.json';
 import {
   MetaMetricsEventCategory,
@@ -25,8 +25,6 @@ describe('Hold to Reveal Modal', () => {
   const onLongPressStub = jest.fn();
   const hideModalStub = jest.fn();
 
-  global.platform = { openTab: jest.fn() };
-
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -36,6 +34,7 @@ describe('Hold to Reveal Modal', () => {
       <HoldToRevealModal
         onLongPressed={onLongPressStub}
         hideModal={hideModalStub}
+        holdToRevealType="SRP"
       />,
       mockStore,
     );
@@ -43,7 +42,7 @@ describe('Hold to Reveal Modal', () => {
     const holdButton = getByText('Hold to reveal SRP');
     expect(holdButton).toBeInTheDocument();
 
-    const warningTitle = getByText(holdToRevealTitle.message);
+    const warningTitle = getByText(holdToRevealSRPTitle.message);
     expect(warningTitle).toBeInTheDocument();
     const warningText1 = getByText(
       holdToRevealContent1.message.replace(' $1', ''),
@@ -83,12 +82,12 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    const circleLocked = queryByLabelText('circle-locked');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     fireEvent.mouseDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
@@ -112,8 +111,8 @@ describe('Hold to Reveal Modal', () => {
 
     fireEvent.click(holdButton);
 
-    const circleLocked = queryByLabelText('circle-locked');
-    const circleUnlocked = queryByLabelText('circle-unlocked');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
 
     await waitFor(() => {
       expect(circleLocked).toBeInTheDocument();
@@ -163,12 +162,12 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    const circleLocked = queryByLabelText('circle-locked');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     fireEvent.mouseDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
