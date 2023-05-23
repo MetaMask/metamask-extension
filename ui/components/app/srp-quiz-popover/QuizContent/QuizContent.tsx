@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
@@ -30,7 +31,7 @@ export default function QuizContent({
           {icon}
         </Box>
       )}
-      {image && <img src={image} />}
+      {image && <img src={image} width="100%" />}
       <Text
         variant={TextVariant.bodyLgMedium}
         textAlign={TextAlign.Center}
@@ -55,9 +56,8 @@ export default function QuizContent({
           onClick={btn.onClick}
           label={btn.label}
           variant={btn.variant}
-          marginLeft={4}
-          marginRight={4}
           marginBottom={2}
+          width={BlockSize.Full}
         >
           {btn.label}
         </Button>
