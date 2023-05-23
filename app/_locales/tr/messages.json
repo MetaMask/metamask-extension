@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Varlık seçenekleri"
   },
-  "assets": {
-    "message": "Varlıklar"
-  },
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
   },

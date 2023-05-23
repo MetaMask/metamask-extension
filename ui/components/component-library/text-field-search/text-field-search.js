@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 import { ButtonIcon, ButtonIconSize, Icon, IconName, IconSize } from '..';
 import { TextField, TEXT_FIELD_TYPES } from '../text-field';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const TextFieldSearch = ({
   className,
@@ -15,37 +16,40 @@ export const TextFieldSearch = ({
   value,
   onChange,
   ...props
-}) => (
-  <TextField
-    className={classnames('mm-text-field-search', className)}
-    value={value}
-    onChange={onChange}
-    type={TEXT_FIELD_TYPES.SEARCH}
-    endAccessory={
-      value && showClearButton ? (
-        <>
-          <ButtonIcon
-            className="mm-text-field__button-clear"
-            ariaLabel="Clear" // TODO: i18n
-            iconName={IconName.Close}
-            size={ButtonIconSize.SM}
-            onClick={clearButtonOnClick}
-            {...clearButtonProps}
-          />
-          {endAccessory}
-        </>
-      ) : (
-        endAccessory
-      )
-    }
-    startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
-    inputProps={{
-      marginRight: showClearButton ? 6 : 0,
-      ...inputProps,
-    }}
-    {...props}
-  />
-);
+}) => {
+  const t = useI18nContext();
+  return (
+    <TextField
+      className={classnames('mm-text-field-search', className)}
+      value={value}
+      onChange={onChange}
+      type={TEXT_FIELD_TYPES.SEARCH}
+      endAccessory={
+        value && showClearButton ? (
+          <>
+            <ButtonIcon
+              className="mm-text-field__button-clear"
+              ariaLabel={t('clear')}
+              iconName={IconName.Close}
+              size={ButtonIconSize.Sm}
+              onClick={clearButtonOnClick}
+              {...clearButtonProps}
+            />
+            {endAccessory}
+          </>
+        ) : (
+          endAccessory
+        )
+      }
+      startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
+      inputProps={{
+        marginRight: showClearButton ? 6 : 0,
+        ...inputProps,
+      }}
+      {...props}
+    />
+  );
+};
 
 TextFieldSearch.propTypes = {
   /**

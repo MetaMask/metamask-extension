@@ -8,6 +8,10 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks'
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '../../../shared/constants/transaction';
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';
@@ -21,6 +25,31 @@ setBackgroundConnection({
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
 });
+
+const mockNetworkId = '5';
+
+const mockTxParamsFromAddress = '0x123456789';
+
+const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
+const mockTxParamsToAddressConcat = '0x85c...D65e';
+
+const mockParsedTxDataToAddressWithout0x =
+  'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
+const mockParsedTxDataToAddress = '0xe57...750A';
+
+const mockPropsToAddress = '0x33m1685cfceaa5c0bdb1609fc536e9a8387dd567';
+const mockPropsToAddressConcat = '0x33m...d567';
+
+const mockTxParams = {
+  from: mockTxParamsFromAddress,
+  to: mockTxParamsToAddress,
+  value: '0x5af3107a4000',
+  gas: '0x5208',
+  maxFeePerGas: '0x59682f16',
+  maxPriorityFeePerGas: '0x59682f00',
+  type: '0x2',
+  data: `0xa22cb465000000000000000000000000${mockParsedTxDataToAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
+};
 
 const baseStore = {
   send: {
@@ -37,17 +66,8 @@ const baseStore = {
     unapprovedTxs: {
       1: {
         id: 1,
-        metamaskNetworkId: '5',
-        txParams: {
-          from: '0x0',
-          to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
-          value: '0x5af3107a4000',
-          gas: '0x5208',
-          maxFeePerGas: '0x59682f16',
-          maxPriorityFeePerGas: '0x59682f00',
-          type: '0x2',
-          data: 'data',
-        },
+        metamaskNetworkId: mockNetworkId,
+        txParams: { ...mockTxParams },
       },
     },
     gasEstimateType: GasEstimateTypes.legacy,
@@ -56,14 +76,14 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: '0x0',
+    selectedAddress: mockTxParamsFromAddress,
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
       },
     ],
-    networkId: '5',
+    networkId: mockNetworkId,
     networkDetails: {
       EIPS: {},
     },
@@ -86,9 +106,17 @@ const baseStore = {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
-      '0x0': { balance: '0x0', address: '0x0' },
+      [mockTxParamsFromAddress]: {
+        balance: '0x0',
+        address: mockTxParamsFromAddress,
+      },
     },
-    identities: { '0x0': { address: '0x0' } },
+    identities: {
+      [mockTxParamsFromAddress]: { address: mockTxParamsFromAddress },
+      [mockTxParamsToAddress]: {
+        name: 'Test Address 1',
+      },
+    },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},
     ensResolutionsByAddress: {},
@@ -97,24 +125,16 @@ const baseStore = {
   confirmTransaction: {
     txData: {
       id: 1,
+      metamaskNetworkId: mockNetworkId,
+      txParams: { ...mockTxParams },
       time: 1675012496170,
-      status: 'unapproved',
-      metamaskNetworkId: '5',
+      status: TransactionStatus.unapproved,
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
       chainId: '0x5',
       loadingDefaults: false,
       dappSuggestedGasFees: null,
       sendFlowHistory: [],
-      txParams: {
-        from: '0x0',
-        to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
-        value: '0x5af3107a4000',
-        gas: '0x5208',
-        maxFeePerGas: '0x59682f16',
-        maxPriorityFeePerGas: '0x59682f00',
-        type: '0x2',
-      },
       origin: 'metamask',
       actionId: 1675012496153.2039,
       type: 'simpleSend',
@@ -145,6 +165,16 @@ const baseStore = {
   },
 };
 
+const mockedStore = jest.mocked(baseStore);
+
+const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
+  mockedStore.metamask.unapprovedTxs[1].txParams = { ..._mockTxParams };
+  mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
+};
+
+const sendToRecipientSelector =
+  '.sender-to-recipient__party--recipient .sender-to-recipient__name';
+
 describe('Confirm Transaction Base', () => {
   it('should match snapshot', () => {
     const store = configureMockStore(middleware)(baseStore);
@@ -155,15 +185,169 @@ describe('Confirm Transaction Base', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should contain L1 L2 fee details for optimism', () => {
-    baseStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
-    baseStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+  it('should not contain L1 L2 fee details for chains that are not optimism', () => {
     const store = configureMockStore(middleware)(baseStore);
-    const { getByText } = renderWithProvider(
+    const { queryByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
     );
-    expect(getByText('Layer 1 fees')).toBeInTheDocument();
-    expect(getByText('Layer 2 gas fee')).toBeInTheDocument();
+    expect(queryByText('Layer 1 fees')).not.toBeInTheDocument();
+    expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
+  });
+
+  it('should contain L1 L2 fee details for optimism', () => {
+    mockedStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
+    mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+    const store = configureMockStore(middleware)(mockedStore);
+    const { queryByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(queryByText('Layer 1 fees')).toBeInTheDocument();
+    expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
+  });
+
+  it('should render NoteToTrader when isNoteToTraderSupported is true', () => {
+    mockedStore.metamask.custodyAccountDetails = {
+      [mockTxParamsFromAddress]: {
+        address: mockTxParamsFromAddress,
+        details: 'details',
+        custodyType: 'testCustody - Saturn',
+        custodianName: 'saturn-dev',
+      },
+    };
+
+    mockedStore.metamask.mmiConfiguration = {
+      custodians: [
+        {
+          name: 'saturn-dev',
+          displayName: 'Saturn Custody',
+          isNoteToTraderSupported: true,
+        },
+      ],
+    };
+
+    const store = configureMockStore(middleware)(mockedStore);
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(getByTestId('transaction-note')).toBeInTheDocument();
+  });
+
+  describe('when rendering the recipient value', () => {
+    describe(`when the transaction is a ${TransactionType.simpleSend} type`, () => {
+      it(`should use txParams.to address`, () => {
+        const store = configureMockStore(middleware)(mockedStore);
+        const { container } = renderWithProvider(
+          <ConfirmTransactionBase actionKey="confirm" />,
+          store,
+        );
+
+        const recipientElem = container.querySelector(sendToRecipientSelector);
+        expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+      });
+
+      it(`should use txParams.to address even if there is no amount sent`, () => {
+        mockedStoreWithConfirmTxParams({
+          ...mockTxParams,
+          value: '0x0',
+        });
+        const store = configureMockStore(middleware)(mockedStore);
+        const { container } = renderWithProvider(
+          <ConfirmTransactionBase actionKey="confirm" />,
+          store,
+        );
+
+        const recipientElem = container.querySelector(sendToRecipientSelector);
+        expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+      });
+    });
+    describe(`when the transaction is NOT a ${TransactionType.simpleSend} type`, () => {
+      beforeEach(() => {
+        mockedStore.confirmTransaction.txData.type =
+          TransactionType.contractInteraction;
+      });
+
+      describe('when there is an amount being sent (it should be treated as a general contract intereaction rather than custom one)', () => {
+        it('should use txParams.to address (contract address)', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            value: '0x45666',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase actionKey="confirm" />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+      });
+
+      describe(`when there is no amount being sent`, () => {
+        it('should use propToAddress (toAddress passed as prop)', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            value: '0x0',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase
+              // we want to test toAddress provided by ownProps in mapStateToProps, but this
+              // currently overrides toAddress this should pan out fine when we refactor the
+              // component into a functional component and remove the container.js file
+              toAddress={mockPropsToAddress}
+              actionKey="confirm"
+            />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockPropsToAddressConcat);
+        });
+
+        it('should use address parsed from transaction data if propToAddress is not provided', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            value: '0x0',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase actionKey="confirm" />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
+        });
+
+        it('should use txParams.to if neither propToAddress is not provided nor the transaction data to address were provided', () => {
+          mockedStoreWithConfirmTxParams({
+            ...mockTxParams,
+            data: '0x',
+            value: '0x0',
+          });
+          const store = configureMockStore(middleware)(mockedStore);
+          const { container } = renderWithProvider(
+            <ConfirmTransactionBase actionKey="confirm" />,
+            store,
+          );
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+      });
+    });
   });
 });

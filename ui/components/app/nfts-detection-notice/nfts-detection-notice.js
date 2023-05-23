@@ -2,11 +2,11 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Dialog from '../../ui/dialog';
-import Typography from '../../ui/typography/typography';
+import { Icon, IconName, Text } from '../../component-library';
 import {
-  TypographyVariant,
-  TEXT_ALIGN,
-  FONT_WEIGHT,
+  TextVariant,
+  TextAlign,
+  FontWeight,
   DISPLAY,
   TextColor,
   IconColor,
@@ -14,7 +14,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, IconName } from '../../component-library';
 
 export default function NftsDetectionNotice() {
   const t = useI18nContext();
@@ -32,22 +31,24 @@ export default function NftsDetectionNotice() {
             />
           </Box>
           <Box paddingLeft={2}>
-            <Typography
+            <Text
               color={TextColor.textDefault}
-              align={TEXT_ALIGN.LEFT}
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.BOLD}
+              align={TextAlign.Left}
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
             >
               {t('newNFTsDetected')}
-            </Typography>
-            <Typography
+            </Text>
+            <Text
               color={TextColor.textDefault}
-              align={TEXT_ALIGN.LEFT}
-              variant={TypographyVariant.H7}
-              boxProps={{ marginBottom: 4 }}
+              align={TextAlign.Left}
+              variant={TextVariant.bodySm}
+              as="h6"
+              marginBottom={4}
             >
               {t('newNFTDetectedMessage')}
-            </Typography>
+            </Text>
             <Button
               type="link"
               onClick={(e) => {
