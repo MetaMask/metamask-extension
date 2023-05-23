@@ -1,21 +1,11 @@
 .snap-update {
   box-shadow: none;
 
-  .content {
+  &__content {
     flex: 1;
 
-    .loader-container {
+    &__loader-container {
       height: 100%;
-    }
-
-    .update-snap-permission-list {
-      padding: 0 24px;
-
-      .new-permission,
-      .approved-permission,
-      .revoked-permission {
-        padding: 8px 0;
-      }
     }
 
     &__permission-description {
