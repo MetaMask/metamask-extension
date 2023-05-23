@@ -3702,20 +3702,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/assets-controllers@npm:6.0.0"
+"@metamask/assets-controllers@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/assets-controllers@npm:7.0.0"
   dependencies:
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
     "@metamask/abi-utils": ^1.1.0
-    "@metamask/approval-controller": ^2.1.0
+    "@metamask/approval-controller": ^2.1.1
     "@metamask/base-controller": ^2.0.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^3.2.0
+    "@metamask/controller-utils": ^3.4.0
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^7.0.0
+    "@metamask/network-controller": ^8.0.0
     "@metamask/preferences-controller": ^3.0.0
     "@metamask/utils": ^5.0.1
     "@types/uuid": ^8.3.0
@@ -3730,43 +3730,9 @@ __metadata:
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/approval-controller": ^2.1.0
-    "@metamask/network-controller": ^7.0.0
-  checksum: 79c56421567b48b24deab2410645ae60022954ad590e6d91c3770fbeaf24ea3e92608935ae15696349a51bfc5d4337b22cc21f48b0d09bbf4e2f1a0c4aa96904
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A6.0.0#./.yarn/patches/@metamask-assets-controllers-npm-6.0.0-0cb763bd07.patch::locator=metamask-crx%40workspace%3A.":
-  version: 6.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A6.0.0#./.yarn/patches/@metamask-assets-controllers-npm-6.0.0-0cb763bd07.patch::version=6.0.0&hash=b3036f&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@ethersproject/bignumber": ^5.7.0
-    "@ethersproject/contracts": ^5.7.0
-    "@ethersproject/providers": ^5.7.0
-    "@metamask/abi-utils": ^1.1.0
-    "@metamask/approval-controller": ^2.1.0
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^3.2.0
-    "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^7.0.0
-    "@metamask/preferences-controller": ^3.0.0
-    "@metamask/utils": ^5.0.1
-    "@types/uuid": ^8.3.0
-    abort-controller: ^3.0.0
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.2
-    ethereumjs-util: ^7.0.10
-    immer: ^9.0.6
-    multiformats: ^9.5.2
-    single-call-balance-checker-abi: ^1.0.0
-    uuid: ^8.3.2
-  peerDependencies:
-    "@metamask/approval-controller": ^2.1.0
-    "@metamask/network-controller": ^7.0.0
-  checksum: 7fcb7d4b62bca0205d8e4d833d40c5b9f5cc6e80a27a3b1f3f3108e7e643121eb2a6f208672fd537e9b372280163fc9029f7f9c1d99ba252d359654a6493affa
+    "@metamask/approval-controller": ^2.1.1
+    "@metamask/network-controller": ^8.0.0
+  checksum: 7075fe057f647ea84bcaaef3efa7c257be551a9ec4682c85dfa07e1f39e525cef43cb9841604fa094f165883060b9c1b07ca393875d66b3dab01eb71de35c7a1
   languageName: node
   linkType: hard
 
@@ -3846,7 +3812,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0, @metamask/controller-utils@npm:^3.2.0, @metamask/controller-utils@npm:^3.3.0, @metamask/controller-utils@npm:^3.4.0":
+"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0, @metamask/controller-utils@npm:^3.3.0, @metamask/controller-utils@npm:^3.4.0":
   version: 3.4.0
   resolution: "@metamask/controller-utils@npm:3.4.0"
   dependencies:
@@ -4092,13 +4058,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@metamask/gas-fee-controller@npm:4.0.1"
+"@metamask/gas-fee-controller@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/gas-fee-controller@npm:5.0.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-    "@metamask/network-controller": ^6.0.0
+    "@metamask/controller-utils": ^3.4.0
+    "@metamask/network-controller": ^8.0.0
     "@types/uuid": ^8.3.0
     babel-runtime: ^6.26.0
     eth-query: ^2.1.2
@@ -4107,8 +4073,8 @@ __metadata:
     immer: ^9.0.6
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/network-controller": ^6.0.0
-  checksum: a7f1557321679a289bc6dcae107c6af57d6862db3120c35bd27fff744ec12b80ee6e5294eb9d658a1f8415920267326167098739f2c7c1abac299d8a5cc69dcc
+    "@metamask/network-controller": ^8.0.0
+  checksum: 6c6a21ab2ca42ad2fc361373e192624deef9f02686e9e124fc3af53f37438dc02264aa2f73c82a3f1e4153b5a8ea518fa11fb212066218c0f4afdc16a95868db
   languageName: node
   linkType: hard
 
@@ -4184,41 +4150,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/network-controller@npm:6.0.0"
+"@metamask/network-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/network-controller@npm:8.0.0"
   dependencies:
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
+    "@metamask/controller-utils": ^3.4.0
     "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/utils": ^3.3.1
+    "@metamask/utils": ^5.0.1
     async-mutex: ^0.2.6
     babel-runtime: ^6.26.0
     eth-json-rpc-infura: ^5.1.0
     eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     uuid: ^8.3.2
-    web3-provider-engine: ^16.0.3
-  checksum: 5bbc0c1c876b7842d2a643962174880695df05b75164ddbd68e2ee62b352ad89525c49635ae256b11a035573bc0ea985a563f1bd86d84775d35afe8597c18dc5
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/network-controller@npm:7.0.0"
-  dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.1.0
-    "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/utils": ^3.3.1
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-json-rpc-infura: ^5.1.0
-    eth-query: ^2.1.2
-    immer: ^9.0.6
-    uuid: ^8.3.2
-    web3-provider-engine: ^16.0.3
-  checksum: 62eeb223f164db1cb5914070b9ec799ee980c0723e9e154afaab3a3032d5ac133c7d1e1cbc506fd9083254f1888a7f7e99137278a107c9b9d854cb9c629b1713
+    web3-provider-engine: ^16.0.5
+  checksum: d8da6a26320577d516c47a007881386ce0fbd4c63911e58058c07cdc0efda8f84d70f7f8295f3cf8e87106c816fa0b1a75df6efec98d1f1fa1232446f773f596
   languageName: node
   linkType: hard
 
@@ -4692,7 +4640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.3.1, @metamask/utils@npm:^3.4.1":
+"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.4.1":
   version: 3.6.0
   resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
@@ -12700,7 +12648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^2.1.0, cross-fetch@npm:^3.1.5":
+"cross-fetch@npm:^3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
   dependencies:
@@ -23663,7 +23611,7 @@ __metadata:
     "@metamask/address-book-controller": ^2.0.0
     "@metamask/announcement-controller": ^3.0.0
     "@metamask/approval-controller": ^2.1.0
-    "@metamask/assets-controllers": ^6.0.0
+    "@metamask/assets-controllers": ^7.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^2.0.0
     "@metamask/browser-passworder": ^4.1.0
@@ -23685,7 +23633,7 @@ __metadata:
     "@metamask/eth-trezor-keyring": ^1.0.0
     "@metamask/etherscan-link": ^2.2.0
     "@metamask/forwarder": ^1.1.0
-    "@metamask/gas-fee-controller": ^4.0.0
+    "@metamask/gas-fee-controller": ^5.0.0
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
@@ -34080,16 +34028,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-provider-engine@npm:^16.0.3":
-  version: 16.0.3
-  resolution: "web3-provider-engine@npm:16.0.3"
+"web3-provider-engine@npm:^16.0.3, web3-provider-engine@npm:^16.0.5":
+  version: 16.0.5
+  resolution: "web3-provider-engine@npm:16.0.5"
   dependencies:
     "@ethereumjs/tx": ^3.3.0
     async: ^2.5.0
     backoff: ^2.5.0
     clone: ^2.0.0
-    cross-fetch: ^2.1.0
-    eth-block-tracker: ^4.4.2
+    eth-block-tracker: ^5.0.1
     eth-json-rpc-filters: ^4.2.1
     eth-json-rpc-infura: ^5.1.0
     eth-json-rpc-middleware: ^6.0.0
@@ -34106,7 +34053,7 @@ __metadata:
     ws: ^5.1.1
     xhr: ^2.2.0
     xtend: ^4.0.1
-  checksum: 31549e1afee0a2bc67425349535b733d4d7fe00caf08686a6f892ed68c4cf5aded3a995769d8a642dfa116a404a6d1261f0c6769836cd49509f8ec771e68fe65
+  checksum: 4dcdc8f49099f8112cb565c119c5e82b8e2c6f1e5fcbcacdd0f3c0baa29944778d133eabe033ff3c1c7f4d2538cd60cfe1caafba97aca5a0f22449f788a72dca
   languageName: node
   linkType: hard
 
