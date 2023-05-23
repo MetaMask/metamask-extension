@@ -165,7 +165,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       await driver.waitForSelector({
-        css: '[data-testid="wallet-balance"] .list-item__heading',
+        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
         text: '1000',
       });
       await driver.delay(regularDelayMs);
@@ -248,7 +248,7 @@ describe('MetaMask', function () {
 
     it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'import tokens', tag: 'a' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
@@ -435,7 +435,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.asset-list-item__token-button',
+        css: '[data-testid="multichain-token-list-item-value"]',
         text: '7.5 TST',
       });
 
