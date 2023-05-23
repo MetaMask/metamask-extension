@@ -19,6 +19,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  PopoverHeader,
 } from '../../../component-library';
 import Popover from '../../../ui/popover';
 import QuizContent from '../QuizContent';
@@ -252,7 +253,10 @@ export default function SRPQuiz(props: any) {
   }, [stage]);
 
   return (
-    <Popover onClose={props.onClose} title={title} centerTitle={true}>
+    <Popover>
+      <PopoverHeader onClose={props.onClose} margin={4}>
+        {title}
+      </PopoverHeader>
       {quizContent}
     </Popover>
   );
