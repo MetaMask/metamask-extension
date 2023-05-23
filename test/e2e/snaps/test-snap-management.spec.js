@@ -127,10 +127,14 @@ describe('Test Snap Management', function () {
         // check to see that there is one notification
         await driver.switchToWindow(extensionPage);
         await driver.delay(1000);
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         const notificationResult = await driver.findElement(
-          '.account-menu__icon__notification-count',
+          '[data-testid="global-menu-notification-count"]',
         );
         assert.equal(await notificationResult.getText(), '1');
+        await driver.clickElement('.menu__background');
 
         // try to remove snap
         await driver.clickElement({
