@@ -13,30 +13,26 @@
     min-width: 0;
     flex: 0 0 auto;
     box-sizing: border-box;
-    opacity: 0.5;
     transition: opacity 200ms ease-in-out;
     background-color: unset;
     text-align: start;
-
-    @include screen-sm-min {
-      &:hover {
-        opacity: 0.4;
-      }
-
-      &:active {
-        opacity: 0.6;
-      }
-    }
+    position: relative;
 
     @include screen-sm-max {
       @include H4;
 
-      border-bottom: 1px solid var(--color-border-muted);
       opacity: 1;
     }
 
+    &__selected-indicator {
+      width: 4px;
+      height: calc(100% - 8px);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+
     &__content {
-      padding: 12px 18px;
       display: flex;
       align-items: center;
       position: relative;
@@ -67,7 +63,6 @@
         justify-content: center;
         margin-inline-end: 16px;
         flex: 0 0 18px;
-        color: var(--color-icon-alternative);
       }
     }
 
@@ -87,6 +82,10 @@
 
     &--active {
       opacity: 1 !important;
+
+      @include screen-sm-min {
+        background-color: var(--color-primary-muted);
+      }
     }
   }
 

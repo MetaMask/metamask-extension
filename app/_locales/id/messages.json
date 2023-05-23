@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Opsi aset"
   },
-  "assets": {
-    "message": "Aset"
-  },
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan penghubung."
   },
@@ -3052,9 +3049,6 @@
   },
   "searchResults": {
     "message": "Cari hasil"
-  },
-  "searchSettings": {
-    "message": "Cari di Pengaturan"
   },
   "searchTokens": {
     "message": "Cari token"

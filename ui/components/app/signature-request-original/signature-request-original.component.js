@@ -5,6 +5,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
+  getNetworkNameFromProviderType,
   getURLHostName,
   sanitizeString,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -19,8 +20,8 @@ import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
@@ -30,7 +31,6 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -80,27 +80,6 @@ export default class SignatureRequestOriginal extends Component {
   state = {
     showSignatureRequestWarning: false,
   };
-
-  getNetworkName() {
-    const { providerConfig } = this.props;
-    const providerName = providerConfig.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return providerConfig.nickname || t('unknownNetwork');
-    }
-  }
 
   msgHexToText = (hex) => {
     try {
@@ -231,7 +210,7 @@ export default class SignatureRequestOriginal extends Component {
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Typography>
@@ -239,7 +218,7 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__content__subtitle"
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
@@ -348,6 +327,7 @@ export default class SignatureRequestOriginal extends Component {
 
   render = () => {
     const {
+      providerConfig,
       messagesCount,
       nativeCurrency,
       currentCurrency,
@@ -358,7 +338,11 @@ export default class SignatureRequestOriginal extends Component {
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
-    const currentNetwork = this.getNetworkName();
+    const networkName = getNetworkNameFromProviderType(providerConfig.type);
+    const currentNetwork =
+      networkName === ''
+        ? providerConfig.nickname || t('unknownNetwork')
+        : t(networkName);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(

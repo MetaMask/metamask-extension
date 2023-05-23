@@ -5,6 +5,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import {
   sanitizeMessage,
   getURLHostName,
+  getNetworkNameFromProviderType,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
@@ -16,8 +17,8 @@ import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
@@ -28,7 +29,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -121,27 +121,6 @@ export default class SignatureRequest extends PureComponent {
     )}`;
   }
 
-  getNetworkName() {
-    const { providerConfig } = this.props;
-    const providerName = providerConfig.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return providerConfig.nickname || t('unknownNetwork');
-    }
-  }
-
   memoizedParseMessage = memoize((data) => {
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
@@ -170,6 +149,7 @@ export default class SignatureRequest extends PureComponent {
 
   render() {
     const {
+      providerConfig,
       txData: {
         msgParams: { data, origin, version },
         type,
@@ -196,7 +176,11 @@ export default class SignatureRequest extends PureComponent {
       primaryType,
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
-    const currentNetwork = this.getNetworkName();
+    const networkName = getNetworkNameFromProviderType(providerConfig.type);
+    const currentNetwork =
+      networkName === ''
+        ? providerConfig.nickname || t('unknownNetwork')
+        : t(networkName);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(
@@ -322,7 +306,7 @@ export default class SignatureRequest extends PureComponent {
           <Typography
             className="signature-request__content__title"
             variant={TypographyVariant.H3}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
             boxProps={{
               marginTop: 4,
             }}
@@ -333,7 +317,7 @@ export default class SignatureRequest extends PureComponent {
             className="request-signature__content__subtitle"
             variant={TypographyVariant.H7}
             color={TextColor.textAlternative}
-            align={TEXT_ALIGN.CENTER}
+            align={TextAlign.Center}
             margin={12}
             marginTop={3}
           >
