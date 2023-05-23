@@ -1,7 +1,6 @@
 const path = require('path');
 const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { generateIconNames } = require('../development/generate-icon-names');
 module.exports = {
   core: {
     disableTelemetry: true,
@@ -30,14 +29,6 @@ module.exports = {
   babel: async (options) => ({
     overrides: options.overrides,
   }),
-  // Sets env variables https://storybook.js.org/docs/react/configure/environment-variables/
-  env: async (config) => {
-    return {
-      ...config,
-      // Creates the icon names environment variable for the component-library/icon/icon.js component
-      ICON_NAMES: generateIconNames(),
-    };
-  },
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
