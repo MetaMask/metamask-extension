@@ -64,7 +64,6 @@ const DEFAULT_SHARED_PROPERTIES = {
 };
 
 const DEFAULT_EVENT_PROPERTIES = {
-  accountAddress: undefined,
   category: 'Unit Test',
   revenue: undefined,
   value: undefined,
