@@ -11,7 +11,9 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
@@ -275,6 +277,10 @@ export default function ConfirmationPage({
     return INPUT_STATE_CONFIRMATIONS.includes(type);
   };
 
+  const getInputState = (type) => {
+    return inputStates[type] ?? '';
+  };
+
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
       setLoadingText(templatedValues.submitText);
@@ -290,7 +296,7 @@ export default function ConfirmationPage({
       setShowWarningModal(true);
     } else {
       const inputState = hasInputState(pendingConfirmation.type)
-        ? inputStates[ApprovalType.SnapDialogPrompt]
+        ? getInputState(pendingConfirmation.type)
         : null;
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
