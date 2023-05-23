@@ -44,11 +44,31 @@ export enum ValidTag {
   Header = 'header',
 }
 
+export type ValidTagType =
+  | 'dd'
+  | 'div'
+  | 'dt'
+  | 'em'
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
+  | 'li'
+  | 'p'
+  | 'span'
+  | 'strong'
+  | 'ul'
+  | 'label'
+  | 'input'
+  | 'header';
+
 export interface TextProps extends BoxProps {
   /**
    * The text content of the Text component
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * The variation of font styles including sizes and weights of the Text component
    * Possible values:
@@ -107,7 +127,7 @@ export interface TextProps extends BoxProps {
   /**
    * Changes the root html element tag of the Text component.
    */
-  as?: ValidTag;
+  as?: ValidTagType;
   /**
    * Additional className to assign the Text component
    */
