@@ -11,7 +11,9 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
@@ -91,10 +93,12 @@ const alertStateReducer = produce((state, action) => {
  *
  * @param {object} pendingConfirmation - a pending confirmation waiting for
  * user approval
+ * @param {object} state - The state object consist of required info to determine alerts.
+ * @param state.unapprovedTxsCount
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
-function useAlertState(pendingConfirmation) {
+function useAlertState(pendingConfirmation, { unapprovedTxsCount } = {}) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
 
   /**
@@ -108,20 +112,22 @@ function useAlertState(pendingConfirmation) {
   useEffect(() => {
     let isMounted = true;
     if (pendingConfirmation) {
-      getTemplateAlerts(pendingConfirmation).then((alerts) => {
-        if (isMounted && alerts.length > 0) {
-          dispatch({
-            type: 'set',
-            confirmationId: pendingConfirmation.id,
-            alerts,
-          });
-        }
-      });
+      getTemplateAlerts(pendingConfirmation, { unapprovedTxsCount }).then(
+        (alerts) => {
+          if (isMounted && alerts.length > 0) {
+            dispatch({
+              type: 'set',
+              confirmationId: pendingConfirmation.id,
+              alerts,
+            });
+          }
+        },
+      );
     }
     return () => {
       isMounted = false;
     };
-  }, [pendingConfirmation]);
+  }, [pendingConfirmation, unapprovedTxsCount]);
 
   const dismissAlert = useCallback(
     (alertId) => {
@@ -169,14 +175,16 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
+  const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
-  const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
+    unapprovedTxsCount,
+  });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
-  const unnaprovedTxsCount = useSelector(getUnapprovedTxCount);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -269,6 +277,10 @@ export default function ConfirmationPage({
     return INPUT_STATE_CONFIRMATIONS.includes(type);
   };
 
+  const getInputState = (type) => {
+    return inputStates[type] ?? '';
+  };
+
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
       setLoadingText(templatedValues.submitText);
@@ -284,7 +296,7 @@ export default function ConfirmationPage({
       setShowWarningModal(true);
     } else {
       const inputState = hasInputState(pendingConfirmation.type)
-        ? inputStates[ApprovalType.SnapDialogPrompt]
+        ? getInputState(pendingConfirmation.type)
         : null;
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
@@ -385,7 +397,6 @@ export default function ConfirmationPage({
       <ConfirmationFooter
         alerts={
           alertState[pendingConfirmation.id] &&
-          unnaprovedTxsCount > 0 &&
           Object.values(alertState[pendingConfirmation.id])
             .filter((alert) => alert.dismissed === false)
             .map((alert, idx, filtered) => (

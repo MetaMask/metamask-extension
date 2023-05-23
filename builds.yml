@@ -130,7 +130,7 @@ features:
     assets:
       - src: ./app/build-types/mmi/images/
         dest: images
-      - ./{app,shared,ui}/**/mmi/**
+      - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
       - src: ./app/build-types/flask/images/
@@ -199,8 +199,6 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - ICON_NAMES
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
