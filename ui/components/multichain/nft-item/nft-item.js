@@ -8,7 +8,8 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  DISPLAY,
+  BorderRadius,
+  Display,
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
@@ -38,15 +39,14 @@ export const NftItem = ({
         }
         anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
         positionObj={{ top: -4, right: -4 }}
-        display={DISPLAY.BLOCK}
+        display={Display.BLOCK}
       >
         {src ? (
-          <button
+          <Box
+            as="button"
             className="nfts-items__item"
-            style={{
-              backgroundColor,
-              borderRadius: 8,
-            }}
+            borderRadius={BorderRadius.LG}
+            backgroundColor={backgroundColor}
             onClick={onClick}
           >
             <img
@@ -56,7 +56,7 @@ export const NftItem = ({
               src={src}
               alt={alt}
             />
-          </button>
+          </Box>
         ) : (
           <NftDefaultImage
             name={name}

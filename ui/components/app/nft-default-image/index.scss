@@ -3,6 +3,7 @@
   padding-top: 100%; // retains 1:1 aspect ratio
   position: relative;
   width: 100%;
+  border-radius: 8px;
 
   &__text {
     overflow: hidden;
