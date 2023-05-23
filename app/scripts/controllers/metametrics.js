@@ -530,9 +530,10 @@ export default class MetaMetricsController {
         );
       }
 
-      const combinedProperties = merge(payload.sensitiveProperties, {
-        ...payload.properties,
-      });
+      const combinedProperties = merge(
+        payload.sensitiveProperties,
+        payload.properties,
+      );
 
       events.push(
         this._track(
@@ -546,17 +547,7 @@ export default class MetaMetricsController {
       );
     }
 
-    events.push(
-      this._track(
-        this._buildEventPayload({
-          ...payload,
-          properties: {
-            ...payload.properties,
-          },
-        }),
-        options,
-      ),
-    );
+    events.push(this._track(this._buildEventPayload(payload), options));
 
     await Promise.all(events);
   }
