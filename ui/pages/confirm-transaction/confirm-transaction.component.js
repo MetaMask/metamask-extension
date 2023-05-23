@@ -58,20 +58,20 @@ const ConfirmTransaction = () => {
   const sendTo = useSelector(getSendTo);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
-  const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
+  const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
     return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
-          unconfirmedMessages[paramsTransactionId] ||
+          unconfirmedTxs[paramsTransactionId] ||
           unconfirmedTxsSorted[0]
       : {};
   }, [
     paramsTransactionId,
     totalUnapproved,
     unapprovedTxs,
-    unconfirmedMessages,
+    unconfirmedTxs,
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
@@ -88,7 +88,7 @@ const ConfirmTransaction = () => {
     paramsTransactionId,
     totalUnapproved,
     unapprovedTxs,
-    unconfirmedMessages,
+    unconfirmedTxs,
     unconfirmedTxsSorted,
   ]);
 
