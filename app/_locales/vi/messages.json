@@ -3050,9 +3050,6 @@
   "searchResults": {
     "message": "Kết quả tìm kiếm"
   },
-  "searchSettings": {
-    "message": "Tìm kiếm trong phần Cài đặt"
-  },
   "searchTokens": {
     "message": "Tìm kiếm token"
   },

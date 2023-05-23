@@ -3050,9 +3050,6 @@
   "searchResults": {
     "message": "검색 결과"
   },
-  "searchSettings": {
-    "message": "설정에서 찾기"
-  },
   "searchTokens": {
     "message": "토큰 검색"
   },

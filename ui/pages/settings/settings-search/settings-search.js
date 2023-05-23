@@ -95,7 +95,7 @@ export default function SettingsSearch({
   return (
     <TextField
       id="search-settings"
-      placeholder={t('searchSettings')}
+      placeholder={t('search')}
       type="text"
       value={searchQuery}
       onChange={(e) => handleSearch(e.target.value)}
