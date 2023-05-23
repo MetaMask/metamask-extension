@@ -8,8 +8,12 @@ import IconWithFallback from '../icon-with-fallback';
  * Please update your code to use the new <AvatarFavicon> component instead, which can be found at ./ui/components/component-library/avatar-favicon.js.
  * You can find documentation for the new AvatarFavicon component in the MetaMask Storybook:
  * {@link https://metamask.github.io/metamask-storybook/?path=/story/components-componentlibrary-avatarfavicon--default-story}
- * If you would like to help with the replacement of the old SiteIcon component, please submit a pull request against this GitHub issue:
- * {@link https://github.com/MetaMask/metamask-extension/issues/{NEW_ID}}
+ * Help to replace `SiteIcon` with `AvatarFavicon` by submitting a PR
+ * @param options
+ * @param options.icon
+ * @param options.name
+ * @param options.size
+ * @param options.className
  */
 export default function SiteIcon({ icon = null, name = '', size, className }) {
   const iconSize = Math.floor(size * 0.75);
