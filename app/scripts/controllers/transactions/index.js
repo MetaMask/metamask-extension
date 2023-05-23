@@ -818,7 +818,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (options?.requireApproval === false) {
-      await this.updateAndApproveTransaction(txMeta, actionId);
+      await this._updateAndApproveTransaction(txMeta, actionId);
       return txMeta;
     }
 
