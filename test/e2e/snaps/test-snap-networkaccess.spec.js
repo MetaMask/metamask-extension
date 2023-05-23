@@ -93,10 +93,7 @@ describe('Test Snap networkAccess', function () {
         const result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
         await driver.delay(500);
-        assert.equal(
-          await result.getText(),
-          `{ "result": "FETCHED_SUCCESSFULLY" }`,
-        );
+        assert.equal(await result.getText(), 'FETCHED_SUCCESSFULLY');
 
         // click ok button
         await driver.clickElement({
