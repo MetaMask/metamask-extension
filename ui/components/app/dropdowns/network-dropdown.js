@@ -33,8 +33,8 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { Icon, IconName, IconSize } from '../../component-library';
+
+import { Icon, IconName, IconSize, ButtonIcon } from '../../component-library';
 
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
