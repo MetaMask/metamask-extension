@@ -3050,9 +3050,6 @@
   "searchResults": {
     "message": "Результаты поиска"
   },
-  "searchSettings": {
-    "message": "Поиск в настройках"
-  },
   "searchTokens": {
     "message": "Поиск токенов"
   },
