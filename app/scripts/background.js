@@ -180,6 +180,7 @@ const sendReadyMessageToTabs = async () => {
 
 // These are set after initialization
 let connectRemote;
+let onDisconnectRemote;
 let connectExternal;
 
 browser.runtime.onConnect.addListener(async (...args) => {
@@ -202,6 +203,9 @@ browser.runtime.onConnect.addListener(async (...args) => {
     // This is set in `setupController`, which is called as part of initialization
     connectRemote(...args);
     openMetamaskConnections.set(connectionId, openConnections + 1);
+    remotePort.onDisconnect.addListener(() => {
+      onDisconnectRemote(connectionId);
+    });
   } else {
     throw new Error('CONNECTION_ALREADY_EXISTS');
   }
@@ -622,7 +626,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, 0);
+          openMetamaskConnections.delete(connectionId);
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -633,7 +637,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, 0);
+          openMetamaskConnections.delete(connectionId);
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -649,7 +653,7 @@ export function setupController(
         openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, 0);
+          openMetamaskConnections.delete(connectionId);
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -682,6 +686,23 @@ export function setupController(
         });
       }
       connectExternal(remotePort);
+    }
+  };
+
+  /**
+   *
+   * @param {string} connectionId - ID used to identify the connection in openMetamaskConnections
+   */
+  onDisconnectRemote = (connectionId) => {
+    if (openMetamaskConnections.has(connectionId)) {
+      const connectionCount = openMetamaskConnections.get(connectionId) || 0;
+      const updatedConnectionsCount = connectionCount - 1;
+
+      if (updatedConnectionsCount <= 0) {
+        openMetamaskConnections.delete(connectionId);
+      } else {
+        openMetamaskConnections.set(connectionId, updatedConnectionsCount);
+      }
     }
   };
 
