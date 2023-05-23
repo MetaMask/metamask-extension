@@ -9,7 +9,7 @@ import {
   JustifyContent,
   TextVariant,
   FLEX_WRAP,
-  TEXT_ALIGN,
+  TextAlign,
   BackgroundColor,
   BorderColor,
   Color,
@@ -125,7 +125,7 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
                   size={TEXT_FIELD_SIZES.SM}
                   inputProps={{
                     variant: TextVariant.bodyXs,
-                    textAlign: TEXT_ALIGN.CENTER,
+                    textAlign: TextAlign.Center,
                   }}
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   endAccessory={
