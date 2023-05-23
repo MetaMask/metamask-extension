@@ -3,7 +3,7 @@
 exports[`Token Cell should match snapshot 1`] = `
 <div>
   <div
-    class="list-item asset-list-item token-cell list-item--single-content-row"
+    class="list-item asset-list-item token-cell list-item--single-content-row list-item-border"
     role="button"
     tabindex="0"
   >
