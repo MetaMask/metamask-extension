@@ -183,8 +183,10 @@ async function verifyEnglishLocale() {
     [
       'ui/**/*.js',
       'ui/**/*.ts',
+      'ui/**/*.tsx',
       'shared/**/*.js',
       'shared/**/*.ts',
+      'shared/**/*.tsx',
       'app/scripts/constants/**/*.js',
       'app/scripts/constants/**/*.ts',
     ],

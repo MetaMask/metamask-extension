@@ -30,10 +30,9 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-item-col"
           >
             <button
-              class="button btn--rounded btn-danger btn--large"
+              class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
               data-testid="reveal-seed-words"
-              role="button"
-              tabindex="0"
+              type="danger"
             >
               Reveal Secret Recovery Phrase
             </button>
@@ -364,9 +363,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-item-col"
           >
             <button
-              class="button btn--rounded btn-secondary settings-page__button"
-              role="button"
-              tabindex="0"
+              class="box mm-text mm-button-base mm-button-base--size-md settings-page__button mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+              type="secondary"
             >
               Add custom network
             </button>
