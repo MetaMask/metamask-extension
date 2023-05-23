@@ -19,6 +19,7 @@ import {
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 const SIGN_MESSAGE_TYPE = {
   MESSAGE: 'message',
@@ -70,8 +71,8 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedTypedMessages,
     networkId,
     blockGasLimit,
-    provider: { chainId },
   } = useSelector((state) => state.metamask);
+  const { chainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

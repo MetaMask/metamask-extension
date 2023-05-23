@@ -229,9 +229,6 @@
   "assetOptions": {
     "message": "Opciones de activos"
   },
-  "assets": {
-    "message": "Activos"
-  },
   "attemptingConnect": {
     "message": "Intentando una conexión a la cadena de bloques."
   },

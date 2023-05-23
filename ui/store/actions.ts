@@ -23,12 +23,12 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  hasTransactionPendingApprovals,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -43,7 +43,10 @@ import {
   DraftTransaction,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  getUnconnectedAccountAlertEnabledness,
+} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -1765,13 +1768,15 @@ export function updateMetamaskState(
   newState: MetaMaskReduxState['metamask'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
-    const { metamask: currentState } = getState();
+    const state = getState();
+    const providerConfig = getProviderConfig(state);
+    const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress, provider } = currentState;
+    const { currentLocale, selectedAddress } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-      provider: newProvider,
+      providerConfig: newProviderConfig,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
@@ -1782,8 +1787,10 @@ export function updateMetamaskState(
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
-    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
+    const newAddressBook =
+      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
+    const oldAddressBook =
+      currentState.addressBook?.[providerConfig?.chainId] ?? {};
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
@@ -1832,10 +1839,10 @@ export function updateMetamaskState(
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
-    if (provider.chainId !== newProvider.chainId) {
+    if (providerConfig.chainId !== newProviderConfig.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
-        payload: newProvider.chainId,
+        payload: newProviderConfig.chainId,
       });
       // We dispatch this action to ensure that the send state stays up to date
       // after the chain changes. This async thunk will fail gracefully in the
@@ -2615,7 +2622,7 @@ export function addToAddressBook(
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getState().metamask.provider;
+    const { chainId } = getProviderConfig(getState());
 
     let set;
     try {
@@ -2691,7 +2698,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasUnconfirmedTransactions(getState())
+      !hasTransactionPendingApprovals(getState())
     ) {
       closeNotificationPopup();
     }
@@ -3105,6 +3112,13 @@ export function toggleAccountMenu() {
 export function toggleNetworkMenu() {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
+export function setAccountDetailsAddress(address: string) {
+  return {
+    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
+    payload: address,
   };
 }
 

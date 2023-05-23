@@ -1,7 +1,9 @@
+import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { CaveatTypes } from '../../shared/constants/permissions';
+import { getApprovalRequestsByType } from './approvals';
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -341,9 +343,10 @@ export function getFirstSnapInstallOrUpdateRequest(state) {
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {
-  return Object.values(state.metamask.pendingApprovals)
-    .filter(({ type }) => type === 'wallet_requestPermissions')
-    .map(({ requestData }) => requestData);
+  return getApprovalRequestsByType(
+    state,
+    ApprovalType.WalletRequestPermissions,
+  ).map(({ requestData }) => requestData);
 }
 
 export function getFirstPermissionRequest(state) {

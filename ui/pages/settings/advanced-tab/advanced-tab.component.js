@@ -15,6 +15,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
+import { BannerAlert } from '../../../components/component-library';
+import {
+  SEVERITIES,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
@@ -30,6 +35,7 @@ export default class AdvancedTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
+    showEthSignModal: PropTypes.func,
     warning: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
@@ -416,10 +422,23 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleEthSignControl() {
-    const { t } = this.context;
-    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
-      this.props;
-
+    const { t, trackEvent } = this.context;
+    const {
+      disabledRpcMethodPreferences,
+      showEthSignModal,
+      setDisabledRpcMethodPreference,
+    } = this.props;
+    const toggleOff = (value) => {
+      setDisabledRpcMethodPreference('eth_sign', !value);
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+        properties: {
+          location: 'Settings',
+          enable_eth_sign: false,
+        },
+      });
+    };
     return (
       <div
         ref={this.settingsRefs[10]}
@@ -432,15 +451,26 @@ export default class AdvancedTab extends PureComponent {
             {t('toggleEthSignDescriptionField')}
           </div>
         </div>
+
+        {disabledRpcMethodPreferences?.eth_sign === true ? (
+          <BannerAlert
+            severity={SEVERITIES.DANGER}
+            marginBottom={5}
+            descriptionProps={{ variant: TextVariant.bodyMd }}
+          >
+            {t('toggleEthSignBannerDescription')}
+          </BannerAlert>
+        ) : null}
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
+              className="eth-sign-toggle"
               value={disabledRpcMethodPreferences?.eth_sign || false}
-              onToggle={(value) =>
-                setDisabledRpcMethodPreference('eth_sign', !value)
-              }
-              offLabel={t('off')}
-              onLabel={t('on')}
+              onToggle={(value) => {
+                value ? toggleOff(value) : showEthSignModal();
+              }}
+              offLabel={t('toggleEthSignOff')}
+              onLabel={t('toggleEthSignOn')}
             />
           </div>
         </div>

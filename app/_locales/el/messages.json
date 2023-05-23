@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Επιλογές περιουσιακών στοιχείων"
   },
-  "assets": {
-    "message": "Περιουσιακά στοιχεία"
-  },
   "attemptSendingAssets": {
     "message": "Εάν επιχειρήσετε να στείλετε περιουσιακά στοιχεία απευθείας από ένα δίκτυο σε ένα άλλο, αυτό ενδέχεται να οδηγήσει σε μόνιμη απώλεια περιουσιακών στοιχείων. Βεβαιωθείτε ότι χρησιμοποιείτε μια διασύνδεση."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "Ιστορικό"
   },
-  "holdToReveal": {
-    "message": "Κρατήστε πατημένο για αποκάλυψη της ΜΦΑ"
-  },
   "holdToRevealContent1": {
     "message": "Η Μυστική σας Φράση Ανάκτησης παρέχει $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "αλλά οι απατεώνες μπορεί να το κάνουν.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Κρατήστε τη ΜΦΑ σας ασφαλή"
   },
   "ignoreAll": {
     "message": "Αγνόηση όλων"
@@ -3902,9 +3893,6 @@
   },
   "thingsToKeep": {
     "message": "Πράγματα που πρέπει να έχετε υπόψη σας:"
-  },
-  "thisIsBasedOn": {
-    "message": "Αυτό βασίζεται σε πληροφορίες από"
   },
   "time": {
     "message": "Ώρα"

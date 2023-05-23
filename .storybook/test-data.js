@@ -598,8 +598,8 @@ const state = {
     nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
-    defaultHomeActiveTabName: 'Assets',
-    provider: {
+    defaultHomeActiveTabName: 'Tokens',
+    providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
       nickname: '',

@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "アセットのオプション"
   },
-  "assets": {
-    "message": "アセット"
-  },
   "attemptSendingAssets": {
     "message": "1 つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "履歴"
   },
-  "holdToReveal": {
-    "message": "長押しして SRP を表示"
-  },
   "holdToRevealContent1": {
     "message": "秘密のリカバリーフレーズは$1を提供します。",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "もし尋ねられた場合はフィッシング詐欺の可能性があります。",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "SRP は安全に保管してください"
   },
   "ignoreAll": {
     "message": "すべて無視"
@@ -3902,9 +3893,6 @@
   },
   "thingsToKeep": {
     "message": "留意点:"
-  },
-  "thisIsBasedOn": {
-    "message": "これは次の情報源からの情報に基づくものです: "
   },
   "time": {
     "message": "時間"

@@ -337,15 +337,22 @@ class Driver {
   }
 
   // Window management
+  async openNewURL(url) {
+    await this.driver.get(url);
+  }
 
   async openNewPage(url) {
     const newHandle = await this.driver.switchTo().newWindow();
-    await this.driver.get(url);
+    await this.openNewURL(url);
     return newHandle;
   }
 
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
+  }
+
+  async switchToNewWindow() {
+    await this.driver.switchTo().newWindow('window');
   }
 
   async switchToFrame(element) {
@@ -394,6 +401,10 @@ class Driver {
     }
 
     throw new Error(`No window with title: ${title}`);
+  }
+
+  async closeWindow() {
+    await this.driver.close();
   }
 
   // Close Alert Popup

@@ -8,6 +8,7 @@ const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { DAPP_URL } = require('./helpers');
 
 function defaultFixture() {
   return {
@@ -197,7 +198,7 @@ function defaultFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
@@ -329,7 +330,7 @@ function onboardingFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
@@ -594,13 +595,13 @@ class FixtureBuilder {
   withPermissionControllerConnectedToTestDapp() {
     return this.withPermissionController({
       subjects: {
-        'http://127.0.0.1:8080': {
-          origin: 'http://127.0.0.1:8080',
+        [DAPP_URL]: {
+          origin: DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
-              invoker: 'http://127.0.0.1:8080',
+              invoker: DAPP_URL,
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',

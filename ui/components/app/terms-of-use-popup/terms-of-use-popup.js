@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
 import {
@@ -28,6 +29,7 @@ export default function TermsOfUsePopup({ onAccept }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
+  const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 
   const popoverRef = useRef();
   const bottomRef = React.createRef();
@@ -37,6 +39,16 @@ export default function TermsOfUsePopup({ onAccept }) {
     bottomRef.current.scrollIntoView({
       behavior: 'smooth',
     });
+  };
+
+  const handleDebouncedScroll = debounce((target) => {
+    setShouldShowScrollButton(
+      target.scrollHeight - target.scrollTop !== target.clientHeight,
+    );
+  }, 100);
+
+  const handleScroll = (e) => {
+    handleDebouncedScroll(e.target);
   };
 
   useEffect(() => {
@@ -54,8 +66,9 @@ export default function TermsOfUsePopup({ onAccept }) {
     <Popover
       className="terms-of-use__popover"
       popoverRef={popoverRef}
+      onScroll={handleScroll}
+      showScrollDown={shouldShowScrollButton}
       title={t('termsOfUseTitle')}
-      showScrollDown
       onScrollDownButtonClick={handleScrollDownClick}
       footerProps={{
         justifyContent: AlignItems.center,

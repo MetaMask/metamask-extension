@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Varlık seçenekleri"
   },
-  "assets": {
-    "message": "Varlıklar"
-  },
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
   },
@@ -1570,9 +1567,6 @@
   "history": {
     "message": "Geçmiş"
   },
-  "holdToReveal": {
-    "message": "GKİ'yi göstermek için basılı tut"
-  },
   "holdToRevealContent1": {
     "message": "Gizli Kurtarma İfadeniz: $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "ancak dolandırıcılar talep edilebilir.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "GKİ'nizi güvende tutun"
   },
   "ignoreAll": {
     "message": "Tümünü yoksay"
@@ -3902,9 +3893,6 @@
   },
   "thingsToKeep": {
     "message": "Unutulmaması gerekenler:"
-  },
-  "thisIsBasedOn": {
-    "message": "Bu, şu kaynaktan alınan bilgilere dayanır: "
   },
   "time": {
     "message": "Zaman"

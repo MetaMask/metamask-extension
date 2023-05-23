@@ -34,7 +34,7 @@ describe('Signature Request Data', () => {
             unlisted: false,
           },
         },
-        provider: {
+        providerConfig: {
           type: 'test',
           chainId: '0x5',
         },

@@ -4,20 +4,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
 import {
   DISPLAY,
   FLEX_DIRECTION,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
-
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Text } from '../../../component-library';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
@@ -87,8 +86,9 @@ const AdvancedGasFeeDefaults = () => {
           onClick={handleUpdateDefaultSettings}
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
-        <Typography
-          variant={TypographyVariant.H7}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textAlternative}
           margin={0}
         >
@@ -97,7 +97,7 @@ const AdvancedGasFeeDefaults = () => {
             : t('advancedGasFeeDefaultOptIn', [
                 <strong key="default-value-change">{t('newValues')}</strong>,
               ])}
-        </Typography>
+        </Text>
       </label>
     </Box>
   );

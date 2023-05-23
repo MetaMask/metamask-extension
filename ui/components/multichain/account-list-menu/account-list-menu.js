@@ -4,9 +4,12 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
-import { ButtonLink, TextFieldSearch, Text } from '../../component-library';
-// TODO: Replace ICON_NAMES with IconName when ButtonBase/Buttons have been updated
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import {
+  IconName,
+  ButtonLink,
+  TextFieldSearch,
+  Text,
+} from '../../component-library';
 import { AccountListItem } from '..';
 import {
   BLOCK_SIZES,
@@ -16,6 +19,12 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Popover from '../../ui/popover';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  getMmiPortfolioEnabled,
+  getMmiPortfolioUrl,
+} from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   getSelectedAccount,
   getMetaMaskAccountsOrdered,
@@ -32,6 +41,10 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   NEW_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CUSTODY_ACCOUNT_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -46,6 +59,11 @@ export const AccountListMenu = ({ onClose }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const inputRef = useRef();
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
+  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
+  ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -66,7 +84,7 @@ export const AccountListMenu = ({ onClose }) => {
   // Focus on the search box when the popover is opened
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.rootNode.querySelector('input[type=search]').focus();
+      inputRef.current.rootNode.querySelector('input[type=search]')?.focus();
     }
   }, [inputRef]);
 
@@ -92,6 +110,10 @@ export const AccountListMenu = ({ onClose }) => {
               placeholder={t('searchAccounts')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              clearButtonOnClick={() => setSearchQuery('')}
+              clearButtonProps={{
+                size: Size.SM,
+              }}
             />
           </Box>
         ) : null}
@@ -140,7 +162,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box marginBottom={4}>
             <ButtonLink
               size={Size.SM}
-              startIconName={ICON_NAMES.ADD}
+              startIconName={IconName.Add}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -160,7 +182,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box marginBottom={4}>
             <ButtonLink
               size={Size.SM}
-              startIconName={ICON_NAMES.IMPORT}
+              startIconName={IconName.Import}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -180,7 +202,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box>
             <ButtonLink
               size={Size.SM}
-              startIconName={ICON_NAMES.HARDWARE}
+              startIconName={IconName.Hardware}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -202,6 +224,69 @@ export const AccountListMenu = ({ onClose }) => {
             >
               {t('hardwareWallet')}
             </ButtonLink>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              <>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Custody}
+                  onClick={() => {
+                    dispatch(toggleAccountMenu());
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.UserClickedConnectCustodialAccount,
+                    });
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser(
+                        CUSTODY_ACCOUNT_ROUTE,
+                      );
+                    } else {
+                      history.push(CUSTODY_ACCOUNT_ROUTE);
+                    }
+                  }}
+                >
+                  {t('connectCustodialAccountMenu')}
+                </ButtonLink>
+                {mmiPortfolioEnabled && (
+                  <ButtonLink
+                    size={Size.SM}
+                    startIconName={IconName.MmmiPortfolioDashboard}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.UserClickedPortfolioButton,
+                      });
+                      window.open(mmiPortfolioUrl, '_blank');
+                    }}
+                  >
+                    {t('portfolioDashboard')}
+                  </ButtonLink>
+                )}
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Compliance}
+                  onClick={() => {
+                    dispatch(toggleAccountMenu());
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.UserClickedCompliance,
+                    });
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser(
+                        COMPLIANCE_FEATURE_ROUTE,
+                      );
+                    } else {
+                      history.push(COMPLIANCE_FEATURE_ROUTE);
+                    }
+                  }}
+                >
+                  {t('compliance')}
+                </ButtonLink>
+              </>
+              ///: END:ONLY_INCLUDE_IN
+            }
           </Box>
         </Box>
       </Box>
