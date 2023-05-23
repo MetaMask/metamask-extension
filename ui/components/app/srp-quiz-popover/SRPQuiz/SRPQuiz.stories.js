@@ -1,5 +1,5 @@
-import { useArgs } from '@storybook/client-api';
 import React from 'react';
+import { useArgs } from '@storybook/client-api';
 import { Button } from '../../../component-library';
 import SRPQuiz from '.';
 
@@ -22,7 +22,10 @@ export const DefaultStory = () => {
         Open Popover
       </Button>
       {isShowingPopover && (
-        <SRPQuiz onClose={() => updateArgs({ isShowingPopover: false })} />
+        <SRPQuiz
+          isOpen={isShowingPopover}
+          onClose={() => updateArgs({ isShowingPopover: false })}
+        />
       )}
     </>
   );
