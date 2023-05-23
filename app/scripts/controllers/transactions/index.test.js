@@ -703,6 +703,61 @@ describe('Transaction Controller', function () {
         assert.equal(txId, updatedTxMeta.id);
       });
     });
+
+    describe('with require approval set to false', function () {
+      beforeEach(function () {
+        // Ensure that the default approval mock is not being used
+        messengerMock.call.callsFake(() => Promise.reject());
+      });
+
+      it('changes status to submitted', async function () {
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+          { requireApproval: false },
+        );
+
+        const transaction = txController.getTransactions({
+          searchCriteria: { id: updatedTxMeta.id },
+        })[0];
+
+        assert.equal(transaction.status, TransactionStatus.submitted);
+      });
+
+      it('emits approved, signed, and submitted status events', async function () {
+        const listener = sinon.spy();
+
+        txController.on('tx:status-update', listener);
+
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+          { requireApproval: false },
+        );
+
+        assert.equal(listener.callCount, 3);
+        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][1], TransactionStatus.approved);
+        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][1], TransactionStatus.signed);
+        assert.equal(listener.args[2][0], updatedTxMeta.id);
+        assert.equal(listener.args[2][1], TransactionStatus.submitted);
+      });
+    });
   });
 
   describe('#createCancelTransaction', function () {

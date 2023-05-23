@@ -1618,15 +1618,21 @@ export function cancelTxs(
       const cancellations = txIds.map(
         (id) =>
           new Promise<void>((resolve, reject) => {
-            const actionId = generateActionId();
-            callBackgroundMethod('cancelTransaction', [id, actionId], (err) => {
-              if (err) {
-                reject(err);
-                return;
-              }
+            callBackgroundMethod(
+              'rejectPendingApproval',
+              [
+                String(id),
+                ethErrors.provider.userRejectedRequest().serialize(),
+              ],
+              (err) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
 
-              resolve();
-            });
+                resolve();
+              },
+            );
           }),
       );
 
