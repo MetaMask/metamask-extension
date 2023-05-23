@@ -230,7 +230,7 @@
     "@metamask/eth-json-rpc-infura": "^8.0.0",
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
     "@metamask/eth-json-rpc-provider": "^1.0.0",
-    "@metamask/eth-keyring-controller": "^10.0.1",
+    "@metamask/eth-keyring-controller": "git+https://github.com/MetaMask/KeyringController.git#410814dbb17e674af9c1ddba2e9a493221fb3815",
     "@metamask/eth-ledger-bridge-keyring": "^0.15.0",
     "@metamask/eth-token-tracker": "^4.0.0",
     "@metamask/eth-trezor-keyring": "^1.0.0",
