@@ -90,7 +90,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
               style="height: 24px; width: 24px; border-radius: 12px;"
             >
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 151, 242);"
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(245, 228, 0);"
               >
                 <svg
                   height="24"
@@ -99,25 +99,25 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   y="0"
                 >
                   <rect
-                    fill="#2362E1"
+                    fill="#F2BE02"
                     height="24"
-                    transform="translate(2.6919976385943882 -4.000732967425142) rotate(458.4 12 12)"
+                    transform="translate(4.11204385070503 -3.89652025148055) rotate(387.1 12 12)"
                     width="24"
                     x="0"
                     y="0"
                   />
                   <rect
-                    fill="#F94301"
+                    fill="#01778E"
                     height="24"
-                    transform="translate(-11.522594467237658 5.994263726614974) rotate(268.8 12 12)"
+                    transform="translate(-1.9540919563657109 12.528454691642345) rotate(227.4 12 12)"
                     width="24"
                     x="0"
                     y="0"
                   />
                   <rect
-                    fill="#FA7900"
+                    fill="#C81435"
                     height="24"
-                    transform="translate(-6.8071905594760675 22.110011910512533) rotate(117.3 12 12)"
+                    transform="translate(13.477268130678231 -9.444486788922836) rotate(422.3 12 12)"
                     width="24"
                     x="0"
                     y="0"

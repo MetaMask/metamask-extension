@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.30.1",
+  "version": "10.30.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -221,7 +221,7 @@
     "@metamask/address-book-controller": "^2.0.0",
     "@metamask/announcement-controller": "^3.0.0",
     "@metamask/approval-controller": "^2.1.0",
-    "@metamask/assets-controllers": "^6.0.0",
+    "@metamask/assets-controllers": "^7.0.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
@@ -236,7 +236,7 @@
     "@metamask/eth-token-tracker": "^4.0.0",
     "@metamask/eth-trezor-keyring": "^1.0.0",
     "@metamask/etherscan-link": "^2.2.0",
-    "@metamask/gas-fee-controller": "^4.0.0",
+    "@metamask/gas-fee-controller": "^5.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/logo": "^3.1.1",

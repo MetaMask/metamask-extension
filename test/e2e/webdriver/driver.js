@@ -403,6 +403,10 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  async closeWindow() {
+    await this.driver.close();
+  }
+
   // Close Alert Popup
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();

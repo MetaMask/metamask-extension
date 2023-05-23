@@ -33,6 +33,10 @@ class AccountList extends Component {
     this.setState({ pathValue });
   }
 
+  isFirstPage() {
+    return this.props.accounts[0]?.index === 0;
+  }
+
   renderHdPathSelector() {
     const { device, selectedPath, hdPaths, onPathChange } = this.props;
     const { pathValue } = this.state;
@@ -100,6 +104,7 @@ class AccountList extends Component {
             <div
               className="hw-account-list__item"
               key={account.address}
+              data-testid="hw-account-list__item"
               title={
                 accountAlreadyConnected
                   ? this.context.t('selectAnAccountAlreadyConnected')
@@ -170,7 +175,9 @@ class AccountList extends Component {
       <div className="hw-list-pagination">
         <button
           className="hw-list-pagination__button"
+          disabled={this.isFirstPage()}
           onClick={this.goToPreviousPage}
+          data-testid="hw-list-pagination__prev-button"
         >
           {`< ${this.context.t('prev')}`}
         </button>
