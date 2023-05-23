@@ -760,6 +760,11 @@ export default function PrepareSwapPage({
     );
   }
 
+  const showMaxBalanceLink =
+    fromTokenSymbol &&
+    !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) &&
+    rawFromTokenBalance > 0;
+
   return (
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
@@ -868,18 +873,17 @@ export default function PrepareSwapPage({
           >
             <div className="prepare-swap-page__balance-message">
               {fromTokenSymbol && swapYourTokenBalance}
-              {fromTokenSymbol &&
-                !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
-                  <div
-                    className="prepare-swap-page__max-button"
-                    data-testid="prepare-swap-page__max-button"
-                    onClick={() =>
-                      onInputChange(fromTokenBalance || '0', fromTokenBalance)
-                    }
-                  >
-                    {t('max')}
-                  </div>
-                )}
+              {showMaxBalanceLink && (
+                <div
+                  className="prepare-swap-page__max-balance"
+                  data-testid="prepare-swap-page__max-balance"
+                  onClick={() =>
+                    onInputChange(fromTokenBalance || '0', fromTokenBalance)
+                  }
+                >
+                  {t('max')}
+                </div>
+              )}
             </div>
             {fromTokenInputValue && swapFromFiatValue && (
               <Box
