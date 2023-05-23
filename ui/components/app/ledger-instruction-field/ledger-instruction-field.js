@@ -25,7 +25,7 @@ import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   SEVERITIES,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -163,7 +163,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
             {renderInstructionStep(
               <span>
                 <ButtonLink
-                  textAlign={TEXT_ALIGN.LEFT}
+                  textAlign={TextAlign.Left}
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
                       window.location.reload();
@@ -180,7 +180,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
             {renderInstructionStep(
               <span>
                 <ButtonLink
-                  textAlign={TEXT_ALIGN.LEFT}
+                  textAlign={TextAlign.Left}
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
                       const connectedDevices =

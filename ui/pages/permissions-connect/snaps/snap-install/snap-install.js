@@ -84,7 +84,7 @@ export default function SnapInstall({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <Box
-        className="header"
+        className="snap-install__header"
         alignItems={AlignItems.center}
         paddingLeft={4}
         paddingRight={4}
@@ -101,10 +101,10 @@ export default function SnapInstall({
           </Text>
         )}
       </Box>
-      <Box className="content">
+      <Box className="snap-install__content">
         {isLoading && (
           <Box
-            className="loader-container"
+            className="snap-install__content__loader-container"
             flexDirection={FLEX_DIRECTION.COLUMN}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
@@ -118,7 +118,7 @@ export default function SnapInstall({
         {hasPermissions && (
           <>
             <Text
-              className="content__permission-description"
+              className="snap-install__content__permission-description"
               paddingBottom={4}
               paddingLeft={4}
               paddingRight={4}
@@ -152,7 +152,7 @@ export default function SnapInstall({
         )}
       </Box>
       <Box
-        className="footers"
+        className="snap-install__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >

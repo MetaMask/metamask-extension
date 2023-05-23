@@ -13,7 +13,7 @@ import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
   JustifyContent,
   Size,
@@ -273,7 +273,7 @@ export default function CustomSpendingCap({
               marginLeft="auto"
               paddingRight={4}
               paddingBottom={2}
-              textAlign={TEXT_ALIGN.END}
+              textAlign={TextAlign.End}
               className={classnames('custom-spending-cap__max', {
                 'custom-spending-cap__max--with-error-message': error,
               })}

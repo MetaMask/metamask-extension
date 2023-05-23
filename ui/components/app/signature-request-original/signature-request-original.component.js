@@ -21,8 +21,8 @@ import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
@@ -222,7 +222,7 @@ export default class SignatureRequestOriginal extends Component {
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Typography>
@@ -230,7 +230,7 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__content__subtitle"
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
