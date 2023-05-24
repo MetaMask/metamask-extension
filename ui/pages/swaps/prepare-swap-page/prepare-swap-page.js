@@ -15,7 +15,6 @@ import {
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
-import Popover from '../../../components/ui/popover';
 import Box from '../../../components/ui/box';
 import {
   DISPLAY,
@@ -117,11 +116,14 @@ import {
   TextField,
   ButtonLink,
   Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
 } from '../../../components/component-library';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
-import PopoverCustomBackground from '../popover-custom-background/popover-custom-background';
 import TransactionSettings from '../transaction-settings/transaction-settings';
 import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import SwapsFooter from '../swaps-footer';
@@ -771,19 +773,20 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken {...importTokenProps} />
         )}
-        {isSwapToOpen && (
-          <Popover
-            title={t('swapSwapTo')}
-            onClose={onSwapToClose}
-            CustomBackground={() => {
-              return <PopoverCustomBackground onClose={onSwapToClose} />;
-            }}
-          >
+        <Modal
+          onClose={onSwapToClose}
+          isOpen={isSwapToOpen}
+          isClosedOnOutsideClick
+          isClosedOnEscapeKey
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={onSwapToClose}>{t('swapSwapTo')}</ModalHeader>
             <Box
-              paddingRight={4}
-              paddingLeft={4}
-              paddingTop={0}
+              paddingTop={10}
+              paddingRight={0}
               paddingBottom={0}
+              paddingLeft={0}
               display={DISPLAY.FLEX}
             >
               <ListWithSearch
@@ -801,28 +804,31 @@ export default function PrepareSwapPage({
                 onOpenImportTokenModalClick={onOpenImportTokenModalClick}
               />
             </Box>
-          </Popover>
-        )}
-        {isSwapFromOpen && (
-          <Popover
-            title={t('swapSwapFrom')}
-            onClose={onSwapFromClose}
-            CustomBackground={() => {
-              return <PopoverCustomBackground onClose={onSwapFromClose} />;
-            }}
-          >
+          </ModalContent>
+        </Modal>
+        <Modal
+          onClose={onSwapFromClose}
+          isOpen={isSwapFromOpen}
+          isClosedOnOutsideClick
+          isClosedOnEscapeKey
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={onSwapFromClose}>
+              {t('swapSwapFrom')}
+            </ModalHeader>
             <Box
-              paddingRight={4}
-              paddingLeft={4}
-              paddingTop={0}
+              paddingTop={10}
+              paddingRight={0}
               paddingBottom={0}
+              paddingLeft={0}
               display={DISPLAY.FLEX}
             >
               <ListWithSearch
                 selectedItem={selectedFromToken}
                 itemsToSearch={tokensToSearchSwapFrom}
                 onClickItem={(item) => {
-                  onFromSelect?.(item);
+                  onToSelect?.(item);
                   onSwapFromClose();
                 }}
                 maxListItems={30}
@@ -831,8 +837,8 @@ export default function PrepareSwapPage({
                 hideItemIf={hideSwapFromTokenIf}
               />
             </Box>
-          </Popover>
-        )}
+          </ModalContent>
+        </Modal>
         {showSmartTransactionsOptInPopover && (
           <SmartTransactionsPopover
             onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
@@ -849,6 +855,7 @@ export default function PrepareSwapPage({
           >
             <SelectedToken
               onClick={onSwapFromOpen}
+              onClose={onSwapFromClose}
               selectedToken={selectedFromToken}
               testId="prepare-swap-page__swap-from"
             />
@@ -968,6 +975,7 @@ export default function PrepareSwapPage({
           >
             <SelectedToken
               onClick={onSwapToOpen}
+              onClose={onSwapToClose}
               selectedToken={selectedToToken}
               testId="prepare-swap-page__swap-to"
             />

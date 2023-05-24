@@ -379,6 +379,13 @@ export default function Swap() {
     return <></>;
   }
 
+  const redirectToDefaultRoute = async () => {
+    clearTemporaryTokenRef.current();
+    dispatch(clearSwapsState());
+    await dispatch(resetBackgroundSwapsState());
+    history.push(DEFAULT_ROUTE);
+  };
+
   return (
     <div className="swaps">
       <div className="swaps__container">
@@ -402,17 +409,18 @@ export default function Swap() {
                 justifyContent={JustifyContent.center}
                 marginLeft={4}
                 width={FRACTIONS.ONE_TWELFTH}
+                tabIndex="0"
+                onKeyUp={(e) => {
+                  if (e.key === 'Enter') {
+                    redirectToDefaultRoute();
+                  }
+                }}
               >
                 <Icon
                   name={IconName.Arrow2Left}
                   size={IconSize.Lg}
                   color={IconColor.iconAlternative}
-                  onClick={async () => {
-                    clearTemporaryTokenRef.current();
-                    dispatch(clearSwapsState());
-                    await dispatch(resetBackgroundSwapsState());
-                    history.push(DEFAULT_ROUTE);
-                  }}
+                  onClick={redirectToDefaultRoute}
                   style={{ cursor: 'pointer' }}
                   title={t('cancel')}
                 />
@@ -441,6 +449,12 @@ export default function Swap() {
               justifyContent={JustifyContent.center}
               marginRight={4}
               width={FRACTIONS.ONE_TWELFTH}
+              tabIndex="0"
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  dispatch(setTransactionSettingsOpened(true));
+                }
+              }}
             >
               {isPrepareSwapRoute && (
                 <Icon

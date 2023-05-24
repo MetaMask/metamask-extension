@@ -113,7 +113,7 @@ export default function ListWithSearch({
   };
 
   return (
-    <Box className="list-with-search" width={BLOCK_SIZES.FULL}>
+    <Box className="list-with-search" width={BLOCK_SIZES.FULL} tabIndex="0">
       <Box
         style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
         display={DISPLAY.FLEX}
@@ -128,6 +128,8 @@ export default function ListWithSearch({
           placeholder={t('enterTokenNameOrAddress')}
           inputProps={{ marginRight: 0 }}
           className="list-with-search__text-search"
+          autoFocus
+          tabIndex="0"
         />
       </Box>
       {items?.length > 0 && (

@@ -11,9 +11,23 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import UrlIcon from '../../../components/ui/url-icon';
 import { I18nContext } from '../../../contexts/i18n';
 
-export default function SelectedToken({ onClick, selectedToken, testId }) {
+export default function SelectedToken({
+  onClick,
+  onClose,
+  selectedToken,
+  testId,
+}) {
   const t = useContext(I18nContext);
   const hasIcon = selectedToken?.iconUrl && selectedToken?.symbol;
+
+  const onKeyUp = (e) => {
+    if (e.key === 'Escape') {
+      onClose();
+    } else if (e.key === 'Enter') {
+      onClick(e);
+    }
+  };
+
   return (
     <div
       className={classnames(
@@ -22,7 +36,9 @@ export default function SelectedToken({ onClick, selectedToken, testId }) {
         'dropdown-input-pair__selector--closed',
       )}
       data-testid="dropdown-search-list"
+      tabIndex="0"
       onClick={onClick}
+      onKeyUp={onKeyUp}
     >
       <div className="dropdown-search-list__selector-closed">
         {hasIcon && (
@@ -65,6 +81,7 @@ export default function SelectedToken({ onClick, selectedToken, testId }) {
 
 SelectedToken.propTypes = {
   onClick: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   selectedToken: PropTypes.object.isRequired,
   testId: PropTypes.string,
 };
