@@ -5,7 +5,7 @@ import {
   Color,
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
@@ -152,10 +152,10 @@ Typography.propTypes = {
    */
   fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
   /**
-   * The text-align of the Typography component. Should use the TEXT_ALIGN object from
+   * The text-align of the Typography component. Should use the TextAlign enum from
    * ./ui/helpers/constants/design-system.js
    */
-  align: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
+  align: PropTypes.oneOf(Object.values(TextAlign)),
   /**
    * The overflow-wrap of the Typography component. Should use the OVERFLOW_WRAP object from
    * ./ui/helpers/constants/design-system.js

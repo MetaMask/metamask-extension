@@ -219,22 +219,24 @@ export const AppHeader = ({ location }) => {
                 />
               ) : null}
 
-              <AccountPicker
-                address={identity.address}
-                name={identity.name}
-                onClick={() => {
-                  dispatch(toggleAccountMenu());
+              {identity ? (
+                <AccountPicker
+                  address={identity.address}
+                  name={identity.name}
+                  onClick={() => {
+                    dispatch(toggleAccountMenu());
 
-                  trackEvent({
-                    event: MetaMetricsEventName.NavAccountMenuOpened,
-                    category: MetaMetricsEventCategory.Navigation,
-                    properties: {
-                      location: 'Home',
-                    },
-                  });
-                }}
-                disabled={disablePickers}
-              />
+                    trackEvent({
+                      event: MetaMetricsEventName.NavAccountMenuOpened,
+                      category: MetaMetricsEventCategory.Navigation,
+                      properties: {
+                        location: 'Home',
+                      },
+                    });
+                  }}
+                  disabled={disablePickers}
+                />
+              ) : null}
               <Box
                 display={DISPLAY.FLEX}
                 alignItems={AlignItems.center}
