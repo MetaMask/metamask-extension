@@ -91,7 +91,6 @@ export default {
     metaMaskFee: '0.875',
     numberOfQuotes: 6,
     chainId: CHAIN_IDS.MAINNET,
-    isBestQuote: true,
   },
 };
 
