@@ -1418,6 +1418,9 @@
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
+  "enterOptionalPassword": {
+    "message": "Enter optional password"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -3521,9 +3524,6 @@
   },
   "searchResults": {
     "message": "Search results"
-  },
-  "searchSettings": {
-    "message": "Search in Settings"
   },
   "searchTokens": {
     "message": "Search tokens"

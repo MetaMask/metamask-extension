@@ -33,8 +33,8 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ButtonIcon } from '../../component-library/button-icon/deprecated';
-import { Icon, IconName, IconSize } from '../../component-library';
+
+import { Icon, IconName, IconSize, ButtonIcon } from '../../component-library';
 
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
@@ -228,27 +228,6 @@ class NetworkDropdown extends Component {
         );
       },
     );
-  }
-
-  getNetworkName() {
-    const { providerConfig } = this.props;
-    const providerName = providerConfig.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return providerConfig.nickname || t('unknownNetwork');
-    }
   }
 
   renderNetworkEntry(network) {

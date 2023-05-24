@@ -374,6 +374,25 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({ usedNetworks });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * Set the interactive replacement token with a url and the old refresh token
+   *
+   * @param {object} opts
+   * @param opts.url
+   * @param opts.oldRefreshToken
+   * @returns {void}
+   */
+  showInteractiveReplacementTokenBanner({ url, oldRefreshToken }) {
+    this.store.updateState({
+      interactiveReplacementToken: {
+        url,
+        oldRefreshToken,
+      },
+    });
+  }
+
+  ///: END:ONLY_INCLUDE_IN
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *

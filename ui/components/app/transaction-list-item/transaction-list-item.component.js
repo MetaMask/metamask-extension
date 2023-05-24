@@ -196,6 +196,7 @@ function TransactionListItemInner({
     ///: END:ONLY_INCLUDE_IN
   ]);
 
+  const showBorder = process.env.MULTICHAIN;
   let showCancelButton = !hasCancelled && isPending && !isUnapproved;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -246,6 +247,7 @@ function TransactionListItemInner({
           )
           ///: END:ONLY_INCLUDE_IN
         }
+        showBorder={showBorder}
         subtitle={
           <h3>
             <TransactionStatusLabel
