@@ -1851,83 +1851,108 @@
     },
     "@sentry/browser": {
       "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
         "XMLHttpRequest": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_RELEASE__": true,
+        "indexedDB.open": true,
         "setTimeout": true
       },
       "packages": {
+        "@sentry/browser>@sentry-internal/tracing": true,
         "@sentry/browser>@sentry/core": true,
-        "@sentry/browser>tslib": true,
-        "@sentry/types": true,
+        "@sentry/browser>@sentry/replay": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/tracing": {
+      "globals": {
+        "Headers": true,
+        "PerformanceObserver": true,
+        "Request": true,
+        "__SENTRY_DEBUG__": true,
+        "addEventListener": true,
+        "performance.getEntriesByType": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
         "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/core": {
       "globals": {
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_TRACING__": true,
         "clearInterval": true,
-        "setInterval": true
+        "clearTimeout": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core>@sentry/hub": true,
-        "@sentry/browser>@sentry/core>@sentry/minimal": true,
-        "@sentry/browser>@sentry/core>tslib": true,
-        "@sentry/types": true,
         "@sentry/utils": true
       }
     },
-    "@sentry/browser>@sentry/core>@sentry/hub": {
+    "@sentry/browser>@sentry/replay": {
       "globals": {
-        "clearInterval": true,
-        "setInterval": true
+        "Blob": true,
+        "CSSConditionRule": true,
+        "CSSGroupingRule": true,
+        "CSSMediaRule": true,
+        "CSSSupportsRule": true,
+        "DragEvent": true,
+        "Element": true,
+        "FormData": true,
+        "HTMLCanvasElement": true,
+        "HTMLElement.prototype": true,
+        "HTMLFormElement": true,
+        "HTMLImageElement": true,
+        "HTMLInputElement.prototype": true,
+        "HTMLOptionElement.prototype": true,
+        "HTMLSelectElement.prototype": true,
+        "HTMLTextAreaElement.prototype": true,
+        "Headers": true,
+        "ImageData": true,
+        "MouseEvent": true,
+        "MutationObserver": true,
+        "Node.prototype.contains": true,
+        "PerformanceObserver": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "Worker": true,
+        "Zone": true,
+        "__SENTRY_DEBUG__": true,
+        "__rrMutationObserver": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.href": true,
+        "pageXOffset": true,
+        "pageYOffset": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core>@sentry/hub>tslib": true,
-        "@sentry/types": true,
-        "@sentry/utils": true
-      }
-    },
-    "@sentry/browser>@sentry/core>@sentry/hub>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@sentry/browser>@sentry/core>@sentry/minimal": {
-      "packages": {
-        "@sentry/browser>@sentry/core>@sentry/hub": true,
-        "@sentry/browser>@sentry/core>@sentry/minimal>tslib": true
-      }
-    },
-    "@sentry/browser>@sentry/core>@sentry/minimal>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@sentry/browser>@sentry/core>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@sentry/browser>tslib": {
-      "globals": {
-        "define": true
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true,
+        "browserify>process": true
       }
     },
     "@sentry/integrations": {
       "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "setTimeout": true
+        "Request": true,
+        "__SENTRY_DEBUG__": true,
+        "console.log": true
       },
       "packages": {
-        "@sentry/integrations>tslib": true,
-        "@sentry/types": true,
         "@sentry/utils": true,
         "localforage": true
-      }
-    },
-    "@sentry/integrations>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "@sentry/utils": {
@@ -1941,20 +1966,20 @@
         "Headers": true,
         "Request": true,
         "Response": true,
+        "TextEncoder": true,
+        "URL": true,
         "XMLHttpRequest.prototype": true,
+        "__SENTRY_BROWSER_BUNDLE__": true,
+        "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
         "document": true,
-        "setTimeout": true
+        "new": true,
+        "setTimeout": true,
+        "target": true
       },
       "packages": {
-        "@sentry/utils>tslib": true,
         "browserify>process": true
-      }
-    },
-    "@sentry/utils>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "@truffle/codec": {
