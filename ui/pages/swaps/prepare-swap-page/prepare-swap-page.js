@@ -645,12 +645,12 @@ export default function PrepareSwapPage({
 
   // Set text for the main button based on different conditions.
   let mainButtonText;
-  if (!isReviewSwapButtonDisabled) {
+  if (swapsErrorKey && swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR) {
+    mainButtonText = t('swapQuotesNotAvailableErrorTitle');
+  } else if (!isReviewSwapButtonDisabled) {
     mainButtonText = t('swapFetchingQuotes');
   } else if (!selectedToToken?.address || !fromTokenAddress) {
     mainButtonText = t('swapSelectToken');
-  } else if (swapsErrorKey && swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR) {
-    mainButtonText = t('swap');
   } else {
     mainButtonText = t('swapEnterAmount');
   }
@@ -706,6 +706,8 @@ export default function PrepareSwapPage({
   const onOpenImportTokenModalClick = (item) => {
     setTokenForImport(item);
     setIsImportTokenModalOpen(true);
+    onSwapToClose();
+    setSwapToSearchQuery('');
   };
 
   /* istanbul ignore next */
@@ -727,13 +729,10 @@ export default function PrepareSwapPage({
     // Only when a user confirms import of a token, we add it and show it in a dropdown.
     onToSelect?.(tokenForImport);
     setTokenForImport(null);
-    onSwapToClose();
-    setSwapToSearchQuery('');
   };
 
   const onImportTokenCloseClick = () => {
     setIsImportTokenModalOpen(false);
-    onSwapToClose();
   };
 
   const importTokenProps = {
