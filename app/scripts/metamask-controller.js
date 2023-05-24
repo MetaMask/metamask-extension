@@ -3191,7 +3191,7 @@ export default class MetamaskController extends EventEmitter {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
       KeyringType.imported,
-      [privateKey],
+      { privateKeys: [privateKey] },
     );
     const [firstAccount] = await keyring.getAccounts();
     // update accounts in preferences controller
