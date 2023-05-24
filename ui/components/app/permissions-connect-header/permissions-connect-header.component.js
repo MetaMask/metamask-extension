@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/subject-metadata-controller';
+import SnapAuthorshipHeader from '../snaps/snap-authorship-header/snap-authorship-header';
+///: END:ONLY_INCLUDE_IN
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
 import {
@@ -19,6 +23,9 @@ export default class PermissionsConnectHeader extends Component {
     headerText: PropTypes.string,
     leftIcon: PropTypes.node,
     rightIcon: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    subjectType: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static defaultProps = {
@@ -29,7 +36,27 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   renderHeaderIcon() {
-    const { iconUrl, iconName, siteOrigin, leftIcon, rightIcon } = this.props;
+    const {
+      iconUrl,
+      iconName,
+      siteOrigin,
+      leftIcon,
+      rightIcon,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      subjectType,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
+    if (subjectType === SubjectType.Snap) {
+      return (
+        <div className="permissions-connect-header__icon">
+          <SnapAuthorshipHeader snapId={siteOrigin} />
+        </div>
+      );
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     return (
       <div className="permissions-connect-header__icon">

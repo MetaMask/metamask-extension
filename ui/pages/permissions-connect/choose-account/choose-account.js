@@ -60,6 +60,7 @@ const ChooseAccount = ({
               : t('connectAccountOrCreate')
           }
           siteOrigin={targetSubjectMetadata?.origin}
+          subjectType={targetSubjectMetadata?.subjectType}
         />
         <AccountList
           accounts={accounts}
