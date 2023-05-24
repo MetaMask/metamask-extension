@@ -31,7 +31,6 @@ import {
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
 import {
-  getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../selectors';
