@@ -9,7 +9,7 @@ import {
   BackgroundColor,
   IconColor,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
   Size,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
@@ -86,13 +86,13 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
       </Box>
       <Text
         paddingBottom={6}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         variant={TextVariant.headingSm}
         as="h2"
       >
         {t('snapInstallWarningHeading')}
       </Text>
-      <Text paddingBottom={6} textAlign={TEXT_ALIGN.CENTER}>
+      <Text paddingBottom={6} textAlign={TextAlign.Center}>
         {warnings.length > 1
           ? t('snapInstallWarningCheckPlural')
           : t('snapInstallWarningCheck')}

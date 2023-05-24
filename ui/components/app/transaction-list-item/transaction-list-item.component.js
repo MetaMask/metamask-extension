@@ -168,6 +168,7 @@ function TransactionListItemInner({
   ]);
 
   const showCancelButton = !hasCancelled && isPending && !isUnapproved;
+  const showBorder = process.env.MULTICHAIN;
 
   return (
     <>
@@ -178,6 +179,7 @@ function TransactionListItemInner({
         icon={
           <TransactionIcon category={category} status={displayedStatusKey} />
         }
+        showBorder={showBorder}
         subtitle={
           <h3>
             <TransactionStatusLabel

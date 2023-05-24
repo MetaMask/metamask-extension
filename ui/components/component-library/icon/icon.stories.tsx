@@ -9,6 +9,7 @@ import {
   JustifyContent,
   TextVariant,
   FlexWrap,
+  FLEX_WRAP,
   TextAlign,
   BackgroundColor,
   BorderColor,

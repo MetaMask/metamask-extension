@@ -40,6 +40,6 @@ describe('SettingsPage', () => {
       '/settings',
     );
 
-    expect(queryByPlaceholderText('Search in Settings')).toBeInTheDocument();
+    expect(queryByPlaceholderText('Search')).toBeInTheDocument();
   });
 });

@@ -4,7 +4,7 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
   OVERFLOW_WRAP,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
   TEXT_TRANSFORM,
   TextVariant,
@@ -166,11 +166,11 @@ describe('Text', () => {
   it('should render the Text with proper text align class name', () => {
     const { getByText } = render(
       <>
-        <Text textAlign={TEXT_ALIGN.LEFT}>left</Text>
-        <Text textAlign={TEXT_ALIGN.CENTER}>center</Text>
-        <Text textAlign={TEXT_ALIGN.RIGHT}>right</Text>
-        <Text textAlign={TEXT_ALIGN.JUSTIFY}>justify</Text>
-        <Text textAlign={TEXT_ALIGN.END}>end</Text>
+        <Text textAlign={TextAlign.Left}>left</Text>
+        <Text textAlign={TextAlign.Center}>center</Text>
+        <Text textAlign={TextAlign.Right}>right</Text>
+        <Text textAlign={TextAlign.Justify}>justify</Text>
+        <Text textAlign={TextAlign.End}>end</Text>
       </>,
     );
 
