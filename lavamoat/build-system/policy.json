@@ -980,6 +980,7 @@
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>are-we-there-yet": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": true,
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
         "@storybook/react>@storybook/node-logger>npmlog>console-control-strings": true,
         "nyc>yargs>set-blocking": true
       }
@@ -1008,6 +1009,9 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>aproba": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": true,
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>has-unicode": true,
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>wide-align": true,
         "@storybook/react>@storybook/node-logger>npmlog>console-control-strings": true,
         "@storybook/react>@storybook/node-logger>npmlog>gauge>has-unicode": true,
         "@storybook/react>@storybook/node-logger>npmlog>gauge>wide-align": true,
@@ -1133,9 +1137,31 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
+    "@sentry/cli>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
+      }
+    },
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
+      }
+    },
+    "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>has-unicode": {
+      "builtin": {
+        "os.type": true
+      },
+      "globals": {
+        "process.env.LANG": true,
+        "process.env.LC_ALL": true,
+        "process.env.LC_CTYPE": true
+      }
+    },
+    "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>wide-align": {
+      "packages": {
+        "yargs>string-width": true
       }
     },
     "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": {
@@ -4886,7 +4912,18 @@
       },
       "packages": {
         "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": {
+      "builtin": {
+        "os.homedir": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.getuid": true,
+        "process.platform": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": {
@@ -4910,7 +4947,32 @@
         "setTimeout": true
       },
       "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf>glob": true,
         "nyc>glob": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf>glob": {
+      "builtin": {
+        "assert": true,
+        "events.EventEmitter": true,
+        "fs": true,
+        "path.join": true,
+        "path.resolve": true,
+        "util": true
+      },
+      "globals": {
+        "console.error": true,
+        "process.cwd": true,
+        "process.nextTick": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint>minimatch": true,
+        "gulp-watch>path-is-absolute": true,
+        "nyc>glob>fs.realpath": true,
+        "nyc>glob>inflight": true,
+        "pump>once": true,
+        "pumpify>inherits": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": {
@@ -8246,14 +8308,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "@sentry/cli>mkdirp": true
       }
     },
     "stylelint>global-modules": {

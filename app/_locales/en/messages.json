@@ -4933,6 +4933,9 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
+  },
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
