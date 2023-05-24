@@ -35,6 +35,7 @@ import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
+import TxGasUtil from './tx-gas-utils';
 import TransactionController from '.';
 
 const noop = () => true;
@@ -579,7 +580,7 @@ describe('Transaction Controller', function () {
         TransactionType.swapApproval,
         undefined,
         '12345',
-        { extraMeta: { type: 'swapApproval', sourceTokenSymbol: 'XBN' } },
+        { swaps: { meta: { type: 'swapApproval', sourceTokenSymbol: 'XBN' } } },
       );
 
       const transaction = txController.getTransactions({
@@ -602,13 +603,15 @@ describe('Transaction Controller', function () {
         undefined,
         '12345',
         {
-          extraMeta: {
-            sourceTokenSymbol: 'BTCX',
-            destinationTokenSymbol: 'ETH',
-            type: 'swapped',
-            destinationTokenDecimals: 8,
-            destinationTokenAddress: VALID_ADDRESS_TWO,
-            swapTokenValue: '0x0077',
+          swaps: {
+            meta: {
+              sourceTokenSymbol: 'BTCX',
+              destinationTokenSymbol: 'ETH',
+              type: 'swapped',
+              destinationTokenDecimals: 8,
+              destinationTokenAddress: VALID_ADDRESS_TWO,
+              swapTokenValue: '0x0077',
+            },
           },
         },
       );
@@ -623,6 +626,79 @@ describe('Transaction Controller', function () {
       assert.equal(transaction.destinationTokenDecimals, 8);
       assert.equal(transaction.destinationTokenAddress, VALID_ADDRESS_TWO);
       assert.equal(transaction.swapTokenValue, '0x0077');
+    });
+
+    describe('if swaps trade with no approval transaction and simulation fails', function () {
+      let analyzeGasUsageOriginal;
+
+      beforeEach(function () {
+        analyzeGasUsageOriginal = TxGasUtil.prototype.analyzeGasUsage;
+
+        sinon.stub(TxGasUtil.prototype, 'analyzeGasUsage').returns({
+          simulationFails: true,
+        });
+      });
+
+      afterEach(function () {
+        // Sinon restore didn't work
+        TxGasUtil.prototype.analyzeGasUsage = analyzeGasUsageOriginal;
+      });
+
+      it('throws error', async function () {
+        await assert.rejects(
+          txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            TransactionType.swap,
+            undefined,
+            '12345',
+            {
+              swaps: {
+                hasApproveTx: false,
+              },
+            },
+          ),
+          new Error('Simulation failed'),
+        );
+      });
+
+      it('cancels transaction', async function () {
+        const listener = sinon.spy();
+
+        txController.on('tx:status-update', listener);
+
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            TransactionType.swap,
+            undefined,
+            '12345',
+            {
+              swaps: {
+                hasApproveTx: false,
+              },
+            },
+          );
+        } catch (error) {
+          // Expected error
+        }
+
+        assert.equal(listener.callCount, 1);
+
+        const [txId, status] = listener.args[0];
+
+        assert.equal(status, TransactionStatus.rejected);
+        assert.equal(txId, updatedTxMeta.id);
+      });
     });
 
     describe('on approval', function () {

@@ -1193,9 +1193,12 @@ export const signAndSendTransactions = (
           TransactionType.swapApproval,
           {
             requireApproval: false,
-            extraMeta: {
-              type: TransactionType.swapApproval,
-              sourceTokenSymbol: sourceTokenInfo.symbol,
+            swaps: {
+              hasApproveTx: true,
+              meta: {
+                type: TransactionType.swapApproval,
+                sourceTokenSymbol: sourceTokenInfo.symbol,
+              },
             },
           },
         );
@@ -1213,16 +1216,19 @@ export const signAndSendTransactions = (
         TransactionType.swap,
         {
           requireApproval: false,
-          extraMeta: {
-            estimatedBaseFee: decEstimatedBaseFee,
-            sourceTokenSymbol: sourceTokenInfo.symbol,
-            destinationTokenSymbol: destinationTokenInfo.symbol,
-            type: TransactionType.swap,
-            destinationTokenDecimals: destinationTokenInfo.decimals,
-            destinationTokenAddress: destinationTokenInfo.address,
-            swapMetaData,
-            swapTokenValue,
-            approvalTxId: finalApproveTxMeta?.id,
+          swaps: {
+            hasApproveTx: Boolean(approveTxParams),
+            meta: {
+              estimatedBaseFee: decEstimatedBaseFee,
+              sourceTokenSymbol: sourceTokenInfo.symbol,
+              destinationTokenSymbol: destinationTokenInfo.symbol,
+              type: TransactionType.swap,
+              destinationTokenDecimals: destinationTokenInfo.decimals,
+              destinationTokenAddress: destinationTokenInfo.address,
+              swapMetaData,
+              swapTokenValue,
+              approvalTxId: finalApproveTxMeta?.id,
+            },
           },
         },
       );
@@ -1230,6 +1236,7 @@ export const signAndSendTransactions = (
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
+      console.error(e);
       await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;

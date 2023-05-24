@@ -806,15 +806,33 @@ export default class TransactionController extends EventEmitter {
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
 
-    if (transactionType === TransactionType.swapApproval) {
-      this.emit('newSwapApproval', txMeta);
-      txMeta = this._updateSwapApprovalTransaction(
-        txMeta.id,
-        options?.extraMeta,
-      );
-    } else if (transactionType === TransactionType.swap) {
-      this.emit('newSwap', txMeta);
-      txMeta = this._updateSwapTransaction(txMeta.id, options?.extraMeta);
+    // The simulationFails property is added if the estimateGas call fails. In cases
+    // when no swaps approval tx is required, this indicates that the swap will likely
+    // fail. There was an earlier estimateGas call made by the swaps controller,
+    // but it is possible that external conditions have change since then, and
+    // a previously succeeding estimate gas call could now fail. By checking for
+    // the `simulationFails` property here, we can reduce the number of swap
+    // transactions that get published to the blockchain only to fail and thereby
+    // waste the user's funds on gas.
+    if (
+      transactionType === TransactionType.swap &&
+      options?.swaps?.hasApproveTx === false &&
+      txMeta.simulationFails
+    ) {
+      await this._cancelTransaction(txMeta.id);
+      throw new Error('Simulation failed');
+    }
+
+    const swapsMeta = options?.swaps?.meta;
+
+    if (swapsMeta) {
+      if (transactionType === TransactionType.swapApproval) {
+        this.emit('newSwapApproval', txMeta);
+        txMeta = this._updateSwapApprovalTransaction(txMeta.id, swapsMeta);
+      } else if (transactionType === TransactionType.swap) {
+        this.emit('newSwap', txMeta);
+        txMeta = this._updateSwapTransaction(txMeta.id, swapsMeta);
+      }
     }
 
     if (options?.requireApproval === false) {
