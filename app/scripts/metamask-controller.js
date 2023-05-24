@@ -49,6 +49,7 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 ///: END:ONLY_INCLUDE_IN
@@ -754,6 +755,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `SnapController:getPermitted`,
           `SnapController:install`,
+          `SubjectMetadataController:getSubjectMetadata`,
         ],
       }),
       state: initState.PermissionController,
@@ -813,7 +815,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
+      iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
@@ -1580,6 +1582,8 @@ export default class MetamaskController extends EventEmitter {
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
+        encrypt,
+        decrypt,
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',

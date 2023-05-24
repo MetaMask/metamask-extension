@@ -430,7 +430,7 @@ describe('MetaMask', function () {
 
     it('checks balance', async function () {
       await driver.clickElement({
-        text: 'Assets',
+        text: 'Tokens',
         tag: 'button',
       });
 

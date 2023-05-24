@@ -1,15 +1,13 @@
 const path = require('path');
-
 const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
-const { generateIconNames } = require('../development/generate-icon-names');
-
 module.exports = {
   core: {
-    builder: 'webpack5',
+    disableTelemetry: true,
   },
-  features: { buildStoriesJson: true },
+  features: {
+    buildStoriesJson: true,
+  },
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
@@ -23,19 +21,14 @@ module.exports = {
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
-    '@whitespace/storybook-addon-html'
+    '@whitespace/storybook-addon-html',
+    '@storybook/addon-mdx-gfm',
   ],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
-  babel: async (options) => ({ overrides: options.overrides }),
-  // Sets env variables https://storybook.js.org/docs/react/configure/environment-variables/
-  env: async (config) => {
-    return {
-      ...config,
-      // Creates the icon names environment variable for the component-library/icon/icon.js component
-      ICON_NAMES: generateIconNames(),
-    };
-  },
+  babel: async (options) => ({
+    overrides: options.overrides,
+  }),
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
@@ -54,7 +47,10 @@ module.exports = {
       os: false,
       path: false,
       stream: require.resolve('stream-browserify'),
-      _stream_transform: require.resolve('readable-stream/lib/_stream_transform.js'),
+      zlib: false,
+      _stream_transform: require.resolve(
+        'readable-stream/lib/_stream_transform.js',
+      ),
     };
     config.module.strictExportPresence = true;
     config.module.rules.push({
@@ -101,5 +97,12 @@ module.exports = {
       }),
     );
     return config;
+  },
+  docs: {
+    autodocs: true,
+  },
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
   },
 };

@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "资产选项"
   },
-  "assets": {
-    "message": "资产"
-  },
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。必须使用桥来进行。"
   },
@@ -3052,9 +3049,6 @@
   },
   "searchResults": {
     "message": "搜索结果"
-  },
-  "searchSettings": {
-    "message": "在设置中搜索"
   },
   "searchTokens": {
     "message": "搜索代币"

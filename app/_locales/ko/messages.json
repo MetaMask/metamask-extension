@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "자산 옵션"
   },
-  "assets": {
-    "message": "자산"
-  },
   "attemptSendingAssets": {
     "message": "한 네트워크에서 다른 네트워크로 자산을 직접 전송하면 자산이 영구적으로 손실될 수 있습니다. 반드시 브릿지를 이용하세요."
   },
@@ -3052,9 +3049,6 @@
   },
   "searchResults": {
     "message": "검색 결과"
-  },
-  "searchSettings": {
-    "message": "설정에서 찾기"
   },
   "searchTokens": {
     "message": "토큰 검색"

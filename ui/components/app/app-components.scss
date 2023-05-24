@@ -41,7 +41,6 @@
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-delineator/index';
 @import 'snaps/snap-settings-card/index';
-@import 'snaps/update-snap-permission-list/index';
 @import 'snaps/copyable/index';
 @import 'snaps/snap-version/index';
 @import 'gas-details-item/index';
@@ -105,8 +104,8 @@
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+@import '../institutional/compliance-details/index';
+@import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IN
