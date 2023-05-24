@@ -140,53 +140,43 @@ exports[`Signature Request Component render should match snapshot when we are us
           class="box mm-icon mm-icon--size-md box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-info-default"
           style="mask-image: url('./images/icons/info.svg');"
         />
-        <h7
+        <h6
           class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
         >
           Your selected account (0xd8f...9aa5) is different than the account trying to sign ()
-        </h7>
+        </h6>
       </div>
       <div
         class="signature-request__origin"
       >
         <div
-          class="site-origin"
+          class="box mm-tag-url box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
         >
           <div
-            class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+            class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            <div
-              class="chip__left-icon"
-            >
-              <div
-                class=""
-              >
-                <span
-                  class="icon-with-fallback__fallback"
-                >
-                  T
-                </span>
-              </div>
-            </div>
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-            >
-              test
-            </span>
+              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-default"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
           </div>
+          <p
+            class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          >
+            test
+          </p>
         </div>
       </div>
-      <h3
-        boxprops="[object Object]"
-        class="box mm-text signature-request__content__title mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+      <h2
+        class="box mm-text signature-request__content__title mm-text--heading-lg box--margin-top-4 box--flex-direction-row box--color-text-default"
       >
         Signature request
-      </h3>
-      <h7
-        class="box mm-text request-signature__content__subtitle mm-text--body-xs mm-text--text-align-center box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
+      </h2>
+      <h6
+        class="box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center box--margin-top-4 box--margin-right-12 box--margin-left-12 box--flex-direction-row box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
-      </h7>
+      </h6>
       <div>
         <button
           class="box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
@@ -195,11 +185,11 @@ exports[`Signature Request Component render should match snapshot when we are us
           <span
             class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
           >
-            <h7
-              class="box mm-text mm-text--body-xs box--flex-direction-row box--color-primary-default"
+            <h6
+              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
             >
               Verify third-party details
-            </h7>
+            </h6>
           </span>
         </button>
       </div>
@@ -897,53 +887,43 @@ exports[`Signature Request Component render should match snapshot when we want t
           class="box mm-icon mm-icon--size-md box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-info-default"
           style="mask-image: url('./images/icons/info.svg');"
         />
-        <h7
+        <h6
           class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
         >
           Your selected account (0xd8f...9aa5) is different than the account trying to sign ()
-        </h7>
+        </h6>
       </div>
       <div
         class="signature-request__origin"
       >
         <div
-          class="site-origin"
+          class="box mm-tag-url box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
         >
           <div
-            class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+            class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            <div
-              class="chip__left-icon"
-            >
-              <div
-                class=""
-              >
-                <span
-                  class="icon-with-fallback__fallback"
-                >
-                  T
-                </span>
-              </div>
-            </div>
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-            >
-              test
-            </span>
+              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-default"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
           </div>
+          <p
+            class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          >
+            test
+          </p>
         </div>
       </div>
-      <h3
-        boxprops="[object Object]"
-        class="box mm-text signature-request__content__title mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+      <h2
+        class="box mm-text signature-request__content__title mm-text--heading-lg box--margin-top-4 box--flex-direction-row box--color-text-default"
       >
         Signature request
-      </h3>
-      <h7
-        class="box mm-text request-signature__content__subtitle mm-text--body-xs mm-text--text-align-center box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
+      </h2>
+      <h6
+        class="box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center box--margin-top-4 box--margin-right-12 box--margin-left-12 box--flex-direction-row box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
-      </h7>
+      </h6>
       <div>
         <button
           class="box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
@@ -952,11 +932,11 @@ exports[`Signature Request Component render should match snapshot when we want t
           <span
             class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
           >
-            <h7
-              class="box mm-text mm-text--body-xs box--flex-direction-row box--color-primary-default"
+            <h6
+              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
             >
               Verify third-party details
-            </h7>
+            </h6>
           </span>
         </button>
       </div>

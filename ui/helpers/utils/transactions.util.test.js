@@ -93,4 +93,12 @@ describe('Transactions utils', () => {
       });
     });
   });
+
+  describe('formatWallet', () => {
+    it('should return formatted wallet address', () => {
+      expect(
+        utils.formatWallet('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'),
+      ).toStrictEqual('0x0dcd5d...0be3e7bc');
+    });
+  });
 });
