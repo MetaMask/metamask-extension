@@ -236,8 +236,7 @@ function TransactionListItemInner({
                 name={IconName.Custody}
                 className="transaction-list-item__icon-badge"
                 color={getTransactionColor(status)}
-                width={IconSize.Xs}
-                height={IconSize.Xs}
+                size={IconSize.Xs}
               />
             </div>
           ) : (
