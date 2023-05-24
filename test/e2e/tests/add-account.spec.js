@@ -100,7 +100,9 @@ describe('Add account', function () {
         await sendTransaction(driver, secondAccount, '2.8');
 
         // Lock the account
-        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="global-menu-lock"]');
@@ -234,7 +236,7 @@ async function checkAccountDetails(driver) {
 
   // get the public address for the "second account"
   const accountDOM = await driver.waitForSelector(
-    '.multichain-address-copy-button',
+    '.qr-code .multichain-address-copy-button',
   );
   const accountAddress = await accountDOM.getText();
 
