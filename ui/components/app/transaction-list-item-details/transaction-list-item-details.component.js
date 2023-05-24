@@ -12,7 +12,8 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName } from '../../component-library';
+import Box from '../../ui/box/box';
+import { Icon, IconName, Text } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
@@ -364,14 +365,14 @@ export default class TransactionListItemDetails extends PureComponent {
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 transactionNote && transactionNote.length !== 0 && (
-                  <div className="transaction-list-item-details__transaction-breakdown">
-                    <h4 className="transaction-breakdown__title">
+                  <Box className="transaction-list-item-details__transaction-breakdown">
+                    <Text as="h4" className="transaction-breakdown__title">
                       {t('transactionNote')}
-                    </h4>
-                    <p className="transaction-breakdown__description">
+                    </Text>
+                    <Text as="p" className="transaction-breakdown__description">
                       {transactionNote}
-                    </p>
-                  </div>
+                    </Text>
+                  </Box>
                 )
                 ///: END:ONLY_INCLUDE_IN
               }

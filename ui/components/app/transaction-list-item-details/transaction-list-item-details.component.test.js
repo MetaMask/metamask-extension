@@ -14,10 +14,11 @@ jest.mock('../../../store/actions.ts', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
+let mockGetCustodianTransactionDeepLink = jest.fn();
+
 jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
-    getCustodianTransactionDeepLink: () =>
-      jest.fn().mockReturnValue({ url: 'https://url.com' }),
+    getCustodianTransactionDeepLink: () => mockGetCustodianTransactionDeepLink,
   }),
 }));
 
@@ -134,6 +135,57 @@ describe('TransactionListItemDetails Component', () => {
       );
 
       expect(queryByTestId('speedup-button')).toBeInTheDocument();
+    });
+  });
+
+  describe('Institutional', () => {
+    it('should render correctly if custodyTransactionDeepLink has a url', async () => {
+      mockGetCustodianTransactionDeepLink = jest
+        .fn()
+        .mockReturnValue({ url: 'https://url.com' });
+
+      const mockStore = configureMockStore([thunk])(mockState);
+
+      renderWithProvider(<TransactionListItemDetails {...props} />, mockStore);
+
+      await waitFor(() => {
+        const custodianViewButton = document.querySelector(
+          '[data-original-title="View in custodian app"]',
+        );
+
+        // Assert that the custodian view button is rendered
+        expect(custodianViewButton).toBeInTheDocument();
+      });
+    });
+
+    it('should render correctly if transactionNote is provided', async () => {
+      const newTransaction = {
+        ...transaction,
+        metadata: {
+          note: 'some note',
+        },
+        custodyId: '1',
+      };
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        transactions: [newTransaction],
+        primaryTransaction: newTransaction,
+        initialTransaction: newTransaction,
+      };
+      const mockStore = configureMockStore([thunk])(mockState);
+
+      const { queryByText } = renderWithProvider(
+        <TransactionListItemDetails
+          {...props}
+          transactionGroup={newTransactionGroup}
+        />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(queryByText('some note')).toBeInTheDocument();
+      });
     });
   });
 });

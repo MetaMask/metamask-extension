@@ -15,7 +15,7 @@ import TransactionStatusLabel from '../transaction-status-label/transaction-stat
 import TransactionIcon from '../transaction-icon';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { IconColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 ///: END:ONLY_INCLUDE_IN
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
@@ -236,8 +236,8 @@ function TransactionListItemInner({
                 name={IconName.Custody}
                 className="transaction-list-item__icon-badge"
                 color={getTransactionColor(status)}
-                width={12}
-                height={12}
+                width={IconSize.Xs}
+                height={IconSize.Xs}
               />
             </div>
           ) : (
