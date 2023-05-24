@@ -40,7 +40,6 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
@@ -93,16 +92,6 @@ export default class SignatureRequestOriginal extends Component {
     } catch (e) {
       return hex;
     }
-  };
-
-  renderAccountInfo = () => {
-    return (
-      <div className="request-signature__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
   };
 
   renderTypedData = (data) => {

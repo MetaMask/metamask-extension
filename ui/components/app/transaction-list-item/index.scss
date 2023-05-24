@@ -67,4 +67,13 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  &__icon-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    transform: scale(0.8);
+  }
+  ///: END:ONLY_INCLUDE_IN
 }

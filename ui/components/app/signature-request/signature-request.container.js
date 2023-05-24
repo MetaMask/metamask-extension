@@ -12,6 +12,7 @@ import {
   getPreferences,
   conversionRateSelector,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getAccountType,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -21,14 +22,39 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { cancelMsgs, showModal } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/order
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import {
+  mmiActionsFactory,
+  setTypedMessageInProgress,
+} from '../../../store/institutional/institution-background';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+///: END:ONLY_INCLUDE_IN
+import {
+  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../../shared/constants/app';
+import {
+  cancelMsgs,
+  showModal,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  goHome,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import SignatureRequest from './signature-request.component';
 
 function mapStateToProps(state, ownProps) {
   const { txData } = ownProps;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const envType = getEnvironmentType();
+  ///: END:ONLY_INCLUDE_IN
+
   const {
     msgParams: { from },
   } = txData;
@@ -63,12 +89,62 @@ function mapStateToProps(state, ownProps) {
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType: getAccountType(state),
+    isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
 
-function mapDispatchToProps(dispatch) {
+let mapDispatchToProps = null;
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+function mmiMapDispatchToProps(dispatch) {
+  const mmiActions = mmiActionsFactory();
+  return {
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
+    showCustodianDeepLink: ({
+      custodyId,
+      fromAddress,
+      closeNotification,
+      onDeepLinkFetched,
+      onDeepLinkShown,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId: undefined,
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        closeNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+      }),
+    showTransactionsFailedModal: ({
+      errorMessage,
+      closeNotification,
+      operationFailed,
+    }) =>
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage,
+          closeNotification,
+          operationFailed,
+        }),
+      ),
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    goHome: () => dispatch(goHome()),
+  };
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
+
+mapDispatchToProps = function (dispatch) {
   return {
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showRejectTransactionsConfirmationModal: ({
@@ -87,7 +163,7 @@ function mapDispatchToProps(dispatch) {
     cancelAll: (unconfirmedMessagesList) =>
       dispatch(cancelMsgs(unconfirmedMessagesList)),
   };
-}
+};
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const {
@@ -105,6 +181,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNotification,
+    ///: END:ONLY_INCLUDE_IN
   } = stateProps;
   const {
     signPersonalMessage,
@@ -139,13 +219,55 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     sign = signMessage;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const signFn = async (...opts) => {
+    if (accountType === 'custody') {
+      try {
+        let msgData = opts;
+        let id = opts.custodyId;
+        if (!opts.custodyId) {
+          msgData = await sign(opts);
+          id = msgData.custodyId;
+        }
+        dispatchProps.showCustodianDeepLink({
+          custodyId: id,
+          fromAddress: fromAccount.address,
+          closeNotification: isNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => undefined,
+        });
+        await dispatchProps.setMsgInProgress(msgData.metamaskId);
+        await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
+        await goHome();
+        return msgData;
+      } catch (err) {
+        await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
+        await dispatchProps.showTransactionsFailedModal({
+          errorMessage: err.message,
+          closeNotification: true,
+          operationFailed: true,
+        });
+        return null;
+      }
+    }
+
+    return sign(opts);
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     ...ownProps,
     ...dispatchProps,
     fromAccount,
     txData,
     cancel,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     sign,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // eslint-disable-next-line no-dupe-keys
+    sign: signFn,
+    ///: END:ONLY_INCLUDE_IN
     isLedgerWallet,
     hardwareWalletRequiresConnection,
     isHardwareWallet: isHdWallet,
