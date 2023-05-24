@@ -94,6 +94,8 @@ export default class SignatureRequest extends PureComponent {
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    showCustodianDeepLink: PropTypes.func,
+    isNotification: PropTypes.bool,
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
@@ -109,6 +111,25 @@ export default class SignatureRequest extends PureComponent {
     hasScrolledMessage: false,
     showContractDetails: false,
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  componentDidMount() {
+    if (this.props.txData.custodyId) {
+      this.props.showCustodianDeepLink({
+        custodyId: this.props.txData.custodyId,
+        fromAddress: this.props.fromAccount.address,
+        closeNotification: this.props.isNotification,
+        onDeepLinkFetched: () => undefined,
+        onDeepLinkShown: () => {
+          this.context.trackEvent({
+            category: 'MMI',
+            event: 'Show deeplink for signature',
+          });
+        },
+      });
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   setMessageRootRef(ref) {
     this.messageRootRef = ref;
@@ -358,6 +379,9 @@ export default class SignatureRequest extends PureComponent {
           cancelAction={onCancel}
           signAction={onSign}
           disabled={
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            Boolean(this.props.txData?.custodyId) ||
+            ///: END:ONLY_INCLUDE_IN
             hardwareWalletRequiresConnection ||
             (messageIsScrollable && !this.state.hasScrolledMessage)
           }
