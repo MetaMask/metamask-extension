@@ -1418,6 +1418,9 @@
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
+  "enterOptionalPassword": {
+    "message": "Enter optional password"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -4929,6 +4932,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
