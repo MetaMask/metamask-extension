@@ -21,7 +21,10 @@ export default function AccountMismatchWarning({ address }) {
       wrapperClassName="account-mismatch-warning__tooltip-wrapper"
       containerClassName="account-mismatch-warning__tooltip-container"
     >
-      <div className="account-mismatch-warning__tooltip-container-icon">
+      <div
+        className="account-mismatch-warning__tooltip-container-icon"
+        data-testid="account-mismatch-warning-tooltip"
+      >
         <InfoIcon severity={SEVERITIES.WARNING} />
       </div>
     </Tooltip>

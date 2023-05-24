@@ -11,7 +11,7 @@ import {
   Display,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   FlexDirection,
   FlexWrap,
 } from '../../../helpers/constants/design-system';
@@ -125,7 +125,7 @@ export default {
       table: { category: 'display' },
     },
     textAlign: {
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
       control: 'select',
       table: { category: 'text' },
     },

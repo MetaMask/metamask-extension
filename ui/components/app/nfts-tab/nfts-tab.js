@@ -9,10 +9,10 @@ import NftsDetectionNotice from '../nfts-detection-notice';
 import NftsItems from '../nfts-items';
 import {
   TypographyVariant,
-  TEXT_ALIGN,
+  TextAlign,
   JustifyContent,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -76,8 +76,8 @@ export default function NftsTab({ onAddNFT }) {
               <Typography
                 color={TextColor.textMuted}
                 variant={TypographyVariant.H4}
-                align={TEXT_ALIGN.CENTER}
-                fontWeight={FONT_WEIGHT.BOLD}
+                align={TextAlign.Center}
+                fontWeight={FontWeight.Bold}
               >
                 {t('noNFTs')}
               </Typography>
@@ -101,7 +101,7 @@ export default function NftsTab({ onAddNFT }) {
         <Typography
           color={TextColor.textMuted}
           variant={TypographyVariant.H5}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
         >
           {t('missingNFT')}
         </Typography>
@@ -128,7 +128,7 @@ export default function NftsTab({ onAddNFT }) {
               <Typography
                 color={TextColor.textMuted}
                 variant={TypographyVariant.H6}
-                align={TEXT_ALIGN.CENTER}
+                align={TextAlign.Center}
               >
                 {t('or')}
               </Typography>
