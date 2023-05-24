@@ -245,7 +245,7 @@ export default class SignatureRequestOriginal extends Component {
       txData: { id },
     } = this.props;
 
-    await sign(event);
+    // await sign(event);
     await resolvePendingApproval(id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
