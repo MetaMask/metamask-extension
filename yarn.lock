@@ -2202,18 +2202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2, @ethereumjs/util@npm:^8.0.5":
-  version: 8.0.5
-  resolution: "@ethereumjs/util@npm:8.0.5"
-  dependencies:
-    "@chainsafe/ssz": 0.9.4
-    "@ethereumjs/rlp": ^4.0.1
-    ethereum-cryptography: ^1.1.2
-  checksum: 318386785295b4584289b1aa576d2621392b3a918d127890db62d3f74184f3377694dd9e951e19bfb9ab80e8dc9e38e180236cac2651dead26097d10963731f9
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/util@npm:^8.0.6":
+"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2, @ethereumjs/util@npm:^8.0.5, @ethereumjs/util@npm:^8.0.6":
   version: 8.0.6
   resolution: "@ethereumjs/util@npm:8.0.6"
   dependencies:
@@ -4030,21 +4019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "@metamask/eth-sig-util@npm:5.0.2"
-  dependencies:
-    "@ethereumjs/util": ^8.0.0
-    bn.js: ^4.11.8
-    ethereum-cryptography: ^1.1.2
-    ethjs-util: ^0.1.6
-    tweetnacl: ^1.0.3
-    tweetnacl-util: ^0.15.1
-  checksum: 1fbf1a0f5e654058f0219c9018dbebadf53036c9c3b47c8faf1cac54816532bb18996821736f526ac4e3d579afcaf502af4ad07e88158a50f015141858b08a90
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-sig-util@npm:^5.1.0":
+"@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
   version: 5.1.0
   resolution: "@metamask/eth-sig-util@npm:5.1.0"
   dependencies:
@@ -4776,14 +4751,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.3.0, @noble/hashes@npm:^1.3.0, @noble/hashes@npm:~1.3.0":
+"@noble/hashes@npm:1.3.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.1.3, @noble/hashes@npm:^1.3.0, @noble/hashes@npm:~1.3.0":
   version: 1.3.0
   resolution: "@noble/hashes@npm:1.3.0"
   checksum: d7ddb6d7c60f1ce1f87facbbef5b724cdea536fc9e7f59ae96e0fc9de96c8f1a2ae2bdedbce10f7dcc621338dfef8533daa73c873f2b5c87fa1a4e05a95c2e2e
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.1.3, @noble/hashes@npm:~1.1.1":
+"@noble/hashes@npm:~1.1.1":
   version: 1.1.3
   resolution: "@noble/hashes@npm:1.1.3"
   checksum: a6f9783d2a33fc528c8709532b1c26cc3f5866f79c66256e881b28c61a1585be3899b008aa4e5e2b4e01b95c713722f52591cbb18ec51aa0ec63e7eaece1b89c
