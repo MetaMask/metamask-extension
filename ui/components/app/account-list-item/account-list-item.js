@@ -47,12 +47,6 @@ export default function AccountListItem({
           <AccountMismatchWarning address={address} />
         )}
       </div>
-      {console.log(
-        displayAddress,
-        name,
-        address,
-        toChecksumHexAddress(address),
-      )}
       {displayAddress && name && (
         <div className="account-list-item__account-address">
           {toChecksumHexAddress(address)}
