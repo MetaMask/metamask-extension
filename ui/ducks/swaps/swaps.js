@@ -939,7 +939,7 @@ export const signAndSendSwapsSmartTransaction = ({
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
         dispatch(setSwapsSTXSubmitLoading(false));
-        dispatch(setCurrentSmartTransactionsError(StxErrorTypes.UNAVAILABLE));
+        dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
       if (approveTxParams) {
