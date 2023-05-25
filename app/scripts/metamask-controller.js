@@ -1216,16 +1216,19 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.getState().providerConfig.chainId,
     });
 
-    this.signatureController.hub.on('cancelWithReason', (message, reason) => {
-      this.metaMetricsController.trackEvent({
-        event: reason,
-        category: MetaMetricsEventCategory.Transactions,
-        properties: {
-          action: 'Sign Request',
-          type: message.type,
-        },
-      });
-    });
+    this.signatureController.hub.on(
+      'cancelWithReason',
+      ({ message, reason }) => {
+        this.metaMetricsController.trackEvent({
+          event: reason,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            action: 'Sign Request',
+            type: message.type,
+          },
+        });
+      },
+    );
 
     this.swapsController = new SwapsController({
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
