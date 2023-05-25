@@ -3,6 +3,7 @@ import { TextVariant } from 'ui/helpers/constants/design-system';
 
 export enum InputType {
   Text = 'text',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   Number = 'number',
   Password = 'password',
   Search = 'search',
@@ -83,9 +84,9 @@ export interface InputProps extends BoxProps {
    */
   textVariant: TextVariant;
   /**
-   * Type of the input element. Can be INPUT_TYPES.TEXT, INPUT_TYPES.PASSWORD, INPUT_TYPES.NUMBER
-   * Defaults to INPUT_TYPES.TEXT ('text')
-   * If you require another type add it to INPUT_TYPES
+   * Type of the input element. Can be InputType.Text, InputType.Password, InputType.Number
+   * Defaults to InputType.Text ('text')
+   * If you require another type add it to InputType
    */
   type: InputType;
   /**

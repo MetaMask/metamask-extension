@@ -161,7 +161,7 @@ export const Ref = (args) => {
   const [{ value }, updateArgs] = useArgs();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleOnClick = () => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
@@ -202,8 +202,9 @@ MaxLength.args = { maxLength: 10, placeholder: 'Max length 10' };
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
-export const Required = Template.bind({});
-Required.args = { required: true, placeholder: 'Required' };
+export const RequiredStory = Template.bind({});
+RequiredStory.args = { required: true, placeholder: 'Required' };
+RequiredStory.storyName = 'Required';
 
 export const DisableStateStyles = Template.bind({});
 DisableStateStyles.args = {
