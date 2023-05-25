@@ -10,6 +10,11 @@
     flex-direction: column;
     margin-left: 16px;
     margin-right: 16px;
+
+    @include screen-sm-min {
+      margin-left: 24px;
+      margin-right: 24px;
+    }
   }
 
   &__swap-from-content {

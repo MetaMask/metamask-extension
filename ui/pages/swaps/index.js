@@ -14,7 +14,9 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
+import classnames from 'classnames';
 import { I18nContext } from '../../contexts/i18n';
+
 import {
   getSelectedAccount,
   getCurrentChainId,
@@ -471,7 +473,11 @@ export default function Swap() {
             </Box>
           )}
         </div>
-        <div className="swaps__content">
+        <div
+          className={classnames('swaps__content', {
+            'swaps__content--redesign-enabled': swapRedesignEnabled,
+          })}
+        >
           <Switch>
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}

@@ -79,6 +79,12 @@
     @include screen-sm-min {
       width: 348px;
     }
+
+    &--redesign-enabled {
+      @include screen-sm-min {
+        width: 100%;
+      }
+    }
   }
 
   &__title {
