@@ -559,10 +559,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedTokenCount(state) {
-  return getSuggestedTokens(state)?.length || 0;
-}
-
 export function getSuggestedTokens(state) {
   return (
     Object.values(state.metamask.pendingApprovals)?.filter(
@@ -571,10 +567,6 @@ export function getSuggestedTokens(state) {
       },
     ) || []
   );
-}
-
-function getSuggestedNftsCount(state) {
-  return getSuggestedNfts(state)?.length || 0;
 }
 
 export function getSuggestedNfts(state) {
@@ -587,7 +579,7 @@ export function getSuggestedNfts(state) {
         },
         type,
       }) => {
-        if (!errors || !standard) {
+        if (errors === undefined && standard === undefined) {
           return false;
         }
         return (
