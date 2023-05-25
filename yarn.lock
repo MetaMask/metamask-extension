@@ -4692,9 +4692,7 @@ __metadata:
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  peerDependencies:
-    "@metamask/approval-controller": ^3.0.0
-  checksum: 379cceaceaa4e120bbf9547b74d709f2a93117a17ec460e22e8935a54a1d10528f435563f6d9dcb1c4b9f521286033b23d5ec14063ea1c6f753953f5e0984a70
+  checksum: 84ad9a52cb3674d0002b032bb32aeaf11c8e96f84a64ec9c42edfc8d21fc24c9b6b6b7558c1605021ee62e275fd59092bf4e6a7c7968182e3169169f2cf294b7
   languageName: node
   linkType: hard
 

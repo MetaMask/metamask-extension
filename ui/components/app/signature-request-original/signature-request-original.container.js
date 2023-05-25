@@ -96,11 +96,11 @@ function mapDispatchToProps(dispatch) {
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const {
-    signPersonalMessage,
-    signTypedMessage,
+    // signPersonalMessage,
+    // signTypedMessage,
     cancelPersonalMessage,
     cancelTypedMessage,
-    signMessage,
+    // signMessage,
     cancelMessage,
     txData,
   } = ownProps;
@@ -123,13 +123,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   let sign;
   if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
     cancel = cancelPersonalMessage;
-    sign = signPersonalMessage;
+    // sign = signPersonalMessage;
   } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     cancel = cancelTypedMessage;
-    sign = signTypedMessage;
+    // sign = signTypedMessage;
   } else if (type === MESSAGE_TYPE.ETH_SIGN) {
     cancel = cancelMessage;
-    sign = signMessage;
+    // sign = signMessage;
   }
 
   return {
@@ -139,7 +139,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     fromAccount,
     txData,
     cancel,
-    sign,
+    // sign,
     cancelAll: () => dispatchCancelAll(valuesFor(messagesList)),
     cancelAllApprovals: () =>
       dispatchCancelAllApprovals(valuesFor(messagesList)),

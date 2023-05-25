@@ -182,20 +182,20 @@ const ConfirmTxScreen = ({ match }) => {
     return <Loading />;
   }
 
-  const signMessage = (type) => (event) => {
-    stopPropagation(event);
-    const params = txData.msgParams;
-    params.metamaskId = txData.id;
-    let action;
-    if (type === SIGN_MESSAGE_TYPE.MESSAGE) {
-      action = actions.signMsg;
-    } else if (type === SIGN_MESSAGE_TYPE.PERSONAL) {
-      action = actions.signPersonalMsg;
-    } else {
-      action = actions.signTypedMsg;
-    }
-    return dispatch(action?.(params));
-  };
+  // const signMessage = (type) => (event) => {
+  //   stopPropagation(event);
+  //   const params = txData.msgParams;
+  //   params.metamaskId = txData.id;
+  //   let action;
+  //   if (type === SIGN_MESSAGE_TYPE.MESSAGE) {
+  //     action = actions.signMsg;
+  //   } else if (type === SIGN_MESSAGE_TYPE.PERSONAL) {
+  //     action = actions.signPersonalMsg;
+  //   } else {
+  //     action = actions.signTypedMsg;
+  //   }
+  //   return dispatch(action?.(params));
+  // };
 
   const cancelMessage = (type) => (event) => {
     stopPropagation(event);
@@ -219,9 +219,9 @@ const ConfirmTxScreen = ({ match }) => {
       identities={identities}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
-      signMessage={signMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
-      signPersonalMessage={signMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
-      signTypedMessage={signMessage(SIGN_MESSAGE_TYPE.TYPED)}
+      // signMessage={signMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
+      // signPersonalMessage={signMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
+      // signTypedMessage={signMessage(SIGN_MESSAGE_TYPE.TYPED)}
       cancelMessage={cancelMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
       cancelPersonalMessage={cancelMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
       cancelTypedMessage={cancelMessage(SIGN_MESSAGE_TYPE.TYPED)}

@@ -45,7 +45,7 @@ import Message from './signature-request-siwe-message';
 export default function SignatureRequestSIWE({
   txData,
   cancelPersonalMessage,
-  signPersonalMessage,
+  // signPersonalMessage,
 }) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -91,7 +91,7 @@ export default function SignatureRequestSIWE({
   const onSign = useCallback(
     async (event) => {
       try {
-        await signPersonalMessage(event);
+        // await signPersonalMessage(event);
         await dispatch(resolvePendingApproval(id, null));
       } catch (e) {
         log.error(e);

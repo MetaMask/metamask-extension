@@ -70,7 +70,7 @@ export default class SignatureRequest extends PureComponent {
     /**
      * Handler for sign button
      */
-    sign: PropTypes.func.isRequired,
+    // sign: PropTypes.func.isRequired,
     /**
      * Whether the hardware wallet requires a connection disables the sign button if true.
      */
@@ -184,7 +184,7 @@ export default class SignatureRequest extends PureComponent {
       },
       fromAccount: { address, balance, name },
       cancel,
-      sign,
+      // sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
       chainId,
@@ -231,7 +231,7 @@ export default class SignatureRequest extends PureComponent {
           .toString();
 
     const onSign = async (event) => {
-      await sign(event);
+      // await sign(event);
       await resolvePendingApproval(id);
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,

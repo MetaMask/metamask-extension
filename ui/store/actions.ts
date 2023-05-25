@@ -641,75 +641,75 @@ export function setCurrentCurrency(
   };
 }
 
-export function signMsg(
-  msgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType['msgParams']>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  log.debug('action - signMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions calling background.signMessage`);
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('signMessage', [msgData]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
+// export function signMsg(
+//   msgData: TemporaryMessageDataType['msgParams'],
+// ): ThunkAction<
+//   Promise<TemporaryMessageDataType['msgParams']>,
+//   MetaMaskReduxState,
+//   unknown,
+//   AnyAction
+// > {
+//   log.debug('action - signMsg');
+//   return async (dispatch: MetaMaskReduxDispatch) => {
+//     dispatch(showLoadingIndication());
+//     log.debug(`actions calling background.signMessage`);
+//     let newState;
+//     try {
+//       newState = await submitRequestToBackground<
+//         MetaMaskReduxState['metamask']
+//       >('signMessage', [msgData]);
+//     } catch (error) {
+//       logErrorWithMessage(error);
+//       dispatch(displayWarning(error));
+//       throw error;
+//     } finally {
+//       dispatch(hideLoadingIndication());
+//     }
 
-    dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.metamaskId));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
+//     dispatch(updateMetamaskState(newState));
+//     dispatch(completedTx(msgData.metamaskId));
+//     dispatch(closeCurrentNotificationWindow());
+//     return msgData;
+//   };
+// }
 
-export function signPersonalMsg(
-  msgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType['msgParams']>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  log.debug('action - signPersonalMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions calling background.signPersonalMessage`);
+// export function signPersonalMsg(
+//   msgData: TemporaryMessageDataType['msgParams'],
+// ): ThunkAction<
+//   Promise<TemporaryMessageDataType['msgParams']>,
+//   MetaMaskReduxState,
+//   unknown,
+//   AnyAction
+// > {
+//   log.debug('action - signPersonalMsg');
+//   return async (dispatch: MetaMaskReduxDispatch) => {
+//     dispatch(showLoadingIndication());
+//     log.debug(`actions calling background.signPersonalMessage`);
 
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('signPersonalMessage', [msgData]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
+//     let newState;
+//     try {
+//       newState = await submitRequestToBackground<
+//         MetaMaskReduxState['metamask']
+//       >('signPersonalMessage', [msgData]);
+//     } catch (error) {
+//       logErrorWithMessage(error);
+//       dispatch(displayWarning(error));
+//       throw error;
+//     } finally {
+//       dispatch(hideLoadingIndication());
+//     }
 
-    dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (newState.unapprovedTypedMessages) {
-      return checkForUnapprovedTypedMessages(msgData, newState);
-    }
-    ///: END:ONLY_INCLUDE_IN
-    dispatch(completedTx(msgData.metamaskId));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
+//     dispatch(updateMetamaskState(newState));
+//     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+//     if (newState.unapprovedTypedMessages) {
+//       return checkForUnapprovedTypedMessages(msgData, newState);
+//     }
+//     ///: END:ONLY_INCLUDE_IN
+//     dispatch(completedTx(msgData.metamaskId));
+//     dispatch(closeCurrentNotificationWindow());
+//     return msgData;
+//   };
+// }
 
 export function decryptMsgInline(
   decryptedMsgData: TemporaryMessageDataType['msgParams'],
@@ -805,43 +805,43 @@ export function encryptionPublicKeyMsg(
   };
 }
 
-export function signTypedMsg(
-  msgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType['msgParams']>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  log.debug('action - signTypedMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions calling background.signTypedMessage`);
+// export function signTypedMsg(
+//   msgData: TemporaryMessageDataType['msgParams'],
+// ): ThunkAction<
+//   Promise<TemporaryMessageDataType['msgParams']>,
+//   MetaMaskReduxState,
+//   unknown,
+//   AnyAction
+// > {
+//   log.debug('action - signTypedMsg');
+//   return async (dispatch: MetaMaskReduxDispatch) => {
+//     dispatch(showLoadingIndication());
+//     log.debug(`actions calling background.signTypedMessage`);
 
-    let newState: MetaMaskReduxState['metamask'];
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('signTypedMessage', [msgData]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
+//     let newState: MetaMaskReduxState['metamask'];
+//     try {
+//       newState = await submitRequestToBackground<
+//         MetaMaskReduxState['metamask']
+//       >('signTypedMessage', [msgData]);
+//     } catch (error) {
+//       logErrorWithMessage(error);
+//       dispatch(displayWarning(error));
+//       throw error;
+//     } finally {
+//       dispatch(hideLoadingIndication());
+//     }
 
-    dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (newState.unapprovedTypedMessages) {
-      return checkForUnapprovedTypedMessages(msgData, newState);
-    }
-    ///: END:ONLY_INCLUDE_IN
-    dispatch(completedTx(msgData.metamaskId));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
+//     dispatch(updateMetamaskState(newState));
+//     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+//     if (newState.unapprovedTypedMessages) {
+//       return checkForUnapprovedTypedMessages(msgData, newState);
+//     }
+//     ///: END:ONLY_INCLUDE_IN
+//     dispatch(completedTx(msgData.metamaskId));
+//     dispatch(closeCurrentNotificationWindow());
+//     return msgData;
+//   };
+// }
 
 export function updateCustomNonce(value: string) {
   return {
