@@ -13,6 +13,7 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { REVEAL_SEED_ROUTE } from '../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BUTTON_VARIANT,
@@ -49,7 +50,7 @@ const rightAnswerIcon = (
 
 const openSupportArticle = (): void => {
   global.platform.openTab({
-    url: 'https://support.metamask.io/hc/en-us/articles/4404722782107',
+    url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
   });
 };
 
