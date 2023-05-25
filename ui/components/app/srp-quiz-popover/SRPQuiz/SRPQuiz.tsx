@@ -259,7 +259,11 @@ export default function SRPQuiz(props: any) {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={props.onClose} margin={4}>
+        <ModalHeader
+          onClose={props.onClose}
+          margin={4}
+          data-testid="srp-quiz-header"
+        >
           {title}
         </ModalHeader>
         {quizContent}

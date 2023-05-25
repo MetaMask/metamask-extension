@@ -14,30 +14,15 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-row"
+        class="settings-page__content-item-col"
       >
-        <div
-          class="settings-page__content-item"
+        <button
+          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+          data-testid="reveal-seed-words"
+          type="danger"
         >
-          <span>
-            Reveal Secret Recovery Phrase
-          </span>
-        </div>
-        <div
-          class="settings-page__content-item"
-        >
-          <div
-            class="settings-page__content-item-col"
-          >
-            <button
-              class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
-              data-testid="reveal-seed-words"
-              type="danger"
-            >
-              Reveal Secret Recovery Phrase
-            </button>
-          </div>
-        </div>
+          Reveal Secret Recovery Phrase
+        </button>
       </div>
     </div>
     <span
@@ -75,6 +60,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
+            data-testid="usePhishingDetection"
           >
             <label
               class="toggle-button toggle-button--on"
@@ -181,6 +167,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
+            data-testid="currencyRateCheckToggle"
           >
             <label
               class="toggle-button toggle-button--on"
@@ -270,6 +257,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
+            data-testid="showIncomingTransactions"
           >
             <label
               class="toggle-button toggle-button--on"
@@ -454,6 +442,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
+            data-testid="autoDetectTokens"
           >
             <label
               class="toggle-button toggle-button--on"
@@ -523,6 +512,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
+            data-testid="useMultiAccountBalanceChecker"
           >
             <label
               class="toggle-button toggle-button--off"
@@ -603,6 +593,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
+            data-testid="participateInMetaMetrics"
           >
             <label
               class="toggle-button toggle-button--off"
