@@ -213,8 +213,6 @@ export default function ViewQuote() {
     });
   }
 
-  const { isBestQuote } = usedQuote;
-
   const fetchParamsSourceToken = fetchParams?.sourceToken;
 
   const additionalTrackingParams = {
@@ -1034,7 +1032,6 @@ export default function ViewQuote() {
                 }
               }
               chainId={chainId}
-              isBestQuote={isBestQuote}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
                 maxPriorityFeePerGas,
               )}
