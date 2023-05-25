@@ -107,6 +107,7 @@ export const Src = (args) => (
     <AvatarNetwork {...args} src="./images/fantom-opera.svg" />
     <AvatarNetwork {...args} src="./images/harmony-one.svg" />
     <AvatarNetwork {...args} src="./images/aurora.png" />
+    <AvatarNetwork {...args} src="./images/wan-token.png" />
   </Box>
 );
 

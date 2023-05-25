@@ -7,6 +7,7 @@ const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 const AVALANCHE_IMAGE_URL = './images/avax-token.png';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
+const WANCHAIN_IMAGE_URL = './images/avax-token.png';
 
 export default {
   title: 'Components/App/AddNetwork',
@@ -104,6 +105,16 @@ export default {
         rpcPrefs: {
           blockExplorerUrl: 'https://explorer.palm.io/',
           imageUrl: PALM_IMAGE_URL,
+        },
+      },
+      {
+        chainId: '888',
+        nickname: 'Wanchain Mainnet',
+        rpcUrl: 'https://gwan-ssl.wandevs.org:56891',
+        ticker: 'WAN',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://wanscan.org/',
+          imageUrl: WANCHAIN_IMAGE_URL,
         },
       },
     ],

@@ -152,6 +152,8 @@ export const CHAIN_IDS = {
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
+  WANCHAIN: '0x378',
+  WANCHAIN_TESTNET: '0x3e7',
 } as const;
 
 /**
@@ -177,6 +179,7 @@ export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
+export const WAN_DISPLAY_NAME = 'Wanchain Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -219,6 +222,7 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
+  WAN: 'WAN',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
@@ -233,6 +237,7 @@ export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
+export const WAN_TOKEN_IMAGE_URL = './images/wan-token.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -356,6 +361,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.WANCHAIN]: WAN_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -382,6 +388,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.WAN]: WAN_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -660,6 +667,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://celoscan.io',
       imageUrl: CELO_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.WANCHAIN,
+    nickname: WAN_DISPLAY_NAME,
+    rpcUrl: `https://gwan-ssl.wandevs.org:56891`,
+    ticker: CURRENCY_SYMBOLS.WAN,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://wanscan.org/',
+      imageUrl: WAN_TOKEN_IMAGE_URL,
     },
   },
 ];
