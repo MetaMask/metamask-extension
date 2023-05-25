@@ -4009,6 +4009,9 @@
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
   },
+  "srpSecurityQuizImgAlt": {
+    "message": "An eye with a keyhole in the center, and three floating password fields"
+  },
   "srpSecurityQuizIntroduction": {
     "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions"
   },
