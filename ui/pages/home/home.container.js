@@ -121,13 +121,13 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchTokenPendingApprovals = hasPendingApprovalsSelector(
+  const hasWatchTokenPendingApprovals = hasPendingApprovals(
     state,
     ApprovalType.WatchAsset,
     ({ requestData: { asset } }) => asset.tokenId === undefined,
   );
 
-  const hasWatchNftPendingApprovals = hasPendingApprovalsSelector(
+  const hasWatchNftPendingApprovals = hasPendingApprovals(
     state,
     ApprovalType.WatchAsset,
     ({ requestData: { asset } }) => asset.tokenId !== undefined,
