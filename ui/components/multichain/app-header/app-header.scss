@@ -36,6 +36,10 @@
     &--avatar-network {
       padding: 0; // TODO: Remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
     }
+
+    &__container {
+      width: fit-content;
+    }
   }
 
   &__lock-contents {
