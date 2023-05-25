@@ -7,6 +7,7 @@ const {
   largeDelayMs,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
+  findAnotherAccountFromAccountList,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -221,13 +222,12 @@ describe('MetaMask Import UI', function () {
         assert.equal(await importedAccountName.getText(), 'Account 4');
 
         // should show the imported label
-        await driver.clickElement('.account-menu__icon');
         // confirm 4th account is account 4, as expected
-        const accountMenuItemSelector = '.account-menu__account:nth-child(4)';
-        const fourthAccountName = await driver.findElement(
-          `${accountMenuItemSelector} .account-menu__name`,
+        const accountMenuItemSelector = await findAnotherAccountFromAccountList(
+          driver,
+          4,
+          'Account 4',
         );
-        assert.equal(await fourthAccountName.getText(), 'Account 4');
         // confirm label is present on the same menu item
         const importedLabel = await driver.findElement(
           `${accountMenuItemSelector} .keyring-label`,
@@ -336,13 +336,13 @@ describe('MetaMask Import UI', function () {
         assert.equal(await importedAccountName.getText(), 'Account 4');
 
         // should show the imported label
-        await driver.clickElement('.account-menu__icon');
         // confirm 4th account is account 4, as expected
-        const accountMenuItemSelector = '.account-menu__account:nth-child(4)';
-        const fourthAccountName = await driver.findElement(
-          `${accountMenuItemSelector} .account-menu__name`,
+        const accountMenuItemSelector = await findAnotherAccountFromAccountList(
+          driver,
+          4,
+          'Account 4',
         );
-        assert.equal(await fourthAccountName.getText(), 'Account 4');
+
         // confirm label is present on the same menu item
         const importedLabel = await driver.findElement(
           `${accountMenuItemSelector} .keyring-label`,

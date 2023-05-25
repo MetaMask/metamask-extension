@@ -12,7 +12,7 @@ import {
 import {
   Size,
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -29,7 +29,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
   const [password, setPassword] = useState('');
   const [fileContents, setFileContents] = useState('');
 
-  const isPrimaryDisabled = password === '' || fileContents === '';
+  const isPrimaryDisabled = fileContents === '';
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -48,7 +48,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
 
   return (
     <>
-      <Text variant={TextVariant.bodyMd} textAlign={TEXT_ALIGN.CENTER}>
+      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}
@@ -61,6 +61,8 @@ export default function JsonImportSubview({ importAccountFunc }) {
       </Text>
 
       <FileInput
+        id="file-input"
+        data-testid="file-input"
         readAs="text"
         onLoad={(event) => setFileContents(event.target.result)}
         style={{
@@ -79,9 +81,11 @@ export default function JsonImportSubview({ importAccountFunc }) {
         type={TEXT_FIELD_TYPES.PASSWORD}
         helpText={warning}
         error
-        placeholder={t('enterPassword')}
+        placeholder={t('enterOptionalPassword')}
         value={password}
-        onChange={(event) => setPassword(event.target.value)}
+        onChange={(event) => {
+          setPassword(event.target.value);
+        }}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
