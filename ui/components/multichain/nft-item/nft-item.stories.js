@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { NftItem } from './nft-item';
 
 export default {
@@ -7,9 +6,6 @@ export default {
   argTypes: {
     alt: {
       control: 'text',
-    },
-    backgroundColor: {
-      control: 'string',
     },
     name: {
       control: 'text',
@@ -27,7 +23,7 @@ export default {
       control: 'text',
     },
     onClick: {
-      action: 'clicked',
+      action: 'onClick',
     },
   },
   args: {
@@ -37,9 +33,6 @@ export default {
     networkName: 'Ethereum Mainnet',
     networkSrc: './images/eth_logo.png',
     tokenId: '2422',
-    onClick: () => {
-      action('clicked');
-    },
   },
 };
 

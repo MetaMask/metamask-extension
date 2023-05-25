@@ -16,7 +16,6 @@ import Box from '../../ui/box/box';
 
 export const NftItem = ({
   alt,
-  backgroundColor,
   name,
   src,
   networkName,
@@ -35,6 +34,7 @@ export const NftItem = ({
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
             data-testid="nft-network-badge"
+            className="nft-network-badge"
           />
         }
         anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
@@ -46,7 +46,6 @@ export const NftItem = ({
             as="button"
             className="nfts-items__item"
             borderRadius={BorderRadius.LG}
-            backgroundColor={backgroundColor}
             onClick={onClick}
           >
             <img
@@ -72,7 +71,6 @@ export const NftItem = ({
 
 NftItem.propTypes = {
   alt: PropTypes.string,
-  backgroundColor: PropTypes.string,
   name: PropTypes.string,
   src: PropTypes.string,
   networkName: PropTypes.string,

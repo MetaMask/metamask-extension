@@ -185,7 +185,6 @@ export default function NftsItems({
                 >
                   {process.env.MULTICHAIN ? (
                     <NftItem
-                      backgroundColor={backgroundColor}
                       src={nftImage}
                       alt={nftImageAlt}
                       name={name}
