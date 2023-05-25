@@ -154,9 +154,6 @@ export default class SendAssetRow extends Component {
           isEqualCaseInsensitive(address, details.address) &&
           tokenId === details.tokenId,
       );
-      if (nft) {
-        return this.renderNft(nft);
-      }
       if (nft || details) {
         return this.renderNft(nft ?? details);
       }
