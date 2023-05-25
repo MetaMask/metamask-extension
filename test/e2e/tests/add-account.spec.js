@@ -4,6 +4,8 @@ const {
   withFixtures,
   regularDelayMs,
   completeImportSRPOnboardingFlow,
+  sendTransaction,
+  findAnotherAccountFromAccountList,
 } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 const FixtureBuilder = require('../fixture-builder');
@@ -21,8 +23,8 @@ describe('Add account', function () {
       },
     ],
   };
+  const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
   const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
-  const thirdAccount = '0xD38d853771Fb546bd8B18b2F3638491bC0B0E906';
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
@@ -50,7 +52,7 @@ describe('Add account', function () {
     );
   });
 
-  it('should add the same account addresses when a secret recovery phrase is imported, the account is locked, and the same secret recovery phrase is imported again', async function () {
+  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -61,64 +63,40 @@ describe('Add account', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        // On boarding with 1st account
         await completeImportSRPOnboardingFlow(
           driver,
           testSeedPhrase,
           testPassword,
         );
 
-        await driver.clickElement('.account-menu__icon');
+        // Check address of 1st account
+        const firstAccountPublicAddress = await checkAccountDetails(driver);
+        assert.equal(firstAccountPublicAddress, firstAccount);
+        await driver.delay(regularDelayMs);
+
+        // Create a new account
+        await driver.findClickableElement('.account-menu__icon');
+        await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+        // Check address of 2nd account
+        const secondAccountPublicAddress = await checkAccountDetails(driver);
+        assert.strictEqual(secondAccountPublicAddress, secondAccount);
+        await driver.delay(regularDelayMs);
+
+        // Give 2nd locally account some balance so it will not be removed after recovering SRP
+        const accountOneSelector = await findAnotherAccountFromAccountList(
+          driver,
+          1,
+          'Account 1',
         );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
-        );
+        await driver.clickElement(accountOneSelector);
+        await sendTransaction(driver, secondAccount, '2.8');
 
-        const detailsModal = await driver.findVisibleElement('span .modal');
-        // get the public address for the "second account"
-        await driver.waitForSelector('.qr-code__address');
-        const secondAccountAddress = await driver.findElement({
-          text: secondAccount,
-          tag: 'div',
-        });
-        const secondAccountPublicAddress = await secondAccountAddress.getText();
-
-        await driver.clickElement('.account-modal__close');
-        await detailsModal.waitForElementState('hidden');
-
-        // generate a third accound
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create account', tag: 'div' });
-        await driver.fill('.new-account-create-form input', '3rd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
-        );
-
-        // get the public address for the "third account"
-        const secondDetailsModal = await driver.findVisibleElement(
-          'span .modal',
-        );
-        await driver.waitForSelector('.qr-code__address');
-        const thirdAccountAddress = await driver.findElement({
-          text: thirdAccount,
-          tag: 'div',
-        });
-        const thirdAccountPublicAddress = await thirdAccountAddress.getText();
-
-        await driver.clickElement('.account-modal__close');
-        await secondDetailsModal.waitForElementState('hidden');
-
-        // lock account
+        // Lock the account
         await driver.clickElement('.account-menu__icon');
         await driver.delay(regularDelayMs);
 
@@ -128,7 +106,7 @@ describe('Add account', function () {
         await lockButton.click();
         await driver.delay(regularDelayMs);
 
-        // restore same seed phrase
+        // Recover via SRP in "forget password" option
         const restoreSeedLink = await driver.findClickableElement(
           '.unlock-page__link',
         );
@@ -147,59 +125,27 @@ describe('Add account', function () {
           text: enLocaleMessages.restore.message,
           tag: 'button',
         });
+
+        // Land in 1st account home page
+        await driver.findElement('.home__main-view');
+
+        // Check address of 1st account
+        const restoredFirstAccountPublicAddress = await checkAccountDetails(
+          driver,
+        );
+        assert.equal(restoredFirstAccountPublicAddress, firstAccount);
         await driver.delay(regularDelayMs);
-
-        // recreate a "2nd account"
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create account', tag: 'div' });
-        await driver.fill('.new-account-create-form input', '2nd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+        // Check address of 2nd account
+        const accountTwoSelector = await findAnotherAccountFromAccountList(
+          driver,
+          2,
+          'Account 2',
         );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
+        await driver.clickElement(accountTwoSelector);
+        const restoredSecondAccountPublicAddress = await checkAccountDetails(
+          driver,
         );
-        const thirdDetailsModal = await driver.findVisibleElement(
-          'span .modal',
-        );
-        // get the public address for the "second account"
-        await driver.waitForSelector('.qr-code__address');
-        const recreatedSecondAccountAddress = await driver.findElement({
-          text: secondAccount,
-          tag: 'div',
-        });
-        assert.equal(
-          await recreatedSecondAccountAddress.getText(),
-          secondAccountPublicAddress,
-        );
-
-        await driver.clickElement('.account-modal__close');
-        await thirdDetailsModal.waitForElementState('hidden');
-
-        // re-generate a third accound
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create account', tag: 'div' });
-        await driver.fill('.new-account-create-form input', '3rd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
-        );
-
-        // get the public address for the "third account"
-        const recreatedThirdAccountAddress = await driver.findElement({
-          text: thirdAccount,
-          tag: 'div',
-        });
-        assert.strictEqual(
-          await recreatedThirdAccountAddress.getText(),
-          thirdAccountPublicAddress,
-        );
+        assert.equal(restoredSecondAccountPublicAddress, secondAccount);
       },
     );
   });
@@ -264,3 +210,19 @@ describe('Add account', function () {
     );
   });
 });
+
+async function checkAccountDetails(driver) {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement(
+    '[data-testid="account-options-menu__account-details"]',
+  );
+
+  await driver.findVisibleElement('.account-details-modal');
+  // get the public address for the "second account"
+  const accountDOM = await driver.findElement('.qr-code__address');
+  const accountAddress = await accountDOM.getText();
+  await driver.clickElement('.account-modal__close');
+  await driver.waitForElementNotPresent('.account-details-modal ');
+
+  return accountAddress;
+}
