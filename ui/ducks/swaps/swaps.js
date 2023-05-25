@@ -208,7 +208,7 @@ const slice = createSlice({
     setCurrentSmartTransactionsError: (state, action) => {
       const errorType = Object.values(StxErrorTypes).includes(action.payload)
         ? action.payload
-        : StxErrorTypes.UNAVAILABLE;
+        : StxErrorTypes.unavailable;
       state.currentSmartTransactionsError = errorType;
     },
     setSwapsSTXSubmitLoading: (state, action) => {
@@ -554,7 +554,7 @@ const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
   for (const transaction of transactions) {
     if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
       dispatch(
-        setCurrentSmartTransactionsError(StxErrorTypes.REGULAR_TX_IN_PROGRESS),
+        setCurrentSmartTransactionsError(StxErrorTypes.regularTxPending),
       );
       break;
     }
@@ -1329,7 +1329,7 @@ export function fetchSwapsSmartTransactionFees({
         const errorObj = parseSmartTransactionsError(e.message);
         if (
           fallbackOnNotEnoughFunds ||
-          errorObj?.error !== StxErrorTypes.NOT_ENOUGH_FUNDS
+          errorObj?.error !== StxErrorTypes.notEnoughFunds
         ) {
           dispatch(setCurrentSmartTransactionsError(errorObj?.error));
         }
