@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const {
+  TEST_SEED_PHRASE,
   convertToHexValue,
   withFixtures,
   regularDelayMs,
@@ -11,8 +12,6 @@ const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Add account', function () {
-  const testSeedPhrase =
-    'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
   const testPassword = 'correct horse battery staple';
   const ganacheOptions = {
     accounts: [
@@ -66,7 +65,7 @@ describe('Add account', function () {
         // On boarding with 1st account
         await completeImportSRPOnboardingFlow(
           driver,
-          testSeedPhrase,
+          TEST_SEED_PHRASE,
           testPassword,
         );
 
@@ -116,7 +115,7 @@ describe('Add account', function () {
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
-          testSeedPhrase,
+          TEST_SEED_PHRASE,
         );
 
         await driver.fill('#password', 'correct horse battery staple');

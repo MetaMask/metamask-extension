@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  TEST_SEED_PHRASE_TWO,
+  convertToHexValue,
+  withFixtures,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
@@ -76,8 +80,6 @@ describe('MetaMask Responsive UI', function () {
 
   it('Importing existing wallet from lock page', async function () {
     const driverOptions = { openDevToolsForTabs: true };
-    const testSeedPhrase =
-      'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
     await withFixtures(
       {
@@ -98,7 +100,7 @@ describe('MetaMask Responsive UI', function () {
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
-          testSeedPhrase,
+          TEST_SEED_PHRASE_TWO,
         );
 
         await driver.fill('#password', 'correct horse battery staple');

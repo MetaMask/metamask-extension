@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
 const {
+  TEST_SEED_PHRASE,
   convertToHexValue,
   withFixtures,
   completeCreateNewWalletOnboardingFlow,
@@ -12,8 +13,6 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask onboarding', function () {
-  const testSeedPhrase =
-    'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
   const testPassword = 'correct horse battery staple';
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
@@ -63,7 +62,7 @@ describe('MetaMask onboarding', function () {
 
         await completeImportSRPOnboardingFlow(
           driver,
-          testSeedPhrase,
+          TEST_SEED_PHRASE,
           testPassword,
         );
 
@@ -164,7 +163,7 @@ describe('MetaMask onboarding', function () {
         // Check that the error message is displayed for the password fields
         await driver.isElementPresent(
           // eslint-disable-next-line prettier/prettier
-            { text: 'Passwords don\'t match', tag: 'h6' },
+          { text: "Passwords don't match", tag: 'h6' },
           true,
         );
 
@@ -188,7 +187,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
+        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
         // Verify site
         assert.equal(
           await driver.isElementPresent({
@@ -267,7 +266,7 @@ describe('MetaMask onboarding', function () {
 
       async ({ driver, secondaryGanacheServer }) => {
         await driver.navigate();
-        await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
+        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
 
         // Add custome network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
