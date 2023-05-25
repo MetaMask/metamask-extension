@@ -91,10 +91,12 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         // should show the correct account name
-        const accountName = await driver.findElement(
-          '[data-testid="account-menu-icon"]',
-        );
-        assert.equal(await accountName.getText(), '2nd account');
+        const accountName = await driver.isElementPresent({
+          tag: 'span',
+          text: '2nd account',
+        });
+
+        assert.equal(accountName, true, 'Account name is not correct');
 
         // Switch back to original account
         // chooses the original account from the account menu
