@@ -7,7 +7,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { ApprovalType } from '@metamask/controller-utils';
 import sinon from 'sinon';
 
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import {
   createTestProviderTools,
   getTestAccounts,
@@ -757,6 +757,7 @@ describe('Transaction Controller', function () {
             undefined,
             '12345',
           ),
+          { code: ethErrors.provider.userRejectedRequest().code },
         );
       });
 
@@ -787,6 +788,176 @@ describe('Transaction Controller', function () {
 
         assert.equal(status, TransactionStatus.rejected);
         assert.equal(txId, updatedTxMeta.id);
+      });
+    });
+
+    describe('on signing error', function () {
+      const signError = new Error('TestSignError');
+      let signStub;
+
+      beforeEach(async function () {
+        signStub = sinon.stub(txController, 'signEthTx').throws(signError);
+      });
+
+      afterEach(function () {
+        signStub.restore();
+      });
+
+      it('changes status to failed', async function () {
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch {
+          // Expected error
+        }
+
+        const transaction = txController.getTransactions({
+          searchCriteria: { id: updatedTxMeta.id },
+        })[0];
+
+        assert.equal(transaction.status, TransactionStatus.failed);
+      });
+
+      it('throws error', async function () {
+        await assert.rejects(
+          txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          ),
+          signError,
+        );
+      });
+
+      it('emits approved and failed status events', async function () {
+        const listener = sinon.spy();
+
+        txController.on('tx:status-update', listener);
+
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch (error) {
+          // Expected error
+        }
+
+        assert.equal(listener.callCount, 2);
+        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][1], TransactionStatus.approved);
+        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][1], TransactionStatus.failed);
+      });
+    });
+
+    describe('on publish error', function () {
+      const publishError = new Error('TestPublishError');
+      let originalQuery;
+
+      beforeEach(async function () {
+        originalQuery = txController.query;
+
+        txController.query = {
+          sendRawTransaction: sinon.stub().throws(publishError),
+        };
+      });
+
+      afterEach(function () {
+        txController.query = originalQuery;
+      });
+
+      it('changes status to failed', async function () {
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch {
+          // Expected error
+        }
+
+        const transaction = txController.getTransactions({
+          searchCriteria: { id: updatedTxMeta.id },
+        })[0];
+
+        assert.equal(transaction.status, TransactionStatus.failed);
+      });
+
+      it('throws error', async function () {
+        await assert.rejects(
+          txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          ),
+          publishError,
+        );
+      });
+
+      it('emits approved, signed, and failed status events', async function () {
+        const listener = sinon.spy();
+
+        txController.on('tx:status-update', listener);
+
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch (error) {
+          // Expected error
+        }
+
+        assert.equal(listener.callCount, 3);
+        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][1], TransactionStatus.approved);
+        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][1], TransactionStatus.signed);
+        assert.equal(listener.args[2][0], updatedTxMeta.id);
+        assert.equal(listener.args[2][1], TransactionStatus.failed);
       });
     });
 
