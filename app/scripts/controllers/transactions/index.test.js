@@ -315,7 +315,8 @@ describe('Transaction Controller', function () {
   });
 
   describe('#newUnapprovedTransaction', function () {
-    let stub, txMeta, txParams;
+    let txMeta, txParams, getPermittedAccounts;
+
     beforeEach(function () {
       txParams = {
         from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
@@ -329,42 +330,29 @@ describe('Transaction Controller', function () {
         history: [{}],
       };
       txController.txStateManager._addTransactionsToState([txMeta]);
-      stub = sinon
-        .stub(txController, 'addUnapprovedTransaction')
-        .callsFake(() => {
-          txController.emit('newUnapprovedTx', txMeta);
-          return Promise.resolve(
-            txController.txStateManager.addTransaction(txMeta),
-          );
-        });
+      getPermittedAccounts = sinon
+        .stub(txController, 'getPermittedAccounts')
+        .returns([txParams.from]);
     });
 
     afterEach(function () {
       txController.txStateManager._addTransactionsToState([]);
-      stub.restore();
+      getPermittedAccounts.restore();
     });
 
     it('should resolve when finished and status is submitted and resolve with the hash', async function () {
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
-        txController.setTxHash(txMetaFromEmit.id, '0x0');
-        txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id);
-      });
-
       const hash = await txController.newUnapprovedTransaction(txParams);
       assert.ok(hash, 'newUnapprovedTransaction needs to return the hash');
     });
 
     it('should reject when finished and status is rejected', async function () {
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
-        txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id);
-      });
-
-      await assert.rejects(
-        () => txController.newUnapprovedTransaction(txParams),
-        {
-          message: 'MetaMask Tx Signature: User denied transaction signature.',
-        },
+      messengerMock.call.returns(
+        Promise.reject({ code: errorCodes.provider.userRejectedRequest }),
       );
+
+      await assert.rejects(txController.newUnapprovedTransaction(txParams), {
+        message: 'MetaMask Tx Signature: User denied transaction signature.',
+      });
     });
   });
 
@@ -531,7 +519,7 @@ describe('Transaction Controller', function () {
       ]);
     });
 
-    it('should still create an approval request when called twice with same actionId', async function () {
+    it('should not create an additional approval request when called twice with same actionId', async function () {
       await txController.addUnapprovedTransaction(
         undefined,
         {
@@ -750,26 +738,48 @@ describe('Transaction Controller', function () {
     });
 
     describe('on cancel', function () {
+      beforeEach(async function () {
+        messengerMock.call.returns(
+          Promise.reject({ code: errorCodes.provider.userRejectedRequest }),
+        );
+      });
+
+      it('throws error', async function () {
+        await assert.rejects(
+          txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          ),
+        );
+      });
+
       it('emits rejected status event', async function () {
         const listener = sinon.spy();
 
         txController.on('tx:status-update', listener);
 
-        messengerMock.call.returns(
-          Promise.reject({ code: errorCodes.provider.userRejectedRequest }),
-        );
-
-        await txController.addUnapprovedTransaction(
-          undefined,
-          {
-            from: selectedAddress,
-            to: recipientAddress,
-          },
-          ORIGIN_METAMASK,
-          undefined,
-          undefined,
-          '12345',
-        );
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch (error) {
+          // Expected error
+        }
 
         assert.equal(listener.callCount, 1);
 
