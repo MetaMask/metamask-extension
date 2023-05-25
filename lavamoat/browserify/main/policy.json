@@ -208,15 +208,9 @@
     },
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/secp256k1": true,
+        "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true
-      }
-    },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/secp256k1": {
@@ -1653,14 +1647,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/scure-bip39>@noble/hashes": true
-      }
-    },
-    "@metamask/scure-bip39>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true
       }
     },
     "@metamask/signature-controller": {
