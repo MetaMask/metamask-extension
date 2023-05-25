@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enable editing L2 gas on optimism ([#18217](https://github.com/MetaMask/metamask-extension/pull/18217))
 - Update keystone links ([#18792](https://github.com/MetaMask/metamask-extension/pull/18792))
 - Remove Goerli buy link and disable button ([#18137](https://github.com/MetaMask/metamask-extension/pull/18137))
+- No long show best quote, only present a list of quotes. ([#19284](https://github.com/MetaMask/metamask-extension/pull/19284))
 - [FLASK] Don't show the title on Install/Update when it's loading ([#19012](https://github.com/MetaMask/metamask-extension/pull/19012))
 - [FLASK] Add updated version of the Snaps settings UI ([#18438](https://github.com/MetaMask/metamask-extension/pull/18438), ([#18775](https://github.com/MetaMask/metamask-extension/pull/18775)))
 
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix in approve header to show correct account name ([#18849](https://github.com/MetaMask/metamask-extension/pull/18849))
 - Fix error when switching to Linea testnet using wallet_switchEthereumChain ([#18710](https://github.com/MetaMask/metamask-extension/pull/18710))
 - Fix for persistant currency conversion on multi layer transactions when the show balance setting is off ([#18833](https://github.com/MetaMask/metamask-extension/pull/18833))
+- Show the right "balance needed" value if we fallback from STX to regular Swaps ([#19230](https://github.com/MetaMask/metamask-extension/pull/19230))
 - [FLASK] Fix overflowing notification content ([#18881](https://github.com/MetaMask/metamask-extension/pull/18881))
 - [FLASK] Fix missing icon for webassembly endowment ([#18781](https://github.com/MetaMask/metamask-extension/pull/18781))
 - [FLASK] Fix text selection bug in snap ui ([#18719](https://github.com/MetaMask/metamask-extension/pull/18719))
