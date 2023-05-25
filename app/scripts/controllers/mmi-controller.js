@@ -16,7 +16,6 @@ import {
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { FINALIZED_TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
@@ -38,12 +37,12 @@ export default class MMIController extends EventEmitter {
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
     this.institutionalFeaturesController = opts.institutionalFeaturesController;
-    this.addKeyringIfNotExists = opts.addKeyringIfNotExists;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTracker = opts.accountTracker;
     this.metaMetricsController = opts.metaMetricsController;
     this.networkController = opts.networkController;
+    this.permissionController = opts.permissionController;
     this.platform = opts.platform;
     this.extension = opts.extension;
 
@@ -93,9 +92,7 @@ export default class MMIController extends EventEmitter {
   custodianEventHandlerFactory() {
     return custodianEventHandlerFactory({
       log,
-      FINALIZED_TRANSACTION_STATUSES,
       getState: () => this.getState(),
-      addKeyringIfNotExists: (t) => this.addKeyringIfNotExists(t),
       getPendingNonce: (address) => this.getPendingNonce(address),
       setTxHash: (txId, txHash) => this.txController.setTxHash(txId, txHash),
       typedMessageManager: this.typedMessageManager,
@@ -552,9 +549,6 @@ export default class MMIController extends EventEmitter {
     const keyringAccounts = await this.keyringController.getAccounts();
     const { identities } = this.preferencesController.store.getState();
     const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const { mmiConfiguration } =
-      this.mmiConfigurationController.store.getState();
-    const { cookieSetUrls } = mmiConfiguration && mmiConfiguration.portfolio;
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
@@ -569,7 +563,6 @@ export default class MMIController extends EventEmitter {
       identities,
       metaMetricsId,
       networks,
-      cookieSetUrls,
       getAccountDetails,
       extensionId,
     });

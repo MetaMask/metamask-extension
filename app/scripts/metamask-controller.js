@@ -1138,6 +1138,7 @@ export default class MetamaskController extends EventEmitter {
       accountTracker: this.accountTracker,
       metaMetricsController: this.metaMetricsController,
       networkController: this.networkController,
+      permissionController: this.permissionController,
       platform: this.platform,
       extension: this.extension,
     });
