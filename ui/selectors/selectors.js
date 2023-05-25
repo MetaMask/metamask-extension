@@ -4,7 +4,6 @@ import { SubjectType } from '@metamask/subject-metadata-controller';
 import {
   ApprovalType,
   ERC1155,
-  ERC20,
   ERC721,
 } from '@metamask/controller-utils';
 import {
@@ -588,12 +587,14 @@ export function getSuggestedNfts(state) {
         },
         type,
       }) => {
-        if (!errors || !standard) return false;
+        if (!errors || !standard) {
+          return false;
+        }
         return (
           (type === ApprovalType.WatchAsset &&
             [ERC721, ERC1155].includes(standard)) ||
           (type === ApprovalType.WatchAsset &&
-            Object.values(errors).some((error) => !!error))
+            Object.values(errors).some((error) => Boolean(error)))
         );
       },
     ) || []

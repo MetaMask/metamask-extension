@@ -113,7 +113,6 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import ConfirmAddSuggestedNFT from '../confirm-add-suggested-nft/confirm-add-suggested-nft';
 
 export default class Routes extends Component {
   static propTypes = {

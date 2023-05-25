@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { ApprovalType } from '@metamask/controller-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
@@ -27,10 +26,7 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
-import {
-  getSuggestedTokens,
-} from '../../selectors';
-
+import { getSuggestedTokens } from '../../selectors';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -170,7 +166,6 @@ const ConfirmAddSuggestedToken = () => {
     goBackIfNoSuggestedTokensOnFirstRender();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   return (
     <div className="page-container">

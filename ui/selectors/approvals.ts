@@ -14,7 +14,9 @@ type ApprovalsMetaMaskState = {
 export function hasPendingApprovals(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
-  predicate?: (approval: ApprovalControllerState['pendingApprovals'][string]) => boolean,
+  predicate?: (
+    approval: ApprovalControllerState['pendingApprovals'][string],
+  ) => boolean,
 ) {
   const pendingApprovalRequests = Object.values(
     state.metamask.pendingApprovals,

@@ -1,6 +1,5 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { ApprovalType } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import {
   resolvePendingApproval,
@@ -32,7 +31,6 @@ const MOCK_SUGGESTED_TOKENS = [
     },
   },
 ];
-
 
 const MOCK_TOKEN = {
   address: '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d',

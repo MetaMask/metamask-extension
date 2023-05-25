@@ -17,14 +17,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
-import {
-  AssetType,
-} from '../../../shared/constants/transaction';
-import {
-  ButtonLink,
-  Icon,
-  IconName,
-} from '../../components/component-library';
+import { AssetType } from '../../../shared/constants/transaction';
+import { ButtonLink, Icon, IconName } from '../../components/component-library';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
@@ -129,7 +123,7 @@ const ConfirmAddSuggestedNFT = () => {
                 },
               }) => {
                 const nftImageURL = getAssetImageURL(image, ipfsGateway);
-                const error = Object.values(errors).find((val) => !!val);
+                const error = Object.values(errors).find((val) => Boolean(val));
                 const blockExplorerLink = getTokenTrackerLink(
                   address,
                   chainId,
