@@ -2249,27 +2249,6 @@ export default class MetamaskController extends EventEmitter {
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
 
-      // signatureController
-      // signMessage: this.signatureController.signMessage.bind(
-      //   this.signatureController,
-      // ),
-      cancelMessage: this.signatureController.cancelMessage.bind(
-        this.signatureController,
-      ),
-      // signPersonalMessage: this.signatureController.signPersonalMessage.bind(
-      //   this.signatureController,
-      // ),
-      cancelPersonalMessage:
-        this.signatureController.cancelPersonalMessage.bind(
-          this.signatureController,
-        ),
-      // signTypedMessage: this.signatureController.signTypedMessage.bind(
-      //   this.signatureController,
-      // ),
-      cancelTypedMessage: this.signatureController.cancelTypedMessage.bind(
-        this.signatureController,
-      ),
-
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
         this.decryptMessageController,

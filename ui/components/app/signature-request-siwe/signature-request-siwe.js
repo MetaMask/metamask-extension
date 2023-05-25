@@ -42,15 +42,10 @@ import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({
-  txData,
-  cancelPersonalMessage,
-  // signPersonalMessage,
-}) {
+export default function SignatureRequestSIWE({ txData }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
-
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
 
@@ -88,34 +83,26 @@ export default function SignatureRequestSIWE({
     (txData?.securityProviderResponse &&
       Object.keys(txData.securityProviderResponse).length === 0);
 
-  const onSign = useCallback(
-    async (event) => {
-      try {
-        // await signPersonalMessage(event);
-        await dispatch(resolvePendingApproval(id, null));
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [signPersonalMessage],
-  );
+  const onSign = useCallback(async () => {
+    try {
+      await dispatch(resolvePendingApproval(id, null));
+    } catch (e) {
+      log.error(e);
+    }
+  }, [id, dispatch]);
 
-  const onCancel = useCallback(
-    async (event) => {
-      try {
-        await cancelPersonalMessage(event);
-        await dispatch(
-          rejectPendingApproval(
-            id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
-          ),
-        );
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [cancelPersonalMessage],
-  );
+  const onCancel = useCallback(async () => {
+    try {
+      await dispatch(
+        rejectPendingApproval(
+          id,
+          serializeError(ethErrors.provider.userRejectedRequest()),
+        ),
+      );
+    } catch (e) {
+      log.error(e);
+    }
+  }, []);
 
   const handleCancelAll = () => {
     const unapprovedTxCount = messagesCount;
@@ -255,12 +242,4 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
-  /**
-   * Handler for cancel button
-   */
-  cancelPersonalMessage: PropTypes.func.isRequired,
-  /**
-   * Handler for sign button
-   */
-  signPersonalMessage: PropTypes.func.isRequired,
 };

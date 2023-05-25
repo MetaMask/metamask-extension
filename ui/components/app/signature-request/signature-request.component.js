@@ -64,10 +64,6 @@ export default class SignatureRequest extends PureComponent {
      */
     isLedgerWallet: PropTypes.bool,
     /**
-     * Handler for cancel button
-     */
-    cancel: PropTypes.func.isRequired,
-    /**
      * Handler for sign button
      */
     // sign: PropTypes.func.isRequired,
@@ -93,7 +89,6 @@ export default class SignatureRequest extends PureComponent {
     history: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
-    cancelAll: PropTypes.func.isRequired,
     cancelAllApprovals: PropTypes.func.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
@@ -154,7 +149,6 @@ export default class SignatureRequest extends PureComponent {
 
   handleCancelAll = () => {
     const {
-      cancelAll,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
@@ -167,7 +161,6 @@ export default class SignatureRequest extends PureComponent {
       unapprovedTxCount: unapprovedMessagesCount,
       onSubmit: async () => {
         await cancelAllApprovals();
-        await cancelAll();
         clearConfirmTransaction();
         history.push(mostRecentOverviewPage);
       },
@@ -183,8 +176,6 @@ export default class SignatureRequest extends PureComponent {
         id,
       },
       fromAccount: { address, balance, name },
-      cancel,
-      // sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
       chainId,
@@ -230,8 +221,7 @@ export default class SignatureRequest extends PureComponent {
           .toBase(10)
           .toString();
 
-    const onSign = async (event) => {
-      // await sign(event);
+    const onSign = async () => {
       await resolvePendingApproval(id);
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
@@ -245,8 +235,7 @@ export default class SignatureRequest extends PureComponent {
       });
     };
 
-    const onCancel = async (event) => {
-      await cancel(event);
+    const onCancel = async () => {
       await rejectPendingApproval(
         id,
         serializeError(ethErrors.provider.userRejectedRequest()),

@@ -32,13 +32,12 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 ///: END:ONLY_INCLUDE_IN
 import {
-  MESSAGE_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ENVIRONMENT_TYPE_NOTIFICATION,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/app';
+
 import {
-  cancelMsgs,
   showModal,
   resolvePendingApproval,
   rejectPendingApproval,
@@ -163,8 +162,6 @@ mapDispatchToProps = function (dispatch) {
         }),
       );
     },
-    cancelAll: (unconfirmedMessagesList) =>
-      dispatch(cancelMsgs(unconfirmedMessagesList)),
     cancelAllApprovals: (unconfirmedMessagesList) => {
       return Promise.all(
         unconfirmedMessagesList.map(
@@ -201,15 +198,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     isNotification,
     ///: END:ONLY_INCLUDE_IN
   } = stateProps;
-  const {
-    // signPersonalMessage,
-    // signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    // signMessage,
-    cancelMessage,
-    txData,
-  } = ownProps;
+  const { txData } = ownProps;
 
   const {
     cancelAll: dispatchCancelAll,
@@ -217,61 +206,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   } = dispatchProps;
 
   const {
-    type,
     msgParams: { from },
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
-
-  let cancel;
-  let sign;
-
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-    cancel = cancelPersonalMessage;
-    // sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-    cancel = cancelTypedMessage;
-    // sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-    cancel = cancelMessage;
-    // sign = signMessage;
-  }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const signFn = async (...opts) => {
-    if (accountType === 'custody') {
-      try {
-        let msgData = opts;
-        let id = opts.custodyId;
-        if (!opts.custodyId) {
-          msgData = await sign(opts);
-          id = msgData.custodyId;
-        }
-        dispatchProps.showCustodianDeepLink({
-          custodyId: id,
-          fromAddress: fromAccount.address,
-          closeNotification: isNotification,
-          onDeepLinkFetched: () => undefined,
-          onDeepLinkShown: () => undefined,
-        });
-        await dispatchProps.setMsgInProgress(msgData.metamaskId);
-        await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
-        await goHome();
-        return msgData;
-      } catch (err) {
-        await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
-        await dispatchProps.showTransactionsFailedModal({
-          errorMessage: err.message,
-          closeNotification: true,
-          operationFailed: true,
-        });
-        return null;
-      }
-    }
-
-    return sign(opts);
-  };
-  ///: END:ONLY_INCLUDE_IN
 
   return {
     ...ownProps,

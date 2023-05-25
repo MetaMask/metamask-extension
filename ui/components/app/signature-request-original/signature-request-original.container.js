@@ -3,10 +3,8 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   goHome,
-  cancelMsgs,
   showModal,
   resolvePendingApproval,
   rejectPendingApproval,
@@ -77,7 +75,6 @@ function mapDispatchToProps(dispatch) {
     },
     rejectPendingApproval: (id, error) =>
       dispatch(rejectPendingApproval(id, error)),
-    cancelAll: (messagesList) => dispatch(cancelMsgs(messagesList)),
     cancelAllApprovals: (messagesList) => {
       return Promise.all(
         messagesList.map(
@@ -95,42 +92,17 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const {
-    // signPersonalMessage,
-    // signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    // signMessage,
-    cancelMessage,
-    txData,
-  } = ownProps;
+  const { txData } = ownProps;
 
   const { allAccounts, messagesList, ...otherStateProps } = stateProps;
 
   const {
-    type,
     msgParams: { from },
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
 
-  const {
-    cancelAll: dispatchCancelAll,
-    cancelAllApprovals: dispatchCancelAllApprovals,
-  } = dispatchProps;
-
-  let cancel;
-  let sign;
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-    cancel = cancelPersonalMessage;
-    // sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-    cancel = cancelTypedMessage;
-    // sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-    cancel = cancelMessage;
-    // sign = signMessage;
-  }
+  const { cancelAllApprovals: dispatchCancelAllApprovals } = dispatchProps;
 
   return {
     ...ownProps,
@@ -138,9 +110,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...dispatchProps,
     fromAccount,
     txData,
-    cancel,
-    // sign,
-    cancelAll: () => dispatchCancelAll(valuesFor(messagesList)),
     cancelAllApprovals: () =>
       dispatchCancelAllApprovals(valuesFor(messagesList)),
   };
