@@ -19,7 +19,7 @@ import {
   ETHERSCAN_PRIVACY_LINK,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
-import SRPQuiz from '../../../components/app/srp-quiz-popover/SRPQuiz';
+import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   BUTTON_SIZES,
   Button,
