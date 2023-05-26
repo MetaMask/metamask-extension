@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IconName, ButtonIcon, Text } from '../../component-library';
@@ -9,12 +10,17 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Popover from '../../ui/popover/popover.component';
+import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
+import { revokeDynamicSnapPermissions } from '../../../store/actions';
 
 export const PermissionCellOptions = ({ permissionName, description }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const ref = useRef(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+
+  const isRevokable = DynamicSnapPermissions.includes(permissionName);
 
   const handleOpen = () => {
     setShowOptions(true);
@@ -36,7 +42,7 @@ export const PermissionCellOptions = ({ permissionName, description }) => {
 
   const handleRevokePermission = () => {
     setShowOptions(false);
-    // TODO
+    dispatch(revokeDynamicSnapPermissions([permissionName]));
   };
 
   return (
@@ -58,17 +64,19 @@ export const PermissionCellOptions = ({ permissionName, description }) => {
               {t('details')}
             </Text>
           </MenuItem>
-          <MenuItem onClick={handleRevokePermission}>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.errorDefault}
-              style={{
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {t('revokePermission')}
-            </Text>
-          </MenuItem>
+          {isRevokable && (
+            <MenuItem onClick={handleRevokePermission}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.errorDefault}
+                style={{
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('revokePermission')}
+              </Text>
+            </MenuItem>
+          )}
         </Menu>
       )}
       {showDetails && (

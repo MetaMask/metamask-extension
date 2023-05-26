@@ -3560,15 +3560,15 @@
     "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
+  "revokePermission": {
+    "message": "Revoke permission"
+  },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
     "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
-  },
-  "revokePermission": {
-    "message": "Revoke permission"
   },
   "riskRating": {
     "message": "Risk rating"
