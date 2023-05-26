@@ -38,7 +38,7 @@ export default function QuizContent({
         <img src={image} alt={t('srpSecurityQuizImgAlt')} width="100%" />
       )}
       <Text
-        variant={TextVariant.bodyLgMedium}
+        variant={TextVariant.headingMd}
         textAlign={TextAlign.Center}
         margin={2}
         color={icon?.props.color} // Copy this text color from the icon's color
@@ -47,7 +47,7 @@ export default function QuizContent({
       </Text>
       {moreContent && (
         <Text
-          variant={TextVariant.bodyMdBold}
+          variant={TextVariant.bodyMd}
           textAlign={TextAlign.Center}
           margin={4}
         >
