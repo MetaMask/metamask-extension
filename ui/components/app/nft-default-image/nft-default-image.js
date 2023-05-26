@@ -22,9 +22,15 @@ export default function NftDefaultImage({
       })}
       onClick={handleImageClick}
     >
-      <Text variant={TextVariant.bodySm} as="h6" className="nft-default__text">
-        {name ?? t('unknownCollection')} <br /> #{tokenId}
-      </Text>
+      {tokenId && (
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
+          className="nft-default__text"
+        >
+          {name ?? t('unknownCollection')} <br /> #{tokenId}
+        </Text>
+      )}
     </Tag>
   );
 }
@@ -42,4 +48,8 @@ NftDefaultImage.propTypes = {
    * The click handler for the NFT default image
    */
   handleImageClick: PropTypes.func,
+  /**
+   * An additional className to apply to the NFT default image
+   */
+  className: PropTypes.string,
 };

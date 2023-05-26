@@ -1,23 +1,14 @@
 .confirm-add-suggested-nft {
-  padding: 16px;
+  margin: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 
-  &__nft-header {
-    @include H7;
-
-    display: flex;
-  }
-
-  &__nft {
-    flex: 1;
-    min-width: 0;
-  }
-
-  &__details {
-    flex: 0 0 30%;
-    min-width: 0;
+  &__header {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border-muted);
   }
 
   &__nft-list {
+    padding: 16px;
     display: flex;
     flex-flow: column nowrap;
     width: 100%;
@@ -27,21 +18,31 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    margin-top: 8px;
-    box-sizing: border-box;
-    max-width: 100%;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__nft-details {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    &--error {
+      opacity: 0.5;
+    }
+
+    margin: 0;
   }
 
   &__nft-data {
     display: flex;
     align-items: center;
     padding: 8px;
-  }
-
-  &__nft-details {
-    display: flex;
-    justify-content: space-evenly;
-    width: 70%;
   }
 
   &__nft-description,
@@ -54,7 +55,7 @@
 
   &__nft-image {
     margin-right: 12px;
-    width: 75px;
+    width: 48px;
     border-radius: 8px;
     flex: 0 0 auto;
   }
@@ -62,8 +63,8 @@
   &__nft-image-default {
     margin-right: 12px;
     flex: 0 0 auto;
-    width: 75px;
-    height: 75px;
+    width: 48px;
+    height: 48px;
     border-radius: 8px;
     padding: 0 !important;
   }
@@ -72,18 +73,52 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
-    width: 60%;
-  }
-
-  &__nft-name {
-    @include H7;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
+  }
+
+  &__nft-name {
+    @include H6;
+
+    align-self: flex-start;
   }
 
   &__nft-tokenid {
     @include H7;
+
     color: #606060;
+  }
+
+  &__nft-remove-tooltip {
+    background-color: black;
+    color: white;
+  }
+
+  &__nft-single-image {
+    border-radius: inherit;
+    width: 100%;
+  }
+
+  &__nft-single-image-default {
+    border-radius: inherit;
+  }
+
+  &__nft-single-details {
+    padding: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__nft-single-sub-details {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

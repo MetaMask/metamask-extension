@@ -3479,13 +3479,13 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  handleWatchAssetRequest = (asset, type) => {
+  handleWatchAssetRequest = (asset, type, origin) => {
     switch (type) {
       case 'ERC20':
         return this.tokensController.watchAsset(asset, type);
       case 'ERC721':
       case 'ERC1155':
-        return this.nftController.watchNft(asset, type);
+        return this.nftController.watchNft(asset, type, origin);
       default:
         throw new Error(`Asset type ${type} not supported`);
     }
