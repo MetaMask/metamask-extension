@@ -293,12 +293,12 @@ export const AppHeader = ({ location }) => {
                       <Box
                         display={DISPLAY.FLEX}
                         alignItems={AlignItems.center}
-                        className="menu-bar__custody-logo"
+                        className="custody-logo"
                         data-testid="custody-logo"
                       >
                         <img
                           src={custodianIcon}
-                          className="menu-bar__custody-logo--icon"
+                          className="custody-logo--icon"
                           alt=""
                         />
                       </Box>
