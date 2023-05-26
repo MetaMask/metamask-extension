@@ -5,6 +5,7 @@ import { TransactionMeta } from '../../shared/constants/transaction';
 type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
+    approvalFlows: ApprovalControllerState['approvalFlows'];
     unapprovedTxs: {
       [transactionId: string]: TransactionMeta;
     };
@@ -32,4 +33,8 @@ export function hasPendingApprovals(
   );
 
   return pendingApprovalRequests.length > 0;
+}
+
+export function hasPendingApprovalFlows(state: ApprovalsMetaMaskState) {
+  return state.metamask.approvalFlows.length > 0;
 }

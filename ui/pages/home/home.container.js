@@ -36,6 +36,7 @@ import {
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   hasPendingApprovals,
+  hasPendingApprovalFlows,
 } from '../../selectors';
 
 import {
@@ -137,6 +138,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    hasPendingApprovalFlows: hasPendingApprovalFlows(state),
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,

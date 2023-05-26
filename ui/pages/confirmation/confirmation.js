@@ -32,11 +32,13 @@ import {
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
+  hasPendingApprovalFlows as hasPendingApprovalFlowsSelector,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, IconName } from '../../components/component-library';
+import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapAuthorship from '../../components/app/snaps/snap-authorship';
 import { getSnapName } from '../../helpers/utils/util';
@@ -176,6 +178,7 @@ export default function ConfirmationPage({
     isEqual,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
+  const hasPendingApprovalFlows = useSelector(hasPendingApprovalFlowsSelector);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
@@ -256,6 +259,7 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
+      !hasPendingApprovalFlows &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
@@ -267,9 +271,14 @@ export default function ConfirmationPage({
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
+    hasPendingApprovalFlows,
   ]);
 
   if (!pendingConfirmation) {
+    if (hasPendingApprovalFlows) {
+      return <Loading />;
+    }
+
     return null;
   }
 

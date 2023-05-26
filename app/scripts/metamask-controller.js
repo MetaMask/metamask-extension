@@ -2063,6 +2063,8 @@ export default class MetamaskController extends EventEmitter {
       // approval
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
+      startApprovalFlow: approvalController.startFlow.bind(approvalController),
+      endApprovalFlow: approvalController.endFlow.bind(approvalController),
 
       // primary HD keyring management
       addNewAccount: this.addNewAccount.bind(this),
