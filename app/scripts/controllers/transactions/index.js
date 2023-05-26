@@ -2787,6 +2787,7 @@ export default class TransactionController extends EventEmitter {
         origin,
         type,
         requestData,
+        expectsResult: true,
       },
       shouldShowRequest,
     );
