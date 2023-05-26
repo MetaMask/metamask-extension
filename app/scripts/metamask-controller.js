@@ -49,6 +49,7 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 ///: END:ONLY_INCLUDE_IN
@@ -139,10 +140,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
-import {
-  NetworkController,
-  NetworkControllerEventType,
-} from './controllers/network';
+import { NetworkController } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
@@ -268,7 +266,12 @@ export default class MetamaskController extends EventEmitter {
 
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
-      allowedEvents: Object.values(NetworkControllerEventType),
+      allowedEvents: [
+        'NetworkController:networkWillChange',
+        'NetworkController:networkDidChange',
+        'NetworkController:infuraIsBlocked',
+        'NetworkController:infuraIsUnblocked',
+      ],
     });
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
@@ -315,11 +318,11 @@ export default class MetamaskController extends EventEmitter {
       initLangCode: opts.initLangCode,
       onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.InfuraIsBlocked,
+        'NetworkController:infuraIsBlocked',
       ),
       onInfuraIsUnblocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.InfuraIsUnblocked,
+        'NetworkController:infuraIsUnblocked',
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
@@ -365,7 +368,7 @@ export default class MetamaskController extends EventEmitter {
         // network provider by one update.
         onNetworkStateChange: (cb) =>
           networkControllerMessenger.subscribe(
-            NetworkControllerEventType.NetworkDidChange,
+            'NetworkController:networkDidChange',
             () => {
               const networkState = this.networkController.store.getState();
               const modifiedNetworkState = {
@@ -476,7 +479,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
@@ -515,7 +518,7 @@ export default class MetamaskController extends EventEmitter {
       // onNetworkDidChange
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
@@ -641,7 +644,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.getState().providerConfig.chainId,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
     });
 
@@ -653,7 +656,7 @@ export default class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
       getCurrentChainId: () =>
         this.networkController.store.getState().providerConfig.chainId,
@@ -754,6 +757,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `SnapController:getPermitted`,
           `SnapController:install`,
+          `SubjectMetadataController:getSubjectMetadata`,
         ],
       }),
       state: initState.PermissionController,
@@ -813,7 +817,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
+      iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
@@ -1149,7 +1153,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     networkControllerMessenger.subscribe(
-      NetworkControllerEventType.NetworkDidChange,
+      'NetworkController:networkDidChange',
       async () => {
         const { ticker } =
           this.networkController.store.getState().providerConfig;
@@ -1210,18 +1214,23 @@ export default class MetamaskController extends EventEmitter {
           ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      getCurrentChainId: () =>
+        this.networkController.store.getState().providerConfig.chainId,
     });
 
-    this.signatureController.hub.on('cancelWithReason', (message, reason) => {
-      this.metaMetricsController.trackEvent({
-        event: reason,
-        category: MetaMetricsEventCategory.Transactions,
-        properties: {
-          action: 'Sign Request',
-          type: message.type,
-        },
-      });
-    });
+    this.signatureController.hub.on(
+      'cancelWithReason',
+      ({ message, reason }) => {
+        this.metaMetricsController.trackEvent({
+          event: reason,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            action: 'Sign Request',
+            type: message.type,
+          },
+        });
+      },
+    );
 
     this.swapsController = new SwapsController({
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
@@ -1272,7 +1281,7 @@ export default class MetamaskController extends EventEmitter {
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
-      NetworkControllerEventType.NetworkDidChange,
+      'NetworkController:networkDidChange',
       () => {
         this.accountTracker._updateAccounts();
       },
@@ -1280,7 +1289,7 @@ export default class MetamaskController extends EventEmitter {
 
     // clear unapproved transactions and messages when the network will change
     networkControllerMessenger.subscribe(
-      NetworkControllerEventType.NetworkWillChange,
+      'NetworkController:networkWillChange',
       () => {
         this.txController.txStateManager.clearUnapprovedTxs();
         this.encryptionPublicKeyController.clearUnapproved();
@@ -1570,6 +1579,8 @@ export default class MetamaskController extends EventEmitter {
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
+        encrypt,
+        decrypt,
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',

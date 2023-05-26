@@ -11,7 +11,7 @@ import Box from '../../ui/box';
 import {
   BorderRadius,
   DISPLAY,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -102,7 +102,7 @@ const ConfirmRemoveJWT = ({
       )}
       <Text
         as="h6"
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         variant={TextVariant.bodySm}
         marginTop={2}
       >

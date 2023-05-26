@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { SEND_STAGES } from '../../../ducks/send';
 import { AppHeader } from '.';
 
 describe('App Header', () => {
@@ -100,11 +101,17 @@ describe('App Header', () => {
       appState: {
         onboardedInThisUISession: false,
       },
+      send: {
+        stage: SEND_STAGES.INACTIVE,
+      },
     };
 
     const mockStore = configureStore();
     const store = mockStore(mockState);
-    const { container } = renderWithProvider(<AppHeader />, store);
+    const { container } = renderWithProvider(
+      <AppHeader location={{ pathname: '' }} />,
+      store,
+    );
     expect(container).toMatchSnapshot();
   });
 });

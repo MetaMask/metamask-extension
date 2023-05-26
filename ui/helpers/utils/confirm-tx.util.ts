@@ -2,7 +2,6 @@ import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
 import { BigNumber } from 'bignumber.js';
 
-import { unconfirmedTransactionsCountSelector } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { TransactionMeta } from '../../../shared/constants/transaction';
@@ -84,22 +83,6 @@ export function convertTokenToFiat({
   }
 
   return tokenInFiat.round(2).toString();
-}
-
-/**
- * This is a selector and probably doesn't belong here but its staying for now
- * Note: I did not go so far as to type the entirety of the MetaMask state tree
- * which definitely needs to be done for the full conversion of TypeScript to
- * be successful and as useful as possible.
- * TODO: Type the MetaMask state tree and use that type here.
- *
- * @param state - MetaMask state
- * @returns true if there are unconfirmed transactions in state
- */
-export function hasUnconfirmedTransactions(
-  state: Record<string, any>,
-): boolean {
-  return unconfirmedTransactionsCountSelector(state) > 0;
 }
 
 /**

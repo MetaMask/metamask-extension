@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '../box/box';
-import { Text } from '../../component-library';
+import { Icon, IconName, Text } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import Tooltip from '.';
 
 export default {
@@ -60,10 +61,7 @@ export const DefaultStory = (args) => (
   <Box display="flex">
     <Text>Hover over the info icon to see the tooltip</Text>
     <Tooltip {...args}>
-      <i
-        className="fa fa-sm fa-info-circle"
-        style={{ color: 'var(--color-icon-alternative)' }}
-      />
+      <Icon name={IconName.Info} color={IconColor.iconAlternative} />
     </Tooltip>
   </Box>
 );
@@ -74,10 +72,7 @@ export const HTML = (args) => (
   <Box display="flex">
     <Text>This tooltips content is html</Text>
     <Tooltip {...args}>
-      <i
-        className="fa fa-sm fa-info-circle"
-        style={{ color: 'var(--color-icon-alternative)' }}
-      />
+      <Icon name={IconName.Info} color={IconColor.iconAlternative} />
     </Tooltip>
   </Box>
 );

@@ -1,6 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
+import {
+  HeaderBase,
+  Text,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  ValidTag,
+} from '..';
 import {
   TextVariant,
   TextAlign,
@@ -50,7 +57,11 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       {...props}
     >
       {typeof children === 'string' ? (
-        <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+        <Text
+          as={ValidTag.Header}
+          variant={TextVariant.headingSm}
+          textAlign={TextAlign.Center}
+        >
           {children}
         </Text>
       ) : (

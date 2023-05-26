@@ -3,33 +3,41 @@
 exports[`NoteToTrader should render the Note to trader component 1`] = `
 <div>
   <div
-    class="box note-header box--display-flex box--flex-direction-row box--justify-content-space-between"
+    class="box confirm-page-container-content__data box--flex-direction-row"
   >
-    <label
-      class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
-      for="transaction-note"
+    <div
+      class="box box--display-flex box--flex-direction-row"
     >
-      Transaction note
-    </label>
-    <p
-      class="box mm-text note-header__counter mm-text--body-md box--flex-direction-row box--color-text-default"
-    >
-      9
-      /
-      280
-    </p>
-  </div>
-  <div
-    class="box note-field box--display-flex box--flex-direction-column"
-  >
-    <textarea
-      data-testid="transaction-note"
-      id="transaction-note"
-      maxlength="280"
-      placeholder=""
-    >
-      some text
-    </textarea>
+      <div
+        class="box note-header box--display-flex box--flex-direction-row box--justify-content-space-between"
+      >
+        <label
+          class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+          for="transaction-note"
+        >
+          Transaction note
+        </label>
+        <p
+          class="box mm-text note-header__counter mm-text--body-md box--flex-direction-row box--color-text-default"
+        >
+          9
+          /
+          280
+        </p>
+      </div>
+      <div
+        class="box note-field box--display-flex box--flex-direction-column"
+      >
+        <textarea
+          data-testid="transaction-note"
+          id="transaction-note"
+          maxlength="280"
+          placeholder=""
+        >
+          some text
+        </textarea>
+      </div>
+    </div>
   </div>
 </div>
 `;

@@ -55,9 +55,14 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(build-main)
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
@@ -71,12 +76,25 @@ function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   isSigningQRHardwareTransaction,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  waitForConfirmDeepLinkDialog,
+  institutionalConnectRequests,
+  ///: END:ONLY_INCLUDE_IN
 }) {
-  return (
+  let shouldCLose =
     isNotification &&
     totalUnapprovedCount === 0 &&
-    !isSigningQRHardwareTransaction
-  );
+    !isSigningQRHardwareTransaction;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shouldCLose &&=
+    // MMI User must be shown a deeplink
+    !waitForConfirmDeepLinkDialog &&
+    // MMI User is connecting to custodian or compliance
+    institutionalConnectRequests.length === 0;
+  ///: END:ONLY_INCLUDE_IN
+
+  return shouldCLose;
 }
 
 export default class Home extends PureComponent {
@@ -89,7 +107,7 @@ export default class Home extends PureComponent {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     hasWatchAssetPendingApprovals: PropTypes.bool,
-    unconfirmedTransactionsCount: PropTypes.number,
+    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
@@ -152,6 +170,14 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
+    mmiPortfolioEnabled: PropTypes.bool,
+    mmiPortfolioUrl: PropTypes.string,
+    modalOpen: PropTypes.bool,
+    setWaitForConfirmDeepLinkDialog: PropTypes.func,
+    waitForConfirmDeepLinkDialog: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -171,7 +197,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       hasWatchAssetPendingApprovals,
       swapsFetchParams,
-      unconfirmedTransactionsCount,
+      hasTransactionPendingApprovals,
     } = this.props;
 
     if (shouldCloseNotificationPopup(props)) {
@@ -179,7 +205,7 @@ export default class Home extends PureComponent {
       closeNotificationPopup();
     } else if (
       firstPermissionsRequestId ||
-      unconfirmedTransactionsCount > 0 ||
+      hasTransactionPendingApprovals ||
       hasWatchAssetPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
@@ -188,18 +214,72 @@ export default class Home extends PureComponent {
     }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  checkInstitutionalConnectRequest() {
+    const { history, institutionalConnectRequests } = this.props;
+    if (
+      institutionalConnectRequests &&
+      institutionalConnectRequests.length > 0 &&
+      institutionalConnectRequests[0].feature === 'custodian'
+    ) {
+      if (
+        institutionalConnectRequests[0].method ===
+        'metamaskinstitutional_reauthenticate'
+      ) {
+        history.push(INTERACTIVE_REPLACEMENT_TOKEN_PAGE);
+      } else if (
+        institutionalConnectRequests[0].method ===
+        'metamaskinstitutional_authenticate'
+      ) {
+        history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
+      }
+    } else if (
+      institutionalConnectRequests &&
+      institutionalConnectRequests.length > 0 &&
+      institutionalConnectRequests[0].feature !== 'custodian'
+    ) {
+      history.push(CONFIRM_INSTITUTIONAL_FEATURE_CONNECT);
+    }
+  }
+
+  shouldCloseCurrentWindow() {
+    const {
+      isNotification,
+      modalOpen,
+      totalUnapprovedCount,
+      institutionalConnectRequests,
+      waitForConfirmDeepLinkDialog,
+    } = this.props;
+
+    if (
+      isNotification &&
+      totalUnapprovedCount === 0 &&
+      institutionalConnectRequests.length === 0 &&
+      !waitForConfirmDeepLinkDialog &&
+      !modalOpen
+    ) {
+      global.platform.closeCurrentWindow();
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   checkStatusAndNavigate() {
     const {
       firstPermissionsRequestId,
       history,
       isNotification,
       hasWatchAssetPendingApprovals,
-      unconfirmedTransactionsCount,
+      hasTransactionPendingApprovals,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
     } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.shouldCloseCurrentWindow();
+    ///: END:ONLY_INCLUDE_IN
+
     if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (!isNotification && haveSwapsQuotes) {
@@ -208,17 +288,29 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (unconfirmedTransactionsCount > 0) {
+    } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (hasWatchAssetPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.checkInstitutionalConnectRequest();
+    ///: END:ONLY_INCLUDE_IN
   }
 
   componentDidMount() {
     this.checkStatusAndNavigate();
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { setWaitForConfirmDeepLinkDialog } = this.props;
+
+    window.addEventListener('beforeunload', () => {
+      // If user closes notification window manually, change waitForConfirmDeepLinkDialog to false
+      setWaitForConfirmDeepLinkDialog(false);
+    });
+    ///: END:ONLY_INCLUDE_IN
   }
 
   static getDerivedStateFromProps(props) {
@@ -625,6 +717,10 @@ export default class Home extends PureComponent {
       completedOnboarding,
       onboardedInThisUISession,
       newNetworkAddedConfigurationId,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      mmiPortfolioEnabled,
+      mmiPortfolioUrl,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     if (forgottenPassword) {
@@ -653,6 +749,9 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          }
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
@@ -666,10 +765,25 @@ export default class Home extends PureComponent {
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
+          {
+            ///: END:ONLY_INCLUDE_IN
+          }
           <div className="home__main-view">
             {process.env.MULTICHAIN ? null : <MenuBar />}
             <div className="home__balance-wrapper">
-              <EthOverview />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                <EthOverview />
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                <EthOverview
+                  mmiPortfolioEnabled={mmiPortfolioEnabled}
+                  mmiPortfolioUrl={mmiPortfolioUrl}
+                />
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
             <Tabs
               t={this.context.t}
@@ -698,28 +812,42 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={this.context.t('assets')}
-                tabKey="assets"
+                name={this.context.t('tokens')}
+                tabKey="tokens"
               >
-                <AssetList
-                  onClickAsset={(asset) =>
-                    history.push(`${ASSET_ROUTE}/${asset}`)
-                  }
-                />
+                {process.env.MULTICHAIN ? (
+                  <Box marginTop={2}>
+                    <AssetList
+                      onClickAsset={(asset) =>
+                        history.push(`${ASSET_ROUTE}/${asset}`)
+                      }
+                    />
+                  </Box>
+                ) : (
+                  <AssetList
+                    onClickAsset={(asset) =>
+                      history.push(`${ASSET_ROUTE}/${asset}`)
+                    }
+                  />
+                )}
               </Tab>
-              <Tab
-                activeClassName="home__tab--active"
-                className="home__tab"
-                data-testid="home__nfts-tab"
-                name={this.context.t('nfts')}
-                tabKey="nfts"
-              >
-                <NftsTab
-                  onAddNFT={() => {
-                    history.push(ADD_NFT_ROUTE);
-                  }}
-                />
-              </Tab>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
+                >
+                  <NftsTab
+                    onAddNFT={() => {
+                      history.push(ADD_NFT_ROUTE);
+                    }}
+                  />
+                </Tab>
+                ///: END:ONLY_INCLUDE_IN
+              }
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -732,7 +860,7 @@ export default class Home extends PureComponent {
             </Tabs>
             <div className="home__support">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
                 t('needHelp', [
                   <a
                     href={SUPPORT_LINK}

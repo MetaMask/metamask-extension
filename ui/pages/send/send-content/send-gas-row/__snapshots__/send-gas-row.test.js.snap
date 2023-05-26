@@ -30,8 +30,9 @@ exports[`SendGasRow Component render should match snapshot 1`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fa fa-info-circle"
+                <span
+                  class="box info-circle mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>
@@ -82,8 +83,9 @@ exports[`SendGasRow Component render should match snapshot 1`] = `
                 style="display: inline;"
                 tabindex="0"
               >
-                <i
-                  class="fa fa-info-circle"
+                <span
+                  class="box info-circle mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                  style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
             </div>

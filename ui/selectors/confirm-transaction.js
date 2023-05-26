@@ -142,50 +142,6 @@ export const unconfirmedMessagesHashSelector = createSelector(
   },
 );
 
-const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount;
-const unapprovedPersonalMsgCountSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgCount;
-const unapprovedDecryptMsgCountSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgCount;
-const unapprovedEncryptionPublicKeyMsgCountSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgCount;
-const unapprovedTypedMessagesCountSelector = (state) =>
-  state.metamask.unapprovedTypedMessagesCount;
-
-export const unconfirmedTransactionsCountSelector = createSelector(
-  unapprovedTxsSelector,
-  unapprovedMsgCountSelector,
-  unapprovedPersonalMsgCountSelector,
-  unapprovedDecryptMsgCountSelector,
-  unapprovedEncryptionPublicKeyMsgCountSelector,
-  unapprovedTypedMessagesCountSelector,
-  deprecatedGetCurrentNetworkId,
-  getCurrentChainId,
-  (
-    unapprovedTxs = {},
-    unapprovedMsgCount = 0,
-    unapprovedPersonalMsgCount = 0,
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
-    network,
-    chainId,
-  ) => {
-    const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter((txId) =>
-      transactionMatchesNetwork(unapprovedTxs[txId], chainId, network),
-    );
-
-    return (
-      filteredUnapprovedTxIds.length +
-      unapprovedTypedMessagesCount +
-      unapprovedMsgCount +
-      unapprovedPersonalMsgCount +
-      unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount
-    );
-  },
-);
-
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
 export const conversionRateSelector = (state) => state.metamask.conversionRate;

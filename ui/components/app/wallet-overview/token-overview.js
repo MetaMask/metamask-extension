@@ -37,10 +37,14 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
 
-import { ButtonIcon, Icon, IconName } from '../../component-library';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+} from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
-import { BUTTON_ICON_SIZES } from '../../component-library/button-icon/deprecated';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import WalletOverview from './wallet-overview';
 
@@ -95,7 +99,7 @@ const TokenOverview = ({ className, token }) => {
               color={IconColor.primaryDefault}
               iconName={IconName.Diagram}
               ariaLabel={t('portfolio')}
-              size={BUTTON_ICON_SIZES.LG}
+              size={ButtonIconSize.Lg}
               onClick={() => {
                 const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
                 global.platform.openTab({

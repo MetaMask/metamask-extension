@@ -441,9 +441,6 @@
   "assetOptions": {
     "message": "Asset options"
   },
-  "assets": {
-    "message": "Assets"
-  },
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
@@ -673,6 +670,9 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "compliance": {
+    "message": "Compliance"
+  },
   "complianceActivatedDesc": {
     "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
   },
@@ -732,6 +732,9 @@
   },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
+  },
+  "connectCustodialAccountMenu": {
+    "message": "Connect Custodial Account"
   },
   "connectCustodialAccountMsg": {
     "message": "Please choose the custodian you want to connect in order to add or refresh a token."
@@ -988,6 +991,9 @@
   },
   "custodySessionExpired": {
     "message": "Custodian session expired."
+  },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
   },
   "custom": {
     "message": "Advanced"
@@ -1412,6 +1418,9 @@
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
+  "enterOptionalPassword": {
+    "message": "Enter optional password"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -1754,9 +1763,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "Hold to reveal SRP"
-  },
   "holdToRevealContent1": {
     "message": "Your Secret Recovery Phrase provides $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1777,9 +1783,28 @@
     "message": "but phishers might.",
     "description": "The text link in 'holdToRevealContent3'"
   },
-  "holdToRevealTitle": {
+  "holdToRevealContentPrivateKey1": {
+    "message": "Your Private Key provides $1",
+    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
+  },
+  "holdToRevealContentPrivateKey2": {
+    "message": "full access to your wallet and funds.",
+    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
+  },
+  "holdToRevealLockedLabel": { "message": "hold to reveal circle locked" },
+  "holdToRevealPrivateKey": {
+    "message": "Hold to reveal Private Key"
+  },
+  "holdToRevealPrivateKeyTitle": {
+    "message": "Keep your private key safe"
+  },
+  "holdToRevealSRP": {
+    "message": "Hold to reveal SRP"
+  },
+  "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
   },
+  "holdToRevealUnlockedLabel": { "message": "hold to reveal circle unlocked" },
   "id": {
     "message": "Id"
   },
@@ -2500,6 +2525,12 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "note": {
+    "message": "Note"
+  },
+  "notePlaceholder": {
+    "message": "The approver will see this note when approving the transaction at the custodian."
+  },
   "notifications": {
     "message": "Notifications"
   },
@@ -3145,6 +3176,9 @@
   "portfolio": {
     "message": "Portfolio"
   },
+  "portfolioDashboard": {
+    "message": "Portfolio Dashboard"
+  },
   "portfolioView": {
     "message": "Portfolio view"
   },
@@ -3490,9 +3524,6 @@
   },
   "searchResults": {
     "message": "Search results"
-  },
-  "searchSettings": {
-    "message": "Search in Settings"
   },
   "searchTokens": {
     "message": "Search tokens"
@@ -4540,6 +4571,9 @@
   "tokenSymbol": {
     "message": "Token symbol"
   },
+  "tokens": {
+    "message": "Tokens"
+  },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
@@ -4651,6 +4685,9 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionNote": {
+    "message": "Transaction note"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
@@ -4891,6 +4928,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
