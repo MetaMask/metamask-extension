@@ -65,7 +65,7 @@ export default function SRPQuiz(props: any) {
   // (Making it a state variable forces the component to render twice)
   let title = '';
 
-  // Using a function dictionary eliminates the need for a switch statement
+  // Using a dictionary of JSX elements eliminates the need for a switch statement
   const stages: JSXDict = {};
 
   stages[QuizStage.introduction] = () => {
@@ -252,7 +252,7 @@ export default function SRPQuiz(props: any) {
   const quizContent = useMemo(() => {
     trackEventSrp(`stage_${stage}`); // Call MetaMetrics based on the current stage
 
-    return stages[stage](); // Pick the right stage from the FunctionDict
+    return stages[stage](); // Pick the right stage from the JSXDict
   }, [stage]);
 
   return (
