@@ -76,7 +76,7 @@ const reviewQuote = async (driver, options) => {
   const swapToAmount = await elementSwapToAmount.getText();
   const expectedAmount = parseFloat(quote[3]) * options.amount;
   const dotIndex = swapToAmount.indexOf('.');
-  const decimals = dotIndex == -1 ? 0 : swapToAmount.length - dotIndex - 1;
+  const decimals = dotIndex === -1 ? 0 : swapToAmount.length - dotIndex - 1;
   assert.equal(
     swapToAmount,
     expectedAmount.toFixed(decimals),
@@ -89,11 +89,12 @@ const reviewQuote = async (driver, options) => {
 
   await driver.findElement('[data-testid="info-tooltip"]');
 
-  if (options.skipCounter) return;
-  await driver.waitForSelector({
-    css: '[data-testid="countdown-timer__timer-container"]',
-    text: '0:25',
-  });
+  if (!options.skipCounter) {
+    await driver.waitForSelector({
+      css: '[data-testid="countdown-timer__timer-container"]',
+      text: '0:25',
+    });
+  }
 };
 
 const waitForTransactionToComplete = async (driver, options) => {

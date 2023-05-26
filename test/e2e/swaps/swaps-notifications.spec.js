@@ -87,7 +87,6 @@ describe('Swaps - notifications', function () {
           amount: 2,
           swapFrom: 'TESTETH',
           swapTo: 'INUINU',
-          amount: 2,
           skipCounter: true,
         });
         const swapButton = await driver.findElement({
