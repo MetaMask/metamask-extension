@@ -152,6 +152,7 @@ describe('NetworkController', () => {
     nock.enableNetConnect('localhost');
     nock.cleanAll();
     resetAllWhenMocks();
+    jest.resetAllMocks();
   });
 
   describe('constructor', () => {
