@@ -136,14 +136,12 @@ export default class ConfirmTransactionBase extends Component {
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     isNotification: PropTypes.bool,
     accountType: PropTypes.string,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     showTransactionsFailedModal: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
