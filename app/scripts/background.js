@@ -32,7 +32,6 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
-import { getEnvironmentType, deferredPromise, getPlatform } from './lib/util';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -51,6 +50,7 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
+import { deferredPromise, getPlatform } from './lib/util';
 
 /* eslint-enable import/first */
 
@@ -84,7 +84,6 @@ let popupIsOpen = false;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
-const openMetamaskConnections = new Map();
 const requestAccountTabIds = {};
 let controller;
 
@@ -185,28 +184,10 @@ let connectExternal;
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-  const remotePort = args[0];
-  const { sender } = remotePort;
 
-  const url = sender?.url;
-  const detectedProcessName = url ? getEnvironmentType(url) : '';
-
-  const connectionId = generateConnectionId(remotePort, detectedProcessName);
-  const openConnections = openMetamaskConnections.get(connectionId) || 0;
-
-  if (
-    openConnections === 0 ||
-    (detectedProcessName === 'background' && openConnections < 2)
-    // 2 background connections are allowed, one for phishing warning page and one for the ledger bridge keyring
-  ) {
-    // This is set in `setupController`, which is called as part of initialization
-    connectRemote(...args);
-    openMetamaskConnections.set(connectionId, openConnections + 1);
-  } else {
-    throw new Error('CONNECTION_ALREADY_EXISTS');
-  }
+  // This is set in `setupController`, which is called as part of initialization
+  connectRemote(...args);
 });
-
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
@@ -435,21 +416,6 @@ export async function loadStateFromPersistence() {
   return versionedData.data;
 }
 
-function generateConnectionId(remotePort, detectedProcessName) {
-  const { sender } = remotePort;
-  const id = sender?.tab ? sender.tab.id : sender?.id;
-  if (!id || !detectedProcessName) {
-    console.error(
-      'Must provide id and detectedProcessName to generate connection id.',
-      id,
-      detectedProcessName,
-    ); // eslint-disable-line no-console
-    throw new Error(
-      'Must provide id and detectedProcessName to generate connection id.',
-    );
-  }
-  return `${id}-${detectedProcessName}`;
-}
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
@@ -604,6 +570,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
       if (isManifestV3) {
         // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
         remotePort.onMessage.addListener((message) => {
@@ -618,11 +585,9 @@ export function setupController(
         });
       }
 
-      const connectionId = generateConnectionId(remotePort, processName);
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, 0);
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -632,8 +597,8 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
+
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, 0);
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -649,7 +614,6 @@ export function setupController(
         openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
-          openMetamaskConnections.set(connectionId, 0);
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;

@@ -4,6 +4,7 @@ const path = require('path');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
 const {
+  TEST_SEED_PHRASE_TWO,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
@@ -20,9 +21,6 @@ describe('MetaMask', function () {
   let driver;
   let dappServer;
   let tokenAddress;
-
-  const testSeedPhrase =
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
   this.bail(true);
 
@@ -151,7 +149,7 @@ describe('MetaMask', function () {
 
       await driver.pasteIntoField(
         '[data-testid="import-srp__srp-word-0"]',
-        testSeedPhrase,
+        TEST_SEED_PHRASE_TWO,
       );
 
       await driver.fill('#password', 'correct horse battery staple');

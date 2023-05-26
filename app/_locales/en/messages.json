@@ -1418,6 +1418,9 @@
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
+  "enterOptionalPassword": {
+    "message": "Enter optional password"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -3522,9 +3525,6 @@
   "searchResults": {
     "message": "Search results"
   },
-  "searchSettings": {
-    "message": "Search in Settings"
-  },
   "searchTokens": {
     "message": "Search tokens"
   },
@@ -4116,10 +4116,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Best of $1 quotes.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
@@ -4932,6 +4928,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",

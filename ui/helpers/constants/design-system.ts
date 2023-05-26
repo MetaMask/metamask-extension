@@ -497,13 +497,4 @@ export const SEVERITIES = {
   SUCCESS: 'success',
 };
 
-export const RESIZE = {
-  NONE: 'none',
-  BOTH: 'both',
-  HORIZONTAL: 'horizontal',
-  VERTICAL: 'vertical',
-  INITIAL: 'initial',
-  INHERIT: 'inherit',
-};
-
 export const BREAKPOINTS = ['base', 'sm', 'md', 'lg'];
