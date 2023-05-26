@@ -194,8 +194,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     unapprovedMessagesCount,
     mostRecentOverviewPage,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    accountType,
-    isNotification,
+    // accountType,
+    // isNotification,
     ///: END:ONLY_INCLUDE_IN
   } = stateProps;
   const { txData } = ownProps;

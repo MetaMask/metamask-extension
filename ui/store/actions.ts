@@ -731,44 +731,6 @@ export function encryptionPublicKeyMsg(
   };
 }
 
-// export function signTypedMsg(
-//   msgData: TemporaryMessageDataType['msgParams'],
-// ): ThunkAction<
-//   Promise<TemporaryMessageDataType['msgParams']>,
-//   MetaMaskReduxState,
-//   unknown,
-//   AnyAction
-// > {
-//   log.debug('action - signTypedMsg');
-//   return async (dispatch: MetaMaskReduxDispatch) => {
-//     dispatch(showLoadingIndication());
-//     log.debug(`actions calling background.signTypedMessage`);
-
-//     let newState: MetaMaskReduxState['metamask'];
-//     try {
-//       newState = await submitRequestToBackground<
-//         MetaMaskReduxState['metamask']
-//       >('signTypedMessage', [msgData]);
-//     } catch (error) {
-//       logErrorWithMessage(error);
-//       dispatch(displayWarning(error));
-//       throw error;
-//     } finally {
-//       dispatch(hideLoadingIndication());
-//     }
-
-//     dispatch(updateMetamaskState(newState));
-//     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-//     if (newState.unapprovedTypedMessages) {
-//       return checkForUnapprovedTypedMessages(msgData, newState);
-//     }
-//     ///: END:ONLY_INCLUDE_IN
-//     dispatch(completedTx(msgData.metamaskId));
-//     dispatch(closeCurrentNotificationWindow());
-//     return msgData;
-//   };
-// }
-
 export function updateCustomNonce(value: string) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
