@@ -2,8 +2,8 @@
 @import 'confirm-page-container-header/index';
 @import 'confirm-detail-row/index';
 @import 'confirm-page-container-navigation/index';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-@import 'flask/index';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+@import 'snaps/index';
 ///: END:ONLY_INCLUDE_IN
 
 .confirm-page-container {

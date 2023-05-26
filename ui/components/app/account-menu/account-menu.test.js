@@ -43,7 +43,7 @@ const initialProps = {
 
 const mockStore = {
   metamask: {
-    provider: {
+    providerConfig: {
       type: 'test',
     },
     preferences: {

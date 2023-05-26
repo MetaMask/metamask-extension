@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -21,9 +21,14 @@ import {
   Text,
 } from '../../component-library';
 import Box from '../../ui/box/box';
-import { getNativeCurrencyImage } from '../../../selectors';
+import { getCurrentChainId, getNativeCurrencyImage } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export const MultichainTokenListItem = ({
   className,
@@ -37,6 +42,9 @@ export const MultichainTokenListItem = ({
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const dataTheme = document.documentElement.getAttribute('data-theme');
+  const trackEvent = useContext(MetaMetricsContext);
+  const chainId = useSelector(getCurrentChainId);
+
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
@@ -56,6 +64,15 @@ export const MultichainTokenListItem = ({
         onClick={(e) => {
           e.preventDefault();
           onClick();
+          trackEvent({
+            category: MetaMetricsEventCategory.Tokens,
+            event: MetaMetricsEventName.TokenDetailsOpened,
+            properties: {
+              location: 'Home',
+              chain_id: chainId,
+              token_symbol: tokenSymbol,
+            },
+          });
         }}
       >
         <BadgeWrapper
@@ -122,7 +139,7 @@ export const MultichainTokenListItem = ({
             </Text>
           </Box>
           <Text color={TextColor.textAlternative}>
-            {Number(primary).toFixed(3)} {tokenSymbol}{' '}
+            {primary} {tokenSymbol}{' '}
           </Text>
         </Box>
       </Box>

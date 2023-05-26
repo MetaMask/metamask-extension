@@ -19,15 +19,13 @@ import {
   getLedgerTransportStatus,
 } from '../../../ducks/app/app';
 
-import Typography from '../../ui/typography/typography';
-import Button from '../../ui/button';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  FONT_WEIGHT,
+  SEVERITIES,
+  TEXT_ALIGN,
   TextColor,
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import Dialog from '../../ui/dialog';
 import {
   getPlatform,
   getEnvironmentType,
@@ -42,14 +40,9 @@ const renderInstructionStep = (
 ) => {
   return (
     show && (
-      <Typography
-        boxProps={{ margin: 0 }}
-        color={color}
-        fontWeight={FONT_WEIGHT.BOLD}
-        variant={TypographyVariant.H7}
-      >
+      <Text color={color} as="h6">
         {text}
-      </Typography>
+      </Text>
     )
   );
 };
@@ -71,8 +64,8 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         ledgerTransportType === LedgerTransportTypes.webhid &&
         webHidConnectedStatus !== WebHIDConnectedStatuses.connected
       ) {
-        const devices = await window.navigator.hid.getDevices();
-        const webHidIsConnected = devices.some(
+        const devices = await window.navigator?.hid?.getDevices();
+        const webHidIsConnected = devices?.some(
           (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
         );
         dispatch(
@@ -136,28 +129,28 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   return (
     <div>
       <div className="confirm-detail-row">
-        <Dialog type="message">
+        <BannerAlert severity={SEVERITIES.INFO}>
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepOne')}`,
+              `• ${t('ledgerConnectionInstructionStepOne')}`,
               !isFirefox && usingLedgerLive,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepTwo')}`,
+              `• ${t('ledgerConnectionInstructionStepTwo')}`,
               !isFirefox && usingLedgerLive,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepThree')}`,
+              `• ${t('ledgerConnectionInstructionStepThree')}`,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepFour')}`,
+              `• ${t('ledgerConnectionInstructionStepFour')}`,
               showDataInstruction,
             )}
             {renderInstructionStep(
               <span>
-                <Button
-                  type="link"
+                <ButtonLink
+                  textAlign={TEXT_ALIGN.LEFT}
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
                       window.location.reload();
@@ -167,14 +160,14 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   }}
                 >
                   {t('ledgerConnectionInstructionCloseOtherApps')}
-                </Button>
+                </ButtonLink>
               </span>,
               transportStatus === HardwareTransportStates.deviceOpenFailure,
             )}
             {renderInstructionStep(
               <span>
-                <Button
-                  type="link"
+                <ButtonLink
+                  textAlign={TEXT_ALIGN.LEFT}
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
                       const connectedDevices =
@@ -200,19 +193,20 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   {environmentTypeIsFullScreen
                     ? t('clickToConnectLedgerViaWebHID')
                     : t('openFullScreenForLedgerWebHid')}
-                </Button>
+                </ButtonLink>
               </span>,
               usingWebHID &&
                 webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
               TextColor.WARNING_DEFAULT,
             )}
           </div>
-        </Dialog>
+        </BannerAlert>
       </div>
     </div>
   );
 }
 
 LedgerInstructionField.propTypes = {
+  // whether or not to show the data instruction
   showDataInstruction: PropTypes.bool,
 };

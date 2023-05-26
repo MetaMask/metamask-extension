@@ -7,12 +7,12 @@ exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
     data-testid="popover-header"
   >
     <div
-      class="box mm-header-base__children box--flex-direction-row box--width-full"
+      class="box box--flex-direction-row box--width-full"
     >
       <h4
         class="box mm-text mm-text--heading-sm mm-text--text-align-center box--flex-direction-row box--color-text-default"
       >
-        Popover Header
+        PopoverHeader
       </h4>
     </div>
   </div>

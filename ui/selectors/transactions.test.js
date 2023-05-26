@@ -29,7 +29,7 @@ describe('Transaction Selectors', () => {
           unapprovedMsgs: {
             1: msg,
           },
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
         },
@@ -59,7 +59,7 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: msg,
           },
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
         },
@@ -90,7 +90,7 @@ describe('Transaction Selectors', () => {
           unapprovedTypedMessages: {
             1: msg,
           },
-          provider: {
+          providerConfig: {
             chainId: '0x5',
           },
         },
@@ -107,7 +107,7 @@ describe('Transaction Selectors', () => {
     it('selects the currentNetworkTxList', () => {
       const state = {
         metamask: {
-          provider: {
+          providerConfig: {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
@@ -171,7 +171,7 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
-          provider: {
+          providerConfig: {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
@@ -255,7 +255,7 @@ describe('Transaction Selectors', () => {
 
     const state = {
       metamask: {
-        provider: {
+        providerConfig: {
           nickname: 'mainnet',
           chainId: CHAIN_IDS.MAINNET,
         },

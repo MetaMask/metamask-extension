@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getSelectedIdentity } from '../../../selectors';
 import { AddressCopyButton } from '../../multichain';
+import Box from '../../ui/box/box';
 
 const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
   const selectedIdentity = useSelector(getSelectedIdentity);
@@ -13,7 +14,9 @@ const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
         {process.env.MULTICHAIN ? (
-          <AddressCopyButton address={checksummedAddress} shorten />
+          <Box marginTop={2}>
+            <AddressCopyButton address={checksummedAddress} shorten />
+          </Box>
         ) : (
           <>{loading ? null : icon}</>
         )}

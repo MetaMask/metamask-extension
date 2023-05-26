@@ -724,7 +724,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
       ///: END:ONLY_INCLUDE_IN

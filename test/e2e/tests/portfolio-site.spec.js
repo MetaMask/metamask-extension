@@ -34,7 +34,7 @@ describe('Portfolio site', function () {
         // Verify site
         assert.equal(
           await driver.getCurrentUrl(),
-          'http://127.0.0.1:8080/?metamaskEntry=ext',
+          'http://127.0.0.1:8080/?metamaskEntry=ext&metametricsId=null',
         );
       },
     );

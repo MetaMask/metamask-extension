@@ -23,7 +23,7 @@ describe('Network Dropdown', () => {
       metamask: {
         networkId: '1',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           type: 'test',
         },
         showTestnetMessageInDropdown: false,
@@ -58,7 +58,7 @@ describe('Network Dropdown', () => {
       metamask: {
         networkId: '1',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           type: 'test',
         },
         showTestnetMessageInDropdown: false,
@@ -137,7 +137,7 @@ describe('Network Dropdown', () => {
       metamask: {
         networkId: '1',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           type: 'test',
         },
         showTestnetMessageInDropdown: false,

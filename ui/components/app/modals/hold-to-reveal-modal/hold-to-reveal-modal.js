@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
 import {
   Text,
   Button,
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   ButtonIcon,
   IconName,
 } from '../../../component-library';
@@ -20,9 +20,16 @@ import {
 import HoldToRevealButton from '../../hold-to-reveal-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 
 const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const unlock = () => {
     onLongPressed();
@@ -53,7 +60,16 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
           className="hold-to-reveal-modal__close"
           iconName={IconName.Close}
           size={Size.SM}
-          onClick={handleCancel}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            handleCancel();
+          }}
           ariaLabel={t('close')}
         />
       </Box>
@@ -86,7 +102,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
             </Text>,
             <Button
               key="hold-to-reveal-5"
-              type={BUTTON_TYPES.LINK}
+              variant={BUTTON_VARIANT.LINK}
               size={Size.auto}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"

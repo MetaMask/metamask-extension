@@ -1,5 +1,5 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { handlers as permittedSnapMethods } from '@metamask/rpc-methods/dist/permitted';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { permittedMethods as permittedSnapMethods } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/rpc-methods/dist/utils';
@@ -72,7 +72,7 @@ export function createMethodMiddleware(hooks) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 const snapHandlerMap = permittedSnapMethods.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map.set(methodName, handler);

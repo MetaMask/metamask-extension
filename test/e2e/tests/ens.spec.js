@@ -80,7 +80,7 @@ describe('ENS', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
-            provider: {
+            providerConfig: {
               chainId: '0x1',
               nickname: '',
               rpcUrl: '',

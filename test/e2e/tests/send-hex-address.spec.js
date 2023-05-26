@@ -155,7 +155,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item',
-          text: '0.00008346 ETH',
+          text: '0.00008455 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -220,7 +220,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item',
-          text: '0.00008346 ETH',
+          text: '0.00008455 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 

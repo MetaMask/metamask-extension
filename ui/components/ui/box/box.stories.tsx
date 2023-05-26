@@ -606,21 +606,30 @@ export const ResponsiveProps = () => {
       >
         <Box
           padding={[4, 8]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           responsive
         </Box>
         <Box
           padding={[4, 8]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           props
         </Box>
         <Box
           padding={[4, 8]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           example
@@ -633,7 +642,10 @@ export const ResponsiveProps = () => {
             BorderRadius.MD,
             BorderRadius.LG,
           ]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           Responsive Border Radius 1
@@ -646,7 +658,10 @@ export const ResponsiveProps = () => {
             BorderRadius.none,
             BorderRadius.full,
           ]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           Responsive Border Radius 2

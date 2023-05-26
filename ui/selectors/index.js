@@ -5,3 +5,4 @@ export * from './metametrics';
 export * from './permissions';
 export * from './selectors';
 export * from './transactions';
+export * from './approvals';

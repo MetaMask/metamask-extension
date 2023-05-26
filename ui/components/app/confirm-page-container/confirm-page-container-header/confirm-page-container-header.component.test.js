@@ -13,7 +13,7 @@ describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
       networkStatus: 'available',
-      provider: {
+      providerConfig: {
         type: 'rpc',
         chainId: '0x5',
       },

@@ -342,36 +342,31 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
       messageCount: number,
     ) => void,
   ) {
-    messageManager.subscribe(
-      async (state: MessageManagerState<AbstractMessage>) => {
-        const newMessages = await this._migrateMessages(
-          state.unapprovedMessages as any,
-        );
-        this.update((draftState) => {
-          updateState(draftState, newMessages, state.unapprovedMessagesCount);
-        });
-      },
-    );
+    messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
+      const newMessages = this._migrateMessages(
+        state.unapprovedMessages as any,
+      );
+      this.update((draftState) => {
+        updateState(draftState, newMessages, state.unapprovedMessagesCount);
+      });
+    });
   }
 
-  private async _migrateMessages(
+  private _migrateMessages(
     coreMessages: Record<string, CoreMessage>,
-  ): Promise<Record<string, StateMessage>> {
+  ): Record<string, StateMessage> {
     const stateMessages: Record<string, StateMessage> = {};
 
     for (const messageId of Object.keys(coreMessages)) {
       const coreMessage = coreMessages[messageId];
-      const stateMessage = await this._migrateMessage(coreMessage);
-
+      const stateMessage = this._migrateMessage(coreMessage);
       stateMessages[messageId] = stateMessage;
     }
 
     return stateMessages;
   }
 
-  private async _migrateMessage(
-    coreMessage: CoreMessage,
-  ): Promise<StateMessage> {
+  private _migrateMessage(coreMessage: CoreMessage): StateMessage {
     const { messageParams, ...coreMessageData } = coreMessage;
 
     // Core message managers use messageParams but frontend uses msgParams with lots of references

@@ -9,10 +9,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../ui/identicon';
 import { ellipsify } from '../../../../pages/send/send.utils';
 import Popover from '../../../ui/popover';
-import Typography from '../../../ui/typography';
 import {
-  FONT_WEIGHT,
-  TypographyVariant,
+  FontWeight,
+  TextVariant,
   DISPLAY,
   Size,
   BorderStyle,
@@ -25,7 +24,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
-import { ButtonIcon, IconName } from '../../../component-library';
+import { ButtonIcon, IconName, Text } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,
@@ -62,32 +61,35 @@ export default function ContractDetailsModal({
         paddingLeft={4}
         className="contract-details-modal__content"
       >
-        <Typography
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TypographyVariant.H5}
+        <Text
+          fontWeight={FontWeight.Bold}
+          variant={TextVariant.bodyMd}
+          as="h5"
           display={DISPLAY.FLEX}
           boxProps={{ marginTop: 0, marginBottom: 0 }}
         >
           {t('contractTitle')}
-        </Typography>
-        <Typography
-          variant={TypographyVariant.H7}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           display={DISPLAY.FLEX}
           color={TextColor.textAlternative}
           boxProps={{ marginTop: 2, marginBottom: 0 }}
         >
           {t('contractDescription')}
-        </Typography>
+        </Text>
         {!isContractRequestingSignature && (
           <>
-            <Typography
-              variant={TypographyVariant.H6}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               display={DISPLAY.FLEX}
               marginTop={4}
               marginBottom={2}
             >
               {nft ? t('contractNFT') : t('contractToken')}
-            </Typography>
+            </Text>
             <Box
               display={DISPLAY.FLEX}
               borderRadius={Size.SM}
@@ -110,23 +112,25 @@ export default function ContractDetailsModal({
                 />
               )}
               <Box data-testid="recipient">
-                <Typography
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TypographyVariant.H5}
+                <Text
+                  fontWeight={FontWeight.Bold}
+                  variant={TextVariant.bodyMd}
+                  as="h5"
                   marginTop={4}
                 >
                   {tokenName || ellipsify(tokenAddress)}
-                </Typography>
+                </Text>
                 {tokenName && (
-                  <Typography
-                    variant={TypographyVariant.H6}
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
                     display={DISPLAY.FLEX}
                     color={TextColor.textAlternative}
                     marginTop={0}
                     marginBottom={4}
                   >
                     {ellipsify(tokenAddress)}
-                  </Typography>
+                  </Text>
                 )}
               </Box>
               <Box
@@ -182,8 +186,9 @@ export default function ContractDetailsModal({
             </Box>
           </>
         )}
-        <Typography
-          variant={TypographyVariant.H6}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           display={DISPLAY.FLEX}
           marginTop={4}
           marginBottom={2}
@@ -193,7 +198,7 @@ export default function ContractDetailsModal({
           {!nft &&
             !isContractRequestingSignature &&
             t('contractRequestingSpendingCap')}
-        </Typography>
+        </Text>
         <Box
           display={DISPLAY.FLEX}
           borderRadius={Size.SM}
@@ -207,23 +212,25 @@ export default function ContractDetailsModal({
             address={toAddress}
           />
           <Box data-testid="recipient">
-            <Typography
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TypographyVariant.H5}
+            <Text
+              fontWeight={FontWeight.Bold}
+              variant={TextVariant.bodyMd}
+              as="h5"
               marginTop={4}
             >
               {addressBookEntry?.data?.name || ellipsify(toAddress)}
-            </Typography>
+            </Text>
             {addressBookEntry?.data?.name && (
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 display={DISPLAY.FLEX}
                 color={TextColor.textAlternative}
                 marginTop={0}
                 marginBottom={4}
               >
                 {ellipsify(toAddress)}
-              </Typography>
+              </Text>
             )}
           </Box>
           <Box

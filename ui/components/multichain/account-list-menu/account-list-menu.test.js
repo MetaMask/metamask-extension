@@ -100,4 +100,37 @@ describe('AccountListMenu', () => {
       getByTestId('multichain-account-menu-no-results'),
     ).toBeInTheDocument();
   });
+
+  it('should not render search bar when there is only one account', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        accounts: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            balance: '0x346ba7725f412cbfdb',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          },
+        },
+      },
+    });
+    const props = { onClose: () => jest.fn() };
+    const { container } = renderWithProvider(
+      <AccountListMenu {...props} />,
+      mockStore,
+    );
+    const searchBox = container.querySelector('input[type=search]');
+    expect(searchBox).not.toBeInTheDocument();
+  });
+
+  it('should render search bar when there is more than one account', () => {
+    render();
+    const searchBox = document.querySelector('input[type=search]');
+    expect(searchBox).toBeInTheDocument();
+  });
 });

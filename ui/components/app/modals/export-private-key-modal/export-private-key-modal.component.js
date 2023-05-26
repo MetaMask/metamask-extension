@@ -98,6 +98,7 @@ export default class ExportPrivateKeyModal extends Component {
         <input
           type="password"
           className="export-private-key-modal__password-input"
+          data-testid="password-input"
           onChange={(event) => this.setState({ password: event.target.value })}
         />
       );

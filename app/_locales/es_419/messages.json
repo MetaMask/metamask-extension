@@ -882,18 +882,6 @@
     "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Ver detalles",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Añadido el",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -2252,10 +2240,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Necesita $1 más $2 para realizar este canje",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Mejor cotización de $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "No hay tokens disponibles que coincidan con $1",

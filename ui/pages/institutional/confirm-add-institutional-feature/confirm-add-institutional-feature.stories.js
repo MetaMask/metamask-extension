@@ -7,7 +7,7 @@ import ConfirmAddInstitutionalFeature from '.';
 const customData = {
   ...testData,
   metamask: {
-    provider: {
+    providerConfig: {
       type: 'test',
     },
     institutionalFeatures: {

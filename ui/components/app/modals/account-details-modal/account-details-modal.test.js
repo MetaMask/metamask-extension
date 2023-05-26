@@ -86,7 +86,7 @@ describe('Account Details Modal', () => {
             },
           },
         },
-        provider: {
+        providerConfig: {
           chainId: '0x99',
         },
       },

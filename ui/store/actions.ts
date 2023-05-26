@@ -29,7 +29,7 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
@@ -43,7 +43,10 @@ import {
   DraftTransaction,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  getUnconnectedAccountAlertEnabledness,
+} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -62,7 +65,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -86,7 +89,7 @@ import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-ma
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   checkForUnapprovedTypedMessages,
   updateCustodyState,
@@ -696,7 +699,7 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (newState.unapprovedTypedMessages) {
       return checkForUnapprovedTypedMessages(msgData, newState);
     }
@@ -828,7 +831,7 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (newState.unapprovedTypedMessages) {
       return checkForUnapprovedTypedMessages(msgData, newState);
     }
@@ -1249,7 +1252,7 @@ export function updateTransactionParams(txId: number, txParams: TxParams) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1342,6 +1345,9 @@ export function markNotificationsAsRead(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 
 export function setDesktopEnabled(desktopEnabled: boolean) {
   return async () => {
@@ -1762,13 +1768,15 @@ export function updateMetamaskState(
   newState: MetaMaskReduxState['metamask'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
-    const { metamask: currentState } = getState();
+    const state = getState();
+    const providerConfig = getProviderConfig(state);
+    const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress, provider } = currentState;
+    const { currentLocale, selectedAddress } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-      provider: newProvider,
+      providerConfig: newProviderConfig,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
@@ -1779,8 +1787,10 @@ export function updateMetamaskState(
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
-    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
+    const newAddressBook =
+      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
+    const oldAddressBook =
+      currentState.addressBook?.[providerConfig?.chainId] ?? {};
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
@@ -1829,10 +1839,10 @@ export function updateMetamaskState(
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
-    if (provider.chainId !== newProvider.chainId) {
+    if (providerConfig.chainId !== newProviderConfig.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
-        payload: newProvider.chainId,
+        payload: newProviderConfig.chainId,
       });
       // We dispatch this action to ensure that the send state stays up to date
       // after the chain changes. This async thunk will fail gracefully in the
@@ -1842,7 +1852,7 @@ export function updateMetamaskState(
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     updateCustodyState(dispatch, newState, getState());
     ///: END:ONLY_INCLUDE_IN
   };
@@ -2612,7 +2622,7 @@ export function addToAddressBook(
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getState().metamask.provider;
+    const { chainId } = getProviderConfig(getState());
 
     let set;
     try {
@@ -3102,6 +3112,13 @@ export function toggleAccountMenu() {
 export function toggleNetworkMenu() {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
+  };
+}
+
+export function setAccountDetailsAddress(address: string) {
+  return {
+    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
+    payload: address,
   };
 }
 
@@ -3723,7 +3740,7 @@ export function removePermissionsFor(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.
  *
@@ -4560,6 +4577,10 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
+export function hideProductTour() {
+  return submitRequestToBackground('setShowProductTour', [false]);
+}
+
 // TODO: codeword NOT_A_THUNK @brad-decker
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
@@ -4642,4 +4663,18 @@ export function requestUserApproval({
       dispatch(displayWarning('Had trouble requesting user approval'));
     }
   };
+}
+
+export async function getCurrentNetworkEIP1559Compatibility(): Promise<
+  boolean | undefined
+> {
+  let networkEIP1559Compatibility;
+  try {
+    networkEIP1559Compatibility = await submitRequestToBackground<boolean>(
+      'getCurrentNetworkEIP1559Compatibility',
+    );
+  } catch (error) {
+    console.error(error);
+  }
+  return networkEIP1559Compatibility;
 }

@@ -1,4 +1,6 @@
 .transaction-list-item {
+  border-top: none;
+
   &__primary-currency {
     color: var(--color-text-default);
     overflow: hidden;

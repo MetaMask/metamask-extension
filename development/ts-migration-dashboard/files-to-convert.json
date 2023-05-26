@@ -79,8 +79,6 @@
   "app/scripts/lib/createRPCMethodTrackingMiddleware.test.js",
   "app/scripts/lib/createStreamSink.js",
   "app/scripts/lib/createTabIdMiddleware.js",
-  "app/scripts/lib/decrypt-message-manager.js",
-  "app/scripts/lib/encryption-public-key-manager.js",
   "app/scripts/lib/ens-ipfs/contracts/registry.js",
   "app/scripts/lib/ens-ipfs/contracts/resolver.js",
   "app/scripts/lib/ens-ipfs/resolver.js",

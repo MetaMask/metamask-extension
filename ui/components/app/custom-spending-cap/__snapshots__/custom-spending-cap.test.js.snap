@@ -24,7 +24,9 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                 class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
               >
                 <h6
-                  class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                  class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                  for="custom-spending-cap"
+                  tag="label"
                 >
                   Custom spending cap
                 </h6>

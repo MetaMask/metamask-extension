@@ -10,7 +10,7 @@ describe('AddContact component', () => {
   const middleware = [thunk];
   const state = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'mainnet',
         nickname: '',
       },

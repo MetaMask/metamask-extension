@@ -19,7 +19,7 @@ jest.mock('../../store/actions.ts', () => ({
   }),
 }));
 
-const providerState = {
+const providerConfigState = {
   chainId: '0x1',
   nickname: '',
   rpcPrefs: {},
@@ -64,7 +64,7 @@ describe('Ducks - Swaps', () => {
     const createGetState = () => {
       return () => ({
         metamask: {
-          provider: { ...providerState },
+          providerConfig: { ...providerConfigState },
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         },
       });
@@ -427,19 +427,19 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = CHAIN_IDS.POLYGON;
+      state.metamask.providerConfig.chainId = CHAIN_IDS.POLYGON;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = CHAIN_IDS.BSC;
+      state.metamask.providerConfig.chainId = CHAIN_IDS.BSC;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = CHAIN_IDS.GOERLI;
+      state.metamask.providerConfig.chainId = CHAIN_IDS.GOERLI;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 

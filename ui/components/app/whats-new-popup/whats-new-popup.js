@@ -20,6 +20,11 @@ import {
 } from '../../../helpers/constants/routes';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -107,9 +112,16 @@ const renderDescription = (description) => {
   );
 };
 
-const renderFirstNotification = (notification, idRefMap, history, isLast) => {
+const renderFirstNotification = (
+  notification,
+  idRefMap,
+  history,
+  isLast,
+  trackEvent,
+) => {
   const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id, history);
+
   const imageComponent = image && (
     <img
       className="whats-new-popup__notification-image"
@@ -144,7 +156,13 @@ const renderFirstNotification = (notification, idRefMap, history, isLast) => {
         <Button
           type="primary"
           className="whats-new-popup__button"
-          onClick={actionFunction}
+          onClick={() => {
+            actionFunction();
+            trackEvent({
+              category: MetaMetricsEventCategory.Home,
+              event: MetaMetricsEventName.WhatsNewClicked,
+            });
+          }}
         >
           {actionText}
         </Button>
@@ -218,6 +236,8 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
+  const trackEvent = useContext(MetaMetricsContext);
+
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
     idRefMap[notifications[notifications.length - 1].id].current.scrollIntoView(
@@ -267,6 +287,14 @@ export default function WhatsNewPopup({ onClose }) {
       className="whats-new-popup__popover"
       onClose={() => {
         updateViewedNotifications(seenNotifications);
+        trackEvent({
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.WhatsNewViewed,
+          properties: {
+            number_viewed: Object.keys(seenNotifications).pop(),
+            completed_all: true,
+          },
+        });
         onClose();
       }}
       popoverRef={popoverRef}
@@ -280,7 +308,13 @@ export default function WhatsNewPopup({ onClose }) {
           // Display the swaps notification with full image
           // Displays the NFTs & OpenSea notifications 18,19 with full image
           return index === 0 || id === 1 || id === 18 || id === 19
-            ? renderFirstNotification(notification, idRefMap, history, isLast)
+            ? renderFirstNotification(
+                notification,
+                idRefMap,
+                history,
+                isLast,
+                trackEvent,
+              )
             : renderSubsequentNotification(
                 notification,
                 idRefMap,

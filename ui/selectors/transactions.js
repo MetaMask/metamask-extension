@@ -11,6 +11,7 @@ import {
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
@@ -28,10 +29,8 @@ export const incomingTxListSelector = (state) => {
     return [];
   }
 
-  const {
-    networkId,
-    provider: { chainId },
-  } = state.metamask;
+  const { networkId } = state.metamask;
+  const { chainId } = getProviderConfig(state);
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
@@ -252,7 +251,18 @@ export const nonceSortedTransactionsSelector = createSelector(
         txReceipt,
       } = transaction;
 
-      if (typeof nonce === 'undefined' || type === TransactionType.incoming) {
+      // Don't group transactions by nonce if:
+      // 1. Tx nonce is undefined
+      // 2. Tx is incoming (deposit)
+      // 3. Tx is custodial (mmi specific)
+      let shouldNotBeGrouped =
+        typeof nonce === 'undefined' || type === TransactionType.incoming;
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
+      ///: END:ONLY_INCLUDE_IN
+
+      if (shouldNotBeGrouped) {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,

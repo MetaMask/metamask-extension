@@ -53,7 +53,7 @@ const ConfirmLegacyGasDisplay = () => {
   if (isMultiLayerFeeNetwork) {
     return [
       <TransactionDetailItem
-        key="total-item"
+        key="legacy-total-item"
         detailTitle={t('transactionDetailLayer2GasHeading')}
         detailTotal={
           <UserPreferencedCurrencyDisplay
@@ -64,11 +64,13 @@ const ConfirmLegacyGasDisplay = () => {
           />
         }
         detailText={
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          useCurrencyRateCheck && (
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={hexMinimumTransactionFee}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          )
         }
         noBold
         flexWidthValues

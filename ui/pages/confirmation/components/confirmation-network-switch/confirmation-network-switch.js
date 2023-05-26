@@ -18,13 +18,10 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 export default function ConfirmationNetworkSwitch({ newNetwork }) {
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-    chainId: state.metamask.provider.chainId,
-  }));
+  const { chainId, nickname, type } = useSelector(getProviderConfig);
 
   return (
     <Box
@@ -38,10 +35,10 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={DISPLAY.BLOCK}
       >
-        {currentNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[currentNetwork.chainId]}
-            name={currentNetwork.nickname}
+            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+            name={nickname}
             size={64}
           />
         ) : (
@@ -59,7 +56,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             justifyContent: JustifyContent.center,
           }}
         >
-          {currentNetwork.nickname || NETWORK_TO_NAME_MAP[currentNetwork.type]}
+          {nickname || NETWORK_TO_NAME_MAP[type]}
         </Typography>
       </Box>
       <Box

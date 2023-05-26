@@ -62,20 +62,22 @@ export default function ConnectedStatusIndicator({ onClick }) {
       ? t('tooltipSatusConnected')
       : t('tooltipSatusNotConnected');
   return (
-    <button className="connected-status-indicator" onClick={onClick}>
+    <>
       {process.env.MULTICHAIN ? (
         <MultichainConnectedSiteMenu
           status={status}
           globalMenuColor={globalMenuColor}
           text={tooltipText}
+          as="button"
+          onClick={onClick}
         />
       ) : (
-        <>
+        <button className="connected-status-indicator" onClick={onClick}>
           <ColorIndicator color={indicatorColor} type={indicatorType} />
           <div className="connected-status-indicator__text">{text}</div>
-        </>
+        </button>
       )}
-    </button>
+    </>
   );
 }
 

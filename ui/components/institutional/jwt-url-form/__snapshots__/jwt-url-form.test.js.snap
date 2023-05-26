@@ -17,7 +17,6 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
           input text
         </p>
         <textarea
-          bordercolor="border-default"
           class="jwt-url-form__input-jwt"
           data-testid="jwt-input"
           id="jwt-box"

@@ -14,23 +14,27 @@ import {
 import { MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
 
-export function showInteractiveReplacementTokenBanner(
-  url: string,
-  oldRefreshToken: string,
-) {
-  return () => {
-    callBackgroundMethod(
-      'showInteractiveReplacementTokenBanner',
-      [url, oldRefreshToken],
-      (err) => {
-        if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
-        }
-      },
-    );
+export function showInteractiveReplacementTokenBanner({
+  url,
+  oldRefreshToken,
+}: {
+  url: string;
+  oldRefreshToken: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
+        url,
+        oldRefreshToken,
+      ]);
+    } catch (err: any) {
+      if (err) {
+        dispatch(displayWarning(err.message));
+        throw new Error(err.message);
+      }
+    }
   };
 }
-
 /**
  * A factory that contains all MMI actions ready to use
  * Example usage:

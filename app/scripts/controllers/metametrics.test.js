@@ -65,7 +65,7 @@ const DEFAULT_PAGE_PROPERTIES = {
 
 function getMockNetworkController() {
   let state = {
-    provider: {
+    providerConfig: {
       type: NETWORK_TYPES.GOERLI,
       chainId: FAKE_CHAIN_ID,
     },
@@ -134,7 +134,7 @@ function getMetaMetricsController({
   return new MetaMetricsController({
     segment: segmentInstance || segment,
     getCurrentChainId: () =>
-      networkController.store.getState().provider.chainId,
+      networkController.store.getState().providerConfig.chainId,
     onNetworkDidChange:
       networkController.onNetworkDidChange.bind(networkController),
     preferencesStore,
@@ -203,7 +203,7 @@ describe('MetaMetricsController', function () {
         networkController,
       });
       networkController.store.updateState({
-        provider: {
+        providerConfig: {
           type: 'NEW_NETWORK',
           chainId: '0xaab',
         },

@@ -15,43 +15,48 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AVATAR_FAVICON_SIZES } from './avatar-favicon.constants';
 
-export const AvatarFavicon = ({
-  size = Size.MD,
-  src,
-  name = 'avatar-favicon',
-  className,
-  fallbackIconProps,
-  borderColor = BorderColor.transparent,
-  ...props
-}) => {
-  const t = useI18nContext();
-
-  return (
-    <AvatarBase
-      size={size}
-      display={DISPLAY.FLEX}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      className={classnames('mm-avatar-favicon', className)}
-      {...{ borderColor, ...props }}
-    >
-      {src ? (
-        <img
-          className="mm-avatar-favicon__image"
-          src={src}
-          alt={t('logo', [name])}
-        />
-      ) : (
-        <Icon
-          name={IconName.Global}
-          color={IconColor.iconDefault}
-          size={size}
-          {...fallbackIconProps}
-        />
-      )}
-    </AvatarBase>
-  );
-};
+export const AvatarFavicon = React.forwardRef(
+  (
+    {
+      size = Size.MD,
+      src,
+      name = 'avatar-favicon',
+      className,
+      fallbackIconProps,
+      borderColor = BorderColor.transparent,
+      ...props
+    },
+    ref,
+  ) => {
+    const t = useI18nContext();
+    return (
+      <AvatarBase
+        ref={ref}
+        size={size}
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        className={classnames('mm-avatar-favicon', className)}
+        {...{ borderColor, ...props }}
+      >
+        {src ? (
+          <img
+            className="mm-avatar-favicon__image"
+            src={src}
+            alt={t('logo', [name])}
+          />
+        ) : (
+          <Icon
+            name={IconName.Global}
+            color={IconColor.iconDefault}
+            size={size}
+            {...fallbackIconProps}
+          />
+        )}
+      </AvatarBase>
+    );
+  },
+);
 
 AvatarFavicon.propTypes = {
   /**
@@ -87,3 +92,5 @@ AvatarFavicon.propTypes = {
    */
   ...Box.propTypes,
 };
+
+AvatarFavicon.displayName = 'AvatarFavicon';

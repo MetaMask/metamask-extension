@@ -72,7 +72,7 @@ const baseStore = {
       useNativeCurrencyAsPrimaryCurrency: false,
     },
     currentCurrency: 'USD',
-    provider: {
+    providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
@@ -156,7 +156,7 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
-    baseStore.metamask.provider.chainId = CHAIN_IDS.OPTIMISM;
+    baseStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
     baseStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
     const store = configureMockStore(middleware)(baseStore);
     const { getByText } = renderWithProvider(

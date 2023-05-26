@@ -56,7 +56,6 @@ exports[`MultichainTokenListItem should render correctly 1`] = `
         <p
           class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
         >
-          NaN
            
            
         </p>

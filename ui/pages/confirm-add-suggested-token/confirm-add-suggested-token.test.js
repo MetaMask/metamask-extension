@@ -44,7 +44,7 @@ const renderComponent = (tokens = []) => {
     metamask: {
       suggestedAssets: [...MOCK_SUGGESTED_ASSETS],
       tokens,
-      provider: { chainId: '0x1' },
+      providerConfig: { chainId: '0x1' },
     },
     history: {
       mostRecentOverviewPage: '/',
