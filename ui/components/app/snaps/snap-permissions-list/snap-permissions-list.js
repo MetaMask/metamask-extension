@@ -8,6 +8,7 @@ import Box from '../../../ui/box';
 export default function SnapPermissionsList({
   permissions,
   targetSubjectMetadata,
+  showOptions
 }) {
   const t = useI18nContext();
 
@@ -23,6 +24,7 @@ export default function SnapPermissionsList({
               avatarIcon={permission.leftIcon}
               dateApproved={permission?.permissionValue?.date}
               key={`${permission.permissionName}-${index}`}
+              showOptions={showOptions}
             />
           );
         },
@@ -34,4 +36,5 @@ export default function SnapPermissionsList({
 SnapPermissionsList.propTypes = {
   permissions: PropTypes.object.isRequired,
   targetSubjectMetadata: PropTypes.object.isRequired,
+  showOptions: PropTypes.bool,
 };

@@ -151,6 +151,7 @@ function ViewSnap() {
         <SnapPermissionsList
           permissions={permissions ?? {}}
           targetSubjectMetadata={targetSubjectMetadata}
+          showOptions={true}
         />
       </Box>
       <Box className="view-snap__connected-sites" marginTop={12}>
