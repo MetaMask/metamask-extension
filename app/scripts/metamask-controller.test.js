@@ -171,6 +171,7 @@ const firstTimeState = {
 
 describe('MetaMaskController', function () {
   let metamaskController;
+  let resetStateSpies;
 
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
@@ -180,8 +181,10 @@ describe('MetaMaskController', function () {
   before(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
-    sinon.spy(MetaMaskController.prototype, 'resetStates');
-    sinon.spy(MetaMaskControllerMV3.prototype, 'resetStates');
+    resetStateSpies = [
+      sinon.spy(MetaMaskController.prototype, 'resetStates'),
+      sinon.spy(MetaMaskControllerMV3.prototype, 'resetStates'),
+    ];
   });
 
   beforeEach(function () {
@@ -251,6 +254,8 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     nock.cleanAll();
     sandbox.restore();
+    resetStateSpies.forEach((spy) => spy.resetHistory());
+    browserPolyfillMock.storage.session.set.resetHistory();
   });
 
   after(async function () {
@@ -264,7 +269,6 @@ describe('MetaMaskController', function () {
     });
 
     it('in mv3, it should reset state', function () {
-      MetaMaskControllerMV3.prototype.resetStates.resetHistory();
       const metamaskControllerMV3 = new MetaMaskControllerMV3({
         showUserConfirmation: noop,
         encryptor: {
@@ -297,8 +301,6 @@ describe('MetaMaskController', function () {
     });
 
     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
-      MetaMaskControllerMV3.prototype.resetStates.resetHistory();
-      browserPolyfillMock.storage.session.set.resetHistory();
       const metamaskControllerMV3 = new MetaMaskControllerMV3({
         showUserConfirmation: noop,
         encryptor: {
