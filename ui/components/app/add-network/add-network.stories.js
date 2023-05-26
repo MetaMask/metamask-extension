@@ -7,6 +7,7 @@ const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 const AVALANCHE_IMAGE_URL = './images/avax-token.png';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
+const EUROPA_IMAGE_URL = './images/europa.svg';
 
 export default {
   title: 'Components/App/AddNetwork',
@@ -104,6 +105,17 @@ export default {
         rpcPrefs: {
           blockExplorerUrl: 'https://explorer.palm.io/',
           imageUrl: PALM_IMAGE_URL,
+        },
+      },
+      {
+        chainId: '2046399126',
+        nickname: 'Europa Liquidity Hub | SKALE',
+        rpcUrl: 'https://mainnet.skalenodes.com/v1/elated-tan-skat',
+        ticker: 'SFUEL',
+        rpcPrefs: {
+          blockExplorerUrl:
+            'https://elated-tan-skat.explorer.mainnet.skalenodes.com/',
+          imageUrl: EUROPA_IMAGE_URL,
         },
       },
     ],

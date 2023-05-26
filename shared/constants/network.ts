@@ -178,7 +178,7 @@ export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
-export const EUROPA_DISPLAY_NAME = 'Europa Liquidity Hub | SKALE';
+export const EUROPA_SKALE_DISPLAY_NAME = 'Europa Liquidity Hub | SKALE';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -673,13 +673,14 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.EUROPA_SKALE,
-    nickname: EUROPA_DISPLAY_NAME,
+    nickname: EUROPA_SKALE_DISPLAY_NAME,
     rpcUrl: 'https://mainnet.skalenodes.com/v1/elated-tan-skat',
     ticker: CURRENCY_SYMBOLS.SFUEL,
     rpcPrefs: {
-      blockExplorerUrl: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
+      blockExplorerUrl:
+        'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
       imageUrl: EUROPA_LOGO_IMAGE_URL,
-    }
+    },
   },
 ];
 
