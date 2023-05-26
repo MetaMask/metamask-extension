@@ -8,7 +8,7 @@ import Box from '../../../ui/box';
 export default function SnapPermissionsList({
   permissions,
   targetSubjectMetadata,
-  showOptions
+  showOptions,
 }) {
   const t = useI18nContext();
 
@@ -18,6 +18,7 @@ export default function SnapPermissionsList({
         (permission, index) => {
           return (
             <PermissionCell
+              permissionName={permission.permissionName}
               title={permission.label}
               description={permission.description}
               weight={permission.weight}
