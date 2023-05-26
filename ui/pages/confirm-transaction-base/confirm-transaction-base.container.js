@@ -1,10 +1,8 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IN
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -53,11 +51,8 @@ import {
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getEnvironmentType,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../app/scripts/lib/util';
-
 import {
   parseStandardTokenTransactionData,
   transactionMatchesNetwork,
@@ -67,21 +62,18 @@ import {
   isEmptyHexString,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-
-import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
-import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
-
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
   TransactionType,
 } from '../../../shared/constants/transaction';
+import { getAccountType } from '../../selectors/selectors';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
+import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
+import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -110,10 +102,8 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const envType = getEnvironmentType();
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  ///: END:ONLY_INCLUDE_IN
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
@@ -214,20 +204,12 @@ const mapStateToProps = (state, ownProps) => {
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
-  let isNoteToTraderSupported = false;
-  if (state.metamask.custodyAccountDetails?.[fromChecksumHexAddress]) {
-    const { custodianName } =
-      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
-
-    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
-      (custodian) => custodian.name === custodianName,
-    )?.isNoteToTraderSupported;
-  }
-  ///: END:ONLY_INCLUDE_IN
+  const isNoteToTraderSupported = getIsNoteToTraderSupported(
+    state,
+    fromChecksumHexAddress,
+  );
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
@@ -284,18 +266,15 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNoteToTraderSupported,
     isNotification,
-    ///: END:ONLY_INCLUDE_IN
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
@@ -332,7 +311,6 @@ export const mapDispatchToProps = (dispatch) => {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     getCustodianConfirmDeepLink: (id) =>
       dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
     showCustodyConfirmLink: ({ link, address, closeNotification, custodyId }) =>
@@ -370,7 +348,6 @@ export const mapDispatchToProps = (dispatch) => {
       }),
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IN
   };
 };
 

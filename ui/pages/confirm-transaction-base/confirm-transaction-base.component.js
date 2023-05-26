@@ -597,23 +597,71 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit() {
+    let submit = this.handleMainSubmit;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    submit = this.handleMMISubmit;
+    ///: END:ONLY_INCLUDE_IN
+
+    submit();
+  }
+
+  handleMainSubmit() {
     const {
       sendTransaction,
       txData,
       history,
       mostRecentOverviewPage,
       updateCustomNonce,
-      maxFeePerGas,
-      customTokenAmount,
-      dappProposedTokenAmount,
-      currentTokenBalance,
-      maxPriorityFeePerGas,
-      baseFeePerGas,
-      methodData,
-      addToAddressBookIfNew,
-      toAccounts,
-      toAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    } = this.props;
+
+    this.updateTxData();
+
+    this.setState(
+      {
+        submitting: true,
+        submitError: null,
+      },
+      () => {
+        this._removeBeforeUnload();
+
+        sendTransaction(txData)
+          .then(() => {
+            if (!this._isMounted) {
+              return;
+            }
+
+            this.setState(
+              {
+                submitting: false,
+              },
+              () => {
+                history.push(mostRecentOverviewPage);
+                updateCustomNonce('');
+              },
+            );
+          })
+          .catch((error) => {
+            if (!this._isMounted) {
+              return;
+            }
+            this.setState({
+              submitting: false,
+              submitError: error.message,
+            });
+            updateCustomNonce('');
+          });
+      },
+    );
+  }
+
+  handleMMISubmit() {
+    const {
+      sendTransaction,
+      txData,
+      history,
+      mostRecentOverviewPage,
+      updateCustomNonce,
       unapprovedTxCount,
       accountType,
       isNotification,
@@ -621,17 +669,9 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionsFailedModal,
       fromAddress,
       isNoteToTraderSupported,
-      ///: END:ONLY_INCLUDE_IN
     } = this.props;
-    const {
-      submitting,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      noteText,
-      ///: END:ONLY_INCLUDE_IN
-    } = this.state;
-    const { name } = methodData;
+    const { noteText } = this.state;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
       txData.custodyStatus = 'created';
 
@@ -641,7 +681,92 @@ export default class ConfirmTransactionBase extends Component {
         };
       }
     }
-    ///: END:ONLY_INCLUDE_IN
+
+    this.updateTxData();
+
+    this.setState(
+      {
+        submitting: true,
+        submitError: null,
+      },
+      () => {
+        this._removeBeforeUnload();
+
+        if (txData.custodyStatus) {
+          setWaitForConfirmDeepLinkDialog(true);
+        }
+
+        sendTransaction(txData)
+          .then(() => {
+            if (!this._isMounted) {
+              return;
+            }
+
+            if (txData.custodyStatus) {
+              this.props.showCustodianDeepLink({
+                fromAddress,
+                closeNotification: isNotification && unapprovedTxCount === 1,
+                txId: txData.id,
+                onDeepLinkFetched: () => {
+                  this.context.trackEvent({
+                    category: 'MMI',
+                    event: 'Show deeplink for transaction',
+                  });
+                },
+                onDeepLinkShown: () => {
+                  this.props.clearConfirmTransaction();
+                  this.setState({ submitting: false }, () => {
+                    history.push(mostRecentOverviewPage);
+                    updateCustomNonce('');
+                  });
+                },
+              });
+            } else {
+              this.setState(
+                {
+                  submitting: false,
+                },
+                () => {
+                  history.push(mostRecentOverviewPage);
+                  updateCustomNonce('');
+                },
+              );
+            }
+          })
+          .catch((error) => {
+            if (!this._isMounted) {
+              return;
+            }
+
+            showTransactionsFailedModal(error.message, isNotification);
+
+            this.setState({
+              submitting: false,
+              submitError: error.message,
+            });
+            setWaitForConfirmDeepLinkDialog(true);
+            updateCustomNonce('');
+          });
+      },
+    );
+  }
+
+  updateTxData() {
+    const {
+      txData,
+      maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
+      maxPriorityFeePerGas,
+      baseFeePerGas,
+      addToAddressBookIfNew,
+      toAccounts,
+      toAddress,
+      methodData,
+    } = this.props;
+    const { submitting } = this.state;
+    const { name } = methodData;
 
     if (txData.type === TransactionType.simpleSend) {
       addToAddressBookIfNew(toAddress, toAccounts);
@@ -687,81 +812,6 @@ export default class ConfirmTransactionBase extends Component {
         maxPriorityFeePerGas,
       };
     }
-
-    this.setState(
-      {
-        submitting: true,
-        submitError: null,
-      },
-      () => {
-        this._removeBeforeUnload();
-
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        if (txData.custodyStatus) {
-          setWaitForConfirmDeepLinkDialog(true);
-        }
-        ///: END:ONLY_INCLUDE_IN
-
-        sendTransaction(txData)
-          .then(() => {
-            if (!this._isMounted) {
-              return;
-            }
-
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            if (txData.custodyStatus) {
-              this.props.showCustodianDeepLink({
-                fromAddress,
-                closeNotification: isNotification && unapprovedTxCount === 1,
-                txId: txData.id,
-                onDeepLinkFetched: () => {
-                  this.context.trackEvent({
-                    category: 'MMI',
-                    event: 'Show deeplink for transaction',
-                  });
-                },
-                onDeepLinkShown: () => {
-                  this.props.clearConfirmTransaction();
-                  this.setState({ submitting: false }, () => {
-                    history.push(mostRecentOverviewPage);
-                    updateCustomNonce('');
-                  });
-                },
-              });
-            } else {
-              ///: END:ONLY_INCLUDE_IN
-
-              this.setState(
-                {
-                  submitting: false,
-                },
-                () => {
-                  history.push(mostRecentOverviewPage);
-                  updateCustomNonce('');
-                },
-              );
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            }
-            ///: END:ONLY_INCLUDE_IN
-          })
-          .catch((error) => {
-            if (!this._isMounted) {
-              return;
-            }
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            showTransactionsFailedModal(error.message, isNotification);
-            ///: END:ONLY_INCLUDE_IN
-            this.setState({
-              submitting: false,
-              submitError: error.message,
-            });
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            setWaitForConfirmDeepLinkDialog(true);
-            ///: END:ONLY_INCLUDE_IN
-            updateCustomNonce('');
-          });
-      },
-    );
   }
 
   handleSetApprovalForAll() {
