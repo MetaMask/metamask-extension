@@ -169,3 +169,17 @@
     margin-right: 14px;
   }
 }
+
+.mm-modal-full-height {
+  .mm-modal-content {
+    &__dialog {
+      @include screen-sm-max {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+    }
+  }
+}

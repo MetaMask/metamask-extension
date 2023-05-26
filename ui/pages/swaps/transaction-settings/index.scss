@@ -1,11 +1,9 @@
 .transaction-settings {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
 
   &__content {
-    padding: 0 16px 16px 16px;
+    @include screen-sm-max {
+      height: 100%;
+    }
   }
 
   &__button-group {

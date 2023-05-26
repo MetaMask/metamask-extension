@@ -16,6 +16,7 @@ import {
   JustifyContent,
   DISPLAY,
   SEVERITIES,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
@@ -29,6 +30,7 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  ButtonPrimary,
 } from '../../../components/component-library';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
@@ -68,6 +70,22 @@ export default function TransactionSettings({
     return 0;
   });
   const [inputRef, setInputRef] = useState(null);
+  const [newSlippage, setNewSlippage] = useState(currentSlippage);
+  const [newSmartTransactionsOptInStatus, setNewSmartTransactionsOptInStatus] =
+    useState(smartTransactionsOptInStatus);
+
+  const didFormChange =
+    newSlippage !== currentSlippage ||
+    newSmartTransactionsOptInStatus !== smartTransactionsOptInStatus;
+
+  const updateTransactionSettings = () => {
+    if (newSlippage !== currentSlippage) {
+      onSelect(newSlippage);
+    }
+    if (newSmartTransactionsOptInStatus !== smartTransactionsOptInStatus) {
+      setSmartTransactionsOptInStatus(newSmartTransactionsOptInStatus);
+    }
+  };
 
   let notificationText = '';
   let notificationTitle = '';
@@ -127,23 +145,31 @@ export default function TransactionSettings({
   }, [dispatch, activeButtonIndex]);
 
   return (
-    <div className="transaction-settings">
-      <Modal
-        onClose={onModalClose}
-        isOpen
-        isClosedOnOutsideClick
-        isClosedOnEscapeKey
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader onClose={onModalClose}>
-            {t('transactionSettings')}
-          </ModalHeader>
-          <div className="transaction-settings__content">
+    <Modal
+      onClose={onModalClose}
+      isOpen
+      isClosedOnOutsideClick
+      isClosedOnEscapeKey
+      className="transaction-settings mm-modal-full-height"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={onModalClose}>
+          {t('transactionSettings')}
+        </ModalHeader>
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.stretch}
+          className="transaction-settings__content"
+        >
+          <Box marginTop={7} marginBottom={5}>
             <>
               {smartTransactionsEnabled && (
                 <Box
                   marginTop={2}
+                  marginBottom={6}
                   display={DISPLAY.FLEX}
                   justifyContent={JustifyContent.spaceBetween}
                 >
@@ -176,9 +202,9 @@ export default function TransactionSettings({
                     )}
                   </Box>
                   <ToggleButton
-                    value={smartTransactionsOptInStatus}
+                    value={newSmartTransactionsOptInStatus}
                     onToggle={(value) => {
-                      setSmartTransactionsOptInStatus(!value, value);
+                      setNewSmartTransactionsOptInStatus(!value, value);
                     }}
                     offLabel={t('off')}
                     onLabel={t('on')}
@@ -231,7 +257,7 @@ export default function TransactionSettings({
                           setCustomValue('');
                           setEnteringCustomValue(false);
                           setActiveButtonIndex(0);
-                          onSelect(Slippage.default);
+                          setNewSlippage(Slippage.default);
                         }}
                       >
                         {t('swapSlippagePercent', [Slippage.default])}
@@ -241,7 +267,7 @@ export default function TransactionSettings({
                           setCustomValue('');
                           setEnteringCustomValue(false);
                           setActiveButtonIndex(1);
-                          onSelect(Slippage.high);
+                          setNewSlippage(Slippage.high);
                         }}
                       >
                         {t('swapSlippagePercent', [Slippage.high])}
@@ -275,7 +301,7 @@ export default function TransactionSettings({
                                 const isValueNumeric = !isNaN(Number(value));
                                 if (isValueNumeric) {
                                   setCustomValue(value);
-                                  onSelect(Number(value));
+                                  setNewSlippage(Number(value));
                                 }
                               }}
                               type="text"
@@ -321,10 +347,22 @@ export default function TransactionSettings({
                 </BannerAlert>
               </Box>
             )}
-          </div>
-        </ModalContent>
-      </Modal>
-    </div>
+          </Box>
+          <Box marginTop={5}>
+            <ButtonPrimary
+              onClick={() => {
+                updateTransactionSettings();
+                onModalClose();
+              }}
+              block
+              disabled={!didFormChange}
+            >
+              {t('update')}
+            </ButtonPrimary>
+          </Box>
+        </Box>
+      </ModalContent>
+    </Modal>
   );
 }
 
