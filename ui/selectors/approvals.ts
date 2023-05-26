@@ -47,3 +47,7 @@ export const getApprovalRequestsByType = (
 export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
+
+export function hasPendingApprovalFlows(state: ApprovalsMetaMaskState) {
+  return state.metamask.approvalFlows.length > 0;
+}

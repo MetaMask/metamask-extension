@@ -279,6 +279,7 @@ export default function ConfirmationPage({
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
+    hasPendingApprovalFlows,
   ]);
 
   useEffect(() => {
