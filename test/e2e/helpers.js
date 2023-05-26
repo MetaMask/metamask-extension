@@ -505,10 +505,18 @@ const findAnotherAccountFromAccountList = async (
   return accountMenuItemSelector;
 };
 
+const TEST_SEED_PHRASE =
+  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+
+const TEST_SEED_PHRASE_TWO =
+  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
   SERVICE_WORKER_URL,
+  TEST_SEED_PHRASE,
+  TEST_SEED_PHRASE_TWO,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,

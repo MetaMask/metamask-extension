@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const path = require('path');
 const {
+  TEST_SEED_PHRASE,
   convertToHexValue,
   withFixtures,
   regularDelayMs,
@@ -11,19 +12,18 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+const ganacheOptions = {
+  accounts: [
+    {
+      secretKey:
+        '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+      balance: convertToHexValue(25000000000000000000),
+    },
+  ],
+};
+
 describe('MetaMask Import UI', function () {
   it('Importing wallet using Secret Recovery Phrase', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
-    const testSeedPhrase =
-      'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
     const testPassword = 'correct horse battery staple';
 
     await withFixtures(
@@ -38,7 +38,7 @@ describe('MetaMask Import UI', function () {
 
         await completeImportSRPOnboardingFlow(
           driver,
-          testSeedPhrase,
+          TEST_SEED_PHRASE,
           testPassword,
         );
 
@@ -139,17 +139,6 @@ describe('MetaMask Import UI', function () {
   });
 
   it('Importing wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
-    const testSeedPhrase =
-      'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
     const testPassword = 'correct horse battery staple';
     const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -165,7 +154,7 @@ describe('MetaMask Import UI', function () {
 
         await completeImportSRPOnboardingFlowWordByWord(
           driver,
-          testSeedPhrase,
+          TEST_SEED_PHRASE,
           testPassword,
         );
 
@@ -187,15 +176,6 @@ describe('MetaMask Import UI', function () {
   });
 
   it('Import Account using private key', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     const testPrivateKey1 =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
     const testPrivateKey2 =
@@ -290,16 +270,6 @@ describe('MetaMask Import UI', function () {
   });
 
   it('Import Account using json file', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -366,15 +336,6 @@ describe('MetaMask Import UI', function () {
   it('Import Account using private key of an already active account should result in an error', async function () {
     const testPrivateKey =
       '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey: testPrivateKey,
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -406,44 +367,36 @@ describe('MetaMask Import UI', function () {
     );
   });
 
-  it('Connects to a Hardware wallet', async function () {
-    const ganacheOptions = {
-      accounts: [
+  if (process.env.ENABLE_MV3) {
+    it('Connects to a Hardware wallet for trezor', async function () {
+      await withFixtures(
         {
-          secretKey:
-            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: convertToHexValue(25000000000000000000),
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions,
+          title: this.test.title,
         },
-      ],
-    };
+        async ({ driver }) => {
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
 
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+          // choose Connect hardware wallet from the account menu
+          await driver.clickElement('[data-testid="account-menu-icon"]');
+          await driver.clickElement({
+            text: 'Hardware wallet',
+            tag: 'button',
+          });
+          await driver.delay(regularDelayMs);
 
-        // choose Connect hardware wallet from the account menu
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement({
-          text: 'Hardware wallet',
-          tag: 'button',
-        });
-        await driver.delay(regularDelayMs);
-
-        // should open the TREZOR Connect popup
-        await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
-        await driver.delay(largeDelayMs * 2);
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        const allWindows = await driver.getAllWindowHandles();
-        assert.equal(allWindows.length, 2);
-      },
-    );
-  });
+          // should open the TREZOR Connect popup
+          await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
+          await driver.delay(largeDelayMs * 2);
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
+          await driver.waitUntilXWindowHandles(2);
+          const allWindows = await driver.getAllWindowHandles();
+          assert.equal(allWindows.length, 2);
+        },
+      );
+    });
+  }
 });

@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import Box from '../../ui/box/box';
 
-import { IconColor, DISPLAY } from '../../../helpers/constants/design-system';
+import { IconColor, Display } from '../../../helpers/constants/design-system';
 
 import { IconProps, IconSize } from './icon.types';
 
@@ -18,7 +18,7 @@ export const Icon = ({
   <Box
     className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
     as="span"
-    display={DISPLAY.INLINE_BLOCK}
+    display={Display.InlineBlock}
     color={color}
     style={{
       /**
