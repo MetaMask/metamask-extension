@@ -347,7 +347,7 @@ export default class TransactionController extends EventEmitter {
       `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
     );
 
-    const { txMeta: initialTxMeta, isExisting } = await this._addTransaction(
+    const { txMeta: initialTxMeta, isExisting } = await this._createTransaction(
       opts.method,
       txParams,
       opts.origin,
@@ -357,9 +357,13 @@ export default class TransactionController extends EventEmitter {
     );
 
     const txId = initialTxMeta.id;
-    const finishedPromise = this._waitForTransactionFinished(txId);
+    const isCompleted = initialTxMeta.status !== TransactionStatus.unapproved;
 
-    if (!isExisting) {
+    const finishedPromise = isCompleted
+      ? Promise.resolve(initialTxMeta)
+      : this._waitForTransactionFinished(txId);
+
+    if (!isExisting && !isCompleted) {
       try {
         await this._requestTransactionApproval(initialTxMeta);
       } catch (error) {
@@ -726,7 +730,7 @@ export default class TransactionController extends EventEmitter {
     actionId,
     options,
   ) {
-    const { txMeta, isExisting } = await this._addTransaction(
+    const { txMeta, isExisting } = await this._createTransaction(
       txMethodType,
       txParams,
       origin,
@@ -735,7 +739,6 @@ export default class TransactionController extends EventEmitter {
       actionId,
       options,
     );
-
     if (isExisting) {
       return txMeta.status === TransactionStatus.unapproved
         ? await this._waitForTransactionFinished(txMeta.id)
@@ -1662,7 +1665,7 @@ export default class TransactionController extends EventEmitter {
     });
   }
 
-  async _addTransaction(
+  async _createTransaction(
     txMethodType,
     txParams,
     origin,
@@ -2754,7 +2757,7 @@ export default class TransactionController extends EventEmitter {
 
       await this._updateAndApproveTransaction(updatedTxMeta, actionId);
 
-      result.success();
+      result?.success();
     } catch (error) {
       const transaction = this.txStateManager.getTransaction(txId);
 

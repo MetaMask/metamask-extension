@@ -49,6 +49,10 @@ const actionId = 'DUMMY_ACTION_ID';
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 
+async function flushPromises() {
+  await new Promise((resolve) => setImmediate(resolve));
+}
+
 describe('Transaction Controller', function () {
   let txController,
     provider,
@@ -315,7 +319,7 @@ describe('Transaction Controller', function () {
   });
 
   describe('#newUnapprovedTransaction', function () {
-    let txMeta, txParams, getPermittedAccounts;
+    let txMeta, txParams, getPermittedAccounts, signStub;
 
     beforeEach(function () {
       txParams = {
@@ -338,6 +342,7 @@ describe('Transaction Controller', function () {
     afterEach(function () {
       txController.txStateManager._addTransactionsToState([]);
       getPermittedAccounts.restore();
+      signStub?.restore();
     });
 
     it('should resolve when finished and status is submitted and resolve with the hash', async function () {
@@ -352,6 +357,91 @@ describe('Transaction Controller', function () {
 
       await assert.rejects(txController.newUnapprovedTransaction(txParams), {
         message: 'MetaMask Tx Signature: User denied transaction signature.',
+      });
+    });
+
+    it('rejects when finished and status is failed', async function () {
+      const signError = new Error('TestSigningError');
+
+      signStub = sinon.stub(txController, 'signEthTx').throws(signError);
+
+      await assert.rejects(txController.newUnapprovedTransaction(txParams), {
+        message: signError.message,
+      });
+    });
+
+    it('creates an approval request', async function () {
+      await txController.newUnapprovedTransaction(txParams);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(updatedTxMeta.id),
+          origin: undefined,
+          requestData: { txId: updatedTxMeta.id },
+          type: ApprovalType.Transaction,
+          expectsResult: true,
+        },
+        true, // Show popup
+      ]);
+    });
+
+    describe('if transaction with same actionId exists', function () {
+      it('does not create an additional approval request', async function () {
+        await txController.newUnapprovedTransaction(txParams, { id: '12345' });
+        await txController.newUnapprovedTransaction(txParams, { id: '12345' });
+
+        assert.equal(messengerMock.call.callCount, 1);
+        assert.deepEqual(messengerMock.call.getCall(0).args, [
+          'ApprovalController:addRequest',
+          {
+            id: String(updatedTxMeta.id),
+            origin: undefined,
+            requestData: { txId: updatedTxMeta.id },
+            type: ApprovalType.Transaction,
+            expectsResult: true,
+          },
+          true, // Show popup
+        ]);
+      });
+
+      it('does not resolve until transaction approved', async function () {
+        let firstTransactionResolve;
+        let firstTransactionCompleted = false;
+        let secondTransactionCompleted = false;
+
+        messengerMock.call.returns(
+          new Promise((resolve) => {
+            firstTransactionResolve = resolve;
+          }),
+        );
+
+        txController
+          .newUnapprovedTransaction(txParams, { id: '12345' })
+          .then(() => {
+            firstTransactionCompleted = true;
+          });
+
+        await flushPromises();
+
+        txController
+          .newUnapprovedTransaction(txParams, { id: '12345' })
+          .then(() => {
+            secondTransactionCompleted = true;
+          });
+
+        await flushPromises();
+
+        assert.equal(firstTransactionCompleted, false);
+        assert.equal(secondTransactionCompleted, false);
+
+        firstTransactionResolve({ value: { txMeta: updatedTxMeta } });
+
+        await flushPromises();
+
+        assert.equal(secondTransactionCompleted, true);
+        assert.equal(secondTransactionCompleted, true);
       });
     });
   });
@@ -514,44 +604,7 @@ describe('Transaction Controller', function () {
           origin: ORIGIN_METAMASK,
           requestData: { txId: txMeta.id },
           type: ApprovalType.Transaction,
-        },
-        true, // Show popup
-      ]);
-    });
-
-    it('should not create an additional approval request when called twice with same actionId', async function () {
-      await txController.addUnapprovedTransaction(
-        undefined,
-        {
-          from: selectedAddress,
-          to: recipientAddress,
-        },
-        ORIGIN_METAMASK,
-        undefined,
-        undefined,
-        '12345',
-      );
-
-      const secondTxMeta = await txController.addUnapprovedTransaction(
-        undefined,
-        {
-          from: selectedAddress,
-          to: recipientAddress,
-        },
-        undefined,
-        undefined,
-        undefined,
-        '12345',
-      );
-
-      assert.equal(messengerMock.call.callCount, 1);
-      assert.deepEqual(messengerMock.call.getCall(0).args, [
-        'ApprovalController:addRequest',
-        {
-          id: String(secondTxMeta.id),
-          origin: ORIGIN_METAMASK,
-          requestData: { txId: secondTxMeta.id },
-          type: ApprovalType.Transaction,
+          expectsResult: true,
         },
         true, // Show popup
       ]);
@@ -686,6 +739,105 @@ describe('Transaction Controller', function () {
 
         assert.equal(status, TransactionStatus.rejected);
         assert.equal(txId, updatedTxMeta.id);
+      });
+    });
+
+    describe('if transaction with same actionId exists', function () {
+      it('does not create an additional approval request', async function () {
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        const secondTxMeta = await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          undefined,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        assert.equal(messengerMock.call.callCount, 1);
+        assert.deepEqual(messengerMock.call.getCall(0).args, [
+          'ApprovalController:addRequest',
+          {
+            id: String(secondTxMeta.id),
+            origin: ORIGIN_METAMASK,
+            requestData: { txId: secondTxMeta.id },
+            type: ApprovalType.Transaction,
+            expectsResult: true,
+          },
+          true, // Show popup
+        ]);
+      });
+
+      it('does not resolve until transaction approved', async function () {
+        let firstTransactionResolve;
+        let firstTransactionCompleted = false;
+        let secondTransactionCompleted = false;
+
+        messengerMock.call.returns(
+          new Promise((resolve) => {
+            firstTransactionResolve = resolve;
+          }),
+        );
+
+        txController
+          .addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          )
+          .then(() => {
+            firstTransactionCompleted = true;
+          });
+
+        await flushPromises();
+
+        txController
+          .addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            undefined,
+            undefined,
+            undefined,
+            '12345',
+          )
+          .then(() => {
+            secondTransactionCompleted = true;
+          });
+
+        await flushPromises();
+
+        assert.equal(firstTransactionCompleted, false);
+        assert.equal(secondTransactionCompleted, false);
+
+        firstTransactionResolve({ value: { txMeta: updatedTxMeta } });
+
+        await flushPromises();
+
+        assert.equal(secondTransactionCompleted, true);
+        assert.equal(secondTransactionCompleted, true);
       });
     });
 
@@ -3281,6 +3433,7 @@ describe('Transaction Controller', function () {
           origin: ORIGIN_METAMASK,
           requestData: { txId: firstTxId },
           type: ApprovalType.Transaction,
+          expectsResult: true,
         },
         false,
       ]);
@@ -3291,6 +3444,7 @@ describe('Transaction Controller', function () {
           origin: ORIGIN_METAMASK,
           requestData: { txId: secondTxId },
           type: ApprovalType.Transaction,
+          expectsResult: true,
         },
         false,
       ]);
