@@ -9,8 +9,8 @@ import {
   BorderRadius,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Text, Icon, IconName, IconSize } from '../../component-library';
@@ -43,8 +43,8 @@ const TransactionFailedModal = ({
         <Text
           as="h1"
           variant={TextVariant.displayMd}
-          textAlign={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
+          textAlign={TextAlign.Center}
+          fontWeight={FontWeight.Bold}
           paddingTop={4}
           paddingBottom={4}
         >
@@ -53,7 +53,7 @@ const TransactionFailedModal = ({
             : `${t('transactionFailed')}!`}
         </Text>
         <Text
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
           variant={TextVariant.bodySm}
           paddingTop={4}
           paddingBottom={4}
