@@ -20,8 +20,8 @@ import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
@@ -38,7 +38,6 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
@@ -89,16 +88,6 @@ export default class SignatureRequestOriginal extends Component {
     } catch (e) {
       return hex;
     }
-  };
-
-  renderAccountInfo = () => {
-    return (
-      <div className="request-signature__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
   };
 
   renderTypedData = (data) => {
@@ -210,7 +199,7 @@ export default class SignatureRequestOriginal extends Component {
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Typography>
@@ -218,7 +207,7 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__content__subtitle"
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           margin={12}
           marginTop={3}
         >

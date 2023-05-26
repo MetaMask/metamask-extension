@@ -481,6 +481,30 @@ const defaultGanacheOptions = {
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
+const sendTransaction = async (driver, recipientAddress, quantity) => {
+  await driver.clickElement('[data-testid="eth-overview-send"]');
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.findElement('.transaction-list-item');
+};
+
+const findAnotherAccountFromAccountList = async (
+  driver,
+  itemNumber,
+  accountName,
+) => {
+  await driver.clickElement('.account-menu__icon');
+  const accountMenuItemSelector = `.account-menu__account:nth-child(${itemNumber})`;
+  const fourthAccountName = await driver.findElement(
+    `${accountMenuItemSelector} .account-menu__name`,
+  );
+  assert.equal(await fourthAccountName.getText(), accountName);
+  return accountMenuItemSelector;
+};
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -503,4 +527,6 @@ module.exports = {
   mockPhishingDetection,
   setupPhishingDetectionMocks,
   defaultGanacheOptions,
+  sendTransaction,
+  findAnotherAccountFromAccountList,
 };
