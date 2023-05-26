@@ -1,8 +1,10 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { getMessage } from '../../../../helpers/utils/i18n-helper';
 import configureStore from '../../../../store/store';
 import SRPQuiz from './SRPQuiz';
 
@@ -34,6 +36,10 @@ function clickButton(text) {
   fireEvent.click(screen.getByText(text));
 }
 
+function t(key) {
+  return getMessage('en', messages, key);
+}
+
 describe('srp-reveal-quiz', () => {
   beforeAll(() => {
     global.platform = { openTab: jest.fn() };
@@ -43,15 +49,15 @@ describe('srp-reveal-quiz', () => {
   it('should go through the full sequence of steps', async () => {
     renderWithProvider(<SRPQuiz isOpen />, store);
 
-    expect(screen.queryByText('Get started')).toBeInTheDocument();
+    expect(
+      screen.queryByText(t('srpSecurityQuizGetStarted')),
+    ).toBeInTheDocument();
 
     expect(
-      screen.queryByText(
-        'If you lose your Secret Recovery Phrase, MetaMask...',
-      ),
+      screen.queryByText(t('srpSecurityQuizQuestionOneQuestion')),
     ).not.toBeInTheDocument();
 
-    clickButton('Learn more');
+    clickButton(t('learnMoreUpperCase'));
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
@@ -59,50 +65,38 @@ describe('srp-reveal-quiz', () => {
       }),
     );
 
-    clickButton('Get started');
+    clickButton(t('srpSecurityQuizGetStarted'));
 
-    await waitForText('If you lose your Secret Recovery Phrase, MetaMask...');
+    await waitForText(t('srpSecurityQuizQuestionOneQuestion'));
 
-    clickButton('Can get it back for you');
+    clickButton(t('srpSecurityQuizQuestionOneWrongAnswer'));
 
-    await waitForText(
-      'Wrong! No one can help get your Secret Recovery Phrase back',
-    );
+    await waitForText(t('srpSecurityQuizQuestionOneWrongAnswerTitle'));
 
-    clickButton('Try again');
+    clickButton(t('tryAgain'));
 
-    await waitForText('If you lose your Secret Recovery Phrase, MetaMask...');
+    await waitForText(t('srpSecurityQuizQuestionOneQuestion'));
 
-    clickButton('Can’t help you');
+    clickButton(t('srpSecurityQuizQuestionOneRightAnswer'));
 
-    await waitForText(
-      'Right! No one can help get your Secret Recovery Phrase back',
-    );
+    await waitForText(t('srpSecurityQuizQuestionOneRightAnswerTitle'));
 
-    clickButton('Continue');
+    clickButton(t('continue'));
 
-    await waitForText(
-      'If anyone, even a support agent, asks for your Secret Recovery Phrase...',
-    );
+    await waitForText(t('srpSecurityQuizQuestionTwoQuestion'));
 
-    clickButton('You should give it to them');
+    clickButton(t('srpSecurityQuizQuestionTwoWrongAnswer'));
 
-    await waitForText(
-      'Nope! Never share your Secret Recovery Phrase with anyone, ever',
-    );
+    await waitForText(t('srpSecurityQuizQuestionTwoWrongAnswerTitle'));
 
-    clickButton('Try again');
+    clickButton(t('tryAgain'));
 
-    await waitForText(
-      'If anyone, even a support agent, asks for your Secret Recovery Phrase...',
-    );
+    await waitForText(t('srpSecurityQuizQuestionTwoQuestion'));
 
-    clickButton('You’re being scammed');
+    clickButton(t('srpSecurityQuizQuestionTwoRightAnswer'));
 
-    await waitForText(
-      'Correct! Sharing your Secret Recovery Phrase is never a good idea',
-    );
+    await waitForText(t('srpSecurityQuizQuestionTwoRightAnswerTitle'));
 
-    clickButton('Continue');
+    clickButton(t('continue'));
   });
 });
