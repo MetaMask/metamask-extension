@@ -30,6 +30,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
   SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
+  SINGLE_CALL_BALANCES_ADDRESS_EUROPA,
 } from '../constants/contracts';
 import { previousValueComparator } from './util';
 
@@ -320,6 +321,13 @@ export default class AccountTracker {
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
+          );
+          break;
+
+        case CHAIN_IDS.EUROPA_SKALE:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_EUROPA,
           );
           break;
 
