@@ -93,7 +93,7 @@ const baseStore = {
       useNativeCurrencyAsPrimaryCurrency: false,
     },
     currentCurrency: 'USD',
-    provider: {
+    providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',

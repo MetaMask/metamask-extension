@@ -28,7 +28,7 @@ exports[`MultichainTokenListItem should render correctly 1`] = `
             <img
               alt="undefined logo"
               class="mm-avatar-network__network-image"
-              src="./images/eth_logo.svg"
+              src="./images/eth_logo.png"
             />
           </div>
         </div>
@@ -56,7 +56,6 @@ exports[`MultichainTokenListItem should render correctly 1`] = `
         <p
           class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
         >
-          NaN
            
            
         </p>

@@ -1,0 +1,1 @@
+export const TERMS_OF_USE_LAST_UPDATED = '2023-03-25';

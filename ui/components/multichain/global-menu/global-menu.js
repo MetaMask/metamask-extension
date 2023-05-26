@@ -1,15 +1,23 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import {
+  IconName,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  Text,
+  ///: END:ONLY_INCLUDE_IN(snaps)
+} from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -21,24 +29,47 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import {
+  getMetaMetricsId,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getUnreadNotificationsCount,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import {
+  AlignItems,
+  BackgroundColor,
+  Display,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IN
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  const metaMetricsId = useSelector(getMetaMetricsId);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
       <MenuItem
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
         onClick={() => {
           history.push(CONNECTED_ROUTE);
           trackEvent({
             event: MetaMetricsEventName.NavConnectedSitesOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
-              location: 'Account Options',
+              location: 'Global Menu',
             },
           });
           closeMenu();
@@ -47,11 +78,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('connectedSites')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.DIAGRAM}
+        iconName={IconName.Diagram}
         onClick={() => {
-          const portfolioUrl = process.env.PORTFOLIO_URL;
+          const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
           global.platform.openTab({
-            url: `${portfolioUrl}?metamaskEntry=ext`,
+            url: portfolioUrl,
           });
           trackEvent(
             {
@@ -59,6 +90,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.PortfolioLinkClicked,
               properties: {
                 url: portfolioUrl,
+                location: 'Global Menu',
               },
             },
             {
@@ -75,14 +107,14 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
           onClick={() => {
             global.platform.openExtensionInBrowser();
             trackEvent({
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
-                location: 'Account Options',
+                location: 'Global Menu',
               },
             });
             closeMenu();
@@ -92,8 +124,43 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           {t('expandView')}
         </MenuItem>
       )}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        <>
+          <MenuItem
+            iconName={IconName.Notification}
+            onClick={() => {
+              closeMenu();
+              history.push(NOTIFICATIONS_ROUTE);
+            }}
+          >
+            <Text as="span">{t('notifications')}</Text>
+            {unreadNotificationsCount > 0 && (
+              <Text
+                as="span"
+                display={Display.InlineBlock}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                backgroundColor={BackgroundColor.primaryDefault}
+                color={TextColor.primaryInverse}
+                padding={[0, 1, 0, 1]}
+                variant={TextVariant.bodyXs}
+                textAlign={TextAlign.Center}
+                style={{
+                  borderRadius: '16px',
+                  minWidth: '24px',
+                }}
+                marginInlineStart={2}
+              >
+                {unreadNotificationsCount}
+              </Text>
+            )}
+          </MenuItem>
+        </>
+        ///: END:ONLY_INCLUDE_IN(snaps)
+      }
       <MenuItem
-        iconName={ICON_NAMES.MESSAGE_QUESTION}
+        iconName={IconName.MessageQuestion}
         onClick={() => {
           global.platform.openTab({ url: SUPPORT_LINK });
           trackEvent(
@@ -102,6 +169,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_LINK,
+                location: 'Global Menu',
               },
             },
             {
@@ -117,14 +185,14 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('support')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.SETTING}
+        iconName={IconName.Setting}
         onClick={() => {
           history.push(SETTINGS_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
-              location: 'Main Menu',
+              location: 'Global Menu',
             },
           });
           closeMenu();
@@ -133,10 +201,17 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('settings')}
       </MenuItem>
       <MenuItem
-        iconName={ICON_NAMES.LOCK}
+        iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);
+          trackEvent({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.AppLocked,
+            properties: {
+              location: 'Global Menu',
+            },
+          });
           closeMenu();
         }}
         data-testid="global-menu-lock"

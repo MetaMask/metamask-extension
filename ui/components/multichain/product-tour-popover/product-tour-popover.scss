@@ -1,0 +1,57 @@
+.multichain-product-tour-menu {
+  width: 344px;
+  box-shadow: none;
+  left: -7px !important;
+  top: 10px !important; //important is required here since Menu has absolute position added via inline style in base component.
+
+  &--rtl {
+    left: 6px !important;
+    right: 6px !important;
+  }
+
+  &__arrow,
+  &__arrow::before {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: inherit;
+  }
+
+  &__arrow {
+    width: 40px;
+    height: 40px;
+    visibility: hidden;
+    top: 0;
+  }
+
+  &__arrow::before {
+    display: block;
+    background-color: inherit;
+    visibility: visible;
+    content: '';
+    transform: rotate(45deg);
+    border-radius: 2px 0 0 0;
+    top: -7px;
+  }
+
+  &__header {
+    position: relative;
+  }
+
+  &__previous-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  &__button {
+    &:hover {
+      color: var(--color-primary-default);
+    }
+
+    &:active {
+      opacity: 0.5;
+      background-color: var(--color-primary-inverse);
+    }
+  }
+}

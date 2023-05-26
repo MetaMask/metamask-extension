@@ -716,27 +716,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet skal være mindst 11 tegn."
   },
-  "syncWithMobile": {
-    "message": "Synkronisér med mobil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Sørg for at der ikke er nogen der kigger på din skærm, når du scanner denne kode"
-  },
-  "syncWithMobileComplete": {
-    "message": "Dine data er blevet synkroniseret korrekt. Nyd MetaMask-mobilappen!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Du kan synkronisere dine konti og informationer med din mobilenhed. Åbn MetaMask-mobilappen, gå til \"Indstillinger\" og tryk på \"Synkroniser fra browserudvidelse\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Hvis du netop har åbnet MetaMask-mobilappen for første gang, skal du blot følge trinnene på din telefon."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scan denne kode med din MetaMask-mobilapp"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkroniser med mobil"
-  },
   "terms": {
     "message": "Brugsbetingelser"
   },

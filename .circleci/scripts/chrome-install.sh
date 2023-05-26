@@ -4,6 +4,8 @@ set -e
 set -u
 set -o pipefail
 
+sudo apt-get update
+
 # To get the latest version, see <https://www.ubuntuupdates.org/ppa/google_chrome?dist=stable>
 CHROME_VERSION='111.0.5563.64-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"

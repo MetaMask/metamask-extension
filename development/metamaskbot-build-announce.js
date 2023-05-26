@@ -45,12 +45,7 @@ async function start() {
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
-  const betaBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-beta-${platform}-${VERSION}.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
+  const betaBuildLinks = `<a href="${BUILD_LINK_BASE}/builds-beta/metamask-beta-chrome-${VERSION}.zip">chrome</a>`;
   const flaskBuildLinks = platforms
     .map((platform) => {
       const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;

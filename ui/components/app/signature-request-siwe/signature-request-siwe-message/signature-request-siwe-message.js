@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
+import { Text } from '../../../component-library';
 
 import {
   FLEX_DIRECTION,
-  TypographyVariant,
+  OVERFLOW_WRAP,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 const SignatureRequestSIWEMessage = ({ data }) => {
@@ -14,21 +15,22 @@ const SignatureRequestSIWEMessage = ({ data }) => {
       <Box flexDirection={FLEX_DIRECTION.COLUMN}>
         {data.map(({ label, value }, i) => (
           <Box key={i.toString()} marginTop={2} marginBottom={2}>
-            <Typography
-              variant={TypographyVariant.H4}
+            <Text
+              as="h4"
+              variant={TextVariant.bodyLgMedium}
               marginTop={2}
               marginBottom={2}
             >
               {label}
-            </Typography>
-            <Typography
+            </Text>
+            <Text
               className="signature-request-siwe-message__sub-text"
-              variant={TypographyVariant.H6}
+              overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               marginTop={2}
               marginBottom={2}
             >
               {value}
-            </Typography>
+            </Text>
           </Box>
         ))}
       </Box>

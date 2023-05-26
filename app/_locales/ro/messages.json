@@ -728,27 +728,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbolul trebuie să fie de 11 caractere sau mai puțin."
   },
-  "syncWithMobile": {
-    "message": "Sincronizați cu dispozitivul mobil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Asigurați-vă că nimeni altcineva nu poate vedea ecranul dvs. când scanați acest cod"
-  },
-  "syncWithMobileComplete": {
-    "message": "Datele dvs. au fost sincronizate cu succes. Bucurați-vă de aplicația mobilă MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Vă puteți sincroniza conturile și informațiile cu dispozitivul dvs. mobil. Deschideți aplicația mobilă MetaMask, mergeți la „Setări” și atingeți „Sincronizare de la extensia de browser”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Dacă deschideți aplicația pentru mobil MetaMask pentru prima oară, urmați pașii afișați pe telefonul dvs."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scanați acest cod folosind aplicația dvs. mobilă MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizați cu mobilul"
-  },
   "terms": {
     "message": "Termeni și condiții"
   },

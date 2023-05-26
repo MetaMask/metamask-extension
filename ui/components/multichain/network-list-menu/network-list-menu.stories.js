@@ -42,8 +42,8 @@ export default {
   title: 'Components/Multichain/NetworkListMenu',
   component: NetworkListMenu,
   argTypes: {
-    closeMenu: {
-      action: 'closeMenu',
+    onClose: {
+      action: 'onClose',
     },
   },
 };

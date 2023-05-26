@@ -1,10 +1,7 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import desktopJson from '../../../app/build-types/desktop/images/desktop-mascot.json';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import mmiJson from '../../../app/build-types/mmi/images/mmi-mascot.json';
 ///: END:ONLY_INCLUDE_IN
 
@@ -13,22 +10,17 @@ const assetList = {
     // Will use default provided by the @metamask/logo library
     foxMeshJson: undefined,
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
   beta: {
     foxMeshJson: undefined,
   },
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   flask: {
     foxMeshJson: flaskJson,
   },
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  desktop: {
-    foxMeshJson: desktopJson,
-  },
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   mmi: {
     foxMeshJson: mmiJson,
   },

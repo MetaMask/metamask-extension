@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -11,11 +12,13 @@ import {
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
   getSelectedAddress,
 } from './selectors';
+import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -28,10 +31,8 @@ export const incomingTxListSelector = (state) => {
     return [];
   }
 
-  const {
-    networkId,
-    provider: { chainId },
-  } = state.metamask;
+  const { networkId } = state.metamask;
+  const { chainId } = getProviderConfig(state);
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
@@ -252,7 +253,18 @@ export const nonceSortedTransactionsSelector = createSelector(
         txReceipt,
       } = transaction;
 
-      if (typeof nonce === 'undefined' || type === TransactionType.incoming) {
+      // Don't group transactions by nonce if:
+      // 1. Tx nonce is undefined
+      // 2. Tx is incoming (deposit)
+      // 3. Tx is custodial (mmi specific)
+      let shouldNotBeGrouped =
+        typeof nonce === 'undefined' || type === TransactionType.incoming;
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
+      ///: END:ONLY_INCLUDE_IN
+
+      if (shouldNotBeGrouped) {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,
@@ -524,3 +536,34 @@ export const submittedPendingTransactionsSelector = createSelector(
       (transaction) => transaction.status === TransactionStatus.submitted,
     ),
 );
+
+const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
+  const { unapprovedTxs } = state.metamask;
+  const unapprovedTxRequests = getApprovalRequestsByType(
+    state,
+    ApprovalType.Transaction,
+  );
+
+  const chainId = getCurrentChainId(state);
+
+  const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
+    ({ id }) => transactionMatchesNetwork(unapprovedTxs[id], chainId),
+  );
+
+  return filteredUnapprovedTxInCurrentNetwork.length > 0;
+};
+
+const TRANSACTION_APPROVAL_TYPES = [
+  ApprovalType.EthDecrypt,
+  ApprovalType.EthGetEncryptionPublicKey,
+  ApprovalType.EthSign,
+  ApprovalType.EthSignTypedData,
+  ApprovalType.PersonalSign,
+];
+
+export function hasTransactionPendingApprovals(state) {
+  return (
+    hasUnapprovedTransactionsInCurrentNetwork(state) ||
+    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
+  );
+}

@@ -5,20 +5,21 @@ import {
   Button,
   AvatarAccount,
   AvatarAccountVariant,
+  Icon,
+  IconName,
   Text,
 } from '../../component-library';
-import { ICON_NAMES, Icon } from '../../component-library/icon/deprecated';
 import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
   DISPLAY,
-  FONT_WEIGHT,
+  FontWeight,
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
 
-export const AccountPicker = ({ address, name, onClick }) => {
+export const AccountPicker = ({ address, name, onClick, disabled }) => {
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
 
   return (
@@ -33,6 +34,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
         gap: 2,
         alignItems: AlignItems.center,
       }}
+      disabled={disabled}
     >
       <AvatarAccount
         variant={
@@ -41,13 +43,14 @@ export const AccountPicker = ({ address, name, onClick }) => {
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={Size.SM}
+        size={Size.XS}
+        borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
-      <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
+      <Text as="span" fontWeight={FontWeight.Bold} ellipsis>
         {name}
       </Text>
       <Icon
-        name={ICON_NAMES.ARROW_DOWN}
+        name={IconName.ArrowDown}
         color={IconColor.iconDefault}
         size={Size.SM}
       />
@@ -68,4 +71,8 @@ AccountPicker.propTypes = {
    * Action to perform when the account picker is clicked
    */
   onClick: PropTypes.func.isRequired,
+  /**
+   * Represents if the AccountPicker should be actionable
+   */
+  disabled: PropTypes.bool.isRequired,
 };

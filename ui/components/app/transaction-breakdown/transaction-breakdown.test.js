@@ -21,7 +21,7 @@ describe('TransactionBreakdown', () => {
     metamask: {
       nativeCurrency: null,
       preferences: {},
-      provider: {
+      providerConfig: {
         chainId: null,
       },
     },

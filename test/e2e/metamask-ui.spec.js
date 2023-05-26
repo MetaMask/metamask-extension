@@ -8,10 +8,10 @@ const {
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
+  openDapp,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
-const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -45,12 +45,6 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -84,6 +78,7 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', function () {
     it('clicks the "Create New Wallet" button on the welcome screen', async function () {
+      await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 
@@ -183,7 +178,7 @@ describe('MetaMask', function () {
     let popup;
     let dapp;
     it('connects the dapp', async function () {
-      await driver.openNewPage('http://127.0.0.1:8080/');
+      await openDapp(driver);
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Connect', tag: 'button' });
@@ -435,7 +430,7 @@ describe('MetaMask', function () {
 
     it('checks balance', async function () {
       await driver.clickElement({
-        text: 'Assets',
+        text: 'Tokens',
         tag: 'button',
       });
 

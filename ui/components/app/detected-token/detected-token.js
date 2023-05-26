@@ -8,7 +8,10 @@ import {
   ignoreTokens,
   setNewTokensImported,
 } from '../../../store/actions';
-import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
@@ -47,6 +50,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const chainId = useSelector(getCurrentChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
   const [tokensListDetected, setTokensListDetected] = useState(() =>
@@ -69,9 +73,11 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: MetaMetricsTokenEventSource.Detected,
+          source_connection_method: MetaMetricsTokenEventSource.Detected,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
+          token_added_type: 'detected',
+          chain_id: chainId,
         },
       });
     });

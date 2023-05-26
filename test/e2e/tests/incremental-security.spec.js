@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Incremental Security', function () {
@@ -29,6 +29,8 @@ describe('Incremental Security', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        // agree to terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -87,7 +89,7 @@ describe('Incremental Security', function () {
         const extension = windowHandles[0];
 
         // switched to Dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
 
         // sends eth to the current account
         await driver.fill('#address', publicAddress);

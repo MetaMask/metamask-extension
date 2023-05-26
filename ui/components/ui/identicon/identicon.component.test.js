@@ -6,7 +6,7 @@ import Identicon from '.';
 describe('Identicon', () => {
   const mockState = {
     metamask: {
-      provider: {
+      providerConfig: {
         chainId: '0x99',
       },
       useBlockie: false,

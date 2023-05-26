@@ -3,9 +3,15 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
-
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
+import {
+  getNetworkNameFromProviderType,
+  getURLHostName,
+  sanitizeString,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shortenAddress,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
@@ -14,11 +20,17 @@ import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  IconColor,
+  DISPLAY,
+  BLOCK_SIZES,
+  TextVariant,
+  BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -26,6 +38,10 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { Icon, IconName, Text } from '../../component-library';
+import Box from '../../ui/box/box';
+///: END:ONLY_INCLUDE_IN
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -54,33 +70,15 @@ export default class SignatureRequestOriginal extends Component {
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
-    provider: PropTypes.object,
+    providerConfig: PropTypes.object,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: PropTypes.object,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
     showSignatureRequestWarning: false,
   };
-
-  getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return provider.nickname || t('unknownNetwork');
-    }
-  }
 
   msgHexToText = (hex) => {
     try {
@@ -152,6 +150,39 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         ) : null}
+
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          this.props.selectedAccount.address ===
+          this.props.fromAccount.address ? null : (
+            <Box
+              className="request-signature__mismatch-info"
+              display={DISPLAY.FLEX}
+              width={BLOCK_SIZES.FULL}
+              padding={4}
+              marginBottom={4}
+              backgroundColor={BackgroundColor.primaryMuted}
+            >
+              <Icon
+                name={IconName.Info}
+                color={IconColor.infoDefault}
+                marginRight={2}
+              />
+              <Text
+                variant={TextVariant.bodyXs}
+                color={TextColor.textDefault}
+                as="h7"
+              >
+                {this.context.t('mismatchAccount', [
+                  shortenAddress(this.props.selectedAccount.address),
+                  shortenAddress(this.props.fromAccount.address),
+                ])}
+              </Text>
+            </Box>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
+
         <div className="request-signature__origin">
           <SiteOrigin
             title={txData.msgParams.origin}
@@ -168,7 +199,7 @@ export default class SignatureRequestOriginal extends Component {
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Typography>
@@ -176,7 +207,7 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__content__subtitle"
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
@@ -285,6 +316,7 @@ export default class SignatureRequestOriginal extends Component {
 
   render = () => {
     const {
+      providerConfig,
       messagesCount,
       nativeCurrency,
       currentCurrency,
@@ -295,7 +327,11 @@ export default class SignatureRequestOriginal extends Component {
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
-    const currentNetwork = this.getNetworkName();
+    const networkName = getNetworkNameFromProviderType(providerConfig.type);
+    const currentNetwork =
+      networkName === ''
+        ? providerConfig.nickname || t('unknownNetwork')
+        : t(networkName);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(

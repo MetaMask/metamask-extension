@@ -116,7 +116,7 @@ const MAINNET_CHAIN_ID = '0x1';
 const firstTimeState = {
   config: {},
   NetworkController: {
-    provider: {
+    providerConfig: {
       type: NETWORK_TYPES.RPC,
       rpcUrl: ALT_MAINNET_RPC_URL,
       chainId: MAINNET_CHAIN_ID,

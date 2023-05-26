@@ -9,19 +9,22 @@ import {
   getRpcPrefsForCurrentProvider,
   getBlockExplorerLinkText,
   getCurrentChainId,
+  getHardwareWalletType,
+  getAccountTypeForKeyring,
 } from '../../../selectors';
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { Text } from '../../component-library';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { Text, IconName } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { showModal } from '../../../store/actions';
+import { setAccountDetailsAddress, showModal } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { formatAccountType } from '../../../helpers/utils/metrics';
 
 export const AccountListItemMenu = ({
   anchorElement,
@@ -40,6 +43,13 @@ export const AccountListItemMenu = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
 
+  const deviceName = useSelector(getHardwareWalletType);
+
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
     trackEvent({
@@ -51,6 +61,7 @@ export const AccountListItemMenu = ({
         url_domain: getURLHostName(addressLink),
       },
     });
+
     global.platform.openTab({
       url: addressLink,
     });
@@ -68,20 +79,29 @@ export const AccountListItemMenu = ({
       onHide={onClose}
     >
       <MenuItem
-        onClick={
+        onClick={() => {
           blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl
-            : openBlockExplorer
-        }
+            ? routeToAddBlockExplorerUrl()
+            : openBlockExplorer();
+
+          trackEvent({
+            event: MetaMetricsEventName.BlockExplorerLinkClicked,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              location: 'Account Options',
+              chain_id: chainId,
+            },
+          });
+        }}
         subtitle={blockExplorerUrlSubTitle || null}
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
       >
         <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
       </MenuItem>
       <MenuItem
         onClick={() => {
-          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+          dispatch(setAccountDetailsAddress(identity.address));
           trackEvent({
             event: MetaMetricsEventName.NavAccountDetailsOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -92,7 +112,7 @@ export const AccountListItemMenu = ({
           onClose();
           closeMenu?.();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
@@ -106,9 +126,18 @@ export const AccountListItemMenu = ({
                 identity,
               }),
             );
+            trackEvent({
+              event: MetaMetricsEventName.AccountRemoved,
+              category: MetaMetricsEventCategory.Accounts,
+              properties: {
+                account_hardware_type: deviceName,
+                chain_id: chainId,
+                account_type: accountType,
+              },
+            });
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>

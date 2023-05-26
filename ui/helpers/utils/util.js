@@ -7,10 +7,10 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -22,7 +22,7 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import {
   SNAPS_DERIVATION_PATHS,
   SNAPS_METADATA,
@@ -539,7 +539,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * @param {string[]} path
  * @param {string} curve
@@ -583,4 +583,19 @@ export const sanitizeString = (value) => {
   }
   const regex = /\u202E/giu;
   return value.replace(regex, '\\u202E');
+};
+
+/**
+ * This method checks current provider type and returns its string representation
+ *
+ * @param {*} provider
+ * @param {*} t
+ * @returns
+ */
+
+export const getNetworkNameFromProviderType = (providerName) => {
+  if (providerName === NETWORK_TYPES.RPC) {
+    return '';
+  }
+  return providerName;
 };

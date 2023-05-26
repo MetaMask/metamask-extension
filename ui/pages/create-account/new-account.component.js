@@ -35,6 +35,7 @@ export default class NewAccountCreateForm extends Component {
             event: MetaMetricsEventName.AccountAdded,
             properties: {
               account_type: MetaMetricsEventAccountType.Default,
+              location: 'Home',
             },
           });
           history.push(mostRecentOverviewPage);

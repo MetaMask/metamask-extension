@@ -2,13 +2,14 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Dialog from '../../ui/dialog';
-import Typography from '../../ui/typography/typography';
+import { Icon, IconName, Text } from '../../component-library';
 import {
-  TypographyVariant,
-  TEXT_ALIGN,
-  FONT_WEIGHT,
+  TextVariant,
+  TextAlign,
+  FontWeight,
   DISPLAY,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
@@ -23,31 +24,31 @@ export default function NftsDetectionNotice() {
       <Dialog type="message" className="nfts-detection-notice__message">
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={1}>
-            <i
-              style={{
-                fontSize: '1rem',
-                color: 'var(--color-primary-default)',
-              }}
-              className="fa fa-info-circle"
+            <Icon
+              name={IconName.Info}
+              className="info-circle"
+              color={IconColor.primaryDefault}
             />
           </Box>
           <Box paddingLeft={2}>
-            <Typography
+            <Text
               color={TextColor.textDefault}
-              align={TEXT_ALIGN.LEFT}
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.BOLD}
+              align={TextAlign.Left}
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
             >
               {t('newNFTsDetected')}
-            </Typography>
-            <Typography
+            </Text>
+            <Text
               color={TextColor.textDefault}
-              align={TEXT_ALIGN.LEFT}
-              variant={TypographyVariant.H7}
-              boxProps={{ marginBottom: 4 }}
+              align={TextAlign.Left}
+              variant={TextVariant.bodySm}
+              as="h6"
+              marginBottom={4}
             >
               {t('newNFTDetectedMessage')}
-            </Typography>
+            </Text>
             <Button
               type="link"
               onClick={(e) => {

@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
-import { BuildType } from '../../../shared/constants/app';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
@@ -57,7 +56,7 @@ export const SENTRY_STATE = {
     nextNonce: true,
     participateInMetaMetrics: true,
     preferences: true,
-    provider: {
+    providerConfig: {
       nickname: true,
       ticker: true,
       type: true,
@@ -90,7 +89,7 @@ export default function setupSentry({ release, getState }) {
   }
 
   const environment =
-    METAMASK_BUILD_TYPE === BuildType.main
+    METAMASK_BUILD_TYPE === 'main'
       ? METAMASK_ENVIRONMENT
       : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
 

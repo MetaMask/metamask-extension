@@ -53,7 +53,7 @@ const render = ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
-      provider: {},
+      providerConfig: {},
       cachedBalances: {},
       accounts: {
         '0xAddress': {

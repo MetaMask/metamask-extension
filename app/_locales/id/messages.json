@@ -398,9 +398,6 @@
   "assetOptions": {
     "message": "Opsi aset"
   },
-  "assets": {
-    "message": "Aset"
-  },
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan penghubung."
   },
@@ -694,10 +691,6 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 tidak terhubung ke situs mana pun.",
     "description": "$1 is the account name"
-  },
-  "connectedSnapSites": {
-    "message": "Snap $1 terhubung ke situs-situs ini. Token ini memiliki akses ke izin yang tercantum di atas. \t",
-    "description": "$1 represents the name of the snap"
   },
   "connecting": {
     "message": "Menghubungkan..."
@@ -1355,18 +1348,6 @@
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Lihat detailnya",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Ditambahkan di",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "dari",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1412,6 @@
   "gasDisplayDappWarning": {
     "message": "Biaya gas ini telah disarankan oleh $1. Pengabaian dapat menyebabkan masalah pada transaksi Anda. Hubungi $1 jika ada pertanyaan.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Biaya gas"
   },
   "gasLimit": {
     "message": "Batas gas"
@@ -1589,9 +1567,6 @@
   "history": {
     "message": "Riwayat"
   },
-  "holdToReveal": {
-    "message": "Tahan untuk mengungkap FPR"
-  },
   "holdToRevealContent1": {
     "message": "Frasa Pemulihan Rahasia memberikan $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1611,9 +1586,6 @@
   "holdToRevealContent5": {
     "message": "tetapi penipu akan mencoba memintanya.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Jaga keamanan FPR Anda"
   },
   "ignoreAll": {
     "message": "Abaikan semua"
@@ -2020,9 +1992,6 @@
   },
   "missingToken": {
     "message": "Tidak melihat token Anda?"
-  },
-  "mobileSyncWarning": {
-    "message": "Fitur 'Sinkronkan dengan ekstensi' dinonaktifkan untuk sementara waktu. Jika Anda ingin menggunakan dompet ekstensi Anda di ponsel MetaMask, maka pada aplikasi seluler Anda: kembali ke opsi pengaturan dompet dan pilih opsi 'Impor dengan Frasa Pemulihan Rahasia'. Gunakan frasa rahasia dompet ekstensi Anda untuk mengimpor dompet Anda ke ponsel nantinya."
   },
   "moreComingSoon": {
     "message": "Selanjutnya akan segera hadir..."
@@ -2697,10 +2666,6 @@
     "message": "Jadwalkan dan lakukan tindakan berkala.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Tampilkan konfirmasi di MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Tampilkan jendela dialog di MetaMask.",
     "description": "The description for the `snap_dialog` permission"
@@ -3085,9 +3050,6 @@
   "searchResults": {
     "message": "Cari hasil"
   },
-  "searchSettings": {
-    "message": "Cari di Pengaturan"
-  },
   "searchTokens": {
     "message": "Cari token"
   },
@@ -3237,10 +3199,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Tidak menemukan hasil yang cocok."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Tampil"
   },
@@ -3314,14 +3272,6 @@
   "smartTransaction": {
     "message": "Transaksi pintar"
   },
-  "snapAccess": {
-    "message": "Snap $1 memiliki akses ke:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Ditambahkan pada $1 dari $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Konten ini berasal dari $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3357,9 +3307,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Kelola Snap Anda"
-  },
-  "snapsStatus": {
-    "message": "Status snap tergantung pada aktivitas."
   },
   "snapsToggle": {
     "message": "Snap hanya akan beroperasi jika diaktifkan"
@@ -3625,10 +3572,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Anda memerlukan $1 $2 lagi untuk menyelesaikan swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Kuotasi terbaik dari $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "Tidak ada token yang cocok yang tersedia $1",
@@ -3940,33 +3883,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbol harus terdiri dari 11 karakter atau kurang."
   },
-  "syncFailed": {
-    "message": "Sinkronisasi gagal"
-  },
-  "syncInProgress": {
-    "message": "Sinkronisasi sedang berlangsung"
-  },
-  "syncWithMobile": {
-    "message": "Sinkronkan dengan seluler"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pastikan tidak ada orang lain yang melihat layar Anda saat memindai kode ini"
-  },
-  "syncWithMobileComplete": {
-    "message": "Data Anda telah berhasil disinkronkan. Nikmati aplikasi seluler MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Anda dapat menyinkronkan akun dan informasi dengan perangkat seluler Anda. Buka aplikasi seluler MetaMask, buka \"Pengaturan\" dan ketuk \"Sinkronkan dari Ekstensi Peramban\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jika Anda baru membuka aplikasi seluler MetaMask untuk pertama kali, cukup ikuti langkah-langkah yang ada di ponsel Anda."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Pindai kode ini dengan aplikasi seluler MetaMask Anda"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinkronkan dengan seluler"
-  },
   "tenPercentIncreased": {
     "message": "Meningkat 10%"
   },
@@ -3987,9 +3903,6 @@
   },
   "thingsToKeep": {
     "message": "Hal-hal yang perlu diingat:"
-  },
-  "thisIsBasedOn": {
-    "message": "Hal ini berdasarkan informasi dari "
   },
   "time": {
     "message": "Waktu"

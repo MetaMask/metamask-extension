@@ -126,6 +126,7 @@ export default function ConfirmTokenTransactionBase({
       assetName || `${getTitleTokenDescription('text')} #${tokenId}`;
   } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
+    subtotalDisplay = `${tokenAmount} ${tokenSymbol}`;
   }
 
   const hexWeiValue = useMemo(() => {

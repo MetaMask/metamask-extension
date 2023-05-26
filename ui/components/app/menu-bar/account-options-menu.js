@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import { showModal } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import {
   CONNECTED_ROUTE,
   NETWORKS_ROUTE,
@@ -17,10 +20,16 @@ import {
   getCurrentKeyring,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getMetaMaskAccountsOrdered,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
@@ -28,7 +37,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { IconName } from '../../component-library';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext();
@@ -45,6 +54,12 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const trackEvent = useContext(MetaMetricsContext);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const isCustodial = /Custody/u.test(keyring.type);
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
 
   const isRemovable = keyring.type !== KeyringType.hdKeyTree;
 
@@ -87,7 +102,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             </span>
           ) : null
         }
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
       >
         {t(
           blockExplorerLinkText.firstPart,
@@ -109,7 +124,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             global.platform.openExtensionInBrowser();
             onClose();
           }}
-          iconName={ICON_NAMES.EXPAND}
+          iconName={IconName.Expand}
         >
           {t('expandView')}
         </MenuItem>
@@ -127,7 +142,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           });
           onClose();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         {t('accountDetails')}
       </MenuItem>
@@ -144,7 +159,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           history.push(CONNECTED_ROUTE);
           onClose();
         }}
-        iconName={ICON_NAMES.CONNECT}
+        iconName={IconName.Connect}
       >
         {t('connectedSites')}
       </MenuItem>
@@ -160,11 +175,42 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             );
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           {t('removeAccount')}
         </MenuItem>
       ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        isCustodial ? (
+          <MenuItem
+            data-testid="account-options-menu__remove-jwt"
+            onClick={async () => {
+              const token = await dispatch(mmiActions.getCustodianToken());
+              const custodyAccountDetails = await dispatch(
+                mmiActions.getAllCustodianAccountsWithToken(
+                  keyring.type.split(' - ')[1],
+                  token,
+                ),
+              );
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_REMOVE_JWT',
+                  token,
+                  custodyAccountDetails,
+                  accounts,
+                  selectedAddress: toChecksumHexAddress(address),
+                }),
+              );
+              onClose();
+            }}
+            iconClassName="fas fa-trash-alt"
+          >
+            {t('removeJWT')}
+          </MenuItem>
+        ) : null
+        ///: END:ONLY_INCLUDE_IN
+      }
     </Menu>
   );
 }

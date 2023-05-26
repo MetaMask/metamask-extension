@@ -9,7 +9,7 @@ exports[`AccountPicker renders properly 1`] = `
       class="box mm-text mm-text--inherit mm-text--ellipsis box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--color-primary-inverse"
     >
       <div
-        class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-border-default box--border-style-solid box--border-width-1"
+        class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-background-default box--border-style-solid box--border-width-1"
       >
         <canvas
           height="32"
@@ -18,10 +18,10 @@ exports[`AccountPicker renders properly 1`] = `
         />
         <img
           alt=""
-          height="24"
+          height="16"
           src="data:image/png;base64,00"
           style="border-radius: 50%;"
-          width="24"
+          width="16"
         />
       </div>
       <span

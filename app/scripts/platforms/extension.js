@@ -194,7 +194,7 @@ export default class ExtensionPlatform {
     let message = `Transaction ${nonce} failed! ${
       errorMessage || txMeta.err.message
     }`;
-    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (isNaN(nonce)) {
       message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
     }

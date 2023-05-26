@@ -741,27 +741,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbolis turi būti ne ilgesnis nei 11 simbolių."
   },
-  "syncWithMobile": {
-    "message": "Sinchronizuoti su mobiliuoju"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pasirūpinkite, kad jums nuskaitant šį kodą niekas nežiūrėtų į jūsų ekraną."
-  },
-  "syncWithMobileComplete": {
-    "message": "Jūsų duomenys sėkmingai sinchronizuoti. Mėgaukitės „MetaMask“ mobiliąja programa! "
-  },
-  "syncWithMobileDesc": {
-    "message": "Galite sinchronizuoti paskyrą ir informaciją su savo mobiliuoju įrenginiu. Atverkite „MetaMask“ mobiliąją programą, eikite į „Nuostatos“ ir palieskite „Sinchronizuoti iš naršyklės plėtinio“"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jeigu „MetaMask“ mobiliąją programą atveriate tik pirmą kartą, tiesiog sekite veiksmus telefone."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Nuskaitykite šį kodą su savo „MetaMask“ mobiliąja programa"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinchronizuoti su mobiliuoju"
-  },
   "terms": {
     "message": "Naudojimo sąlygos"
   },

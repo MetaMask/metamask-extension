@@ -46,7 +46,7 @@ describe('ConfirmSubTitle', () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
       [mockState.metamask.selectedAddress]: {
-        [hexToDecimal(mockState.metamask.provider.chainId)]: [
+        [hexToDecimal(mockState.metamask.providerConfig.chainId)]: [
           { address: '0x9' },
         ],
       },

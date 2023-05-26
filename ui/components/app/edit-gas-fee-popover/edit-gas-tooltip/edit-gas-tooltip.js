@@ -5,13 +5,13 @@ import {
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import {
-  FONT_WEIGHT,
+  FontWeight,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { isMetamaskSuggestedGasEstimate } from '../../../../helpers/utils/gas';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
-import Typography from '../../../ui/typography';
+import { Text } from '../../../component-library';
 
 const EditGasToolTip = ({
   editGasMode,
@@ -107,43 +107,47 @@ const EditGasToolTip = ({
       ) : null}
       {toolTipMessage && (
         <div className="edit-gas-tooltip__container__message">
-          <Typography variant={TypographyVariant.H7}>
+          <Text variant={TextVariant.bodySm} as="h6">
             {toolTipMessage}
-          </Typography>
+          </Text>
         </div>
       )}
       {priorityLevel === PriorityLevels.custom ||
       estimateGreaterThanGasUse ? null : (
         <div className="edit-gas-tooltip__container__values">
           <div>
-            <Typography
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.BOLD}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
               className="edit-gas-tooltip__container__label"
             >
               {t('maxBaseFee')}
-            </Typography>
+            </Text>
             {maxFeePerGas && (
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
                 className="edit-gas-tooltip__container__value"
               >
                 {roundToDecimalPlacesRemovingExtraZeroes(maxFeePerGas, 4)}
-              </Typography>
+              </Text>
             )}
           </div>
           <div>
-            <Typography
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.BOLD}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
               className="edit-gas-tooltip__container__label"
             >
               {t('priorityFeeProperCase')}
-            </Typography>
+            </Text>
             {maxPriorityFeePerGas && (
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
                 className="edit-gas-tooltip__container__value"
               >
@@ -151,25 +155,27 @@ const EditGasToolTip = ({
                   maxPriorityFeePerGas,
                   4,
                 )}
-              </Typography>
+              </Text>
             )}
           </div>
           <div>
-            <Typography
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.BOLD}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Bold}
               className="edit-gas-tooltip__container__label"
             >
               {t('gasLimit')}
-            </Typography>
+            </Text>
             {gasLimit && (
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
                 className="edit-gas-tooltip__container__value"
               >
                 {roundToDecimalPlacesRemovingExtraZeroes(gasLimit, 4)}
-              </Typography>
+              </Text>
             )}
           </div>
         </div>

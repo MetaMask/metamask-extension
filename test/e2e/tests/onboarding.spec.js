@@ -108,6 +108,9 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        // accept terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+
         // welcome
         await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -145,6 +148,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
         // metrics
@@ -208,6 +212,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
         // metrics
