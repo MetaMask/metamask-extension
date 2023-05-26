@@ -419,13 +419,6 @@
     "message": "Per $1 una transazione la commissione di gas deve crescere almeno del 10% per essere riconosciuto dalla rete.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Annulla scambio per ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Annulla scambio gratuitamente"
-  },
   "cancelled": {
     "message": "Annullata"
   },

@@ -548,13 +548,6 @@
     "message": "Para $1 una transacción, la tarifa de gas debe aumentar al menos un 10% para que sea reconocida por la red.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Cancelar el swap por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Cancelar el swap gratuitamente"
-  },
   "cancelled": {
     "message": "Cancelado"
   },

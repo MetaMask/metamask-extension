@@ -548,13 +548,6 @@
     "message": "Για να $1 τη συναλλαγή, τα τέλη συναλλαγής πρέπει να αυξηθούν κατά τουλάχιστον 10% ώστε να αναγνωριστούν από το δίκτυο.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Ακυρώστε τη συναλλαγή για ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Ακυρώστε τη συναλλαγή δωρεάν"
-  },
   "cancelled": {
     "message": "Ακυρώθηκε"
   },

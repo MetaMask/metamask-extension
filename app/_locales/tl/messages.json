@@ -548,13 +548,6 @@
     "message": "Sa $1 na transaksyon ang singil sa gas ay dapat tumaas nang hindi bababa sa 10% para ito ay makilala ng network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Kanselahin ang swap sa halagang ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Kanselahin ang swap nang libre"
-  },
   "cancelled": {
     "message": "Nakansela"
   },
