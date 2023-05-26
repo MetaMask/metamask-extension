@@ -41,17 +41,13 @@ export default function SignatureRequestSIWE({
 }) {
   const dispatch = useDispatch();
   const history = useHistory();
+
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
-  const messagesCount = useSelector((state) =>
-    getTotalUnapprovedMessagesCount(state),
-  );
-  const mostRecentOverviewPage = useSelector((state) =>
-    getMostRecentOverviewPage(state),
-  );
-  const messagesList = useSelector((state) =>
-    unconfirmedMessagesHashSelector(state),
-  );
+
+  const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
+  const messagesList = useSelector(unconfirmedMessagesHashSelector);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
   const {
     msgParams: {
