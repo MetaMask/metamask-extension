@@ -774,7 +774,13 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    additionalKeyrings.push(keyringBuilderFactory(SnapKeyring));
+    additionalKeyrings.push(
+      (() => {
+        const builder = () => new SnapKeyring(this.snapController);
+        builder.type = SnapKeyring.type;
+        return builder;
+      })(),
+    );
     ///: END:ONLY_INCLUDE_IN
 
     this.keyringController = new KeyringController({
