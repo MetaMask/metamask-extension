@@ -2750,7 +2750,7 @@ export default class TransactionController extends EventEmitter {
         },
       );
 
-      result = approvalResult.result;
+      result = approvalResult.resultCallbacks;
 
       const { value } = approvalResult;
       const { txMeta: updatedTxMeta } = value;
