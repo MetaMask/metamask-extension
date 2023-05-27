@@ -16,10 +16,6 @@
   @include screen-sm-min {
     position: absolute;
   }
-
-  .bottom-border-1px {
-    border-width: 0 0 1px 0;
-  }
 }
 
 
@@ -27,7 +23,6 @@
   display: flex;
   flex-flow: column;
   align-items: center;
-  padding: 30px;
 
   &__input-label {
     @include Paragraph;
@@ -39,8 +34,6 @@
   &__input {
     @include Paragraph;
 
-    height: 54px;
-    width: 315.84px;
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     background-color: var(--color-background-default);

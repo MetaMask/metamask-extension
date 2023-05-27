@@ -8,6 +8,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { getAccountNameErrorMessage } from '../../helpers/utils/accounts';
+import { Input } from '../../components/component-library';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -23,8 +24,13 @@ export default class NewAccountCreateForm extends Component {
 
   render() {
     const { newAccountName, defaultAccountName } = this.state;
-    const { history, createAccount, mostRecentOverviewPage, accounts } =
-      this.props;
+    const {
+      history,
+      createAccount,
+      mostRecentOverviewPage,
+      accounts,
+      onCreateClick,
+    } = this.props;
 
     const createClick = (event) => {
       event.preventDefault();
@@ -38,6 +44,7 @@ export default class NewAccountCreateForm extends Component {
               location: 'Home',
             },
           });
+          onCreateClick?.();
           history.push(mostRecentOverviewPage);
         })
         .catch((e) => {
@@ -65,9 +72,8 @@ export default class NewAccountCreateForm extends Component {
           {this.context.t('accountName')}
         </div>
         <div>
-          <input
-            className={classnames({
-              'new-account-create-form__input': true,
+          <Input
+            className={classnames('new-account-create-form__input', {
               'new-account-create-form__input__error': !isValidAccountName,
             })}
             value={newAccountName}
@@ -111,6 +117,7 @@ NewAccountCreateForm.propTypes = {
   history: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   accounts: PropTypes.array,
+  onCreateClick: PropTypes.func,
 };
 
 NewAccountCreateForm.contextTypes = {

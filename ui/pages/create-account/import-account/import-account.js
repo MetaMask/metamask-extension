@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import {
   MetaMetricsEventAccountImportType,
@@ -12,7 +13,6 @@ import Dropdown from '../../../components/ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BLOCK_SIZES,
-  BorderColor,
   FONT_WEIGHT,
   JustifyContent,
   Size,
@@ -20,18 +20,16 @@ import {
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useRouting } from '../../../hooks/useRouting';
 import * as actions from '../../../store/actions';
 
 // Subviews
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
-export default function NewAccountImportForm() {
+export default function NewAccountImportForm({ onImportClick }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { navigateToMostRecentOverviewPage } = useRouting();
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 
@@ -45,7 +43,8 @@ export default function NewAccountImportForm() {
         if (selectedAddress) {
           trackImportEvent(strategy, true);
           dispatch(actions.hideWarning());
-          navigateToMostRecentOverviewPage();
+          // navigateToMostRecentOverviewPage();
+          onImportClick?.();
         } else {
           dispatch(actions.displayWarning(t('importAccountError')));
         }
@@ -124,25 +123,17 @@ export default function NewAccountImportForm() {
 
   return (
     <>
-      <Box
-        padding={4}
-        className="bottom-border-1px" // There is no way to do just a bottom border in the Design System
-        borderColor={BorderColor.borderDefault}
-      >
-        <Text variant={TextVariant.headingLg}>{t('importAccount')}</Text>
-        <Text variant={TextVariant.bodySm} marginTop={2}>
-          {t('importAccountMsg')}{' '}
-          <ButtonLink
-            size={Size.inherit}
-            href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('here')}
-          </ButtonLink>
-        </Text>
-      </Box>
-
+      <Text variant={TextVariant.bodySm} marginTop={2}>
+        {t('importAccountMsg')}{' '}
+        <ButtonLink
+          size={Size.inherit}
+          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('here')}
+        </ButtonLink>
+      </Text>
       <Box padding={4} paddingBottom={8} paddingLeft={4} paddingRight={4}>
         <Label
           width={BLOCK_SIZES.FULL}
@@ -164,3 +155,7 @@ export default function NewAccountImportForm() {
     </>
   );
 }
+
+NewAccountImportForm.propTypes = {
+  onImportClick: PropTypes.func,
+};
