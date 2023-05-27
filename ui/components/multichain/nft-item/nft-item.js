@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
@@ -8,7 +9,6 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  BorderRadius,
   Display,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -22,46 +22,49 @@ export const NftItem = ({
   networkSrc,
   tokenId,
   onClick,
+  clickable = false,
 }) => {
   return (
-    <Box data-testid="nft-item">
+    <Box
+      className="nft-item__container"
+      data-testid="nft-item"
+      as="button"
+      onClick={onClick}
+    >
       <BadgeWrapper
+        className={classnames('nft-item__badge-wrapper', {
+          'nft-item__badge-wrapper__clickable': clickable,
+        })}
+        anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+        positionObj={{ top: -4, right: -4 }}
+        display={Display.BLOCK}
         badge={
           <AvatarNetwork
+            className="nft-item__network-badge"
+            data-testid="nft-network-badge"
             size={Size.SM}
             name={networkName}
             src={networkSrc}
-            borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
-            data-testid="nft-network-badge"
-            className="nft-network-badge"
+            borderColor={BackgroundColor.backgroundDefault}
           />
         }
-        anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
-        positionObj={{ top: -4, right: -4 }}
-        display={Display.BLOCK}
       >
         {src ? (
           <Box
-            as="button"
-            className="nfts-items__item"
-            borderRadius={BorderRadius.LG}
-            onClick={onClick}
-          >
-            <img
-              className="nfts-items__item-image"
-              data-testid="nft-image"
-              style={{ borderRadius: 8 }}
-              src={src}
-              alt={alt}
-            />
-          </Box>
+            className="nft-item__item nft-item__item-image"
+            data-testid="nft-image"
+            as="img"
+            src={src}
+            alt={alt}
+          />
         ) : (
           <NftDefaultImage
+            className="nft-item__default-image"
+            data-testid="nft-default-image"
             name={name}
             tokenId={tokenId}
-            handleImageClick={onClick}
-            data-testid="nft-default-image"
+            clickable={clickable}
           />
         )}
       </BadgeWrapper>
@@ -70,11 +73,12 @@ export const NftItem = ({
 };
 
 NftItem.propTypes = {
-  alt: PropTypes.string,
-  name: PropTypes.string,
   src: PropTypes.string,
-  networkName: PropTypes.string,
-  networkSrc: PropTypes.string,
-  tokenId: PropTypes.string,
-  onClick: PropTypes.func,
+  alt: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  networkName: PropTypes.string.isRequired,
+  networkSrc: PropTypes.string.isRequired,
+  tokenId: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  clickable: PropTypes.bool,
 };

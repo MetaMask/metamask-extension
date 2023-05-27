@@ -15,7 +15,6 @@ import {
   OverflowWrap,
   DISPLAY,
   BLOCK_SIZES,
-  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -187,7 +186,6 @@ export default function NftDetails({ nft }) {
           {process.env.MULTICHAIN ? (
             <Box className="nft-details__nft-item">
               <NftItem
-                backgroundColor={BackgroundColor.backgroundAlternative}
                 src={image ? nftImageURL : ''}
                 alt={image ? nftImageAlt : ''}
                 name={name}

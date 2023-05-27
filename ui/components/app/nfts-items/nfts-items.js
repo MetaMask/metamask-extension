@@ -192,12 +192,13 @@ export default function NftsItems({
                       networkName={currentChain.nickname}
                       networkSrc={currentChain.rpcPrefs?.imageUrl}
                       onClick={handleImageClick}
+                      clickable
                     />
                   ) : (
                     <Card
+                      className="nfts-items__item-wrapper__card"
                       padding={0}
                       justifyContent={JustifyContent.center}
-                      className="nfts-items__item-wrapper__card"
                     >
                       {nftImage ? (
                         <button
@@ -220,6 +221,7 @@ export default function NftsItems({
                           name={name}
                           tokenId={tokenId}
                           handleImageClick={handleImageClick}
+                          clickable
                         />
                       )}
                     </Card>
