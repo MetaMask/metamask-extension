@@ -34,7 +34,10 @@ cleanContextForImports();
 import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
+import { v4 as uuid } from 'uuid';
+
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { announceProvider } from './EIP6963';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -55,9 +58,21 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  initializeProvider({
+  const MetaMaskEIP6963ProviderInfo = {
+    walletId: 'io.metamask',
+    uuid: uuid(),
+    name: 'MetaMask',
+    icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/cb6fd847f3a9cc5e231c749383c3898935e62eab/SVG/metamask-fox.svg',
+  };
+
+  const provider = initializeProvider({
     connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
+  });
+
+  announceProvider({
+    info: MetaMaskEIP6963ProviderInfo,
+    provider,
   });
 }

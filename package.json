@@ -352,7 +352,7 @@
     "ses": "^0.18.4",
     "single-call-balance-checker-abi": "^1.0.0",
     "unicode-confusables": "^0.1.1",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.0",
     "valid-url": "^1.0.9",
     "web3-stream-provider": "^4.0.0",
     "zxcvbn": "^4.4.2"
