@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "ከ Linea Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
   "connectingToMainnet": {
@@ -394,7 +394,7 @@
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
   },
   "links": {

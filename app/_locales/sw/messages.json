@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
   },
   "connectingToMainnet": {
@@ -393,7 +393,7 @@
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {

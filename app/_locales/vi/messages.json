@@ -689,7 +689,7 @@
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Linea Goerli"
   },
   "connectingToMainnet": {
@@ -1840,7 +1840,7 @@
   "likeToImportTokens": {
     "message": "Bạn có muốn nhập những token này không?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Mạng thử nghiệm Linea Goerli"
   },
   "link": {

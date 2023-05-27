@@ -22,6 +22,7 @@ import {
   IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 
 const NetworksListItem = ({
   network,
@@ -119,7 +120,7 @@ const NetworksListItem = ({
             !displayNetworkListItemAsSelected,
         })}
       >
-        {label || t(labelKey)}
+        {label || t(getNetworkLabelKey(labelKey))}
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
             name={IconName.Lock}

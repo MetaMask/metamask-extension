@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "מתחבר ל-Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -406,7 +406,7 @@
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
