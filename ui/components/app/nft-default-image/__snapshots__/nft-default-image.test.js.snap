@@ -3,7 +3,7 @@
 exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 <div>
   <div
-    class="box nft-default box--flex-direction-row"
+    class="box nft-default nft-default__clickable box--flex-direction-row"
     data-testid="nft-default-image"
     tabindex="0"
   >
@@ -20,7 +20,7 @@ exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 </div>
 `;
 
-exports[`NFT Default Image should match snapshot with missing image click handler 1`] = `
+exports[`NFT Default Image should match snapshot with missing clickable prop 1`] = `
 <div>
   <div
     class="box nft-default box--flex-direction-row"

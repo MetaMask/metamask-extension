@@ -79,6 +79,6 @@ NftItem.propTypes = {
   networkName: PropTypes.string.isRequired,
   networkSrc: PropTypes.string.isRequired,
   tokenId: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   clickable: PropTypes.bool,
 };
