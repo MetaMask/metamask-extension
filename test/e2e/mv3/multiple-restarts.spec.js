@@ -31,21 +31,21 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await assertETHBalance(ganacheServer, '25');
 
-        console.log('first send ETH and then terminate SW');
+        // first send ETH and then terminate SW
         const RECIPIENT_ADDRESS = '0x985c30949c92df7a0bd42e0f3e3d539ece98db24';
         await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
         await terminateServiceWorker(driver);
 
         await assertETHBalance(ganacheServer, '24.0000');
 
-        console.log('first send ETH #2 and then terminate SW');
+        // first send ETH #2 and then terminate SW
         await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
         await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
         await terminateServiceWorker(driver);
 
         await assertETHBalance(ganacheServer, '22.9999');
 
-        console.log('first terminate SW and then send ETH');
+        // first terminate SW and then send ETH
         await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
         await terminateServiceWorker(driver);
 
@@ -78,12 +78,12 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await openDapp(driver);
 
-        console.log('Click add Ethereum chain');
+        // Click add Ethereum chain
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(2);
 
-        console.log('Notification pop up opens');
+        // Notification pop up opens
         await switchToWindow(driver, WINDOW_TITLES.Notification);
         let notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
@@ -91,20 +91,20 @@ describe('MV3 - Restart service worker multiple times', function () {
         });
         assert.ok(notification, 'Dapp action does not appear in Metamask');
 
-        console.log('Cancel Notification');
+        // Cancel Notification
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
 
-        console.log('Terminate Service Worker');
+        // Terminate Service Worker
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await terminateServiceWorker(driver);
 
-        console.log('Click add Ethereum chain #2');
+        // Click add Ethereum chain #2
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(2);
 
-        console.log('Notification pop up opens');
+        // Notification pop up opens
         await switchToWindow(driver, WINDOW_TITLES.Notification);
         notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
@@ -112,22 +112,22 @@ describe('MV3 - Restart service worker multiple times', function () {
         });
         assert.ok(notification, 'Dapp action does not appear in Metamask');
 
-        console.log('Cancel Notification');
+        // Cancel Notification
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
 
-        console.log('Terminate Service Worker');
+        // Terminate Service Worker
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await terminateServiceWorker(driver);
 
-        console.log('Click add Ethereum chain #3');
+        // Click add Ethereum chain #3
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(2);
 
         await sleepSeconds(0.1);
 
-        console.log('Notification pop up opens');
+        // Notification pop up opens
         await switchToWindow(driver, WINDOW_TITLES.Notification);
         notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
@@ -135,7 +135,7 @@ describe('MV3 - Restart service worker multiple times', function () {
         });
         assert.ok(notification, 'Dapp action does not appear in Metamask');
 
-        console.log('Accept Notification');
+        // Accept Notification
         await driver.clickElement({ text: 'Approve', tag: 'button' });
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
