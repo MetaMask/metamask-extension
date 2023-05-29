@@ -1,17 +1,16 @@
 const { strict: assert } = require('assert');
 
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Send ERC20 token with 0 decimals', function () {
-  const smartContract =
-  {
+  const smartContract = {
     name: SMART_CONTRACTS.HST,
     customization: {
       decimalUnits: 0,
     },
-  }
+  };
   const ganacheOptions = {
     accounts: [
       {
@@ -21,7 +20,7 @@ describe('Send ERC20 token with 0 decimals', function () {
       },
     ],
   };
-  it('approves an already created token and displays the token approval data', async function () {
+  it('token with 0 decimals is sent successfully from inside MetaMask', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -44,11 +43,8 @@ describe('Send ERC20 token with 0 decimals', function () {
         await driver.clickElement({ text: 'Custom token', tag: 'button' });
 
         const tokenAddress = contractAddress;
-        const tokenSymbol = SMART_CONTRACTS.HST;
-
         await driver.fill('#custom-address', tokenAddress);
         await driver.waitForSelector('#custom-symbol-label');
-        await driver.delay(3000)
         await driver.clickElement({ text: 'Add custom token', tag: 'button' });
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
 
