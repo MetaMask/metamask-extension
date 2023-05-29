@@ -271,6 +271,7 @@ module.exports = {
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
+        'app/scripts/metamask-controller.test.js',
         'app/scripts/platforms/*.test.js',
         'development/**/*.test.js',
         'shared/**/*.test.js',
