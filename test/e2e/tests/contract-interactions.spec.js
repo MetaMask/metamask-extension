@@ -2,7 +2,7 @@ const {
   convertToHexValue,
   withFixtures,
   openDapp,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -93,7 +93,7 @@ describe('Deploy contract and call contract methods', function () {
 
         // renders the correct ETH balance
         await driver.switchToWindow(extension);
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });

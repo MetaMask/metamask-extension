@@ -3,7 +3,7 @@ const {
   convertToHexValue,
   withFixtures,
   openDapp,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -232,7 +232,7 @@ describe('Navigate transactions', function () {
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
-        await assertAccountBalanceForDOM(ganacheServer, driver);
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });
