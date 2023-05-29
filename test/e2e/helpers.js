@@ -511,6 +511,15 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
+const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  const balanceElement = await driver.waitForSelector({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: balance,
+  });
+  assert.equal(`${balance}\nETH`, await balanceElement.getText());
+};
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -537,4 +546,5 @@ module.exports = {
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
+  assertAccountBalanceForDOM,
 };
