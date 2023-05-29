@@ -63,8 +63,28 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  CUSTODIAN_TYPES,
+  MmiConfigurationController,
+} from '@metamask-institutional/custody-keyring';
+import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+// eslint-disable-next-line import/order
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
+///: END:ONLY_INCLUDE_IN
+
 import { ApprovalType } from '@metamask/controller-utils';
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
+
 import {
   AssetType,
   TransactionStatus,
@@ -119,15 +139,16 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-// eslint-disable-next-line import/order
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IN
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import MMIController from './controllers/mmi-controller';
+import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
+///: END:ONLY_INCLUDE_IN
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
@@ -267,6 +288,13 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiConfigurationController = new MmiConfigurationController({
+      initState: initState.MmiConfigurationController,
+      mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
       allowedEvents: [
@@ -276,6 +304,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:infuraIsUnblocked',
       ],
     });
+
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
       state: initState.NetworkController,
@@ -728,9 +757,21 @@ export default class MetamaskController extends EventEmitter {
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
+
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
       );
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+        additionalKeyrings.push(
+          mmiKeyringBuilderFactory(
+            CUSTODIAN_TYPES[custodianType].keyringClass,
+            { mmiConfigurationController: this.mmiConfigurationController },
+          ),
+        );
+      }
+      ///: END:ONLY_INCLUDE_IN
     }
 
     this.keyringController = new KeyringController({
@@ -987,6 +1028,22 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.custodyController = new CustodyController({
+      initState: initState.CustodyController,
+    });
+    this.institutionalFeaturesController = new InstitutionalFeaturesController({
+      initState: initState.InstitutionalFeaturesController,
+      showConfirmRequest: opts.showUserConfirmation,
+    });
+    this.transactionUpdateController = new TransactionUpdateController({
+      initState: initState.TransactionUpdateController,
+      getCustodyKeyring: this.getCustodyKeyringIfExists.bind(this),
+      mmiConfigurationController: this.mmiConfigurationController,
+      captureException,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.backupController = new BackupController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1057,6 +1114,9 @@ export default class MetamaskController extends EventEmitter {
       getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      transactionUpdateController: this.transactionUpdateController,
+      ///: END:ONLY_INCLUDE_IN
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
@@ -1066,6 +1126,28 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiController = new MMIController({
+      mmiConfigurationController: this.mmiConfigurationController,
+      keyringController: this.keyringController,
+      txController: this.txController,
+      securityProviderRequest: this.securityProviderRequest.bind(this),
+      preferencesController: this.preferencesController,
+      appStateController: this.appStateController,
+      transactionUpdateController: this.transactionUpdateController,
+      custodyController: this.custodyController,
+      institutionalFeaturesController: this.institutionalFeaturesController,
+      getState: this.getState.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      accountTracker: this.accountTracker,
+      metaMetricsController: this.metaMetricsController,
+      networkController: this.networkController,
+      permissionController: this.permissionController,
+      platform: this.platform,
+      extension: this.extension,
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
@@ -1434,6 +1516,13 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      CustodyController: this.custodyController.store,
+      InstitutionalFeaturesController:
+        this.institutionalFeaturesController.store,
+      MmiConfigurationController: this.mmiConfigurationController.store,
+      ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
 
@@ -1469,6 +1558,13 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        CustodyController: this.custodyController.store,
+        InstitutionalFeaturesController:
+          this.institutionalFeaturesController.store,
+        MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
       },
@@ -2240,6 +2336,72 @@ export default class MetamaskController extends EventEmitter {
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      connectCustodyAddresses:
+        this.mmiController.connectCustodyAddresses.bind(this),
+      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
+      getCustodianAccountsByAddress:
+        this.mmiController.getCustodianAccountsByAddress.bind(this),
+      getCustodianTransactionDeepLink:
+        this.mmiController.getCustodianTransactionDeepLink.bind(this),
+      getCustodianConfirmDeepLink:
+        this.mmiController.getCustodianConfirmDeepLink.bind(this),
+      getCustodianSignMessageDeepLink:
+        this.mmiController.getCustodianSignMessageDeepLink.bind(this),
+      getCustodianToken: this.mmiController.getCustodianToken.bind(this),
+      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(this),
+      setWaitForConfirmDeepLinkDialog:
+        this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
+          this.custodyController,
+        ),
+      setCustodianConnectRequest:
+        this.custodyController.setCustodianConnectRequest.bind(
+          this.custodyController,
+        ),
+      getCustodianConnectRequest:
+        this.custodyController.getCustodianConnectRequest.bind(
+          this.custodyController,
+        ),
+      getAllCustodianAccountsWithToken:
+        this.mmiController.getAllCustodianAccountsWithToken.bind(this),
+      getMmiConfiguration:
+        this.mmiConfigurationController.getConfiguration.bind(
+          this.mmiConfigurationController,
+        ),
+      setComplianceAuthData:
+        this.institutionalFeaturesController.setComplianceAuthData.bind(
+          this.institutionalFeaturesController,
+        ),
+      deleteComplianceAuthData:
+        this.institutionalFeaturesController.deleteComplianceAuthData.bind(
+          this.institutionalFeaturesController,
+        ),
+      generateComplianceReport:
+        this.institutionalFeaturesController.generateComplianceReport.bind(
+          this.institutionalFeaturesController,
+        ),
+      syncReportsInProgress:
+        this.institutionalFeaturesController.syncReportsInProgress.bind(
+          this.institutionalFeaturesController,
+        ),
+
+      removeConnectInstitutionalFeature:
+        this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
+          this.institutionalFeaturesController,
+        ),
+
+      getComplianceHistoricalReportsByAddress:
+        this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
+          this.institutionalFeaturesController,
+        ),
+      removeAddTokenConnectRequest:
+        this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
+          this.institutionalFeaturesController,
+        ),
+      setCustodianNewRefreshToken:
+        this.mmiController.setCustodianNewRefreshToken.bind(this),
+      ///: END:ONLY_INCLUDE_IN
+
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // snaps
       removeSnapError: this.controllerMessenger.call.bind(
@@ -2670,6 +2832,10 @@ export default class MetamaskController extends EventEmitter {
   async submitPassword(password) {
     await this.keyringController.submitPassword(password);
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiController.onSubmitPassword();
+    ///: END:ONLY_INCLUDE_IN
+
     try {
       await this.blockTracker.checkForLatestBlock();
     } catch (error) {
@@ -2788,6 +2954,16 @@ export default class MetamaskController extends EventEmitter {
 
     return keyring.mnemonic;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  async getCustodyKeyringIfExists(address) {
+    const custodyType = this.custodyController.getCustodyTypeByAddress(
+      toChecksumHexAddress(address),
+    );
+    const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
+    return keyring?.getAccountDetails(address) ? keyring : undefined;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   //
   // Hardware
@@ -3204,6 +3380,10 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.removeAddress(address);
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.custodyController.removeAccount(address);
+    ///: END:ONLY_INCLUDE_IN(build-mmi)
 
     const keyring = await this.keyringController.getKeyringForAccount(address);
     // Remove account from the keyring
@@ -3763,6 +3943,21 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        handleMmiAuthenticate:
+          this.institutionalFeaturesController.handleMmiAuthenticate.bind(
+            this.institutionalFeaturesController,
+          ),
+        handleMmiCheckIfTokenIsPresent:
+          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
+        handleMmiPortfolio: this.mmiController.setMmiPortfolioCookie.bind(this),
+        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
+        handleMmiSetAccountAndNetwork:
+          this.mmiController.setAccountAndNetwork.bind(this),
+        handleMmiOpenAddHardwareWallet:
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
+        ///: END:ONLY_INCLUDE_IN
       }),
     );
 
