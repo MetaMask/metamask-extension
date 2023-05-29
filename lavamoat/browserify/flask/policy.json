@@ -783,6 +783,109 @@
         "@babel/runtime": true
       }
     },
+    "@metamask-institutional/extension": {
+      "globals": {
+        "console.log": true,
+        "fetch": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask-institutional/extension>@metamask-institutional/custody-controller": true,
+        "@metamask-institutional/extension>@metamask-institutional/sdk": true,
+        "@metamask-institutional/extension>@metamask-institutional/types": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/custody-controller": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask-institutional/extension>@metamask-institutional/custody-keyring": true,
+        "@metamask/obs-store": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/custody-keyring": {
+      "globals": {
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask-institutional/extension>@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
+        "@metamask-institutional/extension>@metamask-institutional/sdk": true,
+        "@metamask-institutional/extension>@metamask-institutional/types": true,
+        "@metamask/obs-store": true,
+        "browserify>crypto-browserify": true,
+        "browserify>events": true,
+        "gulp-sass>lodash.clonedeep": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": {
+      "globals": {
+        "console.log": true,
+        "fetch": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk": {
+      "globals": {
+        "URLSearchParams": true,
+        "console.debug": true,
+        "console.log": true,
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask-institutional/extension>@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
+        "@metamask-institutional/extension>@metamask-institutional/sdk>bignumber.js": true,
+        "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken": true,
+        "browserify>crypto-browserify": true,
+        "browserify>events": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken": {
+      "packages": {
+        "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "browserify>process": true,
+        "lodash": true,
+        "mocha>ms": true,
+        "semver": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws": {
+      "packages": {
+        "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws>jwa": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>stream-browserify": true,
+        "browserify>util": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws>jwa": {
+      "packages": {
+        "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": true,
+        "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": true,
+        "browserify>crypto-browserify": true,
+        "browserify>util": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": {
+      "packages": {
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,
