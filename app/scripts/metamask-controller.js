@@ -206,6 +206,7 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
 import { updateCurrentLocale } from './translate';
+import UserOperationBundlerController from './controllers/user-operation-bundler-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -434,6 +435,18 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.AssetsContractController,
     );
+
+    const userOperationBundlerControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'UserOperationBundlerController',
+      });
+
+    this.userOperationBundlerController = new UserOperationBundlerController({
+      messenger: userOperationBundlerControllerMessenger,
+      bundlerProjectId: opts.bundlerProjectId,
+      onNetworkStateChange: (listener) =>
+        this.networkController.store.subscribe(listener),
+    });
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -1142,6 +1155,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
         ],
       }),
+      userOperationBundlerController: this.userOperationBundlerController,
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -3130,6 +3144,8 @@ export default class MetamaskController extends EventEmitter {
         return 'hardware';
       case KeyringType.imported:
         return 'imported';
+      case KeyringType.snap:
+        return 'snap';
       default:
         return 'MetaMask';
     }

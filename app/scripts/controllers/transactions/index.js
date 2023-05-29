@@ -51,6 +51,7 @@ import {
   determineTransactionContractCode,
   determineTransactionType,
   isEIP1559Transaction,
+  isSigned4337Transaction,
 } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
@@ -156,6 +157,7 @@ export default class TransactionController extends EventEmitter {
     this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
+    this.userOperationBundlerController = opts.userOperationBundlerController;
     this.messagingSystem = opts.messenger;
 
     this.memStore = new ObservableStore({});
@@ -205,6 +207,7 @@ export default class TransactionController extends EventEmitter {
       approveTransaction: this._approveTransaction.bind(this),
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+      userOperationBundlerController: this.userOperationBundlerController,
     });
 
     this.txStateManager.store.subscribe(() =>
@@ -1199,6 +1202,126 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
+  /**
+   * updates and approves the transaction
+   *
+   * @param {object} txMeta
+   * @param {string} actionId
+   */
+  async updateAndApproveTransaction(txMeta, actionId) {
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'confTx: user approved transaction',
+    );
+    await this.approveTransaction(txMeta.id, actionId);
+  }
+
+  /**
+   * sets the tx status to approved
+   * auto fills the nonce
+   * signs the transaction
+   * publishes the transaction
+   * if any of these steps fails the tx status will be set to failed
+   *
+   * @param {number} txId - the tx's Id
+   * @param {string} actionId - actionId passed from UI
+   * @param opts - options object
+   * @param opts.hasApprovalRequest - whether the transaction has an approval request
+   */
+  async approveTransaction(txId, actionId, { hasApprovalRequest = true } = {}) {
+    // TODO: Move this safety out of this function.
+    // Since this transaction is async,
+    // we need to keep track of what is currently being signed,
+    // So that we do not increment nonce + resubmit something
+    // that is already being incremented & signed.
+    const txMeta = this.txStateManager.getTransaction(txId);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta.custodyStatus) {
+      this.inProcessOfSigning.delete(txId);
+      await this.signTransaction(txId);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    if (this.inProcessOfSigning.has(txId)) {
+      return;
+    }
+    this.inProcessOfSigning.add(txId);
+    let nonceLock;
+    try {
+      // approve
+      this.txStateManager.setTxStatusApproved(txId);
+      if (hasApprovalRequest) {
+        this._acceptApproval(txMeta);
+      }
+      // get next nonce
+      const fromAddress = txMeta.txParams.from;
+      // wait for a nonce
+      let { customNonceValue } = txMeta;
+      customNonceValue = Number(customNonceValue);
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      // add nonce to txParams
+      // if txMeta has previousGasParams then it is a retry at same nonce with
+      // higher gas settings and therefor the nonce should not be recalculated
+      const nonce = txMeta.previousGasParams
+        ? txMeta.txParams.nonce
+        : nonceLock.nextNonce;
+      const customOrNonce =
+        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
+
+      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails;
+      if (customNonceValue) {
+        txMeta.nonceDetails.customNonceValue = customNonceValue;
+      }
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#approveTransaction',
+      );
+      // sign transaction
+      const rawTx = await this.signTransaction(txId);
+
+      // update txMeta to check if it is a 4337 transaction
+      const updatedTxMeta = this.txStateManager.getTransaction(txId);
+
+      if (updatedTxMeta.is4337Tx) {
+        await this.publishUserOperationTransaction(
+          txId,
+          txMeta.userOp,
+          actionId,
+        );
+      } else {
+        await this.publishTransaction(txId, rawTx, actionId);
+      }
+
+      this._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.approved,
+        actionId,
+      );
+      // must set transaction to submitted/failed before releasing lock
+      nonceLock.releaseLock();
+    } catch (err) {
+      // this is try-catch wrapped so that we can guarantee that the nonceLock is released
+      try {
+        this._failTransaction(txId, err, actionId);
+      } catch (err2) {
+        log.error(err2);
+      }
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
+      // continue with error chain
+      throw err;
+    } finally {
+      this.inProcessOfSigning.delete(txId);
+    }
+  }
+
   async approveTransactionsWithSameNonce(listOfTxParams = []) {
     if (listOfTxParams.length === 0) {
       return '';
@@ -1288,6 +1411,9 @@ export default class TransactionController extends EventEmitter {
     const fromAddress = txParams.from;
     const common = await this.getCommonConfiguration(txParams.from);
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
+
+    // signedEthTx now returns either a regular signed eth transaction by a EOA
+    // or a signed userOperation
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
@@ -1307,6 +1433,18 @@ export default class TransactionController extends EventEmitter {
       );
     }
     ///: END:ONLY_INCLUDE_IN
+
+    // Returns a user operation hash instead of a regular transaction hash
+    if (isSigned4337Transaction(signedEthTx)) {
+      txMeta.userOp = signedEthTx.userOp;
+      txMeta.userOpHash = signedEthTx.userOpHash;
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#signTransaction: add r, s, v values',
+      );
+      this.txStateManager.setTxStatusSigned(txMeta.id);
+      return txMeta.userOpHash;
+    }
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
@@ -1354,6 +1492,46 @@ export default class TransactionController extends EventEmitter {
       } else {
         throw error;
       }
+    }
+    this.setTxHash(txId, txHash);
+
+    this.txStateManager.setTxStatusSubmitted(txId);
+
+    this._trackTransactionMetricsEvent(
+      txMeta,
+      TransactionMetaMetricsEvent.submitted,
+      actionId,
+    );
+  }
+
+  /**
+   * publishes the raw tx and sets the txMeta to submitted
+   *
+   * @param {number} txId - the tx's Id
+   * @param {string} userOp - the userOperation object
+   * @returns {Promise<void>}
+   * @param {number} actionId - actionId passed from UI
+   */
+  async publishUserOperationTransaction(txId, userOp, actionId) {
+    const txMeta = this.txStateManager.getTransaction(txId);
+    if (txMeta.type === TransactionType.swap) {
+      const preTxBalance = await this.query.getBalance(txMeta.txParams.from);
+      txMeta.preTxBalance = preTxBalance.toString(16);
+    }
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'transactions#publishTransaction',
+    );
+    let txHash;
+    try {
+      txHash = await this.userOperationBundlerController.submitUserOperation({
+        userOperation: userOp,
+      });
+    } catch (error) {
+      console.error(
+        `[TransactionController] Error in publishUserOperation - ${error}`,
+      );
+      throw error;
     }
     this.setTxHash(txId, txHash);
 

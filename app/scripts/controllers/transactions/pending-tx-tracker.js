@@ -37,6 +37,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @param {object} config.nonceTracker - see nonce tracker
    * @param {object} config.provider - A network provider.
    * @param {object} config.query - An EthQuery instance.
+   * @param {object} config.userOperationBundlerController - A user operation bundler instance
    * @param {Function} config.publishTransaction - Publishes a raw transaction,
    */
   constructor(config) {
@@ -48,6 +49,7 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.publishTransaction = config.publishTransaction;
     this.approveTransaction = config.approveTransaction;
     this.confirmTransaction = config.confirmTransaction;
+    this.userOperationBundlerController = config.userOperationBundlerController;
   }
 
   /**
@@ -131,6 +133,12 @@ export default class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:block-update', txMeta, latestBlockNumber);
     }
 
+    // If we get here it means that the user op was already submitted to the
+    // bundler, there is nothing more that we can do.
+    if (txMeta.userOp) {
+      return await this.userOperationBundlerController.resubmitTx();
+    }
+
     const firstRetryBlockNumber =
       txMeta.firstRetryBlockNumber || latestBlockNumber;
     const txBlockDistance =
@@ -211,19 +219,48 @@ export default class PendingTransactionTracker extends EventEmitter {
     }
 
     try {
-      const transactionReceipt = await this.query.getTransactionReceipt(txHash);
-      if (transactionReceipt?.blockNumber) {
-        const { baseFeePerGas, timestamp: blockTimestamp } =
-          await this.query.getBlockByHash(transactionReceipt?.blockHash, false);
+      if (txMeta.userOp) {
+        const userOpReceipt =
+          await this.userOperationBundlerController.queryReceiptUserOperation({
+            userOperationHash: txMeta.userOpHash,
+          });
 
-        this.emit(
-          'tx:confirmed',
-          txId,
-          transactionReceipt,
-          baseFeePerGas,
-          blockTimestamp,
+        // if the receipt is null, it means the transaction is not confirmed
+        if (userOpReceipt.success) {
+          const { baseFeePerGas, timestamp } = await this.query.getBlockByHash(
+            userOpReceipt.receipt.blockHash,
+            false,
+          );
+
+          txMeta.hash = userOpReceipt.receipt.transactionHash;
+          this.emit(
+            'tx:confirmed',
+            txId,
+            userOpReceipt.receipt,
+            baseFeePerGas,
+            timestamp,
+          );
+        }
+      } else {
+        const transactionReceipt = await this.query.getTransactionReceipt(
+          txHash,
         );
-        return;
+        if (transactionReceipt?.blockNumber) {
+          const { baseFeePerGas, timestamp: blockTimestamp } =
+            await this.query.getBlockByHash(
+              transactionReceipt?.blockHash,
+              false,
+            );
+
+          this.emit(
+            'tx:confirmed',
+            txId,
+            transactionReceipt,
+            baseFeePerGas,
+            blockTimestamp,
+          );
+          return;
+        }
       }
     } catch (err) {
       txMeta.warning = {

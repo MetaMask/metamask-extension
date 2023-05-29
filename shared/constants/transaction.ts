@@ -1,4 +1,4 @@
-import { AccessList } from '@ethereumjs/tx';
+import { AccessList, JsonTx } from '@ethereumjs/tx';
 
 export enum TransactionType {
   /**
@@ -404,6 +404,12 @@ export interface TransactionMeta {
   submittedTime?: number;
   /** The error encountered during the transaction */
   txErr?: TxError;
+  /** The User Operation for a 4337 transaction */
+  userOp: UserOperation;
+  /** The User Operation hash for a 4337 transaction */
+  userOpHash: string;
+  /** Flag used to identify a 4337 transaction */
+  is4337Tx: boolean;
 }
 
 /**
@@ -476,4 +482,24 @@ export enum TokenStandard {
   ERC1155 = 'ERC1155',
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
+}
+
+export interface SignedUserOperation {
+  userOp: UserOperation;
+  userOpHash: string;
+  ethTx: JsonTx;
+}
+
+export interface UserOperation {
+  sender: string;
+  nonce: string; // hex string
+  initCode: string;
+  callData: string;
+  callGasLimit: string; // hex string
+  verificationGasLimit: string; // hex string
+  preVerificationGas: string; // hex string
+  maxFeePerGas: string; // hex string
+  maxPriorityFeePerGas: string; // hex string
+  paymasterAndData: string;
+  signature: string;
 }

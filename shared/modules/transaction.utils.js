@@ -81,6 +81,19 @@ export function isLegacyTransaction(transaction) {
 }
 
 /**
+ * Determine if the signed transaction object returns includes the field
+ * userOp. This will return false if userOp is undefined
+ *
+ * @param {import("../constants/transaction").SignedUserOperation} transaction -
+ *  the transaction to check
+ * @returns {boolean} true if transaction uses valid Legacy fields OR lacks
+ *  EIP1559 fields
+ */
+export function isSigned4337Transaction(transaction) {
+  return transaction?.userOp !== undefined;
+}
+
+/**
  * Determine if a transactions gas fees in txParams match those in its dappSuggestedGasFees property
  *
  * @param {import("../constants/transaction").TransactionMeta} transaction -
