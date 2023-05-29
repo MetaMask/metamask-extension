@@ -49,6 +49,7 @@ module.exports = {
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>/app/scripts/metamask-controller.test.js',
     '<rootDir>/shared/**/*.test.(js|ts)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',

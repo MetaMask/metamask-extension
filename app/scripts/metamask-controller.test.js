@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import { cloneDeep, last, noop } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
@@ -33,7 +32,9 @@ const browserPolyfillMock = {
     getPlatformInfo: async () => 'mac',
   },
   storage: {
-    session: {},
+    _session: {},
+    get session() { return this._session }, 
+    set session(value) { this._session = value },    
   },
 };
 
@@ -256,7 +257,8 @@ describe('MetaMaskController', function () {
 
   afterEach(function () {
     nock.cleanAll();
-    jest.mockRestore();
+    // jest.mockRestore();
+    jest.clearAllMocks();
   });
 
   afterAll(async function () {
