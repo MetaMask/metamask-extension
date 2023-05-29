@@ -4,7 +4,6 @@ import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import browser from 'webextension-polyfill';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import proxyquire from 'proxyquire';
 
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
@@ -87,9 +86,11 @@ jest.mock('ethjs-contract', () => MockEthContract);
 // https://github.com/MetaMask/metamask-extension/issues/17890
 const MetaMaskController = require('./metamask-controller').default;
 
-const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
-  '../../shared/modules/mv3.utils': { isManifestV3: true },
-}).default;
+jest.mock('../../shared/modules/mv3.utils', () => ({
+  isManifestV3: true,
+}));
+
+const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
 const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
