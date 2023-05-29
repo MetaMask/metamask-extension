@@ -124,7 +124,7 @@ export const NETWORK_IDS = {
   SEPOLIA: '11155111',
   LINEA_GOERLI: '59140',
   // TODO: change network ID for linea mainnet
-  LINEA_MAINNET: '59141',
+  LINEA_MAINNET: '59140',
 } as const;
 
 /**
@@ -152,7 +152,7 @@ export const CHAIN_IDS = {
   SEPOLIA: '0xaa36a7',
   LINEA_GOERLI: '0xe704',
   // TODO: change chain ID for linea mainnet
-  LINEA_MAINNET: '0xe705',
+  LINEA_MAINNET: '0xe704',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
@@ -315,7 +315,6 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.LINEA_MAINNET]: {
     networkId: NETWORK_IDS.LINEA_MAINNET,
     chainId: CHAIN_IDS.LINEA_MAINNET,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
     blockExplorerUrl: 'https://lineascan.build',
   },
   [NETWORK_TYPES.LOCALHOST]: {

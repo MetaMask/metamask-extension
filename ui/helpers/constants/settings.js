@@ -228,8 +228,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('linea-mainnet'),
-    descriptionMessage: (t) => t('linea-mainnet'),
+    sectionMessage: (t) => t('lineaMainnet'),
+    descriptionMessage: (t) => t('lineaMainnet'),
     route: `${NETWORKS_ROUTE}#networks-linea-mainnet`,
     icon: 'fa fa-plug',
   },

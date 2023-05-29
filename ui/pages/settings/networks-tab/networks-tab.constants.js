@@ -64,7 +64,7 @@ const defaultNetworksData = [
       excludeProjectId: true,
     }),
     chainId: CHAIN_IDS.LINEA_MAINNET,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+    ticker: CURRENCY_SYMBOLS.ETH,
     blockExplorerUrl: 'https://lineascan.build',
   },
 ];

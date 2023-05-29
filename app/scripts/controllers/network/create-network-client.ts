@@ -57,7 +57,11 @@ export function createNetworkClient(
   const rpcApiMiddleware =
     networkConfig.type === NetworkClientType.Infura
       ? createInfuraMiddleware({
-          network: networkConfig.network,
+          network:
+            // TODO: this condition is to test the linea mainnet implemenation because the mainnet infrastructure is not yet ready. TO BE REMOVED
+            networkConfig.network === 'linea-mainnet'
+              ? 'linea-goerli'
+              : networkConfig.network,
           projectId: networkConfig.infuraProjectId,
           maxAttempts: 5,
           source: 'metamask',

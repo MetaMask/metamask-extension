@@ -138,7 +138,7 @@ describe('Selectors', () => {
           },
         },
       });
-      expect(networks).toHaveLength(1);
+      expect(networks).toHaveLength(2);
     });
 
     it('returns networks with showTestNetworks on', () => {
@@ -149,7 +149,7 @@ describe('Selectors', () => {
           },
         },
       });
-      expect(networks.length).toBeGreaterThan(1);
+      expect(networks.length).toBeGreaterThan(2);
     });
   });
 

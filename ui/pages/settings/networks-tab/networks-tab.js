@@ -22,6 +22,7 @@ import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
   NETWORK_TYPES,
   TEST_CHAINS,
+  getRpcUrl,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
@@ -31,7 +32,14 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-  isATestNetwork: TEST_CHAINS.includes(network.chainId),
+  isATestNetwork:
+    TEST_CHAINS.includes(network.chainId) &&
+    // TODO: remove this condition once the linea mainnet is ready
+    network.rpcUrl !==
+      getRpcUrl({
+        network: NETWORK_TYPES.LINEA_MAINNET,
+        excludeProjectId: true,
+      }),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
