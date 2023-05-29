@@ -10,7 +10,7 @@ import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import {logPortMessages, logPostMessages} from "./lib/stream-logger";
+import { logPortMessages, logPostMessages } from './lib/stream-logger';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -188,11 +188,7 @@ const setupPhishingExtStreams = () => {
     name: CONTENT_SCRIPT,
   });
   phishingExtStream = new PortStream(phishingExtPort);
-  phishingExtStream._setLogger(
-    CONTENT_SCRIPT,
-    BACKGROUND,
-    logPortMessages,
-  );
+  phishingExtStream._setLogger(CONTENT_SCRIPT, BACKGROUND, logPortMessages);
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -341,11 +337,7 @@ const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
-  extensionStream._setLogger(
-    CONTENT_SCRIPT,
-    BACKGROUND,
-    logPortMessages,
-  );
+  extensionStream._setLogger(CONTENT_SCRIPT, BACKGROUND, logPortMessages);
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
@@ -401,11 +393,7 @@ const setupLegacyPageStreams = () => {
     target: LEGACY_INPAGE,
   });
 
-  legacyPageStream._setLogger(
-    CONTENT_SCRIPT,
-    LEGACY_INPAGE,
-    logPostMessages,
-  );
+  legacyPageStream._setLogger(CONTENT_SCRIPT, LEGACY_INPAGE, logPostMessages);
 
   if (isManifestV3) {
     legacyPageStream.on('data', ({ data: { method } }) => {

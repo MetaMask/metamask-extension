@@ -6,17 +6,11 @@ const colors = {
 };
 
 export function logPortMessages(...args) {
-  logMessage(
-    'PortMessageStream',
-    ...args,
-  );
+  logMessage('PortMessageStream', ...args);
 }
 
 export function logPostMessages(...args) {
-  logMessage(
-    'PostMessageStream',
-    ...args,
-  );
+  logMessage('PostMessageStream', ...args);
 }
 
 function logMessage(prefix, from, to, out, msg) {

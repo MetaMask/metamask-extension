@@ -30,7 +30,7 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
-import {logPortMessages} from "./lib/stream-logger";
+import { logPortMessages } from './lib/stream-logger';
 
 const container = document.getElementById('app-content');
 

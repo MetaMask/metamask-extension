@@ -36,7 +36,7 @@ import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import {logPostMessages} from "./lib/stream-logger";
+import { logPostMessages } from './lib/stream-logger';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
