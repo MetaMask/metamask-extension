@@ -13,6 +13,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
+import {logMessage} from "./lib/stream-utils";
 
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -63,6 +64,12 @@ import {
 import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
 /* eslint-enable import/order */
+
+// contexts
+const CONTENT_SCRIPT = 'metamask-contentscript';
+const BACKGROUND = 'metamask-background';
+const UI = 'metamask-ui';
+const EXTERNAL = 'metamask-external';
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
@@ -567,6 +574,9 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      portStream._setLogger(BACKGROUND, UI, (src, dst, out, data) => {
+        logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+      });
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -630,6 +640,9 @@ export function setupController(
     ) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      portStream._setLogger(BACKGROUND, UI, (src, dst, out, data) => {
+        logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+      });
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -645,12 +658,12 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort);
+      connectExternal(remotePort, CONTENT_SCRIPT);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort) => {
+  connectExternal = (remotePort, to = EXTERNAL) => {
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
@@ -663,6 +676,9 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+    portStream._setLogger(BACKGROUND, to, (src, dst, out, data) => {
+      logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+    });
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,

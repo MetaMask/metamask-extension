@@ -26,6 +26,7 @@ const inpageBundle = inpageContent + inpageSuffix;
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
+const BACKGROUND = 'metamask-background';
 const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
 
 // stream channels
@@ -185,6 +186,9 @@ const setupPhishingExtStreams = () => {
     name: CONTENT_SCRIPT,
   });
   phishingExtStream = new PortStream(phishingExtPort);
+  phishingExtStream._setLogger(CONTENT_SCRIPT, BACKGROUND, (src, dst, out, data) => {
+    logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+  });
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -335,6 +339,9 @@ const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
+  extensionStream._setLogger(CONTENT_SCRIPT, BACKGROUND, (src, dst, out, data) => {
+    logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+  });
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers

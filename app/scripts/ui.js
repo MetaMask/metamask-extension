@@ -27,11 +27,14 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
-import { setupMultiplex } from './lib/stream-utils';
+import {logMessage, setupMultiplex} from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const container = document.getElementById('app-content');
+
+const BACKGROUND = 'metamask-background';
+const UI = 'metamask-ui';
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
@@ -114,6 +117,9 @@ async function start() {
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
+  connectionStream._setLogger(UI, BACKGROUND, (src, dst, out, data) => {
+    logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+  });
 
   const activeTab = await queryCurrentActiveTab(windowType);
 
@@ -247,6 +253,9 @@ async function start() {
 
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
+      connectionStream._setLogger(UI, BACKGROUND, (src, dst, out, data) => {
+        logMessage('PortMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+      });
       extensionPort.onMessage.addListener(messageListener);
       extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
     };
