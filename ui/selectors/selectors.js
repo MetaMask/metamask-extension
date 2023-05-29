@@ -22,6 +22,7 @@ import {
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   AURORA_DISPLAY_NAME,
+  EUROPA_SKALE_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -1276,6 +1277,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return AVALANCHE_DISPLAY_NAME;
     case CHAIN_IDS.AURORA:
       return AURORA_DISPLAY_NAME;
+    case CHAIN_IDS.EUROPA_SKALE:
+      return EUROPA_SKALE_DISPLAY_NAME;
     default:
       return '';
   }
@@ -1295,6 +1298,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.AURORA,
+    CHAIN_IDS.EUROPA_SKALE,
   ].includes(chainId);
 }
 
