@@ -1,17 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+///: END:ONLY_INCLUDE_IN
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
   doesAddressRequireLedgerHidConnection,
   getCurrentCurrency,
   getPreferences,
-  getSelectedAccount,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   unconfirmedMessagesHashSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -42,6 +46,12 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/order
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 
 import {
   TextAlign,
@@ -71,6 +81,7 @@ import Footer from './signature-request-footer';
 
 const SignatureRequest = ({ txData, sign, cancel }) => {
   const trackEvent = useContext(MetaMetricsContext);
+  const dispatch = useDispatch();
   const t = useI18nContext();
 
   const [hasScrolledMessage, setHasScrolledMessage] = useState(false);
@@ -117,6 +128,8 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   // Used to show a warning if the signing account is not the selected account
   // Largely relevant for contract wallet custodians
   const selectedAccount = useSelector(getSelectedAccount);
+  const mmiActions = mmiActionsFactory();
+  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
   ///: END:ONLY_INCLUDE_IN
 
   const messageIsScrollable =
@@ -191,6 +204,31 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
     networkName === ''
       ? providerNickName || t('unknownNetwork')
       : t(networkName);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  useEffect(() => {
+    if (txData.custodyId) {
+      dispatch(
+        showCustodianDeepLink({
+          dispatch,
+          mmiActions,
+          txId: undefined,
+          custodyId: txData.custodyId,
+          fromAddress: address,
+          isSignature: true,
+          closeNotification: isNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => {
+            trackEvent({
+              category: 'MMI',
+              event: 'Show deeplink for signature',
+            });
+          },
+        }),
+      );
+    }
+  }, []);
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <div className="signature-request">
@@ -310,6 +348,9 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
         cancelAction={onCancel}
         signAction={onSign}
         disabled={
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          Boolean(txData?.custodyId) ||
+          ///: END:ONLY_INCLUDE_IN
           hardwareWalletRequiresConnection ||
           (messageIsScrollable && !hasScrolledMessage)
         }
