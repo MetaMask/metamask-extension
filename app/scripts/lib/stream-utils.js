@@ -3,6 +3,34 @@ import pump from 'pump';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 
+const colors = {
+  'metamask-ui': 'green',
+  'metamask-inpage': 'red',
+  'metamask-contentscript': 'cornflowerblue',
+  'metamask-background': 'yellow',
+};
+
+export function logMessage(prefix, id, from, out, to, data) {
+  if (!process.env.METAMASK_DEBUG) {
+    return;
+  }
+  console.log(
+    `%c${prefix} (`+
+    `%c${id}`+
+    `%c): `+
+    '%c' + (from.split('metamask-')[1] || from) +
+    '%c' + (` ${out ? '►►►' : '◄◄◄'} `)+
+    '%c' + (to.split('metamask-')[1] || to),
+    `color: grey;`,
+    `color: fuchsia;`,
+    `color: grey;`,
+    `color: ${colors[from] || 'grey'};`,
+    `color: grey;`,
+    `color: ${colors[to] || 'grey'};`,
+    data || '',
+  )
+}
+
 /**
  * Sets up stream multiplexing for the given stream
  *

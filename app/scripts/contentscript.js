@@ -10,6 +10,7 @@ import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import {logMessage} from "./lib/stream-utils";
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -297,6 +298,10 @@ const setupPageStreams = () => {
   const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: INPAGE,
+  });
+
+  pageStream._setLogger(CONTENT_SCRIPT, INPAGE, (src, dst, out, data) => {
+    logMessage('PostMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
   });
 
   if (isManifestV3) {
