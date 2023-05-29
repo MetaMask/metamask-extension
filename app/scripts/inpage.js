@@ -33,14 +33,11 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 import log from 'loglevel';
+import {METAMASK_CONTENTSCRIPT, METAMASK_INPAGE} from "./context";
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import { logPostMessages } from './lib/stream-logger';
-
-// contexts
-const CONTENT_SCRIPT = 'metamask-contentscript';
-const INPAGE = 'metamask-inpage';
 
 restoreContextAfterImports();
 
@@ -53,11 +50,11 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 if (shouldInjectProvider()) {
   // setup background connection
   const metamaskStream = new WindowPostMessageStream({
-    name: INPAGE,
-    target: CONTENT_SCRIPT,
+    name: METAMASK_INPAGE,
+    target: METAMASK_CONTENTSCRIPT,
   });
 
-  metamaskStream._setLogger(INPAGE, CONTENT_SCRIPT, logPostMessages);
+  metamaskStream._setLogger(METAMASK_INPAGE, METAMASK_CONTENTSCRIPT, logPostMessages);
 
   initializeProvider({
     connectionStream: metamaskStream,

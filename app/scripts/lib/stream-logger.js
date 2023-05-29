@@ -1,8 +1,18 @@
+import {
+  METAMASK_BACKGROUND,
+  METAMASK_CONTENTSCRIPT, METAMASK_EXTERNAL,
+  METAMASK_INPAGE,
+  METAMASK_PHISHING_WARNING_PAGE,
+  METAMASK_UI
+} from "../context";
+
 const colors = {
-  'metamask-ui': 'green',
-  'metamask-inpage': 'red',
-  'metamask-contentscript': 'cornflowerblue',
-  'metamask-background': 'yellow',
+  [METAMASK_UI]: 'green',
+  [METAMASK_INPAGE]: 'red',
+  [METAMASK_CONTENTSCRIPT]: 'cornflowerblue',
+  [METAMASK_BACKGROUND]: 'yellow',
+  [METAMASK_PHISHING_WARNING_PAGE]: 'purple',
+  [METAMASK_EXTERNAL]: 'grey',
 };
 
 export function logPortMessages(...args) {

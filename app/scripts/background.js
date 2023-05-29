@@ -32,6 +32,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { logPortMessages } from './lib/stream-logger';
+import {METAMASK_BACKGROUND, METAMASK_EXTERNAL, METAMASK_UI, METAMASK_CONTENTSCRIPT} from "./context";
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -63,12 +64,6 @@ import {
 import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
 /* eslint-enable import/order */
-
-// contexts
-const CONTENT_SCRIPT = 'metamask-contentscript';
-const BACKGROUND = 'metamask-background';
-const UI = 'metamask-ui';
-const EXTERNAL = 'metamask-external';
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
@@ -573,7 +568,7 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(BACKGROUND, UI, logPortMessages);
+      portStream._setLogger(METAMASK_BACKGROUND, METAMASK_UI, logPortMessages);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -637,7 +632,7 @@ export function setupController(
     ) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(BACKGROUND, UI, logPortMessages);
+      portStream._setLogger(METAMASK_BACKGROUND, METAMASK_UI, logPortMessages);
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -653,12 +648,12 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort, CONTENT_SCRIPT);
+      connectExternal(remotePort, METAMASK_CONTENTSCRIPT);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort, to = EXTERNAL) => {
+  connectExternal = (remotePort, to = METAMASK_EXTERNAL) => {
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
@@ -671,7 +666,7 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    portStream._setLogger(BACKGROUND, to, logPortMessages);
+    portStream._setLogger(METAMASK_BACKGROUND, to, logPortMessages);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
