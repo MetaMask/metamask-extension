@@ -32,7 +32,12 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { logPortMessages } from './lib/stream-logger';
-import {METAMASK_BACKGROUND, METAMASK_EXTERNAL, METAMASK_UI, METAMASK_CONTENTSCRIPT} from "./context";
+import {
+  METAMASK_BACKGROUND,
+  METAMASK_EXTERNAL,
+  METAMASK_UI,
+  METAMASK_CONTENTSCRIPT,
+} from './context';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';

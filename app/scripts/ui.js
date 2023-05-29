@@ -31,7 +31,7 @@ import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 import { logPortMessages } from './lib/stream-logger';
-import {METAMASK_BACKGROUND, METAMASK_UI} from "./context";
+import { METAMASK_BACKGROUND, METAMASK_UI } from './context';
 
 const container = document.getElementById('app-content');
 
@@ -116,7 +116,11 @@ async function start() {
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
-  connectionStream._setLogger(METAMASK_UI, METAMASK_BACKGROUND, logPortMessages);
+  connectionStream._setLogger(
+    METAMASK_UI,
+    METAMASK_BACKGROUND,
+    logPortMessages,
+  );
 
   const activeTab = await queryCurrentActiveTab(windowType);
 
@@ -250,7 +254,11 @@ async function start() {
 
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
-      connectionStream._setLogger(METAMASK_UI, METAMASK_BACKGROUND, logPortMessages);
+      connectionStream._setLogger(
+        METAMASK_UI,
+        METAMASK_BACKGROUND,
+        logPortMessages,
+      );
       extensionPort.onMessage.addListener(messageListener);
       extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
     };

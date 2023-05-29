@@ -33,10 +33,10 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 import log from 'loglevel';
-import {METAMASK_CONTENTSCRIPT, METAMASK_INPAGE} from "./context";
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { METAMASK_CONTENTSCRIPT, METAMASK_INPAGE } from './context';
 import { logPostMessages } from './lib/stream-logger';
 
 restoreContextAfterImports();
@@ -54,7 +54,11 @@ if (shouldInjectProvider()) {
     target: METAMASK_CONTENTSCRIPT,
   });
 
-  metamaskStream._setLogger(METAMASK_INPAGE, METAMASK_CONTENTSCRIPT, logPostMessages);
+  metamaskStream._setLogger(
+    METAMASK_INPAGE,
+    METAMASK_CONTENTSCRIPT,
+    logPostMessages,
+  );
 
   initializeProvider({
     connectionStream: metamaskStream,
