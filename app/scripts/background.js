@@ -31,8 +31,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
-import { logMessage } from './lib/stream-utils';
-
+import {logPortMessages} from "./lib/stream-logger";
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -574,16 +573,7 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(BACKGROUND, UI, (src, dst, out, data) => {
-        logMessage(
-          'PortMessageStream',
-          data?.data?.id || 0,
-          src,
-          out,
-          dst,
-          data?.data,
-        );
-      });
+      portStream._setLogger(BACKGROUND, UI, logPortMessages);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -647,16 +637,7 @@ export function setupController(
     ) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(BACKGROUND, UI, (src, dst, out, data) => {
-        logMessage(
-          'PortMessageStream',
-          data?.data?.id || 0,
-          src,
-          out,
-          dst,
-          data?.data,
-        );
-      });
+      portStream._setLogger(BACKGROUND, UI, logPortMessages);
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -690,16 +671,7 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    portStream._setLogger(BACKGROUND, to, (src, dst, out, data) => {
-      logMessage(
-        'PortMessageStream',
-        data?.data?.id || 0,
-        src,
-        out,
-        dst,
-        data?.data,
-      );
-    });
+    portStream._setLogger(BACKGROUND, to, logPortMessages);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,

@@ -10,7 +10,7 @@ import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { logMessage } from './lib/stream-utils';
+import {logPortMessages, logPostMessages} from "./lib/stream-logger";
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -164,16 +164,7 @@ function setupPhishingPageStreams() {
   phishingPageStream._setLogger(
     CONTENT_SCRIPT,
     PHISHING_WARNING_PAGE,
-    (src, dst, out, data) => {
-      logMessage(
-        'PostMessageStream',
-        data?.data?.id || 0,
-        src,
-        out,
-        dst,
-        data?.data,
-      );
-    },
+    logPostMessages,
   );
 
   if (isManifestV3) {
@@ -200,16 +191,7 @@ const setupPhishingExtStreams = () => {
   phishingExtStream._setLogger(
     CONTENT_SCRIPT,
     BACKGROUND,
-    (src, dst, out, data) => {
-      logMessage(
-        'PortMessageStream',
-        data?.data?.id || 0,
-        src,
-        out,
-        dst,
-        data?.data,
-      );
-    },
+    logPortMessages,
   );
 
   // create and connect channel muxers
@@ -330,16 +312,7 @@ const setupPageStreams = () => {
     target: INPAGE,
   });
 
-  pageStream._setLogger(CONTENT_SCRIPT, INPAGE, (src, dst, out, data) => {
-    logMessage(
-      'PostMessageStream',
-      data?.data?.id || 0,
-      src,
-      out,
-      dst,
-      data?.data,
-    );
-  });
+  pageStream._setLogger(CONTENT_SCRIPT, INPAGE, logPostMessages);
 
   if (isManifestV3) {
     pageStream.on('data', ({ data: { method } }) => {
@@ -371,16 +344,7 @@ const setupExtensionStreams = () => {
   extensionStream._setLogger(
     CONTENT_SCRIPT,
     BACKGROUND,
-    (src, dst, out, data) => {
-      logMessage(
-        'PortMessageStream',
-        data?.data?.id || 0,
-        src,
-        out,
-        dst,
-        data?.data,
-      );
-    },
+    logPortMessages,
   );
   extensionStream.on('data', extensionStreamMessageListener);
 
@@ -440,16 +404,7 @@ const setupLegacyPageStreams = () => {
   legacyPageStream._setLogger(
     CONTENT_SCRIPT,
     LEGACY_INPAGE,
-    (src, dst, out, data) => {
-      logMessage(
-        'PostMessageStream',
-        data?.data?.id || 0,
-        src,
-        out,
-        dst,
-        data?.data,
-      );
-    },
+    logPostMessages,
   );
 
   if (isManifestV3) {

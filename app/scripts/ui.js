@@ -27,9 +27,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
-import { logMessage, setupMultiplex } from './lib/stream-utils';
+import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import {logPortMessages} from "./lib/stream-logger";
 
 const container = document.getElementById('app-content');
 
@@ -117,16 +118,7 @@ async function start() {
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
-  connectionStream._setLogger(UI, BACKGROUND, (src, dst, out, data) => {
-    logMessage(
-      'PortMessageStream',
-      data?.data?.id || 0,
-      src,
-      out,
-      dst,
-      data?.data,
-    );
-  });
+  connectionStream._setLogger(UI, BACKGROUND, logPortMessages);
 
   const activeTab = await queryCurrentActiveTab(windowType);
 
@@ -260,16 +252,7 @@ async function start() {
 
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
-      connectionStream._setLogger(UI, BACKGROUND, (src, dst, out, data) => {
-        logMessage(
-          'PortMessageStream',
-          data?.data?.id || 0,
-          src,
-          out,
-          dst,
-          data?.data,
-        );
-      });
+      connectionStream._setLogger(UI, BACKGROUND, logPortMessages);
       extensionPort.onMessage.addListener(messageListener);
       extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
     };

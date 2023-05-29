@@ -36,7 +36,7 @@ import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { logMessage } from './lib/stream-utils';
+import {logPostMessages} from "./lib/stream-logger";
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -57,16 +57,7 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  metamaskStream._setLogger(INPAGE, CONTENT_SCRIPT, (src, dst, out, data) => {
-    logMessage(
-      'PostMessageStream',
-      data?.data?.id || 0,
-      src,
-      out,
-      dst,
-      data?.data,
-    );
-  });
+  metamaskStream._setLogger(INPAGE, CONTENT_SCRIPT, logPostMessages);
 
   initializeProvider({
     connectionStream: metamaskStream,
