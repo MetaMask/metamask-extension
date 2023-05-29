@@ -33,8 +33,12 @@ const browserPolyfillMock = {
   },
   storage: {
     _session: {},
-    get session() { return this._session }, 
-    set session(value) { this._session = value },    
+    get session() {
+      return this._session;
+    },
+    set session(value) {
+      this._session = value;
+    },
   },
 };
 
@@ -1121,7 +1125,7 @@ describe('MetaMaskController', function () {
       streamTest.end();
     });
 
-    it('adds a tabId and origin to requests', function (done) {
+    it('adds a tabId and origin to requests', async function () {
       const messageSender = {
         url: 'http://mycrypto.com',
         tab: { id: 456 },
@@ -1145,26 +1149,28 @@ describe('MetaMaskController', function () {
         params: [{ ...mockTxParams }],
         method: 'eth_sendTransaction',
       };
-      streamTest.write(
-        {
-          name: 'metamask-provider',
-          data: message,
-        },
-        null,
-        () => {
-          setTimeout(() => {
-            expect(loggerMiddlewareMock.requests[0]).toStrictEqual({
-              ...message,
-              origin: 'http://mycrypto.com',
-              tabId: 456,
+      await new Promise((resolve) => {
+        streamTest.write(
+          {
+            name: 'metamask-provider',
+            data: message,
+          },
+          null,
+          () => {
+            setTimeout(() => {
+              expect(loggerMiddlewareMock.requests[0]).toStrictEqual({
+                ...message,
+                origin: 'http://mycrypto.com',
+                tabId: 456,
+              });
+              resolve();
             });
-            done();
-          });
-        },
-      );
+          },
+        );
+      });
     });
 
-    it('should add only origin to request if tabId not provided', function (done) {
+    it('should add only origin to request if tabId not provided', async function () {
       const messageSender = {
         url: 'http://mycrypto.com',
       };
@@ -1187,22 +1193,24 @@ describe('MetaMaskController', function () {
         params: [{ ...mockTxParams }],
         method: 'eth_sendTransaction',
       };
-      streamTest.write(
-        {
-          name: 'metamask-provider',
-          data: message,
-        },
-        null,
-        () => {
-          setTimeout(() => {
-            expect(loggerMiddlewareMock.requests[0]).toStrictEqual({
-              ...message,
-              origin: 'http://mycrypto.com',
+      await new Promise((resolve) => {
+        streamTest.write(
+          {
+            name: 'metamask-provider',
+            data: message,
+          },
+          null,
+          () => {
+            setTimeout(() => {
+              expect(loggerMiddlewareMock.requests[0]).toStrictEqual({
+                ...message,
+                origin: 'http://mycrypto.com',
+              });
+              resolve();
             });
-            done();
-          });
-        },
-      );
+          },
+        );
+      });
     });
   });
 
