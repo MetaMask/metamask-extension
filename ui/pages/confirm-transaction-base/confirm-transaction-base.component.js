@@ -595,10 +595,10 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit() {
-    let submit = this.handleMainSubmit;
+    let submit = this.handleMainSubmit.bind(this);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    submit = this.handleMMISubmit;
+    submit = this.handleMMISubmit.bind(this);
     ///: END:ONLY_INCLUDE_IN
 
     submit();
