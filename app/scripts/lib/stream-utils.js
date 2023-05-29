@@ -15,12 +15,12 @@ export function logMessage(prefix, id, from, out, to, data) {
     return;
   }
   console.log(
-    `%c${prefix} (`+
-    `%c${id}`+
-    `%c): `+
-    '%c' + (from.split('metamask-')[1] || from) +
-    '%c' + (` ${out ? '►►►' : '◄◄◄'} `)+
-    '%c' + (to.split('metamask-')[1] || to),
+    `%c${prefix} (` +
+      `%c${id}` +
+      `%c): ` +
+      `%c${from.split('metamask-')[1] || from}%c` +
+      ` ${out ? '►►►' : '◄◄◄'} ` +
+      `%c${to.split('metamask-')[1] || to}`,
     `color: grey;`,
     `color: fuchsia;`,
     `color: grey;`,
@@ -28,7 +28,7 @@ export function logMessage(prefix, id, from, out, to, data) {
     `color: grey;`,
     `color: ${colors[to] || 'grey'};`,
     data || '',
-  )
+  );
 }
 
 /**

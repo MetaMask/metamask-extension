@@ -1,7 +1,6 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-import {logMessage} from "./lib/stream-utils";
 
 let __define;
 
@@ -37,6 +36,7 @@ import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { logMessage } from './lib/stream-utils';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -58,7 +58,14 @@ if (shouldInjectProvider()) {
   });
 
   metamaskStream._setLogger(INPAGE, CONTENT_SCRIPT, (src, dst, out, data) => {
-    logMessage('PostMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+    logMessage(
+      'PostMessageStream',
+      data?.data?.id || 0,
+      src,
+      out,
+      dst,
+      data?.data,
+    );
   });
 
   initializeProvider({
