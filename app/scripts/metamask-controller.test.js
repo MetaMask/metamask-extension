@@ -1,9 +1,11 @@
-import { cloneDeep, last } from 'lodash';
+import { cloneDeep, last, noop } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import browser from 'webextension-polyfill';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import proxyquire from 'proxyquire';
+
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -14,6 +16,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
+import sinon from "sinon";
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -175,10 +178,7 @@ const firstTimeState = {
 describe('MetaMaskController', function () {
   let metamaskController;
 
-  const sandbox = sinon.createSandbox();
-  const noop = () => undefined;
-
-  browserPolyfillMock.storage.session.set = sandbox.spy();
+  jest.spyOn(browserPolyfillMock.storage.session, 'set');
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
@@ -188,6 +188,8 @@ describe('MetaMaskController', function () {
   });
 
   beforeEach(function () {
+    jest.resetModules();
+
     nock('https://min-api.cryptocompare.com')
       .persist()
       .get(/.*/u)
@@ -214,8 +216,8 @@ describe('MetaMaskController', function () {
         ]),
       );
 
-    sandbox.replace(browser, 'runtime', {
-      sendMessage: sandbox.stub().rejects(),
+    sinon.replace(browser, 'runtime', {
+      sendMessage: sinon.stub().rejects(),
     });
 
     metamaskController = new MetaMaskController({
@@ -241,19 +243,16 @@ describe('MetaMaskController', function () {
     });
 
     // add sinon method spies
-    sandbox.spy(
+    sinon.spy(
       metamaskController.keyringController,
       'createNewVaultAndKeychain',
     );
-    sandbox.spy(
-      metamaskController.keyringController,
-      'createNewVaultAndRestore',
-    );
+    sinon.spy(metamaskController.keyringController, 'createNewVaultAndRestore');
   });
 
   afterEach(function () {
     nock.cleanAll();
-    sandbox.mockRestore();
+    sinon.mockRestore();
   });
 
   afterAll(async function () {
@@ -398,10 +397,7 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndKeychain', function () {
     it('can only create new vault on keyringController once', async function () {
-      const selectStub = sandbox.stub(
-        metamaskController,
-        'selectFirstIdentity',
-      );
+      const selectStub = sinon.stub(metamaskController, 'selectFirstIdentity');
 
       const password = 'a-fake-password';
 
@@ -424,7 +420,7 @@ describe('MetaMaskController', function () {
 
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
       const password = 'what-what-what';
-      sandbox.stub(metamaskController, 'getBalance');
+      sinon.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
         return Promise.resolve('0x0');
       });
@@ -440,7 +436,7 @@ describe('MetaMaskController', function () {
     });
 
     it('should clear previous identities after vault restoration', async function () {
-      sandbox.stub(metamaskController, 'getBalance');
+      sinon.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
         return Promise.resolve('0x0');
       });
@@ -501,7 +497,7 @@ describe('MetaMaskController', function () {
     });
 
     it('should restore any consecutive accounts with balances without extra zero balance accounts', async function () {
-      sandbox.stub(metamaskController, 'getBalance');
+      sinon.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve(FAKE_HEX_BALANCE);
       });
@@ -1258,10 +1254,10 @@ describe('MetaMaskController', function () {
     it('should do nothing if there are no keyrings in state', async function () {
       const syncAddresses = jest.fn();
       const syncWithAddresses = jest.fn();
-      sandbox.replace(metamaskController, 'preferencesController', {
+      sinon.replace(metamaskController, 'preferencesController', {
         syncAddresses,
       });
-      sandbox.replace(metamaskController, 'accountTracker', {
+      sinon.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
       });
 
@@ -1277,10 +1273,10 @@ describe('MetaMaskController', function () {
     it('should sync addresses if there are keyrings in state', async function () {
       const syncAddresses = jest.fn();
       const syncWithAddresses = jest.fn();
-      sandbox.replace(metamaskController, 'preferencesController', {
+      sinon.replace(metamaskController, 'preferencesController', {
         syncAddresses,
       });
-      sandbox.replace(metamaskController, 'accountTracker', {
+      sinon.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
       });
 
@@ -1301,10 +1297,10 @@ describe('MetaMaskController', function () {
     it('should NOT update selected address if already unlocked', async function () {
       const syncAddresses = jest.fn();
       const syncWithAddresses = jest.fn();
-      sandbox.replace(metamaskController, 'preferencesController', {
+      sinon.replace(metamaskController, 'preferencesController', {
         syncAddresses,
       });
-      sandbox.replace(metamaskController, 'accountTracker', {
+      sinon.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
       });
 
@@ -1472,7 +1468,7 @@ describe('MetaMaskController', function () {
 
       metamaskController.provider = provider;
 
-      sandbox
+      sinon
         .stub(
           metamaskController.assetsContractController,
           'getTokenStandardAndDetails',
@@ -1522,7 +1518,7 @@ describe('MetaMaskController', function () {
 
       metamaskController.provider = provider;
 
-      sandbox
+      sinon
         .stub(
           metamaskController.assetsContractController,
           'getTokenStandardAndDetails',
@@ -1571,7 +1567,7 @@ describe('MetaMaskController', function () {
 
       metamaskController.provider = provider;
 
-      sandbox
+      sinon
         .stub(
           metamaskController.assetsContractController,
           'getTokenStandardAndDetails',
