@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
+///: END:ONLY_INCLUDE_IN
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -330,6 +332,7 @@ export const mapDispatchToProps = (dispatch) => {
           closeNotification,
         }),
       ),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     showCustodianDeepLink: ({
       txId,
       fromAddress,
@@ -346,6 +349,7 @@ export const mapDispatchToProps = (dispatch) => {
         onDeepLinkFetched,
         onDeepLinkShown,
       }),
+    ///: END:ONLY_INCLUDE_IN
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
   };
