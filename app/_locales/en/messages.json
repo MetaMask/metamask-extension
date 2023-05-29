@@ -802,6 +802,9 @@
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
+  "connectingToLineaMainnet": {
+    "message": "Connecting to Linea Mainnet"
+  },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
   },
@@ -2178,6 +2181,9 @@
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
+  },
+  "lineaMainnet": {
+    "message": "Linea Mainnet"
   },
   "mainnetToken": {
     "message": "This address matches a known Ethereum Mainnet token address. Recheck the contract address and network for the token you are trying to add."

@@ -57,7 +57,11 @@ const NetworksTab = ({ addNewNetwork }) => {
     ([networkConfigurationId, networkConfiguration]) => {
       return {
         label: networkConfiguration.nickname,
-        iconColor: 'var(--color-icon-alternative)',
+        iconColor:
+          // TODO: remove this condition once the linea mainnet is ready
+          networkConfiguration.chainId === CHAIN_IDS.LINEA_TESTNET
+            ? '#61dfff'
+            : 'var(--color-icon-alternative)',
         providerType: NETWORK_TYPES.RPC,
         rpcUrl: networkConfiguration.rpcUrl,
         chainId: networkConfiguration.chainId,

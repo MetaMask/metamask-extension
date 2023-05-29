@@ -39,7 +39,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 
-const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
+const UNREMOVABLE_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.LINEA_MAINNET,
+  ...TEST_CHAINS,
+];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();

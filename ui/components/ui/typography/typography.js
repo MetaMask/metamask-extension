@@ -35,6 +35,8 @@ export const ValidColors = [
   Color.sepoliaInverse,
   Color.lineaGoerli,
   Color.lineaGoerliInverse,
+  Color.lineaMainnet,
+  Color.lineaMainnetInverse,
 ];
 
 export const ValidTags = [
