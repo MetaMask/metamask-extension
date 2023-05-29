@@ -160,6 +160,10 @@ function setupPhishingPageStreams() {
     target: PHISHING_WARNING_PAGE,
   });
 
+  phishingPageStream._setLogger(CONTENT_SCRIPT, PHISHING_WARNING_PAGE, (src, dst, out, data) => {
+    logMessage('PostMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
+  });
+
   if (isManifestV3) {
     runWorkerKeepAliveInterval();
   }
@@ -384,6 +388,10 @@ const setupLegacyPageStreams = () => {
   const legacyPageStream = new WindowPostMessageStream({
     name: LEGACY_CONTENT_SCRIPT,
     target: LEGACY_INPAGE,
+  });
+
+  legacyPageStream._setLogger(CONTENT_SCRIPT, LEGACY_INPAGE, (src, dst, out, data) => {
+    logMessage('PostMessageStream', data?.data?.id || 0, src, out, dst, data?.data);
   });
 
   if (isManifestV3) {
