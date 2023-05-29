@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { cloneDeep, last, noop } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
