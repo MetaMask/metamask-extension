@@ -20,8 +20,8 @@ class GanacheContractAddressRegistry {
    *
    * @param contractName
    */
-  getContractAddress(contractName) {
-    return this.#addresses[contractName];
+  getContractAddress(smartContract) {
+    return this.#addresses[typeof smartContract === 'object' ? smartContract.name : smartContract];
   }
 }
 

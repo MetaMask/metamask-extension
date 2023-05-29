@@ -19,10 +19,12 @@ class GanacheSeeder {
    * @param contractName
    */
 
-  async deploySmartContract(contractName) {
+  async deploySmartContract(smartContract) {
     const ethersProvider = new Web3Provider(this.ganacheProvider, 'any');
     const signer = ethersProvider.getSigner();
     const fromAddress = await signer.getAddress();
+    const contractName = typeof smartContract === 'object' ? smartContract.name : smartContract;
+    const contractCustomization = smartContract.customization;
     const contractFactory = new ContractFactory(
       contractConfiguration[contractName].abi,
       contractConfiguration[contractName].bytecode,
@@ -32,11 +34,20 @@ class GanacheSeeder {
     let contract;
 
     if (contractName === SMART_CONTRACTS.HST) {
+      var constructor = contractConfiguration[SMART_CONTRACTS.HST];
+      Object.keys(constructor).forEach(
+        function (key) {
+          if (typeof contractCustomization === 'object' && contractCustomization.hasOwnProperty(key))
+          {
+            constructor[key] = contractCustomization[key];
+          }
+        }
+      );
       contract = await contractFactory.deploy(
-        contractConfiguration[SMART_CONTRACTS.HST].initialAmount,
-        contractConfiguration[SMART_CONTRACTS.HST].tokenName,
-        contractConfiguration[SMART_CONTRACTS.HST].decimalUnits,
-        contractConfiguration[SMART_CONTRACTS.HST].tokenSymbol,
+        constructor.initialAmount,
+        constructor.tokenName,
+        constructor.decimalUnits,
+        constructor.tokenSymbol,
       );
     } else {
       contract = await contractFactory.deploy();
