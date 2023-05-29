@@ -3,8 +3,8 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-///: END:ONLY_INCLUDE_IN
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -275,8 +275,9 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = (dispatch) => {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiActions = mmiActionsFactory();
-
+  ///: END:ONLY_INCLUDE_IN
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
@@ -313,6 +314,7 @@ export const mapDispatchToProps = (dispatch) => {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     getCustodianConfirmDeepLink: (id) =>
       dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
     showCustodyConfirmLink: ({ link, address, closeNotification, custodyId }) =>
@@ -332,7 +334,7 @@ export const mapDispatchToProps = (dispatch) => {
           closeNotification,
         }),
       ),
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+
     showCustodianDeepLink: ({
       txId,
       fromAddress,
@@ -349,9 +351,9 @@ export const mapDispatchToProps = (dispatch) => {
         onDeepLinkFetched,
         onDeepLinkShown,
       }),
-    ///: END:ONLY_INCLUDE_IN
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
