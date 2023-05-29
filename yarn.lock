@@ -3992,9 +3992,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@git+https://github.com/MetaMask/KeyringController.git#a844bfb0ed7a50daf14a6b9c072fa26fe6bd3d91":
-  version: 10.0.1
-  resolution: "@metamask/eth-keyring-controller@https://github.com/MetaMask/KeyringController.git#commit=a844bfb0ed7a50daf14a6b9c072fa26fe6bd3d91"
+"@metamask/eth-keyring-controller@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/eth-keyring-controller@npm:11.0.0"
   dependencies:
     "@ethereumjs/tx": ^4.1.1
     "@metamask/browser-passworder": ^4.1.0
@@ -4003,7 +4003,7 @@ __metadata:
     "@metamask/eth-simple-keyring": ^5.0.0
     "@metamask/utils": ^5.0.0
     obs-store: ^4.0.3
-  checksum: 28b654617ecbaba7754000e4f15da0f96c42bb32d78ee7b8242d484d65af6b11310d368cfed8f9253bfc3630c93c970ebe8d4666334d8e37a468dfb49c9a90ea
+  checksum: 84ade74649bf4020f9c06c985f8116f3cf080c96df201bbd919a6defcffd4824f50feb4b26a630e14d5d2d00fd74e0fde800e5165d63317e834a05a270733d8b
   languageName: node
   linkType: hard
 
@@ -23706,7 +23706,7 @@ __metadata:
     "@metamask/eth-json-rpc-infura": ^8.0.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-json-rpc-provider": ^1.0.0
-    "@metamask/eth-keyring-controller": "git+https://github.com/MetaMask/KeyringController.git#a844bfb0ed7a50daf14a6b9c072fa26fe6bd3d91"
+    "@metamask/eth-keyring-controller": ^11.0.0
     "@metamask/eth-ledger-bridge-keyring": ^0.15.0
     "@metamask/eth-token-tracker": ^4.0.0
     "@metamask/eth-trezor-keyring": ^1.0.0
