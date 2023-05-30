@@ -38,7 +38,10 @@ export default function BottomButtons({
         {t('cancel')}
       </ButtonSecondary>
       <ButtonPrimary
-        onClick={importAccountFunc}
+        onClick={() => {
+          importAccountFunc();
+          onActionComplete(true);
+        }}
         disabled={isPrimaryDisabled}
         size={BUTTON_SECONDARY_SIZES.LG}
         block

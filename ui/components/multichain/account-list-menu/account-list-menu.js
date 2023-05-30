@@ -105,12 +105,28 @@ export const AccountListMenu = ({ onClose }) => {
     >
       {actionMode === 'add' ? (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <CreateAccount onActionComplete={() => setActionMode('')} />
+          <CreateAccount
+            onActionComplete={(confirmed) => {
+              if (confirmed) {
+                dispatch(toggleAccountMenu());
+              } else {
+                setActionMode('');
+              }
+            }}
+          />
         </Box>
       ) : null}
       {actionMode === 'import' ? (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <NewAccountImportForm onActionComplete={() => setActionMode('')} />
+          <NewAccountImportForm
+            onActionComplete={(confirmed) => {
+              if (confirmed) {
+                dispatch(toggleAccountMenu());
+              } else {
+                setActionMode('');
+              }
+            }}
+          />
         </Box>
       ) : null}
       {actionMode === '' ? (

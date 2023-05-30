@@ -62,6 +62,7 @@ export const CreateAccount = ({ onActionComplete }) => {
 
         try {
           await onCreateAccount(newAccountName || defaultAccountName);
+          onActionComplete(true);
           trackEvent({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.AccountAdded,
@@ -70,7 +71,6 @@ export const CreateAccount = ({ onActionComplete }) => {
               location: 'Home',
             },
           });
-          onActionComplete();
           history.push(mostRecentOverviewPage);
         } catch (error) {
           trackEvent({
