@@ -220,7 +220,7 @@ export const CURRENCY_SYMBOLS = {
   BUSD: 'BUSD',
   CELO: 'CELO',
   DAI: 'DAI',
-  GNOSIS: 'XDAI',
+  GNOSIS: 'xDAI',
   ETH: 'ETH',
   FANTOM: 'FTM',
   HARMONY: 'ONE',
