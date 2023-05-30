@@ -1,10 +1,10 @@
 .snap-install {
   box-shadow: none;
 
-  .content {
+  &__content {
     flex: 1;
 
-    .loader-container {
+    &__loader-container {
       height: 100%;
     }
 
