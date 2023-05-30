@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import {
   TextVariant,
@@ -32,16 +32,16 @@ export default {
   args: {
     children: 'ModalHeader',
   },
-} as ComponentMeta<typeof ModalHeader>;
+} as Meta<typeof ModalHeader>;
 
-const Template: ComponentStory<typeof ModalHeader> = (args) => {
+const Template: StoryFn<typeof ModalHeader> = (args) => {
   return <ModalHeader {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Children: ComponentStory<typeof ModalHeader> = (args) => (
+export const Children: StoryFn<typeof ModalHeader> = (args) => (
   <>
     <ModalHeader {...args} marginBottom={4}>
       Children as string
