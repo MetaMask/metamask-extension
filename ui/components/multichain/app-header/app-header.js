@@ -57,6 +57,7 @@ import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getSendStage, SEND_STAGES } from '../../../ducks/send';
+import Tooltip from '../../ui/tooltip';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -175,20 +176,25 @@ export const AppHeader = ({ location }) => {
               paddingRight={4}
               gap={2}
             >
-              <AvatarNetwork
-                className="multichain-app-header__contents--avatar-network"
-                ref={menuRef}
-                as="button"
-                aria-label={t('networkMenu')}
-                padding={0}
-                name={currentNetwork?.nickname}
-                src={currentNetwork?.rpcPrefs?.imageUrl}
-                size={Size.SM}
-                onClick={networkOpenCallback}
-                display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
-                disabled={disableNetworkPicker}
-              />
-              {popupStatus ? null : (
+              {popupStatus ? (
+                <Box className="multichain-app-header__contents__container">
+                  <Tooltip title={currentNetwork?.nickname} position="right">
+                    <AvatarNetwork
+                      className="multichain-app-header__contents--avatar-network"
+                      ref={menuRef}
+                      as="button"
+                      aria-label={t('networkMenu')}
+                      padding={0}
+                      name={currentNetwork?.nickname}
+                      src={currentNetwork?.rpcPrefs?.imageUrl}
+                      size={Size.SM}
+                      onClick={networkOpenCallback}
+                      display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
+                      disabled={disableNetworkPicker}
+                    />
+                  </Tooltip>
+                </Box>
+              ) : (
                 <div>
                   <PickerNetwork
                     margin={2}

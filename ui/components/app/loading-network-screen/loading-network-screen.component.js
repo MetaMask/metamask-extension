@@ -79,6 +79,7 @@ export default class LoadingNetworkScreen extends PureComponent {
       <Popover
         onClose={() => {
           window.clearTimeout(this.cancelCallTimeout);
+          this.setState({ showErrorScreen: false });
         }}
         centerTitle
         title={
@@ -100,6 +101,7 @@ export default class LoadingNetworkScreen extends PureComponent {
           <ButtonSecondary
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
+              this.setState({ showErrorScreen: false });
               showNetworkDropdown();
             }}
             variant={TextVariant.bodySm}

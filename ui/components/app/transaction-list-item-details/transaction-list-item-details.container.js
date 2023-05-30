@@ -2,6 +2,9 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { tryReverseResolveAddress } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import {
   getAddressBook,
   getBlockExplorerLinkText,
@@ -11,6 +14,10 @@ import {
   getAccountName,
   getMetadataContractName,
   getMetaMaskIdentities,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedIdentity,
+  getKnownMethodData,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
@@ -40,6 +47,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const isCustomNetwork = getIsCustomNetwork(state);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const data = ownProps.transactionGroup?.primaryTransaction?.txParams?.data;
+  const methodData = getKnownMethodData(state, data) || {};
+  const transactionNote =
+    ownProps.transactionGroup?.primaryTransaction?.metadata?.note;
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     rpcPrefs,
     recipientEns,
@@ -49,14 +63,29 @@ const mapStateToProps = (state, ownProps) => {
     blockExplorerLinkText: getBlockExplorerLinkText(state),
     recipientName,
     recipientMetadataName,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    methodData,
+    transactionNote,
+    selectedIdentity: getSelectedIdentity(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    getCustodianTransactionDeepLink: (address, txId) => {
+      return dispatch(
+        mmiActions.getCustodianTransactionDeepLink(address, txId),
+      );
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
