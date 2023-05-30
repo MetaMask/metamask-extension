@@ -75,6 +75,8 @@ export const AccountListItem = ({
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const [accountOptionsMenuAnchorElement, setAccountOptionsMenuAnchorElement] =
+    useState(null);
   const ref = useRef(false);
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
 
@@ -224,6 +226,7 @@ export const AccountListItem = ({
           ariaLabel={`${identity.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
+          ref={setAccountOptionsMenuAnchorElement}
           onClick={(e) => {
             e.stopPropagation();
             trackEvent({
@@ -239,7 +242,7 @@ export const AccountListItem = ({
         />
         {accountOptionsMenuOpen ? (
           <AccountListItemMenu
-            anchorElement={ref.current}
+            anchorElement={accountOptionsMenuAnchorElement}
             blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}

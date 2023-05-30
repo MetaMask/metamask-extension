@@ -15,7 +15,12 @@ import {
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { Text, IconName } from '../../component-library';
+import {
+  Text,
+  IconName,
+  Popover,
+  PopoverPosition,
+} from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -23,7 +28,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { setAccountDetailsAddress, showModal } from '../../../store/actions';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  BorderColor,
+  BorderStyle,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 
 export const AccountListItemMenu = ({
@@ -73,76 +82,154 @@ export const AccountListItemMenu = ({
   };
 
   return (
-    <Menu
-      anchorElement={anchorElement}
-      className="account-list-item-menu"
-      onHide={onClose}
-    >
-      <MenuItem
-        onClick={() => {
-          blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl()
-            : openBlockExplorer();
-
-          trackEvent({
-            event: MetaMetricsEventName.BlockExplorerLinkClicked,
-            category: MetaMetricsEventCategory.Accounts,
-            properties: {
-              location: 'Account Options',
-              chain_id: chainId,
-            },
-          });
-        }}
-        subtitle={blockExplorerUrlSubTitle || null}
-        iconName={IconName.Export}
-        data-testid="account-list-menu-open-explorer"
+    <>
+      <Popover
+        referenceElement={anchorElement}
+        position={PopoverPosition.Bottom}
+        // borderStyle={BorderStyle.none}
+        offset={[0, 0]}
+        padding={0}
+        isOpen
+        isPortal
+        preventOverflow
+        style={{ zIndex: 1051, overflow: 'hidden', minWidth: 225 }}
       >
-        <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          dispatch(setAccountDetailsAddress(identity.address));
-          trackEvent({
-            event: MetaMetricsEventName.NavAccountDetailsOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: 'Account Options',
-            },
-          });
-          onClose();
-          closeMenu?.();
-        }}
-        iconName={IconName.ScanBarcode}
-      >
-        <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
-      </MenuItem>
-      {isRemovable ? (
         <MenuItem
-          data-testid="account-list-menu-remove"
           onClick={() => {
-            dispatch(
-              showModal({
-                name: 'CONFIRM_REMOVE_ACCOUNT',
-                identity,
-              }),
-            );
+            blockExplorerLinkText.firstPart === 'addBlockExplorer'
+              ? routeToAddBlockExplorerUrl()
+              : openBlockExplorer();
+
             trackEvent({
-              event: MetaMetricsEventName.AccountRemoved,
+              event: MetaMetricsEventName.BlockExplorerLinkClicked,
               category: MetaMetricsEventCategory.Accounts,
               properties: {
-                account_hardware_type: deviceName,
+                location: 'Account Options',
                 chain_id: chainId,
-                account_type: accountType,
+              },
+            });
+          }}
+          subtitle={blockExplorerUrlSubTitle || null}
+          iconName={IconName.Export}
+          data-testid="account-list-menu-open-explorer"
+        >
+          <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            dispatch(setAccountDetailsAddress(identity.address));
+            trackEvent({
+              event: MetaMetricsEventName.NavAccountDetailsOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'Account Options',
               },
             });
             onClose();
+            closeMenu?.();
           }}
-          iconName={IconName.Trash}
+          iconName={IconName.ScanBarcode}
         >
-          <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
+          <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
         </MenuItem>
-      ) : null}
-    </Menu>
+        {isRemovable ? (
+          <MenuItem
+            data-testid="account-list-menu-remove"
+            onClick={() => {
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_REMOVE_ACCOUNT',
+                  identity,
+                }),
+              );
+              trackEvent({
+                event: MetaMetricsEventName.AccountRemoved,
+                category: MetaMetricsEventCategory.Accounts,
+                properties: {
+                  account_hardware_type: deviceName,
+                  chain_id: chainId,
+                  account_type: accountType,
+                },
+              });
+              onClose();
+            }}
+            iconName={IconName.Trash}
+          >
+            <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
+          </MenuItem>
+        ) : null}
+      </Popover>
+      {/* <Menu
+        anchorElement={anchorElement}
+        className="account-list-item-menu"
+        onHide={onClose}
+      >
+        <MenuItem
+          onClick={() => {
+            blockExplorerLinkText.firstPart === 'addBlockExplorer'
+              ? routeToAddBlockExplorerUrl()
+              : openBlockExplorer();
+
+            trackEvent({
+              event: MetaMetricsEventName.BlockExplorerLinkClicked,
+              category: MetaMetricsEventCategory.Accounts,
+              properties: {
+                location: 'Account Options',
+                chain_id: chainId,
+              },
+            });
+          }}
+          subtitle={blockExplorerUrlSubTitle || null}
+          iconName={IconName.Export}
+          data-testid="account-list-menu-open-explorer"
+        >
+          <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            dispatch(setAccountDetailsAddress(identity.address));
+            trackEvent({
+              event: MetaMetricsEventName.NavAccountDetailsOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'Account Options',
+              },
+            });
+            onClose();
+            closeMenu?.();
+          }}
+          iconName={IconName.ScanBarcode}
+        >
+          <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
+        </MenuItem>
+        {isRemovable ? (
+          <MenuItem
+            data-testid="account-list-menu-remove"
+            onClick={() => {
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_REMOVE_ACCOUNT',
+                  identity,
+                }),
+              );
+              trackEvent({
+                event: MetaMetricsEventName.AccountRemoved,
+                category: MetaMetricsEventCategory.Accounts,
+                properties: {
+                  account_hardware_type: deviceName,
+                  chain_id: chainId,
+                  account_type: accountType,
+                },
+              });
+              onClose();
+            }}
+            iconName={IconName.Trash}
+          >
+            <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
+          </MenuItem>
+        ) : null}
+      </Menu> */}
+    </>
   );
 };
 
