@@ -29,6 +29,7 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await unlockWallet(driver, WALLET_PASSWORD);
 
+        await sleepSeconds(1);
         await assertETHBalance(ganacheServer, '25');
 
         // first send ETH and then terminate SW
@@ -97,6 +98,7 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Terminate Service Worker
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        sleepSeconds(1);
         await terminateServiceWorker(driver);
 
         // Click add Ethereum chain #2
