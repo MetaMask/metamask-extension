@@ -4,8 +4,8 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   TextVariant,
   TextAlign,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   AlignItems,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -49,8 +49,8 @@ export const Children: ComponentStory<typeof ModalHeader> = (args) => (
     <ModalHeader
       {...args}
       childrenWrapperProps={{
-        display: DISPLAY.FLEX,
-        flexDirection: FLEX_DIRECTION.COLUMN,
+        display: Display.Flex,
+        flexDirection: FlexDirection.Column,
         alignItems: AlignItems.center,
         justifyContent: JustifyContent.center,
       }}
