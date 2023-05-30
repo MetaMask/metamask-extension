@@ -83,34 +83,12 @@ type NetworkConfigurationId = string;
 type ChainId = Hex;
 
 /**
- * The set of event types that NetworkController can publish via its messenger.
- */
-export enum NetworkControllerEventType {
-  /**
-   * @see {@link NetworkControllerNetworkDidChangeEvent}
-   */
-  NetworkDidChange = 'NetworkController:networkDidChange',
-  /**
-   * @see {@link NetworkControllerNetworkWillChangeEvent}
-   */
-  NetworkWillChange = 'NetworkController:networkWillChange',
-  /**
-   * @see {@link NetworkControllerInfuraIsBlockedEvent}
-   */
-  InfuraIsBlocked = 'NetworkController:infuraIsBlocked',
-  /**
-   * @see {@link NetworkControllerInfuraIsUnblockedEvent}
-   */
-  InfuraIsUnblocked = 'NetworkController:infuraIsUnblocked',
-}
-
-/**
  * `networkWillChange` is published when the current network is about to be
  * switched, but the new provider has not been created and no state changes have
  * occurred yet.
  */
 export type NetworkControllerNetworkWillChangeEvent = {
-  type: NetworkControllerEventType.NetworkWillChange;
+  type: 'NetworkController:networkWillChange';
   payload: [];
 };
 
@@ -119,7 +97,7 @@ export type NetworkControllerNetworkWillChangeEvent = {
  * switched network (but before the network has been confirmed to be available).
  */
 export type NetworkControllerNetworkDidChangeEvent = {
-  type: NetworkControllerEventType.NetworkDidChange;
+  type: 'NetworkController:networkDidChange';
   payload: [];
 };
 
@@ -129,7 +107,7 @@ export type NetworkControllerNetworkDidChangeEvent = {
  * location.
  */
 export type NetworkControllerInfuraIsBlockedEvent = {
-  type: NetworkControllerEventType.InfuraIsBlocked;
+  type: 'NetworkController:infuraIsBlocked';
   payload: [];
 };
 
@@ -139,7 +117,7 @@ export type NetworkControllerInfuraIsBlockedEvent = {
  * their location, or the network is switched to a non-Infura network.
  */
 export type NetworkControllerInfuraIsUnblockedEvent = {
-  type: NetworkControllerEventType.InfuraIsUnblocked;
+  type: 'NetworkController:infuraIsUnblocked';
   payload: [];
 };
 
@@ -159,8 +137,8 @@ export type NetworkControllerMessenger = RestrictedControllerMessenger<
   typeof name,
   never,
   NetworkControllerEvent,
-  never,
-  NetworkControllerEventType
+  string,
+  string
 >;
 
 /**
@@ -611,14 +589,11 @@ export class NetworkController extends EventEmitter {
     const listener = () => {
       networkChanged = true;
       this.#messenger.unsubscribe(
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
         listener,
       );
     };
-    this.#messenger.subscribe(
-      NetworkControllerEventType.NetworkDidChange,
-      listener,
-    );
+    this.#messenger.subscribe('NetworkController:networkDidChange', listener);
 
     try {
       const results = await Promise.all([
@@ -664,10 +639,7 @@ export class NetworkController extends EventEmitter {
       // in the process of being called, so we don't need to go further.
       return;
     }
-    this.#messenger.unsubscribe(
-      NetworkControllerEventType.NetworkDidChange,
-      listener,
-    );
+    this.#messenger.unsubscribe('NetworkController:networkDidChange', listener);
 
     this.store.updateState({
       networkStatus,
@@ -692,15 +664,15 @@ export class NetworkController extends EventEmitter {
 
     if (isInfura) {
       if (networkStatus === NetworkStatus.Available) {
-        this.#messenger.publish(NetworkControllerEventType.InfuraIsUnblocked);
+        this.#messenger.publish('NetworkController:infuraIsUnblocked');
       } else if (networkStatus === NetworkStatus.Blocked) {
-        this.#messenger.publish(NetworkControllerEventType.InfuraIsBlocked);
+        this.#messenger.publish('NetworkController:infuraIsBlocked');
       }
     } else {
       // Always publish infuraIsUnblocked regardless of network status to
       // prevent consumers from being stuck in a blocked state if they were
       // previously connected to an Infura network that was blocked
-      this.#messenger.publish(NetworkControllerEventType.InfuraIsUnblocked);
+      this.#messenger.publish('NetworkController:infuraIsUnblocked');
     }
   }
 
@@ -892,12 +864,12 @@ export class NetworkController extends EventEmitter {
    * the new network.
    */
   async #switchNetwork(providerConfig: ProviderConfiguration) {
-    this.#messenger.publish(NetworkControllerEventType.NetworkWillChange);
+    this.#messenger.publish('NetworkController:networkWillChange');
     this.#resetNetworkId();
     this.#resetNetworkStatus();
     this.#resetNetworkDetails();
     this.#configureProvider(providerConfig);
-    this.#messenger.publish(NetworkControllerEventType.NetworkDidChange);
+    this.#messenger.publish('NetworkController:networkDidChange');
     await this.lookupNetwork();
   }
 
