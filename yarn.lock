@@ -4700,7 +4700,7 @@ __metadata:
 
 "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch::locator=metamask-crx%40workspace%3A.":
   version: 2.0.0
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch::version=2.0.0&hash=815192&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch::version=2.0.0&hash=be44e4&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^3.0.0
     "@metamask/base-controller": ^3.0.0
@@ -4710,7 +4710,7 @@ __metadata:
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: c7fc4181a8b13b3172adf022afcad85134e2eb329166ade2234c56582ad46da4762a2943a560c425c45e68a80b052c34d3d5a73075b9a1240871d51da72800f2
+  checksum: 8d07e69adb0b7146eb18862639ad4786302699cebac80422ac0b1b7ed1a4105b861d40c9dc7359b888d2197316d0ba3637b795891e821cbe2b29418fef1c96b4
   languageName: node
   linkType: hard
 

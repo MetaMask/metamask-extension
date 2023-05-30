@@ -63,10 +63,7 @@ export default class SignatureRequest extends PureComponent {
      * Check if the wallet is ledget wallet or not
      */
     isLedgerWallet: PropTypes.bool,
-    /**
-     * Handler for sign button
-     */
-    // sign: PropTypes.func.isRequired,
+
     /**
      * Whether the hardware wallet requires a connection disables the sign button if true.
      */
