@@ -23,9 +23,7 @@ export default class PermissionsConnectHeader extends Component {
     headerText: PropTypes.string,
     leftIcon: PropTypes.node,
     rightIcon: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     subjectType: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   static defaultProps = {

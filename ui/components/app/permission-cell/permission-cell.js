@@ -24,6 +24,7 @@ import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
 
 const PermissionCell = ({
+  snapId,
   permissionName,
   title,
   description,
@@ -110,8 +111,9 @@ const PermissionCell = ({
         </Text>
       </Box>
       <Box>
-        {showOptions ? (
+        {showOptions && snapId ? (
           <PermissionCellOptions
+            snapId={snapId}
             permissionName={permissionName}
             description={description}
           />
@@ -126,6 +128,7 @@ const PermissionCell = ({
 };
 
 PermissionCell.propTypes = {
+  snapId: PropTypes.string,
   permissionName: PropTypes.string.isRequired,
   title: PropTypes.oneOfType([
     PropTypes.string.isRequired,

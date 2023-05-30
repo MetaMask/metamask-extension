@@ -13,7 +13,11 @@ import Popover from '../../ui/popover/popover.component';
 import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
 import { revokeDynamicSnapPermissions } from '../../../store/actions';
 
-export const PermissionCellOptions = ({ permissionName, description }) => {
+export const PermissionCellOptions = ({
+  snapId,
+  permissionName,
+  description,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const ref = useRef(false);
@@ -42,7 +46,7 @@ export const PermissionCellOptions = ({ permissionName, description }) => {
 
   const handleRevokePermission = () => {
     setShowOptions(false);
-    dispatch(revokeDynamicSnapPermissions([permissionName]));
+    dispatch(revokeDynamicSnapPermissions(snapId, permissionName));
   };
 
   return (
@@ -91,6 +95,7 @@ export const PermissionCellOptions = ({ permissionName, description }) => {
 };
 
 PermissionCellOptions.propTypes = {
+  snapId: PropTypes.string.isRequired,
   permissionName: PropTypes.string.isRequired,
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };

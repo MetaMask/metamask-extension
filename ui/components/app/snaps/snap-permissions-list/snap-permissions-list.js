@@ -6,6 +6,7 @@ import PermissionCell from '../../permission-cell';
 import Box from '../../../ui/box';
 
 export default function SnapPermissionsList({
+  snapId,
   permissions,
   targetSubjectMetadata,
   showOptions,
@@ -18,6 +19,7 @@ export default function SnapPermissionsList({
         (permission, index) => {
           return (
             <PermissionCell
+              snapId={snapId}
               permissionName={permission.permissionName}
               title={permission.label}
               description={permission.description}
@@ -35,6 +37,7 @@ export default function SnapPermissionsList({
 }
 
 SnapPermissionsList.propTypes = {
+  snapId: PropTypes.string.isRequired,
   permissions: PropTypes.object.isRequired,
   targetSubjectMetadata: PropTypes.object.isRequired,
   showOptions: PropTypes.bool,

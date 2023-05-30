@@ -366,6 +366,9 @@
   "allowThisSiteTo": {
     "message": "Allow this site to:"
   },
+  "allowThisSnapTo": {
+    "message": "Allow this snap to:"
+  },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -3683,6 +3686,9 @@
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
+  },
+  "selectAccountsForSnap": {
+    "message": "Select the account(s) to use with this snap"
   },
   "selectAll": {
     "message": "Select all"

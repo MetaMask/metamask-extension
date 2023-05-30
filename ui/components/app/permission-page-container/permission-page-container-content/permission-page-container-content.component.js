@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+import { SubjectType } from '@metamask/permission-controller';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -96,11 +97,27 @@ export default class PermissionPageContainerContent extends PureComponent {
     return t('connectTo', [selectedIdentities[0]?.addressLabel]);
   }
 
-  render() {
+  getHeaderText() {
     const { subjectMetadata } = this.props;
     const { t } = this.context;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    if (subjectMetadata.subjectType === SubjectType.Snap) {
+      return t('allowThisSnapTo');
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return subjectMetadata.extensionId
+      ? t('allowExternalExtensionTo', [subjectMetadata.extensionId])
+      : t('allowThisSiteTo');
+  }
+
+  render() {
+    const { subjectMetadata } = this.props;
+
     const title = this.getTitle();
+
+    const headerText = this.getHeaderText();
 
     return (
       <div className="permission-approval-container__content">
@@ -109,12 +126,9 @@ export default class PermissionPageContainerContent extends PureComponent {
             iconUrl={subjectMetadata.iconUrl}
             iconName={subjectMetadata.name}
             headerTitle={title}
-            headerText={
-              subjectMetadata.extensionId
-                ? t('allowExternalExtensionTo', [subjectMetadata.extensionId])
-                : t('allowThisSiteTo')
-            }
+            headerText={headerText}
             siteOrigin={subjectMetadata.origin}
+            subjectType={subjectMetadata.subjectType}
           />
           <section className="permission-approval-container__permissions-container">
             {this.renderRequestedPermissions()}

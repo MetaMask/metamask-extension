@@ -149,6 +149,7 @@ function ViewSnap() {
       <Box className="view-snap__permissions" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
         <SnapPermissionsList
+          snapId={decodedSnapId}
           permissions={permissions ?? {}}
           targetSubjectMetadata={targetSubjectMetadata}
           showOptions
