@@ -41,7 +41,7 @@ async function main(): Promise<void> {
   // Release label indicates the next release cut number
   // Example release label: "release-6.5"
   const releaseLabelName = `release-${nextReleaseCutNumber}`;
-  const releaseLabelColor = "000000";
+  const releaseLabelColor = "ededed";
   const releaseLabelDescription = `Issue or pull request that will be included in release ${nextReleaseCutNumber}`;
 
   // Initialise octokit, required to call Github GraphQL API
