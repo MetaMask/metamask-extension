@@ -111,7 +111,7 @@ export const MultichainTokenListItem = ({
             justifyContent={JustifyContent.spaceBetween}
             gap={1}
           >
-            <Box width={[BLOCK_SIZES.ONE_THIRD]}>
+            <Box width={BLOCK_SIZES.ONE_THIRD}>
               <Tooltip
                 position="bottom"
                 interactive
@@ -132,7 +132,7 @@ export const MultichainTokenListItem = ({
             <Text
               fontWeight={FontWeight.Medium}
               variant={TextVariant.bodyMd}
-              width={[BLOCK_SIZES.TWO_THIRD]}
+              width={BLOCK_SIZES.TWO_THIRD}
               textAlign={TextAlign.End}
             >
               {secondary}

@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../ui/button';
 import Box from '../../ui/box/box';
-import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
+import { TextAlign } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -33,7 +33,7 @@ export default function ImportTokenLink() {
     Boolean(process.env.IN_TEST);
 
   return (
-    <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
+    <Box className="import-token-link" textAlign={TextAlign.Center}>
       {isTokenDetectionAvailable && (
         <>
           <Button

@@ -99,12 +99,15 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent,
+    ///: END:ONLY_INCLUDE_IN
   } = props;
 
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [collectionBalance, setCollectionBalance] = useState(0);
+  const [collectionBalance, setCollectionBalance] = useState('0');
 
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
@@ -142,7 +145,7 @@ const ConfirmPageContainer = (props) => {
       fromAddress,
       global.ethereumProvider,
     );
-    setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
+    setCollectionBalance(tokenBalance.toString() || '0');
   }, [fromAddress, tokenAddress]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -238,6 +241,9 @@ const ConfirmPageContainer = (props) => {
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
             txData={txData}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            noteComponent={noteComponent}
+            ///: END:ONLY_INCLUDE_IN
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -304,7 +310,7 @@ const ConfirmPageContainer = (props) => {
             collectionName={title}
             senderAddress={fromAddress}
             name={fromName}
-            isERC721={assetStandard === TokenStandard.ERC20}
+            isERC721={assetStandard === TokenStandard.ERC721}
             total={collectionBalance}
             onSubmit={onSubmit}
             onCancel={onCancel}
@@ -398,6 +404,9 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  noteComponent: PropTypes.node,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default ConfirmPageContainer;

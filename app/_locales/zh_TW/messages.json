@@ -139,9 +139,6 @@
   "assetOptions": {
     "message": "資產選項"
   },
-  "assets": {
-    "message": "資產"
-  },
   "attemptingConnect": {
     "message": "正在嘗試連結區塊鏈。"
   },
