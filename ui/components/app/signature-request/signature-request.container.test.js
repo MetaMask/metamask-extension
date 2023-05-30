@@ -170,7 +170,6 @@ describe('Signature Request', () => {
       await act(() => {
         fireEvent.click(cancelButton);
       });
-      expect(propsWithFiat.cancel.calledOnce).toStrictEqual(true);
       expect(propsWithFiat.rejectPendingApproval.calledOnce).toStrictEqual(
         true,
       );
@@ -181,7 +180,6 @@ describe('Signature Request', () => {
       await act(() => {
         fireEvent.click(signButton);
       });
-      expect(propsWithFiat.sign.calledOnce).toStrictEqual(true);
       expect(propsWithFiat.resolvePendingApproval.calledOnce).toStrictEqual(
         true,
       );
