@@ -10,7 +10,7 @@ import {
   TextFieldSearch,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '..';
+import { AccountListItem, CreateAccount } from '..';
 import {
   BLOCK_SIZES,
   Size,
@@ -46,7 +46,6 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import NewAccountCreateForm from '../../../pages/create-account/new-account.container';
 import NewAccountImportForm from '../../../pages/create-account/import-account/import-account';
 
 export const AccountListMenu = ({ onClose }) => {
@@ -106,8 +105,8 @@ export const AccountListMenu = ({ onClose }) => {
     >
       {actionMode === 'add' ? (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <NewAccountCreateForm
-            onCreateClick={() => {
+          <CreateAccount
+            onActionComplete={() => {
               setActionMode('');
               dispatch(toggleAccountMenu());
             }}
