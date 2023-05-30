@@ -62,6 +62,7 @@ describe('Transaction Controller', function () {
     networkStatusStore,
     getCurrentChainId,
     messengerMock,
+    resultCallbacksMock,
     updatedTxMeta;
 
   beforeEach(function () {
@@ -88,11 +89,17 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop;
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
+
+    resultCallbacksMock = {
+      success: sinon.spy(),
+      error: sinon.spy(),
+    };
+
     messengerMock = {
       call: sinon.stub().callsFake((_) =>
         Promise.resolve({
           value: { txMeta: updatedTxMeta },
-          result: { success: () => undefined, error: () => undefined },
+          resultCallbacks: resultCallbacksMock,
         }),
       ),
     };
@@ -887,6 +894,22 @@ describe('Transaction Controller', function () {
         assert.equal(listener.args[2][0], updatedTxMeta.id);
         assert.equal(listener.args[2][1], TransactionStatus.submitted);
       });
+
+      it('reports success to approval request acceptor', async function () {
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        assert.equal(resultCallbacksMock.success.callCount, 1);
+      });
     });
 
     describe('on cancel', function () {
@@ -1023,6 +1046,30 @@ describe('Transaction Controller', function () {
         assert.equal(listener.args[1][0], updatedTxMeta.id);
         assert.equal(listener.args[1][1], TransactionStatus.failed);
       });
+
+      it('reports error to approval request acceptor', async function () {
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch {
+          // Expected error
+        }
+
+        assert.equal(resultCallbacksMock.error.callCount, 1);
+        assert.strictEqual(
+          resultCallbacksMock.error.getCall(0).args[0].message,
+          signError.message,
+        );
+      });
     });
 
     describe('on publish error', function () {
@@ -1110,6 +1157,30 @@ describe('Transaction Controller', function () {
         assert.equal(listener.args[1][1], TransactionStatus.signed);
         assert.equal(listener.args[2][0], updatedTxMeta.id);
         assert.equal(listener.args[2][1], TransactionStatus.failed);
+      });
+
+      it('reports error to approval request acceptor', async function () {
+        try {
+          await txController.addUnapprovedTransaction(
+            undefined,
+            {
+              from: selectedAddress,
+              to: recipientAddress,
+            },
+            ORIGIN_METAMASK,
+            undefined,
+            undefined,
+            '12345',
+          );
+        } catch {
+          // Expected error
+        }
+
+        assert.equal(resultCallbacksMock.error.callCount, 1);
+        assert.strictEqual(
+          resultCallbacksMock.error.getCall(0).args[0].message,
+          publishError.message,
+        );
       });
     });
 
