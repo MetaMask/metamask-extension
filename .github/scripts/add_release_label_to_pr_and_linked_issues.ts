@@ -33,13 +33,18 @@ async function main(): Promise<void> {
   if (!nextReleaseCutNumber) {
     // NEXT_RELEASE_CUT_NUMBER is defined in section "Secrets and variables">"Actions">"Variables">"New repository variable" in the settings of this repo.
     // NEXT_RELEASE_CUT_NUMBER needs to be updated every time a new release is cut.
-    // Example value: 6.5
+    // Example value: 6.5.0
     core.setFailed('NEXT_RELEASE_CUT_NUMBER not found');
     process.exit(1);
   }
 
+  if (!isValidVersionFormat(nextReleaseCutNumber)) {
+    core.setFailed(`NEXT_RELEASE_CUT_NUMBER (${nextReleaseCutNumber}) is not a valid version format. The expected format is "x.y.z", where "x", "y" and "z" are numbers.`);
+    process.exit(1);
+  }
+
   // Release label indicates the next release cut number
-  // Example release label: "release-6.5"
+  // Example release label: "release-6.5.0"
   const releaseLabelName = `release-${nextReleaseCutNumber}`;
   const releaseLabelColor = "ededed";
   const releaseLabelDescription = `Issue or pull request that will be included in release ${nextReleaseCutNumber}`;
@@ -74,6 +79,12 @@ async function main(): Promise<void> {
   for (const linkedIssue of linkedIssues) {
     await addLabelToLabelable(octokit, linkedIssue, releaseLabelName, releaseLabelColor, releaseLabelDescription);
   }
+}
+
+// This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
+function isValidVersionFormat(str) {
+  const regex = /^\d+\.\d+\.\d+$/;
+  return regex.test(str);
 }
 
 // This function retrieves the repo
