@@ -26,7 +26,7 @@ import * as actions from '../../../store/actions';
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
-export default function NewAccountImportForm({ onImportClick }) {
+export default function NewAccountImportForm({ onActionComplete }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -43,8 +43,7 @@ export default function NewAccountImportForm({ onImportClick }) {
         if (selectedAddress) {
           trackImportEvent(strategy, true);
           dispatch(actions.hideWarning());
-          // navigateToMostRecentOverviewPage();
-          onImportClick?.();
+          onActionComplete();
         } else {
           dispatch(actions.displayWarning(t('importAccountError')));
         }
@@ -114,10 +113,20 @@ export default function NewAccountImportForm({ onImportClick }) {
   function PrivateKeyOrJson() {
     switch (type) {
       case menuItems[0]:
-        return <PrivateKeyImportView importAccountFunc={importAccount} />;
+        return (
+          <PrivateKeyImportView
+            importAccountFunc={importAccount}
+            onActionComplete={onActionComplete}
+          />
+        );
       case menuItems[1]:
       default:
-        return <JsonImportView importAccountFunc={importAccount} />;
+        return (
+          <JsonImportView
+            importAccountFunc={importAccount}
+            onActionComplete={onActionComplete}
+          />
+        );
     }
   }
 
@@ -134,7 +143,7 @@ export default function NewAccountImportForm({ onImportClick }) {
           {t('here')}
         </ButtonLink>
       </Text>
-      <Box padding={4} paddingBottom={8} paddingLeft={4} paddingRight={4}>
+      <Box paddingTop={4} paddingBottom={8}>
         <Label
           width={BLOCK_SIZES.FULL}
           marginBottom={4}
@@ -157,5 +166,5 @@ export default function NewAccountImportForm({ onImportClick }) {
 }
 
 NewAccountImportForm.propTypes = {
-  onImportClick: PropTypes.func,
+  onActionComplete: PropTypes.func.isRequired,
 };

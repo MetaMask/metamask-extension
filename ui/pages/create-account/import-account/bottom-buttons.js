@@ -14,11 +14,13 @@ import * as actions from '../../../store/actions';
 BottomButtons.propTypes = {
   importAccountFunc: PropTypes.func.isRequired,
   isPrimaryDisabled: PropTypes.bool.isRequired,
+  onActionComplete: PropTypes.func.isRequired,
 };
 
 export default function BottomButtons({
   importAccountFunc,
   isPrimaryDisabled,
+  onActionComplete,
 }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -28,7 +30,7 @@ export default function BottomButtons({
       <ButtonSecondary
         onClick={() => {
           dispatch(actions.hideWarning());
-          window.history.back();
+          onActionComplete();
         }}
         size={BUTTON_SECONDARY_SIZES.LG}
         block
