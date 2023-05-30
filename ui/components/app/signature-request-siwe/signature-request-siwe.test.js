@@ -22,63 +22,6 @@ const mockStoreInitialState = {
   },
 };
 
-const subjectMetadata = {
-  'https://example-dapp.website': {
-    iconUrl: 'https://example-dapp.website/favicon-32x32.png',
-    name: 'E2E Test Dapp',
-    origin: 'https://example-dapp.website',
-    extensionId: null,
-    subjectType: 'website',
-  },
-};
-
-const uncofirmedTransactions = {
-  7744017281976947: {
-    id: 5005351545948149,
-    msgParams: {
-      data: '{"domain":{"chainId":"11155111","name":"Ether Mail","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","version":"1"},"message":{"contents":"Hello, Bob!","from":{"name":"Cow","wallets":["0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"]},"to":[{"name":"Bob","wallets":["0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB","0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57","0xB0B0b0b0b0b0B000000000000000000000000000"]}]},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}',
-      from: '0x4f2407ce0bf55eeeed7fe2526bf01137c52cd4a6',
-      origin: 'https://example-dapp.website',
-      version: 'V4',
-    },
-    securityProviderResponse: null,
-    status: 'unapproved',
-    time: 1678880409775,
-    type: 'eth_signTypedData',
-  },
-};
-
-const fromAccount = [
-  {
-    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    balance: '0x446ba7725f412cbfdb',
-    name: 'John Doe',
-  },
-  {
-    address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-    balance: '0x346ba7725f412cbfdb',
-    name: 'John Does',
-  },
-];
-
-const selectedAccount = {
-  address: '0xAddress',
-  balance: '0x0',
-};
-
-jest.mock('../../../selectors', () => ({
-  getTotalUnapprovedMessagesCount: () => 5,
-  getSubjectMetadata: () => subjectMetadata,
-  getMostRecentOverviewPage: () => '',
-  unconfirmedMessagesHashSelector: () => [],
-  accountsWithSendEtherInfoSelector: () => fromAccount,
-  unapprovedDecryptMsgsSelector: () => [],
-  unapprovedEncryptionPublicKeyMsgsSelector: () => [],
-  unconfirmedTransactionsHashSelector: () => uncofirmedTransactions,
-  getTokenList: () => [],
-  getSelectedAccount: () => selectedAccount,
-}));
-
 const mockShowModal = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
@@ -171,44 +114,6 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
     expect(bannerAlert).toHaveTextContent('does not match the address');
   });
 
-  it('should show Reject request button', () => {
-    const store = configureStore(mockStoreInitialState);
-    const txData = cloneDeep(mockProps.txData);
-
-    const { getByText } = renderWithProvider(
-      <SignatureRequestSIWE {...mockProps} txData={txData} />,
-      store,
-    );
-    const cancelAll = getByText('Reject 5 requests');
-    expect(cancelAll).toBeInTheDocument();
-  });
-
-  it('should show cancel all modal on Reject request button click', () => {
-    const store = configureStore(mockStoreInitialState);
-    const txData = cloneDeep(mockProps.txData);
-
-    const { getByText } = renderWithProvider(
-      <SignatureRequestSIWE {...mockProps} txData={txData} />,
-      store,
-    );
-    const cancelAll = getByText('Reject 5 requests');
-    fireEvent.click(cancelAll);
-    expect(mockShowModal).toHaveBeenCalled();
-  });
-
-  it('should show multiple notifications header', () => {
-    const store = configureStore(mockStoreInitialState);
-    const txData = cloneDeep(mockProps.txData);
-
-    const { container } = renderWithProvider(
-      <SignatureRequestSIWE {...mockProps} txData={txData} />,
-      store,
-    );
-    expect(
-      container.getElementsByClassName('signature-request-siwe-header'),
-    ).toHaveLength(1);
-  });
-
   it('should render BannerAlert when domains do not match', () => {
     const store = configureStore(mockStoreInitialState);
     const txData = cloneDeep(mockProps.txData);
@@ -239,5 +144,64 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
     expect(
       container.querySelector('.mock-ledger-instruction-field'),
     ).toBeTruthy();
+  });
+
+  it('should not show multiple notifications header if there is only one unconfirmed tx', () => {
+    const store = configureStore(mockStoreInitialState);
+    const txData = cloneDeep(mockProps.txData);
+
+    const { container } = renderWithProvider(
+      <SignatureRequestSIWE {...mockProps} txData={txData} />,
+      store,
+    );
+    expect(
+      container.querySelector('.confirm-page-container-navigation'),
+    ).toHaveStyle('display: none');
+  });
+
+  describe('when there is more than one unconfirmed tx', () => {
+    let renderResult;
+
+    beforeEach(() => {
+      const store = configureStore({
+        ...mockStoreInitialState,
+        metamask: {
+          ...mockStoreInitialState.metamask,
+          unapprovedMsgCount: 2,
+        },
+      });
+
+      const txData = cloneDeep(mockProps.txData);
+      renderResult = renderWithProvider(
+        <SignatureRequestSIWE {...mockProps} txData={txData} />,
+        store,
+      );
+    });
+
+    afterEach(() => {
+      renderResult = null;
+    });
+
+    it('should show Reject request button', () => {
+      const { getByText } = renderResult;
+      const cancelAll = getByText('Reject 2 requests');
+
+      expect(cancelAll).toBeInTheDocument();
+    });
+
+    it('should show cancel all modal on Reject request button click', () => {
+      const { getByText } = renderResult;
+      const cancelAll = getByText('Reject 2 requests');
+
+      fireEvent.click(cancelAll);
+      expect(mockShowModal).toHaveBeenCalled();
+    });
+
+    it('should show multiple notifications header', () => {
+      const { container } = renderResult;
+      expect(
+        container.getElementsByClassName('signature-request-siwe-header'),
+      ).toHaveLength(1);
+    });
   });
 });
