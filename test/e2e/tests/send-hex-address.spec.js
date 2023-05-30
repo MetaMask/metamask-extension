@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -133,11 +137,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        const balanceAfterDeployment = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balanceAfterDeployment} ETH`,
-        });
+        await assertAccountBalanceForDOM(driver, ganacheServer);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
@@ -198,11 +198,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        const balanceAfterDeployment = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balanceAfterDeployment} ETH`,
-        });
+
+        await assertAccountBalanceForDOM(driver, ganacheServer);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');

@@ -9,6 +9,7 @@ const {
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
+  assertAccountBalanceForDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -304,11 +305,7 @@ describe('MetaMask onboarding', function () {
         );
         assert.equal(await networkDisplay.getText(), networkName);
 
-        const balance = await secondaryGanacheServer.getBalance();
-        const balanceElement = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.equal(`${balance}\nETH`, await balanceElement.getText());
+        await assertAccountBalanceForDOM(driver, secondaryGanacheServer);
       },
     );
   });
