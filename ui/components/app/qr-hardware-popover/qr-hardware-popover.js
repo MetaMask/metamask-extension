@@ -7,11 +7,7 @@ import {
   cancelSyncQRHardware as cancelSyncQRHardwareAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
-  cancelPersonalMsg,
-  cancelMsg,
-  cancelTypedMsg,
 } from '../../../store/actions';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
@@ -43,25 +39,7 @@ const QRHardwarePopover = () => {
   );
 
   const signRequestCancel = useCallback(() => {
-    let action = cancelTx;
-    switch (_txData.type) {
-      case MESSAGE_TYPE.PERSONAL_SIGN: {
-        action = cancelPersonalMsg;
-        break;
-      }
-      case MESSAGE_TYPE.ETH_SIGN: {
-        action = cancelMsg;
-        break;
-      }
-      case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA: {
-        action = cancelTypedMsg;
-        break;
-      }
-      default: {
-        action = cancelTx;
-      }
-    }
-    dispatch(action(_txData));
+    dispatch(cancelTx(_txData));
     dispatch(cancelQRHardwareSignRequestAction());
   }, [dispatch, _txData]);
 
