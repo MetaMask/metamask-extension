@@ -36,7 +36,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
           >
             <h5
-              class="box box--margin-top-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
+              class="box box--margin-top-1 box--margin-bottom-0 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
             >
               OpenSea + Blockaid (Beta)
             </h5>
@@ -83,7 +83,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </label>
           </div>
           <h6
-            class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
           >
             <span>
                

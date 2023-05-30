@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import {
   BlockSize,
@@ -215,11 +215,9 @@ export default {
       table: { category: 'as (root html element)' },
     },
   },
-} as ComponentMeta<typeof Box>;
+} as Meta<typeof Box>;
 
-export const DefaultStory: ComponentStory<typeof Box> = (args) => (
-  <Box {...args} />
-);
+export const DefaultStory: StoryFn<typeof Box> = (args) => <Box {...args} />;
 
 DefaultStory.args = {
   children: 'Box component',
@@ -234,7 +232,7 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
-export const Margin: ComponentStory<typeof Box> = (args) => {
+export const Margin: StoryFn<typeof Box> = (args) => {
   return (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
@@ -259,7 +257,7 @@ export const Margin: ComponentStory<typeof Box> = (args) => {
   );
 };
 
-export const Padding: ComponentStory<typeof Box> = (args) => {
+export const Padding: StoryFn<typeof Box> = (args) => {
   return (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
@@ -282,7 +280,7 @@ export const Padding: ComponentStory<typeof Box> = (args) => {
   );
 };
 
-export const ColorStory: ComponentStory<typeof Box> = (args) => {
+export const ColorStory: StoryFn<typeof Box> = (args) => {
   return (
     <>
       <Box {...args} padding={3} color={TextColor.textDefault}>
@@ -667,11 +665,56 @@ export const ResponsiveProps = () => {
           Responsive Border Radius 2
         </Box>
       </Box>
+      <Text marginBottom={4} marginTop={4}>
+        Boxes below are only visible on certain screen sizes
+      </Text>
+      <Box
+        padding={4}
+        display={[Display.Block, Display.None]}
+        backgroundColor={BackgroundColor.infoMuted}
+      >
+        This box is only visible on screens 0px - 575px
+      </Box>
+      <Box
+        padding={4}
+        display={[Display.Block, null, Display.None]}
+        backgroundColor={BackgroundColor.warningMuted}
+      >
+        This box is only visible on screens 0px - 767px
+      </Box>
+      <Box
+        padding={4}
+        display={[Display.Block, null, null, Display.None]}
+        backgroundColor={BackgroundColor.errorMuted}
+      >
+        This box is only visible on screens 0px - 1279px
+      </Box>
+      <Box
+        padding={4}
+        display={[Display.None, null, null, Display.Block]}
+        backgroundColor={BackgroundColor.successMuted}
+      >
+        This box is only visible on screens 1280px and above
+      </Box>
+      <Box
+        padding={4}
+        display={[Display.None, null, Display.Block]}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+      >
+        This box is only visible on screens 768px and above
+      </Box>
+      <Box
+        padding={4}
+        display={[Display.None, Display.Block]}
+        borderColor={BorderColor.borderDefault}
+      >
+        This box is only visible on screens 576px and above
+      </Box>
     </>
   );
 };
 
-export const As: ComponentStory<typeof Box> = (args) => {
+export const As: StoryFn<typeof Box> = (args) => {
   return (
     <>
       <Text marginBottom={4}>
@@ -687,7 +730,7 @@ export const As: ComponentStory<typeof Box> = (args) => {
   );
 };
 
-export const Width: ComponentStory<typeof Box> = () => {
+export const Width: StoryFn<typeof Box> = () => {
   const getColumns = (): JSX.Element[] => {
     const content: JSX.Element[] = [];
     for (let i = 0; i < 12; i++) {
@@ -932,13 +975,4 @@ export const Width: ComponentStory<typeof Box> = () => {
       </Box>
     </>
   );
-};
-
-Width.args = {
-  width: [
-    BlockSize.Half,
-    BlockSize.OneFifth,
-    BlockSize.ThreeFourths,
-    BlockSize.OneFourth,
-  ],
 };

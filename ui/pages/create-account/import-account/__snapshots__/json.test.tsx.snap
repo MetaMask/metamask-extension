@@ -7,7 +7,7 @@ exports[`Json should match snapshot 1`] = `
   >
     Used by a variety of different clients
     <a
-      class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+      class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--padding-right-0 box--padding-left-0 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
       href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
       rel="noopener noreferrer"
       target="_blank"
@@ -25,12 +25,12 @@ exports[`Json should match snapshot 1`] = `
     class="box mm-form-text-field box--margin-bottom-4 box--display-flex box--flex-direction-column"
   >
     <div
-      class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+      class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field box--padding-right-0 box--padding-left-0 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
     >
       <input
         aria-invalid="true"
         autocomplete="off"
-        class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+        class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--margin-0 box--padding-0 box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
         focused="true"
         id="json-password-box"
         placeholder="Enter optional password"

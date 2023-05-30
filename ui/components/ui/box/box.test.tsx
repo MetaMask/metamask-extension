@@ -28,97 +28,543 @@ describe('Box', () => {
     expect(getByText('Box content')).toBeDefined();
   });
   describe('margin', () => {
-    it('should render the Box with the margin class', () => {
-      const { getByText } = render(<Box margin={1}>Box content</Box>);
+    it('should render the Box with the margin classes', () => {
+      const { getByText } = render(
+        <>
+          <Box margin={0}>Box margin 0</Box>
+          <Box margin={1}>Box margin 1</Box>
+          <Box margin={2}>Box margin 2</Box>
+          <Box margin={3}>Box margin 3</Box>
+          <Box margin={4}>Box margin 4</Box>
+          <Box margin={5}>Box margin 5</Box>
+          <Box margin={6}>Box margin 6</Box>
+          <Box margin={7}>Box margin 7</Box>
+          <Box margin={8}>Box margin 8</Box>
+          <Box margin={9}>Box margin 9</Box>
+          <Box margin={10}>Box margin 10</Box>
+          <Box margin={11}>Box margin 11</Box>
+          <Box margin={12}>Box margin 12</Box>
+          <Box margin="auto">Box margin auto</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-1');
-    });
-    it('should render the Box with the margin auto class', () => {
-      const { getByText } = render(<Box margin="auto">Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--margin-auto');
+      expect(getByText('Box margin 0')).toHaveClass('box--margin-0');
+      expect(getByText('Box margin 1')).toHaveClass('box--margin-1');
+      expect(getByText('Box margin 2')).toHaveClass('box--margin-2');
+      expect(getByText('Box margin 3')).toHaveClass('box--margin-3');
+      expect(getByText('Box margin 4')).toHaveClass('box--margin-4');
+      expect(getByText('Box margin 5')).toHaveClass('box--margin-5');
+      expect(getByText('Box margin 6')).toHaveClass('box--margin-6');
+      expect(getByText('Box margin 7')).toHaveClass('box--margin-7');
+      expect(getByText('Box margin 8')).toHaveClass('box--margin-8');
+      expect(getByText('Box margin 9')).toHaveClass('box--margin-9');
+      expect(getByText('Box margin 10')).toHaveClass('box--margin-10');
+      expect(getByText('Box margin 11')).toHaveClass('box--margin-11');
+      expect(getByText('Box margin 12')).toHaveClass('box--margin-12');
+      expect(getByText('Box margin auto')).toHaveClass('box--margin-auto');
     });
     it('should render the Box with the responsive margin classes', () => {
       const { getByText } = render(
-        <Box margin={[1, 'auto', 3, 4]}>Box content</Box>,
+        <>
+          <Box margin={[0, 0, 0, 0]}>Box margin 0</Box>
+          <Box margin={[1, 1, 1, 1]}>Box margin 1</Box>
+          <Box margin={[2, 2, 2, 2]}>Box margin 2</Box>
+          <Box margin={[3, 3, 3, 3]}>Box margin 3</Box>
+          <Box margin={[4, 4, 4, 4]}>Box margin 4</Box>
+          <Box margin={[5, 5, 5, 5]}>Box margin 5</Box>
+          <Box margin={[6, 6, 6, 6]}>Box margin 6</Box>
+          <Box margin={[7, 7, 7, 7]}>Box margin 7</Box>
+          <Box margin={[8, 8, 8, 8]}>Box margin 8</Box>
+          <Box margin={[9, 9, 9, 9]}>Box margin 9</Box>
+          <Box margin={[10, 10, 10, 10]}>Box margin 10</Box>
+          <Box margin={[11, 11, 11, 11]}>Box margin 11</Box>
+          <Box margin={[12, 12, 12, 12]}>Box margin 12</Box>
+          <Box margin={['auto', 'auto', 'auto', 'auto']}>Box margin auto</Box>
+        </>,
+      );
+      expect(getByText('Box margin 0')).toHaveClass(
+        'box--margin-0 box--sm:margin-0 box--md:margin-0 box--lg:margin-0',
+      );
+      expect(getByText('Box margin 1')).toHaveClass(
+        'box--margin-1 box--sm:margin-1 box--md:margin-1 box--lg:margin-1',
+      );
+      expect(getByText('Box margin 2')).toHaveClass(
+        'box--margin-2 box--sm:margin-2 box--md:margin-2 box--lg:margin-2',
+      );
+      expect(getByText('Box margin 3')).toHaveClass(
+        'box--margin-3 box--sm:margin-3 box--md:margin-3 box--lg:margin-3',
+      );
+      expect(getByText('Box margin 4')).toHaveClass(
+        'box--margin-4 box--sm:margin-4 box--md:margin-4 box--lg:margin-4',
+      );
+      expect(getByText('Box margin 5')).toHaveClass(
+        'box--margin-5 box--sm:margin-5 box--md:margin-5 box--lg:margin-5',
+      );
+      expect(getByText('Box margin 6')).toHaveClass(
+        'box--margin-6 box--sm:margin-6 box--md:margin-6 box--lg:margin-6',
+      );
+      expect(getByText('Box margin 7')).toHaveClass(
+        'box--margin-7 box--sm:margin-7 box--md:margin-7 box--lg:margin-7',
+      );
+      expect(getByText('Box margin 8')).toHaveClass(
+        'box--margin-8 box--sm:margin-8 box--md:margin-8 box--lg:margin-8',
+      );
+      expect(getByText('Box margin 9')).toHaveClass(
+        'box--margin-9 box--sm:margin-9 box--md:margin-9 box--lg:margin-9',
+      );
+      expect(getByText('Box margin 10')).toHaveClass(
+        'box--margin-10 box--sm:margin-10 box--md:margin-10 box--lg:margin-10',
+      );
+      expect(getByText('Box margin 11')).toHaveClass(
+        'box--margin-11 box--sm:margin-11 box--md:margin-11 box--lg:margin-11',
+      );
+      expect(getByText('Box margin 12')).toHaveClass(
+        'box--margin-12 box--sm:margin-12 box--md:margin-12 box--lg:margin-12',
       );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:margin-auto');
-      expect(getByText('Box content')).toHaveClass('box--md:margin-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:margin-4');
+      expect(getByText('Box margin auto')).toHaveClass(
+        'box--margin-auto box--sm:margin-auto box--md:margin-auto box--lg:margin-auto',
+      );
     });
-    it('should render the Box with the marginTop class', () => {
-      const { getByText } = render(<Box marginTop={1}>Box content</Box>);
+    it('should render the Box with the marginTop classes', () => {
+      const { getByText } = render(
+        <>
+          <Box marginTop={0}>Box marginTop 0</Box>
+          <Box marginTop={1}>Box marginTop 1</Box>
+          <Box marginTop={2}>Box marginTop 2</Box>
+          <Box marginTop={3}>Box marginTop 3</Box>
+          <Box marginTop={4}>Box marginTop 4</Box>
+          <Box marginTop={5}>Box marginTop 5</Box>
+          <Box marginTop={6}>Box marginTop 6</Box>
+          <Box marginTop={7}>Box marginTop 7</Box>
+          <Box marginTop={8}>Box marginTop 8</Box>
+          <Box marginTop={9}>Box marginTop 9</Box>
+          <Box marginTop={10}>Box marginTop 10</Box>
+          <Box marginTop={11}>Box marginTop 11</Box>
+          <Box marginTop={12}>Box marginTop 12</Box>
+          <Box marginTop="auto">Box marginTop auto</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-top-1');
-    });
-    it('should render the Box with the marginTop auto class', () => {
-      const { getByText } = render(<Box marginTop="auto">Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--margin-top-auto');
+      expect(getByText('Box marginTop 0')).toHaveClass('box--margin-top-0');
+      expect(getByText('Box marginTop 1')).toHaveClass('box--margin-top-1');
+      expect(getByText('Box marginTop 2')).toHaveClass('box--margin-top-2');
+      expect(getByText('Box marginTop 3')).toHaveClass('box--margin-top-3');
+      expect(getByText('Box marginTop 4')).toHaveClass('box--margin-top-4');
+      expect(getByText('Box marginTop 5')).toHaveClass('box--margin-top-5');
+      expect(getByText('Box marginTop 6')).toHaveClass('box--margin-top-6');
+      expect(getByText('Box marginTop 7')).toHaveClass('box--margin-top-7');
+      expect(getByText('Box marginTop 8')).toHaveClass('box--margin-top-8');
+      expect(getByText('Box marginTop 9')).toHaveClass('box--margin-top-9');
+      expect(getByText('Box marginTop 10')).toHaveClass('box--margin-top-10');
+      expect(getByText('Box marginTop 11')).toHaveClass('box--margin-top-11');
+      expect(getByText('Box marginTop 12')).toHaveClass('box--margin-top-12');
+      expect(getByText('Box marginTop auto')).toHaveClass(
+        'box--margin-top-auto',
+      );
     });
     it('should render the Box with the responsive marginTop classes', () => {
       const { getByText } = render(
-        <Box marginTop={[1, 'auto', 3, 4]}>Box content</Box>,
+        <>
+          <Box marginTop={[0, 0, 0, 0]}>Box marginTop 0</Box>
+          <Box marginTop={[1, 1, 1, 1]}>Box marginTop 1</Box>
+          <Box marginTop={[2, 2, 2, 2]}>Box marginTop 2</Box>
+          <Box marginTop={[3, 3, 3, 3]}>Box marginTop 3</Box>
+          <Box marginTop={[4, 4, 4, 4]}>Box marginTop 4</Box>
+          <Box marginTop={[5, 5, 5, 5]}>Box marginTop 5</Box>
+          <Box marginTop={[6, 6, 6, 6]}>Box marginTop 6</Box>
+          <Box marginTop={[7, 7, 7, 7]}>Box marginTop 7</Box>
+          <Box marginTop={[8, 8, 8, 8]}>Box marginTop 8</Box>
+          <Box marginTop={[9, 9, 9, 9]}>Box marginTop 9</Box>
+          <Box marginTop={[10, 10, 10, 10]}>Box marginTop 10</Box>
+          <Box marginTop={[11, 11, 11, 11]}>Box marginTop 11</Box>
+          <Box marginTop={[12, 12, 12, 12]}>Box marginTop 12</Box>
+          <Box marginTop={['auto', 'auto', 'auto', 'auto']}>
+            Box marginTop auto
+          </Box>
+        </>,
+      );
+      expect(getByText('Box marginTop 0')).toHaveClass(
+        'box--margin-top-0 box--sm:margin-top-0 box--md:margin-top-0 box--lg:margin-top-0',
+      );
+      expect(getByText('Box marginTop 1')).toHaveClass(
+        'box--margin-top-1 box--sm:margin-top-1 box--md:margin-top-1 box--lg:margin-top-1',
+      );
+      expect(getByText('Box marginTop 2')).toHaveClass(
+        'box--margin-top-2 box--sm:margin-top-2 box--md:margin-top-2 box--lg:margin-top-2',
+      );
+      expect(getByText('Box marginTop 3')).toHaveClass(
+        'box--margin-top-3 box--sm:margin-top-3 box--md:margin-top-3 box--lg:margin-top-3',
+      );
+      expect(getByText('Box marginTop 4')).toHaveClass(
+        'box--margin-top-4 box--sm:margin-top-4 box--md:margin-top-4 box--lg:margin-top-4',
+      );
+      expect(getByText('Box marginTop 5')).toHaveClass(
+        'box--margin-top-5 box--sm:margin-top-5 box--md:margin-top-5 box--lg:margin-top-5',
+      );
+      expect(getByText('Box marginTop 6')).toHaveClass(
+        'box--margin-top-6 box--sm:margin-top-6 box--md:margin-top-6 box--lg:margin-top-6',
+      );
+      expect(getByText('Box marginTop 7')).toHaveClass(
+        'box--margin-top-7 box--sm:margin-top-7 box--md:margin-top-7 box--lg:margin-top-7',
+      );
+      expect(getByText('Box marginTop 8')).toHaveClass(
+        'box--margin-top-8 box--sm:margin-top-8 box--md:margin-top-8 box--lg:margin-top-8',
+      );
+      expect(getByText('Box marginTop 9')).toHaveClass(
+        'box--margin-top-9 box--sm:margin-top-9 box--md:margin-top-9 box--lg:margin-top-9',
+      );
+      expect(getByText('Box marginTop 10')).toHaveClass(
+        'box--margin-top-10 box--sm:margin-top-10 box--md:margin-top-10 box--lg:margin-top-10',
+      );
+      expect(getByText('Box marginTop 11')).toHaveClass(
+        'box--margin-top-11 box--sm:margin-top-11 box--md:margin-top-11 box--lg:margin-top-11',
+      );
+      expect(getByText('Box marginTop 12')).toHaveClass(
+        'box--margin-top-12 box--sm:margin-top-12 box--md:margin-top-12 box--lg:margin-top-12',
       );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-top-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:margin-top-auto');
-      expect(getByText('Box content')).toHaveClass('box--md:margin-top-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:margin-top-4');
+      expect(getByText('Box marginTop auto')).toHaveClass(
+        'box--margin-top-auto box--sm:margin-top-auto box--md:margin-top-auto box--lg:margin-top-auto',
+      );
     });
-    it('should render the Box with the marginRight class', () => {
-      const { getByText } = render(<Box marginRight={1}>Box content</Box>);
+    it('should render the Box with the marginRight classes', () => {
+      const { getByText } = render(
+        <>
+          <Box marginRight={0}>Box marginRight 0</Box>
+          <Box marginRight={1}>Box marginRight 1</Box>
+          <Box marginRight={2}>Box marginRight 2</Box>
+          <Box marginRight={3}>Box marginRight 3</Box>
+          <Box marginRight={4}>Box marginRight 4</Box>
+          <Box marginRight={5}>Box marginRight 5</Box>
+          <Box marginRight={6}>Box marginRight 6</Box>
+          <Box marginRight={7}>Box marginRight 7</Box>
+          <Box marginRight={8}>Box marginRight 8</Box>
+          <Box marginRight={9}>Box marginRight 9</Box>
+          <Box marginRight={10}>Box marginRight 10</Box>
+          <Box marginRight={11}>Box marginRight 11</Box>
+          <Box marginRight={12}>Box marginRight 12</Box>
+          <Box marginRight="auto">Box marginRight auto</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-right-1');
-    });
-    it('should render the Box with the marginRight auto class', () => {
-      const { getByText } = render(<Box marginRight="auto">Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--margin-right-auto');
+      expect(getByText('Box marginRight 0')).toHaveClass('box--margin-right-0');
+      expect(getByText('Box marginRight 1')).toHaveClass('box--margin-right-1');
+      expect(getByText('Box marginRight 2')).toHaveClass('box--margin-right-2');
+      expect(getByText('Box marginRight 3')).toHaveClass('box--margin-right-3');
+      expect(getByText('Box marginRight 4')).toHaveClass('box--margin-right-4');
+      expect(getByText('Box marginRight 5')).toHaveClass('box--margin-right-5');
+      expect(getByText('Box marginRight 6')).toHaveClass('box--margin-right-6');
+      expect(getByText('Box marginRight 7')).toHaveClass('box--margin-right-7');
+      expect(getByText('Box marginRight 8')).toHaveClass('box--margin-right-8');
+      expect(getByText('Box marginRight 9')).toHaveClass('box--margin-right-9');
+      expect(getByText('Box marginRight 10')).toHaveClass(
+        'box--margin-right-10',
+      );
+      expect(getByText('Box marginRight 11')).toHaveClass(
+        'box--margin-right-11',
+      );
+      expect(getByText('Box marginRight 12')).toHaveClass(
+        'box--margin-right-12',
+      );
+      expect(getByText('Box marginRight auto')).toHaveClass(
+        'box--margin-right-auto',
+      );
     });
     it('should render the Box with the responsive marginRight classes', () => {
       const { getByText } = render(
-        <Box marginRight={[1, 'auto', 3, 4]}>Box content</Box>,
+        <>
+          <Box marginRight={[0, 0, 0, 0]}>Box marginRight 0</Box>
+          <Box marginRight={[1, 1, 1, 1]}>Box marginRight 1</Box>
+          <Box marginRight={[2, 2, 2, 2]}>Box marginRight 2</Box>
+          <Box marginRight={[3, 3, 3, 3]}>Box marginRight 3</Box>
+          <Box marginRight={[4, 4, 4, 4]}>Box marginRight 4</Box>
+          <Box marginRight={[5, 5, 5, 5]}>Box marginRight 5</Box>
+          <Box marginRight={[6, 6, 6, 6]}>Box marginRight 6</Box>
+          <Box marginRight={[7, 7, 7, 7]}>Box marginRight 7</Box>
+          <Box marginRight={[8, 8, 8, 8]}>Box marginRight 8</Box>
+          <Box marginRight={[9, 9, 9, 9]}>Box marginRight 9</Box>
+          <Box marginRight={[10, 10, 10, 10]}>Box marginRight 10</Box>
+          <Box marginRight={[11, 11, 11, 11]}>Box marginRight 11</Box>
+          <Box marginRight={[12, 12, 12, 12]}>Box marginRight 12</Box>
+          <Box marginRight={['auto', 'auto', 'auto', 'auto']}>
+            Box marginRight auto
+          </Box>
+        </>,
+      );
+      expect(getByText('Box marginRight 0')).toHaveClass(
+        'box--margin-right-0 box--sm:margin-right-0 box--md:margin-right-0 box--lg:margin-right-0',
+      );
+      expect(getByText('Box marginRight 1')).toHaveClass(
+        'box--margin-right-1 box--sm:margin-right-1 box--md:margin-right-1 box--lg:margin-right-1',
+      );
+      expect(getByText('Box marginRight 2')).toHaveClass(
+        'box--margin-right-2 box--sm:margin-right-2 box--md:margin-right-2 box--lg:margin-right-2',
+      );
+      expect(getByText('Box marginRight 3')).toHaveClass(
+        'box--margin-right-3 box--sm:margin-right-3 box--md:margin-right-3 box--lg:margin-right-3',
+      );
+      expect(getByText('Box marginRight 4')).toHaveClass(
+        'box--margin-right-4 box--sm:margin-right-4 box--md:margin-right-4 box--lg:margin-right-4',
+      );
+      expect(getByText('Box marginRight 5')).toHaveClass(
+        'box--margin-right-5 box--sm:margin-right-5 box--md:margin-right-5 box--lg:margin-right-5',
+      );
+      expect(getByText('Box marginRight 6')).toHaveClass(
+        'box--margin-right-6 box--sm:margin-right-6 box--md:margin-right-6 box--lg:margin-right-6',
+      );
+      expect(getByText('Box marginRight 7')).toHaveClass(
+        'box--margin-right-7 box--sm:margin-right-7 box--md:margin-right-7 box--lg:margin-right-7',
+      );
+      expect(getByText('Box marginRight 8')).toHaveClass(
+        'box--margin-right-8 box--sm:margin-right-8 box--md:margin-right-8 box--lg:margin-right-8',
+      );
+      expect(getByText('Box marginRight 9')).toHaveClass(
+        'box--margin-right-9 box--sm:margin-right-9 box--md:margin-right-9 box--lg:margin-right-9',
+      );
+      expect(getByText('Box marginRight 10')).toHaveClass(
+        'box--margin-right-10 box--sm:margin-right-10 box--md:margin-right-10 box--lg:margin-right-10',
+      );
+      expect(getByText('Box marginRight 11')).toHaveClass(
+        'box--margin-right-11 box--sm:margin-right-11 box--md:margin-right-11 box--lg:margin-right-11',
+      );
+      expect(getByText('Box marginRight 12')).toHaveClass(
+        'box--margin-right-12 box--sm:margin-right-12 box--md:margin-right-12 box--lg:margin-right-12',
       );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-right-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:margin-right-auto');
-      expect(getByText('Box content')).toHaveClass('box--md:margin-right-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:margin-right-4');
+      expect(getByText('Box marginRight auto')).toHaveClass(
+        'box--margin-right-auto box--sm:margin-right-auto box--md:margin-right-auto box--lg:margin-right-auto',
+      );
     });
-    it('should render the Box with the marginBottom class', () => {
-      const { getByText } = render(<Box marginBottom={1}>Box content</Box>);
+    it('should render the Box with the marginBottom classes', () => {
+      const { getByText } = render(
+        <>
+          <Box marginBottom={0}>Box marginBottom 0</Box>
+          <Box marginBottom={1}>Box marginBottom 1</Box>
+          <Box marginBottom={2}>Box marginBottom 2</Box>
+          <Box marginBottom={3}>Box marginBottom 3</Box>
+          <Box marginBottom={4}>Box marginBottom 4</Box>
+          <Box marginBottom={5}>Box marginBottom 5</Box>
+          <Box marginBottom={6}>Box marginBottom 6</Box>
+          <Box marginBottom={7}>Box marginBottom 7</Box>
+          <Box marginBottom={8}>Box marginBottom 8</Box>
+          <Box marginBottom={9}>Box marginBottom 9</Box>
+          <Box marginBottom={10}>Box marginBottom 10</Box>
+          <Box marginBottom={11}>Box marginBottom 11</Box>
+          <Box marginBottom={12}>Box marginBottom 12</Box>
+          <Box marginBottom="auto">Box marginBottom auto</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-bottom-1');
+      expect(getByText('Box marginBottom 0')).toHaveClass(
+        'box--margin-bottom-0',
+      );
+      expect(getByText('Box marginBottom 1')).toHaveClass(
+        'box--margin-bottom-1',
+      );
+      expect(getByText('Box marginBottom 2')).toHaveClass(
+        'box--margin-bottom-2',
+      );
+      expect(getByText('Box marginBottom 3')).toHaveClass(
+        'box--margin-bottom-3',
+      );
+      expect(getByText('Box marginBottom 4')).toHaveClass(
+        'box--margin-bottom-4',
+      );
+      expect(getByText('Box marginBottom 5')).toHaveClass(
+        'box--margin-bottom-5',
+      );
+      expect(getByText('Box marginBottom 6')).toHaveClass(
+        'box--margin-bottom-6',
+      );
+      expect(getByText('Box marginBottom 7')).toHaveClass(
+        'box--margin-bottom-7',
+      );
+      expect(getByText('Box marginBottom 8')).toHaveClass(
+        'box--margin-bottom-8',
+      );
+      expect(getByText('Box marginBottom 9')).toHaveClass(
+        'box--margin-bottom-9',
+      );
+      expect(getByText('Box marginBottom 10')).toHaveClass(
+        'box--margin-bottom-10',
+      );
+      expect(getByText('Box marginBottom 11')).toHaveClass(
+        'box--margin-bottom-11',
+      );
+      expect(getByText('Box marginBottom 12')).toHaveClass(
+        'box--margin-bottom-12',
+      );
+      expect(getByText('Box marginBottom auto')).toHaveClass(
+        'box--margin-bottom-auto',
+      );
     });
     it('should render the Box with the responsive marginBottom classes', () => {
       const { getByText } = render(
-        <Box marginBottom={[1, 'auto', 3, 4]}>Box content</Box>,
+        <>
+          <Box marginBottom={[0, 0, 0, 0]}>Box marginBottom 0</Box>
+          <Box marginBottom={[1, 1, 1, 1]}>Box marginBottom 1</Box>
+          <Box marginBottom={[2, 2, 2, 2]}>Box marginBottom 2</Box>
+          <Box marginBottom={[3, 3, 3, 3]}>Box marginBottom 3</Box>
+          <Box marginBottom={[4, 4, 4, 4]}>Box marginBottom 4</Box>
+          <Box marginBottom={[5, 5, 5, 5]}>Box marginBottom 5</Box>
+          <Box marginBottom={[6, 6, 6, 6]}>Box marginBottom 6</Box>
+          <Box marginBottom={[7, 7, 7, 7]}>Box marginBottom 7</Box>
+          <Box marginBottom={[8, 8, 8, 8]}>Box marginBottom 8</Box>
+          <Box marginBottom={[9, 9, 9, 9]}>Box marginBottom 9</Box>
+          <Box marginBottom={[10, 10, 10, 10]}>Box marginBottom 10</Box>
+          <Box marginBottom={[11, 11, 11, 11]}>Box marginBottom 11</Box>
+          <Box marginBottom={[12, 12, 12, 12]}>Box marginBottom 12</Box>
+          <Box marginBottom={['auto', 'auto', 'auto', 'auto']}>
+            Box marginBottom auto
+          </Box>
+        </>,
+      );
+      expect(getByText('Box marginBottom 0')).toHaveClass(
+        'box--margin-bottom-0 box--sm:margin-bottom-0 box--md:margin-bottom-0 box--lg:margin-bottom-0',
+      );
+      expect(getByText('Box marginBottom 1')).toHaveClass(
+        'box--margin-bottom-1 box--sm:margin-bottom-1 box--md:margin-bottom-1 box--lg:margin-bottom-1',
+      );
+      expect(getByText('Box marginBottom 2')).toHaveClass(
+        'box--margin-bottom-2 box--sm:margin-bottom-2 box--md:margin-bottom-2 box--lg:margin-bottom-2',
+      );
+      expect(getByText('Box marginBottom 3')).toHaveClass(
+        'box--margin-bottom-3 box--sm:margin-bottom-3 box--md:margin-bottom-3 box--lg:margin-bottom-3',
+      );
+      expect(getByText('Box marginBottom 4')).toHaveClass(
+        'box--margin-bottom-4 box--sm:margin-bottom-4 box--md:margin-bottom-4 box--lg:margin-bottom-4',
+      );
+      expect(getByText('Box marginBottom 5')).toHaveClass(
+        'box--margin-bottom-5 box--sm:margin-bottom-5 box--md:margin-bottom-5 box--lg:margin-bottom-5',
+      );
+      expect(getByText('Box marginBottom 6')).toHaveClass(
+        'box--margin-bottom-6 box--sm:margin-bottom-6 box--md:margin-bottom-6 box--lg:margin-bottom-6',
+      );
+      expect(getByText('Box marginBottom 7')).toHaveClass(
+        'box--margin-bottom-7 box--sm:margin-bottom-7 box--md:margin-bottom-7 box--lg:margin-bottom-7',
+      );
+      expect(getByText('Box marginBottom 8')).toHaveClass(
+        'box--margin-bottom-8 box--sm:margin-bottom-8 box--md:margin-bottom-8 box--lg:margin-bottom-8',
+      );
+      expect(getByText('Box marginBottom 9')).toHaveClass(
+        'box--margin-bottom-9 box--sm:margin-bottom-9 box--md:margin-bottom-9 box--lg:margin-bottom-9',
+      );
+      expect(getByText('Box marginBottom 10')).toHaveClass(
+        'box--margin-bottom-10 box--sm:margin-bottom-10 box--md:margin-bottom-10 box--lg:margin-bottom-10',
+      );
+      expect(getByText('Box marginBottom 11')).toHaveClass(
+        'box--margin-bottom-11 box--sm:margin-bottom-11 box--md:margin-bottom-11 box--lg:margin-bottom-11',
+      );
+      expect(getByText('Box marginBottom 12')).toHaveClass(
+        'box--margin-bottom-12 box--sm:margin-bottom-12 box--md:margin-bottom-12 box--lg:margin-bottom-12',
       );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-bottom-1');
-      expect(getByText('Box content')).toHaveClass(
-        'box--sm:margin-bottom-auto',
+      expect(getByText('Box marginBottom auto')).toHaveClass(
+        'box--margin-bottom-auto box--sm:margin-bottom-auto box--md:margin-bottom-auto box--lg:margin-bottom-auto',
       );
-      expect(getByText('Box content')).toHaveClass('box--md:margin-bottom-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:margin-bottom-4');
     });
-    it('should render the Box with the marginLeft class', () => {
-      const { getByText } = render(<Box marginLeft={1}>Box content</Box>);
+    it('should render the Box with the marginLeft classes', () => {
+      const { getByText } = render(
+        <>
+          <Box marginLeft={0}>Box marginLeft 0</Box>
+          <Box marginLeft={1}>Box marginLeft 1</Box>
+          <Box marginLeft={2}>Box marginLeft 2</Box>
+          <Box marginLeft={3}>Box marginLeft 3</Box>
+          <Box marginLeft={4}>Box marginLeft 4</Box>
+          <Box marginLeft={5}>Box marginLeft 5</Box>
+          <Box marginLeft={6}>Box marginLeft 6</Box>
+          <Box marginLeft={7}>Box marginLeft 7</Box>
+          <Box marginLeft={8}>Box marginLeft 8</Box>
+          <Box marginLeft={9}>Box marginLeft 9</Box>
+          <Box marginLeft={10}>Box marginLeft 10</Box>
+          <Box marginLeft={11}>Box marginLeft 11</Box>
+          <Box marginLeft={12}>Box marginLeft 12</Box>
+          <Box marginLeft="auto">Box marginLeft auto</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-left-1');
+      expect(getByText('Box marginLeft 0')).toHaveClass('box--margin-left-0');
+      expect(getByText('Box marginLeft 1')).toHaveClass('box--margin-left-1');
+      expect(getByText('Box marginLeft 2')).toHaveClass('box--margin-left-2');
+      expect(getByText('Box marginLeft 3')).toHaveClass('box--margin-left-3');
+      expect(getByText('Box marginLeft 4')).toHaveClass('box--margin-left-4');
+      expect(getByText('Box marginLeft 5')).toHaveClass('box--margin-left-5');
+      expect(getByText('Box marginLeft 6')).toHaveClass('box--margin-left-6');
+      expect(getByText('Box marginLeft 7')).toHaveClass('box--margin-left-7');
+      expect(getByText('Box marginLeft 8')).toHaveClass('box--margin-left-8');
+      expect(getByText('Box marginLeft 9')).toHaveClass('box--margin-left-9');
+      expect(getByText('Box marginLeft 10')).toHaveClass('box--margin-left-10');
+      expect(getByText('Box marginLeft 11')).toHaveClass('box--margin-left-11');
+      expect(getByText('Box marginLeft 12')).toHaveClass('box--margin-left-12');
+      expect(getByText('Box marginLeft auto')).toHaveClass(
+        'box--margin-left-auto',
+      );
     });
     it('should render the Box with the responsive marginLeft classes', () => {
       const { getByText } = render(
-        <Box marginLeft={[1, 'auto', 3, 4]}>Box content</Box>,
+        <>
+          <Box marginLeft={[0, 0, 0, 0]}>Box marginLeft 0</Box>
+          <Box marginLeft={[1, 1, 1, 1]}>Box marginLeft 1</Box>
+          <Box marginLeft={[2, 2, 2, 2]}>Box marginLeft 2</Box>
+          <Box marginLeft={[3, 3, 3, 3]}>Box marginLeft 3</Box>
+          <Box marginLeft={[4, 4, 4, 4]}>Box marginLeft 4</Box>
+          <Box marginLeft={[5, 5, 5, 5]}>Box marginLeft 5</Box>
+          <Box marginLeft={[6, 6, 6, 6]}>Box marginLeft 6</Box>
+          <Box marginLeft={[7, 7, 7, 7]}>Box marginLeft 7</Box>
+          <Box marginLeft={[8, 8, 8, 8]}>Box marginLeft 8</Box>
+          <Box marginLeft={[9, 9, 9, 9]}>Box marginLeft 9</Box>
+          <Box marginLeft={[10, 10, 10, 10]}>Box marginLeft 10</Box>
+          <Box marginLeft={[11, 11, 11, 11]}>Box marginLeft 11</Box>
+          <Box marginLeft={[12, 12, 12, 12]}>Box marginLeft 12</Box>
+          <Box marginLeft={['auto', 'auto', 'auto', 'auto']}>
+            Box marginLeft auto
+          </Box>
+        </>,
+      );
+      expect(getByText('Box marginLeft 0')).toHaveClass(
+        'box--margin-left-0 box--sm:margin-left-0 box--md:margin-left-0 box--lg:margin-left-0',
+      );
+      expect(getByText('Box marginLeft 1')).toHaveClass(
+        'box--margin-left-1 box--sm:margin-left-1 box--md:margin-left-1 box--lg:margin-left-1',
+      );
+      expect(getByText('Box marginLeft 2')).toHaveClass(
+        'box--margin-left-2 box--sm:margin-left-2 box--md:margin-left-2 box--lg:margin-left-2',
+      );
+      expect(getByText('Box marginLeft 3')).toHaveClass(
+        'box--margin-left-3 box--sm:margin-left-3 box--md:margin-left-3 box--lg:margin-left-3',
+      );
+      expect(getByText('Box marginLeft 4')).toHaveClass(
+        'box--margin-left-4 box--sm:margin-left-4 box--md:margin-left-4 box--lg:margin-left-4',
+      );
+      expect(getByText('Box marginLeft 5')).toHaveClass(
+        'box--margin-left-5 box--sm:margin-left-5 box--md:margin-left-5 box--lg:margin-left-5',
+      );
+      expect(getByText('Box marginLeft 6')).toHaveClass(
+        'box--margin-left-6 box--sm:margin-left-6 box--md:margin-left-6 box--lg:margin-left-6',
+      );
+      expect(getByText('Box marginLeft 7')).toHaveClass(
+        'box--margin-left-7 box--sm:margin-left-7 box--md:margin-left-7 box--lg:margin-left-7',
+      );
+      expect(getByText('Box marginLeft 8')).toHaveClass(
+        'box--margin-left-8 box--sm:margin-left-8 box--md:margin-left-8 box--lg:margin-left-8',
+      );
+      expect(getByText('Box marginLeft 9')).toHaveClass(
+        'box--margin-left-9 box--sm:margin-left-9 box--md:margin-left-9 box--lg:margin-left-9',
+      );
+      expect(getByText('Box marginLeft 10')).toHaveClass(
+        'box--margin-left-10 box--sm:margin-left-10 box--md:margin-left-10 box--lg:margin-left-10',
+      );
+      expect(getByText('Box marginLeft 11')).toHaveClass(
+        'box--margin-left-11 box--sm:margin-left-11 box--md:margin-left-11 box--lg:margin-left-11',
+      );
+      expect(getByText('Box marginLeft 12')).toHaveClass(
+        'box--margin-left-12 box--sm:margin-left-12 box--md:margin-left-12 box--lg:margin-left-12',
       );
 
-      expect(getByText('Box content')).toHaveClass('box--margin-left-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:margin-left-auto');
-      expect(getByText('Box content')).toHaveClass('box--md:margin-left-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:margin-left-4');
+      expect(getByText('Box marginLeft auto')).toHaveClass(
+        'box--margin-left-auto box--sm:margin-left-auto box--md:margin-left-auto box--lg:margin-left-auto',
+      );
     });
     it('should render the Box with the marginInline class', () => {
       const { getByText } = render(<Box marginInline={1}>Box content</Box>);
@@ -209,89 +655,519 @@ describe('Box', () => {
       );
     });
   });
-
   describe('padding', () => {
-    it('should render the Box with the padding class with singular value prop or one item array prop', () => {
+    it('should render the Box with the padding classes', () => {
       const { getByText } = render(
         <>
-          <Box padding={1}>Box content</Box>
-          <Box padding={[1]}>Box content one item array</Box>
+          <Box padding={0}>Box padding 0</Box>
+          <Box padding={1}>Box padding 1</Box>
+          <Box padding={2}>Box padding 2</Box>
+          <Box padding={3}>Box padding 3</Box>
+          <Box padding={4}>Box padding 4</Box>
+          <Box padding={5}>Box padding 5</Box>
+          <Box padding={6}>Box padding 6</Box>
+          <Box padding={7}>Box padding 7</Box>
+          <Box padding={8}>Box padding 8</Box>
+          <Box padding={9}>Box padding 9</Box>
+          <Box padding={10}>Box padding 10</Box>
+          <Box padding={11}>Box padding 11</Box>
+          <Box padding={12}>Box padding 12</Box>
         </>,
       );
-      expect(getByText('Box content')).toHaveClass('box--padding-1');
-      expect(getByText('Box content one item array')).toHaveClass(
-        'box--padding-1',
-      );
+
+      expect(getByText('Box padding 0')).toHaveClass('box--padding-0');
+      expect(getByText('Box padding 1')).toHaveClass('box--padding-1');
+      expect(getByText('Box padding 2')).toHaveClass('box--padding-2');
+      expect(getByText('Box padding 3')).toHaveClass('box--padding-3');
+      expect(getByText('Box padding 4')).toHaveClass('box--padding-4');
+      expect(getByText('Box padding 5')).toHaveClass('box--padding-5');
+      expect(getByText('Box padding 6')).toHaveClass('box--padding-6');
+      expect(getByText('Box padding 7')).toHaveClass('box--padding-7');
+      expect(getByText('Box padding 8')).toHaveClass('box--padding-8');
+      expect(getByText('Box padding 9')).toHaveClass('box--padding-9');
+      expect(getByText('Box padding 10')).toHaveClass('box--padding-10');
+      expect(getByText('Box padding 11')).toHaveClass('box--padding-11');
+      expect(getByText('Box padding 12')).toHaveClass('box--padding-12');
     });
     it('should render the Box with the responsive padding classes', () => {
       const { getByText } = render(
-        <Box padding={[1, 2, 3, 4]}>Box content</Box>,
+        <>
+          <Box padding={[0, 0, 0, 0]}>Box padding 0</Box>
+          <Box padding={[1, 1, 1, 1]}>Box padding 1</Box>
+          <Box padding={[2, 2, 2, 2]}>Box padding 2</Box>
+          <Box padding={[3, 3, 3, 3]}>Box padding 3</Box>
+          <Box padding={[4, 4, 4, 4]}>Box padding 4</Box>
+          <Box padding={[5, 5, 5, 5]}>Box padding 5</Box>
+          <Box padding={[6, 6, 6, 6]}>Box padding 6</Box>
+          <Box padding={[7, 7, 7, 7]}>Box padding 7</Box>
+          <Box padding={[8, 8, 8, 8]}>Box padding 8</Box>
+          <Box padding={[9, 9, 9, 9]}>Box padding 9</Box>
+          <Box padding={[10, 10, 10, 10]}>Box padding 10</Box>
+          <Box padding={[11, 11, 11, 11]}>Box padding 11</Box>
+          <Box padding={[12, 12, 12, 12]}>Box padding 12</Box>
+        </>,
+      );
+      expect(getByText('Box padding 0')).toHaveClass(
+        'box--padding-0 box--sm:padding-0 box--md:padding-0 box--lg:padding-0',
+      );
+      expect(getByText('Box padding 1')).toHaveClass(
+        'box--padding-1 box--sm:padding-1 box--md:padding-1 box--lg:padding-1',
+      );
+      expect(getByText('Box padding 2')).toHaveClass(
+        'box--padding-2 box--sm:padding-2 box--md:padding-2 box--lg:padding-2',
+      );
+      expect(getByText('Box padding 3')).toHaveClass(
+        'box--padding-3 box--sm:padding-3 box--md:padding-3 box--lg:padding-3',
+      );
+      expect(getByText('Box padding 4')).toHaveClass(
+        'box--padding-4 box--sm:padding-4 box--md:padding-4 box--lg:padding-4',
+      );
+      expect(getByText('Box padding 5')).toHaveClass(
+        'box--padding-5 box--sm:padding-5 box--md:padding-5 box--lg:padding-5',
+      );
+      expect(getByText('Box padding 6')).toHaveClass(
+        'box--padding-6 box--sm:padding-6 box--md:padding-6 box--lg:padding-6',
+      );
+      expect(getByText('Box padding 7')).toHaveClass(
+        'box--padding-7 box--sm:padding-7 box--md:padding-7 box--lg:padding-7',
+      );
+      expect(getByText('Box padding 8')).toHaveClass(
+        'box--padding-8 box--sm:padding-8 box--md:padding-8 box--lg:padding-8',
+      );
+      expect(getByText('Box padding 9')).toHaveClass(
+        'box--padding-9 box--sm:padding-9 box--md:padding-9 box--lg:padding-9',
+      );
+      expect(getByText('Box padding 10')).toHaveClass(
+        'box--padding-10 box--sm:padding-10 box--md:padding-10 box--lg:padding-10',
+      );
+      expect(getByText('Box padding 11')).toHaveClass(
+        'box--padding-11 box--sm:padding-11 box--md:padding-11 box--lg:padding-11',
+      );
+      expect(getByText('Box padding 12')).toHaveClass(
+        'box--padding-12 box--sm:padding-12 box--md:padding-12 box--lg:padding-12',
+      );
+    });
+    it('should render the Box with the paddingTop classes', () => {
+      const { getByText } = render(
+        <>
+          <Box paddingTop={0}>Box paddingTop 0</Box>
+          <Box paddingTop={1}>Box paddingTop 1</Box>
+          <Box paddingTop={2}>Box paddingTop 2</Box>
+          <Box paddingTop={3}>Box paddingTop 3</Box>
+          <Box paddingTop={4}>Box paddingTop 4</Box>
+          <Box paddingTop={5}>Box paddingTop 5</Box>
+          <Box paddingTop={6}>Box paddingTop 6</Box>
+          <Box paddingTop={7}>Box paddingTop 7</Box>
+          <Box paddingTop={8}>Box paddingTop 8</Box>
+          <Box paddingTop={9}>Box paddingTop 9</Box>
+          <Box paddingTop={10}>Box paddingTop 10</Box>
+          <Box paddingTop={11}>Box paddingTop 11</Box>
+          <Box paddingTop={12}>Box paddingTop 12</Box>
+        </>,
       );
 
-      expect(getByText('Box content')).toHaveClass('box--padding-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:padding-2');
-      expect(getByText('Box content')).toHaveClass('box--md:padding-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:padding-4');
-    });
-    it('should render the Box with the paddingTop class', () => {
-      const { getByText } = render(<Box paddingTop={1}>Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--padding-top-1');
+      expect(getByText('Box paddingTop 0')).toHaveClass('box--padding-top-0');
+      expect(getByText('Box paddingTop 1')).toHaveClass('box--padding-top-1');
+      expect(getByText('Box paddingTop 2')).toHaveClass('box--padding-top-2');
+      expect(getByText('Box paddingTop 3')).toHaveClass('box--padding-top-3');
+      expect(getByText('Box paddingTop 4')).toHaveClass('box--padding-top-4');
+      expect(getByText('Box paddingTop 5')).toHaveClass('box--padding-top-5');
+      expect(getByText('Box paddingTop 6')).toHaveClass('box--padding-top-6');
+      expect(getByText('Box paddingTop 7')).toHaveClass('box--padding-top-7');
+      expect(getByText('Box paddingTop 8')).toHaveClass('box--padding-top-8');
+      expect(getByText('Box paddingTop 9')).toHaveClass('box--padding-top-9');
+      expect(getByText('Box paddingTop 10')).toHaveClass('box--padding-top-10');
+      expect(getByText('Box paddingTop 11')).toHaveClass('box--padding-top-11');
+      expect(getByText('Box paddingTop 12')).toHaveClass('box--padding-top-12');
     });
     it('should render the Box with the responsive paddingTop classes', () => {
       const { getByText } = render(
-        <Box paddingTop={[1, 2, 3, 4]}>Box content</Box>,
+        <>
+          <Box paddingTop={[0, 0, 0, 0]}>Box paddingTop 0</Box>
+          <Box paddingTop={[1, 1, 1, 1]}>Box paddingTop 1</Box>
+          <Box paddingTop={[2, 2, 2, 2]}>Box paddingTop 2</Box>
+          <Box paddingTop={[3, 3, 3, 3]}>Box paddingTop 3</Box>
+          <Box paddingTop={[4, 4, 4, 4]}>Box paddingTop 4</Box>
+          <Box paddingTop={[5, 5, 5, 5]}>Box paddingTop 5</Box>
+          <Box paddingTop={[6, 6, 6, 6]}>Box paddingTop 6</Box>
+          <Box paddingTop={[7, 7, 7, 7]}>Box paddingTop 7</Box>
+          <Box paddingTop={[8, 8, 8, 8]}>Box paddingTop 8</Box>
+          <Box paddingTop={[9, 9, 9, 9]}>Box paddingTop 9</Box>
+          <Box paddingTop={[10, 10, 10, 10]}>Box paddingTop 10</Box>
+          <Box paddingTop={[11, 11, 11, 11]}>Box paddingTop 11</Box>
+          <Box paddingTop={[12, 12, 12, 12]}>Box paddingTop 12</Box>
+        </>,
+      );
+      expect(getByText('Box paddingTop 0')).toHaveClass(
+        'box--padding-top-0 box--sm:padding-top-0 box--md:padding-top-0 box--lg:padding-top-0',
+      );
+      expect(getByText('Box paddingTop 1')).toHaveClass(
+        'box--padding-top-1 box--sm:padding-top-1 box--md:padding-top-1 box--lg:padding-top-1',
+      );
+      expect(getByText('Box paddingTop 2')).toHaveClass(
+        'box--padding-top-2 box--sm:padding-top-2 box--md:padding-top-2 box--lg:padding-top-2',
+      );
+      expect(getByText('Box paddingTop 3')).toHaveClass(
+        'box--padding-top-3 box--sm:padding-top-3 box--md:padding-top-3 box--lg:padding-top-3',
+      );
+      expect(getByText('Box paddingTop 4')).toHaveClass(
+        'box--padding-top-4 box--sm:padding-top-4 box--md:padding-top-4 box--lg:padding-top-4',
+      );
+      expect(getByText('Box paddingTop 5')).toHaveClass(
+        'box--padding-top-5 box--sm:padding-top-5 box--md:padding-top-5 box--lg:padding-top-5',
+      );
+      expect(getByText('Box paddingTop 6')).toHaveClass(
+        'box--padding-top-6 box--sm:padding-top-6 box--md:padding-top-6 box--lg:padding-top-6',
+      );
+      expect(getByText('Box paddingTop 7')).toHaveClass(
+        'box--padding-top-7 box--sm:padding-top-7 box--md:padding-top-7 box--lg:padding-top-7',
+      );
+      expect(getByText('Box paddingTop 8')).toHaveClass(
+        'box--padding-top-8 box--sm:padding-top-8 box--md:padding-top-8 box--lg:padding-top-8',
+      );
+      expect(getByText('Box paddingTop 9')).toHaveClass(
+        'box--padding-top-9 box--sm:padding-top-9 box--md:padding-top-9 box--lg:padding-top-9',
+      );
+      expect(getByText('Box paddingTop 10')).toHaveClass(
+        'box--padding-top-10 box--sm:padding-top-10 box--md:padding-top-10 box--lg:padding-top-10',
+      );
+      expect(getByText('Box paddingTop 11')).toHaveClass(
+        'box--padding-top-11 box--sm:padding-top-11 box--md:padding-top-11 box--lg:padding-top-11',
+      );
+      expect(getByText('Box paddingTop 12')).toHaveClass(
+        'box--padding-top-12 box--sm:padding-top-12 box--md:padding-top-12 box--lg:padding-top-12',
+      );
+    });
+    it('should render the Box with the paddingRight classes', () => {
+      const { getByText } = render(
+        <>
+          <Box paddingRight={0}>Box paddingRight 0</Box>
+          <Box paddingRight={1}>Box paddingRight 1</Box>
+          <Box paddingRight={2}>Box paddingRight 2</Box>
+          <Box paddingRight={3}>Box paddingRight 3</Box>
+          <Box paddingRight={4}>Box paddingRight 4</Box>
+          <Box paddingRight={5}>Box paddingRight 5</Box>
+          <Box paddingRight={6}>Box paddingRight 6</Box>
+          <Box paddingRight={7}>Box paddingRight 7</Box>
+          <Box paddingRight={8}>Box paddingRight 8</Box>
+          <Box paddingRight={9}>Box paddingRight 9</Box>
+          <Box paddingRight={10}>Box paddingRight 10</Box>
+          <Box paddingRight={11}>Box paddingRight 11</Box>
+          <Box paddingRight={12}>Box paddingRight 12</Box>
+        </>,
       );
 
-      expect(getByText('Box content')).toHaveClass('box--padding-top-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:padding-top-2');
-      expect(getByText('Box content')).toHaveClass('box--md:padding-top-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:padding-top-4');
-    });
-    it('should render the Box with the paddingRight class', () => {
-      const { getByText } = render(<Box paddingRight={1}>Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--padding-right-1');
+      expect(getByText('Box paddingRight 0')).toHaveClass(
+        'box--padding-right-0',
+      );
+      expect(getByText('Box paddingRight 1')).toHaveClass(
+        'box--padding-right-1',
+      );
+      expect(getByText('Box paddingRight 2')).toHaveClass(
+        'box--padding-right-2',
+      );
+      expect(getByText('Box paddingRight 3')).toHaveClass(
+        'box--padding-right-3',
+      );
+      expect(getByText('Box paddingRight 4')).toHaveClass(
+        'box--padding-right-4',
+      );
+      expect(getByText('Box paddingRight 5')).toHaveClass(
+        'box--padding-right-5',
+      );
+      expect(getByText('Box paddingRight 6')).toHaveClass(
+        'box--padding-right-6',
+      );
+      expect(getByText('Box paddingRight 7')).toHaveClass(
+        'box--padding-right-7',
+      );
+      expect(getByText('Box paddingRight 8')).toHaveClass(
+        'box--padding-right-8',
+      );
+      expect(getByText('Box paddingRight 9')).toHaveClass(
+        'box--padding-right-9',
+      );
+      expect(getByText('Box paddingRight 10')).toHaveClass(
+        'box--padding-right-10',
+      );
+      expect(getByText('Box paddingRight 11')).toHaveClass(
+        'box--padding-right-11',
+      );
+      expect(getByText('Box paddingRight 12')).toHaveClass(
+        'box--padding-right-12',
+      );
     });
     it('should render the Box with the responsive paddingRight classes', () => {
       const { getByText } = render(
-        <Box paddingRight={[1, 2, 3, 4]}>Box content</Box>,
+        <>
+          <Box paddingRight={[0, 0, 0, 0]}>Box paddingRight 0</Box>
+          <Box paddingRight={[1, 1, 1, 1]}>Box paddingRight 1</Box>
+          <Box paddingRight={[2, 2, 2, 2]}>Box paddingRight 2</Box>
+          <Box paddingRight={[3, 3, 3, 3]}>Box paddingRight 3</Box>
+          <Box paddingRight={[4, 4, 4, 4]}>Box paddingRight 4</Box>
+          <Box paddingRight={[5, 5, 5, 5]}>Box paddingRight 5</Box>
+          <Box paddingRight={[6, 6, 6, 6]}>Box paddingRight 6</Box>
+          <Box paddingRight={[7, 7, 7, 7]}>Box paddingRight 7</Box>
+          <Box paddingRight={[8, 8, 8, 8]}>Box paddingRight 8</Box>
+          <Box paddingRight={[9, 9, 9, 9]}>Box paddingRight 9</Box>
+          <Box paddingRight={[10, 10, 10, 10]}>Box paddingRight 10</Box>
+          <Box paddingRight={[11, 11, 11, 11]}>Box paddingRight 11</Box>
+          <Box paddingRight={[12, 12, 12, 12]}>Box paddingRight 12</Box>
+        </>,
+      );
+      expect(getByText('Box paddingRight 0')).toHaveClass(
+        'box--padding-right-0 box--sm:padding-right-0 box--md:padding-right-0 box--lg:padding-right-0',
+      );
+      expect(getByText('Box paddingRight 1')).toHaveClass(
+        'box--padding-right-1 box--sm:padding-right-1 box--md:padding-right-1 box--lg:padding-right-1',
+      );
+      expect(getByText('Box paddingRight 2')).toHaveClass(
+        'box--padding-right-2 box--sm:padding-right-2 box--md:padding-right-2 box--lg:padding-right-2',
+      );
+      expect(getByText('Box paddingRight 3')).toHaveClass(
+        'box--padding-right-3 box--sm:padding-right-3 box--md:padding-right-3 box--lg:padding-right-3',
+      );
+      expect(getByText('Box paddingRight 4')).toHaveClass(
+        'box--padding-right-4 box--sm:padding-right-4 box--md:padding-right-4 box--lg:padding-right-4',
+      );
+      expect(getByText('Box paddingRight 5')).toHaveClass(
+        'box--padding-right-5 box--sm:padding-right-5 box--md:padding-right-5 box--lg:padding-right-5',
+      );
+      expect(getByText('Box paddingRight 6')).toHaveClass(
+        'box--padding-right-6 box--sm:padding-right-6 box--md:padding-right-6 box--lg:padding-right-6',
+      );
+      expect(getByText('Box paddingRight 7')).toHaveClass(
+        'box--padding-right-7 box--sm:padding-right-7 box--md:padding-right-7 box--lg:padding-right-7',
+      );
+      expect(getByText('Box paddingRight 8')).toHaveClass(
+        'box--padding-right-8 box--sm:padding-right-8 box--md:padding-right-8 box--lg:padding-right-8',
+      );
+      expect(getByText('Box paddingRight 9')).toHaveClass(
+        'box--padding-right-9 box--sm:padding-right-9 box--md:padding-right-9 box--lg:padding-right-9',
+      );
+      expect(getByText('Box paddingRight 10')).toHaveClass(
+        'box--padding-right-10 box--sm:padding-right-10 box--md:padding-right-10 box--lg:padding-right-10',
+      );
+      expect(getByText('Box paddingRight 11')).toHaveClass(
+        'box--padding-right-11 box--sm:padding-right-11 box--md:padding-right-11 box--lg:padding-right-11',
+      );
+      expect(getByText('Box paddingRight 12')).toHaveClass(
+        'box--padding-right-12 box--sm:padding-right-12 box--md:padding-right-12 box--lg:padding-right-12',
+      );
+    });
+    it('should render the Box with the paddingBottom classes', () => {
+      const { getByText } = render(
+        <>
+          <Box paddingBottom={0}>Box paddingBottom 0</Box>
+          <Box paddingBottom={1}>Box paddingBottom 1</Box>
+          <Box paddingBottom={2}>Box paddingBottom 2</Box>
+          <Box paddingBottom={3}>Box paddingBottom 3</Box>
+          <Box paddingBottom={4}>Box paddingBottom 4</Box>
+          <Box paddingBottom={5}>Box paddingBottom 5</Box>
+          <Box paddingBottom={6}>Box paddingBottom 6</Box>
+          <Box paddingBottom={7}>Box paddingBottom 7</Box>
+          <Box paddingBottom={8}>Box paddingBottom 8</Box>
+          <Box paddingBottom={9}>Box paddingBottom 9</Box>
+          <Box paddingBottom={10}>Box paddingBottom 10</Box>
+          <Box paddingBottom={11}>Box paddingBottom 11</Box>
+          <Box paddingBottom={12}>Box paddingBottom 12</Box>
+        </>,
       );
 
-      expect(getByText('Box content')).toHaveClass('box--padding-right-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:padding-right-2');
-      expect(getByText('Box content')).toHaveClass('box--md:padding-right-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:padding-right-4');
-    });
-    it('should render the Box with the paddingBottom class', () => {
-      const { getByText } = render(<Box paddingBottom={1}>Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--padding-bottom-1');
+      expect(getByText('Box paddingBottom 0')).toHaveClass(
+        'box--padding-bottom-0',
+      );
+      expect(getByText('Box paddingBottom 1')).toHaveClass(
+        'box--padding-bottom-1',
+      );
+      expect(getByText('Box paddingBottom 2')).toHaveClass(
+        'box--padding-bottom-2',
+      );
+      expect(getByText('Box paddingBottom 3')).toHaveClass(
+        'box--padding-bottom-3',
+      );
+      expect(getByText('Box paddingBottom 4')).toHaveClass(
+        'box--padding-bottom-4',
+      );
+      expect(getByText('Box paddingBottom 5')).toHaveClass(
+        'box--padding-bottom-5',
+      );
+      expect(getByText('Box paddingBottom 6')).toHaveClass(
+        'box--padding-bottom-6',
+      );
+      expect(getByText('Box paddingBottom 7')).toHaveClass(
+        'box--padding-bottom-7',
+      );
+      expect(getByText('Box paddingBottom 8')).toHaveClass(
+        'box--padding-bottom-8',
+      );
+      expect(getByText('Box paddingBottom 9')).toHaveClass(
+        'box--padding-bottom-9',
+      );
+      expect(getByText('Box paddingBottom 10')).toHaveClass(
+        'box--padding-bottom-10',
+      );
+      expect(getByText('Box paddingBottom 11')).toHaveClass(
+        'box--padding-bottom-11',
+      );
+      expect(getByText('Box paddingBottom 12')).toHaveClass(
+        'box--padding-bottom-12',
+      );
     });
     it('should render the Box with the responsive paddingBottom classes', () => {
       const { getByText } = render(
-        <Box paddingBottom={[1, 2, 3, 4]}>Box content</Box>,
+        <>
+          <Box paddingBottom={[0, 0, 0, 0]}>Box paddingBottom 0</Box>
+          <Box paddingBottom={[1, 1, 1, 1]}>Box paddingBottom 1</Box>
+          <Box paddingBottom={[2, 2, 2, 2]}>Box paddingBottom 2</Box>
+          <Box paddingBottom={[3, 3, 3, 3]}>Box paddingBottom 3</Box>
+          <Box paddingBottom={[4, 4, 4, 4]}>Box paddingBottom 4</Box>
+          <Box paddingBottom={[5, 5, 5, 5]}>Box paddingBottom 5</Box>
+          <Box paddingBottom={[6, 6, 6, 6]}>Box paddingBottom 6</Box>
+          <Box paddingBottom={[7, 7, 7, 7]}>Box paddingBottom 7</Box>
+          <Box paddingBottom={[8, 8, 8, 8]}>Box paddingBottom 8</Box>
+          <Box paddingBottom={[9, 9, 9, 9]}>Box paddingBottom 9</Box>
+          <Box paddingBottom={[10, 10, 10, 10]}>Box paddingBottom 10</Box>
+          <Box paddingBottom={[11, 11, 11, 11]}>Box paddingBottom 11</Box>
+          <Box paddingBottom={[12, 12, 12, 12]}>Box paddingBottom 12</Box>
+        </>,
+      );
+      expect(getByText('Box paddingBottom 0')).toHaveClass(
+        'box--padding-bottom-0 box--sm:padding-bottom-0 box--md:padding-bottom-0 box--lg:padding-bottom-0',
+      );
+      expect(getByText('Box paddingBottom 1')).toHaveClass(
+        'box--padding-bottom-1 box--sm:padding-bottom-1 box--md:padding-bottom-1 box--lg:padding-bottom-1',
+      );
+      expect(getByText('Box paddingBottom 2')).toHaveClass(
+        'box--padding-bottom-2 box--sm:padding-bottom-2 box--md:padding-bottom-2 box--lg:padding-bottom-2',
+      );
+      expect(getByText('Box paddingBottom 3')).toHaveClass(
+        'box--padding-bottom-3 box--sm:padding-bottom-3 box--md:padding-bottom-3 box--lg:padding-bottom-3',
+      );
+      expect(getByText('Box paddingBottom 4')).toHaveClass(
+        'box--padding-bottom-4 box--sm:padding-bottom-4 box--md:padding-bottom-4 box--lg:padding-bottom-4',
+      );
+      expect(getByText('Box paddingBottom 5')).toHaveClass(
+        'box--padding-bottom-5 box--sm:padding-bottom-5 box--md:padding-bottom-5 box--lg:padding-bottom-5',
+      );
+      expect(getByText('Box paddingBottom 6')).toHaveClass(
+        'box--padding-bottom-6 box--sm:padding-bottom-6 box--md:padding-bottom-6 box--lg:padding-bottom-6',
+      );
+      expect(getByText('Box paddingBottom 7')).toHaveClass(
+        'box--padding-bottom-7 box--sm:padding-bottom-7 box--md:padding-bottom-7 box--lg:padding-bottom-7',
+      );
+      expect(getByText('Box paddingBottom 8')).toHaveClass(
+        'box--padding-bottom-8 box--sm:padding-bottom-8 box--md:padding-bottom-8 box--lg:padding-bottom-8',
+      );
+      expect(getByText('Box paddingBottom 9')).toHaveClass(
+        'box--padding-bottom-9 box--sm:padding-bottom-9 box--md:padding-bottom-9 box--lg:padding-bottom-9',
+      );
+      expect(getByText('Box paddingBottom 10')).toHaveClass(
+        'box--padding-bottom-10 box--sm:padding-bottom-10 box--md:padding-bottom-10 box--lg:padding-bottom-10',
+      );
+      expect(getByText('Box paddingBottom 11')).toHaveClass(
+        'box--padding-bottom-11 box--sm:padding-bottom-11 box--md:padding-bottom-11 box--lg:padding-bottom-11',
+      );
+      expect(getByText('Box paddingBottom 12')).toHaveClass(
+        'box--padding-bottom-12 box--sm:padding-bottom-12 box--md:padding-bottom-12 box--lg:padding-bottom-12',
+      );
+    });
+    it('should render the Box with the paddingLeft classes', () => {
+      const { getByText } = render(
+        <>
+          <Box paddingLeft={0}>Box paddingLeft 0</Box>
+          <Box paddingLeft={1}>Box paddingLeft 1</Box>
+          <Box paddingLeft={2}>Box paddingLeft 2</Box>
+          <Box paddingLeft={3}>Box paddingLeft 3</Box>
+          <Box paddingLeft={4}>Box paddingLeft 4</Box>
+          <Box paddingLeft={5}>Box paddingLeft 5</Box>
+          <Box paddingLeft={6}>Box paddingLeft 6</Box>
+          <Box paddingLeft={7}>Box paddingLeft 7</Box>
+          <Box paddingLeft={8}>Box paddingLeft 8</Box>
+          <Box paddingLeft={9}>Box paddingLeft 9</Box>
+          <Box paddingLeft={10}>Box paddingLeft 10</Box>
+          <Box paddingLeft={11}>Box paddingLeft 11</Box>
+          <Box paddingLeft={12}>Box paddingLeft 12</Box>
+        </>,
       );
 
-      expect(getByText('Box content')).toHaveClass('box--padding-bottom-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:padding-bottom-2');
-      expect(getByText('Box content')).toHaveClass('box--md:padding-bottom-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:padding-bottom-4');
-    });
-    it('should render the Box with the paddingLeft class', () => {
-      const { getByText } = render(<Box paddingLeft={1}>Box content</Box>);
-
-      expect(getByText('Box content')).toHaveClass('box--padding-left-1');
+      expect(getByText('Box paddingLeft 0')).toHaveClass('box--padding-left-0');
+      expect(getByText('Box paddingLeft 1')).toHaveClass('box--padding-left-1');
+      expect(getByText('Box paddingLeft 2')).toHaveClass('box--padding-left-2');
+      expect(getByText('Box paddingLeft 3')).toHaveClass('box--padding-left-3');
+      expect(getByText('Box paddingLeft 4')).toHaveClass('box--padding-left-4');
+      expect(getByText('Box paddingLeft 5')).toHaveClass('box--padding-left-5');
+      expect(getByText('Box paddingLeft 6')).toHaveClass('box--padding-left-6');
+      expect(getByText('Box paddingLeft 7')).toHaveClass('box--padding-left-7');
+      expect(getByText('Box paddingLeft 8')).toHaveClass('box--padding-left-8');
+      expect(getByText('Box paddingLeft 9')).toHaveClass('box--padding-left-9');
+      expect(getByText('Box paddingLeft 10')).toHaveClass(
+        'box--padding-left-10',
+      );
+      expect(getByText('Box paddingLeft 11')).toHaveClass(
+        'box--padding-left-11',
+      );
+      expect(getByText('Box paddingLeft 12')).toHaveClass(
+        'box--padding-left-12',
+      );
     });
     it('should render the Box with the responsive paddingLeft classes', () => {
       const { getByText } = render(
-        <Box paddingLeft={[1, 2, 3, 4]}>Box content</Box>,
+        <>
+          <Box paddingLeft={[0, 0, 0, 0]}>Box paddingLeft 0</Box>
+          <Box paddingLeft={[1, 1, 1, 1]}>Box paddingLeft 1</Box>
+          <Box paddingLeft={[2, 2, 2, 2]}>Box paddingLeft 2</Box>
+          <Box paddingLeft={[3, 3, 3, 3]}>Box paddingLeft 3</Box>
+          <Box paddingLeft={[4, 4, 4, 4]}>Box paddingLeft 4</Box>
+          <Box paddingLeft={[5, 5, 5, 5]}>Box paddingLeft 5</Box>
+          <Box paddingLeft={[6, 6, 6, 6]}>Box paddingLeft 6</Box>
+          <Box paddingLeft={[7, 7, 7, 7]}>Box paddingLeft 7</Box>
+          <Box paddingLeft={[8, 8, 8, 8]}>Box paddingLeft 8</Box>
+          <Box paddingLeft={[9, 9, 9, 9]}>Box paddingLeft 9</Box>
+          <Box paddingLeft={[10, 10, 10, 10]}>Box paddingLeft 10</Box>
+          <Box paddingLeft={[11, 11, 11, 11]}>Box paddingLeft 11</Box>
+          <Box paddingLeft={[12, 12, 12, 12]}>Box paddingLeft 12</Box>
+        </>,
       );
-
-      expect(getByText('Box content')).toHaveClass('box--padding-left-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:padding-left-2');
-      expect(getByText('Box content')).toHaveClass('box--md:padding-left-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:padding-left-4');
+      expect(getByText('Box paddingLeft 0')).toHaveClass(
+        'box--padding-left-0 box--sm:padding-left-0 box--md:padding-left-0 box--lg:padding-left-0',
+      );
+      expect(getByText('Box paddingLeft 1')).toHaveClass(
+        'box--padding-left-1 box--sm:padding-left-1 box--md:padding-left-1 box--lg:padding-left-1',
+      );
+      expect(getByText('Box paddingLeft 2')).toHaveClass(
+        'box--padding-left-2 box--sm:padding-left-2 box--md:padding-left-2 box--lg:padding-left-2',
+      );
+      expect(getByText('Box paddingLeft 3')).toHaveClass(
+        'box--padding-left-3 box--sm:padding-left-3 box--md:padding-left-3 box--lg:padding-left-3',
+      );
+      expect(getByText('Box paddingLeft 4')).toHaveClass(
+        'box--padding-left-4 box--sm:padding-left-4 box--md:padding-left-4 box--lg:padding-left-4',
+      );
+      expect(getByText('Box paddingLeft 5')).toHaveClass(
+        'box--padding-left-5 box--sm:padding-left-5 box--md:padding-left-5 box--lg:padding-left-5',
+      );
+      expect(getByText('Box paddingLeft 6')).toHaveClass(
+        'box--padding-left-6 box--sm:padding-left-6 box--md:padding-left-6 box--lg:padding-left-6',
+      );
+      expect(getByText('Box paddingLeft 7')).toHaveClass(
+        'box--padding-left-7 box--sm:padding-left-7 box--md:padding-left-7 box--lg:padding-left-7',
+      );
+      expect(getByText('Box paddingLeft 8')).toHaveClass(
+        'box--padding-left-8 box--sm:padding-left-8 box--md:padding-left-8 box--lg:padding-left-8',
+      );
+      expect(getByText('Box paddingLeft 9')).toHaveClass(
+        'box--padding-left-9 box--sm:padding-left-9 box--md:padding-left-9 box--lg:padding-left-9',
+      );
+      expect(getByText('Box paddingLeft 10')).toHaveClass(
+        'box--padding-left-10 box--sm:padding-left-10 box--md:padding-left-10 box--lg:padding-left-10',
+      );
+      expect(getByText('Box paddingLeft 11')).toHaveClass(
+        'box--padding-left-11 box--sm:padding-left-11 box--md:padding-left-11 box--lg:padding-left-11',
+      );
+      expect(getByText('Box paddingLeft 12')).toHaveClass(
+        'box--padding-left-12 box--sm:padding-left-12 box--md:padding-left-12 box--lg:padding-left-12',
+      );
     });
     it('should render the Box with the responsive paddingInline classes', () => {
       const { getByText } = render(
@@ -599,17 +1475,59 @@ describe('Box', () => {
       );
     });
     it('should render the Box with the gap class', () => {
-      const { getByText } = render(<Box gap={1}>Box content</Box>);
+      const { getByText } = render(
+        <>
+          <Box gap={0}>Box gap 0</Box>
+          <Box gap={1}>Box gap 1</Box>
+          <Box gap={2}>Box gap 2</Box>
+          <Box gap={3}>Box gap 3</Box>
+          <Box gap={4}>Box gap 4</Box>
+          <Box gap={5}>Box gap 5</Box>
+          <Box gap={6}>Box gap 6</Box>
+          <Box gap={7}>Box gap 7</Box>
+          <Box gap={8}>Box gap 8</Box>
+          <Box gap={9}>Box gap 9</Box>
+          <Box gap={10}>Box gap 10</Box>
+          <Box gap={11}>Box gap 11</Box>
+          <Box gap={12}>Box gap 12</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--gap-1');
+      expect(getByText('Box gap 1')).toHaveClass('box--gap-1');
+      expect(getByText('Box gap 2')).toHaveClass('box--gap-2');
+      expect(getByText('Box gap 3')).toHaveClass('box--gap-3');
+      expect(getByText('Box gap 4')).toHaveClass('box--gap-4');
+      expect(getByText('Box gap 5')).toHaveClass('box--gap-5');
+      expect(getByText('Box gap 6')).toHaveClass('box--gap-6');
+      expect(getByText('Box gap 7')).toHaveClass('box--gap-7');
+      expect(getByText('Box gap 8')).toHaveClass('box--gap-8');
+      expect(getByText('Box gap 9')).toHaveClass('box--gap-9');
+      expect(getByText('Box gap 10')).toHaveClass('box--gap-10');
+      expect(getByText('Box gap 11')).toHaveClass('box--gap-11');
+      expect(getByText('Box gap 12')).toHaveClass('box--gap-12');
     });
     it('should render the Box with the responsive gap classes', () => {
-      const { getByText } = render(<Box gap={[1, 2, 3, 4]}>Box content</Box>);
+      const { getByText } = render(
+        <>
+          <Box gap={[0, 1, 2, 3]}>Box gap 0123</Box>
+          <Box gap={[4, 5, 6, 7]}>Box gap 4567</Box>
+          <Box gap={[8, 9, 10, 11]}>Box gap 891011</Box>
+          <Box gap={[12, 12, 12, 12]}>Box gap 12</Box>
+        </>,
+      );
 
-      expect(getByText('Box content')).toHaveClass('box--gap-1');
-      expect(getByText('Box content')).toHaveClass('box--sm:gap-2');
-      expect(getByText('Box content')).toHaveClass('box--md:gap-3');
-      expect(getByText('Box content')).toHaveClass('box--lg:gap-4');
+      expect(getByText('Box gap 0123')).toHaveClass(
+        'box--gap-0 box--sm:gap-1 box--md:gap-2 box--lg:gap-3',
+      );
+      expect(getByText('Box gap 4567')).toHaveClass(
+        'box--gap-4 box--sm:gap-5 box--md:gap-6 box--lg:gap-7',
+      );
+      expect(getByText('Box gap 891011')).toHaveClass(
+        'box--gap-8 box--sm:gap-9 box--md:gap-10 box--lg:gap-11',
+      );
+      expect(getByText('Box gap 12')).toHaveClass(
+        'box--gap-12 box--sm:gap-12 box--md:gap-12 box--lg:gap-12',
+      );
     });
     it('should render the Box with the flexDirection classes', () => {
       const { getByText } = render(
@@ -1034,7 +1952,6 @@ describe('Box', () => {
       );
     });
   });
-
   describe('color', () => {
     it('should render the Box with the color class', () => {
       const { getByText } = render(
@@ -1067,7 +1984,6 @@ describe('Box', () => {
       );
     });
   });
-
   describe('width, height', () => {
     it('should render the Box with the width class', () => {
       const { getByText } = render(

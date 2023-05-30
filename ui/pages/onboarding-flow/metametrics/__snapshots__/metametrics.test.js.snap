@@ -48,7 +48,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <span
-              class="box box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
             >
               Never
             </span>

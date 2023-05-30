@@ -37,17 +37,17 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
         </div>
       </div>
       <h3
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+        class="box box--margin-0 box--sm:margin-0 box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
       >
         Allow this site to add a network?
       </h3>
       <h6
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+        class="box box--margin-0 box--sm:margin-0 box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
         This will allow this network to be used within MetaMask.
       </h6>
       <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+        class="box box--margin-0 box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
       >
         <b>
           MetaMask does not verify custom networks. 
@@ -72,7 +72,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           class="definition-list"
         >
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Network name
             <div>
@@ -92,12 +92,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             Test chain
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Network URL
             <div>
@@ -117,12 +117,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             https://rpcurl.test.chain
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Chain ID
             <div>
@@ -142,12 +142,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             39321
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Currency symbol
             <div>
@@ -167,7 +167,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             TST
           </dd>
@@ -244,17 +244,17 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
         </div>
       </div>
       <h3
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+        class="box box--margin-0 box--sm:margin-0 box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
       >
         Allow this site to add a network?
       </h3>
       <h6
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+        class="box box--margin-0 box--sm:margin-0 box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
         This will allow this network to be used within MetaMask.
       </h6>
       <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+        class="box box--margin-0 box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
       >
         <b>
           MetaMask does not verify custom networks. 
@@ -279,7 +279,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
           class="definition-list"
         >
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Network name
             <div>
@@ -299,12 +299,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             Test chain
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Network URL
             <div>
@@ -324,12 +324,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             https://rpcurl.test.chain
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Chain ID
             <div>
@@ -349,12 +349,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             39321
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="box box--margin-top-0 box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
           >
             Currency symbol
             <div>
@@ -374,7 +374,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="box box--margin-top-0 box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
             TST
           </dd>

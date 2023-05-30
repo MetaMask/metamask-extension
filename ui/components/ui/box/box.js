@@ -119,8 +119,8 @@ function isValidString(type, value) {
 
 const generateClassNames = memoize(
   (type, value, validatorFn) => {
-    // if value does not exist return null
-    if (!value) {
+    // if value does not exist return null, accepts 0 as a valid value
+    if (!value && typeof value !== 'number') {
       return null;
     }
     const classesObject = {};
@@ -134,7 +134,13 @@ const generateClassNames = memoize(
         ? value
         : undefined;
     // single digit equals single value or single array item
-    const singleValue = singleValueProp || singleArrayItemProp;
+    let singleValue;
+    if (singleValueProp || singleValueProp === 0) {
+      singleValue = singleValueProp;
+    }
+    if (singleArrayItemProp || singleArrayItemProp === 0) {
+      singleValue = singleArrayItemProp;
+    }
     // 0 is an acceptable value but is falsy in js
     if (singleValue || singleValue === 0) {
       // add base style without any breakpoint prefixes to classObject
@@ -148,35 +154,35 @@ const generateClassNames = memoize(
         case 4:
           // add base/sm/md/lg
           classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
-            value[0] && validatorFn(type, value[0]);
+            validatorFn(type, value[0]);
           classesObject[
             `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
-          ] = value[1] && validatorFn(type, value[1]);
+          ] = validatorFn(type, value[1]);
           classesObject[
             `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
-          ] = value[2] && validatorFn(type, value[2]);
+          ] = validatorFn(type, value[2]);
           classesObject[
             `${BASE_CLASS_NAME}--${BREAKPOINTS[3]}:${type}-${value[3]}`
-          ] = value[3] && validatorFn(type, value[3]);
+          ] = validatorFn(type, value[3]);
           break;
         case 3:
           // add base/sm/md
           classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
-            value[0] && validatorFn(type, value[0]);
+            validatorFn(type, value[0]);
           classesObject[
             `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
-          ] = value[1] && validatorFn(type, value[1]);
+          ] = validatorFn(type, value[1]);
           classesObject[
             `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
-          ] = value[2] && validatorFn(type, value[2]);
+          ] = validatorFn(type, value[2]);
           break;
         case 2:
           // add base/sm
           classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
-            value[0] && validatorFn(type, value[0]);
+            validatorFn(type, value[0]);
           classesObject[
             `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
-          ] = value[1] && validatorFn(type, value[1]);
+          ] = validatorFn(type, value[1]);
           break;
         default:
           console.log(`Invalid array prop length: ${value.length}`);
@@ -232,56 +238,38 @@ const Box = React.forwardRef(function Box(
     BASE_CLASS_NAME,
     className,
     // Margin
-    margin && generateClassNames('margin', margin, isValidSize),
-    marginTop && generateClassNames('margin-top', marginTop, isValidSize),
-    marginRight && generateClassNames('margin-right', marginRight, isValidSize),
-    marginBottom &&
-      generateClassNames('margin-bottom', marginBottom, isValidSize),
-    marginLeft && generateClassNames('margin-left', marginLeft, isValidSize),
-    marginInline &&
-      generateClassNames('margin-inline', marginInline, isValidSize),
-    marginInlineStart &&
-      generateClassNames('margin-inline-start', marginInlineStart, isValidSize),
-    marginInlineEnd &&
-      generateClassNames('margin-inline-end', marginInlineEnd, isValidSize),
+    generateClassNames('margin', margin, isValidSize),
+    generateClassNames('margin-top', marginTop, isValidSize),
+    generateClassNames('margin-right', marginRight, isValidSize),
+    generateClassNames('margin-bottom', marginBottom, isValidSize),
+    generateClassNames('margin-left', marginLeft, isValidSize),
+    generateClassNames('margin-inline', marginInline, isValidSize),
+    generateClassNames('margin-inline-start', marginInlineStart, isValidSize),
+    generateClassNames('margin-inline-end', marginInlineEnd, isValidSize),
     // Padding
-    padding && generateClassNames('padding', padding, isValidSize),
-    paddingTop && generateClassNames('padding-top', paddingTop, isValidSize),
-    paddingRight &&
-      generateClassNames('padding-right', paddingRight, isValidSize),
-    paddingBottom &&
-      generateClassNames('padding-bottom', paddingBottom, isValidSize),
-    paddingLeft && generateClassNames('padding-left', paddingLeft, isValidSize),
-    paddingInline &&
-      generateClassNames('padding-inline', paddingInline, isValidSize),
-    paddingInlineStart &&
-      generateClassNames(
-        'padding-inline-start',
-        paddingInlineStart,
-        isValidSize,
-      ),
-    paddingInlineEnd &&
-      generateClassNames('padding-inline-end', paddingInlineEnd, isValidSize),
-    display && generateClassNames('display', display, isValidString),
-    gap && generateClassNames('gap', gap, isValidSize),
-    flexDirection &&
-      generateClassNames('flex-direction', flexDirection, isValidString),
-    flexWrap && generateClassNames('flex-wrap', flexWrap, isValidString),
-    justifyContent &&
-      generateClassNames('justify-content', justifyContent, isValidString),
-    alignItems && generateClassNames('align-items', alignItems, isValidString),
-    textAlign && generateClassNames('text-align', textAlign, isValidString),
-    width && generateClassNames('width', width, isValidString),
-    height && generateClassNames('height', height, isValidString),
-    color && generateClassNames('color', color, isValidString),
-    backgroundColor &&
-      generateClassNames('background-color', backgroundColor, isValidString),
-    borderRadius && generateClassNames('rounded', borderRadius, isValidString),
-    borderStyle &&
-      generateClassNames('border-style', borderStyle, isValidString),
-    borderColor &&
-      generateClassNames('border-color', borderColor, isValidString),
-    borderWidth && generateClassNames('border-width', borderWidth, isValidSize),
+    generateClassNames('padding', padding, isValidSize),
+    generateClassNames('padding-top', paddingTop, isValidSize),
+    generateClassNames('padding-right', paddingRight, isValidSize),
+    generateClassNames('padding-bottom', paddingBottom, isValidSize),
+    generateClassNames('padding-left', paddingLeft, isValidSize),
+    generateClassNames('padding-inline', paddingInline, isValidSize),
+    generateClassNames('padding-inline-start', paddingInlineStart, isValidSize),
+    generateClassNames('padding-inline-end', paddingInlineEnd, isValidSize),
+    generateClassNames('display', display, isValidString),
+    generateClassNames('gap', gap, isValidSize),
+    generateClassNames('flex-direction', flexDirection, isValidString),
+    generateClassNames('flex-wrap', flexWrap, isValidString),
+    generateClassNames('justify-content', justifyContent, isValidString),
+    generateClassNames('align-items', alignItems, isValidString),
+    generateClassNames('text-align', textAlign, isValidString),
+    generateClassNames('width', width, isValidString),
+    generateClassNames('height', height, isValidString),
+    generateClassNames('color', color, isValidString),
+    generateClassNames('background-color', backgroundColor, isValidString),
+    generateClassNames('rounded', borderRadius, isValidString),
+    generateClassNames('border-style', borderStyle, isValidString),
+    generateClassNames('border-color', borderColor, isValidString),
+    generateClassNames('border-width', borderWidth, isValidSize),
     {
       // Auto applied classes
       // ---Borders---

@@ -24,7 +24,7 @@ exports[`Confirm Add Institutional Feature opens confirm institutional sucessful
       class="box page-container__content box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-sm box--margin-top-3 box--margin-right-8 box--margin-left-8 box--flex-direction-row box--color-text-default"
+        class="box mm-text mm-text--body-sm box--margin-top-3 box--margin-right-8 box--margin-bottom-0 box--margin-left-8 box--flex-direction-row box--color-text-default"
       >
         Project Name
       </p>

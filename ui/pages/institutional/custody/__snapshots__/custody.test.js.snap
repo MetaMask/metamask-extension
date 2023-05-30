@@ -8,7 +8,7 @@ exports[`CustodyPage renders CustodyPage 1`] = `
     
     
     <div
-      class="box box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
+      class="box box--padding-0 box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
     >
       <button
         aria-label="Back"
@@ -76,7 +76,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
     
     
     <div
-      class="box box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
+      class="box box--padding-0 box--sm:padding-7 box--md:padding-2 box--display-flex box--flex-direction-column"
     >
       <button
         aria-label="Back"
@@ -151,7 +151,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
         </div>
       </div>
       <div
-        class="box box--padding-4 box--display-flex box--flex-direction-row box--justify-content-center"
+        class="box box--padding-4 box--sm:padding-0 box--display-flex box--flex-direction-row box--justify-content-center"
       >
         <button
           class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--margin-right-4 box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"

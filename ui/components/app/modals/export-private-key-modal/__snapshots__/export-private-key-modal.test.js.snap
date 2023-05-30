@@ -69,10 +69,10 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc
       </div>
       <div
-        class="box export-private-key-modal__divider box--margin-5 box--md:margin-3 box--flex-direction-row box--width-full"
+        class="box export-private-key-modal__divider box--margin-5 box--sm:margin-0 box--md:margin-3 box--lg:margin-0 box--flex-direction-row box--width-full"
       />
       <p
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-4 box--md:margin-4 box--flex-direction-row box--color-text-default"
+        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-4 box--sm:margin-0 box--md:margin-4 box--lg:margin-0 box--flex-direction-row box--color-text-default"
       >
         Show Private Keys
       </p>
@@ -85,12 +85,12 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
           Type your MetaMask password
         </label>
         <div
-          class="box mm-text-field mm-text-field--size-md mm-text-field--truncate export-private-key-modal__password-input box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+          class="box mm-text-field mm-text-field--size-md mm-text-field--truncate export-private-key-modal__password-input box--padding-right-0 box--padding-left-0 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
           data-testid="password-input"
         >
           <input
             autocomplete="off"
-            class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+            class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--margin-0 box--padding-0 box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
             focused="false"
             placeholder="Enter password"
             type="password"
@@ -102,7 +102,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box mm-text mm-text--body-sm box--flex-direction-row box--color-error-default"
       />
       <div
-        class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-5 box--margin-left-5 box--padding-1 box--sm:padding-3 box--lg:padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+        class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-5 box--margin-left-5 box--padding-1 box--sm:padding-3 box--md:padding-0 box--lg:padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
       >
         <span
           class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
@@ -117,7 +117,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="box box--margin-top-3 box--padding-5 box--md:padding-5 box--display-flex box--flex-direction-row box--justify-content-space-between box--width-full"
+        class="box box--margin-top-3 box--padding-5 box--sm:padding-0 box--md:padding-5 box--lg:padding-0 box--display-flex box--flex-direction-row box--justify-content-space-between box--width-full"
       >
         <button
           class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--margin-right-4 box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-1/2 box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
