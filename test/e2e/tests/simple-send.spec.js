@@ -1,4 +1,9 @@
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  sendTransaction,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Simple send', function () {
@@ -18,20 +23,17 @@ describe('Simple send', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-        await driver.fill(
-          '[data-testid="ens-input"]',
+        await assertAccountBalanceForDOM(driver, ganacheServer);
+
+        await sendTransaction(
+          driver,
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+          '1',
         );
-        await driver.fill('.unit-input__input', '1');
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.findElement('.transaction-list-item');
       },
     );
   });

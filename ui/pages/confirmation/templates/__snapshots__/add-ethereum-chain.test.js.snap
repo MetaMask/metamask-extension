@@ -1,0 +1,489 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="confirmation-page__content"
+    >
+      <div
+        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
+      >
+        <div
+          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
+          data-testid="network-display"
+        >
+          <div
+            class="chip__left-icon"
+          >
+            <span
+              class="loading-indicator"
+            >
+              <img
+                alt="Attempting to connect to blockchain."
+                class="loading-indicator__spinner"
+                src="images/loading.svg"
+                title="Attempting to connect to blockchain."
+              />
+            </span>
+          </div>
+          <span
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+          >
+            Test initial state
+          </span>
+        </div>
+      </div>
+      <h3
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+      >
+        Allow this site to add a network?
+      </h3>
+      <h6
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      >
+        This will allow this network to be used within MetaMask.
+      </h6>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+      >
+        <b>
+          MetaMask does not verify custom networks. 
+        </b>
+        <span>
+           
+          Learn about 
+          <a
+            href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+            target="__blank"
+          >
+            scams and network security risks
+          </a>
+          .
+           
+        </span>
+      </h6>
+      <div
+        class="box box--margin-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
+      >
+        <dl
+          class="definition-list"
+        >
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Network name
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The name associated with this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            Test chain
+          </dd>
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Network URL
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The URL used to access this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            https://rpcurl.test.chain
+          </dd>
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Chain ID
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The chain ID used to sign transactions for this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            39321
+          </dd>
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Currency symbol
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-4"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The ticker symbol displayed for this network’s currency."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            TST
+          </dd>
+        </dl>
+        <a
+          class="button btn-link truncated-definition-list__view-more"
+          role="button"
+          tabindex="0"
+        >
+          View all details
+        </a>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+    >
+      <div
+        class="confirmation-footer__actions"
+      >
+        <button
+          class="button btn--rounded btn-secondary"
+          role="button"
+          tabindex="0"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary"
+          role="button"
+          tabindex="0"
+        >
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="confirmation-page__content"
+    >
+      <div
+        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
+      >
+        <div
+          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
+          data-testid="network-display"
+        >
+          <div
+            class="chip__left-icon"
+          >
+            <span
+              class="loading-indicator"
+            >
+              <img
+                alt="Attempting to connect to blockchain."
+                class="loading-indicator__spinner"
+                src="images/loading.svg"
+                title="Attempting to connect to blockchain."
+              />
+            </span>
+          </div>
+          <span
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+          >
+            Test initial state
+          </span>
+        </div>
+      </div>
+      <h3
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+      >
+        Allow this site to add a network?
+      </h3>
+      <h6
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      >
+        This will allow this network to be used within MetaMask.
+      </h6>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+      >
+        <b>
+          MetaMask does not verify custom networks. 
+        </b>
+        <span>
+           
+          Learn about 
+          <a
+            href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+            target="__blank"
+          >
+            scams and network security risks
+          </a>
+          .
+           
+        </span>
+      </h6>
+      <div
+        class="box box--margin-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
+      >
+        <dl
+          class="definition-list"
+        >
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Network name
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The name associated with this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            Test chain
+          </dd>
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Network URL
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The URL used to access this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            https://rpcurl.test.chain
+          </dd>
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Chain ID
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The chain ID used to sign transactions for this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            39321
+          </dd>
+          <dt
+            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Currency symbol
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-4"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The ticker symbol displayed for this network’s currency."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            TST
+          </dd>
+        </dl>
+        <a
+          class="button btn-link truncated-definition-list__view-more"
+          role="button"
+          tabindex="0"
+        >
+          View all details
+        </a>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+    >
+      <div
+        class="callout callout--warning callout--multiple callout--dismissible callout--first"
+      >
+        <svg
+          class="info-icon info-icon--warning"
+          fill="none"
+          height="16"
+          viewBox="0 0 16 16"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15.75 8C15.75 3.75 12.25 0.25 8 0.25C3.71875 0.25 0.25 3.75 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.25 15.75 15.75 12.2812 15.75 8ZM8 9.5625C8.78125 9.5625 9.4375 10.2188 9.4375 11C9.4375 11.8125 8.78125 12.4375 8 12.4375C7.1875 12.4375 6.5625 11.8125 6.5625 11C6.5625 10.2188 7.1875 9.5625 8 9.5625ZM6.625 4.40625C6.59375 4.1875 6.78125 4 7 4H8.96875C9.1875 4 9.375 4.1875 9.34375 4.40625L9.125 8.65625C9.09375 8.875 8.9375 9 8.75 9H7.21875C7.03125 9 6.875 8.875 6.84375 8.65625L6.625 4.40625Z"
+          />
+        </svg>
+        <p
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography callout__content typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+        >
+          <span>
+            This custom network is not recognized
+          </span>
+        </p>
+        <button
+          class="box mm-button-icon mm-button-icon--size-sm callout__close-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+        >
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
+      </div>
+      <div
+        class="callout callout--warning callout--multiple callout--dismissible callout--last"
+      >
+        <svg
+          class="info-icon info-icon--warning"
+          fill="none"
+          height="16"
+          viewBox="0 0 16 16"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15.75 8C15.75 3.75 12.25 0.25 8 0.25C3.71875 0.25 0.25 3.75 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.25 15.75 15.75 12.2812 15.75 8ZM8 9.5625C8.78125 9.5625 9.4375 10.2188 9.4375 11C9.4375 11.8125 8.78125 12.4375 8 12.4375C7.1875 12.4375 6.5625 11.8125 6.5625 11C6.5625 10.2188 7.1875 9.5625 8 9.5625ZM6.625 4.40625C6.59375 4.1875 6.78125 4 7 4H8.96875C9.1875 4 9.375 4.1875 9.34375 4.40625L9.125 8.65625C9.09375 8.875 8.9375 9 8.75 9H7.21875C7.03125 9 6.875 8.875 6.84375 8.65625L6.625 4.40625Z"
+          />
+        </svg>
+        <p
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography callout__content typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+        >
+          <span>
+            <span>
+               
+              We recommend that you 
+              <a
+                href="https://metamask.zendesk.com/hc/en-us/articles/360057142392"
+                tabindex="0"
+                target="__blank"
+              >
+                verify the network details
+              </a>
+               before proceeding.
+               
+            </span>
+          </span>
+        </p>
+        <button
+          class="box mm-button-icon mm-button-icon--size-sm callout__close-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+        >
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
+      </div>
+      <div
+        class="confirmation-footer__actions"
+      >
+        <button
+          class="button btn--rounded btn-secondary"
+          role="button"
+          tabindex="0"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary"
+          role="button"
+          tabindex="0"
+        >
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

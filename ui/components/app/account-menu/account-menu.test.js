@@ -74,7 +74,7 @@ describe('Account Menu', () => {
     it('renders user preference currency display balance from account balance', () => {
       const accountBalance = screen.queryAllByTestId('account-menu__balance');
 
-      expect(accountBalance).toHaveLength(2);
+      expect(accountBalance).toHaveLength(4);
     });
 
     it('simulate click', () => {

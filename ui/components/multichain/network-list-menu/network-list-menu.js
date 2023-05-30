@@ -76,7 +76,7 @@ export const NetworkListMenu = ({ onClose }) => {
     >
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
-          {networks.map((network) => {
+          {networks.map((network, index) => {
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
               !isCurrentNetwork &&
@@ -86,7 +86,7 @@ export const NetworkListMenu = ({ onClose }) => {
               <NetworkListItem
                 name={network.nickname}
                 iconSrc={network?.rpcPrefs?.imageUrl}
-                key={network.id || network.chainId}
+                key={`${network.id || network.chainId}-${index}`}
                 selected={isCurrentNetwork}
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());

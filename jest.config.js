@@ -32,15 +32,12 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: [
-    '<rootDir>/test/setup.js',
-    '<rootDir>/test/env.js',
-    '<rootDir>/test/jest/env.js', // jest specific env vars that break mocha tests
-  ],
+  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
+    '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',

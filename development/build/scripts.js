@@ -33,7 +33,6 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
-const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig } = require('./config');
 const {
@@ -1182,10 +1181,8 @@ async function setEnvironmentVariables({
 }) {
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
-  const iconNames = await generateIconNames();
 
   variables.set({
-    ICON_NAMES: iconNames,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
