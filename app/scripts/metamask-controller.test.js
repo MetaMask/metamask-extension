@@ -82,14 +82,8 @@ function MockEthContract() {
 jest.mock('./lib/createLoggerMiddleware', () => ({
   default: createLoggerMiddlewareMock,
 }));
-
 jest.mock('ethjs-contract', () => MockEthContract);
 
-// TODO, Feb 24, 2023:
-// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
-// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
-// us set up the test infrastructure for a mocked provider. Github ticket for that is:
-// https://github.com/MetaMask/metamask-extension/issues/17890
 const MetaMaskController = require('./metamask-controller').default;
 
 jest.mock('../../shared/modules/mv3.utils', () => ({
@@ -186,7 +180,8 @@ const firstTimeState = {
 describe('MetaMaskController', function () {
   let metamaskController;
 
-  jest.spyOn(browserPolyfillMock.storage, 'session', 'set');
+  // eslint-disable-next-line jest/prefer-spy-on
+  browserPolyfillMock.storage.session.set = jest.fn();
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
@@ -224,7 +219,10 @@ describe('MetaMaskController', function () {
         ]),
       );
 
-    jest.spyOn(browser.runtime, 'sendMessage').mockClear().mockRejectedValue();
+    browser.runtime = {
+      ...browser.runtime,
+      sendMessage: jest.fn().mockRejectedValue(),
+    };
 
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,

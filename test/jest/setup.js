@@ -2,6 +2,7 @@
 
 import nock from 'nock';
 import '@testing-library/jest-dom';
+import { chrome } from 'jest-chrome';
 
 jest.mock('webextension-polyfill', () => {
   return {
@@ -10,6 +11,8 @@ jest.mock('webextension-polyfill', () => {
     },
   };
 });
+
+global.chrome = chrome;
 
 const UNRESOLVED = Symbol('timedOut');
 
