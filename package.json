@@ -441,7 +441,7 @@
     "brfs": "^2.0.2",
     "browser-util-inspect": "^0.2.0",
     "browserify": "^16.5.1",
-    "chalk": "^3.0.0",
+    "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "chromedriver": "^111.0.0",
     "concurrently": "^7.6.0",

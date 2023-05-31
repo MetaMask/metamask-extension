@@ -6470,27 +6470,8 @@
     },
     "mocha>log-symbols": {
       "packages": {
-        "madge>ora>is-unicode-supported": true,
-        "mocha>log-symbols>chalk": true
-      }
-    },
-    "mocha>log-symbols>chalk": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "mocha>log-symbols>chalk>supports-color": true
-      }
-    },
-    "mocha>log-symbols>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "sinon>supports-color>has-flag": true
+        "chalk": true,
+        "madge>ora>is-unicode-supported": true
       }
     },
     "mocha>minimatch>brace-expansion": {
@@ -7915,6 +7896,7 @@
         "process.stdout.isTTY": true
       },
       "packages": {
+        "chalk": true,
         "del>slash": true,
         "eslint>imurmurhash": true,
         "globby": true,
@@ -7927,7 +7909,6 @@
         "stylelint>@stylelint/postcss-markdown": true,
         "stylelint>autoprefixer": true,
         "stylelint>balanced-match": true,
-        "stylelint>chalk": true,
         "stylelint>cosmiconfig": true,
         "stylelint>execall": true,
         "stylelint>file-entry-cache": true,
@@ -8100,25 +8081,6 @@
       "packages": {
         "stylelint>autoprefixer>picocolors": true,
         "stylelint>autoprefixer>postcss>source-map": true
-      }
-    },
-    "stylelint>chalk": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "stylelint>chalk>supports-color": true
-      }
-    },
-    "stylelint>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "sinon>supports-color>has-flag": true
       }
     },
     "stylelint>cosmiconfig": {
