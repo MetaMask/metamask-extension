@@ -1718,7 +1718,8 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-rpc-errors": true,
-        "ethereumjs-util": true
+        "ethereumjs-util": true,
+        "lodash": true
       }
     },
     "@metamask/smart-transactions-controller": {
