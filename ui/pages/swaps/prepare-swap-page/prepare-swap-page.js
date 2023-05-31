@@ -827,7 +827,7 @@ export default function PrepareSwapPage({
                 selectedItem={selectedFromToken}
                 itemsToSearch={tokensToSearchSwapFrom}
                 onClickItem={(item) => {
-                  onToSelect?.(item);
+                  onFromSelect?.(item);
                   onSwapFromClose();
                 }}
                 maxListItems={30}
