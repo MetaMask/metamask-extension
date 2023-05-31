@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { fireEvent, waitFor } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
@@ -346,6 +347,25 @@ describe('Confirm Transaction Base', () => {
             sendToRecipientSelector,
           );
           expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+
+        it.only('should handleMainSubmit calls sendTransaction with correct arguments', async () => {
+          const store = configureMockStore(middleware)(mockedStore);
+          const sendTransaction = jest.fn();
+
+          const { getByTestId } = renderWithProvider(
+            <ConfirmTransactionBase
+              actionKey="confirm"
+              sendTransaction={sendTransaction}
+            />,
+            store,
+          );
+          const confirmButton = getByTestId('page-container-footer-next');
+          console.log(confirmButton);
+          fireEvent.click(confirmButton);
+          await waitFor(() => {
+            expect(sendTransaction).toHaveBeenCalled();
+          });
         });
       });
     });
