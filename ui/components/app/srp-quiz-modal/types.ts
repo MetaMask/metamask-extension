@@ -17,6 +17,7 @@ export interface IQuizInformationProps {
     onClick: () => void;
     label: string;
     variant: string;
+    size?: string;
   }[];
 }
 

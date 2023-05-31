@@ -9,7 +9,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { BUTTON_SIZES, Button, Text } from '../../../component-library';
+import { Button, Text } from '../../../component-library';
 import Box from '../../../ui/box';
 import { IQuizInformationProps } from '../types';
 
@@ -35,33 +35,29 @@ export default function QuizContent({
         </Box>
       )}
       {image && (
-        <img src={image} alt={t('srpSecurityQuizImgAlt')} width="100%" />
+        <Box display={Display.Flex} margin="auto" textAlign={TextAlign.Center}>
+          <img src={image} alt={t('srpSecurityQuizImgAlt')} />
+        </Box>
       )}
       <Text
         variant={TextVariant.headingMd}
         textAlign={TextAlign.Center}
-        margin={2}
-        color={icon?.props.color} // Copy this text color from the icon's color
+        color={icon?.props.color} // Inherit this text color from the icon's color
       >
         {content}
       </Text>
       {moreContent && (
-        <Text
-          variant={TextVariant.bodyMd}
-          textAlign={TextAlign.Center}
-          margin={4}
-        >
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
           {moreContent}
         </Text>
       )}
       {buttons.map((btn, idx) => (
         <Button
           key={idx}
-          size={BUTTON_SIZES.LG}
+          size={btn.size}
           onClick={btn.onClick}
           label={btn.label}
           variant={btn.variant}
-          marginBottom={2}
           width={BlockSize.Full}
         >
           {btn.label}
