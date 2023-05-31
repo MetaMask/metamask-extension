@@ -19,7 +19,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Install [Yarn v3](https://yarnpkg.com/getting-started/install)
     - ONLY follow the steps in the "Install Corepack" and "Updating the global Yarn version" sections
     - DO NOT take any of the steps in the "Initializing your project", "Updating to the latest versions" or "Installing the latest build fresh from master" sections. These steps could result in your repo being reset or installing the wrong yarn version, which can break your build.
-- Copy the `.metamaskrc.dist` file to `.metamaskrc`
+- Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc`
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
