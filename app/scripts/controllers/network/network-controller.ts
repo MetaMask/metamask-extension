@@ -130,12 +130,19 @@ export type NetworkControllerEvent =
   | NetworkControllerInfuraIsBlockedEvent
   | NetworkControllerInfuraIsUnblockedEvent;
 
+export type NetworkControllerGetProviderConfigAction = {
+  type: `NetworkController:getProviderConfig`;
+  handler: () => ProviderConfiguration;
+};
+
+export type NetworkControllerAction = NetworkControllerGetProviderConfigAction;
+
 /**
  * The messenger that the NetworkController uses to publish events.
  */
 export type NetworkControllerMessenger = RestrictedControllerMessenger<
   typeof name,
-  never,
+  NetworkControllerAction,
   NetworkControllerEvent,
   string,
   string
@@ -477,6 +484,9 @@ export class NetworkController extends EventEmitter {
     }
     this.#infuraProjectId = infuraProjectId;
     this.#trackMetaMetricsEvent = trackMetaMetricsEvent;
+    this.#messenger.registerActionHandler(`${name}:getProviderConfig`, () => {
+      return this.store.getState().providerConfig;
+    });
   }
 
   /**
