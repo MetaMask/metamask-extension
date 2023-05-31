@@ -224,7 +224,7 @@
     "@metamask-institutional/sdk": "^0.1.17",
     "@metamask-institutional/transaction-update": "^0.1.21",
     "@metamask/address-book-controller": "^2.0.0",
-    "@metamask/announcement-controller": "^3.0.0",
+    "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^2.1.0",
     "@metamask/assets-controllers": "^7.0.0",
     "@metamask/base-controller": "^3.0.0",
