@@ -1,7 +1,6 @@
 import { cloneDeep, last, noop } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
-import proxyquire from 'proxyquire';
 import EthQuery from 'eth-query';
 import browser from 'webextension-polyfill';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -80,19 +79,18 @@ function MockEthContract() {
   };
 }
 
-// TODO, Feb 24, 2023:
-// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
-// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
-// us set up the test infrastructure for a mocked provider. Github ticket for that is:
-// https://github.com/MetaMask/metamask-extension/issues/17890
-const MetaMaskController = proxyquire('./metamask-controller', {
-  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-  'ethjs-contract': MockEthContract,
-}).default;
+jest.mock('./lib/createLoggerMiddleware', () => ({
+  default: createLoggerMiddlewareMock,
+}));
+jest.mock('ethjs-contract', () => MockEthContract);
 
-const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
-  '../../shared/modules/mv3.utils': { isManifestV3: true },
-}).default;
+const MetaMaskController = require('./metamask-controller').default;
+
+jest.mock('../../shared/modules/mv3.utils', () => ({
+  isManifestV3: true,
+}));
+
+const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
@@ -111,6 +109,7 @@ const TEST_DAI_ADDRESS = '0xAAA75474e89094c44da98b954eedeac495271d0f';
 const TEST_USER_ADDRESS = '0xf0d172594caedee459b89ad44c94098e474571b6';
 
 const SEND_TRANSACTION_METHOD = 'eth_sendTransaction';
+const INFURA_PROJECT_ID = 'foo';
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -255,7 +254,7 @@ describe('MetaMaskController', function () {
         getVersion: () => 'foo',
       },
       browser: browserPolyfillMock,
-      infuraProjectId: 'foo',
+      infuraProjectId: INFURA_PROJECT_ID,
       isFirstMetaMaskControllerSetup: true,
     });
 
@@ -306,7 +305,7 @@ describe('MetaMaskController', function () {
           getVersion: () => 'foo',
         },
         browser: browserPolyfillMock,
-        infuraProjectId: 'foo',
+        infuraProjectId: INFURA_PROJECT_ID,
         isFirstMetaMaskControllerSetup: true,
       });
       expect(metamaskControllerMV3.resetStates).toHaveBeenCalledTimes(1);
@@ -340,7 +339,7 @@ describe('MetaMaskController', function () {
           getVersion: () => 'foo',
         },
         browser: browserPolyfillMock,
-        infuraProjectId: 'foo',
+        infuraProjectId: INFURA_PROJECT_ID,
         isFirstMetaMaskControllerSetup: false,
       });
       expect(metamaskControllerMV3.resetStates).not.toHaveBeenCalled();
