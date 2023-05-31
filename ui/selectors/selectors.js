@@ -1492,4 +1492,23 @@ export function getSnapsList(state) {
     };
   });
 }
+
+/**
+ * To get the state of snaps privacy warning popover.
+ *
+ * @param state - Redux state object.
+ * @returns True if popover has been shown, false otherwise.
+ */
+export function getSnapsInstallPrivacyWarningShown(state) {
+  const { snapsInstallPrivacyWarningShown } = state.metamask;
+
+  if (
+    snapsInstallPrivacyWarningShown === undefined ||
+    snapsInstallPrivacyWarningShown === null
+  ) {
+    return false;
+  }
+
+  return snapsInstallPrivacyWarningShown;
+}
 ///: END:ONLY_INCLUDE_IN
