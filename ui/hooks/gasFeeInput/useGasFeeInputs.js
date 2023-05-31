@@ -98,7 +98,6 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EditGasModes.modifyInPlace,
 ) {
-
   const GAS_LIMIT_TOO_HIGH_IN_ETH = '1';
 
   const initialRetryTxMeta = {
