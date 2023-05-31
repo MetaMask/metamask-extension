@@ -116,17 +116,9 @@ const rateLimitTimeouts = {};
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
-  rateLimitSeconds,
+  rateLimitSeconds = 60 * 5,
   securityProviderRequest,
 }) {
-  let finalRateLimitSeconds = rateLimitSeconds;
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  finalRateLimitSeconds ||= 60 * 5;
-  ///: END:ONLY_INCLUDE_IN
-
-  finalRateLimitSeconds ||= 60;
-
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ res,
@@ -246,7 +238,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       rateLimitTimeouts[method] = setTimeout(() => {
         delete rateLimitTimeouts[method];
-      }, SECOND * finalRateLimitSeconds);
+      }, SECOND * rateLimitSeconds);
     }
 
     next(async (callback) => {
