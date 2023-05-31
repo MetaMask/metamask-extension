@@ -158,57 +158,23 @@ describe('NetworkController', () => {
   describe('constructor', () => {
     const invalidInfuraProjectIds = [undefined, null, {}, 1];
     invalidInfuraProjectIds.forEach((invalidProjectId) => {
-      it(`throws if an invalid Infura ID of "${inspect(
+      it(`throws given an invalid Infura ID of "${inspect(
         invalidProjectId,
-      )}" is provided`, () => {
+      )}"`, () => {
+        const messenger = buildMessenger();
+        const restrictedMessenger = buildNetworkControllerMessenger(messenger);
         expect(
-          // @ts-expect-error We are intentionally passing bad input.
-          () => new NetworkController({ infuraProjectId: invalidProjectId }),
+          () =>
+            new NetworkController({
+              messenger: restrictedMessenger,
+              // @ts-expect-error We are intentionally passing bad input.
+              infuraProjectId: invalidProjectId,
+            }),
         ).toThrow('Invalid Infura project ID');
       });
     });
 
-    it('accepts initial state', async () => {
-      await withController(
-        {
-          state: {
-            providerConfig: {
-              type: 'rpc',
-              rpcUrl: 'http://example-custom-rpc.metamask.io',
-              chainId: '0x9999' as const,
-              nickname: 'Test initial state',
-            },
-            networkDetails: {
-              EIPS: {
-                1559: false,
-              },
-            },
-          },
-        },
-        ({ controller }) => {
-          expect(controller.store.getState()).toMatchInlineSnapshot(`
-            {
-              "networkConfigurations": {},
-              "networkDetails": {
-                "EIPS": {
-                  "1559": false,
-                },
-              },
-              "networkId": null,
-              "networkStatus": "unknown",
-              "providerConfig": {
-                "chainId": "0x9999",
-                "nickname": "Test initial state",
-                "rpcUrl": "http://example-custom-rpc.metamask.io",
-                "type": "rpc",
-              },
-            }
-          `);
-        },
-      );
-    });
-
-    it('sets default state without initial state', async () => {
+    it('initializes the state with some defaults', async () => {
       await withController(({ controller }) => {
         expect(controller.store.getState()).toMatchInlineSnapshot(`
           {
@@ -230,6 +196,46 @@ describe('NetworkController', () => {
           }
         `);
       });
+    });
+
+    it('merges the given state into the default state', async () => {
+      await withController(
+        {
+          state: {
+            providerConfig: {
+              type: 'rpc',
+              rpcUrl: 'http://example-custom-rpc.metamask.io',
+              chainId: '0x9999' as const,
+              nickname: 'Test initial state',
+            },
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+          },
+        },
+        ({ controller }) => {
+          expect(controller.store.getState()).toMatchInlineSnapshot(`
+            {
+              "networkConfigurations": {},
+              "networkDetails": {
+                "EIPS": {
+                  "1559": true,
+                },
+              },
+              "networkId": null,
+              "networkStatus": "unknown",
+              "providerConfig": {
+                "chainId": "0x9999",
+                "nickname": "Test initial state",
+                "rpcUrl": "http://example-custom-rpc.metamask.io",
+                "type": "rpc",
+              },
+            }
+          `);
+        },
+      );
     });
   });
 
