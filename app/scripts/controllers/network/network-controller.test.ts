@@ -18,6 +18,7 @@ import {
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 import {
   NetworkController,
+  NetworkControllerAction,
   NetworkControllerEvent,
   NetworkControllerOptions,
   NetworkControllerState,
@@ -2448,6 +2449,31 @@ describe('NetworkController', () => {
           await controller.resetConnection();
         },
       });
+    });
+  });
+
+  describe('NetworkController:getProviderConfig action', () => {
+    it('returns the provider config in state', async () => {
+      await withController(
+        {
+          state: {
+            providerConfig: buildProviderConfig({
+              type: NETWORK_TYPES.MAINNET,
+            }),
+          },
+        },
+        async ({ messenger }) => {
+          const providerConfig = await messenger.call(
+            'NetworkController:getProviderConfig',
+          );
+
+          expect(providerConfig).toStrictEqual(
+            buildProviderConfig({
+              type: NETWORK_TYPES.MAINNET,
+            }),
+          );
+        },
+      );
     });
   });
 
@@ -6088,7 +6114,10 @@ function lookupNetworkTests({
  * @returns The controller messenger.
  */
 function buildMessenger() {
-  return new ControllerMessenger<never, NetworkControllerEvent>();
+  return new ControllerMessenger<
+    NetworkControllerAction,
+    NetworkControllerEvent
+  >();
 }
 
 /**
@@ -6100,6 +6129,7 @@ function buildMessenger() {
 function buildNetworkControllerMessenger(messenger = buildMessenger()) {
   return messenger.getRestricted({
     name: 'NetworkController',
+    allowedActions: ['NetworkController:getProviderConfig'],
     allowedEvents: [
       'NetworkController:networkDidChange',
       'NetworkController:networkWillChange',
@@ -6116,7 +6146,10 @@ type WithControllerCallback<ReturnValue> = ({
   controller,
 }: {
   controller: NetworkController;
-  messenger: ControllerMessenger<never, NetworkControllerEvent>;
+  messenger: ControllerMessenger<
+    NetworkControllerAction,
+    NetworkControllerEvent
+  >;
 }) => Promise<ReturnValue> | ReturnValue;
 
 /**
