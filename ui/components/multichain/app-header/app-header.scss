@@ -83,3 +83,19 @@
     margin-left: 10px;
   }
 }
+
+.app-header__metafox-logo {
+  &--icon {
+    height: 32px;
+
+    @include screen-sm-min {
+      display: none;
+    }
+  }
+
+  &--horizontal {
+    @include screen-sm-max {
+      display: none;
+    }
+  }
+}
