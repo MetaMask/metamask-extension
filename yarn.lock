@@ -4352,7 +4352,7 @@ __metadata:
 
 "@metamask/message-manager@patch:@metamask/message-manager@npm%3A5.0.0#./.yarn/patches/@metamask-message-manager-npm-5.0.0-58c6447e25.patch::locator=metamask-crx%40workspace%3A.":
   version: 5.0.0
-  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A5.0.0#./.yarn/patches/@metamask-message-manager-npm-5.0.0-58c6447e25.patch::version=5.0.0&hash=63b6ec&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A5.0.0#./.yarn/patches/@metamask-message-manager-npm-5.0.0-58c6447e25.patch::version=5.0.0&hash=9ccc17&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": ^2.0.0
     "@metamask/controller-utils": ^3.4.0
@@ -4361,7 +4361,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: e99688617058929fff9a421a77935b335c5587b6b0730c6f3c9c229a899e71bb25ca069b168fd79452e25701bf0a3c0e9bcfb290a0e349c6e149015989c86f38
+  checksum: aecd3e8db63f42e91734112c705c21ddd690dc479b096a0d215b5e7f5e440b1d6f4477227ea312df954e45772b1022f38d426c615d367b2e8ff00d0f370bebd8
   languageName: node
   linkType: hard
 
@@ -4700,7 +4700,7 @@ __metadata:
 
 "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch::locator=metamask-crx%40workspace%3A.":
   version: 2.0.0
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch::version=2.0.0&hash=be44e4&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch::version=2.0.0&hash=88a881&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^3.0.0
     "@metamask/base-controller": ^3.0.0
@@ -4710,7 +4710,7 @@ __metadata:
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
-  checksum: 8d07e69adb0b7146eb18862639ad4786302699cebac80422ac0b1b7ed1a4105b861d40c9dc7359b888d2197316d0ba3637b795891e821cbe2b29418fef1c96b4
+  checksum: 95f0393a819fd0c1a21aaafba3d67070137fe40d4c865126f6b7b89fd25d950dcf921dac3896665c8aeebddd02d2dd0dfa3af686f2df42855dabeaddebeb4bc1
   languageName: node
   linkType: hard
 

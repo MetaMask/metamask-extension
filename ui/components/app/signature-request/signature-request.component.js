@@ -92,6 +92,7 @@ export default class SignatureRequest extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     showCustodianDeepLink: PropTypes.func,
     isNotification: PropTypes.bool,
+    mmiOnSignCallback: PropTypes.func,
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
@@ -220,6 +221,12 @@ export default class SignatureRequest extends PureComponent {
 
     const onSign = async () => {
       await resolvePendingApproval(id);
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      if (this.props.mmiOnSignCallback) {
+        await this.props.mmiOnSignCallback(txData);
+      }
+      ///: END:ONLY_INCLUDE_IN
+
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Confirm',
