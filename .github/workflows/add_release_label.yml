@@ -15,6 +15,63 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get workflow ID
+        id: get-workflow-id
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const workflows = await github.rest.actions.listRepoWorkflows({
+              owner,
+              repo
+            })
+            const workflow = workflows.data.workflows.find(w => w.name === 'NAME_OF_WORKFLOW_USED_TO_CREATE_NEW_RELEASE_BRANCH')
+            return workflow.id
+
+      - name: Get the artifact download URL
+        id: get-artifact-url
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: ${{ steps.get-workflow-id.outputs.result }},
+              status: 'completed'
+            })
+            const runId = runs.data.workflow_runs[0].id
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner,
+              repo,
+              run_id: runId
+            })
+            const artifact = artifacts.data.artifacts.find(a => a.name === 'next_release_cut_number')
+            return artifact.archive_download_url
+
+      - name: Download artifact # the artifact is created by the workflow used to create the release branch when a new release is cut
+        run: |
+          curl -L -o artifact.zip -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ steps.get-artifact-url.outputs.result }}
+          unzip artifact.zip
+
+      - name: Load environment variable
+        id: load_var
+        run: |
+          echo "Checking for environment variable and artifact..."
+
+          if [ -n "${{ vars.NEXT_RELEASE_CUT_NUMBER }}" ]; then
+            echo "Environment variable NEXT_RELEASE_CUT_NUMBER is set:"
+            echo "${{ vars.NEXT_RELEASE_CUT_NUMBER }}"
+            echo "::set-output name=NEXT_RELEASE_CUT_NUMBER::${{ vars.NEXT_RELEASE_CUT_NUMBER }}"
+          elif [ -f next_release_cut_number.txt ]; then
+            echo "Artifact next_release_cut_number.txt exists with contents:"
+            cat next_release_cut_number.txt
+            echo "::set-output name=NEXT_RELEASE_CUT_NUMBER::$(cat next_release_cut_number.txt)"
+          else
+            echo "Neither environment variable nor artifact found."
+            exit 1
+          fi
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -30,5 +87,5 @@ jobs:
         id: add_release_label_to_pr_and_linked_issues
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          NEXT_RELEASE_CUT_NUMBER: ${{ vars.NEXT_RELEASE_CUT_NUMBER }}
+          NEXT_RELEASE_CUT_NUMBER: ${{ steps.load_var.outputs.NEXT_RELEASE_CUT_NUMBER }}
         run: npm run add_release_label_to_pr_and_linked_issues
