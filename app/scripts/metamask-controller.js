@@ -2063,8 +2063,6 @@ export default class MetamaskController extends EventEmitter {
       // approval
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
-      startApprovalFlow: approvalController.startFlow.bind(approvalController),
-      endApprovalFlow: approvalController.endFlow.bind(approvalController),
 
       // primary HD keyring management
       addNewAccount: this.addNewAccount.bind(this),
@@ -3861,6 +3859,12 @@ export default class MetamaskController extends EventEmitter {
           this.approvalController.addAndShowApprovalRequest.bind(
             this.approvalController,
           ),
+        startApprovalFlow: this.approvalController.startFlow.bind(
+          this.approvalController,
+        ),
+        endApprovalFlow: this.approvalController.endFlow.bind(
+          this.approvalController,
+        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
