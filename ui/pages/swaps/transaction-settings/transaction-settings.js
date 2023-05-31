@@ -150,7 +150,6 @@ export default function TransactionSettings({
       isOpen
       isClosedOnOutsideClick
       isClosedOnEscapeKey
-      className="transaction-settings mm-modal-full-height"
     >
       <ModalOverlay />
       <ModalContent>
