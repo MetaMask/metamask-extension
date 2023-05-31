@@ -29,25 +29,25 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const nextReleaseCutNumber = process.env.NEXT_RELEASE_CUT_NUMBER;
-  if (!nextReleaseCutNumber) {
-    // NEXT_RELEASE_CUT_NUMBER is defined in section "Secrets and variables">"Actions">"Variables">"New repository variable" in the settings of this repo.
-    // NEXT_RELEASE_CUT_NUMBER needs to be updated every time a new release is cut.
+  const nextReleaseVersionNumber = process.env.NEXT_SEMVER_VERSION;
+  if (!nextReleaseVersionNumber) {
+    // NEXT_SEMVER_VERSION is defined in section "Secrets and variables">"Actions">"Variables">"New repository variable" in the settings of this repo.
+    // NEXT_SEMVER_VERSION needs to be updated every time a new release is cut.
     // Example value: 6.5.0
-    core.setFailed('NEXT_RELEASE_CUT_NUMBER not found');
+    core.setFailed('NEXT_SEMVER_VERSION not found');
     process.exit(1);
   }
 
-  if (!isValidVersionFormat(nextReleaseCutNumber)) {
-    core.setFailed(`NEXT_RELEASE_CUT_NUMBER (${nextReleaseCutNumber}) is not a valid version format. The expected format is "x.y.z", where "x", "y" and "z" are numbers.`);
+  if (!isValidVersionFormat(nextReleaseVersionNumber)) {
+    core.setFailed(`NEXT_SEMVER_VERSION (${nextReleaseVersionNumber}) is not a valid version format. The expected format is "x.y.z", where "x", "y" and "z" are numbers.`);
     process.exit(1);
   }
 
-  // Release label indicates the next release cut number
+  // Release label indicates the next release version number
   // Example release label: "release-6.5.0"
-  const releaseLabelName = `release-${nextReleaseCutNumber}`;
+  const releaseLabelName = `release-${nextReleaseVersionNumber}`;
   const releaseLabelColor = "ededed";
-  const releaseLabelDescription = `Issue or pull request that will be included in release ${nextReleaseCutNumber}`;
+  const releaseLabelDescription = `Issue or pull request that will be included in release ${nextReleaseVersionNumber}`;
 
   // Initialise octokit, required to call Github GraphQL API
   const octokit: InstanceType<typeof GitHub> = getOctokit(

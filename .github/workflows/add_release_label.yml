@@ -46,7 +46,7 @@ jobs:
               repo,
               run_id: runId
             })
-            const artifact = artifacts.data.artifacts.find(a => a.name === 'next_release_cut_number')
+            const artifact = artifacts.data.artifacts.find(a => a.name === 'next-semver-version')
             return artifact.archive_download_url
 
       - name: Download artifact # the artifact is created by the workflow used to create the release branch when a new release is cut
@@ -54,19 +54,19 @@ jobs:
           curl -L -o artifact.zip -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ steps.get-artifact-url.outputs.result }}
           unzip artifact.zip
 
-      - name: Load environment variable
+      - name: Load next semver version
         id: load_var
         run: |
           echo "Checking for environment variable and artifact..."
 
-          if [ -n "${{ vars.NEXT_RELEASE_CUT_NUMBER }}" ]; then
-            echo "Environment variable NEXT_RELEASE_CUT_NUMBER is set:"
-            echo "${{ vars.NEXT_RELEASE_CUT_NUMBER }}"
-            echo "::set-output name=NEXT_RELEASE_CUT_NUMBER::${{ vars.NEXT_RELEASE_CUT_NUMBER }}"
-          elif [ -f next_release_cut_number.txt ]; then
-            echo "Artifact next_release_cut_number.txt exists with contents:"
-            cat next_release_cut_number.txt
-            echo "::set-output name=NEXT_RELEASE_CUT_NUMBER::$(cat next_release_cut_number.txt)"
+          if [ -n "${{ vars.NEXT_SEMVER_VERSION }}" ]; then
+            echo "Environment variable NEXT_SEMVER_VERSION is set:"
+            echo "${{ vars.NEXT_SEMVER_VERSION }}"
+            echo "::set-output name=NEXT_SEMVER_VERSION::${{ vars.NEXT_SEMVER_VERSION }}"
+          elif [ -f next-semver-version.txt ]; then
+            echo "Artifact next-semver-version.txt exists with contents:"
+            cat next-semver-version.txt
+            echo "::set-output name=NEXT_SEMVER_VERSION::$(cat next-semver-version.txt)"
           else
             echo "Neither environment variable nor artifact found."
             exit 1
@@ -87,5 +87,5 @@ jobs:
         id: add_release_label_to_pr_and_linked_issues
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          NEXT_RELEASE_CUT_NUMBER: ${{ steps.load_var.outputs.NEXT_RELEASE_CUT_NUMBER }}
+          NEXT_SEMVER_VERSION: ${{ steps.load_var.outputs.NEXT_SEMVER_VERSION }}
         run: npm run add_release_label_to_pr_and_linked_issues
