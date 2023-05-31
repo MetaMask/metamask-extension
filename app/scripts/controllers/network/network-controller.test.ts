@@ -259,7 +259,7 @@ describe('NetworkController', () => {
         blockTracker.addListener('latest', () => {
           // do nothing
         });
-        expect(blockTracker.isRunning()).toBeTruthy();
+        expect(blockTracker.isRunning()).toBe(true);
 
         await controller.destroy();
 
