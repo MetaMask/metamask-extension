@@ -1482,34 +1482,12 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/gas-fee-controller>@metamask/base-controller": true,
-        "@metamask/gas-fee-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "eth-query": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/jazzicon": {
@@ -3059,22 +3037,18 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/safe-event-emitter": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
+        "eth-block-tracker>@metamask/safe-event-emitter": true,
         "eth-block-tracker>pify": true,
         "eth-query>json-rpc-random-id": true
       }
     },
-    "eth-block-tracker>@metamask/utils": {
+    "eth-block-tracker>@metamask/safe-event-emitter": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
+        "setTimeout": true
       },
       "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
+        "browserify>events": true
       }
     },
     "eth-ens-namehash": {

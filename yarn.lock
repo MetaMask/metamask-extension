@@ -4288,13 +4288,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/gas-fee-controller@npm:5.0.0"
+"@metamask/gas-fee-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/gas-fee-controller@npm:6.0.0"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.4.0
-    "@metamask/network-controller": ^8.0.0
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/controller-utils": ^4.0.0
+    "@metamask/network-controller": ^9.0.0
+    "@metamask/utils": ^5.0.2
     "@types/uuid": ^8.3.0
     babel-runtime: ^6.26.0
     eth-query: ^2.1.2
@@ -4303,8 +4304,8 @@ __metadata:
     immer: ^9.0.6
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/network-controller": ^8.0.0
-  checksum: 6c6a21ab2ca42ad2fc361373e192624deef9f02686e9e124fc3af53f37438dc02264aa2f73c82a3f1e4153b5a8ea518fa11fb212066218c0f4afdc16a95868db
+    "@metamask/network-controller": ^9.0.0
+  checksum: e7f15b0d3043e228f85cfa462c800d7332845b8d13211b1688c68a3b4b09b921aaa9b3304688dd0b7e4d9abd59f96dab0f50259a90f35c4b50321e2805c65bfb
   languageName: node
   linkType: hard
 
@@ -4397,6 +4398,29 @@ __metadata:
     uuid: ^8.3.2
     web3-provider-engine: ^16.0.5
   checksum: d8da6a26320577d516c47a007881386ce0fbd4c63911e58058c07cdc0efda8f84d70f7f8295f3cf8e87106c816fa0b1a75df6efec98d1f1fa1232446f773f596
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/network-controller@npm:9.0.0"
+  dependencies:
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/controller-utils": ^4.0.0
+    "@metamask/eth-json-rpc-infura": ^8.0.0
+    "@metamask/eth-json-rpc-middleware": ^11.0.0
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/swappable-obj-proxy": ^2.1.0
+    "@metamask/utils": ^5.0.2
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-block-tracker: ^7.0.1
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    json-rpc-engine: ^6.1.0
+    uuid: ^8.3.2
+  checksum: 7548fe82990ff62d36a6c42a49442422fe3634933b6fc85b86a3bbb2788a755c73f3fa70a70ae48ddf09a70e3e33d375723980aec76e89cdf21b76b96a069b07
   languageName: node
   linkType: hard
 
@@ -4616,6 +4640,13 @@ __metadata:
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
   checksum: 8b717ac5d53df0027c05509f03d0534700b5898dd1c3a53fb2dc4c0499ca5971b14aae67f522d09eb9f509e77f50afa95fdb3eda1afbff8b071c18a3d2905e93
+  languageName: node
+  linkType: hard
+
+"@metamask/safe-event-emitter@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/safe-event-emitter@npm:3.0.0"
+  checksum: 8dc58a76f9f75bf2405931465fc311c68043d851e6b8ebe9f82ae339073a08a83430dba9338f8e3adc4bfc8067607125074bcafa32baee3a5157f42343dc89e5
   languageName: node
   linkType: hard
 
@@ -15535,16 +15566,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "eth-block-tracker@npm:7.0.0"
+"eth-block-tracker@npm:^7.0.0, eth-block-tracker@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "eth-block-tracker@npm:7.0.1"
   dependencies:
     "@metamask/eth-json-rpc-provider": ^1.0.0
-    "@metamask/safe-event-emitter": ^2.0.0
-    "@metamask/utils": ^3.0.1
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^5.0.1
     json-rpc-random-id: ^1.0.1
     pify: ^3.0.0
-  checksum: b76f6ba022947eec0161e5592bc5386e8f05bff8a2c3e0e10c76bce21bc51900ef1cb153eb8bf31858fb0027e929c6a85a159bdf84aa1e3ef77b24e53e82ba84
+  checksum: b8ecdaebed26423fa8444a779ecf34fb102f873fd1a29135189a3c553f679e34c19151f6b8d1cbbe180fdcc9ba967a7a55af6a72678140d6e3c8e725e630771e
   languageName: node
   linkType: hard
 
@@ -24045,7 +24076,7 @@ __metadata:
     "@metamask/eth-trezor-keyring": ^1.0.0
     "@metamask/etherscan-link": ^2.2.0
     "@metamask/forwarder": ^1.1.0
-    "@metamask/gas-fee-controller": ^5.0.0
+    "@metamask/gas-fee-controller": ^6.0.0
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
