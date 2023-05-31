@@ -8,13 +8,28 @@ import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
-import { isAddressLedger } from '../../../ducks/metamask/metamask';
+import {
+  isAddressLedger,
+  // getNativeCurrency,
+  // getProviderConfig,
+} from '../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
+  // conversionRateSelector,
   getSubjectMetadata,
+  // getCurrentCurrency,
+  // getCurrentChainId,
+  // getPreferences,
 } from '../../../selectors';
-import { getAccountByAddress } from '../../../helpers/utils/util';
+import {
+  getAccountByAddress,
+  // getNetworkNameFromProviderType,
+} from '../../../helpers/utils/util';
+// import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
+// import { Numeric } from '../../../../shared/modules/Numeric';
+// import { EtherDenomination } from '../../../../shared/constants/common';
+// import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import {
   SEVERITIES,
   TextVariant,
@@ -23,6 +38,9 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import LedgerInstructionField from '../ledger-instruction-field';
+import { useSignatureReqHeaderData } from '../../../hooks/useSignatureReqHeaderData';
+// import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
+
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -31,6 +49,8 @@ export default function SignatureRequestSIWE({
   cancelPersonalMessage,
   signPersonalMessage,
 }) {
+  const t = useContext(I18nContext);
+
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
 
@@ -46,8 +66,17 @@ export default function SignatureRequestSIWE({
 
   const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
-
-  const t = useContext(I18nContext);
+  // const nativeCurrency = useSelector(getNativeCurrency);
+  // const currentCurrency = useSelector(getCurrentCurrency);
+  // const currentChainId = useSelector(getCurrentChainId);
+  // const providerConfig = useSelector(getProviderConfig);
+  // const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  // const conversionRateFromSelector = useSelector(conversionRateSelector);
+  // const networkName = getNetworkNameFromProviderType(providerConfig.type);
+  // const currentNetwork =
+  //   networkName === ''
+  //     ? providerConfig.nickname || t('unknownNetwork')
+  //     : t(networkName);
 
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
@@ -58,6 +87,28 @@ export default function SignatureRequestSIWE({
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
 
+  // const conversionRate = useNativeCurrencyAsPrimaryCurrency
+  //   ? null
+  //   : conversionRateFromSelector;
+
+  // const balanceInBaseAsset = conversionRate
+  //   ? formatCurrency(
+  //       getValueFromWeiHex({
+  //         value: fromAccount.balance,
+  //         fromCurrency: nativeCurrency,
+  //         toCurrency: currentCurrency,
+  //         conversionRate,
+  //         numberOfDecimals: 6,
+  //         toDenomination: EtherDenomination.ETH,
+  //       }),
+  //       currentCurrency,
+  //     )
+  //   : new Numeric(fromAccount.balance, 16, EtherDenomination.WEI)
+  //       .toDenomination(EtherDenomination.ETH)
+  //       .round(6)
+  //       .toBase(10)
+  //       .toString();
+  const networkAccountBalanceHeader = useSignatureReqHeaderData(txData);
   const showSecurityProviderBanner =
     (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
       txData?.securityProviderResponse?.flagAsDangerous !==
@@ -89,6 +140,17 @@ export default function SignatureRequestSIWE({
 
   return (
     <div className="signature-request-siwe">
+      {networkAccountBalanceHeader}
+      {/* <NetworkAccountBalanceHeader
+        networkName={currentNetwork}
+        accountName={fromAccount.name}
+        accountBalance={balanceInBaseAsset}
+        tokenName={
+          conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+        }
+        accountAddress={fromAccount.address}
+        chainId={currentChainId}
+      /> */}
       <Header
         fromAccount={fromAccount}
         domain={origin}
