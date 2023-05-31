@@ -24239,7 +24239,7 @@ __metadata:
     sinon: ^9.0.0
     source-map: ^0.7.2
     source-map-explorer: ^2.4.2
-    squirrelly: ^8.0.8
+    squirrelly: ^9.0.0
     storybook: ^7.0.11
     storybook-dark-mode: ^3.0.0
     stream-browserify: ^3.0.0
@@ -31331,17 +31331,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"squirrelly@npm:8.0.8":
-  version: 8.0.8
-  resolution: "squirrelly@npm:8.0.8"
-  checksum: 0ee76512b88ee38be0a91886bedf01b96aa6a557aaf7cee5d6d2b5ab3903ae32898007447805e3ef46a03f9dde7483d678e1ee433e7882c4b7a110b4c58f4f9f
+"squirrelly@npm:9.0.0":
+  version: 9.0.0
+  resolution: "squirrelly@npm:9.0.0"
+  checksum: 25bcb7350b0919136f1f239c05da17e41924bb8cc93d64a1821c961a31fd0dd25b0190ae2774020a9e63052c3f2a3e06d9f3adcd4d7df69e82818be1e2cb67c9
   languageName: node
   linkType: hard
 
-"squirrelly@patch:squirrelly@npm%3A8.0.8#./.yarn/patches/squirrelly-npm-8.0.8-1d17420d8d.patch::locator=metamask-crx%40workspace%3A.":
-  version: 8.0.8
-  resolution: "squirrelly@patch:squirrelly@npm%3A8.0.8#./.yarn/patches/squirrelly-npm-8.0.8-1d17420d8d.patch::version=8.0.8&hash=db398a&locator=metamask-crx%40workspace%3A."
-  checksum: ffec537e63964d354c77878d322b450b88d1723651b2876e1c858845113c02d3936d144f038d6f0c60cac727e11a87c79ae0d4431b4af3a5e09e7373f209f2cb
+"squirrelly@patch:squirrelly@npm%3A9.0.0#./.yarn/patches/squirrelly-npm-9.0.0-3cf710c7bb.patch::locator=metamask-crx%40workspace%3A.":
+  version: 9.0.0
+  resolution: "squirrelly@patch:squirrelly@npm%3A9.0.0#./.yarn/patches/squirrelly-npm-9.0.0-3cf710c7bb.patch::version=9.0.0&hash=7ea518&locator=metamask-crx%40workspace%3A."
+  checksum: 24d2b50493b86ac64bd29ec5b595cb51f30d965fc787c05d0f952c4a95d7a9867a0144d386e6d0cb5c90e37a85f367e90426f3548ae005a50dd8c410bb79fb00
   languageName: node
   linkType: hard
 
