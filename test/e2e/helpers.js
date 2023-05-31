@@ -113,6 +113,7 @@ async function withFixtures(options, testSuite) {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(failOnConsoleError);
       await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      await driver.checkBrowserForEvents();
     }
 
     let driverProxy;

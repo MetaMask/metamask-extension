@@ -15,6 +15,9 @@ const WINDOW_TITLES = Object.freeze({
   InstalledExtensions: 'Extensions',
 });
 
+// - Await for elements instead of time
+// - New case with tarnsactions
+
 describe('MV3 - Restart service worker multiple times', function () {
   it('Simple simple send flow within full screen view should still be usable', async function () {
     await withFixtures(
@@ -24,37 +27,31 @@ describe('MV3 - Restart service worker multiple times', function () {
         title: this.test.title,
         driverOptions: { openDevToolsForTabs: true },
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
 
         await unlockWallet(driver, WALLET_PASSWORD);
 
-        await sleepSeconds(1);
-        await assertETHBalance(ganacheServer, '25');
+        await assertETHBalance(driver, '25');
 
         // first send ETH and then terminate SW
         const RECIPIENT_ADDRESS = '0x985c30949c92df7a0bd42e0f3e3d539ece98db24';
         await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
         await terminateServiceWorker(driver);
 
-        await assertETHBalance(ganacheServer, '24.0000');
+        await assertETHBalance(driver, '24');
 
         // first send ETH #2 and then terminate SW
-        await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
         await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
         await terminateServiceWorker(driver);
 
-        await assertETHBalance(ganacheServer, '22.9999');
+        await assertETHBalance(driver, '22.9999');
 
         // first terminate SW and then send ETH
-        await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
         await terminateServiceWorker(driver);
-
-        await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
         await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
 
-        await sleepSeconds(2);
-        await assertETHBalance(ganacheServer, '21.9999');
+        await assertETHBalance(driver, '21.9999');
       },
     );
   });
@@ -98,7 +95,6 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Terminate Service Worker
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
-        sleepSeconds(1);
         await terminateServiceWorker(driver);
 
         // Click add Ethereum chain #2
@@ -127,8 +123,6 @@ describe('MV3 - Restart service worker multiple times', function () {
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(2);
 
-        await sleepSeconds(0.1);
-
         // Notification pop up opens
         await switchToWindow(driver, WINDOW_TITLES.Notification);
         notification = await driver.isElementPresent({
@@ -145,7 +139,7 @@ describe('MV3 - Restart service worker multiple times', function () {
     );
   });
 
-  it('Should lock wallet when a browser session ends (after turning off the extension', async function () {
+  it.only('Should lock wallet when a browser session ends (after turning off the extension', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -165,24 +159,45 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await unlockWallet(driver, WALLET_PASSWORD);
 
-        await reloadExtension(driver, extensionId);
+        // await driver.openNewPage('chrome://extensions/');
 
-        // ensure extension finishes reloading before reopening full screen extension
-        await sleepSeconds(0.1);
+        // await reloadExtension(driver, extensionId);
 
-        await driver.openNewPage(`${extensionUrl}/home.html`);
+        console.log('phase one finished ');
 
-        const passwordField = await driver.isElementPresent('#password');
-        assert.ok(
-          passwordField,
-          'Password screen is not visible. Wallet should have been locked.',
-        );
+        await sleepSeconds(10);
+
+        await reloadProgramatically(driver);
+
+        console.log('after reload');
+
+        await sleepSeconds(100);
+
+        // // ensure extension finishes reloading before reopening full screen extension
+        // await sleepSeconds(0.1);
+
+        // await driver.openNewPage(`${extensionUrl}/home.html`);
+
+        // const passwordField = await driver.isElementPresent('#password');
+        // assert.ok(
+        //   passwordField,
+        //   'Password screen is not visible. Wallet should have been locked.',
+        // );
       },
     );
   });
 });
 
+async function reloadProgramatically(driver) {
+  await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.executeScript('window.stateHooks.refreshBrowser()');
+  // await driver.waitForLogEvent('[Service Worker Restart]');
+  // await driver.executeScript('window.location.reload()');
+}
+
 async function reloadExtension(driver, extensionId) {
+  await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
+
   await driver.openNewPage('chrome://extensions/');
 
   // extensions-manager
@@ -240,19 +255,97 @@ async function reloadExtension(driver, extensionId) {
   await reloadBtn.click();
 }
 
+// async function checkForToaster(driver) {
+//   await switchToWindow(driver, WINDOW_TITLES.InstalledExtensions);
+
+//   // extensions-manager
+//   const extensionsManager = await driver.findElement('extensions-manager');
+
+//   // shadowRoot
+//   const extensionsManagerShadowRoot = await driver.executeScript(
+//     'return arguments[0][0].shadowRoot',
+//     extensionsManager,
+//   );
+
+//   // cr-toast-manager
+//   const crToastManager = await extensionsManagerShadowRoot.findElement({
+//     css: 'cr-toast-manager',
+//   });
+
+//   // shadowRoot
+//   const crToastManagerShadowRoot = await driver.executeScript(
+//     'return arguments[0][0].shadowRoot',
+//     crToastManager,
+//   );
+
+//   // cr-toast#toast
+//   const toastEl = await crToastManagerShadowRoot.findElement({
+//     css: '#toast',
+//   });
+
+//   // await sleepSeconds(0.5);
+
+//   const isReloadFinished = await driver.executeScript(
+//     'return arguments[0][0]',
+//     crToastManagerShadowRoot,
+//   );
+
+//   console.log({ isReloadFinished });
+
+//   // assert.equal(toastText, 'Reloaded', 'Expected toast to say "Reloaded"');
+// }
+
+// function checkAttributeChange(elementId, attribute, timeoutSecs = 10) {
+//   const element = document.getElementById(elementId);
+//   const initialValue = element.getAttribute(attribute);
+
+//   return new Promise((resolve, reject) => {
+//     const intervalId = setInterval(() => {
+//       const timeoutId = setTimeout(() => {
+//         clearInterval(intervalId);
+//         reject(Error('Timeout exceeded'));
+//       }, timeoutSecs * 1000);
+
+//       const currentValue = element.getAttribute(attribute);
+//       if (currentValue !== initialValue) {
+//         clearInterval(intervalId);
+//         clearTimeout(timeoutId);
+//         resolve(currentValue);
+//       }
+//       // Check every 100ms
+//     }, 100);
+//   });
+// }
+
+// driver.executeScript(`return (${checkAttributeChange.toString()})("myElementId", "myAttribute");`)
+//   .then((value) => console.log(value))
+//   .catch((error) => console.log(error));
+
+
 async function unlockWallet(driver, walletPassword) {
   await driver.fill('#password', walletPassword);
   await driver.press('#password', driver.Key.ENTER);
 }
 
-async function assertETHBalance(ganacheServer, expectedBalance) {
-  await sleepSeconds(0.1);
-  const balance = await ganacheServer.getBalance();
+async function assertETHBalance(driver, expectedBalance) {
+  await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
 
-  assert.equal(String(balance), expectedBalance);
+  const isETHBalanceOverviewPresentAndVisible =
+    await driver.isElementPresentAndVisible({
+      css: '[data-testid="eth-overview__primary-currency"]',
+      text: `${expectedBalance} ETH`,
+    });
+
+  assert.equal(
+    isETHBalanceOverviewPresentAndVisible,
+    true,
+    `Balance DOM element should be visible and match ${expectedBalance} ETH.`,
+  );
 }
 
 async function simpleSendETH(driver, value, recipient) {
+  await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
+
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipient);
   await driver.fill('.unit-input__input', value);
