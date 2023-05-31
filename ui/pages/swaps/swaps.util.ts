@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { Json } from '@metamask/controller-utils';
+import { Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
   ALLOWED_CONTRACT_ADDRESSES,

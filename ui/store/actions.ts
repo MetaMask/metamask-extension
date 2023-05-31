@@ -4686,3 +4686,20 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   }
   return networkEIP1559Compatibility;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * Set status of popover warning for the first snap installation.
+ *
+ * @param shown - True if popover has been shown.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
+  return async () => {
+    await submitRequestToBackground(
+      'setSnapsInstallPrivacyWarningShownStatus',
+      [shown],
+    );
+  };
+}
+///: END:ONLY_INCLUDE_IN
