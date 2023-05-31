@@ -94,7 +94,8 @@ const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
   '../../shared/modules/mv3.utils': { isManifestV3: true },
 }).default;
 
-const currentNetworkId = '5';
+const CURRENT_NETWORK_ID = '5';
+const CURRENT_CHAIN_ID = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -104,6 +105,12 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const TEST_HEX_BALANCE = '0x14ced5122ce0a000';
+const TEST_TOKEN_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+const TEST_DAI_ADDRESS = '0xAAA75474e89094c44da98b954eedeac495271d0f';
+const TEST_USER_ADDRESS = '0xf0d172594caedee459b89ad44c94098e474571b6';
+
+const SEND_TRANSACTION_METHOD = 'eth_sendTransaction';
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -116,12 +123,16 @@ const NETWORK_CONFIGURATION_ID_2 = 'networkConfigurationId2';
 const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
 
 const ALT_MAINNET_NAME = 'Alt Mainnet';
+const ALT_POLYGON_NAME = 'Alt Polygon';
+const POLYGON_NAME = 'Polygon';
 
 const ETH = 'ETH';
 const MATIC = 'MATIC';
 
 const POLYGON_CHAIN_ID = '0x89';
 const MAINNET_CHAIN_ID = '0x1';
+
+const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
 
 const firstTimeState = {
   config: {},
@@ -148,7 +159,7 @@ const firstTimeState = {
         type: NETWORK_TYPES.RPC,
         chainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
-        nickname: 'Polygon',
+        nickname: POLYGON_NAME,
         id: NETWORK_CONFIGURATION_ID_2,
       },
       [NETWORK_CONFIGURATION_ID_3]: {
@@ -156,7 +167,7 @@ const firstTimeState = {
         type: NETWORK_TYPES.RPC,
         chainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
-        nickname: 'Alt Polygon',
+        nickname: ALT_POLYGON_NAME,
         id: NETWORK_CONFIGURATION_ID_1,
       },
     },
@@ -395,8 +406,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  const FAKE_HEX_BALANCE = '0x14ced5122ce0a000';
-
   describe('#createNewVaultAndKeychain', function () {
     it('can only create new vault on keyringController once', async function () {
       const selectStub = jest.spyOn(metamaskController, 'selectFirstIdentity');
@@ -509,11 +518,11 @@ describe('MetaMaskController', function () {
         .mockImplementation(([address, ...args]) => {
           switch (address) {
             case TEST_ADDRESS:
-              return Promise.resolve(FAKE_HEX_BALANCE);
+              return Promise.resolve(TEST_HEX_BALANCE);
             case TEST_ADDRESS_2:
               return Promise.resolve('0x0');
             case TEST_ADDRESS_3:
-              return Promise.resolve(FAKE_HEX_BALANCE);
+              return Promise.resolve(TEST_HEX_BALANCE);
             default:
               return originalFn(address, ...args);
           }
@@ -541,13 +550,13 @@ describe('MetaMaskController', function () {
     it('should return the balance known by accountTracker', async function () {
       const accounts = {};
 
-      accounts[TEST_ADDRESS] = { balance: FAKE_HEX_BALANCE };
+      accounts[TEST_ADDRESS] = { balance: TEST_HEX_BALANCE };
 
       metamaskController.accountTracker.store.putState({ accounts });
 
       const gotten = await metamaskController.getBalance(TEST_ADDRESS);
 
-      expect(FAKE_HEX_BALANCE).toStrictEqual(gotten);
+      expect(TEST_HEX_BALANCE).toStrictEqual(gotten);
     });
 
     it('should ask the network for a balance when not known by accountTracker', async function () {
@@ -558,7 +567,7 @@ describe('MetaMaskController', function () {
         .spyOn(ethQuery, 'getBalance')
         .mockClear()
         .mockImplementation((_, callback) => {
-          callback(undefined, FAKE_HEX_BALANCE);
+          callback(undefined, TEST_HEX_BALANCE);
         });
 
       metamaskController.accountTracker.store.putState({ accounts });
@@ -568,7 +577,7 @@ describe('MetaMaskController', function () {
         ethQuery,
       );
 
-      expect(FAKE_HEX_BALANCE).toStrictEqual(gotten);
+      expect(TEST_HEX_BALANCE).toStrictEqual(gotten);
     });
   });
 
@@ -868,12 +877,12 @@ describe('MetaMaskController', function () {
         .spyOn(metamaskController.preferencesController, 'setAccountLabel')
         .mockClear();
       await metamaskController
-        .connectHardware(HardwareDeviceNames.trezor, 0, `m/44'/1'/0'/0`)
+        .connectHardware(HardwareDeviceNames.trezor, 0, TREZOR_TESTNET_PATH)
         .catch(() => null);
       await metamaskController.unlockHardwareWalletAccount(
         accountToUnlock,
         HardwareDeviceNames.trezor,
-        `m/44'/1'/0'/0`,
+        TREZOR_TESTNET_PATH,
       );
     });
 
@@ -981,13 +990,13 @@ describe('MetaMaskController', function () {
         createTxMeta({
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          metamaskNetworkId: CURRENT_NETWORK_ID,
           txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
         }),
         createTxMeta({
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          metamaskNetworkId: CURRENT_NETWORK_ID,
           txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
         }),
         createTxMeta({
@@ -998,7 +1007,7 @@ describe('MetaMaskController', function () {
         createTxMeta({
           id: 3,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          metamaskNetworkId: CURRENT_NETWORK_ID,
           txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
         }),
       ]);
@@ -1147,7 +1156,7 @@ describe('MetaMaskController', function () {
         id: 1999133338649204,
         jsonrpc: '2.0',
         params: [{ ...mockTxParams }],
-        method: 'eth_sendTransaction',
+        method: SEND_TRANSACTION_METHOD,
       };
       await new Promise((resolve) => {
         streamTest.write(
@@ -1191,7 +1200,7 @@ describe('MetaMaskController', function () {
         id: 1999133338649204,
         jsonrpc: '2.0',
         params: [{ ...mockTxParams }],
-        method: 'eth_sendTransaction',
+        method: SEND_TRANSACTION_METHOD,
       };
       await new Promise((resolve) => {
         streamTest.write(
@@ -1347,8 +1356,6 @@ describe('MetaMaskController', function () {
   });
 
   describe('getTokenStandardAndDetails', function () {
-    const X6B_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-    const XF0_ADDRESS = '0xf0d172594caedee459b89ad44c94098e474571b6';
     it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async function () {
       const providerResultStub = {
         eth_getCode: '0x123',
@@ -1357,8 +1364,8 @@ describe('MetaMaskController', function () {
       };
       const { provider } = createTestProviderTools({
         scaffold: providerResultStub,
-        networkId: '5',
-        chainId: '5',
+        networkId: CURRENT_NETWORK_ID,
+        chainId: CURRENT_CHAIN_ID,
       });
 
       const tokenData = {
@@ -1369,15 +1376,15 @@ describe('MetaMaskController', function () {
       metamaskController.tokenListController.update(() => {
         return {
           tokenList: {
-            [X6B_ADDRESS.toLowerCase()]: tokenData,
+            [TEST_TOKEN_ADDRESS.toLowerCase()]: tokenData,
           },
         };
       });
 
       metamaskController.provider = provider;
       const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-        X6B_ADDRESS,
-        XF0_ADDRESS,
+        TEST_TOKEN_ADDRESS,
+        TEST_USER_ADDRESS,
       );
 
       expect(tokenDetails.standard).toStrictEqual('ERC20');
@@ -1394,8 +1401,8 @@ describe('MetaMaskController', function () {
       };
       const { provider } = createTestProviderTools({
         scaffold: providerResultStub,
-        networkId: '5',
-        chainId: '5',
+        networkId: CURRENT_NETWORK_ID,
+        chainId: CURRENT_CHAIN_ID,
       });
 
       const tokenData = {
@@ -1406,7 +1413,7 @@ describe('MetaMaskController', function () {
       metamaskController.tokensController.update({
         tokens: [
           {
-            address: X6B_ADDRESS.toLowerCase(),
+            address: TEST_TOKEN_ADDRESS.toLowerCase(),
             ...tokenData,
           },
         ],
@@ -1414,8 +1421,8 @@ describe('MetaMaskController', function () {
 
       metamaskController.provider = provider;
       const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-        X6B_ADDRESS,
-        XF0_ADDRESS,
+        TEST_TOKEN_ADDRESS,
+        TEST_USER_ADDRESS,
       );
 
       expect(tokenDetails.standard).toStrictEqual('ERC20');
@@ -1432,14 +1439,14 @@ describe('MetaMaskController', function () {
       };
       const { provider } = createTestProviderTools({
         scaffold: providerResultStub,
-        networkId: '5',
-        chainId: '5',
+        networkId: CURRENT_NETWORK_ID,
+        chainId: CURRENT_CHAIN_ID,
       });
 
       metamaskController.provider = provider;
       const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-        X6B_ADDRESS,
-        XF0_ADDRESS,
+        TEST_TOKEN_ADDRESS,
+        TEST_USER_ADDRESS,
       );
 
       expect(tokenDetails.standard).toStrictEqual('ERC20');
@@ -1456,8 +1463,8 @@ describe('MetaMaskController', function () {
       };
       const { provider } = createTestProviderTools({
         scaffold: providerResultStub,
-        networkId: '5',
-        chainId: '5',
+        networkId: CURRENT_NETWORK_ID,
+        chainId: CURRENT_CHAIN_ID,
       });
 
       const tokenData = {
@@ -1470,7 +1477,7 @@ describe('MetaMaskController', function () {
       metamaskController.tokenListController.update(() => {
         return {
           tokenList: {
-            [X6B_ADDRESS.toLowerCase()]: {},
+            [TEST_TOKEN_ADDRESS.toLowerCase()]: {},
           },
         };
       });
@@ -1489,7 +1496,7 @@ describe('MetaMaskController', function () {
 
       const tokenDetails = await metamaskController.getTokenStandardAndDetails(
         '0xNotInTokenList',
-        XF0_ADDRESS,
+        TEST_USER_ADDRESS,
       );
       expect(tokenDetails.standard).toStrictEqual(
         tokenData.standard.toUpperCase(),
@@ -1507,8 +1514,8 @@ describe('MetaMaskController', function () {
       };
       const { provider } = createTestProviderTools({
         scaffold: providerResultStub,
-        networkId: '5',
-        chainId: '5',
+        networkId: CURRENT_NETWORK_ID,
+        chainId: CURRENT_CHAIN_ID,
       });
 
       const tokenData = {
@@ -1521,7 +1528,7 @@ describe('MetaMaskController', function () {
       metamaskController.tokenListController.update(() => {
         return {
           tokenList: {
-            '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            [TEST_DAI_ADDRESS.toLowerCase()]: tokenData,
           },
         };
       });
@@ -1538,8 +1545,8 @@ describe('MetaMaskController', function () {
 
       const { balance, decimals, standard, symbol } =
         await metamaskController.getTokenStandardAndDetails(
-          '0xAAA75474e89094c44da98b954eedeac495271d0f',
-          XF0_ADDRESS,
+          TEST_DAI_ADDRESS,
+          TEST_USER_ADDRESS,
         );
       expect(standard).toStrictEqual(tokenData.standard.toUpperCase());
       expect(decimals).toStrictEqual(String(tokenData.decimals));
@@ -1555,8 +1562,8 @@ describe('MetaMaskController', function () {
       };
       const { provider } = createTestProviderTools({
         scaffold: providerResultStub,
-        networkId: '5',
-        chainId: '5',
+        networkId: CURRENT_NETWORK_ID,
+        chainId: CURRENT_CHAIN_ID,
       });
 
       const tokenData = {
@@ -1569,7 +1576,7 @@ describe('MetaMaskController', function () {
       metamaskController.tokenListController.update(() => {
         return {
           tokenList: {
-            '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            [TEST_DAI_ADDRESS.toLowerCase()]: tokenData,
           },
         };
       });
@@ -1586,8 +1593,8 @@ describe('MetaMaskController', function () {
 
       const { balance, decimals, standard, symbol } =
         await metamaskController.getTokenStandardAndDetails(
-          '0xAAA75474e89094c44da98b954eedeac495271d0f',
-          XF0_ADDRESS,
+          TEST_DAI_ADDRESS,
+          TEST_USER_ADDRESS,
         );
       expect(standard).toStrictEqual(tokenData.standard.toUpperCase());
       expect(decimals).toStrictEqual(String(tokenData.decimals));
@@ -1636,7 +1643,7 @@ describe('MetaMaskController', function () {
           type: NETWORK_TYPES.RPC,
           chainId: POLYGON_CHAIN_ID,
           ticker: MATIC,
-          nickname: 'Polygon',
+          nickname: POLYGON_NAME,
           id: NETWORK_CONFIGURATION_ID_2,
         });
       });
@@ -1674,7 +1681,7 @@ describe('MetaMaskController', function () {
           type: NETWORK_TYPES.RPC,
           chainId: POLYGON_CHAIN_ID,
           ticker: MATIC,
-          nickname: 'Polygon',
+          nickname: POLYGON_NAME,
           id: NETWORK_CONFIGURATION_ID_2,
         });
       });
