@@ -54,7 +54,6 @@ type Block = {
 };
 
 const createNetworkClientMock = jest.mocked(createNetworkClient);
-// const providerFromEngineMock = jest.mocked(providerFromEngine);
 const uuidV4Mock = jest.mocked(v4);
 
 /**
