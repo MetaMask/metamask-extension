@@ -1697,7 +1697,7 @@ export default class MetamaskController extends EventEmitter {
       }
       // we can't provide constructor arguments to keyrings
       // so we have to set the provider here
-      snapKeyring.setController(this.snapController);
+      // snapKeyring.setController(this.snapController);
       this.snapKeyring = snapKeyring;
     }
     return this.snapKeyring;
