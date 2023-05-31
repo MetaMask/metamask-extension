@@ -502,9 +502,7 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { pendingApprovalCount = 0 } = state.metamask;
-
-  return pendingApprovalCount;
+  return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
