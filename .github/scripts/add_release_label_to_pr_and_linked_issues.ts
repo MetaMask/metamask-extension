@@ -82,7 +82,7 @@ async function main(): Promise<void> {
 }
 
 // This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
-function isValidVersionFormat(str) {
+function isValidVersionFormat(str: string): boolean {
   const regex = /^\d+\.\d+\.\d+$/;
   return regex.test(str);
 }
