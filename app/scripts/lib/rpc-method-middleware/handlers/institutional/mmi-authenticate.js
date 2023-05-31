@@ -35,7 +35,6 @@ async function mmiAuthenticateHandler(
   { handleMmiAuthenticate },
 ) {
   try {
-    console.log(req);
     res.result = await handleMmiAuthenticate(req);
     return end();
   } catch (error) {
