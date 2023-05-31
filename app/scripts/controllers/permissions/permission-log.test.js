@@ -1,4 +1,4 @@
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import { useFakeTimers } from 'sinon';
 import { constants, getters, noop } from '../../../../test/mocks/permissions';
 import { PermissionLogController } from './permission-log';

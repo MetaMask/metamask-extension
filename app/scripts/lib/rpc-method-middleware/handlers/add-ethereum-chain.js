@@ -22,6 +22,9 @@ const addEthereumChain = {
     findNetworkConfigurationBy: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    startApprovalFlow: true,
+    endApprovalFlow: true,
+    setApprovalFlowLoadingText: true,
   },
 };
 export default addEthereumChain;
@@ -38,6 +41,9 @@ async function addEthereumChainHandler(
     findNetworkConfigurationBy,
     setActiveNetwork,
     requestUserApproval,
+    startApprovalFlow,
+    endApprovalFlow,
+    setApprovalFlowLoadingText,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -242,57 +248,74 @@ async function addEthereumChainHandler(
     );
   }
   let networkConfigurationId;
+
+  const { id: approvalFlowId } = await startApprovalFlow();
+
   try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.AddEthereumChain,
-      requestData: {
-        chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        chainName: _chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-    });
+    setApprovalFlowLoadingText('Adding Network');
 
-    networkConfigurationId = await upsertNetworkConfiguration(
-      {
-        chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        nickname: _chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
-    );
+    try {
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.AddEthereumChain,
+        requestData: {
+          chainId: _chainId,
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          chainName: _chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+      });
 
-    // Once the network has been added, the requested is considered successful
-    res.result = null;
-  } catch (error) {
-    return end(error);
-  }
+      networkConfigurationId = await upsertNetworkConfiguration(
+        {
+          chainId: _chainId,
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          nickname: _chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+        { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
+      );
 
-  // Ask the user to switch the network
-  try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.SwitchEthereumChain,
-      requestData: {
-        rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
-        nickname: _chainName,
-        ticker,
-        networkConfigurationId,
-      },
-    });
-    await setActiveNetwork(networkConfigurationId);
-  } catch (error) {
-    // For the purposes of this method, it does not matter if the user
-    // declines to switch the selected network. However, other errors indicate
-    // that something is wrong.
-    if (error.code !== errorCodes.provider.userRejectedRequest) {
+      // Once the network has been added, the requested is considered successful
+      res.result = null;
+    } catch (error) {
       return end(error);
     }
+
+    // Simulate original race condition
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    // Ask the user to switch the network
+    try {
+      await setApprovalFlowLoadingText('Switching Network');
+
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.SwitchEthereumChain,
+        requestData: {
+          rpcUrl: firstValidRPCUrl,
+          chainId: _chainId,
+          nickname: _chainName,
+          ticker,
+          networkConfigurationId,
+        },
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      await setActiveNetwork(networkConfigurationId);
+    } catch (error) {
+      // For the purposes of this method, it does not matter if the user
+      // declines to switch the selected network. However, other errors indicate
+      // that something is wrong.
+      if (error.code !== errorCodes.provider.userRejectedRequest) {
+        return end(error);
+      }
+    }
+    return end();
+  } finally {
+    endApprovalFlow(approvalFlowId);
   }
-  return end();
 }

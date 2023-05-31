@@ -36,6 +36,7 @@ import {
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   hasPendingApprovals,
+  getApprovalFlows,
 } from '../../selectors';
 
 import {
@@ -86,6 +87,7 @@ const mapStateToProps = (state) => {
   } = metamask;
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
+  const approvalFlows = getApprovalFlows(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -137,6 +139,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    approvalFlows,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,
