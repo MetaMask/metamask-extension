@@ -3877,12 +3877,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/announcement-controller@npm:3.0.0"
+"@metamask/announcement-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/announcement-controller@npm:4.0.0"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-  checksum: 14fe28e7db72ca3457618016d33dd66a566c991d4692a62e83ddf89b74f82277e5ed47dbd128aff9079cc3a5045ef79b808c106acc18717a51fb8ef9d05e0d5b
+    "@metamask/base-controller": ^3.0.0
+  checksum: 9652545ddf1da0919c60c97456e695a39d7851c25bde9b73417c179c4c8abce4be32165d4d09b0c97671925b55d8c66a1af9f641595327722bbe92d658886719
   languageName: node
   linkType: hard
 
@@ -23953,7 +23953,7 @@ __metadata:
     "@metamask-institutional/sdk": ^0.1.17
     "@metamask-institutional/transaction-update": ^0.1.21
     "@metamask/address-book-controller": ^2.0.0
-    "@metamask/announcement-controller": ^3.0.0
+    "@metamask/announcement-controller": ^4.0.0
     "@metamask/approval-controller": ^2.1.0
     "@metamask/assets-controllers": ^7.0.0
     "@metamask/auto-changelog": ^2.1.0
