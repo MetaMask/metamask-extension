@@ -570,7 +570,7 @@ export class NetworkController extends EventEmitter {
    * blocking requests, or if the network is not Infura-supported.
    */
   async lookupNetwork(): Promise<void> {
-    const { chainId, type } = this.store.getState().providerConfig;
+    const { type } = this.store.getState().providerConfig;
     const { provider } = this.getProviderAndBlockTracker();
     let networkChanged = false;
     let networkId: NetworkIdState = null;
@@ -581,16 +581,6 @@ export class NetworkController extends EventEmitter {
       log.warn(
         'NetworkController - lookupNetwork aborted due to missing provider',
       );
-      return;
-    }
-
-    if (!chainId) {
-      log.warn(
-        'NetworkController - lookupNetwork aborted due to missing chainId',
-      );
-      this.#resetNetworkId();
-      this.#resetNetworkStatus();
-      this.#resetNetworkDetails();
       return;
     }
 
@@ -874,11 +864,12 @@ export class NetworkController extends EventEmitter {
    * the new network.
    */
   async #switchNetwork(providerConfig: ProviderConfiguration) {
+    const { type, rpcUrl, chainId } = providerConfig;
     this.#messenger.publish('NetworkController:networkWillChange');
     this.#resetNetworkId();
     this.#resetNetworkStatus();
     this.#resetNetworkDetails();
-    this.#configureProvider(providerConfig);
+    this.#configureProvider({ type, rpcUrl, chainId });
     this.#messenger.publish('NetworkController:networkDidChange');
     await this.lookupNetwork();
   }
@@ -888,8 +879,7 @@ export class NetworkController extends EventEmitter {
    * block tracker) to talk to a network.
    *
    * @param args - The arguments.
-   * @param args.type - The shortname of an Infura-supported network (see
-   * {@link NETWORK_TYPES}).
+   * @param args.type - The provider type.
    * @param args.rpcUrl - The URL of the RPC endpoint that represents the
    * network. Only used for non-Infura networks.
    * @param args.chainId - The chain ID of the network (as per EIP-155). Only
@@ -897,16 +887,28 @@ export class NetworkController extends EventEmitter {
    * any Infura-supported network).
    * @throws if the `type` if not a known Infura-supported network.
    */
-  #configureProvider({ type, rpcUrl, chainId }: ProviderConfiguration): void {
+  #configureProvider({
+    type,
+    rpcUrl,
+    chainId,
+  }: {
+    type: ProviderType;
+    rpcUrl: string | undefined;
+    chainId: Hex | undefined;
+  }): void {
     const isInfura = isInfuraProviderType(type);
     if (isInfura) {
-      // infura type-based endpoints
       this.#configureInfuraProvider({
         type,
         infuraProjectId: this.#infuraProjectId,
       });
-    } else if (type === NETWORK_TYPES.RPC && rpcUrl) {
-      // url-based rpc endpoints
+    } else if (type === NETWORK_TYPES.RPC) {
+      if (chainId === undefined) {
+        throw new Error('chainId must be provided for custom RPC endpoints');
+      }
+      if (rpcUrl === undefined) {
+        throw new Error('rpcUrl must be provided for custom RPC endpoints');
+      }
       this.#configureStandardProvider(rpcUrl, chainId);
     } else {
       throw new Error(
