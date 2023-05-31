@@ -21,9 +21,9 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
-// ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { useMMICustodySignMessage } from '../../hooks/useMMICustodySignMessage';
-// ///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IN
 
 const signatureSelect = (txData) => {
   const {
