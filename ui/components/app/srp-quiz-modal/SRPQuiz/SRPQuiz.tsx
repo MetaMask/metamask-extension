@@ -11,11 +11,14 @@ import {
   BlockSize,
   IconColor,
   TextAlign,
+  Display,
+  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { REVEAL_SEED_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  BUTTON_SIZES,
   BUTTON_VARIANT,
   Icon,
   IconName,
@@ -79,6 +82,7 @@ export default function SRPQuiz(props: any) {
             label: t('srpSecurityQuizGetStarted'),
             onClick: () => setStage(QuizStage.questionOne),
             variant: BUTTON_VARIANT.PRIMARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -100,11 +104,13 @@ export default function SRPQuiz(props: any) {
             label: t('srpSecurityQuizQuestionOneWrongAnswer'),
             onClick: () => setStage(QuizStage.wrongAnswerQuestionOne),
             variant: BUTTON_VARIANT.SECONDARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('srpSecurityQuizQuestionOneRightAnswer'),
             onClick: () => setStage(QuizStage.rightAnswerQuestionOne),
             variant: BUTTON_VARIANT.SECONDARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -128,6 +134,7 @@ export default function SRPQuiz(props: any) {
             label: t('continue'),
             onClick: () => setStage(QuizStage.questionTwo),
             variant: BUTTON_VARIANT.PRIMARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -151,6 +158,7 @@ export default function SRPQuiz(props: any) {
             label: t('tryAgain'),
             onClick: () => setStage(QuizStage.questionOne),
             variant: BUTTON_VARIANT.PRIMARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -172,11 +180,13 @@ export default function SRPQuiz(props: any) {
             label: t('srpSecurityQuizQuestionTwoRightAnswer'),
             onClick: () => setStage(QuizStage.rightAnswerQuestionTwo),
             variant: BUTTON_VARIANT.SECONDARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('srpSecurityQuizQuestionTwoWrongAnswer'),
             onClick: () => setStage(QuizStage.wrongAnswerQuestionTwo),
             variant: BUTTON_VARIANT.SECONDARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -200,6 +210,7 @@ export default function SRPQuiz(props: any) {
             label: t('continue'),
             onClick: () => history.push(REVEAL_SEED_ROUTE),
             variant: BUTTON_VARIANT.PRIMARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -223,6 +234,7 @@ export default function SRPQuiz(props: any) {
             label: t('tryAgain'),
             onClick: () => setStage(QuizStage.questionTwo),
             variant: BUTTON_VARIANT.PRIMARY,
+            size: BUTTON_SIZES.LG,
           },
           {
             label: t('learnMoreUpperCase'),
@@ -258,12 +270,14 @@ export default function SRPQuiz(props: any) {
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader
-          onClose={props.onClose}
-          margin={4}
-          data-testid="srp-quiz-header"
-        >
+      <ModalContent
+        modalDialogProps={{
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          gap: 4,
+        }}
+      >
+        <ModalHeader onClose={props.onClose} data-testid="srp-quiz-header">
           {title}
         </ModalHeader>
         {quizContent}
