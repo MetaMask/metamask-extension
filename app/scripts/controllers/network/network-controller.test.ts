@@ -86,19 +86,19 @@ const BLOCK: Block = POST_1559_BLOCK;
 const INFURA_NETWORKS = [
   {
     networkType: NETWORK_TYPES.MAINNET,
-    chainId: '0x1' as const,
+    chainId: toHex(1),
     ticker: 'ETH',
     blockExplorerUrl: 'https://etherscan.io',
   },
   {
     networkType: NETWORK_TYPES.GOERLI,
-    chainId: '0x5' as const,
+    chainId: toHex(5),
     ticker: 'GoerliETH',
     blockExplorerUrl: 'https://goerli.etherscan.io',
   },
   {
     networkType: NETWORK_TYPES.SEPOLIA,
-    chainId: '0xaa36a7' as const,
+    chainId: toHex(11155111),
     ticker: 'SepoliaETH',
     blockExplorerUrl: 'https://sepolia.etherscan.io',
   },
