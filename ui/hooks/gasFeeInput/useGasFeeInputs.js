@@ -6,7 +6,6 @@ import {
   GasRecommendations,
   EditGasModes,
   PriorityLevels,
-  TOO_HIGH_GAS_LIMIT,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
@@ -99,6 +98,9 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EditGasModes.modifyInPlace,
 ) {
+
+  const GAS_LIMIT_TOO_HIGH_IN_ETH = '1';
+
   const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
     id: _transaction?.id,
@@ -176,14 +178,12 @@ export function useGasFeeInputs(
         .times(new Numeric(transaction?.txParams?.maxFeePerGas ?? '0x0', 16))
         .toPrefixedHexString();
 
-      console.log('maximumGas: ', maximumGas);
       const fee = new Numeric(maximumGas, 16, EtherDenomination.WEI)
         .toDenomination(EtherDenomination.ETH)
         .toBase(10)
         .toString();
 
-      console.log('fee: ', fee);
-      if (Number(fee) > Number(TOO_HIGH_GAS_LIMIT)) {
+      if (Number(fee) > Number(GAS_LIMIT_TOO_HIGH_IN_ETH)) {
         setEstimateUsed(PriorityLevels.dappSuggestedHigh);
       }
 
