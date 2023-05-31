@@ -25,6 +25,7 @@ const addEthereumChain = {
     startApprovalFlow: true,
     endApprovalFlow: true,
     setApprovalFlowLoadingText: true,
+    showApprovalSuccess: true,
   },
 };
 export default addEthereumChain;
@@ -44,6 +45,7 @@ async function addEthereumChainHandler(
     startApprovalFlow,
     endApprovalFlow,
     setApprovalFlowLoadingText,
+    showApprovalSuccess,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -314,6 +316,11 @@ async function addEthereumChainHandler(
         return end(error);
       }
     }
+
+    await showApprovalSuccess({
+      message: `Added **${_chainName}** network.`,
+    });
+
     return end();
   } finally {
     endApprovalFlow(approvalFlowId);

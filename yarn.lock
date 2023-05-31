@@ -3899,14 +3899,14 @@ __metadata:
 
 "@metamask/approval-controller@file:.yalc/@metamask/approval-controller::locator=metamask-crx%40workspace%3A.":
   version: 3.1.0
-  resolution: "@metamask/approval-controller@file:.yalc/@metamask/approval-controller#.yalc/@metamask/approval-controller::hash=f65bff&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/approval-controller@file:.yalc/@metamask/approval-controller#.yalc/@metamask/approval-controller::hash=01cfcc&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 0a489f1e79b0c50c2729329e9192130381f8f21381e118fb1b2c406926444c82ba5466406709e1d042316419ef9115b8cf2f505da945569ee6352f88f1004256
+  checksum: 97cb0358025b54312e9c3d1a2a933d685d755aebab66c307a2c37fef9c5b4c99c60aef5acdf5d2c7eb768961f66da672bc7faf9e33951758eaca42cf2e3dc259
   languageName: node
   linkType: hard
 
