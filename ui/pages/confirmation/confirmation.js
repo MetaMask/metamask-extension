@@ -263,7 +263,10 @@ export default function ConfirmationPage({
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
-    } else if (pendingConfirmations.length <= currentPendingConfirmation) {
+    } else if (
+      pendingConfirmations.length &&
+      pendingConfirmations.length <= currentPendingConfirmation
+    ) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
   }, [
