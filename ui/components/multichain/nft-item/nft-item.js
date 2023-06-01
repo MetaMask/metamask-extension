@@ -10,6 +10,7 @@ import {
 import {
   BackgroundColor,
   Display,
+  JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
@@ -47,6 +48,9 @@ export const NftItem = ({
             src={networkSrc}
             borderWidth={2}
             borderColor={BackgroundColor.backgroundDefault}
+            /* We are using BackgroundColor.backgroundDefault here because
+             * there is no equivalent BorderColor to get the "cutout" effect
+             */
           />
         }
       >
@@ -57,6 +61,8 @@ export const NftItem = ({
             as="img"
             src={src}
             alt={alt}
+            display={Display.BLOCK}
+            justifyContent={JustifyContent.center}
           />
         ) : (
           <NftDefaultImage
