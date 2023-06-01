@@ -12,7 +12,7 @@ import {
 
 jest.mock('../../../shared/modules/mv3.utils', () => {
   return {
-    isManifestV3: () => true,
+    isManifestV3: true,
   };
 });
 
