@@ -23,7 +23,7 @@ const ConfirmPageContainerNavigation = () => {
   const unapprovedEncryptionPublicKeyMsgs = useSelector(
     unapprovedEncryptionPublicKeyMsgsSelector,
   );
-  const uncofirmedTransactions = useSelector(
+  const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsHashSelector,
   );
 
@@ -36,7 +36,7 @@ const ConfirmPageContainerNavigation = () => {
     ...enumUnapprovedEncryptMsgsKey,
   ];
 
-  const enumUnapprovedTxs = Object.keys(uncofirmedTransactions).filter(
+  const enumUnapprovedTxs = Object.keys(unconfirmedTransactions).filter(
     (key) => enumDecryptAndEncryptMsgs.includes(key) === false,
   );
 
@@ -54,7 +54,7 @@ const ConfirmPageContainerNavigation = () => {
     if (txId) {
       dispatch(clearConfirmTransaction());
       history.push(
-        uncofirmedTransactions[txId]?.msgParams
+        unconfirmedTransactions[txId]?.msgParams
           ? `${CONFIRM_TRANSACTION_ROUTE}/${txId}${SIGNATURE_REQUEST_PATH}`
           : `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
       );
