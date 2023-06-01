@@ -15,6 +15,14 @@
     height: 100%;
   }
 
+  &__panel > *:first-child {
+    margin-top: 0;
+  }
+
+  &__panel > *:last-child {
+    margin-bottom: 0;
+  }
+
   &__content > *:first-child {
     margin-top: 0;
   }
