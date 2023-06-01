@@ -24,8 +24,8 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { useSignatureRequestHeaderData } from '../../../hooks/useSignatureRequestHeaderData';
 
+import SignatureRequestsCommonHeader from '../signature-requests-common-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -61,8 +61,6 @@ export default function SignatureRequestSIWE({
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
 
-  const networkAccountBalanceHeader = useSignatureRequestHeaderData(txData);
-
   const showSecurityProviderBanner =
     (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
       txData?.securityProviderResponse?.flagAsDangerous !==
@@ -94,7 +92,7 @@ export default function SignatureRequestSIWE({
 
   return (
     <div className="signature-request-siwe">
-      {networkAccountBalanceHeader}
+      <SignatureRequestsCommonHeader txData={txData} />
       <Header
         fromAccount={fromAccount}
         domain={origin}
