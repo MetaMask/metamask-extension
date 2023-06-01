@@ -83,12 +83,12 @@ const MockMv3Utils = () => ({
   isManifestV3: () => true,
 });
 
-jest.mock('./lib/createLoggerMiddleware', createLoggerMiddlewareMock);
-jest.mock('ethjs-contract', MockEthContract);
+jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
+jest.mock('ethjs-contract', () => MockEthContract);
 
 const MetaMaskController = require('./metamask-controller').default;
 
-jest.mock('../../shared/modules/mv3.utils', MockMv3Utils);
+jest.mock('../../shared/modules/mv3.utils', () => MockMv3Utils);
 
 const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
