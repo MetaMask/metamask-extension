@@ -13,7 +13,6 @@ export default class PermissionPageContainer extends Component {
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
     request: PropTypes.object,
-    requestMetadata: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
       name: PropTypes.string,
       origin: PropTypes.string.isRequired,
@@ -25,7 +24,6 @@ export default class PermissionPageContainer extends Component {
 
   static defaultProps = {
     request: {},
-    requestMetadata: {},
     selectedIdentities: [],
     allIdentitiesSelected: false,
   };
@@ -109,17 +107,12 @@ export default class PermissionPageContainer extends Component {
   };
 
   render() {
-    const {
-      requestMetadata,
-      targetSubjectMetadata,
-      selectedIdentities,
-      allIdentitiesSelected,
-    } = this.props;
+    const { targetSubjectMetadata, selectedIdentities, allIdentitiesSelected } =
+      this.props;
 
     return (
       <div className="page-container permission-approval-container">
         <PermissionPageContainerContent
-          requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={this.state.selectedPermissions}
           selectedIdentities={selectedIdentities}
