@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.31.1]
+### Fixed
+- Fix signature requests for Keystone Hardware Wallet users ([#19349](https://github.com/MetaMask/metamask-extension/pull/19349))
 
 ## [10.31.0]
 ### Added
