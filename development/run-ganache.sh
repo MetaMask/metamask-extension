@@ -33,15 +33,14 @@ done
 if [[ "$mainnet_flag" == 'true' ]]
 then
   infura_project_id=''
-  while IFS== read -r key value; do
-    if [[ "$key" == 'INFURA_PROJECT_ID' ]]
+  while IFS= read -r line; do
+    if [[ "$line" =~ INFURA_PROJECT_ID=([a-z0-9]+) ]]
     then
-      infura_project_id="$value"
+      infura_project_id=${BASH_REMATCH[1]}
     fi
   done < .metamaskrc
-  echo "$infura_project_id"
   # shellcheck disable=SC2086
-  $ganache_cli --fork https://mainnet.infura.io/v3/${infura_project_id} --chain.chainId 1 &
+  $ganache_cli --fork https://mainnet.infura.io/v3/${infura_project_id} --chain.chainId 1 --mnemonic "$seed_phrase" -e 1000 &
 else
   # shellcheck disable=SC2086
   $ganache_cli --chain.vmErrorsOnRPCResponse false --networkId 1337 --mnemonic "$seed_phrase" ${GANACHE_ARGS:-} &
