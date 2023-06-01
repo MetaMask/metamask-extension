@@ -178,6 +178,8 @@ env:
   - ETHERSCAN_KEY: null
   # also INFURA_PROJECT_ID below
 
+  - DEV_STATE: null
+
   ###
   # Build system backwards compatibility
   ###
