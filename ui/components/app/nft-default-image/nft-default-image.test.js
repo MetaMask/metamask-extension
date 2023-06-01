@@ -61,13 +61,13 @@ describe('NFT Default Image', () => {
     const { container } = renderWithProvider(
       <NftDefaultImage name="NFT Name" tokenId="123" clickable={false} />,
     );
-    expect(container.firstChild).not.toHaveClass('nft-default__clickable');
+    expect(container.firstChild).not.toHaveClass('nft-default--clickable');
   });
 
   it('renders component with clickable class when clickable is true', () => {
     const { container } = renderWithProvider(
       <NftDefaultImage name="NFT Name" tokenId="123" clickable />,
     );
-    expect(container.firstChild).toHaveClass('nft-default__clickable');
+    expect(container.firstChild).toHaveClass('nft-default--clickable');
   });
 });
