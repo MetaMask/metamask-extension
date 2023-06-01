@@ -227,6 +227,7 @@ export const AccountListItem = ({
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountOptionsMenuAnchorElement}
+          // onBlur={() => setAccountOptionsMenuOpen(false)}
           onClick={(e) => {
             e.stopPropagation();
             trackEvent({
