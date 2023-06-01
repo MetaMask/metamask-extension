@@ -263,10 +263,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('should reset states on first time profile load', function () {
-      it('is an empty test', function () {
-        assert.ok(true);
-      });
-
       it('in mv2, it should reset state without attempting to call browser storage', function () {
         assert.equal(metamaskController.resetStates.callCount, 1);
         assert.equal(browserPolyfillMock.storage.session.set.callCount, 0);
