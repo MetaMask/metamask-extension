@@ -94,7 +94,6 @@ import {
 
 import {
   resetSwapsPostFetchState,
-  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
@@ -358,22 +357,12 @@ export default function BuildQuote({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
-  const { destinationTokenAddedForSwap } = fetchParams || {};
-  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
-      if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(
-          ignoreTokens({
-            tokensToIgnore: toAddress,
-            dontShowLoadingIndicator: true,
-          }),
-        );
-      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, destinationTokenAddedForSwap, toAddress],
+    [dispatch],
   );
 
   const hideDropdownItemIf = useCallback(

@@ -92,7 +92,6 @@ import {
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
-  ignoreTokens,
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
@@ -447,22 +446,12 @@ export default function PrepareSwapPage({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
-  const { destinationTokenAddedForSwap } = fetchParams || {};
-  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
-      if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(
-          ignoreTokens({
-            tokensToIgnore: toAddress,
-            dontShowLoadingIndicator: true,
-          }),
-        );
-      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, destinationTokenAddedForSwap, toAddress],
+    [dispatch],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
