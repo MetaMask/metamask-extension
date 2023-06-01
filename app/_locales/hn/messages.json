@@ -69,9 +69,6 @@
   "create": {
     "message": "बनाएं"
   },
-  "createAccount": {
-    "message": "खाता बनाएं"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },
@@ -322,10 +319,6 @@
   },
   "total": {
     "message": "कुल"
-  },
-  "troubleTokenBalances": {
-    "message": "मुसीबत... आपके टोकन शेष राशि को लोड करने में हमें परेशानी हुई थी। आप उन्हें देख सकते हैं",
-    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "अपना पासवर्ड टाइप करें"

@@ -3853,16 +3853,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^2.0.0, @metamask/approval-controller@npm:^2.1.0, @metamask/approval-controller@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@metamask/approval-controller@npm:2.1.1"
+"@metamask/approval-controller@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "@metamask/approval-controller@npm:3.1.0"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.4.0
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 2e3798e67821660be7c7a35cbe5d001085fd2814fb58bc21e1525383fe2fba66ddb4074896c530de29407d929790ee3a036e180c5576962e3b50a85afe3fd9df
+  checksum: 2043e62e8815a600e839617b4df26515fc33f655e21562dc230cd6dbfc4677e955e1e45a5df8fbb2def2122b3578f6a632acb939f8175419febb1471d0c48ce0
   languageName: node
   linkType: hard
 
@@ -4359,15 +4359,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/notification-controller@npm:2.0.0"
+"@metamask/notification-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/notification-controller@npm:3.0.0"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.0.0
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/utils": ^5.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 22d299bc2816f1822d63b71820bb8c5b55b28696a91c6a2f38fcc743e79140de4f5d0a30daffcd0a141ca7efe07024c80340fb19a457375698fb5bf9fc181859
+  checksum: 5661d6cf095ca322f3e6dc1a4d3c2c95f3fd6d5caf641ffe1ed424da9be07ad10220b6d53a58580f89b8ad9485b67fc2e7dc87d7188ad2dfe5ce80da546cbc7c
   languageName: node
   linkType: hard
 
@@ -23932,7 +23932,7 @@ __metadata:
     "@metamask-institutional/transaction-update": ^0.1.21
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
-    "@metamask/approval-controller": ^2.1.0
+    "@metamask/approval-controller": ^3.0.0
     "@metamask/assets-controllers": ^7.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
@@ -23961,7 +23961,7 @@ __metadata:
     "@metamask/logo": ^3.1.1
     "@metamask/message-manager": ^5.0.0
     "@metamask/metamask-eth-abis": ^3.0.0
-    "@metamask/notification-controller": ^2.0.0
+    "@metamask/notification-controller": ^3.0.0
     "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^3.2.0
     "@metamask/phishing-controller": ^3.0.0
