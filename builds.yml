@@ -200,8 +200,6 @@ env:
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - ICON_NAMES
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - METAMASK_ENVIRONMENT

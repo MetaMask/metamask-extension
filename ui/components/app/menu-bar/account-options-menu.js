@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import { showModal } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import {
   CONNECTED_ROUTE,
   NETWORKS_ROUTE,
@@ -17,10 +20,16 @@ import {
   getCurrentKeyring,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getMetaMaskAccountsOrdered,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
@@ -45,6 +54,12 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const trackEvent = useContext(MetaMetricsContext);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const isCustodial = /Custody/u.test(keyring.type);
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
 
   const isRemovable = keyring.type !== KeyringType.hdKeyTree;
 
@@ -165,6 +180,37 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           {t('removeAccount')}
         </MenuItem>
       ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        isCustodial ? (
+          <MenuItem
+            data-testid="account-options-menu__remove-jwt"
+            onClick={async () => {
+              const token = await dispatch(mmiActions.getCustodianToken());
+              const custodyAccountDetails = await dispatch(
+                mmiActions.getAllCustodianAccountsWithToken(
+                  keyring.type.split(' - ')[1],
+                  token,
+                ),
+              );
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_REMOVE_JWT',
+                  token,
+                  custodyAccountDetails,
+                  accounts,
+                  selectedAddress: toChecksumHexAddress(address),
+                }),
+              );
+              onClose();
+            }}
+            iconClassName="fas fa-trash-alt"
+          >
+            {t('removeJWT')}
+          </MenuItem>
+        ) : null
+        ///: END:ONLY_INCLUDE_IN
+      }
     </Menu>
   );
 }

@@ -625,10 +625,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -658,6 +669,15 @@ export default class MetaMetricsController {
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -676,6 +696,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       context: this._buildContext(referrer, page),
     };
@@ -689,6 +712,13 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiAccountAddress =
+      metamaskState.custodyAccountDetails &&
+      Object.keys(metamaskState.custodyAccountDetails).length
+        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+        : null;
+    ///: END:ONLY_INCLUDE_IN
     const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
@@ -727,6 +757,11 @@ export default class MetaMetricsController {
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
+      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
+      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IN
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],

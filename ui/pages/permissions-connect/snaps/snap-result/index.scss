@@ -1,10 +1,10 @@
 .snap-result {
   box-shadow: none;
 
-  .headers {
+  &__header {
     flex: 1;
 
-    .loader-container {
+    &__loader-container {
       height: 100%;
     }
   }
