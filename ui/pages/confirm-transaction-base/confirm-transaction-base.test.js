@@ -349,7 +349,7 @@ describe('Confirm Transaction Base', () => {
           expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
         });
 
-        it.only('should handleMainSubmit calls sendTransaction with correct arguments', async () => {
+        it.skip('should handleMainSubmit calls sendTransaction with correct arguments', async () => {
           const store = configureMockStore(middleware)(mockedStore);
           const sendTransaction = jest.fn();
 

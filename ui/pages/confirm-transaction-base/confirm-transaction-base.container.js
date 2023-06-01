@@ -378,6 +378,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps
   } = dispatchProps;
 
+  let isMainBetaFlask = false;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  isMainBetaFlask = true;
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     ...stateProps,
     ...otherDispatchProps,
@@ -391,6 +397,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         transaction: txData,
       });
     },
+    isMainBetaFlask,
   };
 };
 

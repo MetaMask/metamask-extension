@@ -54,6 +54,7 @@ import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
+import updateTxData from '../../../shared/modules/updateTxData';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -142,6 +143,7 @@ export default class ConfirmTransactionBase extends Component {
     showTransactionsFailedModal: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
+    isMainBetaFlask: PropTypes.bool,
   };
 
   state = {
@@ -595,14 +597,15 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit() {
-    console.log('please work');
-    let submit = this.handleMainSubmit.bind(this);
+    const { submitting } = this.state;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    submit = this.handleMMISubmit.bind(this);
-    ///: END:ONLY_INCLUDE_IN
+    if (submitting) {
+      return;
+    }
 
-    submit();
+    this.props.isMainBetaFlask
+      ? this.handleMainSubmit()
+      : this.handleMMISubmit();
   }
 
   handleMainSubmit() {
@@ -612,9 +615,31 @@ export default class ConfirmTransactionBase extends Component {
       history,
       mostRecentOverviewPage,
       updateCustomNonce,
+      methodData,
+      maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
+      maxPriorityFeePerGas,
+      baseFeePerGas,
+      addToAddressBookIfNew,
+      toAccounts,
+      toAddress,
     } = this.props;
 
-    this.updateTxData();
+    updateTxData({
+      txData,
+      maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
+      maxPriorityFeePerGas,
+      baseFeePerGas,
+      addToAddressBookIfNew,
+      toAccounts,
+      toAddress,
+      name: methodData.name,
+    });
 
     this.setState(
       {
@@ -668,6 +693,16 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionsFailedModal,
       fromAddress,
       isNoteToTraderSupported,
+      methodData,
+      maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
+      maxPriorityFeePerGas,
+      baseFeePerGas,
+      addToAddressBookIfNew,
+      toAccounts,
+      toAddress,
     } = this.props;
     const { noteText } = this.state;
 
@@ -681,7 +716,19 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    this.updateTxData();
+    updateTxData({
+      txData,
+      maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
+      maxPriorityFeePerGas,
+      baseFeePerGas,
+      addToAddressBookIfNew,
+      toAccounts,
+      toAddress,
+      name: methodData.name,
+    });
 
     this.setState(
       {
@@ -748,69 +795,6 @@ export default class ConfirmTransactionBase extends Component {
           });
       },
     );
-  }
-
-  updateTxData() {
-    const {
-      txData,
-      maxFeePerGas,
-      customTokenAmount,
-      dappProposedTokenAmount,
-      currentTokenBalance,
-      maxPriorityFeePerGas,
-      baseFeePerGas,
-      addToAddressBookIfNew,
-      toAccounts,
-      toAddress,
-      methodData,
-    } = this.props;
-    const { submitting } = this.state;
-    const { name } = methodData;
-
-    if (txData.type === TransactionType.simpleSend) {
-      addToAddressBookIfNew(toAddress, toAccounts);
-    }
-    if (submitting) {
-      return;
-    }
-
-    if (baseFeePerGas) {
-      txData.estimatedBaseFee = baseFeePerGas;
-    }
-
-    if (name) {
-      txData.contractMethodName = name;
-    }
-
-    if (dappProposedTokenAmount) {
-      txData.dappProposedTokenAmount = dappProposedTokenAmount;
-      txData.originalApprovalAmount = dappProposedTokenAmount;
-    }
-
-    if (customTokenAmount) {
-      txData.customTokenAmount = customTokenAmount;
-      txData.finalApprovalAmount = customTokenAmount;
-    } else if (dappProposedTokenAmount !== undefined) {
-      txData.finalApprovalAmount = dappProposedTokenAmount;
-    }
-
-    if (currentTokenBalance) {
-      txData.currentTokenBalance = currentTokenBalance;
-    }
-
-    if (maxFeePerGas) {
-      txData.txParams = {
-        ...txData.txParams,
-        maxFeePerGas,
-      };
-    }
-
-    if (maxPriorityFeePerGas) {
-      txData.txParams = {
-        ...txData.txParams,
-        maxPriorityFeePerGas,
-      };
-    }
   }
 
   handleSetApprovalForAll() {
@@ -946,7 +930,6 @@ export default class ConfirmTransactionBase extends Component {
       userAcknowledgedGasMissing,
       showWarningModal,
     } = this.state;
-
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
     const hasSimulationError = Boolean(txData.simulationFails);
