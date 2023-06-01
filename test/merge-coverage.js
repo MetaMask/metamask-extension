@@ -6,10 +6,29 @@ const reports = require('istanbul-reports');
 const glob = require('fast-glob');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const yaml = require('js-yaml');
+// Temporarily commented out as we can't rely on the commented yaml file
+// Can be restored when the codecov checks are restored
+// const yaml = require('js-yaml');
 const codecovTargets = require('../coverage-targets');
 
-const codecovConfig = yaml.load(fs.readFileSync('codecov.yml', 'utf8'));
+// Temporarily commented out as we can't rely on the commented yaml file
+// Can be restored when the codecov checks are restored. In the meantime
+// the important parts of the yaml file are copied below in normal js object
+// format.
+// const codecovConfig = yaml.load(fs.readFileSync('codecov.yml', 'utf8'));
+
+const codecovConfig = {
+  coverage: {
+    status: {
+      global: {},
+      project: {
+        transforms: {
+          paths: ['development/build/transforms/**/*.js'],
+        },
+      },
+    },
+  },
+};
 
 const COVERAGE_DIR = './coverage/';
 

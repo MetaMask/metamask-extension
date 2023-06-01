@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Hesabı bağla ya da yeni hesap oluştur"
   },
-  "connectHardwareWallet": {
-    "message": "Donanım Cüzdanı Bağla"
-  },
   "connectManually": {
     "message": "Mevcut siteye manuel olarak bağlan"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Oluştur"
-  },
-  "createAccount": {
-    "message": "Hesap Oluştur"
   },
   "createNewWallet": {
     "message": "Yeni bir cüzdan oluştur"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Herkes, mevcut tokenlerin sahte sürümleri de dahil olmak üzere herhangi bir ada sahip bir token oluşturabilir. Riski tamamen size ait olacak şekikde token ekleyin ve işlem yapın!"
   },
-  "importTokens": {
-    "message": "tokenleri içe aktar"
-  },
   "importTokensCamelCase": {
     "message": "Tokenleri içe aktar"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Buradan talep et"
   },
-  "missingToken": {
-    "message": "Tokeninizi görmüyor musunuz?"
-  },
   "moreComingSoon": {
     "message": "Daha fazlası çok yakında..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
-  },
-  "notifications": {
-    "message": "Bildirimler"
   },
   "notifications10ActionText": {
     "message": "Ayarlarda ziyaret et",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Gönder ekranında on altılık veri alanını göstermek için bunu seçin"
   },
-  "showHide": {
-    "message": "Göster/gizle"
-  },
   "showIncomingTransactions": {
     "message": "Gelen işlemleri göster"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "Durum"
-  },
-  "statusConnected": {
-    "message": "Bağlandı"
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "eth_sign taleplerini değiştirin"
   },
-  "toggleTestNetworks": {
-    "message": "Test ağlarını $1",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
-  },
-  "troubleTokenBalances": {
-    "message": "Token bakiyeleriniz yüklenirken sorun yaşadık. Burada görüntüleyebilirsiniz ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "İzin verdiğinizde paranıza aşağıdaki $1 erişimine izin verirsiniz"
