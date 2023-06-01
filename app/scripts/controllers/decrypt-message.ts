@@ -324,6 +324,8 @@ export default class DecryptMessageController extends BaseControllerV2<
         state.unapprovedMessages as any,
       );
       this.update((draftState) => {
+        // @ts-expect-error `Draft` type from immer incompatibile with `Json` recursive type
+        // See https://github.com/immerjs/immer/issues/839
         updateState(draftState, newMessages, state.unapprovedMessagesCount);
       });
     });
