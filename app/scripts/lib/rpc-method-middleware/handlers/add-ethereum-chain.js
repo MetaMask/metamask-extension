@@ -26,6 +26,7 @@ const addEthereumChain = {
     endApprovalFlow: true,
     setApprovalFlowLoadingText: true,
     showApprovalSuccess: true,
+    showApprovalError: true,
   },
 };
 export default addEthereumChain;
@@ -46,6 +47,7 @@ async function addEthereumChainHandler(
     endApprovalFlow,
     setApprovalFlowLoadingText,
     showApprovalSuccess,
+    showApprovalError,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -309,10 +311,17 @@ async function addEthereumChainHandler(
 
       await setActiveNetwork(networkConfigurationId);
     } catch (error) {
+      // eslint-disable-next-line no-ex-assign
+      error = new Error('Example error for demo purposes');
+
       // For the purposes of this method, it does not matter if the user
       // declines to switch the selected network. However, other errors indicate
       // that something is wrong.
       if (error.code !== errorCodes.provider.userRejectedRequest) {
+        await showApprovalError({
+          error: error.message,
+        });
+
         return end(error);
       }
     }

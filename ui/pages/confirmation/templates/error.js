@@ -32,7 +32,7 @@ function getValues(pendingApproval, t, actions, _history) {
               fontWeight: FontWeight.Bold,
               paddingBottom: 2,
             },
-            children: 'Success',
+            children: 'Error',
           },
           {
             key: 'message',
@@ -41,8 +41,8 @@ function getValues(pendingApproval, t, actions, _history) {
               textAlign: TextAlign.Center,
             },
             children: processString(
-              pendingApproval.requestData.message,
-              'The operation completed successfully',
+              pendingApproval.requestData.error,
+              'The operation failed.',
             ),
           },
         ],
@@ -58,8 +58,8 @@ function getValues(pendingApproval, t, actions, _history) {
   };
 }
 
-const success = {
+const error = {
   getValues,
 };
 
-export default success;
+export default error;

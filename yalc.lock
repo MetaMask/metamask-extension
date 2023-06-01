@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@metamask/approval-controller": {
-      "signature": "54dac20d94d44c3c563d5fa501e1a2dd",
+      "signature": "ab7fd4ed924d620171b998096fa82674",
       "file": true,
       "replaced": "^2.1.0"
     }

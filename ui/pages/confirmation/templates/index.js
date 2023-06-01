@@ -9,6 +9,7 @@ import {
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
+import error from './error';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
@@ -19,6 +20,7 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   success,
+  error,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
