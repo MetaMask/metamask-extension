@@ -1,5 +1,4 @@
 import { cloneDeep, noop } from 'lodash';
-import nock from 'nock';
 import browser from 'webextension-polyfill';
 import { FIRST_TIME_CONTROLLER_STATE } from '../../test/helpers/metamask-controller';
 
@@ -56,7 +55,7 @@ function MockEthContract() {
   };
 }
 const MockMv3Utils = () => ({
-  isManifestV3: true,
+  isManifestV3: () => true,
 });
 
 function metamaskControllerArgumentConstructor({
@@ -92,8 +91,6 @@ jest.mock('../../shared/modules/mv3.utils', () => MockMv3Utils);
 const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
 describe('MetaMaskController', function () {
-  let metamaskController;
-
   const sessionSetSpy = jest
     .spyOn(browserPolyfillMock.storage.session, 'set')
     .mockImplementation();
@@ -106,50 +103,15 @@ describe('MetaMaskController', function () {
   beforeEach(function () {
     jest.resetModules();
 
-    nock('https://min-api.cryptocompare.com')
-      .persist()
-      .get(/.*/u)
-      .reply(200, '{"JPY":12415.9}');
-    nock('https://static.metafi.codefi.network')
-      .persist()
-      .get('/api/v1/lists/stalelist.json')
-      .reply(
-        200,
-        JSON.stringify({
-          version: 2,
-          tolerance: 2,
-          fuzzylist: [],
-          allowlist: [],
-          blocklist: ['127.0.0.1'],
-          lastUpdated: 0,
-        }),
-      )
-      .get('/api/v1/lists/hotlist.json')
-      .reply(
-        200,
-        JSON.stringify([
-          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
-        ]),
-      );
-
     browser.runtime = {
       ...browser.runtime,
       sendMessage: jest.fn().mockRejectedValue(),
     };
 
     jest.spyOn(MetaMaskControllerMV3.prototype, 'resetStates').mockClear();
-
-    // add jest method spies
-    jest
-      .spyOn(metamaskController.keyringController, 'createNewVaultAndKeychain')
-      .mockClear();
-    jest
-      .spyOn(metamaskController.keyringController, 'createNewVaultAndRestore')
-      .mockClear();
   });
 
   afterEach(function () {
-    nock.cleanAll();
     // jest.mockRestore();
     jest.clearAllMocks();
   });
