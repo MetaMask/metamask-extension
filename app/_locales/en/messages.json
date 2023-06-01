@@ -654,6 +654,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "click": {
+    "message": "Click"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -1418,6 +1421,9 @@
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
+  "enterOptionalPassword": {
+    "message": "Enter optional password"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -1558,6 +1564,10 @@
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
+  },
+  "forMoreDetails": {
+    "message": "for more details.",
+    "description": "Click for more details message in popup modal displayed when installing a snap for the first time."
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -3522,9 +3532,6 @@
   "searchResults": {
     "message": "Search results"
   },
-  "searchSettings": {
-    "message": "Search in Settings"
-  },
   "searchTokens": {
     "message": "Search tokens"
   },
@@ -3843,8 +3850,28 @@
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
   },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "Installing a snap retrieves data from third parties. They may collect your personal information.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "MetaMask has no access to this information.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
+  },
+  "snapsThirdPartyNoticeReadMorePartOne": {
+    "message": "Any information you share with third-party-developed snaps will be collected directly by those snaps in accordance with their privacy policies. ",
+    "description": "First part of a tooltip content in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsThirdPartyNoticeReadMorePartThree": {
+    "message": "MetaMask has no access to information you share with these third parties.",
+    "description": "Third part of a tooltip content in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsThirdPartyNoticeReadMorePartTwo": {
+    "message": "During the installation of a snap, npmjs (npmjs.com) and AWS (aws.amazon.com) may collect your IP address. Please refer to their privacy policies for more information.",
+    "description": "Second part of a tooltip content in popup modal displayed when installing a snap for the first time."
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -4116,10 +4143,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Best of $1 quotes.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
@@ -4469,6 +4492,10 @@
   },
   "thingsToKeep": {
     "message": "Things to keep in mind:"
+  },
+  "thirdPartySoftware": {
+    "message": "Third party software",
+    "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
   "thisCollection": {
     "message": "this collection"
@@ -4932,6 +4959,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",

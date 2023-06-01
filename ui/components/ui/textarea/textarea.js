@@ -4,15 +4,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  RESIZE,
   BorderStyle,
-  BLOCK_SIZES,
+  BlockSize,
   Size,
   BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-
 import Box from '../box';
+import { RESIZE } from './textarea.constants';
 
 const TextArea = ({
   className,
@@ -40,7 +39,7 @@ const TextArea = ({
       borderRadius={Size.SM}
       borderStyle={BorderStyle.solid}
       padding={4}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       {...boxProps}
     >
       {(boxClassName) => (
