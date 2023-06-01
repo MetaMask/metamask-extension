@@ -29,6 +29,21 @@ export default function UpdateSnapPermissionList({
           );
         },
       )}
+      {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
+        (permission, index) => {
+          return (
+            <PermissionCell
+              title={permission.label}
+              description={permission.description}
+              weight={permission.weight}
+              avatarIcon={permission.leftIcon}
+              dateApproved={permission?.permissionValue?.date}
+              key={`${permission.permissionName}-${index}`}
+              revoked
+            />
+          );
+        },
+      )}
       {getWeightedPermissions(
         t,
         approvedPermissions,
@@ -45,21 +60,6 @@ export default function UpdateSnapPermissionList({
           />
         );
       })}
-      {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
-        (permission, index) => {
-          return (
-            <PermissionCell
-              title={permission.label}
-              description={permission.description}
-              weight={permission.weight}
-              avatarIcon={permission.leftIcon}
-              dateApproved={permission?.permissionValue?.date}
-              key={`${permission.permissionName}-${index}`}
-              revoked
-            />
-          );
-        },
-      )}
     </Box>
   );
 }
