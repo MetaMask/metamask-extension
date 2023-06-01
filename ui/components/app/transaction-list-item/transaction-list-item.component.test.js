@@ -10,6 +10,7 @@ import {
   getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
+  getCurrentNetwork,
 } from '../../../selectors';
 import {
   renderWithProvider,
@@ -107,6 +108,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {
     return opts.tokens ?? [];
+  } else if (selector === getCurrentNetwork) {
+    return opts.currentChain ?? undefined;
   }
   return undefined;
 };
@@ -127,6 +130,10 @@ describe('TransactionListItem', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '0x3',
+          currentChain: {
+            chainId: '0x1',
+            nickname: 'Ethereum Mainnet',
+          },
         }),
       );
       const { queryByTestId } = renderWithProvider(
@@ -139,6 +146,10 @@ describe('TransactionListItem', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
+          currentChain: {
+            chainId: '0x1',
+            nickname: 'Ethereum Mainnet',
+          },
         }),
       );
       const { queryByTestId } = renderWithProvider(
@@ -151,6 +162,10 @@ describe('TransactionListItem', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
+          currentChain: {
+            chainId: '0x1',
+            nickname: 'Ethereum Mainnet',
+          },
         }),
       );
       const { getByText, queryByText } = renderWithProvider(

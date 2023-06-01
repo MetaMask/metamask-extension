@@ -13,10 +13,21 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { IconColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize } from '../../component-library';
-///: END:ONLY_INCLUDE_IN
+import {
+  BackgroundColor,
+  Display,
+  IconColor,
+  Size,
+} from '../../../helpers/constants/design-system';
+import {
+  AvatarNetwork,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../component-library';
+
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
@@ -31,7 +42,10 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getCurrentNetwork,
+} from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
@@ -196,6 +210,7 @@ function TransactionListItemInner({
     ///: END:ONLY_INCLUDE_IN
   ]);
 
+  const currentChain = useSelector(getCurrentNetwork);
   let showCancelButton = !hasCancelled && isPending && !isUnapproved;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -240,7 +255,27 @@ function TransactionListItemInner({
             </div>
           ) : (
             ///: END:ONLY_INCLUDE_IN
-            <TransactionIcon category={category} status={displayedStatusKey} />
+            <BadgeWrapper
+              anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+              positionObj={{ top: -4, right: -4 }}
+              display={Display.Block}
+              badge={
+                <AvatarNetwork
+                  className="activity-tx__network-badge"
+                  data-testid="activity-tx-network-badge"
+                  size={Size.XS}
+                  name={currentChain.nickname}
+                  src={currentChain.rpcPrefs?.imageUrl}
+                  borderWidth={1}
+                  borderColor={BackgroundColor.backgroundDefault}
+                />
+              }
+            >
+              <TransactionIcon
+                category={category}
+                status={displayedStatusKey}
+              />
+            </BadgeWrapper>
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           )
           ///: END:ONLY_INCLUDE_IN
