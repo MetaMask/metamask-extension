@@ -36,6 +36,7 @@ import {
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   hasPendingApprovals,
+  unconfirmedTransactionsCountSelector,
 } from '../../selectors';
 
 import {
@@ -70,7 +71,6 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
-import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -130,7 +130,7 @@ const mapStateToProps = (state) => {
     forgottenPassword,
     hasWatchAssetPendingApprovals,
     swapsEnabled,
-    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
+    unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
