@@ -210,22 +210,6 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  window.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: debugState,
-      version: global.platform.getVersion(),
-    };
-  };
-  window.stateHooks.refreshBrowser = function () {
-    console.log('inside window.stateHooks.refreshBrowser');
-    console.log({ inTest: process.env.IN_TEST });
-    if (process.env.IN_TEST) {
-      browser.runtime.reload();
-    }
-  };
 }
 
 window.logStateString = async function (cb) {

@@ -486,25 +486,6 @@ class Driver {
     });
   }
 
-  async checkBrowserForEvents() {
-    const cdpConnection = await this.driver.createCDPConnection('page');
-
-    await this.driver.onLogEvent(cdpConnection, (event) => {
-      const eventLogs = event.args
-        .map((arg) => arg.value)
-        .filter((arg) => Boolean(arg));
-
-      eventLogs.forEach((eventLog) => {
-        console.log(eventLog);
-        this.events.push(eventLog);
-      });
-    });
-  }
-
-  async waitForLogEvent(eventName, timeout = this.timeout) {
-    await this.wait(this.events.includes(eventName), timeout);
-  }
-
   async checkBrowserForConsoleErrors(failOnConsoleError) {
     const ignoredErrorMessages = [
       // Third-party Favicon 404s show up as errors

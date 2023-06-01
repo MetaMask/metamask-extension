@@ -113,7 +113,6 @@ async function withFixtures(options, testSuite) {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(failOnConsoleError);
       await driver.checkBrowserForConsoleErrors(failOnConsoleError);
-      await driver.checkBrowserForEvents();
     }
 
     let driverProxy;
@@ -563,6 +562,13 @@ async function waitForAccountRendered(driver) {
     '[data-testid="eth-overview__primary-currency"]',
   );
 }
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  TestDApp: 'E2E Test Dapp',
+  Notification: 'MetaMask Notification',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  InstalledExtensions: 'Extensions',
+});
 
 const login = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
@@ -609,4 +615,5 @@ module.exports = {
   waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
+  WINDOW_TITLES,
 };
