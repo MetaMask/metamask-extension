@@ -21,7 +21,7 @@ import {
  * The "keys" of all of permissions recognized by the PermissionController.
  * Permission keys and names have distinct meanings in the permission system.
  */
-const PermissionKeys = Object.freeze({
+const PermissionNames = Object.freeze({
   ...RestrictedMethods,
 });
 
@@ -101,9 +101,9 @@ export const getPermissionSpecifications = ({
   captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
-    [PermissionKeys.eth_accounts]: {
+    [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: PermissionKeys.eth_accounts,
+      targetName: PermissionNames.eth_accounts,
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 
       factory: (permissionOptions, requestData) => {

@@ -29,7 +29,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
 
     Object.values(specifications).forEach((specification) => {
       expect(specification).toMatchObject({
-        targetKey: expect.stringMatching(/^(snap_|wallet_)/u),
+        targetName: expect.stringMatching(/^(snap_|wallet_)/u),
         methodImplementation: expect.any(Function),
       });
     });
@@ -43,8 +43,8 @@ describe('buildSnapEndowmentSpecifications', () => {
     ).toStrictEqual(
       Object.keys(EndowmentPermissions)
         .filter(
-          (targetKey) =>
-            !Object.keys(ExcludedSnapEndowments).includes(targetKey),
+          (targetName) =>
+            !Object.keys(ExcludedSnapEndowments).includes(targetName),
         )
         .sort(),
     );
