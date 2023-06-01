@@ -11,7 +11,6 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
-
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later
