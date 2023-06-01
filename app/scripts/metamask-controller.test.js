@@ -40,8 +40,8 @@ const browserPolyfillMock = {
   },
   storage: {
     session: {
-      set: noop,
-      get: noop,
+      set: jest.fn(),
+      get: jest.fn(),
     },
   },
 };

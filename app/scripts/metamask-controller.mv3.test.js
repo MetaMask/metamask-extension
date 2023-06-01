@@ -1,12 +1,7 @@
 import { cloneDeep, noop } from 'lodash';
-import browser from 'webextension-polyfill';
 import { FIRST_TIME_CONTROLLER_STATE } from '../../test/helpers/metamask-controller';
 
-const Ganache = require('../../test/e2e/ganache');
-
 const INFURA_PROJECT_ID = 'foo';
-
-const ganacheServer = new Ganache();
 
 const browserPolyfillMock = {
   runtime: {
@@ -21,8 +16,8 @@ const browserPolyfillMock = {
   },
   storage: {
     session: {
-      set: noop,
-      get: noop,
+      set: jest.fn(),
+      get: jest.fn(),
     },
   },
 };
@@ -40,23 +35,6 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   }
   next();
 };
-
-const MOCK_TOKEN_BALANCE = '888';
-
-function MockEthContract() {
-  return () => {
-    return {
-      at: () => {
-        return {
-          balanceOf: () => MOCK_TOKEN_BALANCE,
-        };
-      },
-    };
-  };
-}
-const MockMv3Utils = () => ({
-  isManifestV3: () => true,
-});
 
 function metamaskControllerArgumentConstructor({
   isFirstMetaMaskControllerSetup = false,
@@ -85,28 +63,26 @@ function metamaskControllerArgumentConstructor({
 }
 
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
-jest.mock('ethjs-contract', () => MockEthContract);
-jest.mock('../../shared/modules/mv3.utils', () => MockMv3Utils);
+jest.mock('../../shared/modules/mv3.utils', () => ({
+  isManifestV3: true,
+}));
 
 const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
 describe('MetaMaskController', function () {
   const sessionSetSpy = jest
     .spyOn(browserPolyfillMock.storage.session, 'set')
-    .mockImplementation();
+    .mockImplementation(() => {
+      console.log('called');
+    });
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
-    await ganacheServer.start();
   });
 
   beforeEach(function () {
     jest.resetModules();
-
-    browser.runtime = {
-      ...browser.runtime,
-      sendMessage: jest.fn().mockRejectedValue(),
-    };
+    sessionSetSpy.mockClear();
 
     jest.spyOn(MetaMaskControllerMV3.prototype, 'resetStates').mockClear();
   });
@@ -116,14 +92,8 @@ describe('MetaMaskController', function () {
     jest.clearAllMocks();
   });
 
-  afterAll(async function () {
-    await ganacheServer.quit();
-  });
-
   describe('should reset states on first time profile load', function () {
     it('in mv3, it should reset state', function () {
-      jest.spyOn(MetaMaskControllerMV3.prototype, 'resetStates').mockClear();
-
       const metamaskControllerMV3 = new MetaMaskControllerMV3(
         metamaskControllerArgumentConstructor({
           isFirstMetaMaskControllerSetup: true,
@@ -137,7 +107,6 @@ describe('MetaMaskController', function () {
     });
 
     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
-      sessionSetSpy.mockReset();
       const metamaskControllerMV3 = new MetaMaskControllerMV3(
         metamaskControllerArgumentConstructor(),
       );
