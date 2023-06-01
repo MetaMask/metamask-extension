@@ -121,6 +121,7 @@
   "app/scripts/lockdown-run.js",
   "app/scripts/metamask-controller.js",
   "app/scripts/metamask-controller.test.js",
+  "app/scripts/metamask-controller.mv3.test.js",
   "app/scripts/migrations/002.js",
   "app/scripts/migrations/003.js",
   "app/scripts/migrations/004.js",

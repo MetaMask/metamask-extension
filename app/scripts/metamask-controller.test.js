@@ -17,6 +17,10 @@ import {
   InternalKeyringType,
   KeyringType,
 } from '../../shared/constants/keyring';
+import {
+  FIRST_TIME_CONTROLLER_STATE,
+  MockEthContract,
+} from '../../test/helpers/metamask-controller';
 import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -35,12 +39,9 @@ const browserPolyfillMock = {
     getPlatformInfo: async () => 'mac',
   },
   storage: {
-    _session: {},
-    get session() {
-      return this._session;
-    },
-    set session(value) {
-      this._session = value;
+    session: {
+      set: noop,
+      get: noop,
     },
   },
 };
@@ -68,32 +69,10 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
-const MOCK_TOKEN_BALANCE = '888';
-
-function MockEthContract() {
-  return () => {
-    return {
-      at: () => {
-        return {
-          balanceOf: () => MOCK_TOKEN_BALANCE,
-        };
-      },
-    };
-  };
-}
-
-const MockMv3Utils = () => ({
-  isManifestV3: () => true,
-});
-
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 jest.mock('ethjs-contract', () => MockEthContract);
 
 const MetaMaskController = require('./metamask-controller').default;
-
-jest.mock('../../shared/modules/mv3.utils', () => MockMv3Utils);
-
-const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
@@ -118,14 +97,11 @@ const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
-const POLYGON_RPC_URL_2 = 'https://polygon-rpc.com';
 
 const NETWORK_CONFIGURATION_ID_1 = 'networkConfigurationId1';
 const NETWORK_CONFIGURATION_ID_2 = 'networkConfigurationId2';
-const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
 
 const ALT_MAINNET_NAME = 'Alt Mainnet';
-const ALT_POLYGON_NAME = 'Alt Polygon';
 const POLYGON_NAME = 'Polygon';
 
 const ETH = 'ETH';
@@ -146,63 +122,7 @@ const PROVIDER_RESULT_STUB = {
     '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
 };
 
-const firstTimeState = {
-  config: {},
-  NetworkController: {
-    providerConfig: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: ALT_MAINNET_RPC_URL,
-      chainId: MAINNET_CHAIN_ID,
-      ticker: ETH,
-      nickname: ALT_MAINNET_NAME,
-      id: NETWORK_CONFIGURATION_ID_1,
-    },
-    networkConfigurations: {
-      [NETWORK_CONFIGURATION_ID_1]: {
-        rpcUrl: ALT_MAINNET_RPC_URL,
-        type: NETWORK_TYPES.RPC,
-        chainId: MAINNET_CHAIN_ID,
-        ticker: ETH,
-        nickname: ALT_MAINNET_NAME,
-        id: NETWORK_CONFIGURATION_ID_1,
-      },
-      [NETWORK_CONFIGURATION_ID_2]: {
-        rpcUrl: POLYGON_RPC_URL,
-        type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
-        ticker: MATIC,
-        nickname: POLYGON_NAME,
-        id: NETWORK_CONFIGURATION_ID_2,
-      },
-      [NETWORK_CONFIGURATION_ID_3]: {
-        rpcUrl: POLYGON_RPC_URL_2,
-        type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
-        ticker: MATIC,
-        nickname: ALT_POLYGON_NAME,
-        id: NETWORK_CONFIGURATION_ID_1,
-      },
-    },
-    networkDetails: {
-      EIPS: {
-        1559: false,
-      },
-    },
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
-      },
-    },
-  },
-};
-
-function controllerArgumentConstructor({
+function metamaskControllerArgumentConstructor({
   isFirstMetaMaskControllerSetup = false,
 } = {}) {
   return {
@@ -216,7 +136,7 @@ function controllerArgumentConstructor({
         return Promise.resolve(this.object);
       },
     },
-    initState: cloneDeep(firstTimeState),
+    initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
     initLangCode: 'en_US',
     platform: {
       showTransactionNotification: () => undefined,
@@ -230,11 +150,10 @@ function controllerArgumentConstructor({
 
 describe('MetaMaskController', function () {
   let metamaskController;
-  const sessionSetSpy = jest.spyOn(
-    browserPolyfillMock.storage,
-    'session',
-    'set',
-  );
+
+  const sessionSetSpy = jest
+    .spyOn(browserPolyfillMock.storage.session, 'set')
+    .mockImplementation();
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
@@ -278,7 +197,9 @@ describe('MetaMaskController', function () {
     jest.spyOn(MetaMaskController.prototype, 'resetStates').mockClear();
 
     metamaskController = new MetaMaskController(
-      controllerArgumentConstructor({ isFirstMetaMaskControllerSetup: true }),
+      metamaskControllerArgumentConstructor({
+        isFirstMetaMaskControllerSetup: true,
+      }),
     );
 
     // add jest method spies
@@ -301,32 +222,8 @@ describe('MetaMaskController', function () {
   });
 
   describe('should reset states on first time profile load', function () {
-    beforeEach(function () {
-      jest.spyOn(MetaMaskControllerMV3.prototype, 'resetStates').mockClear();
-    });
-
     it('in mv2, it should reset state without attempting to call browser storage', function () {
       expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
-      expect(sessionSetSpy).not.toHaveBeenCalled();
-    });
-
-    it('in mv3, it should reset state', function () {
-      const metamaskControllerMV3 = new MetaMaskControllerMV3(
-        controllerArgumentConstructor({ isFirstMetaMaskControllerSetup: true }),
-      );
-      expect(metamaskControllerMV3.resetStates).toHaveBeenCalledTimes(1);
-      expect(sessionSetSpy).toHaveBeenCalledTimes(1);
-      expect(sessionSetSpy).toHaveBeenNthCalledWith(1, {
-        isFirstMetaMaskControllerSetup: false,
-      });
-    });
-
-    it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
-      sessionSetSpy.mockReset();
-      const metamaskControllerMV3 = new MetaMaskControllerMV3(
-        controllerArgumentConstructor(),
-      );
-      expect(metamaskControllerMV3.resetStates).not.toHaveBeenCalled();
       expect(sessionSetSpy).not.toHaveBeenCalled();
     });
   });
@@ -353,6 +250,7 @@ describe('MetaMaskController', function () {
       const privKeyHex = await simpleKeyrings[0].exportAccount(
         pubAddressHexArr[0],
       );
+
       expect(privKeyHex).toStrictEqual(importPrivkey);
       expect(pubAddressHexArr[0]).toStrictEqual(E18_ADDRESS);
     });
@@ -419,7 +317,9 @@ describe('MetaMaskController', function () {
       await metamaskController
         .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
         .catch(() => null);
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+      await metamaskController
+        .createNewVaultAndRestore(password, TEST_SEED)
+        .catch(() => null);
 
       expect(
         metamaskController.keyringController.createNewVaultAndRestore,
@@ -430,12 +330,12 @@ describe('MetaMaskController', function () {
     it('should clear previous identities after vault restoration', async function () {
       jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-      let startTime = Date.now();
+      const startTime = Date.now();
       await metamaskController.createNewVaultAndRestore(
         VAULT_PASSWORD,
         TEST_SEED,
       );
-      let endTime = Date.now();
+      const endTime = Date.now();
 
       const firstVaultIdentities = cloneDeep(
         metamaskController.getState().identities,
@@ -464,20 +364,20 @@ describe('MetaMaskController', function () {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: FAKE_ACCOUNT_NAME },
       });
 
-      startTime = Date.now();
+      const startTimeAlt = Date.now();
       await metamaskController.createNewVaultAndRestore(
         VAULT_PASSWORD,
         TEST_SEED_ALT,
       );
-      endTime = Date.now();
+      const endTimeAlt = Date.now();
 
       const secondVaultIdentities = cloneDeep(
         metamaskController.getState().identities,
       );
 
       expectWithinRange(secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected, [
-        startTime,
-        endTime,
+        startTimeAlt,
+        endTimeAlt,
       ]);
 
       delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected;

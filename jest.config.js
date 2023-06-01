@@ -50,6 +50,7 @@ module.exports = {
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>/app/scripts/metamask-controller.test.js',
+    '<rootDir>/app/scripts/metamask-controller.mv3.test.js',
     '<rootDir>/shared/**/*.test.(js|ts)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',

@@ -11,6 +11,7 @@ module.exports = {
     './app/scripts/controllers/mmi-controller.test.js',
     './app/scripts/constants/error-utils.test.js',
     './app/scripts/metamask-controller.test.js',
+    './app/scripts/metamask-controller.mv3.test.js',
   ],
   recursive: true,
   require: ['test/env.js', 'test/setup.js'],
