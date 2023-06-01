@@ -13,7 +13,10 @@ import {
   HardwareDeviceNames,
   HardwareKeyringType,
 } from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
+import {
+  InternalKeyringType,
+  KeyringType,
+} from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -133,6 +136,16 @@ const MAINNET_CHAIN_ID = '0x1';
 
 const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
 
+const UNKNOWN_DEVICE_ERROR_MESSAGE =
+  'MetamaskController:getKeyringForDevice - Unknown device';
+const NO_HD_KEY_ERROR_MESSAGE = 'MetamaskController - No HD Key Tree found';
+
+const PROVIDER_RESULT_STUB = {
+  eth_getCode: '0x123',
+  eth_call:
+    '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+};
+
 const firstTimeState = {
   config: {},
   NetworkController: {
@@ -189,17 +202,43 @@ const firstTimeState = {
   },
 };
 
+function controllerArgumentConstructor({
+  isFirstMetaMaskControllerSetup = false,
+} = {}) {
+  return {
+    showUserConfirmation: noop,
+    encryptor: {
+      encrypt(_, object) {
+        this.object = object;
+        return Promise.resolve('mock-encrypted');
+      },
+      decrypt() {
+        return Promise.resolve(this.object);
+      },
+    },
+    initState: cloneDeep(firstTimeState),
+    initLangCode: 'en_US',
+    platform: {
+      showTransactionNotification: () => undefined,
+      getVersion: () => 'foo',
+    },
+    browser: browserPolyfillMock,
+    infuraProjectId: INFURA_PROJECT_ID,
+    isFirstMetaMaskControllerSetup,
+  };
+}
+
 describe('MetaMaskController', function () {
   let metamaskController;
-
-  // eslint-disable-next-line jest/prefer-spy-on
-  browserPolyfillMock.storage.session.set = jest.fn();
+  const sessionSetSpy = jest.spyOn(
+    browserPolyfillMock.storage,
+    'session',
+    'set',
+  );
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
-    jest.spyOn(MetaMaskController.prototype, 'resetStates').mockClear();
-    jest.spyOn(MetaMaskControllerMV3.prototype, 'resetStates').mockClear();
   });
 
   beforeEach(function () {
@@ -236,37 +275,19 @@ describe('MetaMaskController', function () {
       sendMessage: jest.fn().mockRejectedValue(),
     };
 
-    metamaskController = new MetaMaskController({
-      showUserConfirmation: noop,
-      encryptor: {
-        encrypt(_, object) {
-          this.object = object;
-          return Promise.resolve('mock-encrypted');
-        },
-        decrypt() {
-          return Promise.resolve(this.object);
-        },
-      },
-      initState: cloneDeep(firstTimeState),
-      initLangCode: 'en_US',
-      platform: {
-        showTransactionNotification: () => undefined,
-        getVersion: () => 'foo',
-      },
-      browser: browserPolyfillMock,
-      infuraProjectId: INFURA_PROJECT_ID,
-      isFirstMetaMaskControllerSetup: true,
-    });
+    jest.spyOn(MetaMaskController.prototype, 'resetStates').mockClear();
+
+    metamaskController = new MetaMaskController(
+      controllerArgumentConstructor({ isFirstMetaMaskControllerSetup: true }),
+    );
 
     // add jest method spies
-    jest.spyOn(
-      metamaskController.keyringController,
-      'createNewVaultAndKeychain',
-    );
-    jest.spyOn(
-      metamaskController.keyringController,
-      'createNewVaultAndRestore',
-    );
+    jest
+      .spyOn(metamaskController.keyringController, 'createNewVaultAndKeychain')
+      .mockClear();
+    jest
+      .spyOn(metamaskController.keyringController, 'createNewVaultAndRestore')
+      .mockClear();
   });
 
   afterEach(function () {
@@ -280,70 +301,33 @@ describe('MetaMaskController', function () {
   });
 
   describe('should reset states on first time profile load', function () {
+    beforeEach(function () {
+      jest.spyOn(MetaMaskControllerMV3.prototype, 'resetStates').mockClear();
+    });
+
     it('in mv2, it should reset state without attempting to call browser storage', function () {
       expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
-      expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      expect(sessionSetSpy).not.toHaveBeenCalled();
     });
 
     it('in mv3, it should reset state', function () {
-      MetaMaskControllerMV3.prototype.resetStates.mockReset();
-      const metamaskControllerMV3 = new MetaMaskControllerMV3({
-        showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
-        initState: cloneDeep(firstTimeState),
-        initLangCode: 'en_US',
-        platform: {
-          showTransactionNotification: () => undefined,
-          getVersion: () => 'foo',
-        },
-        browser: browserPolyfillMock,
-        infuraProjectId: INFURA_PROJECT_ID,
-        isFirstMetaMaskControllerSetup: true,
-      });
-      expect(metamaskControllerMV3.resetStates).toHaveBeenCalledTimes(1);
-      expect(browserPolyfillMock.storage.session.set).toHaveBeenCalledTimes(1);
-      expect(browserPolyfillMock.storage.session.set).toHaveBeenNthCalledWith(
-        1,
-        {
-          isFirstMetaMaskControllerSetup: false,
-        },
+      const metamaskControllerMV3 = new MetaMaskControllerMV3(
+        controllerArgumentConstructor({ isFirstMetaMaskControllerSetup: true }),
       );
+      expect(metamaskControllerMV3.resetStates).toHaveBeenCalledTimes(1);
+      expect(sessionSetSpy).toHaveBeenCalledTimes(1);
+      expect(sessionSetSpy).toHaveBeenNthCalledWith(1, {
+        isFirstMetaMaskControllerSetup: false,
+      });
     });
 
     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
-      MetaMaskControllerMV3.prototype.resetStates.mockReset();
-      browserPolyfillMock.storage.session.set.mockReset();
-      const metamaskControllerMV3 = new MetaMaskControllerMV3({
-        showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
-        initState: cloneDeep(firstTimeState),
-        initLangCode: 'en_US',
-        platform: {
-          showTransactionNotification: () => undefined,
-          getVersion: () => 'foo',
-        },
-        browser: browserPolyfillMock,
-        infuraProjectId: INFURA_PROJECT_ID,
-        isFirstMetaMaskControllerSetup: false,
-      });
+      sessionSetSpy.mockReset();
+      const metamaskControllerMV3 = new MetaMaskControllerMV3(
+        controllerArgumentConstructor(),
+      );
       expect(metamaskControllerMV3.resetStates).not.toHaveBeenCalled();
-      expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      expect(sessionSetSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -430,10 +414,7 @@ describe('MetaMaskController', function () {
 
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
       const password = 'what-what-what';
-      jest.spyOn(metamaskController, 'getBalance');
-      metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
-      });
+      jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
       await metamaskController
         .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
@@ -447,10 +428,7 @@ describe('MetaMaskController', function () {
 
     const VAULT_PASSWORD = 'foobar1337';
     it('should clear previous identities after vault restoration', async function () {
-      jest.spyOn(metamaskController, 'getBalance');
-      metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
-      });
+      jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
       let startTime = Date.now();
       await metamaskController.createNewVaultAndRestore(
@@ -584,6 +562,7 @@ describe('MetaMaskController', function () {
     it('getState', function () {
       const getApi = metamaskController.getApi();
       const state = getApi.getState();
+
       expect(state).toStrictEqual(metamaskController.getState());
     });
   });
@@ -629,7 +608,7 @@ describe('MetaMaskController', function () {
           0,
           `m/44/0'/0'`,
         ),
-      ).rejects.toThrow('MetamaskController - Unknown device');
+      ).rejects.toThrow(UNKNOWN_DEVICE_ERROR_MESSAGE);
     });
 
     it('should add the Trezor Hardware keyring', async function () {
@@ -679,7 +658,7 @@ describe('MetaMaskController', function () {
       );
 
       const mockHDKeyring = {
-        type: 'HD Key Tree',
+        type: InternalKeyringType.hdKeyTree,
         mnemonic: uint8ArrayMnemonic,
       };
       jest
@@ -700,9 +679,7 @@ describe('MetaMaskController', function () {
           'Some random device name',
           `m/44/0'/0'`,
         ),
-      ).rejects.toThrow(
-        'MetamaskController:getKeyringForDevice - Unknown device',
-      );
+      ).rejects.toThrow(UNKNOWN_DEVICE_ERROR_MESSAGE);
     });
 
     it('should be locked by default', async function () {
@@ -784,17 +761,9 @@ describe('MetaMaskController', function () {
 
   describe('forgetDevice', function () {
     it('should throw if it receives an unknown device name', async function () {
-      let error = '';
-
-      try {
-        await metamaskController.forgetDevice('Some random device name');
-      } catch (e) {
-        error = e.message;
-      }
-
-      expect(error).toStrictEqual(
-        'MetamaskController:getKeyringForDevice - Unknown device',
-      );
+      await expect(
+        await metamaskController.forgetDevice('Some random device name'),
+      ).rejects.toThrow(UNKNOWN_DEVICE_ERROR_MESSAGE);
     });
 
     it('should wipe all the keyring info', async function () {
@@ -823,28 +792,25 @@ describe('MetaMaskController', function () {
       windowOpenStub = jest
         .spyOn(window, 'open')
         .mockClear()
-        .mockImplementation();
-      windowOpenStub.mockReturnValue(noop);
+        .mockReturnValue(noop);
 
       addNewAccountStub = jest
         .spyOn(metamaskController.keyringController, 'addNewAccount')
         .mockClear()
-        .mockImplementation();
-      addNewAccountStub.mockReturnValue({});
+        .mockReturnValue({});
 
       getAccountsStub = jest
         .spyOn(metamaskController.keyringController, 'getAccounts')
         .mockClear()
-        .mockImplementation();
-      // Need to return different address to mock the behavior of
-      // adding a new account from the keyring
-      getAccountsStub.mockImplementation(() => {
-        if (getAccountsStub.mock.calls.length === 0) {
-          return Promise.resolve(['0x1']);
-        }
+        .mockImplementation(() => {
+          // Need to return different address to mock the behavior of
+          // adding a new account from the keyring
+          if (getAccountsStub.mock.calls.length === 0) {
+            return Promise.resolve(['0x1']);
+          }
 
-        return Promise.reject(new Error('Account not found'));
-      });
+          return Promise.reject(new Error('Account not found'));
+        });
       getAccountsStub.mockImplementation(() => {
         if (getAccountsStub.mock.calls.length === 1) {
           return Promise.resolve(['0x2']);
@@ -886,8 +852,8 @@ describe('MetaMaskController', function () {
     });
 
     afterEach(function () {
-      window.open.mockRestore();
-      metamaskController.keyringController.addNewAccount.mockRestore();
+      windowOpenStub.mockRestore();
+      addNewAccountStub.mockRestore();
       metamaskController.keyringController.getAccounts.mockRestore();
       metamaskController.preferencesController.setAddresses.mockRestore();
       metamaskController.preferencesController.setSelectedAddress.mockRestore();
@@ -903,15 +869,11 @@ describe('MetaMaskController', function () {
     });
 
     it('should call keyringController.addNewAccount', async function () {
-      expect(
-        metamaskController.keyringController.addNewAccount,
-      ).toHaveBeenCalledTimes(1);
+      expect(addNewAccountStub).toHaveBeenCalledTimes(1);
     });
 
     it('should call keyringController.getAccounts', async function () {
-      expect(
-        metamaskController.keyringController.getAccounts.called,
-      ).toBeTruthy();
+      expect(getAccountsStub).toHaveBeenCalled();
     });
 
     it('should call preferencesController.setAddresses', async function () {
@@ -935,29 +897,17 @@ describe('MetaMaskController', function () {
 
   describe('#addNewAccount', function () {
     it('errors when an primary keyring is does not exist', async function () {
-      let error = '';
-
-      try {
-        await metamaskController.addNewAccount();
-      } catch (e) {
-        error = e.message;
-      }
-
-      expect(error).toStrictEqual('MetamaskController - No HD Key Tree found');
+      await expect(await metamaskController.addNewAccount()).rejects.toThrow(
+        NO_HD_KEY_ERROR_MESSAGE,
+      );
     });
   });
 
   describe('#verifyseedPhrase', function () {
     it('errors when no keying is provided', async function () {
-      let error = '';
-
-      try {
-        await metamaskController.verifySeedPhrase();
-      } catch (e) {
-        error = e.message;
-      }
-
-      expect(error).toStrictEqual('MetamaskController - No HD Key Tree found');
+      await expect(await metamaskController.verifySeedPhrase()).rejects.toThrow(
+        NO_HD_KEY_ERROR_MESSAGE,
+      );
     });
 
     it('#addNewAccount', async function () {
@@ -971,32 +921,27 @@ describe('MetaMaskController', function () {
 
   describe('#resetAccount', function () {
     it('wipes transactions from only the correct network id and with the selected address', async function () {
-      const selectedAddressStub = jest
+      jest
         .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
         .mockClear()
-        .mockImplementation();
-      const getNetworkIdStub = jest
+        .mockReturnValue(TEST_ADDRESS);
+      jest
         .spyOn(metamaskController.txController.txStateManager, 'getNetworkId')
         .mockClear()
-        .mockImplementation();
-
-      selectedAddressStub.mockReturnValue(
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      );
-      getNetworkIdStub.mockReturnValue(42);
+        .mockReturnValue(42);
 
       metamaskController.txController.txStateManager._addTransactionsToState([
         createTxMeta({
           id: 1,
           status: TransactionStatus.unapproved,
           metamaskNetworkId: CURRENT_NETWORK_ID,
-          txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+          txParams: { from: TEST_ADDRESS },
         }),
         createTxMeta({
           id: 1,
           status: TransactionStatus.unapproved,
           metamaskNetworkId: CURRENT_NETWORK_ID,
-          txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+          txParams: { from: TEST_ADDRESS },
         }),
         createTxMeta({
           id: 2,
@@ -1021,13 +966,15 @@ describe('MetaMaskController', function () {
   describe('#removeAccount', function () {
     let ret;
     const addressToRemove = '0x1';
-    let mockKeyring;
+    const mockKeyring = {
+      getAccounts: jest.fn().mockResolvedValue([]),
+      destroy: jest.fn(),
+    };
 
     beforeEach(async function () {
-      mockKeyring = {
-        getAccounts: jest.fn().mockReturnValue(Promise.resolve([])),
-        destroy: jest.fn(),
-      };
+      mockKeyring.getAccounts.mockClear();
+      mockKeyring.destroy.mockClear();
+
       jest
         .spyOn(metamaskController.preferencesController, 'removeAddress')
         .mockClear()
@@ -1047,7 +994,7 @@ describe('MetaMaskController', function () {
       jest
         .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
         .mockClear()
-        .mockReturnValue(Promise.resolve(mockKeyring));
+        .mockResolvedValue(mockKeyring);
 
       ret = await metamaskController.removeAccount(addressToRemove);
     });
@@ -1083,7 +1030,7 @@ describe('MetaMaskController', function () {
       ).toHaveBeenCalledWith(addressToRemove);
     });
     it('should return address', async function () {
-      expect(ret).toStrictEqual('0x1');
+      expect(ret).toStrictEqual(addressToRemove);
     });
     it('should call keyringController.getKeyringForAccount', async function () {
       expect(metamaskController.keyringController).toHaveBeenCalledWith(
@@ -1300,6 +1247,7 @@ describe('MetaMaskController', function () {
       await metamaskController._onKeyringControllerUpdate({
         keyrings,
       });
+      const newState = metamaskController.getState();
 
       expect(
         metamaskController.preferencesController.syncAddresses,
@@ -1307,7 +1255,7 @@ describe('MetaMaskController', function () {
       expect(
         metamaskController.accountTracker.syncWithAddresses,
       ).toHaveBeenNthCalledWith(1, FAKE_ACCOUNTS);
-      expect(metamaskController.getState()).toStrictEqual(oldState);
+      expect(newState).toStrictEqual(oldState);
     });
 
     it('should NOT update selected address if already unlocked', async function () {
@@ -1342,6 +1290,7 @@ describe('MetaMaskController', function () {
       metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
       const readNotification =
         metamaskController.getState().notifications[NOTIFICATION_ID];
+
       expect(readNotification.readDate).not.toBeNull();
     });
   });
@@ -1350,19 +1299,15 @@ describe('MetaMaskController', function () {
     it('deletes the notification from state', function () {
       metamaskController.dismissNotifications([NOTIFICATION_ID]);
       const state = metamaskController.getState().notifications;
+
       expect(Object.values(state)).not.toContain(NOTIFICATION_ID);
     });
   });
 
   describe('getTokenStandardAndDetails', function () {
     it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async function () {
-      const providerResultStub = {
-        eth_getCode: '0x123',
-        eth_call:
-          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-      };
       const { provider } = createTestProviderTools({
-        scaffold: providerResultStub,
+        scaffold: PROVIDER_RESULT_STUB,
         networkId: CURRENT_NETWORK_ID,
         chainId: CURRENT_CHAIN_ID,
       });
@@ -1393,13 +1338,8 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from tokens if available, and with a balance retrieved by fetchTokenBalance', async function () {
-      const providerResultStub = {
-        eth_getCode: '0x123',
-        eth_call:
-          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-      };
       const { provider } = createTestProviderTools({
-        scaffold: providerResultStub,
+        scaffold: PROVIDER_RESULT_STUB,
         networkId: CURRENT_NETWORK_ID,
         chainId: CURRENT_CHAIN_ID,
       });
@@ -1431,13 +1371,8 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from contract-metadata if available, and with a balance retrieved by fetchTokenBalance', async function () {
-      const providerResultStub = {
-        eth_getCode: '0x123',
-        eth_call:
-          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-      };
       const { provider } = createTestProviderTools({
-        scaffold: providerResultStub,
+        scaffold: PROVIDER_RESULT_STUB,
         networkId: CURRENT_NETWORK_ID,
         chainId: CURRENT_CHAIN_ID,
       });
@@ -1455,13 +1390,8 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from the blockchain, via the assetsContractController, if not available through other sources', async function () {
-      const providerResultStub = {
-        eth_getCode: '0x123',
-        eth_call:
-          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-      };
       const { provider } = createTestProviderTools({
-        scaffold: providerResultStub,
+        scaffold: PROVIDER_RESULT_STUB,
         networkId: CURRENT_NETWORK_ID,
         chainId: CURRENT_CHAIN_ID,
       });
@@ -1506,13 +1436,8 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC721', async function () {
-      const providerResultStub = {
-        eth_getCode: '0x123',
-        eth_call:
-          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-      };
       const { provider } = createTestProviderTools({
-        scaffold: providerResultStub,
+        scaffold: PROVIDER_RESULT_STUB,
         networkId: CURRENT_NETWORK_ID,
         chainId: CURRENT_CHAIN_ID,
       });
@@ -1554,13 +1479,8 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC1155', async function () {
-      const providerResultStub = {
-        eth_getCode: '0x123',
-        eth_call:
-          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-      };
       const { provider } = createTestProviderTools({
-        scaffold: providerResultStub,
+        scaffold: PROVIDER_RESULT_STUB,
         networkId: CURRENT_NETWORK_ID,
         chainId: CURRENT_CHAIN_ID,
       });
