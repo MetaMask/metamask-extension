@@ -61,7 +61,7 @@ export const NftItem = ({
             as="img"
             src={src}
             alt={alt}
-            display={Display.BLOCK}
+            display={Display.Block}
             justifyContent={JustifyContent.center}
           />
         ) : (
